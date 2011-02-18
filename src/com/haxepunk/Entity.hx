@@ -135,7 +135,7 @@ class Entity extends Tweener
 	{
 		if (_world == null) return null;
 		
-		var e:Entity = _world._typeFirst[type];
+		var e:Entity = _world._typeFirst.get(type);
 		if (!collidable || e == null) return null;
 		
 		_x = this.x; _y = this.y;
@@ -316,7 +316,7 @@ class Entity extends Tweener
 	{
 		if (_world == null) return;
 		
-		var e:Entity = _world._typeFirst[type];
+		var e:Entity = _world._typeFirst.get(type);
 		if (!collidable || e == null) return;
 		
 		_x = this.x; _y = this.y;
@@ -485,9 +485,9 @@ class Entity extends Tweener
 	private function setMask(value:Mask):Mask
 	{
 		if (_mask == value) return value;
-		if (_mask) _mask.assignTo(null);
+		if (_mask != null) _mask.assignTo(null);
 		_mask = value;
-		if (value) _mask.assignTo(this);
+		if (value != null) _mask.assignTo(this);
 		return _mask;
 	}
 	
@@ -500,7 +500,7 @@ class Entity extends Tweener
 	{
 		if (_graphic == value) return value;
 		_graphic = value;
-		if (value && value._assign != null) value._assign();
+		if (value != null && value.assign != null) value.assign();
 		return _graphic;
 	}
 	
@@ -510,13 +510,13 @@ class Entity extends Tweener
 	 */
 	public function addGraphic(g:Graphic):Graphic
 	{
-		if (Std.is(graphic, Graphiclist)) cast(graphic, Graphiclist).add(g);
-		else
-		{
-			var list:Graphiclist = new Graphiclist();
-			if (graphic) list.add(graphic);
-			graphic = list;
-		}
+//		if (Std.is(graphic, Graphiclist)) cast(graphic, Graphiclist).add(g);
+//		else
+//		{
+//			var list:Graphiclist = new Graphiclist();
+//			if (graphic) list.add(graphic);
+//			graphic = list;
+//		}
 		return g;
 	}
 	
@@ -541,15 +541,15 @@ class Entity extends Tweener
 	 */
 	public function setHitboxTo(o:Dynamic)
 	{
-		if (Std.is(o, Image) || Std.is(o, Rectangle)) setHitbox(o.width, o.height, -o.x, -o.y);
+		if (Std.is(o, Image) || Std.is(o, Rectangle)) setHitbox(Std.int(o.width), Std.int(o.height), -Std.int(o.x), -Std.int(o.y));
 		else
 		{
 			if (o.hasOwnProperty("width")) width = o.width;
 			if (o.hasOwnProperty("height")) height = o.height;
 			if (o.hasOwnProperty("originX") && !Std.is(o, Graphic)) originX = o.originX;
-			else if (o.hasOwnProperty("x")) originX = -o.x;
+			else if (o.hasOwnProperty("x")) originX = Std.int(-o.x);
 			if (o.hasOwnProperty("originY") && !Std.is(o, Graphic)) originX = o.originY;
-			else if (o.hasOwnProperty("y")) originX = -o.y;
+			else if (o.hasOwnProperty("y")) originX = Std.int(-o.y);
 		}
 	}
 	
@@ -569,8 +569,8 @@ class Entity extends Tweener
 	 */
 	public function centerOrigin()
 	{
-		originX = width / 2;
-		originY = height / 2;
+		originX = Std.int(width / 2);
+		originY = Std.int(height / 2);
 	}
 	
 	/**
@@ -636,17 +636,17 @@ class Entity extends Tweener
 		y = Math.round(_moveY);
 		_moveX -= x;
 		_moveY -= y;
-		if (solidType)
+		if (solidType != "")
 		{
 			var sign:Int, e:Entity;
 			if (x != 0)
 			{
-				if (collidable && (sweep || collide(solidType, this.x + x, this.y)))
+				if (collidable && (sweep || collide(solidType, this.x + x, this.y) != null))
 				{
 					sign = x > 0 ? 1 : -1;
 					while (x != 0)
 					{
-						if ((e = collide(solidType, this.x + sign, this.y)))
+						if ((e = collide(solidType, this.x + sign, this.y)) != null)
 						{
 							moveCollideX(e);
 							break;
@@ -662,12 +662,12 @@ class Entity extends Tweener
 			}
 			if (y != 0)
 			{
-				if (collidable && (sweep || collide(solidType, this.x, this.y + y)))
+				if (collidable && (sweep || collide(solidType, this.x, this.y + y) != null))
 				{
 					sign = y > 0 ? 1 : -1;
 					while (y != 0)
 					{
-						if ((e = collide(solidType, this.x, this.y + sign)))
+						if ((e = collide(solidType, this.x, this.y + sign)) != null)
 						{
 							moveCollideY(e);
 							break;
@@ -759,25 +759,21 @@ class Entity extends Tweener
 		if (y - originY + height > bottom - padding) y = bottom - height + originY - padding;
 	}
 	
-	public var updateNext(getUpdateNext, null):Entity;
-	private function getUpdateNext():Entity { return _updateNext; }
-	
-	public var renderPrev(getRenderPrev, null):Entity;
-	private function getRenderPrev():Entity { return _renderPrev; }
-	
 	// Entity information.
-	private var _class:String;
-	private var _world:World;
-	private var _added:Bool;
-	private var _type:String;
-	private var _layer:Int;
-	private var _updatePrev:Entity;
-	private var _updateNext:Entity;
-	private var _renderPrev:Entity;
-	private var _renderNext:Entity;
-	private var _typePrev:Entity;
-	private var _typeNext:Entity;
-	private var _recycleNext:Entity;
+	public var _class:String;
+	public var _world:World;
+	public var _added:Bool;
+	public var _type:String;
+	public var _layer:Int;
+	
+	public var updatePrev:Entity;
+	public var updateNext:Entity;
+	public var renderPrev:Entity;
+	public var renderNext:Entity;
+	
+	public var _typePrev:Entity;
+	public var _typeNext:Entity;
+	public var _recycleNext:Entity;
 	
 	// Collision information.
 	private var HITBOX:Mask;

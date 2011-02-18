@@ -25,9 +25,9 @@ class Mask
 	public function new() 
 	{
 		_class = Type.getClassName(Type.getClass(this));
-		_check = new Dictionary();
-		_check[Mask] = collideMask;
-		_check[Masklist] = collideMasklist;
+		_check = new Hash<Dynamic->Bool>();
+		_check.set("Mask", collideMask);
+		_check.set("Masklist", collideMasklist);
 	}
 	
 	/**
@@ -37,8 +37,8 @@ class Mask
 	 */
 	public function collide(mask:Mask):Bool
 	{
-		if (_check[mask._class] != null) return _check[mask._class](mask);
-		if (mask._check[_class] != null) return mask._check[_class](this);
+		if (_check.get(mask._class) != null) return _check.get(mask._class)(mask);
+		if (mask._check.get(_class) != null) return mask._check.get(_class)(this);
 		return false;
 	}
 	
@@ -64,13 +64,13 @@ class Mask
 		if (parent != null) update();
 	}
 	
-	/** @private Updates the parent's bounds for this mask. */
-	private function update()
+	/** Updates the parent's bounds for this mask. */
+	public function update()
 	{
 		
 	}
 	
 	// Mask information.
 	private var _class:String;
-	private var _check:Dictionary;
+	private var _check:Hash<Dynamic->Bool>;
 }

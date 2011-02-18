@@ -68,7 +68,7 @@ class Masklist extends Hitbox
 	public function remove(mask:Mask):Mask
 	{
 		if (_masks.indexOf(mask) < 0) return mask;
-		_temp.clear();
+//		_temp.clear();
 		var m:Mask;
 		for (m in _masks)
 		{
@@ -92,7 +92,7 @@ class Masklist extends Hitbox
 	 */
 	public function removeAt(index:Int = 0)
 	{
-		_temp.clear();
+//		_temp.clear();
 		var i:Int = _masks.length;
 		index %= i;
 		while (i-- > 0)	
@@ -118,8 +118,8 @@ class Masklist extends Hitbox
 		var m:Mask;
 		for (m in _masks) m.list = null;
 		_count = 0;
-		_masks.clear();
-		_temp.clear();
+//		_masks.clear();
+//		_temp.clear();
 		update();
 	}
 	
@@ -137,7 +137,7 @@ class Masklist extends Hitbox
 	override public function update() 
 	{
 		// find bounds of the contained masks
-		var t:Int, l:Int, r:Int, b:Int, h:Hitbox, i:Int = _count;
+		var t:Int = 0, l:Int = 0, r:Int = 0, b:Int = 0, h:Hitbox, i:Int = _count;
 		while (i-- > 0)
 		{
 			if ((h = cast(_masks[i], Hitbox)) != null)

@@ -2,7 +2,7 @@ package com.haxepunk;
 
 import flash.geom.Point;
 import flash.utils.Dictionary;
-import net.flashpunk.utils.Input;
+import com.haxepunk.utils.Input;
 
 /**
  * Updated by Engine, main game container that holds all currently active Entities.
@@ -20,13 +20,23 @@ class World extends Tweener
 	 */
 	public var camera:Point;
 	
+	public static inline var NUMBER_MAX_VALUE = untyped __global__["Number"].MAX_VALUE;
+	
 	/**
 	 * Constructor.
 	 */
 	public function new() 
 	{
+		super();
 		visible = true;
 		camera = new Point();
+		
+		_layerList = new Array<Int>();
+		
+		_add = new Array<Entity>();
+		_remove = new Array<Entity>();
+		_classCount = new Hash<Int>();
+		_recycled = new Hash<Entity>();
 	}
 	
 	/**
@@ -54,15 +64,15 @@ class World extends Tweener
 	{
 		// update the entities
 		var e:Entity = _updateFirst;
-		while (e)
+		while (e != null)
 		{
 			if (e.active)
 			{
-				if (e._tween) e.updateTweens();
+				if (e.tween != null) e.updateTweens();
 				e.update();
 			}
-			if (e._graphic && e._graphic.active) e._graphic.update();
-			e = e._updateNext;
+			if (e.graphic != null && e.graphic.active) e.graphic.update();
+			e = e.updateNext;
 		}
 	}
 	
@@ -76,13 +86,13 @@ class World extends Tweener
 		// render the entities in order of depth
 		var e:Entity,
 			i:Int = _layerList.length;
-		while (i --)
+		while (i-- > 0)
 		{
 			e = _renderLast[_layerList[i]];
-			while (e)
+			while (e != null)
 			{
 				if (e.visible) e.render();
-				e = e._renderPrev;
+				e = e.renderPrev;
 			}
 		}
 	}
@@ -93,7 +103,7 @@ class World extends Tweener
 	public var mouseX(getMouseX, null):Int;
 	private function getMouseX():Int
 	{
-		return FP.screen.mouseX + FP.camera.x;
+		return Std.int(HXP.screen.mouseX + HXP.camera.x);
 	}
 	
 	/**
@@ -102,7 +112,7 @@ class World extends Tweener
 	public var mouseY(getMouseY, null):Int;
 	private function getMouseY():Int
 	{
-		return FP.screen.mouseY + FP.camera.y;
+		return Std.int(HXP.screen.mouseY + HXP.camera.y);
 	}
 	
 	/**
@@ -112,7 +122,7 @@ class World extends Tweener
 	 */
 	public function add(e:Entity):Entity
 	{
-		if (e._world) return e;
+		if (e._world != null) return e;
 		_add[_add.length] = e;
 		e._world = this;
 		return e;
@@ -137,11 +147,11 @@ class World extends Tweener
 	public function removeAll()
 	{
 		var e:Entity = _updateFirst;
-		while (e)
+		while (e != null)
 		{
 			_remove[_remove.length] = e;
 			e._world = null;
-			e = e._updateNext;
+			e = e.updateNext;
 		}
 	}
 	
@@ -192,7 +202,7 @@ class World extends Tweener
 	public function addMask(mask:Mask, type:String, x:Int = 0, y:Int = 0):Entity
 	{
 		var e:Entity = new Entity(x, y, null, mask);
-		if (type) e.type = type;
+		if (type != "") e.type = type;
 		e.active = e.visible = false;
 		return add(e);
 	}
@@ -203,18 +213,20 @@ class World extends Tweener
 	 * @param	addToWorld		Add it to the World immediately.
 	 * @return	The new Entity object.
 	 */
-	public function create(classType:Class, addToWorld:Bool = true):Entity
+/*
+	public function create(classType:String, addToWorld:Bool = true):Entity
 	{
-		var e:Entity = _recycled[classType];
+		var e:Entity = _recycled[String];
 		if (e != null)
 		{
 			_recycled[classType] = e._recycleNext;
 			e._recycleNext = null;
 		}
-//		else e = new classType;
+		else e = new Type.createInstance();
 		if (addToWorld) return add(e);
 		return e;
 	}
+*/
 	
 	/**
 	 * Removes the Entity from the World at the end of the frame and recycles it.
@@ -225,8 +237,8 @@ class World extends Tweener
 	public function recycle(e:Entity):Entity
 	{
 		if (e._world != this) return e;
-		e._recycleNext = _recycled[e._class];
-		_recycled[e._class] = e;
+		e._recycleNext = _recycled.get(e._class);
+		_recycled.set(e._class, e);
 		return remove(e);
 	}
 	
@@ -234,17 +246,17 @@ class World extends Tweener
 	 * Clears stored reycled Entities of the Class type.
 	 * @param	classType		The Class type to clear.
 	 */
-	public function clearRecycled(classType:Dynamic)
+	public function clearRecycled(classType:String)
 	{
-		var e:Entity = _recycled[classType],
+		var e:Entity = _recycled.get(classType),
 			n:Entity;
-		while (e)
+		while (e != null)
 		{
 			n = e._recycleNext;
 			e._recycleNext = null;
 			e = n;
 		}
-		delete _recycled[classType];
+//		delete _recycled[classType];
 	}
 	
 	/**
@@ -252,8 +264,8 @@ class World extends Tweener
 	 */
 	public function clearRecycledAll()
 	{
-		var classType:Dynamic;
-		for (classType in _recycled) clearRecycled(classType);
+		var e:Entity;
+		for (e in _recycled) clearRecycled(e._class);
 	}
 	
 	/**
@@ -263,16 +275,16 @@ class World extends Tweener
 	 */
 	public function bringToFront(e:Entity):Bool
 	{
-		if (e._world != this || !e._renderPrev) return false;
+		if (e._world != this || e.renderPrev == null) return false;
 		// pull from list
-		e._renderPrev._renderNext = e._renderNext;
-		if (e._renderNext) e._renderNext._renderPrev = e._renderPrev;
-		else _renderLast[e._layer] = e._renderPrev;
+		e.renderPrev.renderNext = e.renderNext;
+		if (e.renderNext != null) e.renderNext.renderPrev = e.renderPrev;
+		else _renderLast[e._layer] = e.renderPrev;
 		// place at the start
-		e._renderNext = _renderFirst[e._layer];
-		e._renderNext._renderPrev = e;
+		e.renderNext = _renderFirst[e._layer];
+		e.renderNext.renderPrev = e;
 		_renderFirst[e._layer] = e;
-		e._renderPrev = null;
+		e.renderPrev = null;
 		return true;
 	}
 	
@@ -283,16 +295,16 @@ class World extends Tweener
 	 */
 	public function sendToBack(e:Entity):Bool
 	{
-		if (e._world != this || !e._renderNext) return false;
+		if (e._world != this || e.renderNext == null) return false;
 		// pull from list
-		e._renderNext._renderPrev = e._renderPrev;
-		if (e._renderPrev) e._renderPrev._renderNext = e._renderNext;
-		else _renderFirst[e._layer] = e._renderNext;
+		e.renderNext.renderPrev = e.renderPrev;
+		if (e.renderPrev != null) e.renderPrev.renderNext = e.renderNext;
+		else _renderFirst[e._layer] = e.renderNext;
 		// place at the end
-		e._renderPrev = _renderLast[e._layer];
-		e._renderPrev._renderNext = e;
+		e.renderPrev = _renderLast[e._layer];
+		e.renderPrev.renderNext = e;
 		_renderLast[e._layer] = e;
-		e._renderNext = null;
+		e.renderNext = null;
 		return true;
 	}
 	
@@ -303,16 +315,16 @@ class World extends Tweener
 	 */
 	public function bringForward(e:Entity):Bool
 	{
-		if (e._world != this || !e._renderPrev) return false;
+		if (e._world != this || e.renderPrev == null) return false;
 		// pull from list
-		e._renderPrev._renderNext = e._renderNext;
-		if (e._renderNext) e._renderNext._renderPrev = e._renderPrev;
-		else _renderLast[e._layer] = e._renderPrev;
+		e.renderPrev.renderNext = e.renderNext;
+		if (e.renderNext != null) e.renderNext.renderPrev = e.renderPrev;
+		else _renderLast[e._layer] = e.renderPrev;
 		// shift towards the front
-		e._renderNext = e._renderPrev;
-		e._renderPrev = e._renderPrev._renderPrev;
-		e._renderNext._renderPrev = e;
-		if (e._renderPrev) e._renderPrev._renderNext = e;
+		e.renderNext = e.renderPrev;
+		e.renderPrev = e.renderPrev.renderPrev;
+		e.renderNext.renderPrev = e;
+		if (e.renderPrev != null) e.renderPrev.renderNext = e;
 		else _renderFirst[e._layer] = e;
 		return true;
 	}
@@ -324,16 +336,16 @@ class World extends Tweener
 	 */
 	public function sendBackward(e:Entity):Bool
 	{
-		if (e._world != this || !e._renderNext) return false;
+		if (e._world != this || e.renderNext == null) return false;
 		// pull from list
-		e._renderNext._renderPrev = e._renderPrev;
-		if (e._renderPrev) e._renderPrev._renderNext = e._renderNext;
-		else _renderFirst[e._layer] = e._renderNext;
+		e.renderNext.renderPrev = e.renderPrev;
+		if (e.renderPrev != null) e.renderPrev.renderNext = e.renderNext;
+		else _renderFirst[e._layer] = e.renderNext;
 		// shift towards the back
-		e._renderPrev = e._renderNext;
-		e._renderNext = e._renderNext._renderNext;
-		e._renderPrev._renderNext = e;
-		if (e._renderNext) e._renderNext._renderPrev = e;
+		e.renderPrev = e.renderNext;
+		e.renderNext = e.renderNext.renderNext;
+		e.renderPrev.renderNext = e;
+		if (e.renderNext != null) e.renderNext.renderPrev = e;
 		else _renderLast[e._layer] = e;
 		return true;
 	}
@@ -345,7 +357,7 @@ class World extends Tweener
 	 */
 	public function isAtFront(e:Entity):Bool
 	{
-		return e._renderPrev == null;
+		return e.renderPrev == null;
 	}
 	
 	/**
@@ -355,7 +367,7 @@ class World extends Tweener
 	 */
 	public function isAtBack(e:Entity):Bool
 	{
-		return e._renderNext == null;
+		return e.renderNext == null;
 	}
 	
 	/**
@@ -369,8 +381,8 @@ class World extends Tweener
 	 */
 	public function collideRect(type:String, rX:Float, rY:Float, rWidth:Float, rHeight:Float):Entity
 	{
-		var e:Entity = _typeFirst[type];
-		while (e)
+		var e:Entity = _typeFirst.get(type);
+		while (e != null)
 		{
 			if (e.collideRect(e.x, e.y, rX, rY, rWidth, rHeight)) return e;
 			e = e._typeNext;
@@ -387,8 +399,8 @@ class World extends Tweener
 	 */
 	public function collidePoint(type:String, pX:Float, pY:Float):Entity
 	{
-		var e:Entity = _typeFirst[type];
-		while (e)
+		var e:Entity = _typeFirst.get(type);
+		while (e != null)
 		{
 			if (e.collidePoint(e.x, e.y, pX, pY)) return e;
 			e = e._typeNext;
@@ -411,9 +423,9 @@ class World extends Tweener
 	{
 		// If the distance is less than precision, do the short sweep.
 		if (precision < 1) precision = 1;
-		if (FP.distance(fromX, fromY, toX, toY) < precision)
+		if (HXP.distance(fromX, fromY, toX, toY) < precision)
 		{
-			if (p)
+			if (p != null)
 			{
 				if (fromX == toX && fromY == toY)
 				{
@@ -426,8 +438,8 @@ class World extends Tweener
 		}
 		
 		// Get information about the line we're about to raycast.
-		var xDelta:Int = Math.abs(toX - fromX),
-			yDelta:Int = Math.abs(toY - fromY),
+		var xDelta:Int = Std.int(Math.abs(toX - fromX)),
+			yDelta:Int = Std.int(Math.abs(toY - fromY)),
 			xSign:Float = toX > fromX ? precision : -precision,
 			ySign:Float = toY > fromY ? precision : -precision,
 			x:Float = fromX, y:Float = fromY, e:Entity;
@@ -440,15 +452,15 @@ class World extends Tweener
 			{
 				while (x < toX)
 				{
-					if ((e = collidePoint(type, x, y)))
+					if ((e = collidePoint(type, x, y)) != null)
 					{
-						if (!p) return e;
+						if (p == null) return e;
 						if (precision < 2)
 						{
 							p.x = x - xSign; p.y = y - ySign;
 							return e;
 						}
-						return collideLine(type, x - xSign, y - ySign, toX, toY, 1, p);
+						return collideLine(type, Std.int(x - xSign), Std.int(y - ySign), toX, toY, 1, p);
 					}
 					x += xSign; y += ySign;
 				}
@@ -457,15 +469,15 @@ class World extends Tweener
 			{
 				while (x > toX)
 				{
-					if ((e = collidePoint(type, x, y)))
+					if ((e = collidePoint(type, x, y)) != null)
 					{
-						if (!p) return e;
+						if (p == null) return e;
 						if (precision < 2)
 						{
 							p.x = x - xSign; p.y = y - ySign;
 							return e;
 						}
-						return collideLine(type, x - xSign, y - ySign, toX, toY, 1, p);
+						return collideLine(type, Std.int(x - xSign), Std.int(y - ySign), toX, toY, 1, p);
 					}
 					x += xSign; y += ySign;
 				}
@@ -478,15 +490,15 @@ class World extends Tweener
 			{
 				while (y < toY)
 				{
-					if ((e = collidePoint(type, x, y)))
+					if ((e = collidePoint(type, x, y)) != null)
 					{
-						if (!p) return e;
+						if (p == null) return e;
 						if (precision < 2)
 						{
 							p.x = x - xSign; p.y = y - ySign;
 							return e;
 						}
-						return collideLine(type, x - xSign, y - ySign, toX, toY, 1, p);
+						return collideLine(type, Std.int(x - xSign), Std.int(y - ySign), toX, toY, 1, p);
 					}
 					x += xSign; y += ySign;
 				}
@@ -495,15 +507,15 @@ class World extends Tweener
 			{
 				while (y > toY)
 				{
-					if ((e = collidePoint(type, x, y)))
+					if ((e = collidePoint(type, x, y)) != null)
 					{
-						if (!p) return e;
+						if (p == null) return e;
 						if (precision < 2)
 						{
 							p.x = x - xSign; p.y = y - ySign;
 							return e;
 						}
-						return collideLine(type, x - xSign, y - ySign, toX, toY, 1, p);
+						return collideLine(type, Std.int(x - xSign), Std.int(y - ySign), toX, toY, 1, p);
 					}
 					x += xSign; y += ySign;
 				}
@@ -513,12 +525,12 @@ class World extends Tweener
 		// Check the last position.
 		if (precision > 1)
 		{
-			if (!p) return collidePoint(type, toX, toY);
-			if (collidePoint(type, toX, toY)) return collideLine(type, x - xSign, y - ySign, toX, toY, 1, p);
+			if (p == null) return collidePoint(type, toX, toY);
+			if (collidePoint(type, toX, toY) != null) return collideLine(type, Std.int(x - xSign), Std.int(y - ySign), toX, toY, 1, p);
 		}
 		
 		// No collision, return the end point.
-		if (p)
+		if (p != null)
 		{
 			p.x = toX;
 			p.y = toY;
@@ -538,7 +550,7 @@ class World extends Tweener
 	 */
 	public function collideRectInto(type:String, rX:Float, rY:Float, rWidth:Float, rHeight:Float, into:Array<Entity>)
 	{
-		var e:Entity = _typeFirst[type],
+		var e:Entity = _typeFirst.get(type),
 			n:Int = into.length;
 		while (e != null)
 		{
@@ -558,7 +570,7 @@ class World extends Tweener
 	 */
 	public function collidePointInto(type:String, pX:Float, pY:Float, into:Array<Entity>)
 	{
-		var e:Entity = _typeFirst[type],
+		var e:Entity = _typeFirst.get(type),
 			n:Int = into.length;
 		while (e != null)
 		{
@@ -578,10 +590,10 @@ class World extends Tweener
 	 */
 	public function nearestToRect(type:String, x:Float, y:Float, width:Float, height:Float):Entity
 	{
-		var n:Entity = _typeFirst[type],
-			nearDist:Float = Number.MAX_VALUE,
-			near:Entity, dist:Float;
-		while (n)
+		var n:Entity = _typeFirst.get(type),
+			nearDist:Float = NUMBER_MAX_VALUE,
+			near:Entity = null, dist:Float;
+		while (n != null)
 		{
 			dist = squareRects(x, y, width, height, n.x - n.originX, n.y - n.originY, n.width, n.height);
 			if (dist < nearDist)
@@ -604,12 +616,13 @@ class World extends Tweener
 	public function nearestToEntity(type:String, e:Entity, useHitboxes:Bool = false):Entity
 	{
 		if (useHitboxes) return nearestToRect(type, e.x - e.originX, e.y - e.originY, e.width, e.height);
-		var n:Entity = _typeFirst[type],
-			nearDist:Float = Number.MAX_VALUE,
-			near:Entity, dist:Float,
+		var n:Entity = _typeFirst.get(type),
+			nearDist:Float = NUMBER_MAX_VALUE,
+			near:Entity = null,
+			dist:Float,
 			x:Float = e.x - e.originX,
 			y:Float = e.y - e.originY;
-		while (n)
+		while (n != null)
 		{
 			dist = (x - n.x) * (x - n.x) + (y - n.y) * (y - n.y);
 			if (dist < nearDist)
@@ -632,12 +645,13 @@ class World extends Tweener
 	 */
 	public function nearestToPoint(type:String, x:Float, y:Float, useHitboxes:Bool = false):Entity
 	{
-		var n:Entity = _typeFirst[type],
-			nearDist:Float = Number.MAX_VALUE,
-			near:Entity, dist:Float;
+		var n:Entity = _typeFirst.get(type),
+			nearDist:Float = NUMBER_MAX_VALUE,
+			near:Entity = null,
+			dist:Float;
 		if (useHitboxes)
 		{
-			while (n)
+			while (n != null)
 			{
 				dist = squarePointRect(x, y, n.x - n.originX, n.y - n.originY, n.width, n.height);
 				if (dist < nearDist)
@@ -649,7 +663,7 @@ class World extends Tweener
 			}
 			return near;
 		}
-		while (n)
+		while (n != null)
 		{
 			dist = (x - n.x) * (x - n.x) + (y - n.y) * (y - n.y);
 			if (dist < nearDist)
@@ -675,7 +689,7 @@ class World extends Tweener
 	 */
 	public function typeCount(type:String):Int
 	{
-		return _typeCount[type];
+		return 0; // _typeCount[type];
 	}
 	
 	/**
@@ -683,9 +697,9 @@ class World extends Tweener
 	 * @param	c		The Class type to count.
 	 * @return	How many Entities of Class exist in the World.
 	 */
-	public function classCount(c:Class):Int
+	public function classCount(c:String):Int
 	{
-		return _classCount[c];
+		return _classCount.get(c);
 	}
 	
 	/**
@@ -717,8 +731,8 @@ class World extends Tweener
 	 */
 	public function typeFirst(type:String):Entity
 	{
-		if (!_updateFirst) return null;
-		return _typeFirst[type] as Entity;
+		if (_updateFirst == null) return null;
+		return _typeFirst.get(type);
 	}
 	
 	/**
@@ -726,6 +740,7 @@ class World extends Tweener
 	 * @param	c		The Class type to check.
 	 * @return	The Entity.
 	 */
+/*
 	public function classFirst(c:Class):Entity
 	{
 		if (!_updateFirst) return null;
@@ -733,10 +748,11 @@ class World extends Tweener
 		while (e)
 		{
 			if (Std.is(e, c)) return e;
-			e = e._updateNext;
+			e = e.updateNext;
 		}
 		return null;
 	}
+*/
 	
 	/**
 	 * The first Entity on the Layer.
@@ -745,8 +761,8 @@ class World extends Tweener
 	 */
 	public function layerFirst(layer:Int):Entity
 	{
-		if (!_updateFirst) return null;
-		return _renderFirst[layer] as Entity;
+		if (_updateFirst == null) return null;
+		return _renderFirst[layer];
 	}
 	
 	/**
@@ -756,8 +772,8 @@ class World extends Tweener
 	 */
 	public function layerLast(layer:Int):Entity
 	{
-		if (!_updateFirst) return null;
-		return _renderLast[layer] as Entity;
+		if (_updateFirst == null) return null;
+		return _renderLast[layer];
 	}
 	
 	/**
@@ -766,8 +782,8 @@ class World extends Tweener
 	public var farthest(getFarthest, null):Entity;
 	private function getFarthest():Entity
 	{
-		if (!_updateFirst) return null;
-		return _renderLast[_layerList[_layerList.length - 1] as int] as Entity;
+		if (_updateFirst == null) return null;
+		return _renderLast[_layerList[_layerList.length - 1]];
 	}
 	
 	/**
@@ -776,8 +792,8 @@ class World extends Tweener
 	public var nearest(getNearest, null):Entity;
 	private function getNearest():Entity
 	{
-		if (!_updateFirst) return null;
-		return _renderFirst[_layerList[0] as int] as Entity;
+		if (_updateFirst == null) return null;
+		return _renderFirst[_layerList[0]];
 	}
 	
 	/**
@@ -786,8 +802,8 @@ class World extends Tweener
 	public var layerFarthest(getLayerFarthest, null):Int;
 	private function getLayerFarthest():Int
 	{
-		if (!_updateFirst) return 0;
-		return _layerList[_layerList.length - 1] as int;
+		if (_updateFirst == null) return 0;
+		return _layerList[_layerList.length - 1];
 	}
 	
 	/**
@@ -796,8 +812,8 @@ class World extends Tweener
 	public var layerNearest(getLayerNearest, null):Int;
 	private function getLayerNearest():Int
 	{
-		if (!_updateFirst) return 0;
-		return _layerList[0] as int;
+		if (_updateFirst == null) return 0;
+		return _layerList[0];
 	}
 	
 	/**
@@ -807,7 +823,8 @@ class World extends Tweener
 	private function getUniqueTypes():Int
 	{
 		var i:Int = 0;
-		for (var type:String in _typeCount) i ++;
+		var type:String;
+		for (type in _typeCount) i++;
 		return i;
 	}
 	
@@ -817,17 +834,14 @@ class World extends Tweener
 	 * @param	into		The Array or Vector to populate.
 	 * @return	The same array, populated.
 	 */
-	public function getType(type:String, into:Object)
+	public function getType(type:String, into:Array<Entity>)
 	{
-		if (into is Array || into is Vector.<*>)
+		var e:Entity = _typeFirst.get(type),
+			n:Int = into.length;
+		while (e != null)
 		{
-			var e:Entity = _typeFirst[type],
-				n:Int = into.length;
-			while (e)
-			{
-				into[n ++] = e;
-				e = e._typeNext;
-			}
+			into[n++] = e;
+			e = e._typeNext;
 		}
 	}
 	
@@ -837,16 +851,18 @@ class World extends Tweener
 	 * @param	into		The Array or Vector to populate.
 	 * @return	The same array, populated.
 	 */
-	public function getClass(c:Class, into:Array<Entity)
+/*
+	public function getClass(c:Class, into:Array<Entity>)
 	{
 		var e:Entity = _updateFirst,
 			n:Int = into.length;
 		while (e != null)
 		{
-			if (e is c) into[n++] = e;
-			e = e._updateNext;
+			if (Std.is(e, c)) into[n++] = e;
+			e = e.updateNext;
 		}
 	}
+*/
 	
 	/**
 	 * Pushes all Entities in the World on the layer into the Array or Vector.
@@ -854,17 +870,14 @@ class World extends Tweener
 	 * @param	into		The Array or Vector to populate.
 	 * @return	The same array, populated.
 	 */
-	public function getLayer(layer:Int, into:Object)
+	public function getLayer(layer:Int, into:Array<Entity>)
 	{
-		if (into is Array || into is Vector.<*>)
+		var e:Entity = _renderLast[layer],
+			n:Int = into.length;
+		while (e != null)
 		{
-			var e:Entity = _renderLast[layer],
-				n:Int = into.length;
-			while (e)
-			{
-				into[n ++] = e;
-				e = e._updatePrev;
-			}
+			into[n ++] = e;
+			e = e.updatePrev;
 		}
 	}
 	
@@ -873,17 +886,14 @@ class World extends Tweener
 	 * @param	into		The Array or Vector to populate.
 	 * @return	The same array, populated.
 	 */
-	public function getAll(into:Object)
+	public function getAll(into:Array<Entity>)
 	{
-		if (into is Array || into is Vector.<*>)
+		var e:Entity = _updateFirst,
+			n:Int = into.length;
+		while (e != null)
 		{
-			var e:Entity = _updateFirst,
-				n:Int = into.length;
-			while (e)
-			{
-				into[n ++] = e;
-				e = e._updateNext;
-			}
+			into[n ++] = e;
+			e = e.updateNext;
 		}
 	}
 	
@@ -895,9 +905,9 @@ class World extends Tweener
 		var e:Entity;
 		
 		// remove entities
-		if (_remove.length)
+		if (_remove.length != 0)
 		{
-			for each (e in _remove)
+			for (e in _remove)
 			{
 				if (e._added != true && _add.indexOf(e) >= 0)
 				{
@@ -908,73 +918,83 @@ class World extends Tweener
 				e.removed();
 				removeUpdate(e);
 				removeRender(e);
-				if (e._type) removeType(e);
-				if (e.autoClear && e._tween) e.clearTweens();
+				if (e._type != "") removeType(e);
+				if (e.autoClear && e.tween != null) e.clearTweens();
 			}
-			_remove.length = 0;
+//			_remove.clear();
 		}
 		
 		// add entities
-		if (_add.length)
+		if (_add.length != 0)
 		{
-			for each (e in _add)
+			for (e in _add)
 			{
 				e._added = true;
 				addUpdate(e);
 				addRender(e);
-				if (e._type) addType(e);
+				if (e._type != "") addType(e);
 				e.added();
 			}
-			_add.length = 0;
+//			_add.clear();
 		}
 		
 		// sort the depth list
 		if (_layerSort)
 		{
-			if (_layerList.length > 1) FP.sort(_layerList, true);
+			if (_layerList.length > 1) _layerList.sort(layerSort);// HXP.sort(_layerList, true);
 			_layerSort = false;
 		}
+	}
+	
+	private function layerSort(a:Int, b:Int):Int
+	{
+		if (a > b)
+			return 1;
+		else if (a < b)
+			return -1;
+		
+		return 0;
 	}
 	
 	/** @private Adds Entity to the update list. */
 	private function addUpdate(e:Entity)
 	{
 		// add to update list
-		if (_updateFirst)
+		if (_updateFirst != null)
 		{
-			_updateFirst._updatePrev = e;
-			e._updateNext = _updateFirst;
+			_updateFirst.updatePrev = e;
+			e.updateNext = _updateFirst;
 		}
-		else e._updateNext = null;
-		e._updatePrev = null;
+		else e.updateNext = null;
+		e.updatePrev = null;
 		_updateFirst = e;
 		_count ++;
-		if (!_classCount[e._class]) _classCount[e._class] = 0;
-		_classCount[e._class] ++;
+		if (_classCount.get(e._class) != 0) _classCount.set(e._class, 0);
+		_classCount.set(e._class, _classCount.get(e._class) + 1); // increment
 	}
 	
 	/** @private Removes Entity from the update list. */
 	private function removeUpdate(e:Entity)
 	{
 		// remove from the update list
-		if (_updateFirst == e) _updateFirst = e._updateNext;
-		if (e._updateNext) e._updateNext._updatePrev = e._updatePrev;
-		if (e._updatePrev) e._updatePrev._updateNext = e._updateNext;
-		e._updateNext = e._updatePrev = null;
+		if (_updateFirst == e) _updateFirst = e.updateNext;
+		if (e.updateNext != null) e.updateNext.updatePrev = e.updatePrev;
+		if (e.updatePrev != null) e.updatePrev.updateNext = e.updateNext;
+		e.updateNext = e.updatePrev = null;
 		
 		_count --;
-		_classCount[e._class] --;
+		_classCount.set(e._class, _classCount.get(e._class) - 1); // decrement
 	}
 	
 	/** @private Adds Entity to the render list. */
-	internal function addRender(e:Entity)
+	public function addRender(e:Entity)
 	{
 		var f:Entity = _renderFirst[e._layer];
-		if (f)
+		if (f != null)
 		{
 			// Append entity to existing layer.
-			e._renderNext = f;
-			f._renderPrev = e;
+			e.renderNext = f;
+			f.renderPrev = e;
 			_layerCount[e._layer] ++;
 		}
 		else
@@ -983,24 +1003,24 @@ class World extends Tweener
 			_renderLast[e._layer] = e;
 			_layerList[_layerList.length] = e._layer;
 			_layerSort = true;
-			e._renderNext = null;
+			e.renderNext = null;
 			_layerCount[e._layer] = 1;
 		}
 		_renderFirst[e._layer] = e;
-		e._renderPrev = null;
+		e.renderPrev = null;
 	}
 	
 	/** @private Removes Entity from the render list. */
-	internal function removeRender(e:Entity)
+	public function removeRender(e:Entity)
 	{
-		if (e._renderNext) e._renderNext._renderPrev = e._renderPrev;
-		else _renderLast[e._layer] = e._renderPrev;
-		if (e._renderPrev) e._renderPrev._renderNext = e._renderNext;
+		if (e.renderNext != null) e.renderNext.renderPrev = e.renderPrev;
+		else _renderLast[e._layer] = e.renderPrev;
+		if (e.renderPrev != null) e.renderPrev.renderNext = e.renderNext;
 		else
 		{
 			// Remove this entity from the layer.
-			_renderFirst[e._layer] = e._renderNext
-			if (!e._renderNext)
+			_renderFirst[e._layer] = e.renderNext;
+			if (e.renderNext == null)
 			{
 				// Remove the layer from the layer list if this was the last entity.
 				if (_layerList.length > 1)
@@ -1008,41 +1028,41 @@ class World extends Tweener
 					_layerList[_layerList.indexOf(e._layer)] = _layerList[_layerList.length - 1];
 					_layerSort = true;
 				}
-				_layerList.length --;
+				_layerList.pop();
 			}
 		}
 		_layerCount[e._layer] --;
-		e._renderNext = e._renderPrev = null;
+		e.renderNext = e.renderPrev = null;
 	}
 	
 	/** @private Adds Entity to the type list. */
-	internal function addType(e:Entity)
+	public function addType(e:Entity)
 	{
 		// add to type list
-		if (_typeFirst[e._type])
+		if (_typeFirst.get(e._type) != null)
 		{
-			_typeFirst[e._type]._typePrev = e;
-			e._typeNext = _typeFirst[e._type];
-			_typeCount[e._type] ++;
+			_typeFirst.get(e._type)._typePrev = e;
+			e._typeNext = _typeFirst.get(e._type);
+//			_typeCount[e._type]++;
 		}
 		else
 		{
 			e._typeNext = null;
-			_typeCount[e._type] = 1;
+//			_typeCount[e._type] = 1;
 		}
 		e._typePrev = null;
-		_typeFirst[e._type] = e;
+		_typeFirst.set(e._type, e);
 	}
 	
 	/** @private Removes Entity from the type list. */
-	internal function removeType(e:Entity)
+	public function removeType(e:Entity)
 	{
 		// remove from the type list
-		if (_typeFirst[e._type] == e) _typeFirst[e._type] = e._typeNext;
-		if (e._typeNext) e._typeNext._typePrev = e._typePrev;
-		if (e._typePrev) e._typePrev._typeNext = e._typeNext;
+		if (_typeFirst.get(e._type) == e) _typeFirst.set(e._type, e._typeNext);
+		if (e._typeNext != null) e._typeNext._typePrev = e._typePrev;
+		if (e._typePrev != null) e._typePrev._typeNext = e._typeNext;
 		e._typeNext = e._typePrev = null;
-		_typeCount[e._type] --;
+//		_typeCount[e._type] --;
 	}
 	
 	/** @private Calculates the squared distance between two rectangles. */
@@ -1064,7 +1084,7 @@ class World extends Tweener
 			if (y1 > y2) return squarePoints(x1, y1, (x2 + w2), (y2 + h2));
 			return squarePoints(x1, y1 + h1, x2 + w2, y2);
 		}
-		if (y1 > y2) return squarePoints(x1 + w1, y1, x2, y2 + h2)
+		if (y1 > y2) return squarePoints(x1 + w1, y1, x2, y2 + h2);
 		return squarePoints(x1 + w1, y1 + h1, x2, y2);
 	}
 	
@@ -1093,28 +1113,28 @@ class World extends Tweener
 			if (py > ry) return squarePoints(px, py, rx + rw, ry + rh);
 			return squarePoints(px, py, rx + rw, ry);
 		}
-		if (py > ry) return squarePoints(px, py, rx, ry + rh)
+		if (py > ry) return squarePoints(px, py, rx, ry + rh);
 		return squarePoints(px, py, rx, ry);
 	}
 	
 	// Adding and removal.
-	private var _add:Vector.<Entity> = new Vector.<Entity>;
-	private var _remove:Vector.<Entity> = new Vector.<Entity>;
+	private var _add:Array<Entity>;
+	private var _remove:Array<Entity>;
 	
 	// Update information.
 	private var _updateFirst:Entity;
 	private var _count:Int;
 	
 	// Render information.
-	private var _renderFirst:Array;
-	private var _renderLast:Array;
-	private var _layerList:Array;
-	private var _layerCount:Array;
+	private var _renderFirst:Array<Entity>;
+	private var _renderLast:Array<Entity>;
+	private var _layerList:Array<Int>;
+	private var _layerCount:Array<Int>;
 	private var _layerSort:Bool;
-	private var _tempArray:Array;
+	private var _tempArray:Array<Entity>;
 	
-	private var _classCount:Dictionary = new Dictionary;
-	private var _typeFirst:Array<Hash<String>>;
+	private var _classCount:Hash<Int>;
+	public var _typeFirst:Hash<Entity>;
 	private var _typeCount:Array<Int>;
-	private var _recycled:Dictionary = new Dictionary;
+	private var _recycled:Hash<Entity>;
 }

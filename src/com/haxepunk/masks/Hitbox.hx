@@ -18,16 +18,17 @@ class Hitbox extends Mask
 	 */
 	public function new(width:Int = 1, height:Int = 1, x:Int = 0, y:Int = 0) 
 	{
+		super();
 		_width = width;
 		_height = height;
 		_x = x;
 		_y = y;
-		_check[Mask] = collideMask;
-		_check[Hitbox] = collideHitbox;
+		_check.set("Mask", collideMask);
+		_check.set("Hitbox", collideHitbox);
 	}
 	
 	/** @private Collides against an Entity. */
-	private function collideMask(other:Mask):Bool
+	override private function collideMask(other:Mask):Bool
 	{
 		return parent.x + _x + _width > other.parent.x - other.parent.originX
 			&& parent.y + _y + _height > other.parent.y - other.parent.originY
@@ -53,8 +54,8 @@ class Hitbox extends Mask
 	{
 		if (_x == value) return value;
 		_x = value;
-		if (list) list.update();
-		else if (parent) update();
+		if (list != null) list.update();
+		else if (parent != null) update();
 		return _x;
 	}
 	
@@ -67,8 +68,8 @@ class Hitbox extends Mask
 	{
 		if (_y == value) return value;
 		_y = value;
-		if (list) list.update();
-		else if (parent) update();
+		if (list!= null) list.update();
+		else if (parent != null) update();
 		return _y;
 	}
 	
@@ -100,8 +101,8 @@ class Hitbox extends Mask
 		return _height;
 	}
 	
-	/** @private Updates the parent's bounds for this mask. */
-	override private function update() 
+	/** Updates the parent's bounds for this mask. */
+	override public function update() 
 	{
 		// update entity bounds
 		parent.originX = -_x;
@@ -110,7 +111,7 @@ class Hitbox extends Mask
 		parent.height = _height;
 		
 		// update parent list
-		if (list) list.update();
+		if (list != null) list.update();
 	}
 	
 	// Hitbox information.

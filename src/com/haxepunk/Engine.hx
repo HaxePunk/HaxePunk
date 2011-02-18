@@ -10,6 +10,7 @@ import flash.display.StageScaleMode;
 import flash.events.Event;
 import flash.events.TimerEvent;
 import flash.geom.Rectangle;
+import flash.Lib;
 import haxe.Timer;
 import com.haxepunk.utils.Draw;
 import com.haxepunk.utils.Input;
@@ -72,9 +73,10 @@ class Engine extends MovieClip
 		maxFrameSkip = 5;
 		tickRate = 4;
 		_frameList = new Array<Int>();
+		_delta = 0;
 		
 		// on-stage event listener
-		addEventListener(Event.ADDED_TO_STAGE, onStage);
+		Lib.current.addEventListener(Event.ADDED_TO_STAGE, onStage);
 	}
 	
 	/**
@@ -128,11 +130,11 @@ class Engine extends MovieClip
 	 */
 	public function setStageProperties()
 	{
-		stage.frameRate = HXP.assignedFrameRate;
-		stage.align = StageAlign.TOP_LEFT;
-		stage.quality = StageQuality.HIGH;
-		stage.scaleMode = StageScaleMode.NO_SCALE;
-		stage.displayState = StageDisplayState.NORMAL;
+		HXP.stage.frameRate = HXP.assignedFrameRate;
+		HXP.stage.align = StageAlign.TOP_LEFT;
+		HXP.stage.quality = StageQuality.HIGH;
+		HXP.stage.scaleMode = StageScaleMode.NO_SCALE;
+		HXP.stage.displayState = StageDisplayState.NORMAL;
 	}
 	
 	/** @private Event handler for stage entry. */
@@ -142,7 +144,7 @@ class Engine extends MovieClip
 		removeEventListener(Event.ADDED_TO_STAGE, onStage);
 		
 		// set stage properties
-		HXP.stage = flash.Lib.current;
+		HXP.stage = Lib.current.stage;
 		setStageProperties();
 		
 		// enable input
@@ -168,7 +170,7 @@ class Engine extends MovieClip
 		{
 			// nonfixed framerate
 			_last = Timer.stamp();
-			addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			Lib.current.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 	}
 	

@@ -1,8 +1,8 @@
 package com.haxepunk;
 
 import flash.display.BitmapData;
-import flash.display.MovieClip;
 import flash.display.Sprite;
+import flash.display.Stage;
 import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
@@ -100,7 +100,10 @@ class HXP
 	private static function setWorld(value:World):World
 	{
 		if (_world == value) return value;
-		_goto = value;
+		if (_world == null)
+			_world = value;
+		else
+			_goto = value;
 		return _world;
 	}
 	
@@ -780,7 +783,7 @@ class HXP
 	public static inline var RAD:Float = Math.PI / -180;
 	
 	// Global Flash objects.
-	public static var stage:MovieClip;
+	public static var stage:Stage;
 	public static var engine:Engine;
 	
 	// Global objects used for rendering, collision, etc.
