@@ -95,14 +95,17 @@ class HXP
 	 * The currently active World object. When you set this, the World is flagged
 	 * to switch, but won't actually do so until the end of the current frame.
 	 */
-	public static var state(getState, setState):State;
-	private static function getState():State { return _state; }
-	private static function setState(value:State):State
+	public static var world(getWorld, setWorld):World;
+	private static function getWorld():World { return _world; }
+	private static function setWorld(value:World):World
 	{
-		if (_state == value) return value;
+		if (_world == value) return value;
 		_goto = value;
-		return _state;
+		return _world;
 	}
+	
+	public static var goto(getGoto, setGoto):World;
+	private static function getGoto():World { return _goto; }
 	
 	/**
 	 * Sets the camera position.
@@ -737,8 +740,8 @@ class HXP
 	}
 	
 	// World information.
-	private static var _state:State;
-	private static var _goto:State;
+	private static var _world:World;
+	private static var _goto:World;
 	
 	// Console information.
 	private static var _console:Console;

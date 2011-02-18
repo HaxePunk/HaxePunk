@@ -45,6 +45,7 @@
   <hiddenPaths>
     <hidden path="compile.hxml" />
     <hidden path="HaxePunk.tmproj" />
+    <hidden path=".git" />
   </hiddenPaths>
   <!-- Executed before build -->
   <preBuildCommand />

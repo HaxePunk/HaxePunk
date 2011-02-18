@@ -65,5 +65,8 @@ class Tweener
 		}
 	}
 	
+	public var tween(getTween, null):Tween;
+	private function getTween():Tween { return _tween; }
+	
 	private var _tween:Tween;
 }

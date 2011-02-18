@@ -11,7 +11,7 @@ import flash.events.Event;
 import flash.events.TimerEvent;
 import flash.geom.Rectangle;
 import haxe.Timer;
-import com.haxepunk.utils.Draw;
+//import com.haxepunk.utils.Draw;
 import com.haxepunk.utils.Input;
 
 /**
@@ -22,22 +22,22 @@ class Engine extends MovieClip
 	/**
 	 * If the game should stop updating/rendering.
 	 */
-	public var paused:Boolean;
+	public var paused:Bool;
 	
 	/**
 	 * Cap on the elapsed time (default at 30 FPS). Raise this to allow for lower framerates (eg. 1 / 10).
 	 */
-	public var maxElapsed:Number;
+	public var maxElapsed:Float;
 	
 	/**
 	 * The max amount of frames that can be skipped in fixed framerate mode.
 	 */
-	public var maxFrameSkip:uint;
+	public var maxFrameSkip:Int;
 	
 	/**
 	 * The amount of milliseconds between ticks in fixed framerate mode.
 	 */
-	public var tickRate:uint;
+	public var tickRate:Int;
 	
 	/**
 	 * Constructor. Defines startup information about your game.
@@ -46,29 +46,30 @@ class Engine extends MovieClip
 	 * @param	frameRate		The game framerate, in frames per second.
 	 * @param	fixed			If a fixed-framerate should be used.
 	 */
-	public function Engine(width:uint, height:uint, frameRate:Number = 60, fixed:Boolean = false) 
+	public function Engine(width:Int, height:Int, frameRate:Float = 60, fixed:Bool = false) 
 	{
 		// global game properties
-		FP.width = width;
-		FP.height = height;
-		FP.assignedFrameRate = frameRate;
-		FP.fixed = fixed;
+		HXP.width = width;
+		HXP.height = height;
+		HXP.assignedFrameRate = frameRate;
+		HXP.fixed = fixed;
 		
 		// global game objects
-		FP.engine = this;
-		FP.screen = new Screen;
-		FP.bounds = new Rectangle(0, 0, width, height);
-		FP._world = new World;
+		HXP.engine = this;
+		HXP.screen = new Screen();
+		HXP.bounds = new Rectangle(0, 0, width, height);
+		HXP.world = new State();
 		
 		// miscellanious startup stuff
-		if (FP.randomSeed == 0) FP.randomizeSeed();
-		FP.entity = new Entity;
-		FP._time = getTimer();
+		if (HXP.randomSeed == 0) HXP.randomizeSeed();
+		HXP.entity = new Entity();
+		HXP._time = getTimer();
 		
 		paused = false;
 		maxElapsed = 0.0333;
 		maxFrameSkip = 5;
 		tickRate = 4;
+		_frameList = new Array<Int>();
 		
 		// on-stage event listener
 		addEventListener(Event.ADDED_TO_STAGE, onStage);
@@ -77,7 +78,7 @@ class Engine extends MovieClip
 	/**
 	 * Override this, called after Engine has been added to the stage.
 	 */
-	public function init():void
+	public function init()
 	{
 		
 	}
@@ -85,47 +86,47 @@ class Engine extends MovieClip
 	/**
 	 * Updates the game, updating the World and Entities.
 	 */
-	public function update():void
+	public function update()
 	{
-		if (FP._world.active)
+		if (HXP.world.active)
 		{
-			if (FP._world._tween) FP._world.updateTweens();
-			FP._world.update();
+			if (HXP.world.tween != null) HXP.world.updateTweens();
+			HXP.world.update();
 		}
-		FP._world.updateLists();
-		if (FP._goto) checkWorld();
+		HXP.world.updateLists();
+		if (HXP.goto != null) checkWorld();
 	}
 	
 	/**
 	 * Renders the game, rendering the World and Entities.
 	 */
-	public function render():void
+	public function render()
 	{
 		// timing stuff
-		var t:Number = getTimer();
-		if (!_frameLast) _frameLast = t;
+		var t:Float = Timer.stamp();
+		if (_frameLast == 0) _frameLast = Std.int(t);
 		
 		// render loop
-		FP.screen.swap();
+		HXP.screen.swap();
 		Draw.resetTarget();
-		FP.screen.refresh();
-		if (FP._world.visible) FP._world.render();
-		FP.screen.redraw();
+		HXP.screen.refresh();
+		if (HXP.world.visible) HXP.world.render();
+		HXP.screen.redraw();
 		
 		// more timing stuff
 		t = getTimer();
 		_frameListSum += (_frameList[_frameList.length] = t - _frameLast);
 		if (_frameList.length > 10) _frameListSum -= _frameList.shift();
-		FP.frameRate = 1000 / (_frameListSum / _frameList.length);
+		HXP.frameRate = 1000 / (_frameListSum / _frameList.length);
 		_frameLast = t;
 	}
 	
 	/**
 	 * Sets the game's stage properties. Override this to set them differently.
 	 */
-	public function setStageProperties():void
+	public function setStageProperties()
 	{
-		stage.frameRate = FP.assignedFrameRate;
+		stage.frameRate = HXP.assignedFrameRate;
 		stage.align = StageAlign.TOP_LEFT;
 		stage.quality = StageQuality.HIGH;
 		stage.scaleMode = StageScaleMode.NO_SCALE;
@@ -133,57 +134,56 @@ class Engine extends MovieClip
 	}
 	
 	/** @private Event handler for stage entry. */
-	private function onStage(e:Event = null):void
+	private function onStage(e:Event = null)
 	{
 		// remove event listener
 		removeEventListener(Event.ADDED_TO_STAGE, onStage);
 		
 		// set stage properties
-		FP.stage = stage;
+		HXP.stage = flash.Current.lib;
 		setStageProperties();
 		
 		// enable input
 		Input.enable();
 		
 		// switch worlds
-		if (FP._goto) checkWorld();
+		if (HXP.goto != null) checkWorld();
 		
 		// game start
 		init();
 		
 		// start game loop
-		_rate = 1000 / FP.assignedFrameRate;
-		if (FP.fixed)
+		_rate = 1000 / HXP.assignedFrameRate;
+		if (HXP.fixed)
 		{
 			// fixed framerate
 			_skip = _rate * maxFrameSkip;
-			_last = _prev = getTimer();
+			_last = _prev = Timer.stamp();
 			_timer = new Timer(tickRate);
-			_timer.addEventListener(TimerEvent.TIMER, onTimer);
-			_timer.start();
+			_timer.run = onTimer;
 		}
 		else
 		{
 			// nonfixed framerate
-			_last = getTimer();
+			_last = Timer.stamp();
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 	}
 	
 	/** @private Framerate independent game loop. */
-	private function onEnterFrame(e:Event):void
+	private function onEnterFrame(e:Event)
 	{
 		// update timer
 		_time = _gameTime = getTimer();
-		FP._flashTime = _time - _flashTime;
+		HXP._flashTime = _time - _flashTime;
 		_updateTime = _time;
-		FP.elapsed = (_time - _last) / 1000;
-		if (FP.elapsed > maxElapsed) FP.elapsed = maxElapsed;
-		FP.elapsed *= FP.rate;
+		HXP.elapsed = (_time - _last) / 1000;
+		if (HXP.elapsed > maxElapsed) HXP.elapsed = maxElapsed;
+		HXP.elapsed *= HXP.rate;
 		_last = _time;
 		
 		// update console
-		if (FP._console) FP._console.update();
+		if (HXP._console) HXP._console.update();
 		
 		// update loop
 		if (!paused) update();
@@ -192,23 +192,23 @@ class Engine extends MovieClip
 		Input.update();
 		
 		// update timer
-		_time = _renderTime = getTimer();
-		FP._updateTime = _time - _updateTime;
+		_time = _renderTime = Timer.stamp();
+		HXP._updateTime = _time - _updateTime;
 		
 		// render loop
 		if (!paused) render();
 		
 		// update timer
-		_time = _flashTime = getTimer();
-		FP._renderTime = _time - _renderTime;
-		FP._gameTime = _time - _gameTime;
+		_time = _flashTime = Timer.stamp();
+		HXP._renderTime = _time - _renderTime;
+		HXP._gameTime = _time - _gameTime;
 	}
 	
 	/** @private Fixed framerate game loop. */
-	private function onTimer(e:TimerEvent):void
+	private function onTimer()
 	{
 		// update timer
-		_time = getTimer();
+		_time = Timer.stamp();
 		_delta += (_time - _last);
 		_last = _time;
 		
@@ -216,11 +216,11 @@ class Engine extends MovieClip
 		if (_delta < _rate) return;
 		
 		// update timer
-		_gameTime = _time;
-		FP._flashTime = _time - _flashTime;
+		_gameTime = Std.int(_time);
+		HXP._flashTime = _time - _flashTime;
 		
 		// update console
-		if (FP._console) FP._console.update();
+		if (HXP.console != null) HXP.console.update();
 		
 		// update loop
 		if (_delta > _skip) _delta = _skip;
@@ -229,9 +229,9 @@ class Engine extends MovieClip
 			// update timer
 			_updateTime = _time;
 			_delta -= _rate;
-			FP.elapsed = (_time - _prev) / 1000;
-			if (FP.elapsed > maxElapsed) FP.elapsed = maxElapsed;
-			FP.elapsed *= FP.rate;
+			HXP.elapsed = (_time - _prev) / 1000;
+			if (HXP.elapsed > maxElapsed) HXP.elapsed = maxElapsed;
+			HXP.elapsed *= HXP.rate;
 			_prev = _time;
 			
 			// update loop
@@ -242,7 +242,7 @@ class Engine extends MovieClip
 			
 			// update timer
 			_time = getTimer();
-			FP._updateTime = _time - _updateTime;
+			HXP._updateTime = _time - _updateTime;
 		}
 		
 		// update timer
@@ -253,42 +253,42 @@ class Engine extends MovieClip
 		
 		// update timer
 		_time = _flashTime = getTimer();
-		FP._renderTime = _time - _renderTime;
-		FP._gameTime =  _time - _gameTime;
+		HXP._renderTime = _time - _renderTime;
+		HXP._gameTime =  _time - _gameTime;
 	}
 	
 	/** @private Switch Worlds if they've changed. */
-	private function checkWorld():void
+	private function checkWorld()
 	{
-		if (!FP._goto) return;
-		FP._world.end();
-		FP._world.updateLists();
-		if (FP._world && FP._world.autoClear && FP._world._tween) FP._world.clearTweens();
-		FP._world = FP._goto;
-		FP._goto = null;
-		FP.camera = FP._world.camera;
-		FP._world.updateLists();
-		FP._world.begin();
-		FP._world.updateLists();
+		if (HXP.goto == null) return;
+		HXP.world.end();
+		HXP.world.updateLists();
+		if (HXP.world != null && HXP.world.autoClear && HXP.world.tween != null) HXP.world.clearTweens();
+		HXP.world = HXP.goto;
+		HXP.goto = null;
+		HXP.camera = HXP.world.camera;
+		HXP.world.updateLists();
+		HXP.world.begin();
+		HXP.world.updateLists();
 	}
 	
 	// Timing information.
-	private var _delta:Number = 0;
-	private var _time:Number;
-	private var _last:Number;
+	private var _delta:Float;
+	private var _time:Float;
+	private var _last:Float;
 	private var _timer:Timer;
-	private var	_rate:Number;
-	private var	_skip:Number;
-	private var _prev:Number;
+	private var	_rate:Float;
+	private var	_skip:Float;
+	private var _prev:Float;
 	
 	// Debug timing information.
-	private var _updateTime:uint;
-	private var _renderTime:uint;
-	private var _gameTime:uint;
-	private var _flashTime:uint;
+	private var _updateTime:Int;
+	private var _renderTime:Int;
+	private var _gameTime:Int;
+	private var _flashTime:Int;
 	
 	// FrameRate tracking.
-	private var _frameLast:uint = 0;
-	private var _frameListSum:uint = 0;
-	private var _frameList:Vector.<uint> = new Vector.<uint>;
+	private var _frameLast:Int;
+	private var _frameListSum:Int;
+	private var _frameList:Array<Int>;
 }

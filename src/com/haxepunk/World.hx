@@ -1,7 +1,7 @@
 package com.haxepunk;
 import flash.geom.Point;
 
-class State extends Tweener
+class World extends Tweener
 {
 	
 	public var visible:Bool;
