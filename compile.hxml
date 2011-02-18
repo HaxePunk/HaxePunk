@@ -1,4 +1,4 @@
--swf9 game.swf
+-swf9 bin/game.swf
 -swf-version 10
 -main Main
 -cp src
