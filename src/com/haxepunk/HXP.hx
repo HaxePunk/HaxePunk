@@ -106,6 +106,10 @@ class HXP
 	
 	public static var goto(getGoto, setGoto):World;
 	private static function getGoto():World { return _goto; }
+	private static function setGoto(value:World):World {
+		_goto = value;
+		return _goto;
+	}
 	
 	/**
 	 * Sets the camera position.
@@ -739,6 +743,12 @@ class HXP
 		}
 	}
 	
+	public static var time(null, setTime):Float;
+	private static function setTime(value:Float):Float {
+		_time = value;
+		return _time;
+	}
+	
 	// World information.
 	private static var _world:World;
 	private static var _goto:World;
@@ -748,10 +758,10 @@ class HXP
 	
 	// Time information.
 	private static var _time:Float;
-	public static var _updateTime:Float;
-	public static var _renderTime:Float;
-	public static var _gameTime:Float;
-	public static var _flashTime:Float;
+	public static var updateTime:Float;
+	public static var renderTime:Float;
+	public static var gameTime:Float;
+	public static var flashTime:Float;
 	
 	// Bitmap storage.
 	private static var _bitmap:Dynamic;

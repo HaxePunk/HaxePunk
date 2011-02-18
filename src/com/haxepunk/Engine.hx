@@ -11,7 +11,7 @@ import flash.events.Event;
 import flash.events.TimerEvent;
 import flash.geom.Rectangle;
 import haxe.Timer;
-//import com.haxepunk.utils.Draw;
+import com.haxepunk.utils.Draw;
 import com.haxepunk.utils.Input;
 
 /**
@@ -46,8 +46,10 @@ class Engine extends MovieClip
 	 * @param	frameRate		The game framerate, in frames per second.
 	 * @param	fixed			If a fixed-framerate should be used.
 	 */
-	public function Engine(width:Int, height:Int, frameRate:Float = 60, fixed:Bool = false) 
+	public function new(width:Int, height:Int, frameRate:Float = 60, fixed:Bool = false) 
 	{
+		super();
+		
 		// global game properties
 		HXP.width = width;
 		HXP.height = height;
@@ -58,12 +60,12 @@ class Engine extends MovieClip
 		HXP.engine = this;
 		HXP.screen = new Screen();
 		HXP.bounds = new Rectangle(0, 0, width, height);
-		HXP.world = new State();
+		HXP.world = new World();
 		
 		// miscellanious startup stuff
 		if (HXP.randomSeed == 0) HXP.randomizeSeed();
 		HXP.entity = new Entity();
-		HXP._time = getTimer();
+		HXP.time = Timer.stamp();
 		
 		paused = false;
 		maxElapsed = 0.0333;
@@ -114,8 +116,8 @@ class Engine extends MovieClip
 		HXP.screen.redraw();
 		
 		// more timing stuff
-		t = getTimer();
-		_frameListSum += (_frameList[_frameList.length] = t - _frameLast);
+		t = Timer.stamp();
+		_frameListSum += (_frameList[_frameList.length] = Std.int(t - _frameLast));
 		if (_frameList.length > 10) _frameListSum -= _frameList.shift();
 		HXP.frameRate = 1000 / (_frameListSum / _frameList.length);
 		_frameLast = t;
@@ -140,7 +142,7 @@ class Engine extends MovieClip
 		removeEventListener(Event.ADDED_TO_STAGE, onStage);
 		
 		// set stage properties
-		HXP.stage = flash.Current.lib;
+		HXP.stage = flash.Lib.current;
 		setStageProperties();
 		
 		// enable input
@@ -174,8 +176,8 @@ class Engine extends MovieClip
 	private function onEnterFrame(e:Event)
 	{
 		// update timer
-		_time = _gameTime = getTimer();
-		HXP._flashTime = _time - _flashTime;
+		_time = _gameTime = Timer.stamp();
+		HXP.flashTime = _time - _flashTime;
 		_updateTime = _time;
 		HXP.elapsed = (_time - _last) / 1000;
 		if (HXP.elapsed > maxElapsed) HXP.elapsed = maxElapsed;
@@ -183,7 +185,7 @@ class Engine extends MovieClip
 		_last = _time;
 		
 		// update console
-		if (HXP._console) HXP._console.update();
+		if (HXP.console != null) HXP.console.update();
 		
 		// update loop
 		if (!paused) update();
@@ -193,15 +195,15 @@ class Engine extends MovieClip
 		
 		// update timer
 		_time = _renderTime = Timer.stamp();
-		HXP._updateTime = _time - _updateTime;
+		HXP.updateTime = _time - _updateTime;
 		
 		// render loop
 		if (!paused) render();
 		
 		// update timer
 		_time = _flashTime = Timer.stamp();
-		HXP._renderTime = _time - _renderTime;
-		HXP._gameTime = _time - _gameTime;
+		HXP.renderTime = _time - _renderTime;
+		HXP.gameTime = _time - _gameTime;
 	}
 	
 	/** @private Fixed framerate game loop. */
@@ -217,7 +219,7 @@ class Engine extends MovieClip
 		
 		// update timer
 		_gameTime = Std.int(_time);
-		HXP._flashTime = _time - _flashTime;
+		HXP.flashTime = _time - _flashTime;
 		
 		// update console
 		if (HXP.console != null) HXP.console.update();
@@ -241,8 +243,8 @@ class Engine extends MovieClip
 			Input.update();
 			
 			// update timer
-			_time = getTimer();
-			HXP._updateTime = _time - _updateTime;
+			_time = Timer.stamp();
+			HXP.updateTime = _time - _updateTime;
 		}
 		
 		// update timer
@@ -252,9 +254,9 @@ class Engine extends MovieClip
 		if (!paused) render();
 		
 		// update timer
-		_time = _flashTime = getTimer();
-		HXP._renderTime = _time - _renderTime;
-		HXP._gameTime =  _time - _gameTime;
+		_time = _flashTime = Timer.stamp();
+		HXP.renderTime = _time - _renderTime;
+		HXP.gameTime =  _time - _gameTime;
 	}
 	
 	/** @private Switch Worlds if they've changed. */
@@ -282,13 +284,13 @@ class Engine extends MovieClip
 	private var _prev:Float;
 	
 	// Debug timing information.
-	private var _updateTime:Int;
-	private var _renderTime:Int;
-	private var _gameTime:Int;
-	private var _flashTime:Int;
+	private var _updateTime:Float;
+	private var _renderTime:Float;
+	private var _gameTime:Float;
+	private var _flashTime:Float;
 	
 	// FrameRate tracking.
-	private var _frameLast:Int;
+	private var _frameLast:Float;
 	private var _frameListSum:Int;
 	private var _frameList:Array<Int>;
 }

@@ -337,7 +337,7 @@ class Console
 				else
 				{
 					// Update info while the game runs.
-					updateEntityLists(HXP.state.count != ENTITY_LIST.length);
+					updateEntityLists(HXP.world.count != ENTITY_LIST.length);
 					renderEntities();
 					updateFPSRead();
 					updateEntityCount();
@@ -551,7 +551,7 @@ class Console
 			// Append selected Entitites with new selections.
 			for (e in SCREEN_LIST)
 			{
-				if (SELECT_LIST.indexOf(e) < 0)
+				if (indexOf(SELECT_LIST, e) < 0)
 				{
 					HXP.rect.x = (e.x - HXP.camera.x) * sx - 3;
 					HXP.rect.y = (e.y - HXP.camera.y) * sy - 3;
@@ -646,7 +646,7 @@ class Console
 			for (e in SCREEN_LIST)
 			{
 				// If the Entity is not selected.
-				if (SELECT_LIST.indexOf(e) < 0)
+				if (indexOf(SELECT_LIST, e) < 0)
 				{
 					// Draw the normal hitbox and position.
 					if (e.width != 0 && e.height != 0)
@@ -748,17 +748,29 @@ class Console
 		}
 	}
 	
+	private static function indexOf(list:List<Entity>, obj:Entity):Int
+	{
+		var e:Entity;
+		var i:Int = 0;
+		for (e in list)
+		{
+			if (e == obj) return i;
+			i++;
+		}
+		return -1;
+	}
+	
 	/** @private Update the FPS/frame timing panel text. */
 	private function updateFPSRead()
 	{
 		var prec = 1000;
 		_fpsReadText.text = "FPS: " + Std.int(HXP.frameRate * prec) / prec;
 		_fpsInfoText0.text =
-			"Update: " + Std.string(HXP._updateTime) + "ms\n" + 
-			"Render: " + Std.string(HXP._renderTime) + "ms";
+			"Update: " + Std.string(HXP.updateTime) + "ms\n" + 
+			"Render: " + Std.string(HXP.renderTime) + "ms";
 		_fpsInfoText1.text =
-			"Game: " + Std.string(HXP._gameTime) + "ms\n" + 
-			"Flash: " + Std.string(HXP._flashTime) + "ms";
+			"Game: " + Std.string(HXP.gameTime) + "ms\n" + 
+			"Flash: " + Std.string(HXP.flashTime) + "ms";
 	}
 	
 	/** @private Update the debug panel text. */
@@ -770,7 +782,7 @@ class Console
 		
 		// Update the Debug read text.
 		var s:String =
-			"Mouse: " + Std.string(HXP.state.mouseX) + ", " + Std.string(HXP.state.mouseY) +
+			"Mouse: " + Std.string(HXP.world.mouseX) + ", " + Std.string(HXP.world.mouseY) +
 			"\nCamera: " + Std.string(HXP.camera.x) + ", " + Std.string(HXP.camera.y);
 		if (SELECT_LIST.length != 0)
 		{
@@ -806,7 +818,7 @@ class Console
 	/** @private Updates the Entity count text. */
 	private function updateEntityCount()
 	{
-		_entReadText.text = Std.string(HXP.state.count) + " Entities";
+		_entReadText.text = Std.string(HXP.world.count) + " Entities";
 	}
 	
 	/** @private Updates the Button panel. */
