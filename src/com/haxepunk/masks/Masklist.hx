@@ -11,13 +11,14 @@ class Masklist extends Hitbox
 	 * Constructor.
 	 * @param	...mask		Masks to add to the list.
 	 */
-	public function new(mask) 
+	public function new(masks:Array<Mask>) 
 	{
+		super();
 		_masks = new Array<Mask>();
 		_temp = new Array<Mask>();
 		
 		var m:Mask;
-		for (m in mask) add(m);
+		for (m in masks) add(m);
 	}
 	
 	/** @private Collide against a mask. */
@@ -67,7 +68,7 @@ class Masklist extends Hitbox
 	public function remove(mask:Mask):Mask
 	{
 		if (_masks.indexOf(mask) < 0) return mask;
-		_temp.length = 0;
+		_temp.clear();
 		var m:Mask;
 		for (m in _masks)
 		{
@@ -91,10 +92,10 @@ class Masklist extends Hitbox
 	 */
 	public function removeAt(index:Int = 0)
 	{
-		_temp.length = 0;
+		_temp.clear();
 		var i:Int = _masks.length;
 		index %= i;
-		while (i --)
+		while (i-- > 0)	
 		{
 			if (i == index)
 			{
@@ -116,7 +117,9 @@ class Masklist extends Hitbox
 	{
 		var m:Mask;
 		for (m in _masks) m.list = null;
-		_masks.length = _temp.length = _count = 0;
+		_count = 0;
+		_masks.clear();
+		_temp.clear();
 		update();
 	}
 	
@@ -131,13 +134,13 @@ class Masklist extends Hitbox
 	}
 	
 	/** @private Updates the parent's bounds for this mask. */
-	override private function update() 
+	override public function update() 
 	{
 		// find bounds of the contained masks
 		var t:Int, l:Int, r:Int, b:Int, h:Hitbox, i:Int = _count;
-		while (i --)
+		while (i-- > 0)
 		{
-			if ((h = cast(_masks[i], Hitbox)))
+			if ((h = cast(_masks[i], Hitbox)) != null)
 			{
 				if (h._x < l) l = h._x;
 				if (h._y < t) t = h._y;

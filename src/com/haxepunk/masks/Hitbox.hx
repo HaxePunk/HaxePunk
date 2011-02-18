@@ -81,8 +81,8 @@ class Hitbox extends Mask
 	{
 		if (_width == value) return value;
 		_width = value;
-		if (list) list.update();
-		else if (parent) update();
+		if (list != null) list.update();
+		else if (parent != null) update();
 		return _width;
 	}
 	
@@ -95,8 +95,8 @@ class Hitbox extends Mask
 	{
 		if (_height == value) return value;
 		_height = value;
-		if (list) list.update();
-		else if (parent) update();
+		if (list != null) list.update();
+		else if (parent != null) update();
 		return _height;
 	}
 	

@@ -359,9 +359,9 @@ class Draw
 	 */
 	public static function entity(e:Entity, x:Int = 0, y:Int = 0, addEntityPosition:Bool = false)
 	{
-		if (e.visible && e.graphic)
+		if (e.visible && e.graphic != null)
 		{
-			if (addEntityPosition) graphic(e.graphic, x + e.x, y + e.y);
+			if (addEntityPosition) graphic(e.graphic, Std.int(x + e.x), Std.int(y + e.y));
 			else graphic(e.graphic, x, y);
 		}
 	}

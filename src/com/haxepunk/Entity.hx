@@ -3,8 +3,6 @@ package com.haxepunk;
 import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-//import flash.utils.getQualifiedClassName;
-//import flash.utils.getDefinitionByName;
 import com.haxepunk.graphics.Image;
 
 /**
@@ -66,6 +64,7 @@ class Entity extends Tweener
 	 */
 	public function new(x:Float = 0, y:Float = 0, graphic:Graphic = null, mask:Mask = null) 
 	{
+		super();
 		visible = true;
 		collidable = true;
 		this.x = x;
@@ -75,10 +74,10 @@ class Entity extends Tweener
 		_point = HXP.point;
 		_camera = HXP.point2;
 		
-		if (graphic) this.graphic = graphic;
-		if (mask) this.mask = mask;
+		if (graphic != null) this.graphic = graphic;
+		if (mask != null) this.mask = mask;
 		HITBOX.assignTo(this);
-		_class = Class(getDefinitionByName(getQualifiedClassName(this)));
+		_class = Type.getClassName(Type.getClass(this));
 	}
 	
 	/**
@@ -111,7 +110,7 @@ class Entity extends Tweener
 	 */
 	public function render() 
 	{
-		if (_graphic && _graphic.visible)
+		if (_graphic != null && _graphic.visible)
 		{
 			if (_graphic.relative)
 			{
@@ -119,9 +118,9 @@ class Entity extends Tweener
 				_point.y = y;
 			}
 			else _point.x = _point.y = 0;
-			_camera.x = FP.camera.x;
-			_camera.y = FP.camera.y;
-			_graphic.render(renderTarget ? renderTarget : FP.buffer, _point, _camera);
+			_camera.x = HXP.camera.x;
+			_camera.y = HXP.camera.y;
+			_graphic.render((renderTarget != null) ? renderTarget : HXP.buffer, _point, _camera);
 		}
 	}
 	
@@ -134,17 +133,17 @@ class Entity extends Tweener
 	 */
 	public function collide(type:String, x:Float, y:Float):Entity
 	{
-		if (!_world) return null;
+		if (_world == null) return null;
 		
 		var e:Entity = _world._typeFirst[type];
-		if (!collidable || !e) return null;
+		if (!collidable || e == null) return null;
 		
 		_x = this.x; _y = this.y;
 		this.x = x; this.y = y;
 		
-		if (!_mask)
+		if (_mask == null)
 		{
-			while (e)
+			while (e != null)
 			{
 				if (x - originX + width > e.x - e.originX
 				&& y - originY + height > e.y - e.originY
@@ -152,7 +151,7 @@ class Entity extends Tweener
 				&& y - originY < e.y - e.originY + e.height
 				&& e.collidable && e != this)
 				{
-					if (!e._mask || e._mask.collide(HITBOX))
+					if (e._mask == null || e._mask.collide(HITBOX))
 					{
 						this.x = _x; this.y = _y;
 						return e;
@@ -164,7 +163,7 @@ class Entity extends Tweener
 			return null;
 		}
 		
-		while (e)
+		while (e != null)
 		{
 			if (x - originX + width > e.x - e.originX
 			&& y - originY + height > e.y - e.originY
@@ -172,7 +171,7 @@ class Entity extends Tweener
 			&& y - originY < e.y - e.originY + e.height
 			&& e.collidable && e != this)
 			{
-				if (_mask.collide(e._mask ? e._mask : e.HITBOX))
+				if (_mask.collide(e._mask != null ? e._mask : e.HITBOX))
 				{
 					this.x = _x; this.y = _y;
 					return e;
@@ -191,14 +190,14 @@ class Entity extends Tweener
 	 * @param	y			Virtual y position to place this Entity.
 	 * @return	The first Entity collided with, or null if none were collided.
 	 */
-	public function collideTypes(types:Dynamic, x:Float, y:Float):Entity
+	public function collideTypes(types:Array<String>, x:Float, y:Float):Entity
 	{
-		if (!_world) return null;
+		if (_world == null) return null;
 		var e:Entity;
 		var type:String;
 		for (type in types)
 		{
-			if ((e = collide(type, x, y))) return e;
+			if ((e = collide(type, x, y)) != null) return e;
 		}
 		return null;
 	}
@@ -221,9 +220,9 @@ class Entity extends Tweener
 		&& y - originY < e.y - e.originY + e.height
 		&& collidable && e.collidable)
 		{
-			if (!_mask)
+			if (_mask == null)
 			{
-				if (!e._mask || e._mask.collide(HITBOX))
+				if (e._mask == null || e._mask.collide(HITBOX))
 				{
 					this.x = _x; this.y = _y;
 					return e;
@@ -231,7 +230,7 @@ class Entity extends Tweener
 				this.x = _x; this.y = _y;
 				return null;
 			}
-			if (_mask.collide(e._mask ? e._mask : e.HITBOX))
+			if (_mask.collide(e._mask != null ? e._mask : e.HITBOX))
 			{
 				this.x = _x; this.y = _y;
 				return e;
@@ -256,14 +255,14 @@ class Entity extends Tweener
 		if (x - originX + width >= rX && y - originY + height >= rY
 		&& x - originX <= rX + rWidth && y - originY <= rY + rHeight)
 		{
-			if (!_mask) return true;
+			if (_mask == null) return true;
 			_x = this.x; _y = this.y;
 			this.x = x; this.y = y;
-			FP.entity.x = rX;
-			FP.entity.y = rY;
-			FP.entity.width = rWidth;
-			FP.entity.height = rHeight;
-			if (_mask.collide(FP.entity.HITBOX))
+			HXP.entity.x = rX;
+			HXP.entity.y = rY;
+			HXP.entity.width = Std.int(rWidth);
+			HXP.entity.height = Std.int(rHeight);
+			if (_mask.collide(HXP.entity.HITBOX))
 			{
 				this.x = _x; this.y = _y;
 				return true;
@@ -287,14 +286,14 @@ class Entity extends Tweener
 		if (pX >= x - originX && pY >= y - originY
 		&& pX < x - originX + width && pY < y - originY + height)
 		{
-			if (!_mask) return true;
+			if (_mask == null) return true;
 			_x = this.x; _y = this.y;
 			this.x = x; this.y = y;
-			FP.entity.x = pX;
-			FP.entity.y = pY;
-			FP.entity.width = 1;
-			FP.entity.height = 1;
-			if (_mask.collide(FP.entity.HITBOX))
+			HXP.entity.x = pX;
+			HXP.entity.y = pY;
+			HXP.entity.width = 1;
+			HXP.entity.height = 1;
+			if (_mask.collide(HXP.entity.HITBOX))
 			{
 				this.x = _x; this.y = _y;
 				return true;
@@ -313,20 +312,20 @@ class Entity extends Tweener
 	 * @param	array		The Array or Vector object to populate.
 	 * @return	The array, populated with all collided Entities.
 	 */
-	public function collideInto(type:String, x:Float, y:Float, array:Dynamic)
+	public function collideInto(type:String, x:Float, y:Float, array:Array<Entity>)
 	{
-		if (!_world) return;
+		if (_world == null) return;
 		
 		var e:Entity = _world._typeFirst[type];
-		if (!collidable || !e) return;
+		if (!collidable || e == null) return;
 		
 		_x = this.x; _y = this.y;
 		this.x = x; this.y = y;
 		var n:Int = array.length;
 		
-		if (!_mask)
+		if (_mask == null)
 		{
-			while (e)
+			while (e != null)
 			{
 				if (x - originX + width > e.x - e.originX
 				&& y - originY + height > e.y - e.originY
@@ -334,7 +333,7 @@ class Entity extends Tweener
 				&& y - originY < e.y - e.originY + e.height
 				&& e.collidable && e != this)
 				{
-					if (!e._mask || e._mask.collide(HITBOX)) array[n ++] = e;
+					if (e._mask == null || e._mask.collide(HITBOX)) array[n++] = e;
 				}
 				e = e._typeNext;
 			}
@@ -342,7 +341,7 @@ class Entity extends Tweener
 			return;
 		}
 		
-		while (e)
+		while (e != null)
 		{
 			if (x - originX + width > e.x - e.originX
 			&& y - originY + height > e.y - e.originY
@@ -350,7 +349,7 @@ class Entity extends Tweener
 			&& y - originY < e.y - e.originY + e.height
 			&& e.collidable && e != this)
 			{
-				if (_mask.collide(e._mask ? e._mask : e.HITBOX)) array[n ++] = e;
+				if (_mask.collide(e._mask != null ? e._mask : e.HITBOX)) array[n++] = e;
 			}
 			e = e._typeNext;
 		}
@@ -366,9 +365,9 @@ class Entity extends Tweener
 	 * @param	array		The Array or Vector object to populate.
 	 * @return	The array, populated with all collided Entities.
 	 */
-	public function collideTypesInto(types:Dynamic, x:Float, y:Float, array:Dynamic)
+	public function collideTypesInto(types:Array<String>, x:Float, y:Float, array:Array<Entity>)
 	{
-		if (!_world) return;
+		if (_world == null) return;
 		var type:String;
 		for (type in types) collideInto(type, x, y, array);
 	}
@@ -379,7 +378,7 @@ class Entity extends Tweener
 	public var onCamera(getOnCamera, null):Bool;
 	private function getOnCamera():Bool
 	{
-		return collideRect(x, y, FP.camera.x, FP.camera.y, FP.width, FP.height);
+		return collideRect(x, y, HXP.camera.x, HXP.camera.y, HXP.width, HXP.height);
 	}
 	
 	/**
@@ -471,9 +470,9 @@ class Entity extends Tweener
 			_type = value;
 			return _type;
 		}
-		if (_type) _world.removeType(this);
+		if (_type != "") _world.removeType(this);
 		_type = value;
-		if (value) _world.addType(this);
+		if (value != "") _world.addType(this);
 		return _type;
 	}
 	
@@ -583,7 +582,7 @@ class Entity extends Tweener
 	public function distanceFrom(e:Entity, useHitboxes:Bool = false):Float
 	{
 		if (!useHitboxes) return Math.sqrt((x - e.x) * (x - e.x) + (y - e.y) * (y - e.y));
-		return FP.distanceRects(x - originX, y - originY, width, height, e.x - e.originX, e.y - e.originY, e.width, e.height);
+		return HXP.distanceRects(x - originX, y - originY, width, height, e.x - e.originX, e.y - e.originY, e.width, e.height);
 	}
 	
 	/**
@@ -596,7 +595,7 @@ class Entity extends Tweener
 	public function distanceToPoint(px:Float, py:Float, useHitbox:Bool = false):Float
 	{
 		if (!useHitbox) return Math.sqrt((x - px) * (x - px) + (y - py) * (y - py));
-		return FP.distanceRectPoint(px, py, x - originX, y - originY, width, height);
+		return HXP.distanceRectPoint(px, py, x - originX, y - originY, width, height);
 	}
 	
 	/**
@@ -609,7 +608,7 @@ class Entity extends Tweener
 	 */
 	public function distanceToRect(rx:Float, ry:Float, rwidth:Float, rheight:Float):Float
 	{
-		return FP.distanceRects(rx, ry, rwidth, rheight, x - originX, y - originY, width, height);
+		return HXP.distanceRects(rx, ry, rwidth, rheight, x - originX, y - originY, width, height);
 	}
 	
 	/**
@@ -618,8 +617,8 @@ class Entity extends Tweener
 	 */
 	public function toString():String
 	{
-		var s:String = String(_class);
-		return s.substring(7, s.length - 1);
+		var s:String = _class;
+		return s.substr(7, s.length - 1);
 	}
 	
 	/**
@@ -760,8 +759,14 @@ class Entity extends Tweener
 		if (y - originY + height > bottom - padding) y = bottom - height + originY - padding;
 	}
 	
+	public var updateNext(getUpdateNext, null):Entity;
+	private function getUpdateNext():Entity { return _updateNext; }
+	
+	public var renderPrev(getRenderPrev, null):Entity;
+	private function getRenderPrev():Entity { return _renderPrev; }
+	
 	// Entity information.
-	private var _class:Class;
+	private var _class:String;
 	private var _world:World;
 	private var _added:Bool;
 	private var _type:String;

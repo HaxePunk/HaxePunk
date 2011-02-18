@@ -1,8 +1,6 @@
 package com.haxepunk;
 
 import flash.utils.Dictionary;
-//import flash.utils.getDefinitionByName;
-//import flash.utils.getQualifiedClassName;
 import com.haxepunk.masks.Hitbox;
 import com.haxepunk.masks.Masklist;
 
@@ -26,7 +24,7 @@ class Mask
 	 */
 	public function new() 
 	{
-		_class = Class(getDefinitionByName(getQualifiedClassName(this)));
+		_class = Type.getClassName(Type.getClass(this));
 		_check = new Dictionary();
 		_check[Mask] = collideMask;
 		_check[Masklist] = collideMasklist;
@@ -60,10 +58,10 @@ class Mask
 	}
 	
 	/** @private Assigns the mask to the parent. */
-	private function assignTo(parent:Entity)
+	public function assignTo(parent:Entity)
 	{
 		this.parent = parent;
-		if (parent) update();
+		if (parent != null) update();
 	}
 	
 	/** @private Updates the parent's bounds for this mask. */
@@ -73,6 +71,6 @@ class Mask
 	}
 	
 	// Mask information.
-	private var _class:Class;
+	private var _class:String;
 	private var _check:Dictionary;
 }
