@@ -66,7 +66,7 @@ class Engine extends MovieClip
 		// miscellanious startup stuff
 		if (HXP.randomSeed == 0) HXP.randomizeSeed();
 		HXP.entity = new Entity();
-		HXP.time = Timer.stamp();
+		HXP.time = Lib.getTimer();
 		
 		paused = false;
 		maxElapsed = 0.0333;
@@ -107,7 +107,7 @@ class Engine extends MovieClip
 	public function render()
 	{
 		// timing stuff
-		var t:Float = Timer.stamp();
+		var t:Float = Lib.getTimer();
 		if (_frameLast == 0) _frameLast = Std.int(t);
 		
 		// render loop
@@ -118,7 +118,7 @@ class Engine extends MovieClip
 		HXP.screen.redraw();
 		
 		// more timing stuff
-		t = Timer.stamp();
+		t = Lib.getTimer();
 		_frameListSum += (_frameList[_frameList.length] = Std.int(t - _frameLast));
 		if (_frameList.length > 10) _frameListSum -= _frameList.shift();
 		HXP.frameRate = 1000 / (_frameListSum / _frameList.length);
@@ -146,6 +146,7 @@ class Engine extends MovieClip
 		// set stage properties
 		HXP.stage = Lib.current.stage;
 		setStageProperties();
+		HXP.stage.addChild(this);
 		
 		// enable input
 		Input.enable();
@@ -162,14 +163,14 @@ class Engine extends MovieClip
 		{
 			// fixed framerate
 			_skip = _rate * maxFrameSkip;
-			_last = _prev = Timer.stamp();
+			_last = _prev = Lib.getTimer();
 			_timer = new Timer(tickRate);
 			_timer.run = onTimer;
 		}
 		else
 		{
 			// nonfixed framerate
-			_last = Timer.stamp();
+			_last = Lib.getTimer();
 			Lib.current.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 	}
@@ -178,7 +179,7 @@ class Engine extends MovieClip
 	private function onEnterFrame(e:Event)
 	{
 		// update timer
-		_time = _gameTime = Timer.stamp();
+		_time = _gameTime = Lib.getTimer();
 		HXP.flashTime = _time - _flashTime;
 		_updateTime = _time;
 		HXP.elapsed = (_time - _last) / 1000;
@@ -196,14 +197,14 @@ class Engine extends MovieClip
 		Input.update();
 		
 		// update timer
-		_time = _renderTime = Timer.stamp();
+		_time = _renderTime = Lib.getTimer();
 		HXP.updateTime = _time - _updateTime;
 		
 		// render loop
 		if (!paused) render();
 		
 		// update timer
-		_time = _flashTime = Timer.stamp();
+		_time = _flashTime = Lib.getTimer();
 		HXP.renderTime = _time - _renderTime;
 		HXP.gameTime = _time - _gameTime;
 	}
@@ -212,7 +213,7 @@ class Engine extends MovieClip
 	private function onTimer()
 	{
 		// update timer
-		_time = Timer.stamp();
+		_time = Lib.getTimer();
 		_delta += (_time - _last);
 		_last = _time;
 		
@@ -245,7 +246,7 @@ class Engine extends MovieClip
 			Input.update();
 			
 			// update timer
-			_time = Timer.stamp();
+			_time = Lib.getTimer();
 			HXP.updateTime = _time - _updateTime;
 		}
 		
@@ -256,7 +257,7 @@ class Engine extends MovieClip
 		if (!paused) render();
 		
 		// update timer
-		_time = _flashTime = Timer.stamp();
+		_time = _flashTime = Lib.getTimer();
 		HXP.renderTime = _time - _renderTime;
 		HXP.gameTime =  _time - _gameTime;
 	}

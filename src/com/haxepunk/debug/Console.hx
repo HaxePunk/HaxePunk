@@ -34,9 +34,6 @@ class Console
 	{
 		init();
 		Input.define("_ARROWS", [Key.RIGHT, Key.LEFT, Key.DOWN, Key.UP]);
-		
-//		var oldFunc = Reflect.makeVarArgs(Reflect.field(this, "log"));
-//		Reflect.setField(this, "log", Reflect.makeVarArgs(function(args:Array<Dynamic>) { oldFunc(args); }));
 	}
 	
 	// Initialize variables
