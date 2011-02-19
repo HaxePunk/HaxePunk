@@ -1,5 +1,6 @@
 package com.haxepunk.masks;
 
+import com.haxepunk.HXP;
 import com.haxepunk.Mask;
 
 /**
@@ -68,7 +69,7 @@ class Masklist extends Hitbox
 	public function remove(mask:Mask):Mask
 	{
 		if (_masks.indexOf(mask) < 0) return mask;
-//		_temp.clear();
+		HXP.clear(_temp);
 		var m:Mask;
 		for (m in _masks)
 		{
@@ -92,7 +93,7 @@ class Masklist extends Hitbox
 	 */
 	public function removeAt(index:Int = 0)
 	{
-//		_temp.clear();
+		HXP.clear(_temp);
 		var i:Int = _masks.length;
 		index %= i;
 		while (i-- > 0)	
@@ -118,8 +119,8 @@ class Masklist extends Hitbox
 		var m:Mask;
 		for (m in _masks) m.list = null;
 		_count = 0;
-//		_masks.clear();
-//		_temp.clear();
+		HXP.clear(_masks);
+		HXP.clear(_temp);
 		update();
 	}
 	

@@ -928,8 +928,8 @@ class World extends Tweener
 				removeRender(e);
 				if (e._type != "") removeType(e);
 				if (e.autoClear && e.tween != null) e.clearTweens();
-				_remove.pop();
 			}
+			HXP.clear(_remove);
 		}
 		
 		// add entities
@@ -942,8 +942,8 @@ class World extends Tweener
 				addRender(e);
 				if (e._type != "") addType(e);
 				e.added();
-				_add.pop();
 			}
+			HXP.clear(_add);
 		}
 		
 		// sort the depth list

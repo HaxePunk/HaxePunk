@@ -117,6 +117,13 @@ class HXP
 		return _goto;
 	}
 	
+	public static function clear(array:Array<Dynamic>)
+	{
+		var i:Int;
+		for (i in 0...array.length)
+			array.pop();
+	}
+	
 	/**
 	 * Sets the camera position.
 	 * @param	x	X position.

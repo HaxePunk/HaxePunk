@@ -42,9 +42,9 @@ package net.flashpunk.masks
 			_height = height;
 			
 			// set callback functions
-			_check[Mask] = collideMask;
-			_check[Hitbox] = collideHitbox;
-			_check[Pixelmask] = collidePixelmask;
+			_check[Type.getClassName(Mask)] = collideMask;
+			_check[Type.getClassName(Hitbox)] = collideHitbox;
+			_check[Type.getClassName(Pixelmask)] = collidePixelmask;
 		}
 		
 		/**

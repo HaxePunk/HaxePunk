@@ -23,8 +23,8 @@ class Hitbox extends Mask
 		_height = height;
 		_x = x;
 		_y = y;
-		_check.set("Mask", collideMask);
-		_check.set("Hitbox", collideHitbox);
+		_check.set(Type.getClassName(Mask), collideMask);
+		_check.set(Type.getClassName(Hitbox), collideHitbox);
 	}
 	
 	/** @private Collides against an Entity. */

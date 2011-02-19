@@ -35,9 +35,9 @@ package net.flashpunk.masks
 			_y = y;
 			
 			// set callback functions
-			_check[Mask] = collideMask;
-			_check[Pixelmask] = collidePixelmask;
-			_check[Hitbox] = collideHitbox;
+			_check[Type.getClassName(Mask)] = collideMask;
+			_check[Type.getClassName(Pixelmask)] = collidePixelmask;
+			_check[Type.getClassName(Hitbox)] = collideHitbox;
 		}
 		
 		/** @private Collide against an Entity. */
