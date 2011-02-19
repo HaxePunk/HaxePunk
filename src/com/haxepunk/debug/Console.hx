@@ -13,9 +13,11 @@ import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
 import com.haxepunk.Entity;
 import com.haxepunk.HXP;
+import haxe.Log;
 //import com.haxepunk.utils.Draw;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
+import haxe.PosInfos;
 
 class BmpConsoleDebug  extends BitmapData { public function new() { super(0, 0); } }
 class BmpConsoleLogo   extends BitmapData { public function new() { super(0, 0); } }
@@ -34,6 +36,7 @@ class Console
 	public function new()
 	{
 		init();
+		Log.trace = traceLog;
 		Input.define("_ARROWS", [Key.RIGHT, Key.LEFT, Key.DOWN, Key.UP]);
 	}
 	
@@ -80,6 +83,12 @@ class Console
 		WATCH_LIST = new List<String>();
 		WATCH_LIST.push("x");
 		WATCH_LIST.push("y");
+	}
+	
+	public function traceLog(v:Dynamic, ?infos:PosInfos)
+	{
+		LOG.push(infos.className + "(" + infos.lineNumber + "): " + Std.string(v));
+		if (_enabled && _sprite.visible) updateLog();
 	}
 	
 	/**
@@ -762,7 +771,7 @@ class Console
 	private function updateFPSRead()
 	{
 		var prec = 1000;
-		_fpsReadText.text = "FPS: " + Std.int(HXP.frameRate * prec) / prec;
+		_fpsReadText.text = "FPS: " + Std.int(HXP.frameRate);
 		_fpsInfoText0.text =
 			"Update: " + Std.string(HXP.updateTime) + "ms\n" + 
 			"Render: " + Std.string(HXP.renderTime) + "ms";

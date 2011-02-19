@@ -20,6 +20,7 @@ class World extends Tweener
 	 */
 	public var camera:Point;
 	
+	// Flash equivalent: Number.MAX_VALUE
 	public static inline var NUMBER_MAX_VALUE = untyped __global__["Number"].MAX_VALUE;
 	
 	/**
@@ -32,6 +33,12 @@ class World extends Tweener
 		camera = new Point();
 		
 		_layerList = new Array<Int>();
+		_layerCount = new Array<Int>();
+		
+		_renderFirst = new Array<Entity>();
+		_renderLast = new Array<Entity>();
+		
+		_typeFirst = new Hash<Entity>();
 		
 		_add = new Array<Entity>();
 		_remove = new Array<Entity>();
@@ -123,7 +130,7 @@ class World extends Tweener
 	public function add(e:Entity):Entity
 	{
 		if (e._world != null) return e;
-		_add[_add.length] = e;
+		_add.push(e);
 		e._world = this;
 		return e;
 	}
@@ -136,7 +143,7 @@ class World extends Tweener
 	public function remove(e:Entity):Entity
 	{
 		if (e._world != this) return e;
-		_remove[_remove.length] = e;
+		_remove.push(e);
 		e._world = null;
 		return e;
 	}
@@ -149,7 +156,7 @@ class World extends Tweener
 		var e:Entity = _updateFirst;
 		while (e != null)
 		{
-			_remove[_remove.length] = e;
+			_remove.push(e);
 			e._world = null;
 			e = e.updateNext;
 		}
@@ -256,7 +263,7 @@ class World extends Tweener
 			e._recycleNext = null;
 			e = n;
 		}
-//		delete _recycled[classType];
+		_recycled.set(classType, null);
 	}
 	
 	/**
@@ -905,8 +912,9 @@ class World extends Tweener
 		var e:Entity;
 		
 		// remove entities
-		if (_remove.length != 0)
+		if (_remove.length > 0)
 		{
+			trace("remove");
 			for (e in _remove)
 			{
 				if (e._added != true && _add.indexOf(e) >= 0)
@@ -920,12 +928,12 @@ class World extends Tweener
 				removeRender(e);
 				if (e._type != "") removeType(e);
 				if (e.autoClear && e.tween != null) e.clearTweens();
+				_remove.pop();
 			}
-//			_remove.clear();
 		}
 		
 		// add entities
-		if (_add.length != 0)
+		if (_add.length > 0)
 		{
 			for (e in _add)
 			{
@@ -934,8 +942,8 @@ class World extends Tweener
 				addRender(e);
 				if (e._type != "") addType(e);
 				e.added();
+				_add.pop();
 			}
-//			_add.clear();
 		}
 		
 		// sort the depth list

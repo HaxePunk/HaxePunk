@@ -100,11 +100,14 @@ class HXP
 	private static function setWorld(value:World):World
 	{
 		if (_world == value) return value;
-		if (_world == null)
-			_world = value;
-		else
-			_goto = value;
+		_goto = value;
 		return _world;
+	}
+	
+	public static function swapWorld()
+	{
+		_world = _goto;
+		_goto = null;
 	}
 	
 	public static var goto(getGoto, setGoto):World;
@@ -753,7 +756,7 @@ class HXP
 	}
 	
 	// World information.
-	private static var _world:World;
+	private static var _world:World = new World();
 	private static var _goto:World;
 	
 	// Console information.

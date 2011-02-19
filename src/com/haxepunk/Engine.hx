@@ -61,7 +61,6 @@ class Engine extends MovieClip
 		HXP.engine = this;
 		HXP.screen = new Screen();
 		HXP.bounds = new Rectangle(0, 0, width, height);
-		HXP.world = new World();
 		
 		// miscellanious startup stuff
 		if (HXP.randomSeed == 0) HXP.randomizeSeed();
@@ -141,7 +140,7 @@ class Engine extends MovieClip
 	private function onStage(e:Event = null)
 	{
 		// remove event listener
-		removeEventListener(Event.ADDED_TO_STAGE, onStage);
+		Lib.current.removeEventListener(Event.ADDED_TO_STAGE, onStage);
 		
 		// set stage properties
 		HXP.stage = Lib.current.stage;
@@ -269,8 +268,7 @@ class Engine extends MovieClip
 		HXP.world.end();
 		HXP.world.updateLists();
 		if (HXP.world != null && HXP.world.autoClear && HXP.world.tween != null) HXP.world.clearTweens();
-		HXP.world = HXP.goto;
-		HXP.goto = null;
+		HXP.swapWorld();
 		HXP.camera = HXP.world.camera;
 		HXP.world.updateLists();
 		HXP.world.begin();

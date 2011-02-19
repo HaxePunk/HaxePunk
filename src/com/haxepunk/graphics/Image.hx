@@ -64,6 +64,7 @@ class Image extends Graphic
 	 */
 	public function new(source:BitmapData, clipRect:Rectangle = null) 
 	{
+		super();
 		init();
 		
 		_source = source;
@@ -104,7 +105,7 @@ class Image extends Graphic
 		_bitmap.bitmapData = _buffer;
 	}
 	
-	/** @private Renders the image. */
+	/** Renders the image. */
 	override public function render(target:BitmapData, point:Point, camera:Point) 
 	{
 		// quit if no graphic is assigned
@@ -274,8 +275,8 @@ class Image extends Graphic
 	 */
 	public function centerOrigin()
 	{
-		originX = Std.int(_bufferRect.width / 2);
-		originY = Std.int(_bufferRect.height / 2);
+		originX = Std.int(width / 2);
+		originY = Std.int(height / 2);
 	}
 	
 	/**

@@ -6,23 +6,14 @@ import flash.geom.Rectangle;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextLineMetrics;
-import net.flashpunk.FP;
-import net.flashpunk.Graphic;
+import com.haxepunk.HXP;
+import com.haxepunk.Graphic;
 
 /**
  * Used for drawing text using embedded fonts.
  */
-public class Text extends Image
+class Text extends Image
 {
-	/**
-	 * The font to assign to new Text objects.
-	 */
-	public static var font:String = "default";
-	
-	/**
-	 * The font size to assign to new Text objects.
-	 */
-	public static var size:uint = 16;
 	
 	/**
 	 * Constructor.
@@ -32,13 +23,14 @@ public class Text extends Image
 	 * @param	width		Image width (leave as 0 to size to the starting text string).
 	 * @param	height		Image height (leave as 0 to size to the starting text string).
 	 */
-	public function Text(text:String, x:Number = 0, y:Number = 0, width:uint = 0, height:uint = 0)
+	public function new(text:String, x:Float = 0, y:Float = 0, width:Int = 0, height:Int = 0)
 	{
+		_field = new TextField();
 		_field.embedFonts = true;
-		_field.defaultTextFormat = _form = new TextFormat(Text.font, Text.size, 0xFFFFFF);
+		_field.defaultTextFormat = _form = new TextFormat("default", 16, 0xFFFFFF);
 		_field.text = _text = text;
-		if (!width) width = _field.textWidth + 4;
-		if (!height) height = _field.textHeight + 4;
+		if (width == 0) width = Std.int(_field.textWidth + 4);
+		if (height == 0) height = Std.int(_field.textHeight + 4);
 		_source = new BitmapData(width, height, true, 0);
 		super(_source);
 		updateBuffer();
@@ -47,79 +39,73 @@ public class Text extends Image
 	}
 	
 	/** @private Updates the drawing buffer. */
-	override public function updateBuffer(clearBefore:Boolean = false):void 
+	override public function updateBuffer(clearBefore:Bool = false) 
 	{
 		_field.setTextFormat(_form);
-		_field.width = _width = _field.textWidth + 4;
-		_field.height = _height = _field.textHeight + 4;
+		_field.width = _field.textWidth + 4;
+		_field.height = _field.textHeight + 4;
+		_width = Std.int(_field.width);
+		_height = Std.int(_field.height);
 		_source.fillRect(_sourceRect, 0);
 		_source.draw(_field);
 		super.updateBuffer(clearBefore);
 	}
 	
-	/** @private Centers the Text's originX/Y to its center. */
-	override public function centerOrigin():void 
-	{
-		originX = _width / 2;
-		originY = _height / 2;
-	}
-	
 	/**
 	 * Text string.
 	 */
-	public function get text():String { return _text; }
-	public function set text(value:String):void
+	public var text(getText, setText):String;
+	private function getText():String { return _text; }
+	private function setText(value:String):String
 	{
-		if (_text == value) return;
+		if (_text == value) return value;
 		_field.text = _text = value;
 		updateBuffer();
+		return _text;
 	}
 	
 	/**
 	 * Font family.
 	 */
-	public function get font():String { return _font; }
-	public function set font(value:String):void
+	public var font(getFont, setFont):String;
+	private function getFont():String { return _font; }
+	private function setFont(value:String):String
 	{
-		if (_font == value) return;
+		if (_font == value) return value;
 		_form.font = _font = value;
 		updateBuffer();
+		return _font;
 	}
 	
 	/**
 	 * Font size.
 	 */
-	public function get size():uint { return _size; }
-	public function set size(value:uint):void
+	public var size(getSize, setSize):Int;
+	private function getSize():Int { return _size; }
+	private function setSize(value:Int):Int
 	{
-		if (_size == value) return;
+		if (_size == value) return value;
 		_form.size = _size = value;
 		updateBuffer();
+		return _size;
 	}
 	
 	/**
 	 * Width of the text image.
 	 */
-	override public function get width():uint { return _width; }
+	override private function getWidth():Int { return _width; }
 	
 	/**
 	 * Height of the text image.
 	 */
-	override public function get height():uint { return _height; }
+	override private function getHeight():Int { return _height; }
 	
 	// Text information.
-	/** @private */ private var _field:TextField = new TextField;
-	/** @private */ private var _width:uint;
-	/** @private */ private var _height:uint;
-	/** @private */ private var _form:TextFormat;
-	/** @private */ private var _text:String;
-	/** @private */ private var _font:String;
-	/** @private */ private var _size:uint;
-	
-	// Default font family.
-	// Use this option when compiling with Flex SDK 3 or lower
-	// [Embed(source = '04B_03__.TTF', fontFamily = 'default')]
-	// Use this option when compiling with Flex SDK 4
-	[Embed(source = '04B_03__.TTF', embedAsCFF="false", fontFamily = 'default')]
-	/** @private */ private static var _FONT_DEFAULT:Class;
+	private var _field:TextField;
+	private var _width:Int;
+	private var _height:Int;
+	private var _form:TextFormat;
+	private var _text:String;
+	private var _font:String;
+	private var _size:Int;
 }

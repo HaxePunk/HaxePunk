@@ -49,7 +49,7 @@ class Graphic
 	/**
 	 * Constructor.
 	 */
-	public function Graphic() 
+	public function new() 
 	{
 		active = false;
 		visible = true;
