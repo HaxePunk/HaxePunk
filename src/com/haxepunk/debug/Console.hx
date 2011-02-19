@@ -10,6 +10,7 @@ import flash.geom.ColorTransform;
 import flash.geom.Rectangle;
 import flash.text.TextField;
 import flash.text.TextFormat;
+import flash.text.TextFormatAlign;
 import com.haxepunk.Entity;
 import com.haxepunk.HXP;
 //import com.haxepunk.utils.Draw;
@@ -42,7 +43,7 @@ class Console
 		toggleKey = 192; // Tilde (~) by default
 		
 		_sprite = new Sprite();
-		_format = new TextFormat("console");
+		_format = new TextFormat("default");
 		_back = new Bitmap();
 
 		_fpsRead = new Sprite();
@@ -862,7 +863,17 @@ class Console
 	{
 		_format.size = size;
 		_format.color = color;
-//		_format.align = align;
+		switch(align)
+		{
+			case "left":
+				_format.align = TextFormatAlign.LEFT;
+			case "right":
+				_format.align = TextFormatAlign.RIGHT;
+			case "center":
+				_format.align = TextFormatAlign.CENTER;
+			case "justify":
+				_format.align = TextFormatAlign.JUSTIFY;
+		}
 		return _format;
 	}
 	
