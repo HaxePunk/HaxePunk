@@ -186,11 +186,11 @@ class Engine extends MovieClip
 		HXP.elapsed *= HXP.rate;
 		_last = _time;
 		
-		// update console
-		if (HXP.console != null) HXP.console.update();
-		
 		// update loop
 		if (!paused) update();
+		
+		// update console
+		if (HXP.console != null) HXP.console.update();
 		
 		// update input
 		Input.update();
@@ -223,9 +223,6 @@ class Engine extends MovieClip
 		_gameTime = Std.int(_time);
 		HXP.flashTime = _time - _flashTime;
 		
-		// update console
-		if (HXP.console != null) HXP.console.update();
-		
 		// update loop
 		if (_delta > _skip) _delta = _skip;
 		while (_delta > _rate)
@@ -240,6 +237,9 @@ class Engine extends MovieClip
 			
 			// update loop
 			if (!paused) update();
+			
+			// update console
+			if (HXP.console != null) HXP.console.update();
 			
 			// update input
 			Input.update();

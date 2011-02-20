@@ -76,7 +76,7 @@ class Console
 
 		LOG = new Array<String>();
 
-		ENTITY_LIST = new List<Entity>();
+		ENTITY_LIST = new Array<Entity>();
 		SCREEN_LIST = new List<Entity>();
 		SELECT_LIST = new List<Entity>();
 
@@ -403,7 +403,7 @@ class Console
 			_debRead.visible = false;
 			_logRead.visible = true;
 			updateLog();
-			ENTITY_LIST.clear();
+			HXP.clear(ENTITY_LIST);
 			SCREEN_LIST.clear();
 			SELECT_LIST.clear();
 		}
@@ -624,8 +624,8 @@ class Console
 		// If the list should be re-populated.
 		if (fetchList)
 		{
-			ENTITY_LIST.clear();
-//			HXP.world.getAll(ENTITY_LIST);
+			HXP.clear(ENTITY_LIST);
+			HXP.world.getAll(ENTITY_LIST);
 		}
 		
 		// Update the list of Entities on screen.
@@ -953,7 +953,7 @@ class Console
 	private var LOG:Array<String>;
 	
 	// Entity lists.
-	private var ENTITY_LIST:List<Entity>;
+	private var ENTITY_LIST:Array<Entity>;
 	private var SCREEN_LIST:List<Entity>;
 	private var SELECT_LIST:List<Entity>;
 	
