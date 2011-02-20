@@ -102,21 +102,11 @@ class Input
 				i:Int = v.length;
 			while (i-- > 0)
 			{
-				if ((v[i] < 0) ? _pressNum != 0 : indexOf(_press, v[i]) >= 0) return true;
+				if ((v[i] < 0) ? _pressNum != 0 : Lambda.indexOf(_press, v[i]) >= 0) return true;
 			}
 			return false;
 		}
-		return (input < 0) ? _pressNum != 0 : indexOf(_press, input) >= 0;
-	}
-	
-	private static function indexOf(array:Array<Int>, obj:Int):Int
-	{
-		var i:Int;
-		for (i in 0...array.length)
-		{
-			if (array[i] == obj) return i;
-		}
-		return -1;
+		return (input < 0) ? _pressNum != 0 : Lambda.indexOf(_press, input) >= 0;
 	}
 	
 	/**
@@ -132,11 +122,11 @@ class Input
 				i:Int = v.length;
 			while (i-- > 0)
 			{
-				if ((v[i] < 0) ? _releaseNum != 0 : indexOf(_release, v[i]) >= 0) return true;
+				if ((v[i] < 0) ? _releaseNum != 0 : Lambda.indexOf(_release, v[i]) >= 0) return true;
 			}
 			return false;
 		}
-		return (input < 0) ? _releaseNum != 0 : indexOf(_release, input) >= 0;
+		return (input < 0) ? _releaseNum != 0 : Lambda.indexOf(_release, input) >= 0;
 	}
 	
 	public static function enable()

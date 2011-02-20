@@ -558,7 +558,7 @@ class Console
 			// Append selected Entitites with new selections.
 			for (e in SCREEN_LIST)
 			{
-				if (indexOf(SELECT_LIST, e) < 0)
+				if (Lambda.indexOf(SELECT_LIST, e) < 0)
 				{
 					HXP.rect.x = (e.x - HXP.camera.x) * sx - 3;
 					HXP.rect.y = (e.y - HXP.camera.y) * sy - 3;
@@ -653,7 +653,7 @@ class Console
 			for (e in SCREEN_LIST)
 			{
 				// If the Entity is not selected.
-				if (indexOf(SELECT_LIST, e) < 0)
+				if (Lambda.indexOf(SELECT_LIST, e) < 0)
 				{
 					// Draw the normal hitbox and position.
 					if (e.width != 0 && e.height != 0)
@@ -753,18 +753,6 @@ class Console
 			_debReadText0.selectable = false;
 			_debReadText1.selectable = false;
 		}
-	}
-	
-	private static function indexOf(list:List<Entity>, obj:Entity):Int
-	{
-		var e:Entity;
-		var i:Int = 0;
-		for (e in list)
-		{
-			if (e == obj) return i;
-			i++;
-		}
-		return -1;
 	}
 	
 	/** @private Update the FPS/frame timing panel text. */

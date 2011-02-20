@@ -917,9 +917,9 @@ class World extends Tweener
 			trace("remove");
 			for (e in _remove)
 			{
-				if (e._added != true && _add.indexOf(e) >= 0)
+				if (e._added != true && Lambda.indexOf(_add, e) >= 0)
 				{
-					_add.splice(_add.indexOf(e), 1);
+					_add.splice(Lambda.indexOf(_add, e), 1);
 					continue;
 				}
 				e._added = false;
@@ -1033,7 +1033,7 @@ class World extends Tweener
 				// Remove the layer from the layer list if this was the last entity.
 				if (_layerList.length > 1)
 				{
-					_layerList[_layerList.indexOf(e._layer)] = _layerList[_layerList.length - 1];
+					_layerList[Lambda.indexOf(_layerList, e._layer)] = _layerList[_layerList.length - 1];
 					_layerSort = true;
 				}
 				_layerList.pop();
