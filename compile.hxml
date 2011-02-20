@@ -3,3 +3,4 @@
 -main Main
 -cp src
 -swf-header 640:480:60:000000
+-swf-lib assets.swf

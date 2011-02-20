@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<movie width="640" height="480" framerate="60">
+	<frame>
+		<library>
+			<!-- HaxePunk Graphics -->
+			<bitmap id="com.haxepunk.console.BmpConsoleDebug" import="src/com/haxepunk/debug/console_debug.png" />
+			<bitmap id="com.haxepunk.console.BmpConsoleLogo" import="src/com/haxepunk/debug/console_logo.png" />
+			<bitmap id="com.haxepunk.console.BmpConsoleOutput" import="src/com/haxepunk/debug/console_output.png" />
+			<bitmap id="com.haxepunk.console.BmpConsolePause" import="src/com/haxepunk/debug/console_pause.png" />
+			<bitmap id="com.haxepunk.console.BmpConsolePlay" import="src/com/haxepunk/debug/console_play.png" />
+			<bitmap id="com.haxepunk.console.BmpconsoleStep" import="src/com/haxepunk/debug/console_step.png" />
+			<font id="default" import="src/com/haxepunk/graphics/04B_03__.TTF" />
+			<!-- Project Graphics -->
+			<bitmap id="BmpBlock" import="assets/gfx/block.png" />
+			<bitmap id="BmpCharacter" import="assets/gfx/character.png" />
+		</library>
+	</frame>
+	<frame />
+</movie>
