@@ -517,8 +517,8 @@ class HXP
 	 */
 	public static function next(current:Dynamic, options:Array<Dynamic>, loop:Bool = true):Dynamic
 	{
-//		if (loop) return options[(options.indexOf(current) + 1) % options.length];
-//		return options[Math.max(options.indexOf(current) + 1, options.length - 1)];
+		if (loop) return options[(Lambda.indexOf(options, current) + 1) % options.length];
+		return options[Std.int(Math.max(Lambda.indexOf(options, current) + 1, options.length - 1))];
 	}
 	
 	/**
@@ -530,8 +530,8 @@ class HXP
 	 */
 	public static function prev(current:Dynamic, options:Array<Dynamic>, loop:Bool = true):Dynamic
 	{
-//		if (loop) return options[((options.indexOf(current) - 1) + options.length) % options.length];
-//		return options[Math.max(options.indexOf(current) - 1, 0)];
+		if (loop) return options[((Lambda.indexOf(options, current) - 1) + options.length) % options.length];
+		return options[Std.int(Math.max(Lambda.indexOf(options, current) - 1, 0))];
 	}
 	
 	/**
