@@ -1,1 +1,1 @@
-A HaXe port of the FlashPunk AS3 library.
+A HaXe port of the FlashPunk AS3 library.It is suggested to use FlashDevelop for an IDE since it simplifies embedding assets. However, if you prefer the console or another editor please use the assets.xml file for SWFMill as a starting point.swfmill simple assets.xml assets.swf
