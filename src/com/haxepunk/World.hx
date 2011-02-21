@@ -43,6 +43,7 @@ class World extends Tweener
 		_add = new Array<Entity>();
 		_remove = new Array<Entity>();
 		_classCount = new Hash<Int>();
+		_typeCount = new Hash<Int>();
 		_recycled = new Hash<Entity>();
 	}
 	
@@ -696,7 +697,7 @@ class World extends Tweener
 	 */
 	public function typeCount(type:String):Int
 	{
-		return 0; // _typeCount[type];
+		return _typeCount.get(type);
 	}
 	
 	/**
@@ -949,7 +950,7 @@ class World extends Tweener
 		// sort the depth list
 		if (_layerSort)
 		{
-			if (_layerList.length > 1) _layerList.sort(layerSort);// HXP.sort(_layerList, true);
+			if (_layerList.length > 1) _layerList.sort(layerSort);
 			_layerSort = false;
 		}
 	}
@@ -1051,12 +1052,12 @@ class World extends Tweener
 		{
 			_typeFirst.get(e._type)._typePrev = e;
 			e._typeNext = _typeFirst.get(e._type);
-//			_typeCount[e._type]++;
+			_typeCount.set(e._type, _typeCount.get(e._type) + 1);
 		}
 		else
 		{
 			e._typeNext = null;
-//			_typeCount[e._type] = 1;
+			_typeCount.set(e._type, 1);
 		}
 		e._typePrev = null;
 		_typeFirst.set(e._type, e);
@@ -1070,7 +1071,7 @@ class World extends Tweener
 		if (e._typeNext != null) e._typeNext._typePrev = e._typePrev;
 		if (e._typePrev != null) e._typePrev._typeNext = e._typeNext;
 		e._typeNext = e._typePrev = null;
-//		_typeCount[e._type] --;
+		_typeCount.set(e._type, _typeCount.get(e._type) - 1);
 	}
 	
 	/** @private Calculates the squared distance between two rectangles. */
@@ -1143,6 +1144,6 @@ class World extends Tweener
 	
 	private var _classCount:Hash<Int>;
 	public var _typeFirst:Hash<Entity>;
-	private var _typeCount:Array<Int>;
+	private var _typeCount:Hash<Int>;
 	private var _recycled:Hash<Entity>;
 }

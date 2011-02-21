@@ -4,6 +4,7 @@ import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import com.haxepunk.graphics.Image;
+import com.haxepunk.graphics.Graphiclist;
 
 /**
  * Main game Entity class updated by World.
@@ -510,13 +511,13 @@ class Entity extends Tweener
 	 */
 	public function addGraphic(g:Graphic):Graphic
 	{
-//		if (Std.is(graphic, Graphiclist)) cast(graphic, Graphiclist).add(g);
-//		else
-//		{
-//			var list:Graphiclist = new Graphiclist();
-//			if (graphic) list.add(graphic);
-//			graphic = list;
-//		}
+		if (Std.is(graphic, Graphiclist)) cast(graphic, Graphiclist).add(g);
+		else
+		{
+			var list:Graphiclist = new Graphiclist();
+			if (graphic != null) list.add(graphic);
+			graphic = list;
+		}
 		return g;
 	}
 	

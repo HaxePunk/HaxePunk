@@ -174,15 +174,13 @@ class HXP
 	
 	/**
 	 * Randomly chooses and returns one of the provided values.
-	 * @param	...objs		The Objects you want to randomly choose from. Can be ints, Floats, Points, etc.
+	 * @param	objs		The Objects you want to randomly choose from. Can be ints, Floats, Points, etc.
 	 * @return	A randomly chosen one of the provided parameters.
 	 */
-	// TODO: fix this function
-//	public static function choose(objs):Dynamic
-//	{
-//		var c:Dynamic = (objs.length == 1 && (objs[0] is Array || objs[0] is Vector.<*>)) ? objs[0] : objs;
-//		return c[rand(c.length)];
-//	}
+	public static function choose(objs:Array<Dynamic>):Dynamic
+	{
+		return objs[rand(objs.length)];
+	}
 	
 	/**
 	 * Finds the sign of the provided value.

@@ -128,10 +128,6 @@ class Console
 		{
 			for (i in properties) WATCH_LIST.push(i);
 		}
-		else if (Std.is(properties[0], Array))
-		{
-//			for (i in properties[0]) WATCH_LIST.push(i);
-		}
 		else WATCH_LIST.push(properties[0]);
 	}
 	
@@ -790,6 +786,7 @@ class Console
 				s += "\n\n- " + Std.string(e) + " -\n";
 				for (str in WATCH_LIST)
 				{
+//					var fields Array<String> = Type.getClassFields(e);
 //					if (e.hasOwnProperty(str)) s += "\n" + str + ": " + e[str].toString();
 				}
 			}

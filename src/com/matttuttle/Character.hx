@@ -4,7 +4,9 @@ import com.haxepunk.graphics.Spritemap;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 
-// Example character class using simple physics
+/**
+ * Example character class using simple physics
+ */
 class Character extends PhysicsEntity
 {
 	

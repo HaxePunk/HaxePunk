@@ -235,10 +235,10 @@ class Screen
 	 * Captures the current screen as an Image object.
 	 * @return	A new Image object.
 	 */
-//	public function capture():Image
-//	{
-//		return new Image(_bitmap[_current].bitmapData.clone());
-//	}
+	public function capture():Image
+	{
+		return new Image(_bitmap[_current].bitmapData.clone());
+	}
 	
 	// Screen infromation.
 	private var _sprite:Sprite;

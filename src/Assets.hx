@@ -1,6 +1,8 @@
 import flash.display.BitmapData;
 
-// Define class stubs
+/**
+ * Define class stubs
+ */
 class BmpBlock extends BitmapData { }
 class BmpCharacter extends BitmapData { }
 
