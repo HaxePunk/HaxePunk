@@ -2,7 +2,7 @@ package com.matttuttle;
 
 import com.haxepunk.HXP;
 import com.haxepunk.World;
-import com.haxepunk.masks.Grid;
+import com.haxepunk.utils.Data;
 
 class GameWorld extends World
 {
