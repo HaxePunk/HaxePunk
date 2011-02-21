@@ -1,32 +1,33 @@
-﻿package net.flashpunk.tweens.motion 
+﻿package com.haxepunk.tweens.motion;
+
+import com.haxepunk.Tween;
+import com.haxepunk.utils.Ease;
+
+/**
+ * Base class for motion Tweens.
+ */
+class Motion extends Tween
 {
-	import net.flashpunk.Tween;
+	/**
+	 * Current x position of the Tween.
+	 */
+	public var x:Float;
 	
 	/**
-	 * Base class for motion Tweens.
+	 * Current y position of the Tween.
 	 */
-	public class Motion extends Tween
+	public var y:Float;
+	
+	/**
+	 * Constructor.
+	 * @param	duration	Duration of the Tween.
+	 * @param	complete	Optional completion callback.
+	 * @param	type		Tween type.
+	 * @param	ease		Optional easer function.
+	 */
+	public function new(duration:Float, complete:CompleteCallback = null, type:TweenType, ease:EaseFunction = null) 
 	{
-		/**
-		 * Current x position of the Tween.
-		 */
-		public var x:Number = 0;
-		
-		/**
-		 * Current y position of the Tween.
-		 */
-		public var y:Number = 0;
-		
-		/**
-		 * Constructor.
-		 * @param	duration	Duration of the Tween.
-		 * @param	complete	Optional completion callback.
-		 * @param	type		Tween type.
-		 * @param	ease		Optional easer function.
-		 */
-		public function Motion(duration:Number, complete:Function = null, type:uint = 0, ease:Function = null) 
-		{
-			super(duration, type, complete, ease);
-		}
+		x = y = 0;
+		super(duration, type, complete, ease);
 	}
 }

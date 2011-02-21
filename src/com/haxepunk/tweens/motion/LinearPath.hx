@@ -1,133 +1,141 @@
-﻿package net.flashpunk.tweens.motion 
+﻿package com.haxepunk.tweens.motion;
+
+import com.haxepunk.Tween;
+import com.haxepunk.utils.Ease;
+import flash.geom.Point;
+
+/**
+ * Determines linear motion along a set of points.
+ */
+class LinearPath extends Motion
 {
-	import flash.geom.Point;
-	import net.flashpunk.FP;
+	/**
+	 * Constructor.
+	 * @param	complete	Optional completion callback.
+	 * @param	type		Tween type.
+	 */
+	public function new(complete:CompleteCallback = null, type:TweenType) 
+	{
+		_points = new Array<Point>();
+		_pointD = new Array<Float>();
+		_pointT = new Array<Float>();
+		
+		_distance = _speed = _index = 0;
+		
+		super(0, complete, type, null);
+		_pointD[0] = _pointT[0] = 0;
+	}
 	
 	/**
-	 * Determines linear motion along a set of points.
+	 * Starts moving along the path.
+	 * @param	duration		Duration of the movement.
+	 * @param	ease			Optional easer function.
 	 */
-	public class LinearPath extends Motion
+	public function setMotion(duration:Float, ease:EaseFunction = null)
 	{
-		/**
-		 * Constructor.
-		 * @param	complete	Optional completion callback.
-		 * @param	type		Tween type.
-		 */
-		public function LinearPath(complete:Function = null, type:uint = 0) 
-		{
-			super(0, complete, type, null);
-			_pointD[0] = _pointT[0] = 0;
-		}
-		
-		/**
-		 * Starts moving along the path.
-		 * @param	duration		Duration of the movement.
-		 * @param	ease			Optional easer function.
-		 */
-		public function setMotion(duration:Number, ease:Function = null):void
-		{
-			updatePath();
-			_target = duration;
-			_speed = _distance / duration;
-			_ease = ease;
-			start();
-		}
-		
-		/**
-		 * Starts moving along the path at the speed.
-		 * @param	speed		Speed of the movement.
-		 * @param	ease		Optional easer function.
-		 */
-		public function setMotionSpeed(speed:Number, ease:Function = null):void
-		{
-			updatePath();
-			_target = _distance / speed;
-			_speed = speed;
-			_ease = ease;
-			start();
-		}
-		
-		/**
-		 * Adds the point to the path.
-		 * @param	x		X position.
-		 * @param	y		Y position.
-		 */
-		public function addPoint(x:Number = 0, y:Number = 0):void
-		{
-			if (_last)
-			{
-				_distance += Math.sqrt((x - _last.x) * (x - _last.x) + (y - _last.y) * (y - _last.y));
-				_pointD[_points.length] = _distance;
-			}
-			_points[_points.length] = _last = new Point(x, y);
-		}
-		
-		/**
-		 * Gets a point on the path.
-		 * @param	index		Index of the point.
-		 * @return	The Point object.
-		 */
-		public function getPoint(index:uint = 0):Point
-		{
-			if (!_points.length) throw new Error("No points have been added to the path yet.");
-			return _points[index % _points.length];
-		}
-		
-		/** @private Starts the Tween. */
-		override public function start():void 
-		{
-			_index = 0;
-			super.start();
-		}
-		
-		/** @private Updates the Tween. */
-		override public function update():void 
-		{
-			super.update();
-			if (_index < _points.length - 1)
-			{
-				while (_t > _pointT[_index + 1]) _index ++;
-			}
-			var td:Number = _pointT[_index],
-				tt:Number = _pointT[_index + 1] - td;
-			td = (_t - td) / tt;
-			_prev = _points[_index];
-			_next = _points[_index + 1];
-			x = _prev.x + (_next.x - _prev.x) * td;
-			y = _prev.y + (_next.y - _prev.y) * td;
-		}
-		
-		/** @private Updates the path, preparing it for motion. */
-		private function updatePath():void
-		{
-			if (_points.length < 2)	throw new Error("A LinearPath must have at least 2 points to operate.");
-			if (_pointD.length == _pointT.length) return;
-			// evaluate t for each point
-			var i:int = 0;
-			while (i < _points.length) _pointT[i] = _pointD[i ++] / _distance;
-		}
-		
-		/**
-		 * The full length of the path.
-		 */
-		public function get distance():Number { return _distance; }
-		
-		/**
-		 * How many points are on the path.
-		 */
-		public function get pointCount():Number { return _points.length; }
-		
-		// Path information.
-		/** @private */ private var _points:Vector.<Point> = new Vector.<Point>;
-		/** @private */ private var _pointD:Vector.<Number> = new Vector.<Number>;
-		/** @private */ private var _pointT:Vector.<Number> = new Vector.<Number>;
-		/** @private */ private var _distance:Number = 0;
-		/** @private */ private var _speed:Number = 0;
-		/** @private */ private var _index:uint = 0;
-		
-		// Line information.
-		/** @private */ private var _last:Point;
-		/** @private */ private var _prev:Point;
-		/** @private */ private var _next:Point;
+		updatePath();
+		_target = duration;
+		_speed = _distance / duration;
+		_ease = ease;
+		start();
 	}
+	
+	/**
+	 * Starts moving along the path at the speed.
+	 * @param	speed		Speed of the movement.
+	 * @param	ease		Optional easer function.
+	 */
+	public function setMotionSpeed(speed:Float, ease:EaseFunction = null)
+	{
+		updatePath();
+		_target = _distance / speed;
+		_speed = speed;
+		_ease = ease;
+		start();
+	}
+	
+	/**
+	 * Adds the point to the path.
+	 * @param	x		X position.
+	 * @param	y		Y position.
+	 */
+	public function addPoint(x:Float = 0, y:Float = 0)
+	{
+		if (_last != null)
+		{
+			_distance += Math.sqrt((x - _last.x) * (x - _last.x) + (y - _last.y) * (y - _last.y));
+			_pointD[_points.length] = _distance;
+		}
+		_points[_points.length] = _last = new Point(x, y);
+	}
+	
+	/**
+	 * Gets a point on the path.
+	 * @param	index		Index of the point.
+	 * @return	The Point object.
+	 */
+	public function getPoint(index:Int = 0):Point
+	{
+		if (_points.length == 0) throw "No points have been added to the path yet.";
+		return _points[index % _points.length];
+	}
+	
+	/** @private Starts the Tween. */
+	override public function start() 
+	{
+		_index = 0;
+		super.start();
+	}
+	
+	/** @private Updates the Tween. */
+	override public function update() 
+	{
+		super.update();
+		if (_index < _points.length - 1)
+		{
+			while (_t > _pointT[_index + 1]) _index ++;
+		}
+		var td:Float = _pointT[_index],
+			tt:Float = _pointT[_index + 1] - td;
+		td = (_t - td) / tt;
+		_prevPoint = _points[_index];
+		_nextPoint = _points[_index + 1];
+		x = _prevPoint.x + (_nextPoint.x - _prevPoint.x) * td;
+		y = _prevPoint.y + (_nextPoint.y - _prevPoint.y) * td;
+	}
+	
+	/** @private Updates the path, preparing it for motion. */
+	private function updatePath()
+	{
+		if (_points.length < 2)	throw "A LinearPath must have at least 2 points to operate.";
+		if (_pointD.length == _pointT.length) return;
+		// evaluate t for each point
+		var i:Int = 0;
+		while (i < _points.length) _pointT[i] = _pointD[i ++] / _distance;
+	}
+	
+	/**
+	 * The full length of the path.
+	 */
+	public var distance(getDistance, null):Float;
+	private function getDistance():Float { return _distance; }
+	
+	/**
+	 * How many points are on the path.
+	 */
+	public var pointCount(getPointCount, null):Float;
+	private function getPointCount():Float { return _points.length; }
+	
+	// Path information.
+	private var _points:Array<Point>;
+	private var _pointD:Array<Float>;
+	private var _pointT:Array<Float>;
+	private var _distance:Float;
+	private var _speed:Float;
+	private var _index:Int;
+	
+	// Line information.
+	private var _last:Point;
+	private var _prevPoint:Point;
+	private var _nextPoint:Point;
 }
