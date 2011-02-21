@@ -8,7 +8,7 @@ import com.haxepunk.HXP;
 /**
  * Special Image object that can display blocks of tiles.
  */
-public class TiledImage extends Image
+class TiledImage extends Image
 {
 	/**
 	 * Constructs the TiledImage.
@@ -17,65 +17,71 @@ public class TiledImage extends Image
 	 * @param	height		The height of the image (the texture will be drawn to fill this area).
 	 * @param	clipRect	An optional area of the source texture to use (eg. a tile from a tileset).
 	 */
-	public function TiledImage(texture:*, width:uint = 0, height:uint = 0, clipRect:Rectangle = null)
+	public function new(texture:BitmapData, width:Int = 0, height:Int = 0, clipRect:Rectangle = null)
 	{
+		_graphics = HXP.sprite.graphics;
+		_offsetX = _offsetY = 0;
 		_width = width;
 		_height = height;
 		super(texture, clipRect);
 	}
 	
 	/** @private Creates the buffer. */
-	override protected function createBuffer():void 
+	override private function createBuffer() 
 	{
-		if (!_width) _width = _sourceRect.width;
-		if (!_height) _height = _sourceRect.height;
+		if (_width == 0) _width = Std.int(_sourceRect.width);
+		if (_height == 0) _height = Std.int(_sourceRect.height);
 		_buffer = new BitmapData(_width, _height, true, 0);
 		_bufferRect = _buffer.rect;
 	}
 	
 	/** @private Updates the buffer. */
-	override public function updateBuffer(clearBefore:Boolean = false):void
+	override public function updateBuffer(clearBefore:Bool = false)
 	{
-		if (!_source) return;
-		if (!_texture)
+		if (_source == null) return;
+		if (_texture == null)
 		{
-			_texture = new BitmapData(_sourceRect.width, _sourceRect.height, true, 0);
-			_texture.copyPixels(_source, _sourceRect, FP.zero);
+			_texture = new BitmapData(Std.int(_sourceRect.width), Std.int(_sourceRect.height), true, 0);
+			_texture.copyPixels(_source, _sourceRect, HXP.zero);
 		}
 		_buffer.fillRect(_bufferRect, 0);
 		_graphics.clear();
 		if (_offsetX != 0 || _offsetY != 0)
 		{
-			FP.matrix.identity();
-			FP.matrix.tx = Math.round(_offsetX);
-			FP.matrix.ty = Math.round(_offsetY);
-			_graphics.beginBitmapFill(_texture, FP.matrix);
+			HXP.matrix.identity();
+			HXP.matrix.tx = Math.round(_offsetX);
+			HXP.matrix.ty = Math.round(_offsetY);
+			_graphics.beginBitmapFill(_texture, HXP.matrix);
 		}
 		else _graphics.beginBitmapFill(_texture);
 		_graphics.drawRect(0, 0, _width, _height);
-		_buffer.draw(FP.sprite, null, _tint);
+		_buffer.draw(HXP.sprite, null, _tint);
 	}
 	
 	/**
 	 * The x-offset of the texture.
 	 */
-	public function get offsetX():Number { return _offsetX; }
-	public function set offsetX(value:Number):void
+	public var offsetX(getOffsetX, setOffsetX):Float;
+	private function getOffsetX():Float { return _offsetX; }
+	private function setOffsetX(value:Float):Float
 	{
-		if (_offsetX == value) return;
+		if (_offsetX == value) return value;
 		_offsetX = value;
 		updateBuffer();
+		return _offsetX;
 	}
 	
 	/**
 	 * The y-offset of the texture.
 	 */
-	public function get offsetY():Number { return _offsetY; }
-	public function set offsetY(value:Number):void
+	public var offsetY(getOffsetY, setOffsetY):Float;
+	private function getOffsetY():Float { return _offsetY; }
+	private function setOffsetY(value:Float):Float
 	{
-		if (_offsetY == value) return;
+		if (_offsetY == value) return value;
 		_offsetY = value;
 		updateBuffer();
+		return _offsetY;
 	}
 	
 	/**
@@ -83,7 +89,7 @@ public class TiledImage extends Image
 	 * @param	x		The x-offset.
 	 * @param	y		The y-offset.
 	 */
-	public function setOffset(x:Number, y:Number):void
+	public function setOffset(x:Float, y:Float)
 	{
 		if (_offsetX == x && _offsetY == y) return;
 		_offsetX = x;
@@ -92,10 +98,10 @@ public class TiledImage extends Image
 	}
 	
 	// Drawing information.
-	/** @private */ private var _graphics:Graphics = FP.sprite.graphics;
-	/** @private */ private var _texture:BitmapData;
-	/** @private */ private var _width:uint;
-	/** @private */ private var _height:uint;
-	/** @private */ private var _offsetX:Number = 0;
-	/** @private */ private var _offsetY:Number = 0;
+	private var _graphics:Graphics;
+	private var _texture:BitmapData;
+	private var _width:Int;
+	private var _height:Int;
+	private var _offsetX:Float;
+	private var _offsetY:Float;
 }
