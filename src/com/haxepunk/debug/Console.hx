@@ -13,10 +13,9 @@ import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
 import com.haxepunk.Entity;
 import com.haxepunk.HXP;
-import haxe.Log;
-//import com.haxepunk.utils.Draw;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
+import haxe.Log;
 import haxe.PosInfos;
 
 class BmpConsoleDebug  extends BitmapData { public function new() { super(0, 0); } }
