@@ -786,8 +786,7 @@ class Console
 				s += "\n\n- " + Std.string(e) + " -\n";
 				for (str in WATCH_LIST)
 				{
-//					var fields Array<String> = Type.getClassFields(e);
-//					if (e.hasOwnProperty(str)) s += "\n" + str + ": " + e[str].toString();
+					if (Reflect.hasField(e, str)) s += "\n" + str + ": " + Reflect.field(e, str).toString();
 				}
 			}
 		}

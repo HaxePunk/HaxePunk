@@ -11,7 +11,10 @@ import flash.media.SoundTransform;
 import flash.system.System;
 import flash.utils.ByteArray;
 import com.haxepunk.Graphic;
+import com.haxepunk.Tween;
+import com.haxepunk.utils.Ease;
 import com.haxepunk.debug.Console;
+import com.haxepunk.tweens.misc.MultiVarTween;
 import haxe.Timer;
 
 /**
@@ -686,27 +689,25 @@ class HXP
 	 * 
 	 * Example: HXP.tween(object, { x: 500, y: 350 }, 2.0, { ease: easeFunction, complete: onComplete } );
 	 */
-/*
 	public static function tween(object:Dynamic, values:Dynamic, duration:Float, options:Dynamic = null):MultiVarTween
 	{
-		var type:Int = Tween.ONESHOT,
-			complete:Function = null,
-			ease:Function = null,
+		var type:TweenType = TweenType.OneShot,
+			complete:CompleteCallback = null,
+			ease:EaseFunction = null,
 			tweener:Tweener = HXP.world;
 		if (Std.is(object, Tweener)) tweener = cast(object, Tweener);
 		if (options)
 		{
-			if (options.hasOwnProperty("type")) type = options.type;
-			if (options.hasOwnProperty("complete")) complete = options.complete;
-			if (options.hasOwnProperty("ease")) ease = options.ease;
-			if (options.hasOwnProperty("tweener")) tweener = options.tweener;
+			if (Reflect.hasField(options, "type")) type = options.type;
+			if (Reflect.hasField(options, "complete")) complete = options.complete;
+			if (Reflect.hasField(options, "ease")) ease = options.ease;
+			if (Reflect.hasField(options, "tweener")) tweener = options.tweener;
 		}
 		var tween:MultiVarTween = new MultiVarTween(complete, type);
 		tween.tween(object, values, duration, ease);
 		tweener.addTween(tween);
 		return tween;
 	}
-*/
 	
 	/**
 	 * Gets an array of frame indices.
