@@ -1,7 +1,6 @@
 package com.haxepunk;
 
 import flash.geom.Point;
-import flash.utils.Dictionary;
 import com.haxepunk.utils.Input;
 
 /**

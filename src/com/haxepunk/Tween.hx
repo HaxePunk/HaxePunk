@@ -1,5 +1,7 @@
 package com.haxepunk;
 
+import com.haxepunk.utils.Ease;
+
 enum TweenType
 {
 	Persist;
@@ -7,12 +9,14 @@ enum TweenType
 	OneShot;
 }
 
+typedef CompleteCallback = Void -> Void;
+
 class Tween
 {
 	public var active:Bool;
-	public var complete:Void -> Void;
+	public var complete:CompleteCallback;
 	
-	public function new(duration:Float, type:TweenType, complete:Void -> Void = null, ease:Float -> Float = null)
+	public function new(duration:Float, type:TweenType, complete:CompleteCallback = null, ease:EaseFunction = null)
 	{
 		_target = duration;
 		_type = type;
@@ -73,7 +77,7 @@ class Tween
 	private function getScale():Float { return _t; }
 	
 	private var _type:TweenType;
-	private var _ease:Float -> Float;
+	private var _ease:EaseFunction;
 	private var _t:Float;
 	
 	private var _time:Float;

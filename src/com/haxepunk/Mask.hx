@@ -1,8 +1,9 @@
 package com.haxepunk;
 
-import flash.utils.Dictionary;
 import com.haxepunk.masks.Hitbox;
 import com.haxepunk.masks.Masklist;
+
+typedef MaskCallback = Dynamic -> Bool;
 
 /**
  * Base class for Entity collision masks.
@@ -25,7 +26,7 @@ class Mask
 	public function new() 
 	{
 		_class = Type.getClassName(Type.getClass(this));
-		_check = new Hash<Dynamic->Bool>();
+		_check = new Hash<MaskCallback>();
 		_check.set(Type.getClassName(Mask), collideMask);
 		_check.set(Type.getClassName(Masklist), collideMasklist);
 	}
@@ -74,5 +75,5 @@ class Mask
 	
 	// Mask information.
 	private var _class:String;
-	private var _check:Hash<Dynamic->Bool>;
+	private var _check:Hash<MaskCallback>;
 }

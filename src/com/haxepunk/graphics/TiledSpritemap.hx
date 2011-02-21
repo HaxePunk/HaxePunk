@@ -3,6 +3,7 @@ package com.haxepunk.graphics;
 import flash.display.BitmapData;
 import flash.display.Graphics;
 import com.haxepunk.HXP;
+import com.haxepunk.graphics.Spritemap;
 
 /**
  * Special Spritemap object that can display blocks of animated sprites.
@@ -18,7 +19,7 @@ class TiledSpritemap extends Spritemap
 	 * @param	height			Height of the block to render.
 	 * @param	callback		Optional callback function for animation end.
 	 */
-	public function new(source:BitmapData, frameWidth:Int = 0, frameHeight:Int = 0, width:Int = 0, height:Int = 0, callbackFunc:Void->Void = null) 
+	public function new(source:BitmapData, frameWidth:Int = 0, frameHeight:Int = 0, width:Int = 0, height:Int = 0, callbackFunc:CallbackFunction = null) 
 	{
 		_graphics = HXP.sprite.graphics;
 		_offsetX = _offsetY = 0;

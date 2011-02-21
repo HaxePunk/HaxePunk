@@ -4,6 +4,8 @@ import com.haxepunk.Entity;
 import com.haxepunk.HXP;
 import com.haxepunk.World;
 
+import com.haxepunk.Sfx;
+
 class GameWorld extends World
 {
 	

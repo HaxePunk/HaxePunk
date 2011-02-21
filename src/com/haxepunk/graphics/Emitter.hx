@@ -8,8 +8,7 @@ import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
-import com.haxepunk.graphics.ParticleType;
-import com.haxepunk.graphics.Particle;
+import com.haxepunk.utils.Ease;
 
 /**
  * Particle emitter used for emitting and rendering particle sprites.

@@ -4,7 +4,6 @@ import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
 import flash.display.BitmapData;
 import flash.geom.Point;
-import flash.utils.Dictionary;
 
 /**
  * A Graphic that can contain multiple Graphics of one or various types.
