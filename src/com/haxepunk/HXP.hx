@@ -489,7 +489,8 @@ class HXP
 	/**
 	 * A pseudo-random Float produced using FP's random seed, where 0 <= Float < 1.
 	 */
-	private static function getrandom():Float
+	public static var random(getRandom, null):Float;
+	private static function getRandom():Float
 	{
 		_seed = (_seed * 16807) % 2147483647;
 		return _seed / 2147483647;
