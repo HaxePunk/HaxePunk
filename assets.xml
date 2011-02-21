@@ -10,9 +10,7 @@
 			<bitmap id="com.haxepunk.debug.BmpConsolePlay" import="src/com/haxepunk/debug/console_play.png" />
 			<bitmap id="com.haxepunk.debug.BmpConsoleStep" import="src/com/haxepunk/debug/console_step.png" />
 			<font name="default" import="src/com/haxepunk/graphics/04B_03__.TTF" />
-			<!-- Project Graphics -->
-			<bitmap id="BmpBlock" import="assets/gfx/block.png" />
-			<bitmap id="BmpCharacter" import="assets/gfx/character.png" />
+			<!-- Add Project Specific Graphics Here -->
 		</library>
 	</frame>
 </movie>
