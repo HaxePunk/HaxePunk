@@ -42,6 +42,8 @@
     <asset path="src\com\haxepunk\debug\console_step.png" bitmap="True" id="com.haxepunk.debug.BmpConsoleStep" />
     <asset path="src\com\haxepunk\graphics\04B_03__.TTF" id="default" />
     <asset path="src\test\box.png" bitmap="True" id="test.Box" />
+    <asset path="src\com\matttuttle\445_tileset.png" bitmap="True" id="com.matttuttle.BmpTileSet" />
+    <asset path="src\com\matttuttle\cattoy.png" bitmap="True" id="com.matttuttle.BmpCharacter" />
   </library>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>

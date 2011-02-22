@@ -15,7 +15,7 @@ class QuadPath extends Motion
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(complete:CompleteCallback = null, type:TweenType) 
+	public function new(?complete:CompleteCallback, type:TweenType) 
 	{
 		_points = new Array<Point>();
 		_curve = new Array<Point>();

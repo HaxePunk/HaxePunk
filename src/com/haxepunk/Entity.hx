@@ -7,6 +7,26 @@ import com.haxepunk.graphics.Image;
 import com.haxepunk.graphics.Graphiclist;
 
 /**
+ * Friend class used by World
+ */
+typedef FriendEntity = {
+	private var _class:String;
+	private var _world:World;
+	private var _added:Bool;
+	private var _type:String;
+	private var _layer:Int;
+	
+	private var _updatePrev:FriendEntity;
+	private var _updateNext:FriendEntity;
+	private var _renderPrev:FriendEntity;
+	private var _renderNext:FriendEntity;
+	
+	private var _typePrev:FriendEntity;
+	private var _typeNext:FriendEntity;
+	private var _recycleNext:Entity;
+}
+
+/**
  * Main game Entity class updated by World.
  */
 class Entity extends Tweener
@@ -136,16 +156,18 @@ class Entity extends Tweener
 	{
 		if (_world == null) return null;
 		
-		var e:Entity = _world._typeFirst.get(type);
-		if (!collidable || e == null) return null;
+		var e:Entity,
+			fe:FriendEntity = _world._typeFirst.get(type);
+		if (!collidable || fe == null) return null;
 		
 		_x = this.x; _y = this.y;
 		this.x = x; this.y = y;
 		
 		if (_mask == null)
 		{
-			while (e != null)
+			while (fe != null)
 			{
+				e = cast(fe, Entity);
 				if (x - originX + width > e.x - e.originX
 				&& y - originY + height > e.y - e.originY
 				&& x - originX < e.x - e.originX + e.width
@@ -158,14 +180,15 @@ class Entity extends Tweener
 						return e;
 					}
 				}
-				e = e._typeNext;
+				fe = fe._typeNext;
 			}
 			this.x = _x; this.y = _y;
 			return null;
 		}
 		
-		while (e != null)
+		while (fe != null)
 		{
+			e = cast(fe, Entity);
 			if (x - originX + width > e.x - e.originX
 			&& y - originY + height > e.y - e.originY
 			&& x - originX < e.x - e.originX + e.width
@@ -178,7 +201,7 @@ class Entity extends Tweener
 					return e;
 				}
 			}
-			e = e._typeNext;
+			fe = fe._typeNext;
 		}
 		this.x = _x; this.y = _y;
 		return null;
@@ -317,8 +340,9 @@ class Entity extends Tweener
 	{
 		if (_world == null) return;
 		
-		var e:Entity = _world._typeFirst.get(type);
-		if (!collidable || e == null) return;
+		var e:Entity,
+			fe:FriendEntity = _world._typeFirst.get(type);
+		if (!collidable || fe == null) return;
 		
 		_x = this.x; _y = this.y;
 		this.x = x; this.y = y;
@@ -326,8 +350,9 @@ class Entity extends Tweener
 		
 		if (_mask == null)
 		{
-			while (e != null)
+			while (fe != null)
 			{
+				e = cast(fe, Entity);
 				if (x - originX + width > e.x - e.originX
 				&& y - originY + height > e.y - e.originY
 				&& x - originX < e.x - e.originX + e.width
@@ -336,14 +361,15 @@ class Entity extends Tweener
 				{
 					if (e._mask == null || e._mask.collide(HITBOX)) array[n++] = e;
 				}
-				e = e._typeNext;
+				fe = fe._typeNext;
 			}
 			this.x = _x; this.y = _y;
 			return;
 		}
 		
-		while (e != null)
+		while (fe != null)
 		{
+			e = cast(fe, Entity);
 			if (x - originX + width > e.x - e.originX
 			&& y - originY + height > e.y - e.originY
 			&& x - originX < e.x - e.originX + e.width
@@ -352,7 +378,7 @@ class Entity extends Tweener
 			{
 				if (_mask.collide(e._mask != null ? e._mask : e.HITBOX)) array[n++] = e;
 			}
-			e = e._typeNext;
+			fe = fe._typeNext;
 		}
 		this.x = _x; this.y = _y;
 		return;
@@ -761,20 +787,20 @@ class Entity extends Tweener
 	}
 	
 	// Entity information.
-	public var _class:String;
-	public var _world:World;
-	public var _added:Bool;
-	public var _type:String;
-	public var _layer:Int;
+	private var _class:String;
+	private var _world:World;
+	private var _added:Bool;
+	private var _type:String;
+	private var _layer:Int;
 	
-	public var updatePrev:Entity;
-	public var updateNext:Entity;
-	public var renderPrev:Entity;
-	public var renderNext:Entity;
+	private var _updatePrev:FriendEntity;
+	private var _updateNext:FriendEntity;
+	private var _renderPrev:FriendEntity;
+	private var _renderNext:FriendEntity;
 	
-	public var _typePrev:Entity;
-	public var _typeNext:Entity;
-	public var _recycleNext:Entity;
+	private var _typePrev:FriendEntity;
+	private var _typeNext:FriendEntity;
+	private var _recycleNext:Entity;
 	
 	// Collision information.
 	private var HITBOX:Mask;

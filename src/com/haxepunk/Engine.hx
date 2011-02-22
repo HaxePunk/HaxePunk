@@ -14,6 +14,7 @@ import flash.Lib;
 import haxe.Timer;
 import com.haxepunk.utils.Draw;
 import com.haxepunk.utils.Input;
+import com.haxepunk.Tweener;
 
 /**
  * Main game Sprite class, added to the Flash Stage. Manages the game loop.
@@ -93,7 +94,8 @@ class Engine extends MovieClip
 	{
 		if (HXP.world.active)
 		{
-			if (HXP.world.tween != null) HXP.world.updateTweens();
+			var ft:FriendTweener = HXP.world;
+			if (ft._tween != null) HXP.world.updateTweens();
 			HXP.world.update();
 		}
 		HXP.world.updateLists();
@@ -267,7 +269,8 @@ class Engine extends MovieClip
 		if (HXP.goto == null) return;
 		HXP.world.end();
 		HXP.world.updateLists();
-		if (HXP.world != null && HXP.world.autoClear && HXP.world.tween != null) HXP.world.clearTweens();
+		var ft:FriendTweener = HXP.world;
+		if (HXP.world != null && HXP.world.autoClear && ft._tween != null) HXP.world.clearTweens();
 		HXP.swapWorld();
 		HXP.camera = HXP.world.camera;
 		HXP.world.updateLists();

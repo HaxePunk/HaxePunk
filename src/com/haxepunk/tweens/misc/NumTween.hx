@@ -18,7 +18,7 @@ class NumTween extends Tween
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(complete:CompleteCallback = null, type:TweenType) 
+	public function new(?complete:CompleteCallback, type:TweenType) 
 	{
 		value = 0;
 		super(0, type, complete);

@@ -1,5 +1,11 @@
 package com.haxepunk;
 
+import com.haxepunk.Tween;
+
+typedef FriendTweener = {
+	private var _tween:Tween;
+}
+
 class Tweener
 {
 	public var active:Bool;
@@ -18,10 +24,12 @@ class Tweener
 	
 	public function addTween(t:Tween, start:Bool = false):Tween
 	{
-		if (t._parent != null) throw "Cannot add a Tween object more than once.";
-		t._parent = this;
-		t._next = _tween;
-		if (_tween != null) _tween._prev = t;
+		var ft:FriendTween = t;
+		if (ft._parent != null) throw "Cannot add a Tween object more than once.";
+		ft._parent = this;
+		ft._next = _tween;
+		var friendTween:FriendTween = _tween;
+		if (_tween != null) friendTween._prev = t;
 		_tween = t;
 		if (start) _tween.start();
 		return t;
@@ -29,44 +37,45 @@ class Tweener
 	
 	public function removeTween(t:Tween):Tween
 	{
-		if (t._parent != this) throw "Core object does not contain Tween.";
-		if (t._next != null) t._next._prev = t._prev;
-		if (t._prev != null) t._prev._next = t._next;
-		else _tween = t._next;
-		t._next = t._prev = null;
-		t._parent = null;
+		var ft:FriendTween = t;
+		if (ft._parent != this) throw "Core object does not contain Tween.";
+		if (ft._next != null) ft._next._prev = ft._prev;
+		if (ft._prev != null) ft._prev._next = ft._next;
+		else _tween = cast(ft._next, Tween);
+		ft._next = ft._prev = null;
+		ft._parent = null;
 		t.active = false;
 		return t;
 	}
 	
 	public function clearTweens()
 	{
-		var t:Tween = _tween;
-		var n:Tween;
-		while (t != null)
+		var t:Tween,
+			ft:FriendTween= _tween;
+		var fn:FriendTween;
+		while (ft != null)
 		{
-			n = t._next;
-			removeTween(t);
-			t = n;
+			fn = ft._next;
+			removeTween(cast(ft, Tween));
+			ft = fn;
 		}
 	}
 	
 	public function updateTweens()
 	{
-		var t:Tween = _tween;
-		while (t != null)
+		var t:Tween,
+			ft:FriendTween = _tween;
+		while (ft != null)
 		{
+			t = cast(ft, Tween);
 			if (t.active)
 			{
 				t.update();
-				if (t._finish) t.finish();
+				if (ft._finish) ft.finish();
 			}
-			t = t._next;
+			ft = ft._next;
 		}
 	}
-	
-	public var tween(getTween, null):Tween;
-	private function getTween():Tween { return _tween; }
 	
 	private var _tween:Tween;
 }

@@ -11,23 +11,43 @@ enum TweenType
 
 typedef CompleteCallback = Void -> Void;
 
+typedef FriendTween = {
+	private function finish():Void;
+	
+	private var _finish:Bool;
+	private var _parent:Tweener;
+	private var _prev:FriendTween;
+	private var _next:FriendTween;
+}
+
 class Tween
 {
 	public var active:Bool;
 	public var complete:CompleteCallback;
 	
-	public function new(duration:Float, type:TweenType, complete:CompleteCallback = null, ease:EaseFunction = null)
+	/**
+	 * Constructor. Specify basic information about the Tween.
+	 * @param	duration		Duration of the tween (in seconds or frames).
+	 * @param	type			Tween type, one of Tween.PERSIST (default), Tween.LOOPING, or Tween.ONESHOT.
+	 * @param	complete		Optional callback for when the Tween completes.
+	 * @param	ease			Optional easer function to apply to the Tweened value.
+	 */
+	public function new(duration:Float, ?type:TweenType, ?complete:CompleteCallback, ease:EaseFunction = null)
 	{
 		_target = duration;
+		if (type == null) type = TweenType.Persist;
 		_type = type;
 		this.complete = complete;
 		_ease = ease;
 		_t = 0;
 	}
 	
+	/**
+	 * Updates the Tween, called by World.
+	 */
 	public function update()
 	{
-		_time += 1;
+		_time += HXP.fixed ? 1 : HXP.elapsed;
 		_t = _time / _target;
 		if (_ease != null && _t > 0 && _t < 1) _t = _ease(_t);
 		if (_time >= _target)
@@ -37,6 +57,9 @@ class Tween
 		}
 	}
 	
+	/**
+	 * Starts the Tween, or restarts it if it's currently running.
+	 */
 	public function start()
 	{
 		_time = 0;
@@ -48,7 +71,8 @@ class Tween
 		active = true;
 	}
 	
-	public function finish()
+	/** @private Called when the Tween completes. */
+	private function finish()
 	{
 		switch(_type)
 		{
@@ -83,8 +107,8 @@ class Tween
 	private var _time:Float;
 	private var _target:Float;
 	
-	public var _finish:Bool;
-	public var _parent:Tweener;
-	public var _prev:Tween;
-	public var _next:Tween;
+	private var _finish:Bool;
+	private var _parent:Tweener;
+	private var _prev:FriendTween;
+	private var _next:FriendTween;
 }
