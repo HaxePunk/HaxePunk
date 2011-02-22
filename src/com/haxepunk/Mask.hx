@@ -38,10 +38,12 @@ class Mask
 	 */
 	public function collide(mask:Mask):Bool
 	{
-		trace(_check);
-		trace(mask._class);
-		if (_check.get(mask._class) != null) return _check.get(mask._class)(mask);
-		if (mask._check.get(_class) != null) return mask._check.get(_class)(this);
+		var cbFunc:MaskCallback = _check.get(mask._class);
+		if (cbFunc != null) return cbFunc(mask);
+		
+		cbFunc = mask._check.get(_class);
+		if (cbFunc != null) return cbFunc(this);
+		
 		return false;
 	}
 	

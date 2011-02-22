@@ -648,17 +648,7 @@ class HXP
 	{
 		if (_console != null)
 		{
-			if (data.length > 1)
-			{
-				var i:Int = 0, s:String = "";
-				while (i < data.length)
-				{
-					if (i > 0) s += " ";
-					s += data[i++].toString();
-				}
-				_console.log(data);
-			}
-			else _console.log(data[0]);
+			_console.log(data);
 		}
 	});
 	
@@ -670,8 +660,7 @@ class HXP
 	{
 		if (_console != null)
 		{
-			if (properties.length > 1) _console.watch(properties);
-			else _console.watch(properties[0]);
+			_console.watch(properties);
 		}
 	});
 	
