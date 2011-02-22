@@ -21,19 +21,23 @@ class Data
 		var data:Dynamic = loadData(file);
 		_data = new Hash<Dynamic>();
 		var str:String;
-		for (str in data) _data[i] = data[i];
+		for (str in Reflect.fields(data)) _data.set(str, Reflect.field(data, str));
 	}
 	
 	/**
 	 * Overwrites the file with the current data. The current data will not be saved until this function is called.
 	 * @param	file		The filename to save.
 	 */
-	public static function save(file:String = "")
+	public static function save(file:String = "", overwrite:Bool = true)
 	{
-		if (_shared) _shared.clear();
-		var data:Object = loadData(file);
+		if (_shared != null) _shared.clear();
+		var data:Dynamic = loadData(file);
 		var str:String;
-		for (str in _data) data[i] = _data[i];
+		if (overwrite)
+		{
+			for (str in Reflect.fields(data)) Reflect.deleteField(data, str);
+		}
+		for (str in _data.keys()) Reflect.setField(data, str, _data.get(str));
 		_shared.flush(SIZE);
 	}
 	
@@ -45,18 +49,7 @@ class Data
 	 */
 	public static function readInt(name:String, defaultValue:Int = 0):Int
 	{
-		return int(read(name, defaultValue));
-	}
-	
-	/**
-	 * Reads a uint from the current data.
-	 * @param	name			Property to read.
-	 * @param	defaultValue	Default value.
-	 * @return	The property value, or defaultValue if the property is not assigned.
-	 */
-	public static function readUint(name:String, defaultValue:Int = 0):Int
-	{
-		return uint(read(name, defaultValue));
+		return Std.int(read(name, defaultValue));
 	}
 	
 	/**
@@ -67,7 +60,7 @@ class Data
 	 */
 	public static function readBool(name:String, defaultValue:Bool = true):Bool
 	{
-		return Boolean(read(name, defaultValue));
+		return read(name, defaultValue);
 	}
 	
 	/**
@@ -78,61 +71,36 @@ class Data
 	 */
 	public static function readString(name:String, defaultValue:String = ""):String
 	{
-		return String(read(name, defaultValue));
+		return Std.string(read(name, defaultValue));
 	}
 	
 	/**
-	 * Writes an int to the current data.
-	 * @param	name		Property to write.
-	 * @param	value		Value to write.
+	 * Reads a property from the data object.
+	 * @param	name			Property to read.
+	 * @param	defaultValue	Default value.
+	 * @return	The property value, or defaultValue if the property is not assigned.
 	 */
-	public static function writeInt(name:String, value:Int = 0)
+	public static function read(name:String, defaultValue:Dynamic = null):Dynamic
 	{
-		_data[name] = value;
-	}
-	
-	/**
-	 * Writes a uint to the current data.
-	 * @param	name		Property to write.
-	 * @param	value		Value to write.
-	 */
-	public static function writeUint(name:String, value:Int = 0)
-	{
-		_data[name] = value;
-	}
-	
-	/**
-	 * Writes a Boolean to the current data.
-	 * @param	name		Property to write.
-	 * @param	value		Value to write.
-	 */
-	public static function writeBool(name:String, value:Bool = true)
-	{
-		_data[name] = value;
-	}
-	
-	/**
-	 * Writes a String to the current data.
-	 * @param	name		Property to write.
-	 * @param	value		Value to write.
-	 */
-	public static function writeString(name:String, value:String = "")
-	{
-		_data[name] = value;
-	}
-	
-	/** @private Reads a property from the data object. */
-	private static function read(name:String, defaultValue:Dynamic):Dynamic
-	{
-		if (_data.hasOwnProperty(name)) return _data[name];
+		if (_data.get(name) != null) return _data.get(name);
 		return defaultValue;
+	}
+	
+	/**
+	 * Writes a Dynamic object to the current data.
+	 * @param	name		Property to write.
+	 * @param	value		Value to write.
+	 */
+	public static function write(name:String, value:Dynamic)
+	{
+		_data.set(name, value);
 	}
 	
 	/** @private Loads the data file, or return it if you're loading the same one. */
 	private static function loadData(file:String):Dynamic
 	{
 		if (file == null) file = DEFAULT_FILE;
-		if (id != null) _shared = SharedObject.getLocal(PREFIX + "/" + id + "/" + file, "/");
+		if (id != "") _shared = SharedObject.getLocal(PREFIX + "/" + id + "/" + file, "/");
 		else _shared = SharedObject.getLocal(PREFIX + "/" + file);
 		return _shared.data;
 	}
@@ -140,8 +108,8 @@ class Data
 	// Data information.
 	private static var _shared:SharedObject;
 	private static var _dir:String;
-	private static var _data:Hash<Dynamic>;
-	private static inline var PREFIX:String = "FlashPunk";
+	private static var _data:Hash<Dynamic> = new Hash<Dynamic>();
+	private static inline var PREFIX:String = "HaxePunk";
 	private static inline var DEFAULT_FILE:String = "_file";
 	private static inline var SIZE:Int = 10000;
 }
