@@ -15,16 +15,18 @@ class Graphiclist extends Graphic
 	 * Constructor.
 	 * @param	...graphic		Graphic objects to add to the list.
 	 */
-	public function new(graphic:Array<Graphic> = null) 
+	public function new(graphic:Array<Dynamic> = null) 
 	{
 		super();
+		
+		if (graphic == null) throw "Invalid graphic list";
 		
 		_graphics = new Array<Graphic>();
 		_temp = new Array<Graphic>();
 		_camera = new Point();
 		
 		var g:Graphic;
-		for (g in graphic) add(g);
+		for (g in graphic) if (cast(g, Graphic) != null) add(g);
 	}
 	
 	/** @private Updates the graphics in the list. */
