@@ -78,6 +78,7 @@ class Graphic
 		
 	}
 	
+	/** @private Callback for when the graphic is assigned to an Entity. */
 	public var assign(getAssign, setAssign):AssignCallback;
 	private function getAssign():AssignCallback { return _assign; }
 	private function setAssign(value:AssignCallback):AssignCallback { _assign = value; return _assign; }
