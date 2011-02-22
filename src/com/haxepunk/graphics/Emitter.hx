@@ -22,8 +22,9 @@ class Emitter extends Graphic
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
 	 */
-	public function Emitter(source:BitmapData, frameWidth:Int = 0, frameHeight:Int = 0) 
+	public function new(source:BitmapData, frameWidth:Int = 0, frameHeight:Int = 0) 
 	{
+		super();
 		_p = new Point();
 		_tint = new ColorTransform();
 		_types = new Hash<ParticleType>();
@@ -155,9 +156,11 @@ class Emitter extends Graphic
 	 */
 	public function newType(name:String, frames:Array<Int> = null):ParticleType
 	{
-		if (_types.get(name) != null) throw "Cannot add multiple particle types of the same name";
-		_types.set(name, new ParticleType(name, frames, _source, _frameWidth, _frameHeight));
-		return _types.get(name);
+		var pt:ParticleType = _types.get(name);
+		if (pt != null) throw "Cannot add multiple particle types of the same name";
+		pt = new ParticleType(name, frames, _source, _frameWidth, _frameHeight);
+		_types.set(name, pt);
+		return pt;
 	}
 	
 	/**
@@ -174,7 +177,9 @@ class Emitter extends Graphic
 	 */
 	public function setMotion(name:String, angle:Float, distance:Float, duration:Float, angleRange:Float = 0, distanceRange:Float = 0, durationRange:Float = 0, ease:EaseFunction = null):ParticleType
 	{
-		return _types.get(name).setMotion(angle, distance, duration, angleRange, distanceRange, durationRange, ease);
+		var pt:ParticleType = _types.get(name);
+		if (pt == null) return null;
+		return pt.setMotion(angle, distance, duration, angleRange, distanceRange, durationRange, ease);
 	}
 	
 	/**
@@ -187,7 +192,9 @@ class Emitter extends Graphic
 	 */
 	public function setAlpha(name:String, start:Float = 1, finish:Float = 0, ease:EaseFunction = null):ParticleType
 	{
-		return _types.get(name).setAlpha(start, finish, ease);
+		var pt:ParticleType = _types.get(name);
+		if (pt == null) return null;
+		return pt.setAlpha(start, finish, ease);
 	}
 	
 	/**
@@ -200,7 +207,9 @@ class Emitter extends Graphic
 	 */
 	public function setColor(name:String, start:Int = 0xFFFFFF, finish:Int = 0, ease:EaseFunction = null):ParticleType
 	{
-		return _types.get(name).setColor(start, finish, ease);
+		var pt:ParticleType = _types.get(name);
+		if (pt == null) return null;
+		return pt.setColor(start, finish, ease);
 	}
 	
 	/**
@@ -212,8 +221,8 @@ class Emitter extends Graphic
 	 */
 	public function emit(name:String, x:Float, y:Float):Particle
 	{
-		if (_types.get(name) == null) throw "Particle type \"" + name + "\" does not exist.";
 		var p:Particle, type:ParticleType = _types.get(name);
+		if (type == null) throw "Particle type \"" + name + "\" does not exist.";
 		
 		if (_cache != null)
 		{

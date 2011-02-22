@@ -29,6 +29,7 @@ class ParticleType
 		_source = source;
 		_width = source.width;
 		_frame = new Rectangle(0, 0, frameWidth, frameHeight);
+		if (frames == null) frames = new Array<Int>();
 		_frames = frames;
 		_frameCount = frames.length;
 	}

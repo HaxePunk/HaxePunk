@@ -14,7 +14,6 @@ class Particle
 	 */
 	public function new() 
 	{
-		
 	}
 	
 	// Particle information.
