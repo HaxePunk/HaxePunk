@@ -26,8 +26,9 @@ class Grid extends Hitbox
 	 * @param	x				X offset of the grid.
 	 * @param	y				Y offset of the grid.
 	 */
-	public function Grid(width:Int, height:Int, tileWidth:Int, tileHeight:Int, x:Int = 0, y:Int = 0) 
+	public function new(width:Int, height:Int, tileWidth:Int, tileHeight:Int, x:Int = 0, y:Int = 0) 
 	{
+		super();
 		// check for illegal grid size
 		if (width == 0 ||
 			height == 0 ||
