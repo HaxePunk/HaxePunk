@@ -34,9 +34,7 @@ class Data
 		var data:Dynamic = loadData(file);
 		var str:String;
 		if (overwrite)
-		{
 			for (str in Reflect.fields(data)) Reflect.deleteField(data, str);
-		}
 		for (str in _data.keys()) Reflect.setField(data, str, _data.get(str));
 		_shared.flush(SIZE);
 	}
