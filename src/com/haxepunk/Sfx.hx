@@ -30,6 +30,7 @@ class Sfx
 		_pan = 0;
 		_position = 0;
 		
+		if (source == null) throw "Invalid source Sound.";
 		var className:String = Type.getClassName(Type.getClass(source));
 		_sound = _sounds.get(className);
 		if (_sound == null)
@@ -45,10 +46,10 @@ class Sfx
 	 * @param	vol		Volume factor, a value from 0 to 1.
 	 * @param	pan		Panning factor, a value from -1 to 1.
 	 */
-	public function play(vol:Float = 1, pan:Float = 0)
+	public function play(volume:Float = 1, pan:Float = 0)
 	{
 		if (_channel != null) stop();
-		_volume = _transform.volume = vol < 0 ? 0 : vol;
+		_volume = _transform.volume = volume < 0 ? 0 : volume;
 		_pan = _transform.pan = pan < -1 ? -1 : (pan > 1 ? 1 : pan);
 		_channel = _sound.play(0, 0, _transform);
 		_channel.addEventListener(Event.SOUND_COMPLETE, onComplete);

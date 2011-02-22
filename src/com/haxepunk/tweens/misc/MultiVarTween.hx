@@ -13,7 +13,7 @@ class MultiVarTween extends Tween
 	 * @param	complete		Optional completion callback.
 	 * @param	type			Tween type.
 	 */
-	public function new(?complete:CompleteCallback, type:TweenType)
+	public function new(?complete:CompleteCallback, ?type:TweenType)
 	{
 		_vars = new Array<String>();
 		_start = new Array<Float>();

@@ -756,11 +756,11 @@ class Console
 		var prec = 1000;
 		_fpsReadText.text = "FPS: " + Std.int(HXP.frameRate);
 		_fpsInfoText0.text =
-			"Update: " + Std.string(HXP.updateTime) + "ms\n" + 
-			"Render: " + Std.string(HXP.renderTime) + "ms";
+			"Update: " + Std.string(HXP._updateTime) + "ms\n" + 
+			"Render: " + Std.string(HXP._renderTime) + "ms";
 		_fpsInfoText1.text =
-			"Game: " + Std.string(HXP.gameTime) + "ms\n" + 
-			"Flash: " + Std.string(HXP.flashTime) + "ms";
+			"Game: " + Std.string(HXP._gameTime) + "ms\n" + 
+			"Flash: " + Std.string(HXP._flashTime) + "ms";
 	}
 	
 	/** @private Update the debug panel text. */

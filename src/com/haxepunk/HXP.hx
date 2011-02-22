@@ -771,10 +771,10 @@ class HXP
 	
 	// Time information.
 	private static var _time:Float;
-	public static var updateTime:Float;
-	public static var renderTime:Float;
-	public static var gameTime:Float;
-	public static var flashTime:Float;
+	public static var _updateTime:Float;
+	public static var _renderTime:Float;
+	public static var _gameTime:Float;
+	public static var _flashTime:Float;
 	
 	// Bitmap storage.
 	private static var _bitmap:Dynamic;

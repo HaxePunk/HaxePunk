@@ -11,6 +11,9 @@ enum TweenType
 
 typedef CompleteCallback = Void -> Void;
 
+/**
+ * Friend class for access to Tween private members
+ */
 typedef FriendTween = {
 	private function finish():Void;
 	

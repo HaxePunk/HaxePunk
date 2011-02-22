@@ -181,7 +181,7 @@ class Engine extends MovieClip
 	{
 		// update timer
 		_time = _gameTime = Lib.getTimer();
-		HXP.flashTime = _time - _flashTime;
+		HXP._flashTime = _time - _flashTime;
 		_updateTime = _time;
 		HXP.elapsed = (_time - _last) / 1000;
 		if (HXP.elapsed > maxElapsed) HXP.elapsed = maxElapsed;
@@ -199,15 +199,15 @@ class Engine extends MovieClip
 		
 		// update timer
 		_time = _renderTime = Lib.getTimer();
-		HXP.updateTime = _time - _updateTime;
+		HXP._updateTime = _time - _updateTime;
 		
 		// render loop
 		if (!paused) render();
 		
 		// update timer
 		_time = _flashTime = Lib.getTimer();
-		HXP.renderTime = _time - _renderTime;
-		HXP.gameTime = _time - _gameTime;
+		HXP._renderTime = _time - _renderTime;
+		HXP._gameTime = _time - _gameTime;
 	}
 	
 	/** @private Fixed framerate game loop. */
@@ -223,7 +223,7 @@ class Engine extends MovieClip
 		
 		// update timer
 		_gameTime = Std.int(_time);
-		HXP.flashTime = _time - _flashTime;
+		HXP._flashTime = _time - _flashTime;
 		
 		// update loop
 		if (_delta > _skip) _delta = _skip;
@@ -248,7 +248,7 @@ class Engine extends MovieClip
 			
 			// update timer
 			_time = Lib.getTimer();
-			HXP.updateTime = _time - _updateTime;
+			HXP._updateTime = _time - _updateTime;
 		}
 		
 		// update timer
@@ -259,8 +259,8 @@ class Engine extends MovieClip
 		
 		// update timer
 		_time = _flashTime = Lib.getTimer();
-		HXP.renderTime = _time - _renderTime;
-		HXP.gameTime =  _time - _gameTime;
+		HXP._renderTime = _time - _renderTime;
+		HXP._gameTime =  _time - _gameTime;
 	}
 	
 	/** @private Switch Worlds if they've changed. */
