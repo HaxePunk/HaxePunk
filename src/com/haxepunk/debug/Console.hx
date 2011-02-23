@@ -1,5 +1,11 @@
 package com.haxepunk.debug;
 
+import com.haxepunk.Entity;
+import com.haxepunk.HXP;
+import com.haxepunk.DataLoader;
+import com.haxepunk.utils.Input;
+import com.haxepunk.utils.Key;
+import com.haxepunk.loaders.BitmapLoader;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.BlendMode;
@@ -8,27 +14,22 @@ import flash.display.Sprite;
 import flash.display.Stage;
 import flash.geom.ColorTransform;
 import flash.geom.Rectangle;
+import flash.Lib;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
-import com.haxepunk.Entity;
-import com.haxepunk.HXP;
-import com.haxepunk.BitmapLoader;
-import com.haxepunk.utils.Input;
-import com.haxepunk.utils.Key;
 import haxe.Log;
 import haxe.PosInfos;
 
-/*
 #if flash
-	class BmpConsoleDebug  extends BitmapData { public function new() { super(0, 0); } }
-	class BmpConsoleLogo   extends BitmapData { public function new() { super(0, 0); } }
-	class BmpConsoleOutput extends BitmapData { public function new() { super(0, 0); } }
-	class BmpConsolePause  extends BitmapData { public function new() { super(0, 0); } }
-	class BmpConsolePlay   extends BitmapData { public function new() { super(0, 0); } }
-	class BmpConsoleStep   extends BitmapData { public function new() { super(0, 0); } }
+	class BmpConsoleDebug  extends BitmapData { }
+	class BmpConsoleLogo   extends BitmapData { }
+	class BmpConsoleOutput extends BitmapData { }
+	class BmpConsolePause  extends BitmapData { }
+	class BmpConsolePlay   extends BitmapData { }
+	class BmpConsoleStep   extends BitmapData { }
 #end
-*/
+
 
 class Console
 {
@@ -41,14 +42,6 @@ class Console
 	{
 		init();
 		
-		_bmpLogo = new BitmapLoader("assets/console_logo.png");
-		_bmpDebug = new BitmapLoader("assets/console_debug.png");
-		_bmpOutput = new BitmapLoader("assets/console_output.png");
-		_bmpPlay = new BitmapLoader("assets/console_play.png");
-		_bmpPause = new BitmapLoader("assets/console_pause.png");
-		_bmpStep = new BitmapLoader("assets/console_step.png");
-		
-		Log.trace = traceLog;
 		Input.define("_ARROWS", [Key.RIGHT, Key.LEFT, Key.DOWN, Key.UP]);
 	}
 	
@@ -58,7 +51,11 @@ class Console
 		toggleKey = 192; // Tilde (~) by default
 		
 		_sprite = new Sprite();
+#if flash
 		_format = new TextFormat("default");
+#else
+		_format = new TextFormat("assets/04B_03__.TTF");
+#end
 		_back = new Bitmap();
 
 		_fpsRead = new Sprite();
@@ -95,6 +92,8 @@ class Console
 		WATCH_LIST = new List<String>();
 		WATCH_LIST.push("x");
 		WATCH_LIST.push("y");
+		
+		Log.trace = traceLog;
 	}
 	
 	public function traceLog(v:Dynamic, ?infos:PosInfos)
@@ -152,6 +151,30 @@ class Console
 		// Quit if the console is already enabled.
 		if (_enabled) return;
 		
+#if flash
+		// Use embedded images for flash
+		_bmpLogo = new Bitmap(new BmpConsoleLogo(0, 0));
+		_butDebug = new Bitmap(new BmpConsoleDebug(0, 0));
+		_butOutput = new Bitmap(new BmpConsoleOutput(0, 0));
+		_butPlay = new Bitmap(new BmpConsolePlay(0, 0));
+		_butPause = new Bitmap(new BmpConsolePause(0, 0));
+		_butStep = new Bitmap(new BmpConsoleStep(0, 0));
+		onLoaded();
+#else
+		var preload:DataLoader = new DataLoader();
+		preload.loadBitmap("assets/console_logo.png", _bmpLogo = new Bitmap());
+		preload.loadBitmap("assets/console_debug.png", _butDebug = new Bitmap());
+		preload.loadBitmap("assets/console_output.png", _butOutput = new Bitmap());
+		preload.loadBitmap("assets/console_play.png", _butPlay = new Bitmap());
+		preload.loadBitmap("assets/console_pause.png", _butPause = new Bitmap());
+		preload.loadBitmap("assets/console_step.png", _butStep = new Bitmap());
+		preload.onLoaded = onLoaded;
+		preload.start();
+#end
+	}
+	
+	private function onLoaded()
+	{
 		// Enable it and add the Sprite to the stage.
 		_enabled = true;
 		HXP.engine.addChild(_sprite);
@@ -160,16 +183,17 @@ class Console
 		var big:Bool = width >= 480;
 		
 		// The transparent FlashPunk logo overlay bitmap.
+#if flash
 		_sprite.addChild(_back);
 		_back.bitmapData = new BitmapData(width, height, true, 0xFFFFFFFF);
-		var b:BitmapData = _bmpLogo.bitmap.bitmapData;
 		HXP.matrix.identity();
-		HXP.matrix.tx = Math.max((_back.bitmapData.width - b.width) / 2, 0);
-		HXP.matrix.ty = Math.max((_back.bitmapData.height - b.height) / 2, 0);
+		HXP.matrix.tx = Math.max((_back.bitmapData.width - _bmpLogo.width) / 2, 0);
+		HXP.matrix.ty = Math.max((_back.bitmapData.height - _bmpLogo.height) / 2, 0);
 		HXP.matrix.scale(Math.min(width / _back.bitmapData.width, 1), Math.min(height / _back.bitmapData.height, 1));
-		_back.bitmapData.draw(b, HXP.matrix, null, BlendMode.MULTIPLY);
+		_back.bitmapData.draw(_bmpLogo, HXP.matrix, null, BlendMode.MULTIPLY);
 		_back.bitmapData.draw(_back.bitmapData, null, null, BlendMode.INVERT);
 		_back.bitmapData.colorTransform(_back.bitmapData.rect, new ColorTransform(1, 1, 1, 0.5));
+#end
 		
 		// The entity and selection sprites.
 		_sprite.addChild(_entScreen);
@@ -187,7 +211,11 @@ class Console
 		// The entity count panel.
 		_entRead.graphics.clear();
 		_entRead.graphics.beginFill(0, .5);
+#if flash
 		_entRead.graphics.drawRoundRectComplex(0, 0, _entReadText.width, 20, 0, 0, 20, 0);
+#else
+		_entRead.graphics.drawRoundRect(0, -20, _entReadText.width + 40, 40, 20);
+#end
 		
 		// The FPS text.
 		_sprite.addChild(_fpsRead);
@@ -202,7 +230,11 @@ class Console
 		// The FPS and frame timing panel.
 		_fpsRead.graphics.clear();
 		_fpsRead.graphics.beginFill(0, .75);
+#if flash
 		_fpsRead.graphics.drawRoundRectComplex(0, 0, big ? 200 : 100, 20, 0, 0, 0, 20);
+#else
+		_fpsRead.graphics.drawRoundRect(-20, -20, (big ? 220 : 120), 40, 20);
+#end
 		
 		// The frame timing text.
 		if (big) _sprite.addChild(_fpsInfo);
@@ -260,17 +292,21 @@ class Console
 		
 		// The button panel buttons.
 		_sprite.addChild(_butRead);
-		_butRead.addChild(_butDebug = _bmpDebug.bitmap);
-		_butRead.addChild(_butOutput = _bmpOutput.bitmap);
-		_butRead.addChild(_butPlay = _bmpPlay.bitmap).x = 20;
-		_butRead.addChild(_butPause = _bmpPause.bitmap).x = 20;
-		_butRead.addChild(_butStep = _bmpStep.bitmap).x = 40;
+		_butRead.addChild(_butDebug);
+		_butRead.addChild(_butOutput);
+		_butRead.addChild(_butPlay).x = 20;
+		_butRead.addChild(_butPause).x = 20;
+		_butRead.addChild(_butStep).x = 40;
 		updateButtons();
 		
 		// The button panel.
 		_butRead.graphics.clear();
 		_butRead.graphics.beginFill(0, .75);
-		_butRead.graphics.drawRoundRectComplex(-20, 0, 100, 20, 0, 0, 20, 20);
+#if flash
+		_butRead.graphics.drawRoundRectComplex( -20, 0, 100, 20, 0, 0, 20, 20);
+#else
+		_butRead.graphics.drawRoundRect(-20, -20, 100, 40, 20);
+#end
 		
 		// Set the state to unpaused.
 		paused = false;
@@ -697,12 +733,20 @@ class Console
 			_logRead.y = 40;
 			_logRead.graphics.clear();
 			_logRead.graphics.beginFill(0, .75);
+#if flash
 			_logRead.graphics.drawRoundRectComplex(0, 0, _logReadText0.width, 20, 0, 20, 0, 0);
+#else
+			_logRead.graphics.drawRect(0, 0, _logReadText0.width, 20);
+#end
 			_logRead.graphics.drawRect(0, 20, width, _logHeight);
 			
 			// Draw the log scrollbar.
 			_logRead.graphics.beginFill(0x202020, 1);
+#if flash
 			_logRead.graphics.drawRoundRectComplex(_logBar.x, _logBar.y, _logBar.width, _logBar.height, 8, 8, 8, 8);
+#else
+			_logRead.graphics.drawRoundRect(_logBar.x, _logBar.y, _logBar.width, _logBar.height, 8);
+#end
 			
 			// If the log has more lines than the display limit.
 			if (LOG.length > _logLines)
@@ -711,7 +755,11 @@ class Console
 				_logRead.graphics.beginFill(0xFFFFFF, 1);
 				var h:Int = Std.int(HXP.clamp(_logBar.height * (_logLines / LOG.length), 12, _logBar.height - 4)),
 					y:Int = Std.int(_logBar.y + 2 + (_logBar.height - 16) * _logScroll);
+#if flash
 				_logRead.graphics.drawRoundRectComplex(_logBar.x + 2, y, 12, 12, 6, 6, 6, 6);
+#else
+				_logRead.graphics.drawRoundRect(_logBar.x + 2, y, 12, 12, 6);
+#end
 			}
 			
 			// Display the log text lines.
@@ -744,7 +792,11 @@ class Console
 			_logReadText1.height = 20;
 			_logRead.graphics.clear();
 			_logRead.graphics.beginFill(0, .75);
+#if flash
 			_logRead.graphics.drawRoundRectComplex(0, 0, _logReadText0.width, 20, 0, 20, 0, 0);
+#else
+			_logRead.graphics.drawRect(0, 0, _logReadText0.width, 20);
+#end
 			_logRead.graphics.drawRect(0, 20, width, 20);
 			
 			// Draw the single-line log text with the latests logged text.
@@ -814,8 +866,13 @@ class Console
 		_debRead.y = Std.int(height - _debReadText1.height);
 		_debRead.graphics.clear();
 		_debRead.graphics.beginFill(0, .75);
+#if flash
 		_debRead.graphics.drawRoundRectComplex(0, 0, _debReadText0.width, 20, 0, 20, 0, 0);
 		_debRead.graphics.drawRoundRectComplex(0, 20, _debReadText1.width + 20, height - _debRead.y - 20, 0, 20, 0, 0);
+#else
+		_debRead.graphics.drawRect(0, 0, _debReadText0.width, 20);
+		_debRead.graphics.drawRect(0, 20, _debReadText1.width + 20, height - _debRead.y - 20);
+#end
 	}
 	
 	/** @private Updates the Entity count text. */
@@ -931,14 +988,6 @@ class Console
 	private var _debReadText1:TextField;
 	private var _debWidth:Int;
 	
-	// Bitmap loaders
-	private var _bmpLogo:BitmapLoader;
-	private var _bmpDebug:BitmapLoader;
-	private var _bmpOutput:BitmapLoader;
-	private var _bmpPlay:BitmapLoader;
-	private var _bmpPause:BitmapLoader;
-	private var _bmpStep:BitmapLoader;
-	
 	// Button panel information
 	private var _butRead:Sprite;
 	private var _butDebug:Bitmap;
@@ -946,6 +995,8 @@ class Console
 	private var _butPlay:Bitmap;
 	private var _butPause:Bitmap;
 	private var _butStep:Bitmap;
+	
+	private var _bmpLogo:Bitmap;
 	
 	// Entity selection information.
 	private var _entScreen:Sprite;

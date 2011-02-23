@@ -135,19 +135,11 @@ class Engine extends Sprite
 	 */
 	public function setStageProperties()
 	{
-#if flash
 		HXP.stage.frameRate = HXP.assignedFrameRate;
 		HXP.stage.align = StageAlign.TOP_LEFT;
 		HXP.stage.quality = StageQuality.HIGH;
 		HXP.stage.scaleMode = StageScaleMode.NO_SCALE;
 		HXP.stage.displayState = StageDisplayState.NORMAL;
-#else
-		stage.frameRate = HXP.assignedFrameRate;
-		stage.align = StageAlign.TOP_LEFT;
-		stage.quality = StageQuality.HIGH;
-		stage.scaleMode = StageScaleMode.NO_SCALE;
-		stage.displayState = StageDisplayState.NORMAL;
-#end
 	}
 	
 	/** @private Event handler for stage entry. */
@@ -228,7 +220,6 @@ class Engine extends Sprite
 	/** @private Fixed framerate game loop. */
 	private function onTimer()
 	{
-		trace("update");
 		// update timer
 		_time = Lib.getTimer();
 		_delta += (_time - _last);
