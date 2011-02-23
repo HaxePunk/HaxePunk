@@ -8,7 +8,6 @@ import flash.display.StageDisplayState;
 import flash.display.StageQuality;
 import flash.display.StageScaleMode;
 import flash.events.Event;
-import flash.events.TimerEvent;
 import flash.geom.Rectangle;
 import flash.Lib;
 import haxe.Timer;
@@ -99,7 +98,7 @@ class Engine extends MovieClip
 			HXP.world.update();
 		}
 		HXP.world.updateLists();
-		if (HXP.goto != null) checkWorld();
+		if (!HXP.gotoIsNull()) checkWorld();
 	}
 	
 	/**
@@ -153,7 +152,7 @@ class Engine extends MovieClip
 		Input.enable();
 		
 		// switch worlds
-		if (HXP.goto != null) checkWorld();
+		if (!HXP.gotoIsNull()) checkWorld();
 		
 		// game start
 		init();
@@ -266,7 +265,7 @@ class Engine extends MovieClip
 	/** @private Switch Worlds if they've changed. */
 	private function checkWorld()
 	{
-		if (HXP.goto == null) return;
+		if (HXP.gotoIsNull()) return;
 		HXP.world.end();
 		HXP.world.updateLists();
 		var ft:FriendTweener = HXP.world;

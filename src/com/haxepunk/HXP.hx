@@ -113,13 +113,6 @@ class HXP
 		_goto = null;
 	}
 	
-	public static var goto(getGoto, setGoto):World;
-	private static function getGoto():World { return _goto; }
-	private static function setGoto(value:World):World {
-		_goto = value;
-		return _goto;
-	}
-	
 	public static function clear(array:Array<Dynamic>)
 	{
 		var i:Int;
@@ -750,6 +743,8 @@ class HXP
 		_time = value;
 		return _time;
 	}
+	
+	public static function gotoIsNull():Bool { return (_goto == null); }
 	
 	// World information.
 	private static var _world:World = new World();

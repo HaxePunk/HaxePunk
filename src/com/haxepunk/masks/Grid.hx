@@ -5,6 +5,7 @@ import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import com.haxepunk.HXP;
+import com.haxepunk.Mask;
 
 /**
  * Uses a hash grid to determine collision, faster than

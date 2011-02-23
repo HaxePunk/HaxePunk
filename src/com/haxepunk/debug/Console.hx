@@ -13,17 +13,20 @@ import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
 import com.haxepunk.Entity;
 import com.haxepunk.HXP;
+import com.haxepunk.ImageLoader;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 import haxe.Log;
 import haxe.PosInfos;
 
-class BmpConsoleDebug  extends BitmapData { public function new() { super(0, 0); } }
-class BmpConsoleLogo   extends BitmapData { public function new() { super(0, 0); } }
-class BmpConsoleOutput extends BitmapData { public function new() { super(0, 0); } }
-class BmpConsolePause  extends BitmapData { public function new() { super(0, 0); } }
-class BmpConsolePlay   extends BitmapData { public function new() { super(0, 0); } }
-class BmpConsoleStep   extends BitmapData { public function new() { super(0, 0); } }
+#if flash
+	class BmpConsoleDebug  extends BitmapData { public function new() { super(0, 0); } }
+	class BmpConsoleLogo   extends BitmapData { public function new() { super(0, 0); } }
+	class BmpConsoleOutput extends BitmapData { public function new() { super(0, 0); } }
+	class BmpConsolePause  extends BitmapData { public function new() { super(0, 0); } }
+	class BmpConsolePlay   extends BitmapData { public function new() { super(0, 0); } }
+	class BmpConsoleStep   extends BitmapData { public function new() { super(0, 0); } }
+#end
 
 class Console
 {
@@ -131,6 +134,17 @@ class Console
 		else WATCH_LIST.push(properties[0]);
 	}
 	
+	private function loadedLogo(data:BitmapData)
+	{
+		HXP.matrix.identity();
+		HXP.matrix.tx = Math.max((_back.bitmapData.width - data.width) / 2, 0);
+		HXP.matrix.ty = Math.max((_back.bitmapData.height - data.height) / 2, 0);
+		HXP.matrix.scale(Math.min(width / _back.bitmapData.width, 1), Math.min(height / _back.bitmapData.height, 1));
+		_back.bitmapData.draw(data, HXP.matrix, null, BlendMode.MULTIPLY);
+		_back.bitmapData.draw(_back.bitmapData, null, null, BlendMode.INVERT);
+		_back.bitmapData.colorTransform(_back.bitmapData.rect, new ColorTransform(1, 1, 1, 0.5));
+	}
+	
 	/**
 	 * Enables the console.
 	 */
@@ -149,14 +163,7 @@ class Console
 		// The transparent FlashPunk logo overlay bitmap.
 		_sprite.addChild(_back);
 		_back.bitmapData = new BitmapData(width, height, true, 0xFFFFFFFF);
-		var b:BitmapData = new BmpConsoleDebug();
-		HXP.matrix.identity();
-		HXP.matrix.tx = Math.max((_back.bitmapData.width - b.width) / 2, 0);
-		HXP.matrix.ty = Math.max((_back.bitmapData.height - b.height) / 2, 0);
-		HXP.matrix.scale(Math.min(width / _back.bitmapData.width, 1), Math.min(height / _back.bitmapData.height, 1));
-		_back.bitmapData.draw(b, HXP.matrix, null, BlendMode.MULTIPLY);
-		_back.bitmapData.draw(_back.bitmapData, null, null, BlendMode.INVERT);
-		_back.bitmapData.colorTransform(_back.bitmapData.rect, new ColorTransform(1, 1, 1, 0.5));
+		ImageLoader.load("console_logo.png", loadedLogo);
 		
 		// The entity and selection sprites.
 		_sprite.addChild(_entScreen);
