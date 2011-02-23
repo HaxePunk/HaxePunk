@@ -13,12 +13,13 @@ import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
 import com.haxepunk.Entity;
 import com.haxepunk.HXP;
-import com.haxepunk.ImageLoader;
+import com.haxepunk.BitmapLoader;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 import haxe.Log;
 import haxe.PosInfos;
 
+/*
 #if flash
 	class BmpConsoleDebug  extends BitmapData { public function new() { super(0, 0); } }
 	class BmpConsoleLogo   extends BitmapData { public function new() { super(0, 0); } }
@@ -27,6 +28,7 @@ import haxe.PosInfos;
 	class BmpConsolePlay   extends BitmapData { public function new() { super(0, 0); } }
 	class BmpConsoleStep   extends BitmapData { public function new() { super(0, 0); } }
 #end
+*/
 
 class Console
 {
@@ -38,6 +40,14 @@ class Console
 	public function new()
 	{
 		init();
+		
+		_bmpLogo = new BitmapLoader("assets/console_logo.png");
+		_bmpDebug = new BitmapLoader("assets/console_debug.png");
+		_bmpOutput = new BitmapLoader("assets/console_output.png");
+		_bmpPlay = new BitmapLoader("assets/console_play.png");
+		_bmpPause = new BitmapLoader("assets/console_pause.png");
+		_bmpStep = new BitmapLoader("assets/console_step.png");
+		
 		Log.trace = traceLog;
 		Input.define("_ARROWS", [Key.RIGHT, Key.LEFT, Key.DOWN, Key.UP]);
 	}
@@ -134,17 +144,6 @@ class Console
 		else WATCH_LIST.push(properties[0]);
 	}
 	
-	private function loadedLogo(data:BitmapData)
-	{
-		HXP.matrix.identity();
-		HXP.matrix.tx = Math.max((_back.bitmapData.width - data.width) / 2, 0);
-		HXP.matrix.ty = Math.max((_back.bitmapData.height - data.height) / 2, 0);
-		HXP.matrix.scale(Math.min(width / _back.bitmapData.width, 1), Math.min(height / _back.bitmapData.height, 1));
-		_back.bitmapData.draw(data, HXP.matrix, null, BlendMode.MULTIPLY);
-		_back.bitmapData.draw(_back.bitmapData, null, null, BlendMode.INVERT);
-		_back.bitmapData.colorTransform(_back.bitmapData.rect, new ColorTransform(1, 1, 1, 0.5));
-	}
-	
 	/**
 	 * Enables the console.
 	 */
@@ -163,7 +162,14 @@ class Console
 		// The transparent FlashPunk logo overlay bitmap.
 		_sprite.addChild(_back);
 		_back.bitmapData = new BitmapData(width, height, true, 0xFFFFFFFF);
-		ImageLoader.load("console_logo.png", loadedLogo);
+		var b:BitmapData = _bmpLogo.bitmap.bitmapData;
+		HXP.matrix.identity();
+		HXP.matrix.tx = Math.max((_back.bitmapData.width - b.width) / 2, 0);
+		HXP.matrix.ty = Math.max((_back.bitmapData.height - b.height) / 2, 0);
+		HXP.matrix.scale(Math.min(width / _back.bitmapData.width, 1), Math.min(height / _back.bitmapData.height, 1));
+		_back.bitmapData.draw(b, HXP.matrix, null, BlendMode.MULTIPLY);
+		_back.bitmapData.draw(_back.bitmapData, null, null, BlendMode.INVERT);
+		_back.bitmapData.colorTransform(_back.bitmapData.rect, new ColorTransform(1, 1, 1, 0.5));
 		
 		// The entity and selection sprites.
 		_sprite.addChild(_entScreen);
@@ -254,11 +260,11 @@ class Console
 		
 		// The button panel buttons.
 		_sprite.addChild(_butRead);
-		_butRead.addChild(_butDebug = new Bitmap(new BmpConsoleDebug()));
-		_butRead.addChild(_butOutput = new Bitmap(new BmpConsoleOutput()));
-		_butRead.addChild(_butPlay = new Bitmap(new BmpConsolePlay())).x = 20;
-		_butRead.addChild(_butPause = new Bitmap(new BmpConsolePause())).x = 20;
-		_butRead.addChild(_butStep = new Bitmap(new BmpConsoleStep())).x = 40;
+		_butRead.addChild(_butDebug = _bmpDebug.bitmap);
+		_butRead.addChild(_butOutput = _bmpOutput.bitmap);
+		_butRead.addChild(_butPlay = _bmpPlay.bitmap).x = 20;
+		_butRead.addChild(_butPause = _bmpPause.bitmap).x = 20;
+		_butRead.addChild(_butStep = _bmpStep.bitmap).x = 40;
 		updateButtons();
 		
 		// The button panel.
@@ -924,6 +930,14 @@ class Console
 	private var _debReadText0:TextField;
 	private var _debReadText1:TextField;
 	private var _debWidth:Int;
+	
+	// Bitmap loaders
+	private var _bmpLogo:BitmapLoader;
+	private var _bmpDebug:BitmapLoader;
+	private var _bmpOutput:BitmapLoader;
+	private var _bmpPlay:BitmapLoader;
+	private var _bmpPause:BitmapLoader;
+	private var _bmpStep:BitmapLoader;
 	
 	// Button panel information
 	private var _butRead:Sprite;

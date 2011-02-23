@@ -2,7 +2,7 @@ package com.haxepunk;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
-import flash.display.MovieClip;
+import flash.display.Sprite;
 import flash.display.StageAlign;
 import flash.display.StageDisplayState;
 import flash.display.StageQuality;
@@ -18,7 +18,7 @@ import com.haxepunk.Tweener;
 /**
  * Main game Sprite class, added to the Flash Stage. Manages the game loop.
  */
-class Engine extends MovieClip
+class Engine extends Sprite
 {
 	/**
 	 * If the game should stop updating/rendering.
@@ -75,7 +75,12 @@ class Engine extends MovieClip
 		_delta = 0;
 		
 		// on-stage event listener
+#if flash
 		Lib.current.addEventListener(Event.ADDED_TO_STAGE, onStage);
+#else
+		addEventListener(Event.ADDED_TO_STAGE, onStage);
+		Lib.current.addChild(this);
+#end
 	}
 	
 	/**
@@ -130,23 +135,34 @@ class Engine extends MovieClip
 	 */
 	public function setStageProperties()
 	{
+#if flash
 		HXP.stage.frameRate = HXP.assignedFrameRate;
 		HXP.stage.align = StageAlign.TOP_LEFT;
 		HXP.stage.quality = StageQuality.HIGH;
 		HXP.stage.scaleMode = StageScaleMode.NO_SCALE;
 		HXP.stage.displayState = StageDisplayState.NORMAL;
+#else
+		stage.frameRate = HXP.assignedFrameRate;
+		stage.align = StageAlign.TOP_LEFT;
+		stage.quality = StageQuality.HIGH;
+		stage.scaleMode = StageScaleMode.NO_SCALE;
+		stage.displayState = StageDisplayState.NORMAL;
+#end
 	}
 	
 	/** @private Event handler for stage entry. */
 	private function onStage(e:Event = null)
 	{
 		// remove event listener
+#if flash
 		Lib.current.removeEventListener(Event.ADDED_TO_STAGE, onStage);
-		
-		// set stage properties
 		HXP.stage = Lib.current.stage;
-		setStageProperties();
 		HXP.stage.addChild(this);
+#else
+		removeEventListener(Event.ADDED_TO_STAGE, onStage);
+		HXP.stage = stage;
+#end
+		setStageProperties();
 		
 		// enable input
 		Input.enable();
@@ -171,7 +187,7 @@ class Engine extends MovieClip
 		{
 			// nonfixed framerate
 			_last = Lib.getTimer();
-			Lib.current.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 	}
 	
@@ -212,6 +228,7 @@ class Engine extends MovieClip
 	/** @private Fixed framerate game loop. */
 	private function onTimer()
 	{
+		trace("update");
 		// update timer
 		_time = Lib.getTimer();
 		_delta += (_time - _last);

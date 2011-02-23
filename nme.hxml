@@ -1,6 +1,5 @@
 -cp src
 -main Main
--lib neash
 -lib nme
 -lib hxcpp
 --remap flash:nme
