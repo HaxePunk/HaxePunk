@@ -13,6 +13,11 @@ class Main extends Engine
 	public function new()
 	{
 		super(kScreenWidth, kScreenHeight, kFrameRate, true);
+	}
+	
+	override public function init()
+	{
+		// Place your code here
 		HXP.console.enable();
 	}
 	

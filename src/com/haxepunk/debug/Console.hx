@@ -5,7 +5,6 @@ import com.haxepunk.HXP;
 import com.haxepunk.DataLoader;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
-import com.haxepunk.loaders.BitmapLoader;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.BlendMode;
