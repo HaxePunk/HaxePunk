@@ -234,20 +234,19 @@ class World extends Tweener
 	 * @param	addToWorld		Add it to the World immediately.
 	 * @return	The new Entity object.
 	 */
-/*
-	public function create(classType:String, addToWorld:Bool = true):Entity
+	public function create(classType:Dynamic, addToWorld:Bool = true):Entity
 	{
-		var e:Entity = _recycled[String];
-		if (e != null)
+		var fe:FriendEntity = _recycled.get(classType);
+		if (fe != null)
 		{
-			_recycled[classType] = e._recycleNext;
-			e._recycleNext = null;
+			_recycled.set(classType, fe._recycleNext);
+			fe._recycleNext = null;
 		}
-		else e = new Type.createInstance();
+		else fe = Type.createInstance(classType, []);
+		var e:Entity = cast(fe, Entity);
 		if (addToWorld) return add(e);
 		return e;
 	}
-*/
 	
 	/**
 	 * Removes the Entity from the World at the end of the frame and recycles it.
