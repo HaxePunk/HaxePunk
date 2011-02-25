@@ -847,7 +847,7 @@ class Console
 			else
 			{
 				var e:Entity = SELECT_LIST.first();
-				s += "\n\n- " + Std.string(e) + " -\n";
+				s += "\n\n- " + Type.getClassName(Type.getClass(e)) + " -\n";
 				for (str in WATCH_LIST)
 				{
 					if (Reflect.hasField(e, str)) s += "\n" + str + ": " + Reflect.field(e, str).toString();
