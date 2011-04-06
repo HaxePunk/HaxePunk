@@ -30,10 +30,10 @@ class Tilemap extends Canvas
 		_rect = HXP.rect;
 		
 		// set some tilemap information
-		_width = width * tileWidth;
-		_height = height * tileHeight;
-		_columns = width;
-		_rows = height;
+		_width = width - (width % tileWidth);
+		_height = height - (height % tileHeight);
+		_columns = Std.int(_width / tileWidth);
+		_rows = Std.int(_height / tileHeight);
 		_map = new BitmapData(_columns, _rows, false, 0);
 		_temp = _map.clone();
 		_tile = new Rectangle(0, 0, tileWidth, tileHeight);
