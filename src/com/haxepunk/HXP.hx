@@ -488,8 +488,8 @@ class HXP
 	public static var random(getRandom, null):Float;
 	private static function getRandom():Float
 	{
-		_seed = (_seed * 16807) % 2147483647;
-		return _seed / 2147483647;
+		_seed = Std.int((_seed * 16807.0) % 2147483647.0);
+		return _seed / 2147483647.0;
 	}
 	
 	/**
@@ -499,8 +499,8 @@ class HXP
 	 */
 	public static function rand(amount:Int):Int
 	{
-		_seed = (_seed * 16807) % 2147483647;
-		return Std.int(_seed / 2147483647) * amount;
+		_seed = Std.int((_seed * 16807.0) % 2147483647.0);
+		return Std.int((_seed / 2147483647.0) * amount);
 	}
 	
 	/**
