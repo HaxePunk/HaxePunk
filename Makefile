@@ -24,7 +24,8 @@ flash: $(FINAL).swf
 
 $(FINAL).swf: $(ASSETS).swf
 	haxe -swf9 $(FINAL).swf -swf-version 10 -main $(MAIN) -cp $(SRC) \
-	-swf-header $(WIDTH):$(HEIGHT):60:000000 -swf-lib $(ASSETS).swf
+	-swf-header $(WIDTH):$(HEIGHT):60:000000 -swf-lib $(ASSETS).swf \
+	-D samhaxe
 
 $(ASSETS).swf:
 	samhaxe $(ASSETS).xml $(ASSETS).swf

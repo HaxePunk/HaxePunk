@@ -1,12 +1,14 @@
 # HaxePunk
-A HaXe port of the FlashPunk AS3 library.
+A HaXe port of the [FlashPunk](http://flashpunk.net) AS3 library.
 
-Make sure you have Haxe 2.07 or above to compile. Using FlashDevelop is
-probably the easiest way to build HaxePunk but you can use the command line
-tools in the following way. You will also need SWFMill installed.
+## Compilation
+There are two methods you can use to compile HaxePunk. Make sure you have Haxe 2.07 or higher.
 
-### Command Line Compiler Instructions
-cd HaxePunk
-swfmill simple assets.xml assets.swf
-haxe compile.hxml
-bin/game.swf
+### FlashDevelop
+Use the HaxePunk.hxproj file to start your project. It has assets already setup and a Main class to get you started.
+
+### Command line compilation
+You will need to download SamHaXe to compile the assets file. Then just run `make` and everything should compile.
+
+## Questions?
+Drop by the [HaxePunk forum](http://forum.haxepunk.com) to ask anything or send me an email, heardtheword (at) gmail (dot) com.
