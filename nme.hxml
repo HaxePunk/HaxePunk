@@ -1,7 +1,0 @@
--cp src
--main Main
--lib nme
--lib hxcpp
---remap flash:nme
---remap neko:cpp
--cpp cpp

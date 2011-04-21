@@ -20,16 +20,6 @@ import flash.text.TextFormatAlign;
 import haxe.Log;
 import haxe.PosInfos;
 
-#if flash
-	class BmpConsoleDebug  extends BitmapData { }
-	class BmpConsoleLogo   extends BitmapData { }
-	class BmpConsoleOutput extends BitmapData { }
-	class BmpConsolePause  extends BitmapData { }
-	class BmpConsolePlay   extends BitmapData { }
-	class BmpConsoleStep   extends BitmapData { }
-#end
-
-
 class Console
 {
 	/**
@@ -152,12 +142,12 @@ class Console
 		
 #if flash
 		// Use embedded images for flash
-		_bmpLogo = new Bitmap(new BmpConsoleLogo(0, 0));
-		_butDebug = new Bitmap(new BmpConsoleDebug(0, 0));
-		_butOutput = new Bitmap(new BmpConsoleOutput(0, 0));
-		_butPlay = new Bitmap(new BmpConsolePlay(0, 0));
-		_butPause = new Bitmap(new BmpConsolePause(0, 0));
-		_butStep = new Bitmap(new BmpConsoleStep(0, 0));
+		_bmpLogo = new BmpConsoleLogo();
+		_butDebug = new BmpConsoleDebug();
+		_butOutput = new BmpConsoleOutput();
+		_butPlay = new BmpConsolePlay();
+		_butPause = new BmpConsolePause();
+		_butStep = new BmpConsoleStep();
 		onLoaded();
 #else
 		var preload:DataLoader = new DataLoader();
