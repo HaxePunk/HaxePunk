@@ -13,7 +13,7 @@ class VarTween extends Tween
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:CompleteCallback, type:TweenType) 
+	public function new(?complete:CompleteCallback, ?type:TweenType) 
 	{
 		super(0, type, complete);
 	}
@@ -29,26 +29,70 @@ class VarTween extends Tween
 	public function tween(object:Dynamic, property:String, to:Float, duration:Float, ease:EaseFunction = null)
 	{
 		_object = object;
-		_property = property;
 		_ease = ease;
-		if (!Reflect.hasField(object, property)) throw "The Object does not have the property\"" + property + "\", or it is not accessible.";
+		
+		// Check to make sure we have valid parameters
+		if (!Reflect.isObject(object))
+			throw "A valid object was not passed.";
+		if (!Reflect.hasField(object, property))
+			throw "The Object does not have the property\"" + property + "\", or it is not accessible.";
+		
+		_property = property;
+		_method = false;
 		var a:Float = Reflect.field(_object, property);
-		if (a == 0) throw "The property \"" + property + "\" is not numeric.";
+		
+		// Check if we need to use a getter/setter method
+		if (Math.isNaN(a))
+		{
+			// set the first letter to uppercase
+			property = property.substr(0, 1).toUpperCase() + property.substr(1);
+			var getter:Dynamic = getMethod("get" + property); // ex. getAlpha
+			_method = getMethod("set" + property); // ex. setAlpha
+			_property = "";
+			
+			a = cast(Reflect.callMethod(object, getter, []), Float);
+			
+			// still equal to nan??
+			if (Math.isNaN(a)) throw "The property \"" + property + "\" is not numeric.";
+		}
+		
 		_start = a;
 		_range = to - _start;
 		_target = duration;
 		start();
 	}
 	
+	private function getMethod(funcName:String):Dynamic
+	{
+		if (Reflect.hasField(_object, funcName))
+		{
+			var method:Dynamic = Reflect.field(_object, funcName);
+			if (Reflect.isFunction(method))
+				return method;
+		}
+		
+		throw "The object doe not have the method \"" + funcName + "\", or it is not accessible.";
+		return null;
+	}
+	
 	/** @private Updates the Tween. */
 	override public function update() 
 	{
 		super.update();
-		Reflect.setField(_object, _property, _start + _range * _t);
+		var val:Float = _start + _range * _t;
+		if (_property != "")
+		{
+			Reflect.setField(_object, _property, val);
+		}
+		else
+		{
+			Reflect.callMethod(_object, _method, [val]);
+		}
 	}
 	
 	// Tween information.
 	private var _object:Dynamic;
+	private var _method:Dynamic;
 	private var _property:String;
 	private var _start:Float;
 	private var _range:Float;
