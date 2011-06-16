@@ -37,7 +37,7 @@ class Spritemap extends Image
 	 * @param	frameHeight		Frame height.
 	 * @param	callback		Optional callback function for animation end.
 	 */
-	public function new(source:BitmapData, frameWidth:Int = 0, frameHeight:Int = 0, cbFunc:CallbackFunction = null) 
+	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, cbFunc:CallbackFunction = null) 
 	{
 		complete = true;
 		rate = 1;

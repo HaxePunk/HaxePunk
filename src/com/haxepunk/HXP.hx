@@ -1,6 +1,7 @@
 package com.haxepunk;
 
 import flash.display.BitmapData;
+import flash.display.Bitmap;
 import flash.display.Sprite;
 import flash.display.Stage;
 import flash.geom.Matrix;
@@ -612,6 +613,22 @@ class HXP
 	}
 	
 	/**
+	 * Fetches a stored BitmapData object represented by the source.
+	 * @param	source		Embedded Bitmap class.
+	 * @return	The stored BitmapData object.
+	 */
+	public static function getBitmap(source:Dynamic):BitmapData
+	{
+		var name:String = Std.string(source);
+		if (_bitmap.exists(name))
+			return _bitmap.get(name);
+		
+		var data:BitmapData = Type.createInstance(source, []).bitmapData;
+		_bitmap.set(name, data);
+		return data;
+	}
+	
+	/**
 	 * Sets a time flag.
 	 * @return	Time elapsed (in milliseconds) since the last time flag was set.
 	 */
@@ -761,7 +778,7 @@ class HXP
 	public static var _flashTime:Float;
 	
 	// Bitmap storage.
-	private static var _bitmap:Dynamic;
+	private static var _bitmap:Hash<BitmapData> = new Hash<BitmapData>();
 	
 	// Pseudo-random number generation (the seed is set in Engine's contructor).
 	private static var _seed:Int = 0;

@@ -62,12 +62,21 @@ class Image extends Graphic
 	 * @param	source		Source image.
 	 * @param	clipRect	Optional rectangle defining area of the source image to draw.
 	 */
-	public function new(source:BitmapData, clipRect:Rectangle = null) 
+	public function new(source:Dynamic, clipRect:Rectangle = null) 
 	{
 		super();
 		init();
 		
-		_source = source;
+		if (Std.is(source, BitmapData))
+		{
+			_source = source;
+			_class = "";
+		}
+		else
+		{
+			_class = Type.getClassName(source);
+			_source = HXP.getBitmap(source);
+		}
 		if (_source == null) throw "Invalid source image.";
 		_sourceRect = _source.rect;
 		
@@ -243,7 +252,7 @@ class Image extends Graphic
 	private function getFlipped():Bool { return _flipped; }
 	private function setFlipped(value:Bool):Bool
 	{
-		if (_flipped == value || _class == 0) return value;
+		if (_flipped == value || _class == "") return value;
 		_flipped = value;
 		var temp:BitmapData = _source;
 		if (!value || _flip != null)
@@ -253,14 +262,15 @@ class Image extends Graphic
 			updateBuffer();
 			return _flipped;
 		}
-		if (_flips[_class])
+		if (_flips.exists(_class))
 		{
-			_source = _flips[_class];
+			_source = _flips.get(_class);
 			_flip = temp;
 			updateBuffer();
 			return _flipped;
 		}
-		_source = _flips[_class] = new BitmapData(_source.width, _source.height, true, 0);
+		_source = new BitmapData(_source.width, _source.height, true, 0);
+		_flips.set(_class, _source);
 		_flip = temp;
 		HXP.matrix.identity();
 		HXP.matrix.a = -1;
@@ -340,8 +350,8 @@ class Image extends Graphic
 	private var _matrix:Matrix;
 	
 	// Flipped image information.
-	private var _class:Int;
+	private var _class:String;
 	private var _flipped:Bool;
 	private var _flip:BitmapData;
-	private static var _flips:Dynamic;
+	private static var _flips:Hash<BitmapData> = new Hash<BitmapData>();
 }
