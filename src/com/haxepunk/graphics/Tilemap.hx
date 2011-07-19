@@ -25,7 +25,7 @@ class Tilemap extends Canvas
 	 * @param	tileWidth		Tile width.
 	 * @param	tileHeight		Tile height.
 	 */
-	public function new(tileset:BitmapData, width:Int, height:Int, tileWidth:Int, tileHeight:Int) 
+	public function new(tileset:Dynamic, width:Int, height:Int, tileWidth:Int, tileHeight:Int) 
 	{
 		_rect = HXP.rect;
 		
@@ -44,7 +44,8 @@ class Tilemap extends Canvas
 		super(_width, _height);
 		
 		// load the tileset graphic
-		_set = tileset;
+		if (Std.is(tileset, Class)) _set = HXP.getBitmap(tileset);
+		else if (Std.is(tileset, BitmapData)) _set = tileset;
 		if (_set == null) throw "Invalid tileset graphic provided.";
 		_setColumns = Std.int(_set.width / tileWidth);
 		_setRows = Std.int(_set.height / tileHeight);

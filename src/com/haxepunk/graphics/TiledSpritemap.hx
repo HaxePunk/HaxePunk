@@ -19,7 +19,7 @@ class TiledSpritemap extends Spritemap
 	 * @param	height			Height of the block to render.
 	 * @param	callback		Optional callback function for animation end.
 	 */
-	public function new(source:BitmapData, frameWidth:Int = 0, frameHeight:Int = 0, width:Int = 0, height:Int = 0, callbackFunc:CallbackFunction = null) 
+	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, width:Int = 0, height:Int = 0, callbackFunc:CallbackFunction = null) 
 	{
 		_graphics = HXP.sprite.graphics;
 		_offsetX = _offsetY = 0;

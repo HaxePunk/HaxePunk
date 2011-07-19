@@ -52,7 +52,7 @@ class Sfx
 		_volume = _transform.volume = volume < 0 ? 0 : volume;
 		_pan = _transform.pan = pan < -1 ? -1 : (pan > 1 ? 1 : pan);
 		_channel = _sound.play(0, 0, _transform);
-		_channel.addEventListener(Event.SOUND_COMPLETE, onComplete);
+		if (_channel != null) _channel.addEventListener(Event.SOUND_COMPLETE, onComplete);
 		_looping = false;
 		_position = 0;
 	}

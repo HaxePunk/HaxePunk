@@ -24,12 +24,12 @@ class PreRotation extends Image
 	 * @param	frameCount		How many frames to use. More frames result in smoother rotations.
 	 * @param	smooth			Make the rotated graphic appear less pixelly.
 	 */
-	public function new(source:BitmapData, frameCount:Int = 36, smooth:Bool = false) 
+	public function new(source:Dynamic, frameCount:Int = 36, smooth:Bool = false) 
 	{
 		frameAngle = 0;
 		_last = _current = -1;
 		
-		var name:String = Type.getClassName(Type.getClass(source));
+		var name:String = Type.getClassName(source);
 		
 		var r:BitmapData = _rotated.get(name);
 		var size:Int = _size.get(name);
@@ -38,7 +38,7 @@ class PreRotation extends Image
 		if (r == null)
 		{
 			// produce a rotated bitmap strip
-			var temp:BitmapData = source,
+			var temp:BitmapData = HXP.getBitmap(source),
 				size:Int = Math.ceil(HXP.distance(0, 0, temp.width, temp.height));
 			_size.set(name, size);
 			_frame.width = _frame.height = size;
@@ -53,7 +53,7 @@ class PreRotation extends Image
 			_rotated.set(name, r);
 			var m:Matrix = HXP.matrix,
 				a:Float = 0,
-				aa:Float = Std.int((Math.PI * 2) / -frameCount),
+				aa:Float = Math.PI * 2 / -frameCount,
 				ox:Int = Std.int(temp.width / 2),
 				oy:Int = Std.int(temp.height / 2),
 				o:Int = Std.int(_frame.width / 2),
@@ -86,7 +86,7 @@ class PreRotation extends Image
 	{
 		frameAngle %= 360;
 		if (frameAngle < 0) frameAngle += 360;
-		_current = Std.int(_frameCount * (frameAngle / 360));
+		_current = Math.floor(_frameCount * frameAngle / 360);
 		if (_last != _current)
 		{
 			_last = _current;
