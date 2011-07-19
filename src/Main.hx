@@ -13,12 +13,15 @@ class Main extends Engine
 	public function new()
 	{
 		super(kScreenWidth, kScreenHeight, kFrameRate, true);
+		HXP.screen.color = kClearColor;
+		HXP.screen.scale = 1;
 	}
 	
 	override public function init()
 	{
-		// Place your code here
 		HXP.console.enable();
+		// Place your code here
+		HXP.world = new YourWorld();
 	}
 	
 	static function main()

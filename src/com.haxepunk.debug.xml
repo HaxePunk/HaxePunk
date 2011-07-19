@@ -13,14 +13,14 @@
     xmlns:comp1="http://mindless-labs.com/samhaxe/modules/Compose#1.1"
 >
   <shx:frame>
-    <img:image class="BmpConsoleDebug" import="src/com/haxepunk/debug/console_debug.png"/>
-    <img:image class="BmpConsoleLogo" import="src/com/haxepunk/debug/console_logo.png"/>
-    <img:image class="BmpConsoleOutput" import="src/com/haxepunk/debug/console_output.png"/>
-    <img:image class="BmpConsolePause" import="src/com/haxepunk/debug/console_pause.png"/>
-    <img:image class="BmpConsolePlay" import="src/com/haxepunk/debug/console_play.png" />
-    <img:image class="BmpConsoleStep" import="src/com/haxepunk/debug/console_step.png" />
-
-    <font:ttf name="default" import="src/com/haxepunk/graphics/04B_03__.TTF"/>
-
+    <font:ttf name="default" import="com/haxepunk/graphics/04B_03__.TTF"/>
+  </shx:frame>
+  <shx:frame>
+    <img:image class="GfxConsoleDebug" import="com/haxepunk/debug/console_debug.png"/>
+    <img:image class="GfxConsoleLogo" import="com/haxepunk/debug/console_logo.png"/>
+    <img:image class="GfxConsoleOutput" import="com/haxepunk/debug/console_output.png"/>
+    <img:image class="GfxConsolePause" import="com/haxepunk/debug/console_pause.png"/>
+    <img:image class="GfxConsolePlay" import="com/haxepunk/debug/console_play.png" />
+    <img:image class="GfxConsoleStep" import="com/haxepunk/debug/console_step.png" />
   </shx:frame>
 </shx:resource>
