@@ -59,18 +59,18 @@ class Draw
 	{
 		if (color < 0xFF000000) color = 0xFF000000 | color;
 		
-		// get the drawing positions
-		x1 -= Std.int(_camera.x);
-		y1 -= Std.int(_camera.y);
-		x2 -= Std.int(_camera.x);
-		y2 -= Std.int(_camera.y);
-		
 		// get the drawing difference
 		var screen:BitmapData = _target,
 			X:Float = Math.abs(x2 - x1),
 			Y:Float = Math.abs(y2 - y1),
 			xx:Int,
 			yy:Int;
+		
+		// get drawing positions and clamp to bitmap boundaries
+		x1 = Std.int(HXP.clamp(x1 - _camera.x, 0, screen.width));
+		y1 = Std.int(HXP.clamp(y1 - _camera.y, 0, screen.height));
+		x2 = Std.int(HXP.clamp(x2 - _camera.x, 0, screen.width));
+		y2 = Std.int(HXP.clamp(y2 - _camera.y, 0, screen.height));
 		
 		// draw a single pixel
 		if (X == 0)
