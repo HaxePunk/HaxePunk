@@ -26,9 +26,11 @@ class Stamp extends Graphic
 		this.y = y;
 		
 		// set the graphic
-		if (source == null) return;
-		_source = source;
-		if (_source != null) _sourceRect = _source.rect;
+		if (Std.is(source, Dynamic)) _source = HXP.getBitmap(source);
+		else if (Std.is(_source, BitmapData)) _source = source;
+		if (_source == null) throw "Invalid source image.";
+		
+		_sourceRect = _source.rect;
 	}
 	
 	/** @private Renders the Graphic. */

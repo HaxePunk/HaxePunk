@@ -76,7 +76,8 @@ class Engine extends Sprite
 		
 		// on-stage event listener
 #if flash
-		Lib.current.addEventListener(Event.ADDED_TO_STAGE, onStage);
+		if (Lib.current.stage != null) onStage();
+		else Lib.current.addEventListener(Event.ADDED_TO_STAGE, onStage);
 #else
 		addEventListener(Event.ADDED_TO_STAGE, onStage);
 		Lib.current.addChild(this);
@@ -147,7 +148,8 @@ class Engine extends Sprite
 	{
 		// remove event listener
 #if flash
-		Lib.current.removeEventListener(Event.ADDED_TO_STAGE, onStage);
+		if (e != null)
+			Lib.current.removeEventListener(Event.ADDED_TO_STAGE, onStage);
 		HXP.stage = Lib.current.stage;
 		HXP.stage.addChild(this);
 #else

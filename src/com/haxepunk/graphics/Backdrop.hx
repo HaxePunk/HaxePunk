@@ -17,9 +17,10 @@ class Backdrop extends Canvas
 	 * @param	repeatX		Repeat horizontally.
 	 * @param	repeatY		Repeat vertically.
 	 */
-	public function new(texture:BitmapData, repeatX:Bool = true, repeatY:Bool = true) 
+	public function new(texture:Dynamic, repeatX:Bool = true, repeatY:Bool = true) 
 	{
-		_texture = texture;
+		if (Std.is(texture, Dynamic)) _texture = HXP.getBitmap(texture);
+		else if (Std.is(texture, BitmapData)) _texture = texture;
 		if (_texture == null) _texture = new BitmapData(HXP.width, HXP.height, true, 0);
 		
 		_repeatX = repeatX;

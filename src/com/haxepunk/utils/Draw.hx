@@ -67,10 +67,10 @@ class Draw
 			yy:Int;
 		
 		// get drawing positions and clamp to bitmap boundaries
-		x1 = Std.int(HXP.clamp(x1 - _camera.x, 0, screen.width));
-		y1 = Std.int(HXP.clamp(y1 - _camera.y, 0, screen.height));
-		x2 = Std.int(HXP.clamp(x2 - _camera.x, 0, screen.width));
-		y2 = Std.int(HXP.clamp(y2 - _camera.y, 0, screen.height));
+		x1 = Std.int(HXP.clamp(x1 - _camera.x, 0, screen.width - 1));
+		y1 = Std.int(HXP.clamp(y1 - _camera.y, 0, screen.height - 1));
+		x2 = Std.int(HXP.clamp(x2 - _camera.x, 0, screen.width - 1));
+		y2 = Std.int(HXP.clamp(y2 - _camera.y, 0, screen.height - 1));
 		
 		// draw a single pixel
 		if (X == 0)

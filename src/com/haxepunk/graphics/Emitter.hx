@@ -22,7 +22,7 @@ class Emitter extends Graphic
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
 	 */
-	public function new(source:BitmapData, frameWidth:Int = 0, frameHeight:Int = 0) 
+	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0) 
 	{
 		super();
 		_p = new Point();
