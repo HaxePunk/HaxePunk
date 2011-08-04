@@ -21,13 +21,12 @@ class Pixelmask extends Hitbox
 	 * @param	x			X offset of the mask.
 	 * @param	y			Y offset of the mask.
 	 */
-	public function new(source:Dynamic, x:Int = 0, y:Int = 0)
+	public function new(source:BitmapData, x:Int = 0, y:Int = 0)
 	{
 		super();
 		
 		// fetch mask data
-		if (Std.is(source, BitmapData)) _data = source;
-		else _data = HXP.getBitmap(source);
+		_data = source;
 		if (_data == null) throw "Invalid Pixelmask source image.";
 		
 		threshold = 1;
