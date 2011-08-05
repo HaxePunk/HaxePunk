@@ -104,14 +104,17 @@ class Hitbox extends Mask
 	/** Updates the parent's bounds for this mask. */
 	override public function update() 
 	{
-		// update entity bounds
-		parent.originX = -_x;
-		parent.originY = -_y;
-		parent.width = _width;
-		parent.height = _height;
-		
-		// update parent list
-		if (list != null) list.update();
+		if (parent != null) 
+		{
+			// update entity bounds
+			parent.originX = -_x;
+			parent.originY = -_y;
+			parent.width = _width;
+			parent.height = _height;
+			
+			// update parent list
+			if (list != null) list.update();
+		}
 	}
 	
 	// Hitbox information.

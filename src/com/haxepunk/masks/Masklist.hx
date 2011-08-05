@@ -1,5 +1,6 @@
 package com.haxepunk.masks;
 
+import com.haxepunk.Entity;
 import com.haxepunk.HXP;
 import com.haxepunk.Mask;
 
@@ -12,7 +13,7 @@ class Masklist extends Hitbox
 	 * Constructor.
 	 * @param	...mask		Masks to add to the list.
 	 */
-	public function new(masks:Array<Mask>) 
+	public function new(masks:Array<Dynamic>) 
 	{
 		super();
 		_masks = new Array<Mask>();
@@ -57,6 +58,7 @@ class Masklist extends Hitbox
 	{
 		_masks[_count ++] = mask;
 		mask.list = this;
+		mask.parent = parent;
 		update();
 		return mask;
 	}
@@ -76,6 +78,7 @@ class Masklist extends Hitbox
 			if (m == mask)
 			{
 				mask.list = null;
+				mask.parent = null;
 				_count --;
 				update();
 			}
@@ -132,6 +135,12 @@ class Masklist extends Hitbox
 	public function getMask(index:Int = 0):Mask
 	{
 		return _masks[index % _masks.length];
+	}
+	
+	override public function assignTo(parent:Entity):Void 
+	{
+		for (m in _masks) m.parent = parent;
+		super.assignTo(parent);
 	}
 	
 	/** @private Updates the parent's bounds for this mask. */
