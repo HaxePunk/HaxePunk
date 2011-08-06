@@ -21,7 +21,6 @@ class Main extends Engine
 	{
 		HXP.console.enable();
 		// Place your code here
-		HXP.world = new YourWorld();
 	}
 	
 	static function main()
