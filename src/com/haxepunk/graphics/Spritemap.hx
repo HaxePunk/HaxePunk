@@ -252,7 +252,7 @@ class Spritemap extends Image
 	 * The currently playing animation.
 	 */
 	public var currentAnim(getCurrentAnim, null):String;
-	private function getCurrentAnim():String { return _anim != null ? _anim.name : ""; }
+	private function getCurrentAnim():String { return (_anim != null) ? _anim.name : ""; }
 	
 	// Spritemap information.
 	private var _rect:Rectangle;

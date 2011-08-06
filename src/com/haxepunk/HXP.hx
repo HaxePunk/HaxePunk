@@ -504,6 +504,17 @@ class HXP
 		return Std.int((_seed / 2147483647.0) * amount);
 	}
 	
+	private static function indexOf(a:Array<Dynamic>, v:Dynamic):Int
+	{
+		var i = 0;
+		for( v2 in a ) {
+			if( v == v2 )
+				return i;
+			i++;
+		}
+		return -1;
+	}
+	
 	/**
 	 * Returns the next item after current in the list of options.
 	 * @param	current		The currently selected item (must be one of the options).
@@ -513,8 +524,8 @@ class HXP
 	 */
 	public static function next(current:Dynamic, options:Array<Dynamic>, loop:Bool = true):Dynamic
 	{
-		if (loop) return options[(Lambda.indexOf(options, current) + 1) % options.length];
-		return options[Std.int(Math.max(Lambda.indexOf(options, current) + 1, options.length - 1))];
+		if (loop) return options[(indexOf(options, current) + 1) % options.length];
+		return options[Std.int(Math.max(indexOf(options, current) + 1, options.length - 1))];
 	}
 	
 	/**
@@ -526,8 +537,8 @@ class HXP
 	 */
 	public static function prev(current:Dynamic, options:Array<Dynamic>, loop:Bool = true):Dynamic
 	{
-		if (loop) return options[((Lambda.indexOf(options, current) - 1) + options.length) % options.length];
-		return options[Std.int(Math.max(Lambda.indexOf(options, current) - 1, 0))];
+		if (loop) return options[((indexOf(options, current) - 1) + options.length) % options.length];
+		return options[Std.int(Math.max(indexOf(options, current) - 1, 0))];
 	}
 	
 	/**

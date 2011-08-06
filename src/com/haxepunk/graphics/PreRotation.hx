@@ -109,6 +109,6 @@ class PreRotation extends Image
 	private static var _rotated:Hash<BitmapData> = new Hash<BitmapData>();
 	private static var _size:Hash<Int> = new Hash<Int>();
 	
-	private static inline var _MAX_WIDTH:Int = 4000;
+	private static inline var _MAX_WIDTH:Int = 3000;
 	private static inline var _MAX_HEIGHT:Int = 4000;
 }
