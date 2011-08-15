@@ -91,6 +91,8 @@ class Entity extends Tweener
 		this.x = x;
 		this.y = y;
 		
+		_moveX = _moveY = 0;
+		
 		HITBOX = new Mask();
 		_point = HXP.point;
 		_camera = HXP.point2;
@@ -663,7 +665,7 @@ class Entity extends Tweener
 		y = Math.round(_moveY);
 		_moveX -= x;
 		_moveY -= y;
-		if (solidType != "")
+		if (solidType != null)
 		{
 			var sign:Int, e:Entity;
 			if (x != 0)

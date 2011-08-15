@@ -35,7 +35,7 @@ class Tween
 	 * @param	complete		Optional callback for when the Tween completes.
 	 * @param	ease			Optional easer function to apply to the Tweened value.
 	 */
-	public function new(duration:Float, ?type:TweenType, ?complete:CompleteCallback, ease:EaseFunction = null)
+	public function new(duration:Float, ?type:TweenType, ?complete:CompleteCallback, ?ease:EaseFunction)
 	{
 		_target = duration;
 		if (type == null) type = TweenType.Persist;
