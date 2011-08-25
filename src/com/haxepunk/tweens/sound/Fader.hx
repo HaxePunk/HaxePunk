@@ -14,7 +14,7 @@ class Fader extends Tween
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:CompleteCallback, type:TweenType) 
+	public function new(?complete:CompleteCallback, ?type:TweenType) 
 	{
 		super(0, type, complete);
 	}
