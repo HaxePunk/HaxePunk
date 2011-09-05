@@ -901,18 +901,17 @@ class World extends Tweener
 	 * @param	into		The Array or Vector to populate.
 	 * @return	The same array, populated.
 	 */
-/*
-	public function getClass(c:Class, into:Array<Entity>)
+	public function getClass(c:Class<Dynamic>, into:Array<Entity>)
 	{
-		var e:Entity = _updateFirst,
+		var fe:FriendEntity = _updateFirst,
 			n:Int = into.length;
-		while (e != null)
+		while (fe != null)
 		{
-			if (Std.is(e, c)) into[n++] = e;
-			e = e._updateNext;
+			if (Std.is(fe, c))
+				into[n++] = cast(fe, Entity);
+			fe = fe._updateNext;
 		}
 	}
-*/
 	
 	/**
 	 * Pushes all Entities in the World on the layer into the Array or Vector.

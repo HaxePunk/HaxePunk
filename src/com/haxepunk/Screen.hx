@@ -2,8 +2,11 @@ package com.haxepunk;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
+import flash.display.BlendMode;
 import flash.display.PixelSnapping;
+import flash.display.Shader;
 import flash.display.Sprite;
+import flash.filters.BitmapFilter;
 import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Transform;
@@ -53,6 +56,11 @@ class Screen
 	{
 		_current = 1 - _current;
 		HXP.buffer = _bitmap[_current].bitmapData;
+	}
+	
+	public function addFilter(filter:Array<Dynamic>)
+	{
+		_sprite.filters = filter;
 	}
 	
 	/**
