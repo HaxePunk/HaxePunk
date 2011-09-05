@@ -31,7 +31,7 @@ class LinearPath extends Motion
 	 * @param	duration		Duration of the movement.
 	 * @param	ease			Optional easer function.
 	 */
-	public function setMotion(duration:Float, ease:EaseFunction = null)
+	public function setMotion(duration:Float, ?ease:EaseFunction)
 	{
 		updatePath();
 		_target = duration;
@@ -45,7 +45,7 @@ class LinearPath extends Motion
 	 * @param	speed		Speed of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotionSpeed(speed:Float, ease:EaseFunction = null)
+	public function setMotionSpeed(speed:Float, ?ease:EaseFunction)
 	{
 		updatePath();
 		_target = _distance / speed;

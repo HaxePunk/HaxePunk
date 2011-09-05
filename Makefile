@@ -20,9 +20,7 @@ FINAL = $(BIN)/$(APP)
 
 all: flash
 
-flash: $(FINAL).swf
-
-$(FINAL).swf: $(ASSETS).swf
+flash: $(ASSETS).swf
 	haxe -swf9 $(FINAL).swf -swf-version 10 -main $(MAIN) -cp $(SRC) \
 	-swf-header $(WIDTH):$(HEIGHT):60:000000 -swf-lib $(ASSETS).swf \
 	-D samhaxe
@@ -30,11 +28,12 @@ $(FINAL).swf: $(ASSETS).swf
 $(ASSETS).swf:
 	samhaxe $(ASSETS).xml $(ASSETS).swf
 
-native: $(FINAL).exe
+native: cpp
 
-$(FINAL).exe:
-	haxe -cp $(SRC) -main $(MAIN) -lib nme -lib hxcpp --remap flash:nme \
-	--remap neko:cpp -cpp cpp
+cpp:
+	haxe -cp $(SRC) -main $(MAIN) -lib nme --remap flash:nme \
+	--remap neko:cpp -cpp cpp -D HXCPP_M64
 
 clean:
-	rm -f $(ASSETS).swf $(FINAL).swf $(FINAL).exe
+	rm -f $(ASSETS).swf $(FINAL).swf
+	rm -fR cpp

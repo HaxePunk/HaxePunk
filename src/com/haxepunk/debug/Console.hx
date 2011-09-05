@@ -21,13 +21,13 @@ import haxe.Log;
 import haxe.PosInfos;
 
 // Define classes for FlashDevelop
-#if (flash && !samhaxe)
-	class BmpConsoleDebug  extends BitmapData { }
-	class BmpConsoleLogo   extends BitmapData { }
-	class BmpConsoleOutput extends BitmapData { }
-	class BmpConsolePause  extends BitmapData { }
-	class BmpConsolePlay   extends BitmapData { }
-	class BmpConsoleStep   extends BitmapData { }
+#if (flash && swfmill)
+	class GfxConsoleDebug  extends BitmapData { }
+	class GfxConsoleLogo   extends BitmapData { }
+	class GfxConsoleOutput extends BitmapData { }
+	class GfxConsolePause  extends BitmapData { }
+	class GfxConsolePlay   extends BitmapData { }
+	class GfxConsoleStep   extends BitmapData { }
 #end
 
 class Console
@@ -89,8 +89,8 @@ class Console
 		SELECT_LIST = new List<Entity>();
 
 		WATCH_LIST = new List<String>();
-		WATCH_LIST.push("x");
-		WATCH_LIST.push("y");
+		WATCH_LIST.push("_x");
+		WATCH_LIST.push("_y");
 		
 		Log.trace = traceLog;
 	}
@@ -152,32 +152,31 @@ class Console
 		
 #if flash
 	// Use embedded images for flash
-	#if samhaxe
-		_bmpLogo = new BmpConsoleLogo();
-		_butDebug = new BmpConsoleDebug();
-		_butOutput = new BmpConsoleOutput();
-		_butPlay = new BmpConsolePlay();
-		_butPause = new BmpConsolePause();
-		_butStep = new BmpConsoleStep();
-		trace("samhaxe");
+	#if !swfmill
+		_bmpLogo = new GfxConsoleLogo();
+		_butDebug = new GfxConsoleDebug();
+		_butOutput = new GfxConsoleOutput();
+		_butPlay = new GfxConsolePlay();
+		_butPause = new GfxConsolePause();
+		_butStep = new GfxConsoleStep();
 	#else
 		// Flashdevelop version
-		_bmpLogo = new Bitmap(new BmpConsoleLogo(0, 0));
-		_butDebug = new Bitmap(new BmpConsoleDebug(0, 0));
-		_butOutput = new Bitmap(new BmpConsoleOutput(0, 0));
-		_butPlay = new Bitmap(new BmpConsolePlay(0, 0));
-		_butPause = new Bitmap(new BmpConsolePause(0, 0));
-		_butStep = new Bitmap(new BmpConsoleStep(0, 0));
+		_bmpLogo = new Bitmap(new GfxConsoleLogo(0, 0));
+		_butDebug = new Bitmap(new GfxConsoleDebug(0, 0));
+		_butOutput = new Bitmap(new GfxConsoleOutput(0, 0));
+		_butPlay = new Bitmap(new GfxConsolePlay(0, 0));
+		_butPause = new Bitmap(new GfxConsolePause(0, 0));
+		_butStep = new Bitmap(new GfxConsoleStep(0, 0));
 	#end
 		onLoaded();
 #else
 		var preload:DataLoader = new DataLoader();
-		preload.loadBitmap("assets/console_logo.png", _bmpLogo = new Bitmap());
-		preload.loadBitmap("assets/console_debug.png", _butDebug = new Bitmap());
-		preload.loadBitmap("assets/console_output.png", _butOutput = new Bitmap());
-		preload.loadBitmap("assets/console_play.png", _butPlay = new Bitmap());
-		preload.loadBitmap("assets/console_pause.png", _butPause = new Bitmap());
-		preload.loadBitmap("assets/console_step.png", _butStep = new Bitmap());
+		preload.loadBitmap("assets/gfx/console_logo.png", _bmpLogo = new Bitmap());
+		preload.loadBitmap("assets/gfx/console_debug.png", _butDebug = new Bitmap());
+		preload.loadBitmap("assets/gfx/console_output.png", _butOutput = new Bitmap());
+		preload.loadBitmap("assets/gfx/console_play.png", _butPlay = new Bitmap());
+		preload.loadBitmap("assets/gfx/console_pause.png", _butPause = new Bitmap());
+		preload.loadBitmap("assets/gfx/console_step.png", _butStep = new Bitmap());
 		preload.onLoaded = onLoaded;
 		preload.start();
 #end
@@ -192,7 +191,7 @@ class Console
 		// Used to determine some text sizing.
 		var big:Bool = width >= 480;
 		
-		// The transparent FlashPunk logo overlay bitmap.
+		// The transparent logo overlay bitmap.
 #if flash
 		_sprite.addChild(_back);
 		_back.bitmapData = new BitmapData(width, height, true, 0xFFFFFFFF);

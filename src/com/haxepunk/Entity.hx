@@ -14,6 +14,7 @@ typedef FriendEntity = {
 	private var _world:World;
 	private var _added:Bool;
 	private var _type:String;
+	private var _name:String;
 	private var _layer:Int;
 	
 	private var _updatePrev:FriendEntity;
@@ -23,7 +24,7 @@ typedef FriendEntity = {
 	
 	private var _typePrev:FriendEntity;
 	private var _typeNext:FriendEntity;
-	private var _recycleNext:Entity;
+	private var _recycleNext:FriendEntity;
 }
 
 /**
@@ -44,12 +45,16 @@ class Entity extends Tweener
 	/**
 	 * X position of the Entity in the World.
 	 */
-	public var x:Float;
+	public var x(getX, setX):Float;
+	private function getX():Float { return _x; }
+	private function setX(value:Float):Float { _x = value; return _x; }
 	
 	/**
 	 * Y position of the Entity in the World.
 	 */
-	public var y:Float;
+	public var y(getY, setY):Float;
+	private function getY():Float { return _y; }
+	private function setY(value:Float):Float { _y = value; return _y; }
 	
 	/**
 	 * Width of the Entity's hitbox.
@@ -88,8 +93,8 @@ class Entity extends Tweener
 		super();
 		visible = true;
 		collidable = true;
-		this.x = x;
-		this.y = y;
+		_x = x;
+		_y = y;
 		
 		HITBOX = new Mask();
 		_point = HXP.point;
@@ -454,6 +459,19 @@ class Entity extends Tweener
 	private function getRight():Float { return x - originX + width; }
 	
 	/**
+	 * The Entity's instance name. Use this to uniquely identify single
+     * game Entities, which can then be looked-up with World.getInstance().
+	 */
+	public var name(getName, setName):String;
+	private function getName():String { return _name; }
+	private function setName(value:String):String
+	{
+		if (_world != null) _world.registerName(this);
+		_name = value;
+		return _name;
+	}
+	
+	/**
 	 * The topmost position of the Entity's hitbox.
 	 */
 	public var top(getTop, null):Float;
@@ -791,6 +809,7 @@ class Entity extends Tweener
 	private var _world:World;
 	private var _added:Bool;
 	private var _type:String;
+	private var _name:String;
 	private var _layer:Int;
 	
 	private var _updatePrev:FriendEntity;
@@ -800,7 +819,7 @@ class Entity extends Tweener
 	
 	private var _typePrev:FriendEntity;
 	private var _typeNext:FriendEntity;
-	private var _recycleNext:Entity;
+	private var _recycleNext:FriendEntity;
 	
 	// Collision information.
 	private var HITBOX:Mask;

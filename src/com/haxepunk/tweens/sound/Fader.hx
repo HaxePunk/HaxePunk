@@ -25,7 +25,7 @@ class Fader extends Tween
 	 * @param	duration	Duration of the fade.
 	 * @param	ease		Optional easer function.
 	 */
-	public function fadeTo(volume:Float, duration:Float, ease:EaseFunction = null)
+	public function fadeTo(volume:Float, duration:Float, ?ease:EaseFunction)
 	{
 		if (volume < 0) volume = 0;
 		_start = HXP.volume;

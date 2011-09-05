@@ -33,7 +33,7 @@ class CircularMotion extends Motion
 	 * @param	duration	Duration of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotion(centerX:Float, centerY:Float, radius:Float, angle:Float, clockwise:Bool, duration:Float, ease:EaseFunction = null)
+	public function setMotion(centerX:Float, centerY:Float, radius:Float, angle:Float, clockwise:Bool, duration:Float, ?ease:EaseFunction)
 	{
 		_centerX = centerX;
 		_centerY = centerY;
@@ -55,7 +55,7 @@ class CircularMotion extends Motion
 	 * @param	speed		Speed of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotionSpeed(centerX:Float, centerY:Float, radius:Float, angle:Float, clockwise:Bool, speed:Float, ease:EaseFunction = null)
+	public function setMotionSpeed(centerX:Float, centerY:Float, radius:Float, angle:Float, clockwise:Bool, speed:Float, ?ease:EaseFunction)
 	{
 		_centerX = centerX;
 		_centerY = centerY;

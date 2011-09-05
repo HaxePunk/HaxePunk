@@ -42,12 +42,12 @@ class PreRotation extends Image
 				size:Int = Math.ceil(HXP.distance(0, 0, temp.width, temp.height));
 			_size.set(name, size);
 			_frame.width = _frame.height = size;
-			var width:Int = Std.int(_frame.width * frameCount),
-				height:Int = Std.int(_frame.height);
+			var width:Int = Std.int(size * frameCount),
+				height:Int = Std.int(size);
 			if (width > _MAX_WIDTH)
 			{
-				width = Std.int(_MAX_WIDTH - (_MAX_WIDTH % _frame.width));
-				height = Std.int(Math.ceil(frameCount / (width / _frame.width)) * _frame.height);
+				width = Std.int(_MAX_WIDTH - (_MAX_WIDTH % size));
+				height = Std.int(Math.ceil(frameCount / (width / size)) * size);
 			}
 			r = new BitmapData(width, height, true, 0);
 			_rotated.set(name, r);
@@ -109,6 +109,6 @@ class PreRotation extends Image
 	private static var _rotated:Hash<BitmapData> = new Hash<BitmapData>();
 	private static var _size:Hash<Int> = new Hash<Int>();
 	
-	private static inline var _MAX_WIDTH:Int = 4000;
+	private static inline var _MAX_WIDTH:Int = 3000;
 	private static inline var _MAX_HEIGHT:Int = 4000;
 }

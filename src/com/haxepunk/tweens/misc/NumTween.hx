@@ -31,7 +31,7 @@ class NumTween extends Tween
 	 * @param	duration		Duration of the tween.
 	 * @param	ease			Optional easer function.
 	 */
-	public function tween(fromValue:Float, toValue:Float, duration:Float, ease:EaseFunction = null)
+	public function tween(fromValue:Float, toValue:Float, duration:Float, ?ease:EaseFunction)
 	{
 		_start = value = fromValue;
 		_range = toValue - value;

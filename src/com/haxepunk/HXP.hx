@@ -24,7 +24,7 @@ import haxe.Timer;
 class HXP 
 {
 	/**
-	 * The FlashPunk major version.
+	 * The HaxePunk major version (comparable to FlashPunk's version number).
 	 */
 	public static inline var VERSION:String = "1.4";
 	
@@ -470,9 +470,9 @@ class HXP
 	private static function getRandomSeed():Int { return _getSeed; }
 	private static function setRandomSeed(value:Int):Int
 	{
-		_seed = Std.int(clamp(value, 1.0, 2147483646.0));
-		_getSeed = _seed;
-		return _seed;
+		_seed = clamp(value, 1.0, 2147483646.0);
+		_getSeed = Std.int(_seed);
+		return _getSeed;
 	}
 	
 	/**
@@ -487,10 +487,21 @@ class HXP
 	 * A pseudo-random Float produced using FP's random seed, where 0 <= Float < 1.
 	 */
 	public static var random(getRandom, null):Float;
-	private static function getRandom():Float
+	private static inline function getRandom():Float
 	{
 		_seed = Std.int((_seed * 16807.0) % 2147483647.0);
 		return _seed / 2147483647.0;
+	}
+	
+	/**
+	 * A pseudo-random integral value x in the range min <= x <= max.
+	 * @param	min	the minimum value of the range
+	 * @param	max the maximum value of the range
+	 * @return	a random number within the given range values
+	 */
+	public static inline function randIntRange(min:Int, max:Int):Int
+	{
+		return Math.round((min - 0.4999) + ((max + 0.4999) - (min - 0.4999)) * getRandom());
 	}
 	
 	/**
@@ -781,7 +792,7 @@ class HXP
 	private static var _bitmap:Hash<BitmapData> = new Hash<BitmapData>();
 	
 	// Pseudo-random number generation (the seed is set in Engine's contructor).
-	private static var _seed:Int = 0;
+	private static var _seed:Float = 0;
 	private static var _getSeed:Int;
 	
 	// Volume control.

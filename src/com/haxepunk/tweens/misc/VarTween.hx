@@ -26,7 +26,7 @@ class VarTween extends Tween
 	 * @param	duration	Duration of the tween.
 	 * @param	ease		Optional easer function.
 	 */
-	public function tween(object:Dynamic, property:String, to:Float, duration:Float, ease:EaseFunction = null)
+	public function tween(object:Dynamic, property:String, to:Float, duration:Float, ?ease:EaseFunction)
 	{
 		_object = object;
 		_ease = ease;

@@ -3,20 +3,17 @@ package com.haxepunk.masks;
 import com.haxepunk.Mask;
 
 /**
- * Uses parent's hitbox to determine collision. This class is used
- * internally by HaxePunk, you don't need to use this class because
- * this is the default behaviour of Entities without a Mask object.
+ * Uses circular area to determine collision.
  */
-class Hitbox extends Mask
+class Circle extends Mask
 {
 	/**
 	 * Constructor.
-	 * @param	width		Width of the hitbox.
-	 * @param	height		Height of the hitbox.
-	 * @param	x			X offset of the hitbox.
-	 * @param	y			Y offset of the hitbox.
+	 * @param	radius		Radius of the circle.
+	 * @param	x			X offset of the circle.
+	 * @param	y			Y offset of the circle.
 	 */
-	public function new(width:Int = 1, height:Int = 1, x:Int = 0, y:Int = 0) 
+	public function new(radius:Int = 1, x:Int = 0, y:Int = 0) 
 	{
 		super();
 		_width = width;
