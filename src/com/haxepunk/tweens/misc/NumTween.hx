@@ -18,7 +18,7 @@ class NumTween extends Tween
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:CompleteCallback, ?type:TweenType) 
+	public function new(?complete:CompleteCallback, type:TweenType) 
 	{
 		value = 0;
 		super(0, type, complete);
@@ -31,7 +31,7 @@ class NumTween extends Tween
 	 * @param	duration		Duration of the tween.
 	 * @param	ease			Optional easer function.
 	 */
-	public function tween(fromValue:Float, toValue:Float, duration:Float, ?ease:EaseFunction)
+	public function tween(fromValue:Float, toValue:Float, duration:Float, ease:EaseFunction = null)
 	{
 		_start = value = fromValue;
 		_range = toValue - value;

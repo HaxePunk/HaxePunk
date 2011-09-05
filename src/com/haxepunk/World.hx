@@ -48,8 +48,7 @@ class World extends Tweener
 		_remove = new Array<Entity>();
 		_classCount = new Hash<Int>();
 		_typeCount = new Hash<Int>();
-		_recycled = new Hash<FriendEntity>();
-		_entityNames = new Hash<FriendEntity>();
+		_recycled = new Hash<Entity>();
 	}
 	
 	/**
@@ -237,10 +236,11 @@ class World extends Tweener
 	 */
 	public function create(classType:Dynamic, addToWorld:Bool = true):Entity
 	{
-		var fe:FriendEntity = _recycled.get(classType);
+		var className:String = Type.getClassName(classType);
+		var fe:FriendEntity = _recycled.get(className);
 		if (fe != null)
 		{
-			_recycled.set(classType, fe._recycleNext);
+			_recycled.set(className, fe._recycleNext);
 			fe._recycleNext = null;
 		}
 		else fe = Type.createInstance(classType, []);
@@ -270,13 +270,15 @@ class World extends Tweener
 	 */
 	public function clearRecycled(classType:String)
 	{
-		var e:Entity,
-			fe:FriendEntity = _recycled.get(classType);
-		while (fe != null)
+		var e:Entity = _recycled.get(classType),
+			fe:FriendEntity,
+			n:Entity;
+		while (e != null)
 		{
-			e = cast(fe._recycleNext, Entity);
-			fe._recycleNext = null;
 			fe = e;
+			n = fe._recycleNext;
+			fe._recycleNext = null;
+			e = n;
 		}
 		_recycled.set(classType, null);
 	}
@@ -901,17 +903,18 @@ class World extends Tweener
 	 * @param	into		The Array or Vector to populate.
 	 * @return	The same array, populated.
 	 */
-	public function getClass(c:Class<Dynamic>, into:Array<Entity>)
+/*
+	public function getClass(c:Class, into:Array<Entity>)
 	{
-		var fe:FriendEntity = _updateFirst,
+		var e:Entity = _updateFirst,
 			n:Int = into.length;
-		while (fe != null)
+		while (e != null)
 		{
-			if (Std.is(fe, c))
-				into[n++] = cast(fe, Entity);
-			fe = fe._updateNext;
+			if (Std.is(e, c)) into[n++] = e;
+			e = e._updateNext;
 		}
 	}
+*/
 	
 	/**
 	 * Pushes all Entities in the World on the layer into the Array or Vector.
@@ -951,44 +954,6 @@ class World extends Tweener
 	}
 	
 	/**
-	 * Returns the Entity with the instance name, or null if none exists.
-	 * @param	name	Instance name of the Entity.
-	 * @return	An Entity in this world.
-	 */
-	public function getInstance(name:String):Entity
-	{
-		if (name != "" && name != null)
-		{
-			var i:String;
-			for (i in _entityNames.keys())
-			{
-				if (i == name)
-				{
-					var fe:FriendEntity = _entityNames.get(i);
-					if (fe._world == this) return cast(fe, Entity);
-					else _entityNames.set(i, null);
-				}
-			}
-		}
-		return null;
-	}
-	
-	/** @private Register's the Entity's instance name. */
-	public function registerName(e:Entity)
-	{
-		var fe:FriendEntity = e;
-		if (fe._name != "") _entityNames.set(e.name, e);
-		else unregisterName(e);
-	}
-	
-	/** @private Unregister's the Entity's instance name. */
-	public function unregisterName(e:Entity)
-	{
-		var fe:FriendEntity = e;
-		if (_entityNames.get(fe._name) != null) _entityNames.set(fe._name, fe);
-	}
-	
-	/**
 	 * Updates the add/remove lists at the end of the frame.
 	 */
 	public function updateLists()
@@ -1013,7 +978,6 @@ class World extends Tweener
 				removeUpdate(e);
 				removeRender(e);
 				if (fe._type != "") removeType(e);
-				if (fe._name != "") unregisterName(e);
 				if (e.autoClear && ft._tween != null) e.clearTweens();
 			}
 			HXP.clear(_remove);
@@ -1029,7 +993,6 @@ class World extends Tweener
 				addUpdate(e);
 				addRender(e);
 				if (fe._type != "") addType(e);
-				if (fe._name != "") registerName(e);
 				e.added();
 			}
 			HXP.clear(_add);
@@ -1223,24 +1186,23 @@ class World extends Tweener
 	}
 	
 	// Adding and removal.
-	/** @private */  private var _add:Array<Entity>;
-	/** @private */  private var _remove:Array<Entity>;
+	private var _add:Array<Entity>;
+	private var _remove:Array<Entity>;
 	
 	// Update information.
-	/** @private */  private var _updateFirst:FriendEntity;
-	/** @private */  private var _count:Int;
+	private var _updateFirst:FriendEntity;
+	private var _count:Int;
 	
 	// Render information.
-	/** @private */  private var _renderFirst:Array<FriendEntity>;
-	/** @private */  private var _renderLast:Array<FriendEntity>;
-	/** @private */  private var _layerList:Array<Int>;
-	/** @private */  private var _layerCount:Array<Int>;
-	/** @private */  private var _layerSort:Bool;
-	/** @private */  private var _tempArray:Array<Entity>;
+	private var _renderFirst:Array<FriendEntity>;
+	private var _renderLast:Array<FriendEntity>;
+	private var _layerList:Array<Int>;
+	private var _layerCount:Array<Int>;
+	private var _layerSort:Bool;
+	private var _tempArray:Array<Entity>;
 	
-	/** @private */  private var _classCount:Hash<Int>;
-	/** @private */  public var _typeFirst:Hash<FriendEntity>;
-	/** @private */  private var _typeCount:Hash<Int>;
-	/** @private */  private var _recycled:Hash<FriendEntity>;
-	/** @private */  private var _entityNames:Hash<FriendEntity>;
+	private var _classCount:Hash<Int>;
+	public var _typeFirst:Hash<FriendEntity>;
+	private var _typeCount:Hash<Int>;
+	private var _recycled:Hash<Entity>;
 }

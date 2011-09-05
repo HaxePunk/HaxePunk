@@ -4,7 +4,7 @@ import com.haxepunk.Mask;
 
 /**
  * Uses parent's hitbox to determine collision. This class is used
- * internally by HaxePunk, you don't need to use this class because
+ * internally by FlashPunk, you don't need to use this class because
  * this is the default behaviour of Entities without a Mask object.
  */
 class Hitbox extends Mask
@@ -104,14 +104,17 @@ class Hitbox extends Mask
 	/** Updates the parent's bounds for this mask. */
 	override public function update() 
 	{
-		// update entity bounds
-		parent.originX = -_x;
-		parent.originY = -_y;
-		parent.width = _width;
-		parent.height = _height;
-		
-		// update parent list
-		if (list != null) list.update();
+		if (parent != null) 
+		{
+			// update entity bounds
+			parent.originX = -_x;
+			parent.originY = -_y;
+			parent.width = _width;
+			parent.height = _height;
+			
+			// update parent list
+			if (list != null) list.update();
+		}
 	}
 	
 	// Hitbox information.

@@ -1,5 +1,6 @@
 package com.haxepunk.graphics;
 
+import control.Global;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.BlendMode;
@@ -70,7 +71,7 @@ class Image extends Graphic
 		if (Std.is(source, BitmapData))
 		{
 			_source = source;
-			_class = "";
+			_class = "" + Std.string(Global.uniqueGraphicsID++);
 		}
 		else
 		{

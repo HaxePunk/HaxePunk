@@ -28,7 +28,7 @@ class SfxFader extends Tween
 	 * @param	duration	Duration of the fade.
 	 * @param	ease		Optional easer function.
 	 */
-	public function fadeTo(volume:Float, duration:Float, ?ease:EaseFunction)
+	public function fadeTo(volume:Float, duration:Float, ease:EaseFunction = null)
 	{
 		if (volume < 0) volume = 0;
 		_start = _sfx.volume;
@@ -46,7 +46,7 @@ class SfxFader extends Tween
 	 * @param	volume		The volume to fade in the new Sfx to.
 	 * @param	ease		Optional easer function.
 	 */
-	public function crossFade(play:Sfx, loop:Bool, duration:Float, volume:Float = 1, ?ease:EaseFunction)
+	public function crossFade(play:Sfx, loop:Bool, duration:Float, volume:Float = 1, ease:EaseFunction = null)
 	{
 		_crossSfx = play;
 		_crossRange = volume;

@@ -32,7 +32,7 @@ class AngleTween extends Tween
 	 * @param	duration		Duration of the tween.
 	 * @param	ease			Optional easer function.
 	 */
-	public function tween(fromAngle:Float, toAngle:Float, duration:Float, ?ease:EaseFunction)
+	public function tween(fromAngle:Float, toAngle:Float, duration:Float, ease:EaseFunction = null)
 	{
 		_start = angle = fromAngle;
 		var d:Float = toAngle - angle,

@@ -100,7 +100,6 @@ class Engine extends Sprite
 		if (HXP.world.active)
 		{
 			var ft:FriendTweener = HXP.world;
-			Tween.updateStatic();
 			if (ft._tween != null) HXP.world.updateTweens();
 			HXP.world.update();
 		}

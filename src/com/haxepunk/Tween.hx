@@ -1,6 +1,5 @@
 package com.haxepunk;
 
-import com.haxepunk.tweens.TweenInfo;
 import com.haxepunk.utils.Ease;
 
 enum TweenType
@@ -36,7 +35,7 @@ class Tween
 	 * @param	complete		Optional callback for when the Tween completes.
 	 * @param	ease			Optional easer function to apply to the Tweened value.
 	 */
-	public function new(duration:Float, ?type:TweenType, ?complete:CompleteCallback, ?ease:EaseFunction)
+	public function new(duration:Float, ?type:TweenType, ?complete:CompleteCallback, ease:EaseFunction = null)
 	{
 		_target = duration;
 		if (type == null) type = TweenType.Persist;
@@ -104,64 +103,6 @@ class Tween
 	public var scale(getScale, null):Float;
 	private function getScale():Float { return _t; }
 	
-	/**
-	 * Tweens the properties of an object.
-	 * @param	object		Object to tween.
-	 * @param	duration	Duration of the tween.
-	 * @param	values		Properties to tween and their target values (eg. {x:100, y:200}).
-	 * @param	complete	Optional completion callback function.
-	 * @param	ease		Optional easer function.
-	 */
-	public static function to(object:Dynamic, duration:Float, values:Dynamic, ?complete:CompleteCallback, ?ease:EaseFunction)
-	{
-		var t:TweenInfo = TweenInfo.create(object, duration, values, complete, ease),
-			i:Int = _tweens.length;
-		while (i-- > 0)
-		{
-			if (_tweens[i] == null)
-			{
-				_tweens[i] = t;
-				return;
-			}
-		}
-		_tweens.push(t);
-	}
-	
-	/**
-	 * Clears any active static tweens called by Tween.to()
-	 */
-	public static function clear()
-	{
-		var tween:TweenInfo;
-		for (tween in _tweens) tween.destroy();
-		HXP.clear(_tweens);
-	}
-	
-	/** @private Updates the static tweens */
-	public static function updateStatic()
-	{
-		var e:Float, t:Float, i:String, tween:TweenInfo, j:Int = _tweens.length, f:CompleteCallback;
-		while (j-- > 0)
-		{
-			tween = _tweens[j];
-			if (tween != null)
-			{
-				tween.elapsed += HXP.elapsed;
-				e = tween.elapsed / tween.duration;
-				if (e >= 1) e = 1;
-				t = tween.ease == null ? e : tween.ease(e);
-				for (i in tween.start.keys()) Reflect.setField(tween.object, i, tween.start.get(i) + tween.range.get(i) * t);
-				if (e == 1)
-				{
-					f = tween.complete;
-					tween.destroy();
-					_tweens[j] = null;
-					if (f != null) f();
-				}
-			}
-		}
-	}
-	
 	private var _type:TweenType;
 	private var _ease:EaseFunction;
 	private var _t:Float;
@@ -173,5 +114,4 @@ class Tween
 	private var _parent:Tweener;
 	private var _prev:FriendTween;
 	private var _next:FriendTween;
-	private static var _tweens:Array<TweenInfo> = new Array<TweenInfo>();
 }

@@ -45,7 +45,7 @@ class ParticleType
 	 * @param	ease			Optional easer function.
 	 * @return	This ParticleType object.
 	 */
-	public function setMotion(angle:Float, distance:Float, duration:Float, angleRange:Float = 0, distanceRange:Float = 0, durationRange:Float = 0, ?ease:EaseFunction):ParticleType
+	public function setMotion(angle:Float, distance:Float, duration:Float, angleRange:Float = 0, distanceRange:Float = 0, durationRange:Float = 0, ease:EaseFunction = null):ParticleType
 	{
 		_angle = angle * HXP.RAD;
 		_distance = distance;
@@ -66,7 +66,7 @@ class ParticleType
 	 * @param	ease			Optional easer function.
 	 * @return	This ParticleType object.
 	 */
-	public function setMotionVector(x:Float, y:Float, duration:Float, durationRange:Float = 0, ?ease:EaseFunction):ParticleType
+	public function setMotionVector(x:Float, y:Float, duration:Float, durationRange:Float = 0, ease:EaseFunction = null):ParticleType
 	{
 		_angle = Math.atan2(y, x);
 		_angleRange = 0;
@@ -83,7 +83,7 @@ class ParticleType
 	 * @param	ease		Optional easer function.
 	 * @return	This ParticleType object.
 	 */
-	public function setAlpha(start:Float = 1, finish:Float = 0, ?ease:EaseFunction):ParticleType
+	public function setAlpha(start:Float = 1, finish:Float = 0, ease:EaseFunction = null):ParticleType
 	{
 		start = start < 0 ? 0 : (start > 1 ? 1 : start);
 		finish = finish < 0 ? 0 : (finish > 1 ? 1 : finish);
@@ -101,7 +101,7 @@ class ParticleType
 	 * @param	ease		Optional easer function.
 	 * @return	This ParticleType object.
 	 */
-	public function setColor(start:Int = 0xFFFFFF, finish:Int = 0, ?ease:EaseFunction):ParticleType
+	public function setColor(start:Int = 0xFFFFFF, finish:Int = 0, ease:EaseFunction = null):ParticleType
 	{
 		start &= 0xFFFFFF;
 		finish &= 0xFFFFFF;

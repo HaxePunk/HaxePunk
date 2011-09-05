@@ -4,6 +4,7 @@ import flash.display.BitmapData;
 import flash.display.DisplayObject;
 import flash.geom.Point;
 import flash.geom.Rectangle;
+import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
 
 /**
@@ -17,7 +18,7 @@ class Stamp extends Graphic
 	 * @param	x			X offset.
 	 * @param	y			Y offset.
 	 */
-	public function new(source:BitmapData, x:Int = 0, y:Int = 0) 
+	public function new(source:Dynamic, x:Int = 0, y:Int = 0) 
 	{
 		super();
 		
@@ -26,8 +27,9 @@ class Stamp extends Graphic
 		this.y = y;
 		
 		// set the graphic
-		if (Std.is(source, Dynamic)) _source = HXP.getBitmap(source);
-		else if (Std.is(_source, BitmapData)) _source = source;
+		if (Std.is(source, BitmapData)) _source = source;
+		else _source = HXP.getBitmap(source);
+		
 		if (_source == null) throw "Invalid source image.";
 		
 		_sourceRect = _source.rect;
