@@ -70,7 +70,7 @@ class Image extends Graphic
 		if (Std.is(source, BitmapData))
 		{
 			_source = source;
-			_class = "";
+			_class = "BitmapData";
 		}
 		else
 		{
