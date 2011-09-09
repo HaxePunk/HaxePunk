@@ -236,10 +236,11 @@ class World extends Tweener
 	 */
 	public function create(classType:Dynamic, addToWorld:Bool = true):Entity
 	{
-		var fe:FriendEntity = _recycled.get(classType);
+		var className:String = Type.getClassName(classType);
+		var fe:FriendEntity = _recycled.get(className);
 		if (fe != null)
 		{
-			_recycled.set(classType, fe._recycleNext);
+			_recycled.set(className, fe._recycleNext);
 			fe._recycleNext = null;
 		}
 		else fe = Type.createInstance(classType, []);
