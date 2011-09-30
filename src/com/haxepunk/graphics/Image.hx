@@ -1,12 +1,12 @@
 package com.haxepunk.graphics;
 
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.display.BlendMode;
-import nme.geom.ColorTransform;
-import nme.geom.Matrix;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.BlendMode;
+import flash.geom.ColorTransform;
+import flash.geom.Matrix;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 import com.haxepunk.Graphic;
 import com.haxepunk.HXP;
 
@@ -66,7 +66,7 @@ class Image extends Graphic
 	 * @param	source		Source image.
 	 * @param	clipRect	Optional rectangle defining area of the source image to draw.
 	 */
-	public function new(source:Dynamic, clipRect:Rectangle = null, name:String = "BitmapData") 
+	public function new(source:Dynamic, clipRect:Rectangle = null, name:String = "") 
 	{
 		super();
 		init();
@@ -78,7 +78,8 @@ class Image extends Graphic
 		}
 		else
 		{
-			_class = Type.getClassName(Type.getClass(source));
+			if (name == "")_class = Type.getClassName(Type.getClass(source));
+			else _class = name;
 			_source = HXP.getBitmap(source);
 		}
 		if (_source == null) throw "Invalid source image.";

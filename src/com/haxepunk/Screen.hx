@@ -1,14 +1,14 @@
 package com.haxepunk;
 
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.display.BlendMode;
-import nme.display.PixelSnapping;
-import nme.display.Sprite;
-import nme.filters.BitmapFilter;
-import nme.geom.Matrix;
-import nme.geom.Point;
-import nme.geom.Transform;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.BlendMode;
+import flash.display.PixelSnapping;
+import flash.display.Sprite;
+import flash.filters.BitmapFilter;
+import flash.geom.Matrix;
+import flash.geom.Point;
+import flash.geom.Transform;
 import com.haxepunk.graphics.Image;
 
 /**

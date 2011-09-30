@@ -1,10 +1,10 @@
 package com.haxepunk.graphics;
 
-import nme.display.BitmapData;
-import nme.display.BlendMode;
-import nme.display.SpreadMethod;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+import flash.display.BitmapData;
+import flash.display.BlendMode;
+import flash.display.SpreadMethod;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 import com.haxepunk.HXP;
 
 typedef CallbackFunction = Void -> Void;
@@ -37,7 +37,7 @@ class Spritemap extends Image
 	 * @param	frameHeight		Frame height.
 	 * @param	callback		Optional callback function for animation end.
 	 */
-	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, cbFunc:CallbackFunction = null, name:String = "BitmapData") 
+	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, cbFunc:CallbackFunction = null, name:String = "") 
 	{
 		complete = true;
 		rate = 1;

@@ -1,15 +1,15 @@
 package com.haxepunk;
 
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.display.Loader;
-import nme.events.Event;
-import nme.events.IOErrorEvent;
-import nme.Lib;
-import nme.net.URLLoader;
-import nme.net.URLLoaderDataFormat;
-import nme.net.URLRequest;
-import nme.utils.ByteArray;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.Loader;
+import flash.events.Event;
+import flash.events.IOErrorEvent;
+import flash.Lib;
+import flash.net.URLLoader;
+import flash.net.URLLoaderDataFormat;
+import flash.net.URLRequest;
+import flash.utils.ByteArray;
 import haxe.Resource;
 
 /**

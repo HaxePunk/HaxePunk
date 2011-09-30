@@ -1,6 +1,6 @@
 package com.haxepunk;
 
-import nme.geom.Point;
+import flash.geom.Point;
 import com.haxepunk.utils.Input;
 import com.haxepunk.Entity;
 import com.haxepunk.Tweener;

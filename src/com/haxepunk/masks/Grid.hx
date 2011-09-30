@@ -1,12 +1,11 @@
 package com.haxepunk.masks;
 
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 import com.haxepunk.HXP;
 import com.haxepunk.Mask;
-import unit.Player;
 
 
 #if !flash

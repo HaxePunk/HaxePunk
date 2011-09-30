@@ -1,15 +1,15 @@
 package com.haxepunk;
 
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.display.Sprite;
-import nme.display.StageAlign;
-import nme.display.StageDisplayState;
-import nme.display.StageQuality;
-import nme.display.StageScaleMode;
-import nme.events.Event;
-import nme.geom.Rectangle;
-import nme.Lib;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.Sprite;
+import flash.display.StageAlign;
+import flash.display.StageDisplayState;
+import flash.display.StageQuality;
+import flash.display.StageScaleMode;
+import flash.events.Event;
+import flash.geom.Rectangle;
+import flash.Lib;
 import haxe.Timer;
 import com.haxepunk.utils.Draw;
 import com.haxepunk.utils.Input;

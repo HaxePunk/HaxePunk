@@ -1,7 +1,7 @@
 package com.haxepunk;
 
-import nme.display.BitmapData;
-import nme.geom.Point;
+import flash.display.BitmapData;
+import flash.geom.Point;
 
 typedef AssignCallback = Void -> Void;
 

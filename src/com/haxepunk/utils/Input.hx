@@ -1,8 +1,8 @@
 package com.haxepunk.utils;
 
-import nme.events.KeyboardEvent;
-import nme.events.MouseEvent;
-import nme.ui.Keyboard;
+import flash.events.KeyboardEvent;
+import flash.events.MouseEvent;
+import flash.ui.Keyboard;
 import com.haxepunk.HXP;
 
 class Input

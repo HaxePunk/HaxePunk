@@ -1,18 +1,18 @@
 package com.haxepunk;
 
-import nme.display.BitmapData;
-import nme.display.Bitmap;
-import nme.display.Sprite;
-import nme.display.Stage;
-import nme.geom.Matrix;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+import flash.display.BitmapData;
+import flash.display.Bitmap;
+import flash.display.Sprite;
+import flash.display.Stage;
+import flash.geom.Matrix;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 #if flash
 import flash.media.SoundMixer;
 import flash.media.SoundTransform;
 #end
-import nme.system.System;
-import nme.utils.ByteArray;
+import flash.system.System;
+import flash.utils.ByteArray;
 import com.haxepunk.Graphic;
 import com.haxepunk.Tween;
 import com.haxepunk.utils.Ease;

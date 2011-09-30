@@ -1,7 +1,7 @@
 package com.haxepunk.graphics;
 
-import nme.display.BitmapData;
-import nme.display.Graphics;
+import flash.display.BitmapData;
+import flash.display.Graphics;
 import com.haxepunk.HXP;
 import com.haxepunk.graphics.Spritemap;
 
