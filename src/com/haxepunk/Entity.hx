@@ -1,8 +1,8 @@
 package com.haxepunk;
 
-import flash.display.BitmapData;
-import flash.geom.Point;
-import flash.geom.Rectangle;
+import nme.display.BitmapData;
+import nme.geom.Point;
+import nme.geom.Rectangle;
 import com.haxepunk.graphics.Image;
 import com.haxepunk.graphics.Graphiclist;
 
@@ -179,6 +179,8 @@ class Entity extends Tweener
 					if (e._mask == null || e._mask.collide(HITBOX))
 					{
 						this.x = _x; this.y = _y;
+						e.collideListener(this);
+						collideListener(e);
 						return e;
 					}
 				}
@@ -200,6 +202,7 @@ class Entity extends Tweener
 				if (_mask.collide(e._mask != null ? e._mask : e.HITBOX))
 				{
 					this.x = _x; this.y = _y;
+					e.collideListener(this);
 					return e;
 				}
 			}
@@ -646,8 +649,7 @@ class Entity extends Tweener
 	 */
 	public function toString():String
 	{
-		var s:String = _class;
-		return s.substr(7, s.length - 1);
+		return _class;
 	}
 	
 	/**
@@ -786,6 +788,11 @@ class Entity extends Tweener
 	{
 		if (y - originY < top + padding) y = top + originY + padding;
 		if (y - originY + height > bottom - padding) y = bottom - height + originY - padding;
+	}
+	
+	public function collideListener(entity:Entity):Void 
+	{
+		
 	}
 	
 	// Entity information.

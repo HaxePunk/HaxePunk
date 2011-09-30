@@ -2,7 +2,7 @@
 
 import com.haxepunk.Tween;
 import com.haxepunk.utils.Ease;
-import flash.geom.Point;
+import nme.geom.Point;
 
 /**
  * Determines linear motion along a set of points.
@@ -45,13 +45,16 @@ class LinearPath extends Motion
 	 * @param	speed		Speed of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotionSpeed(speed:Float, ease:EaseFunction = null)
+	public function setMotionSpeed(speed:Float, ease:EaseFunction = null, startNow:Bool = true)
 	{
 		updatePath();
 		_target = _distance / speed;
 		_speed = speed;
 		_ease = ease;
-		start();
+		if (startNow) 
+		{
+			start();
+		}
 	}
 	
 	/**

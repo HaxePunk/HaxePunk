@@ -1,16 +1,18 @@
 package com.haxepunk;
 
-import flash.display.BitmapData;
-import flash.display.Bitmap;
-import flash.display.Sprite;
-import flash.display.Stage;
-import flash.geom.Matrix;
-import flash.geom.Point;
-import flash.geom.Rectangle;
+import nme.display.BitmapData;
+import nme.display.Bitmap;
+import nme.display.Sprite;
+import nme.display.Stage;
+import nme.geom.Matrix;
+import nme.geom.Point;
+import nme.geom.Rectangle;
+#if flash
 import flash.media.SoundMixer;
 import flash.media.SoundTransform;
-import flash.system.System;
-import flash.utils.ByteArray;
+#end
+import nme.system.System;
+import nme.utils.ByteArray;
 import com.haxepunk.Graphic;
 import com.haxepunk.Tween;
 import com.haxepunk.utils.Ease;
@@ -149,8 +151,10 @@ class HXP
 	{
 		if (value < 0) value = 0;
 		if (_volume == value) return value;
+		#if flash
 		_soundTransform.volume = _volume = value;
 		SoundMixer.soundTransform = _soundTransform;
+		#end
 		return _volume;
 	}
 	
@@ -164,8 +168,10 @@ class HXP
 		if (value < -1) value = -1;
 		if (value > 1) value = 1;
 		if (_pan == value) return value;
+		#if flash
 		_soundTransform.pan = _pan = value;
 		SoundMixer.soundTransform = _soundTransform;
+		#end
 		return _pan;
 	}
 	
@@ -634,7 +640,7 @@ class HXP
 		if (_bitmap.exists(name))
 			return _bitmap.get(name);
 		
-		var data:BitmapData = Type.createInstance(source, []).bitmapData;
+		var data:BitmapData = source.bitmapData;
 		_bitmap.set(name, data);
 		return data;
 	}
@@ -798,7 +804,9 @@ class HXP
 	// Volume control.
 	private static var _volume:Float = 1;
 	private static var _pan:Float = 0;
+	#if flash
 	private static var _soundTransform:SoundTransform = new SoundTransform();
+	#end
 	
 	// Used for rad-to-deg and deg-to-rad conversion.
 	public static inline var DEG:Float = -180 / Math.PI;

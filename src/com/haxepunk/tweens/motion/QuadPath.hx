@@ -2,7 +2,7 @@
 
 import com.haxepunk.Tween;
 import com.haxepunk.utils.Ease;
-import flash.geom.Point;
+import nme.geom.Point;
 
 /**
  * A series of points which will determine a path from the

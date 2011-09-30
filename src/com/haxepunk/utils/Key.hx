@@ -1,6 +1,6 @@
 package com.haxepunk.utils;
 
-class Key 
+class Key
 {
 	public inline static var ANY = -1;
 	
@@ -102,7 +102,7 @@ class Key
 	 * @param	char		The key to name.
 	 * @return	The name.
 	 */
-	public static function name(char):String
+	public static function nameOfKey(char):String
 	{
 		if (char >= A && char <= Z) return String.fromCharCode(char);
 		if (char >= F1 && char <= F15) return "F" + Std.string(char - 111);

@@ -5,23 +5,24 @@ import com.haxepunk.HXP;
 import com.haxepunk.DataLoader;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
-import flash.display.Bitmap;
-import flash.display.BitmapData;
-import flash.display.BlendMode;
-import flash.display.Graphics;
-import flash.display.Sprite;
-import flash.display.Stage;
-import flash.geom.ColorTransform;
-import flash.geom.Rectangle;
-import flash.Lib;
-import flash.text.TextField;
-import flash.text.TextFormat;
-import flash.text.TextFormatAlign;
+import nme.display.Bitmap;
+import nme.display.BitmapData;
+import nme.display.BlendMode;
+import nme.display.Graphics;
+import nme.display.Sprite;
+import nme.display.Stage;
+import nme.geom.ColorTransform;
+import nme.geom.Rectangle;
+import nme.Lib;
+import nme.text.Font;
+import nme.text.TextField;
+import nme.text.TextFormat;
+import nme.text.TextFormatAlign;
 import haxe.Log;
 import haxe.PosInfos;
 
 // Define classes for FlashDevelop
-#if (flash && swfmill)
+#if (flash && !swfmill)
 	class GfxConsoleDebug  extends BitmapData { }
 	class GfxConsoleLogo   extends BitmapData { }
 	class GfxConsoleOutput extends BitmapData { }
@@ -50,7 +51,10 @@ class Console
 		toggleKey = 192; // Tilde (~) by default
 		
 		_sprite = new Sprite();
-#if flash
+#if nme
+		var font:Font = ApplicationMain.getAsset("source/com/haxepunk/graphics/04B_03__.TTF");
+		_format = new TextFormat(font.fontName);
+#else if flash
 		_format = new TextFormat("default");
 #else
 		_format = new TextFormat("assets/04B_03__.TTF");
@@ -150,9 +154,17 @@ class Console
 		// Quit if the console is already enabled.
 		if (_enabled) return;
 		
-#if flash
+#if nme
+	_bmpLogo = new Bitmap(ApplicationMain.getAsset ("source/com/haxepunk/debug/console_logo.png"));
+	_butDebug = new Bitmap(ApplicationMain.getAsset ("source/com/haxepunk/debug/console_debug.png"));
+	_butOutput = new Bitmap(ApplicationMain.getAsset ("source/com/haxepunk/debug/console_output.png"));
+	_butPlay = new Bitmap(ApplicationMain.getAsset ("source/com/haxepunk/debug/console_play.png"));
+	_butPause = new Bitmap(ApplicationMain.getAsset ("source/com/haxepunk/debug/console_pause.png"));
+	_butStep = new Bitmap(ApplicationMain.getAsset ("source/com/haxepunk/debug/console_step.png"));
+	onLoaded();
+#elseif flash
 	// Use embedded images for flash
-	#if !swfmill
+	#if swfmill
 		_bmpLogo = new GfxConsoleLogo();
 		_butDebug = new GfxConsoleDebug();
 		_butOutput = new GfxConsoleOutput();
@@ -192,7 +204,7 @@ class Console
 		var big:Bool = width >= 480;
 		
 		// The transparent FlashPunk logo overlay bitmap.
-#if flash
+#if (flash)
 		_sprite.addChild(_back);
 		_back.bitmapData = new BitmapData(width, height, true, 0xFFFFFFFF);
 		HXP.matrix.identity();
@@ -201,6 +213,16 @@ class Console
 		HXP.matrix.scale(Math.min(width / _back.bitmapData.width, 1), Math.min(height / _back.bitmapData.height, 1));
 		_back.bitmapData.draw(_bmpLogo, HXP.matrix, null, BlendMode.MULTIPLY);
 		_back.bitmapData.draw(_back.bitmapData, null, null, BlendMode.INVERT);
+		_back.bitmapData.colorTransform(_back.bitmapData.rect, new ColorTransform(1, 1, 1, 0.5));
+#else
+		_sprite.addChild(_back);
+		_back.bitmapData = new BitmapData(width, height, true, 0xFFFFFFFF);
+		HXP.matrix.identity();
+		HXP.matrix.tx = Math.max((_back.bitmapData.width - _bmpLogo.width) / 2, 0);
+		HXP.matrix.ty = Math.max((_back.bitmapData.height - _bmpLogo.height) / 2, 0);
+		HXP.matrix.scale(Math.min(width / _back.bitmapData.width, 1), Math.min(height / _back.bitmapData.height, 1));
+		_back.bitmapData.draw(_bmpLogo, HXP.matrix, null, "multiply");
+		_back.bitmapData.draw(_back.bitmapData, null, null, "invert");
 		_back.bitmapData.colorTransform(_back.bitmapData.rect, new ColorTransform(1, 1, 1, 0.5));
 #end
 		
@@ -212,7 +234,9 @@ class Console
 		_sprite.addChild(_entRead);
 		_entRead.addChild(_entReadText);
 		_entReadText.defaultTextFormat = format(16, 0xFFFFFF, "right");
+		#if flash
 		_entReadText.embedFonts = true;
+		#end
 		_entReadText.width = 100;
 		_entReadText.height = 20;
 		_entRead.x = width - _entReadText.width;
@@ -230,7 +254,9 @@ class Console
 		_sprite.addChild(_fpsRead);
 		_fpsRead.addChild(_fpsReadText);
 		_fpsReadText.defaultTextFormat = format(16);
+		#if flash
 		_fpsReadText.embedFonts = true;
+		#end
 		_fpsReadText.width = 70;
 		_fpsReadText.height = 20;
 		_fpsReadText.x = 2;
@@ -251,8 +277,10 @@ class Console
 		_fpsInfo.addChild(_fpsInfoText1);
 		_fpsInfoText0.defaultTextFormat = format(8, 0xAAAAAA);
 		_fpsInfoText1.defaultTextFormat = format(8, 0xAAAAAA);
+		#if flash
 		_fpsInfoText0.embedFonts = true;
 		_fpsInfoText1.embedFonts = true;
+		#end
 		_fpsInfoText0.width = _fpsInfoText1.width = 60;
 		_fpsInfoText0.height = _fpsInfoText1.height = 20;
 		_fpsInfo.x = 75;
@@ -264,8 +292,10 @@ class Console
 		_logRead.addChild(_logReadText1);
 		_logReadText0.defaultTextFormat = format(16, 0xFFFFFF);
 		_logReadText1.defaultTextFormat = format(big ? 16 : 8, 0xFFFFFF);
+		#if flash
 		_logReadText0.embedFonts = true;
 		_logReadText1.embedFonts = true;
+		#end
 		_logReadText0.selectable = false;
 		_logReadText0.width = 80;
 		_logReadText0.height = 20;
@@ -285,8 +315,10 @@ class Console
 		_debRead.addChild(_debReadText1);
 		_debReadText0.defaultTextFormat = format(16, 0xFFFFFF);
 		_debReadText1.defaultTextFormat = format(8, 0xFFFFFF);
+		#if flash
 		_debReadText0.embedFonts = true;
 		_debReadText1.embedFonts = true;
+		#end
 		_debReadText0.selectable = false;
 		_debReadText0.width = 80;
 		_debReadText0.height = 20;

@@ -1,9 +1,9 @@
 package com.haxepunk;
 
-import flash.events.Event;
-import flash.media.Sound;
-import flash.media.SoundChannel;
-import flash.media.SoundTransform;
+import nme.events.Event;
+import nme.media.Sound;
+import nme.media.SoundChannel;
+import nme.media.SoundTransform;
 
 typedef AudioCompleteCallback = Void -> Void;
 

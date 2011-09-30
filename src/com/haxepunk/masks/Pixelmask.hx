@@ -1,8 +1,8 @@
 package com.haxepunk.masks;
 
-import flash.display.BitmapData;
-import flash.geom.Point;
-import flash.geom.Rectangle;
+import nme.display.BitmapData;
+import nme.geom.Point;
+import nme.geom.Rectangle;
 import com.haxepunk.HXP;
 
 /**
@@ -57,7 +57,11 @@ class Pixelmask extends Hitbox
 		_rect.y = other.parent.y - other.parent.originY;
 		_rect.width = other.parent.width;
 		_rect.height = other.parent.height;
+		#if flash
 		return _data.hitTest(_point, threshold, _rect);
+		#else
+		return false;
+		#end
 	}
 	
 	/** @private Collide against a Hitbox. */
@@ -69,7 +73,11 @@ class Pixelmask extends Hitbox
 		_rect.y = other.parent.y + other._y;
 		_rect.width = other._width;
 		_rect.height = other._height;
+		#if flash
 		return _data.hitTest(_point, threshold, _rect);
+		#else
+		return false;
+		#end
 	}
 	
 	/** @private Collide against a Pixelmask. */
@@ -79,7 +87,11 @@ class Pixelmask extends Hitbox
 		_point.y = parent.y + _y;
 		_point2.x = other.parent.x + other._x;
 		_point2.y = other.parent.y + other._y;
+		#if flash
 		return _data.hitTest(_point, threshold, other._data, _point2, other.threshold);
+		#else
+		return false;
+		#end
 	}
 	
 	/**

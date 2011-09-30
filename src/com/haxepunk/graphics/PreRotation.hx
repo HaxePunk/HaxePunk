@@ -1,10 +1,10 @@
 package com.haxepunk.graphics;
 
-import flash.display.Bitmap;
-import flash.display.BitmapData;
-import flash.geom.Matrix;
-import flash.geom.Point;
-import flash.geom.Rectangle;
+import nme.display.Bitmap;
+import nme.display.BitmapData;
+import nme.geom.Matrix;
+import nme.geom.Point;
+import nme.geom.Rectangle;
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
 

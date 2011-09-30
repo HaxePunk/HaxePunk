@@ -1,12 +1,12 @@
 package com.haxepunk.graphics;
 
-import flash.display.Bitmap;
-import flash.display.BitmapData;
-import flash.display.BlendMode;
-import flash.geom.ColorTransform;
-import flash.geom.Matrix;
-import flash.geom.Point;
-import flash.geom.Rectangle;
+import nme.display.Bitmap;
+import nme.display.BitmapData;
+import nme.display.BlendMode;
+import nme.geom.ColorTransform;
+import nme.geom.Matrix;
+import nme.geom.Point;
+import nme.geom.Rectangle;
 import com.haxepunk.Graphic;
 import com.haxepunk.HXP;
 
@@ -49,7 +49,11 @@ class Image extends Graphic
 	 * Optional blend mode to use when drawing this image.
 	 * Use constants from the flash.display.BlendMode class.
 	 */
+	#if flash
 	public var blend:BlendMode;
+	#else
+	public var blend:String;
+	#end
 	
 	/**
 	 * If the image should be drawn transformed with pixel smoothing.
@@ -62,7 +66,7 @@ class Image extends Graphic
 	 * @param	source		Source image.
 	 * @param	clipRect	Optional rectangle defining area of the source image to draw.
 	 */
-	public function new(source:Dynamic, clipRect:Rectangle = null) 
+	public function new(source:Dynamic, clipRect:Rectangle = null, name:String = "BitmapData") 
 	{
 		super();
 		init();
@@ -70,11 +74,11 @@ class Image extends Graphic
 		if (Std.is(source, BitmapData))
 		{
 			_source = source;
-			_class = "BitmapData";
+			_class = name;
 		}
 		else
 		{
-			_class = Type.getClassName(source);
+			_class = Type.getClassName(Type.getClass(source));
 			_source = HXP.getBitmap(source);
 		}
 		if (_source == null) throw "Invalid source image.";

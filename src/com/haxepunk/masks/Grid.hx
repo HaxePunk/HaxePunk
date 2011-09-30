@@ -1,12 +1,17 @@
 package com.haxepunk.masks;
 
-import flash.display.Bitmap;
-import flash.display.BitmapData;
-import flash.geom.Point;
-import flash.geom.Rectangle;
+import nme.display.Bitmap;
+import nme.display.BitmapData;
+import nme.geom.Point;
+import nme.geom.Rectangle;
 import com.haxepunk.HXP;
 import com.haxepunk.Mask;
+import unit.Player;
 
+
+#if !flash
+typedef Array2D = Array<Array<Int>>;
+#end
 /**
  * Uses a hash grid to determine collision, faster than
  * using hundreds of Entities for tiled levels, etc.
@@ -17,6 +22,7 @@ class Grid extends Hitbox
 	 * If x/y positions should be used instead of columns/rows.
 	 */
 	public var usePositions:Bool;
+	
 	
 	/**
 	 * Constructor.
@@ -55,6 +61,14 @@ class Grid extends Hitbox
 		_check.set(Type.getClassName(Mask), collideMask);
 		_check.set(Type.getClassName(Hitbox), collideHitbox);
 		_check.set(Type.getClassName(Pixelmask), collidePixelmask);
+		
+		#if !flash
+		_grid = new Array2D();
+		for (x in 0..._columns)
+		{
+			_grid[x] = new Array();
+		}
+		#end
 	}
 	
 	/**
@@ -70,7 +84,11 @@ class Grid extends Hitbox
 			column = Std.int(column / _tile.width);
 			row = Std.int(row / _tile.height);
 		}
+		#if flash
 		_data.setPixel32(column, row, solid ? 0xFFFFFFFF : 0);
+		#else
+		_grid[column][row] = (solid ? 1:0);
+		#end
 	}
 	
 	/**
@@ -213,6 +231,7 @@ class Grid extends Hitbox
 	/** @private Collides against an Entity. */
 	override private function collideMask(other:Mask):Bool
 	{
+		#if flash
 		_rect.x = other.parent.x - other.parent.originX - parent.x + parent.originX;
 		_rect.y = other.parent.y - other.parent.originY - parent.y + parent.originY;
 		_point.x = Std.int((_rect.x + other.parent.width - 1) / _tile.width) + 1;
@@ -222,6 +241,27 @@ class Grid extends Hitbox
 		_rect.width = _point.x - _rect.x;
 		_rect.height = _point.y - _rect.y;
 		return _data.hitTest(HXP.zero, 1, _rect);
+		
+		
+		#else
+		var rectX = Std.int(other.parent.x - other.parent.originX - parent.x + parent.originX);
+		var rectY = Std.int(other.parent.y - other.parent.originY - parent.y + parent.originY);
+		var pX:Int = Std.int((rectX + other.parent.width - 1) / _tile.width) + 1;
+		var pY:Int = Std.int((rectY + other.parent.height -1) / _tile.height) + 1;
+		rectX = Std.int(rectX / _tile.width);
+		rectY = Std.int(rectY / _tile.height);
+		var rectWidth:Int = pX - rectX;
+		var rectHeight:Int = pY - rectY;
+
+		for (dx in 0...rectWidth) 
+		{
+			for (dy in 0...rectHeight) 
+			{
+				if (_grid[rectX + dx][rectY + dy] == 1) return true;
+			}
+		}
+		return false;
+		#end
 	}
 	
 	/** @private Collides against a Hitbox. */
@@ -235,12 +275,36 @@ class Grid extends Hitbox
 		_rect.y = Std.int(_rect.y / _tile.height);
 		_rect.width = _point.x - _rect.x;
 		_rect.height = _point.y - _rect.y;
+		#if flash
 		return _data.hitTest(HXP.zero, 1, _rect);
+		#else
+		if (_grid[Std.int(_rect.x)][Std.int(_rect.y)] == 1) 
+		{
+			return true;
+		}
+		if (_grid[Std.int(_rect.x)][Std.int(_rect.y +_rect.height)] == 1) 
+		{
+			return true;
+		}
+		if (_grid[Std.int(_rect.x +_rect.width)][Std.int(_rect.y)] == 1) 
+		{
+			return true;
+		}
+		if (_grid[Std.int(_rect.x +_rect.width)][Std.int(_rect.y +_rect.height)] == 1) 
+		{
+			return true;
+		}
+		return false;
+		#end
 	}
 	
 	/** @private Collides against a Pixelmask. */
 	private function collidePixelmask(other:Pixelmask):Bool
 	{
+		#if !flash
+		return true;
+		#end
+		
 		var x1:Int = Std.int(other.parent.x + other.x - parent.x - _x),
 			y1:Int = Std.int(other.parent.y + other.y - parent.y - _y),
 			x2:Int = Std.int((x1 + other.width - 1) / _tile.width),
@@ -258,7 +322,9 @@ class Grid extends Hitbox
 			{
 				if (_data.getPixel32(x1, y1) != 0)
 				{
+					#if flash
 					if (other.data.hitTest(_point, 1, _tile)) return true;
+					#end
 				}
 				x1 ++;
 				_tile.x += _tile.width;
@@ -279,4 +345,8 @@ class Grid extends Hitbox
 	private var _rect:Rectangle;
 	private var _point:Point;
 	private var _point2:Point;
+	
+	#if !flash
+	private var _grid:Array2D;
+	#end
 }

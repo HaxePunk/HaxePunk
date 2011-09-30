@@ -1,6 +1,6 @@
 package com.haxepunk;
 
-import flash.geom.Point;
+import nme.geom.Point;
 import com.haxepunk.utils.Input;
 import com.haxepunk.Entity;
 import com.haxepunk.Tweener;
@@ -104,6 +104,7 @@ class World extends Tweener
 			i:Int = _layerList.length;
 		while (i-- > 0)
 		{
+			trace(i);
 			fe = _renderLast[_layerList[i]];
 			while (fe != null)
 			{

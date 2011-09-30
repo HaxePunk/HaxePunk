@@ -1,11 +1,11 @@
 package com.haxepunk.graphics;
 
-import flash.display.BitmapData;
-import flash.geom.Point;
-import flash.geom.Rectangle;
-import flash.text.TextField;
-import flash.text.TextFormat;
-import flash.text.TextLineMetrics;
+import nme.display.BitmapData;
+import nme.geom.Point;
+import nme.geom.Rectangle;
+import nme.text.TextField;
+import nme.text.TextFormat;
+
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
 
@@ -26,7 +26,9 @@ class Text extends Image
 	public function new(text:String, x:Float = 0, y:Float = 0, width:Int = 0, height:Int = 0)
 	{
 		_field = new TextField();
+		#if flash
 		_field.embedFonts = true;
+		#end
 		_field.defaultTextFormat = _form = new TextFormat("default", 16, 0xFFFFFF);
 		_field.text = _text = text;
 		if (width == 0) width = Std.int(_field.textWidth + 4);

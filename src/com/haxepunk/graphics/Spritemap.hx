@@ -1,10 +1,10 @@
 package com.haxepunk.graphics;
 
-import flash.display.BitmapData;
-import flash.display.BlendMode;
-import flash.display.SpreadMethod;
-import flash.geom.Point;
-import flash.geom.Rectangle;
+import nme.display.BitmapData;
+import nme.display.BlendMode;
+import nme.display.SpreadMethod;
+import nme.geom.Point;
+import nme.geom.Rectangle;
 import com.haxepunk.HXP;
 
 typedef CallbackFunction = Void -> Void;
@@ -37,7 +37,7 @@ class Spritemap extends Image
 	 * @param	frameHeight		Frame height.
 	 * @param	callback		Optional callback function for animation end.
 	 */
-	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, cbFunc:CallbackFunction = null) 
+	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, cbFunc:CallbackFunction = null, name:String = "BitmapData") 
 	{
 		complete = true;
 		rate = 1;
@@ -45,7 +45,7 @@ class Spritemap extends Image
 		_timer = 0;
 		
 		_rect = new Rectangle(0, 0, frameWidth, frameHeight);
-		super(source, _rect);
+		super(source, _rect, name);
 		if (frameWidth == 0) _rect.width = this.source.width;
 		if (frameHeight == 0) _rect.height = this.source.height;
 		
@@ -67,7 +67,8 @@ class Spritemap extends Image
 		// get position of the current frame
 		_rect.x = _rect.width * _frame;
 		_rect.y = Std.int(_rect.x / _width) * _rect.height;
-		_rect.x %= _width;
+		_rect.x = _rect.x % _width;
+		
 		if (_flipped) _rect.x = (_width - _rect.width) - _rect.x;
 		
 		// update the buffer
@@ -192,7 +193,7 @@ class Spritemap extends Image
 	public function setAnimFrame(name:String, index:Int)
 	{
 		var frames:Array<Int> = _anims.get(name).frames;
-		index %= frames.length;
+		index = index % frames.length;
 		if (index < 0) index += frames.length;
 		frame = frames[index];
 	}

@@ -1,9 +1,9 @@
 package com.haxepunk.graphics;
 
-import flash.display.BitmapData;
-import flash.display.DisplayObject;
-import flash.geom.Point;
-import flash.geom.Rectangle;
+import nme.display.BitmapData;
+import nme.display.DisplayObject;
+import nme.geom.Point;
+import nme.geom.Rectangle;
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
 
