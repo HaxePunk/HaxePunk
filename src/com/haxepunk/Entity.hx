@@ -179,8 +179,6 @@ class Entity extends Tweener
 					if (e._mask == null || e._mask.collide(HITBOX))
 					{
 						this.x = _x; this.y = _y;
-						e.collideListener(this);
-						collideListener(e);
 						return e;
 					}
 				}
@@ -202,7 +200,6 @@ class Entity extends Tweener
 				if (_mask.collide(e._mask != null ? e._mask : e.HITBOX))
 				{
 					this.x = _x; this.y = _y;
-					e.collideListener(this);
 					return e;
 				}
 			}
@@ -794,10 +791,6 @@ class Entity extends Tweener
 		if (y - originY + height > bottom - padding) y = bottom - height + originY - padding;
 	}
 	
-	public function collideListener(entity:Entity):Void 
-	{
-		
-	}
 	
 	// Entity information.
 	private var _class:String;
