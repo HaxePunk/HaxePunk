@@ -22,7 +22,7 @@ class Draw
 	 * The blending mode used by Draw functions. This will not
 	 * apply to Draw.line(), but will apply to Draw.linePlus().
 	 */
-	#if flash
+	#if (flash || js)
 	public static var blend:BlendMode;
 	#else
 	public static var blend:String;
@@ -34,7 +34,7 @@ class Draw
 	 * @param	camera		The camera offset (use null for none).
 	 * @param	blend		The blend mode to use.
 	 */
-	#if flash
+	#if (flash || js)
 	public static function setTarget(target:BitmapData, camera:Point = null, blend:BlendMode = null)
 	{
 		_target = target;

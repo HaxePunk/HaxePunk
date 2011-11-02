@@ -18,7 +18,7 @@ class Canvas extends Graphic
 	/**
 	 * Optional blend mode to use (see flash.display.BlendMode for blending modes).
 	 */
-	#if flash
+	#if (flash || js)
 	public var blend:BlendMode;
 	#else
 	public var blend:String;

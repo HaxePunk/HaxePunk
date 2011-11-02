@@ -31,6 +31,12 @@ class HXP
 	public static inline var VERSION:String = "1.4";
 	
 	/**
+	 * The standard layer used since only flash can handle negative indicies in arrays, set your layers to some offset of this
+	 */
+	public static inline var BASELAYER:Int = 10;
+	 
+	
+	/**
 	 * Width of the game.
 	 */
 	public static var width:Int;
@@ -190,7 +196,7 @@ class HXP
 	 * @param	value		The Float to evaluate.
 	 * @return	1 if value > 0, -1 if value < 0, and 0 when value == 0.
 	 */
-	public static function sign(value:Float):Int
+	public static inline function sign(value:Float):Int
 	{
 		return value < 0 ? -1 : (value > 0 ? 1 : 0);
 	}
@@ -334,6 +340,11 @@ class HXP
 	public static function distance(x1:Float, y1:Float, x2:Float = 0, y2:Float = 0):Float
 	{
 		return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+	}
+	
+	public static inline function distanceSquared(x1:Float, y1:Float, x2:Float = 0, y2:Float = 0):Float 
+	{
+		return (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
 	}
 	
 	/**

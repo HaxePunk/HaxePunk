@@ -29,7 +29,7 @@ class Text extends Image
 		#if flash
 		_field.embedFonts = true;
 		#end
-		_field.defaultTextFormat = _form = new TextFormat("default", 16, 0xFFFFFF);
+		_field.defaultTextFormat = _form = new TextFormat("source/com/haxepunk/graphics/04B_03__", 16, 0xFFFFFF);
 		_field.text = _text = text;
 		if (width == 0) width = Std.int(_field.textWidth + 4);
 		if (height == 0) height = Std.int(_field.textHeight + 4);

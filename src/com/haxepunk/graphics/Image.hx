@@ -49,7 +49,7 @@ class Image extends Graphic
 	 * Optional blend mode to use when drawing this image.
 	 * Use constants from the flash.display.BlendMode class.
 	 */
-	#if flash
+	#if (flash || js)
 	public var blend:BlendMode;
 	#else
 	public var blend:String;
@@ -65,6 +65,7 @@ class Image extends Graphic
 	 * Constructor.
 	 * @param	source		Source image.
 	 * @param	clipRect	Optional rectangle defining area of the source image to draw.
+	 * @param	name		Optional name, necessary to identify the bitmapData if you are using flipped
 	 */
 	public function new(source:Dynamic, clipRect:Rectangle = null, name:String = "") 
 	{
@@ -258,6 +259,7 @@ class Image extends Graphic
 	private function setFlipped(value:Bool):Bool
 	{
 		if (_flipped == value || _class == "") return value;
+		
 		_flipped = value;
 		var temp:BitmapData = _source;
 		if (!value || _flip != null)

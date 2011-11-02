@@ -45,16 +45,14 @@ class LinearPath extends Motion
 	 * @param	speed		Speed of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotionSpeed(speed:Float, ease:EaseFunction = null, startNow:Bool = true)
+	public function setMotionSpeed(speed:Float, ease:EaseFunction = null)
 	{
 		updatePath();
 		_target = _distance / speed;
 		_speed = speed;
 		_ease = ease;
-		if (startNow) 
-		{
-			start();
-		}
+		
+		start();
 	}
 	
 	/**

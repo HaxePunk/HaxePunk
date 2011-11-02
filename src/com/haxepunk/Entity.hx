@@ -101,12 +101,14 @@ class Entity extends Tweener
 		if (mask != null) this.mask = mask;
 		HITBOX.assignTo(this);
 		_class = Type.getClassName(Type.getClass(this));
+		
+		layer = HXP.BASELAYER;
 	}
 	
 	/**
 	 * Override this, called when the Entity is added to a World.
 	 */
-	public function added()
+	public function added():Void
 	{
 		
 	}
@@ -114,7 +116,7 @@ class Entity extends Tweener
 	/**
 	 * Override this, called when the Entity is removed from a World.
 	 */
-	public function removed()
+	public function removed():Void
 	{
 		
 	}
@@ -122,7 +124,7 @@ class Entity extends Tweener
 	/**
 	 * Updates the Entity.
 	 */
-	override public function update() 
+	override public function update():Void
 	{
 		
 	}
@@ -131,7 +133,7 @@ class Entity extends Tweener
 	 * Renders the Entity. If you override this for special behaviour,
 	 * remember to call super.render() to render the Entity's graphic.
 	 */
-	public function render() 
+	public function render():Void
 	{
 		if (_graphic != null && _graphic.visible)
 		{
@@ -179,8 +181,6 @@ class Entity extends Tweener
 					if (e._mask == null || e._mask.collide(HITBOX))
 					{
 						this.x = _x; this.y = _y;
-						e.collideListener(this);
-						collideListener(e);
 						return e;
 					}
 				}
@@ -202,7 +202,6 @@ class Entity extends Tweener
 				if (_mask.collide(e._mask != null ? e._mask : e.HITBOX))
 				{
 					this.x = _x; this.y = _y;
-					e.collideListener(this);
 					return e;
 				}
 			}
@@ -478,10 +477,12 @@ class Entity extends Tweener
 	private function setLayer(value:Int):Int
 	{
 		if (_layer == value) return _layer;
+		#if flash
 		if (value < 0) 
 		{
 			trace("Negative layers may not work properly if you aren't using flash");
 		}
+		#end
 		if (!_added)
 		{
 			_layer = value;
@@ -794,10 +795,6 @@ class Entity extends Tweener
 		if (y - originY + height > bottom - padding) y = bottom - height + originY - padding;
 	}
 	
-	public function collideListener(entity:Entity):Void 
-	{
-		
-	}
 	
 	// Entity information.
 	private var _class:String;

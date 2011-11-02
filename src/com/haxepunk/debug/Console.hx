@@ -54,7 +54,7 @@ class Console
 #if nme
 		var font:Font = ApplicationMain.getAsset("source/com/haxepunk/graphics/04B_03__.TTF");
 		_format = new TextFormat(font.fontName);
-#else if flash
+#elseif flash
 		_format = new TextFormat("default");
 #else
 		_format = new TextFormat("assets/04B_03__.TTF");
@@ -204,7 +204,7 @@ class Console
 		var big:Bool = width >= 480;
 		
 		// The transparent FlashPunk logo overlay bitmap.
-#if (flash)
+#if (flash || js)
 		_sprite.addChild(_back);
 		_back.bitmapData = new BitmapData(width, height, true, 0xFFFFFFFF);
 		HXP.matrix.identity();
