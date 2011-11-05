@@ -32,6 +32,8 @@ class ParticleType
 		if (frames == null) frames = new Array<Int>();
 		_frames = frames;
 		_frameCount = frames.length;
+		
+		_gravity = 0;
 	}
 	
 	/**
@@ -76,6 +78,19 @@ class ParticleType
 		return this;
 	}
 	
+	/**
+	* Sets the gravity range of this particle type.
+	* @param gravity Gravity amount to affect to the particle y velocity.
+	* @param gravityRange Random amount to add to the particle's gravity.
+	* @return This ParticleType object.
+	*/
+	public function setGravity(gravity:Float = 0, gravityRange:Float = 0):ParticleType
+	{
+		_gravity = gravity;
+		_gravityRange = gravityRange;
+		return this;
+	}
+
 	/**
 	 * Sets the alpha range of this particle type.
 	 * @param	start		The starting alpha.
@@ -140,6 +155,10 @@ class ParticleType
 	public var _duration:Float;
 	public var _durationRange:Float;
 	public var _ease:EaseFunction;
+	
+	// Gravity information.
+	public var _gravity:Float;
+	public var _gravityRange:Float;
 	
 	// Alpha information.
 	public var _alpha:Float;

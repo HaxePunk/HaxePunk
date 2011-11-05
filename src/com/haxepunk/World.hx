@@ -204,10 +204,10 @@ class World extends Tweener
 	 * @param	layer		Layer of the Entity.
 	 * @return	The Entity that was added.
 	 */
-	public function addGraphic(graphic:Graphic, layer:Int = 0, x:Int = 0, y:Int = 0):Entity
+	public function addGraphic(graphic:Graphic, layer:Int = HXP.BASELAYER, x:Float = 0, y:Float = 0):Entity
 	{
 		var e:Entity = new Entity(x, y, graphic);
-		if (layer != 0) e.layer = layer;
+		if (layer != HXP.BASELAYER) e.layer = layer;
 		e.active = false;
 		return add(e);
 	}
@@ -441,7 +441,8 @@ class World extends Tweener
 		while (fe != null)
 		{
 			e = cast(fe, Entity);
-			if (e.collidePoint(e.x, e.y, pX, pY)) return e;
+			if (e.collidePoint(e.x, e.y, pX, pY))
+				return e;
 			fe = fe._typeNext;
 		}
 		return null;
@@ -601,6 +602,30 @@ class World extends Tweener
 	}
 	
 	/**
+	 * Populates an array with all Entities that collide with the circle. This
+	 * function does not empty the array, that responsibility is left to the user.
+	 * @param	type 		The Entity type to check for.
+	 * @param	circleX		X position of the circle.
+	 * @param	circleY		Y position of the circle.
+	 * @param	radius		The radius of the circle.
+	 * @param	into		The Array or Vector to populate with collided Entities.
+	 */
+	public function collideCircleInto(type:String, circleX:Float, circleY:Float, radius:Float , into:Array<Entity>)
+	{
+		var e:Entity,
+			fe:FriendEntity = _typeFirst.get(type),
+			n:Int = into.length;
+			
+		radius *= radius;//Square it to avoid the square root
+		while (fe != null)
+		{
+			e = cast(fe, Entity);
+			if (HXP.distanceSquared(circleX, circleY, e.x, e.y) < radius) into[n ++] = e;
+			fe = fe._typeNext;
+		}
+	}
+	
+	/**
 	 * Populates an array with all Entities that collide with the position. This
 	 * function does not empty the array, that responsibility is left to the user.
 	 * @param	type		The Entity type to check for.
@@ -673,6 +698,38 @@ class World extends Tweener
 			n = cast(fe, Entity);
 			dist = (x - n.x) * (x - n.x) + (y - n.y) * (y - n.y);
 			if (dist < nearDist)
+			{
+				nearDist = dist;
+				near = n;
+			}
+			fe = fe._typeNext;
+		}
+		return near;
+	}
+	
+	
+	/**
+	 * Finds the Entity nearest to another.
+	 * @param	type		The Entity type to check for.
+	 * @param	e			The Entity to find the nearest to.
+	 * @param	useHitboxes	If the Entities' hitboxes should be used to determine the distance. If false, their x/y coordinates are used.
+	 * @return	The nearest Entity to e.
+	 */
+	public function nearestToClass(type:String, e:Entity, classType:Dynamic ,useHitboxes:Bool = false):Entity
+	{
+		if (useHitboxes) return nearestToRect(type, e.x - e.originX, e.y - e.originY, e.width, e.height);
+		var n:Entity,
+			fe:FriendEntity = _typeFirst.get(type),
+			nearDist:Float = NUMBER_MAX_VALUE,
+			near:Entity = null,
+			dist:Float,
+			x:Float = e.x - e.originX,
+			y:Float = e.y - e.originY;
+		while (fe != null)
+		{
+			n = cast(fe, Entity);
+			dist = (x - n.x) * (x - n.x) + (y - n.y) * (y - n.y);
+			if (dist < nearDist && Std.is(e, classType))
 			{
 				nearDist = dist;
 				near = n;
@@ -1044,7 +1101,6 @@ class World extends Tweener
 		if (fe._updateNext != null) fe._updateNext._updatePrev = fe._updatePrev;
 		if (fe._updatePrev != null) fe._updatePrev._updateNext = fe._updateNext;
 		fe._updateNext = fe._updatePrev = null;
-		
 		_count --;
 		_classCount.set(fe._class, _classCount.get(fe._class) - 1); // decrement
 	}

@@ -51,6 +51,7 @@ class LinearPath extends Motion
 		_target = _distance / speed;
 		_speed = speed;
 		_ease = ease;
+		
 		start();
 	}
 	

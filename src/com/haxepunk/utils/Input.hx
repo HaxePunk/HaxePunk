@@ -171,14 +171,16 @@ class Input
 	private static function onKeyDown(e:KeyboardEvent = null)
 	{
 		var code:Int = lastKey = e.keyCode;
-
+		
 		if (code == Key.BACKSPACE) keyString = keyString.substr(0, keyString.length - 1);
 		else if ((code > 47 && code < 58) || (code > 64 && code < 91) || code == 32)
 		{
 			if (keyString.length > kKeyStringMax) keyString = keyString.substr(1);
 			var char:String = String.fromCharCode(code);
+			#if flash
 			if (e.shiftKey || Keyboard.capsLock) char = char.toUpperCase();
 			else char = char.toLowerCase();
+			#end
 			keyString += char;
 		}
 		

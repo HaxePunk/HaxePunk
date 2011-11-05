@@ -5,7 +5,7 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.text.TextField;
 import flash.text.TextFormat;
-import flash.text.TextLineMetrics;
+
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
 
@@ -26,8 +26,10 @@ class Text extends Image
 	public function new(text:String, x:Float = 0, y:Float = 0, width:Int = 0, height:Int = 0)
 	{
 		_field = new TextField();
+		#if flash
 		_field.embedFonts = true;
-		_field.defaultTextFormat = _form = new TextFormat("default", 16, 0xFFFFFF);
+		#end
+		_field.defaultTextFormat = _form = new TextFormat("source/com/haxepunk/graphics/04B_03__", 16, 0xFFFFFF);
 		_field.text = _text = text;
 		if (width == 0) width = Std.int(_field.textWidth + 4);
 		if (height == 0) height = Std.int(_field.textHeight + 4);

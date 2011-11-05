@@ -46,9 +46,9 @@ class DataLoader
 				{
 					bitmap.bitmapData = bdata.bitmapData;
 				}
-			});
-		#else
-			bitmap.bitmapData = BitmapData.load(file);
+			});		
+		#elseif !js
+		bitmap.bitmapData = BitmapData.load(file);
 		#end
 	}
 	
@@ -107,7 +107,7 @@ class DataLoader
 				});
 				loader.load(new URLRequest(e.url));
 			}
-		#else
+		#elseif !js
 			if (e.binary)
 			{
 				var b = ByteArray.readFile(e.url);
