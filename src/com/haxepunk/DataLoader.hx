@@ -46,10 +46,8 @@ class DataLoader
 				{
 					bitmap.bitmapData = bdata.bitmapData;
 				}
-			});
-		#elseif js
-		
-		#else
+			});		
+		#elseif !js
 		bitmap.bitmapData = BitmapData.load(file);
 		#end
 	}

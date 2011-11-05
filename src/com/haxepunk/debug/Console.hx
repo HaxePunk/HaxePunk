@@ -22,7 +22,7 @@ import haxe.Log;
 import haxe.PosInfos;
 
 // Define classes for FlashDevelop
-#if (flash && !swfmill)
+#if (flash && swfmill)
 	class GfxConsoleDebug  extends BitmapData { }
 	class GfxConsoleLogo   extends BitmapData { }
 	class GfxConsoleOutput extends BitmapData { }
@@ -164,7 +164,7 @@ class Console
 	onLoaded();
 #elseif flash
 	// Use embedded images for flash
-	#if swfmill
+	#if !swfmill
 		_bmpLogo = new GfxConsoleLogo();
 		_butDebug = new GfxConsoleDebug();
 		_butOutput = new GfxConsoleOutput();

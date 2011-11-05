@@ -477,7 +477,7 @@ class Entity extends Tweener
 	private function setLayer(value:Int):Int
 	{
 		if (_layer == value) return _layer;
-		#if flash
+		#if debug
 		if (value < 0) 
 		{
 			trace("Negative layers may not work properly if you aren't using flash");

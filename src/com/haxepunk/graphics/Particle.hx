@@ -27,6 +27,9 @@ class Particle
 	public var _moveX:Float;
 	public var _moveY:Float;
 	
+	// Gravity information.
+	public var _gravity:Float;
+	
 	// List information.
 	public var _prev:Particle;
 	public var _next:Particle;
