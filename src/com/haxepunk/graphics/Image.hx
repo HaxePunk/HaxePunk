@@ -49,7 +49,11 @@ class Image extends Graphic
 	 * Optional blend mode to use when drawing this image.
 	 * Use constants from the flash.display.BlendMode class.
 	 */
+	#if (flash || js)
 	public var blend:BlendMode;
+	#else
+	public var blend:String;
+	#end
 	
 	/**
 	 * If the image should be drawn transformed with pixel smoothing.
@@ -61,8 +65,9 @@ class Image extends Graphic
 	 * Constructor.
 	 * @param	source		Source image.
 	 * @param	clipRect	Optional rectangle defining area of the source image to draw.
+	 * @param	name		Optional name, necessary to identify the bitmapData if you are using flipped
 	 */
-	public function new(source:Dynamic, clipRect:Rectangle = null) 
+	public function new(source:Dynamic, clipRect:Rectangle = null, name:String = "") 
 	{
 		super();
 		init();
@@ -70,11 +75,12 @@ class Image extends Graphic
 		if (Std.is(source, BitmapData))
 		{
 			_source = source;
-			_class = "BitmapData";
+			_class = name;
 		}
 		else
 		{
-			_class = Type.getClassName(source);
+			if (name == "")_class = Type.getClassName(Type.getClass(source));
+			else _class = name;
 			_source = HXP.getBitmap(source);
 		}
 		if (_source == null) throw "Invalid source image.";
@@ -253,6 +259,7 @@ class Image extends Graphic
 	private function setFlipped(value:Bool):Bool
 	{
 		if (_flipped == value || _class == "") return value;
+		
 		_flipped = value;
 		var temp:BitmapData = _source;
 		if (!value || _flip != null)

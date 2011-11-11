@@ -7,6 +7,8 @@ import com.haxepunk.Graphic;
 import com.haxepunk.HXP;
 import com.haxepunk.masks.Grid;
 
+
+typedef Array2D = Array<Array<Int>>
 /**
  * A canvas to which Tiles can be drawn for fast multiple tile rendering.
  */
@@ -180,6 +182,17 @@ class Tilemap extends Canvas
 			row ++;
 		}
 		usePositions = u;
+	}
+	
+	public function loadFrom2DArray(array:Array2D):Void 
+	{
+		for (x in 0...array.length)
+		{
+			for (y in 0...array[0].length)
+			{
+				setTile(x, y, array[x][y]);
+			}
+		}
 	}
 	
 	/**

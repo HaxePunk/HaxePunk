@@ -22,7 +22,11 @@ class Draw
 	 * The blending mode used by Draw functions. This will not
 	 * apply to Draw.line(), but will apply to Draw.linePlus().
 	 */
+	#if (flash || js)
 	public static var blend:BlendMode;
+	#else
+	public static var blend:String;
+	#end
 	
 	/**
 	 * Sets the drawing target for Draw functions.
@@ -30,12 +34,21 @@ class Draw
 	 * @param	camera		The camera offset (use null for none).
 	 * @param	blend		The blend mode to use.
 	 */
+	#if (flash || js)
 	public static function setTarget(target:BitmapData, camera:Point = null, blend:BlendMode = null)
 	{
 		_target = target;
 		_camera = (camera != null) ? camera : HXP.zero;
 		Draw.blend = blend;
 	}
+	#else
+	public static function setTarget(target:BitmapData, camera:Point = null, blend:String = null)
+	{
+		_target = target;
+		_camera = (camera != null) ? camera : HXP.zero;
+		Draw.blend = blend;
+	}
+	#end
 	
 	/**
 	 * Resets the drawing target to the default. The same as calling Draw.setTarget(HXP.buffer, HXP.camera).

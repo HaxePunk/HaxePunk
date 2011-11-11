@@ -117,6 +117,7 @@ class Emitter extends Graphic
 			td = (type._ease == null) ? t : type._ease(t);
 			_p.x = _point.x + p._x + p._moveX * td;
 			_p.y = _point.y + p._y + p._moveY * td;
+			p._moveY += p._gravity * td;
 			
 			// get frame
 			rect.x = rect.width * type._frames[Std.int(td * type._frameCount)];
@@ -181,6 +182,17 @@ class Emitter extends Graphic
 		if (pt == null) return null;
 		return pt.setMotion(angle, distance, duration, angleRange, distanceRange, durationRange, ease);
 	}
+	/**
+	 * Sets the gravity range for a particle type.
+	 * @param  name      The particle type.
+	 * @param  gravity      Gravity amount to affect to the particle y velocity.
+	 * @param  gravityRange  Random amount to add to the particle's gravity.
+	 * @return  This ParticleType object.
+	 */
+	public function setGravity(name:String, gravity:Float = 0, gravityRange:Float = 0):ParticleType
+	{
+		return cast(_types.get(name) , ParticleType).setGravity(gravity, gravityRange);
+	}
 	
 	/**
 	 * Sets the alpha range of the particle type.
@@ -243,6 +255,7 @@ class Emitter extends Graphic
 		p._moveY = Math.sin(a) * d;
 		p._x = x;
 		p._y = y;
+		p._gravity = type._gravity + type._gravityRange * HXP.random;
 		_particleCount ++;
 		return (_particle = p);
 	}
