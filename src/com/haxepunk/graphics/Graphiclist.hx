@@ -19,14 +19,16 @@ class Graphiclist extends Graphic
 	{
 		super();
 		
-		if (graphic == null) throw "Invalid graphic list";
 		
 		_graphics = new Array<Graphic>();
 		_temp = new Array<Graphic>();
 		_camera = new Point();
 		
-		var g:Graphic;
-		for (g in graphic) if (cast(g, Graphic) != null) add(g);
+		if (graphic != null)
+		{
+			var g:Graphic;
+			for (g in graphic) if (cast(g, Graphic) != null) add(g);
+		}
 	}
 	
 	/** @private Updates the graphics in the list. */

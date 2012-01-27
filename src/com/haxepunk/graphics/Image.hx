@@ -3,6 +3,7 @@ package com.haxepunk.graphics;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.BlendMode;
+import flash.display.Tilesheet;
 import flash.geom.ColorTransform;
 import flash.geom.Matrix;
 import flash.geom.Point;
@@ -15,6 +16,7 @@ import com.haxepunk.HXP;
  */
 class Image extends Graphic
 {
+	
 	/**
 	 * Rotation of the image, in degrees.
 	 */
@@ -93,6 +95,12 @@ class Image extends Graphic
 			_sourceRect = clipRect;
 		}
 		
+		#if cpp
+		_tileSheet = HXP.tileSheet;
+	
+		
+		#end
+		
 		createBuffer();
 		updateBuffer();
 	}
@@ -123,6 +131,38 @@ class Image extends Graphic
 	/** Renders the image. */
 	override public function render(target:BitmapData, point:Point, camera:Point) 
 	{
+		#if cpp
+		var useScale = (HXP.flags & HXP.TILE_SCALE) > 0;
+		var useRotation = (HXP.flags & HXP.TILE_ROTATION) > 0;
+		var useRGB = (HXP.flags & HXP.TILE_RGB) > 0;
+		var useAlpha = (HXP.flags & HXP.TILE_ALPHA) > 0;
+		HXP.tileData[HXP.currentPos++] = x;
+		HXP.tileData[HXP.currentPos++] = y;
+		
+		if (useScale)
+		{
+			HXP.tileData[HXP.currentPos++] = scale;
+		}
+		
+		if (useRotation)
+		{
+			HXP.tileData[HXP.currentPos++] = angle;
+		}
+		
+		if (useRGB)
+		{
+			HXP.tileData[HXP.currentPos++] = _tint.redMultiplier;
+			HXP.tileData[HXP.currentPos++] = _tint.greenMultiplier;
+			HXP.tileData[HXP.currentPos++] = _tint.blueMultiplier;
+		}
+		
+		if (useAlpha)
+		{
+			HXP.tileData[HXP.currentPos++] = _alpha;
+		}
+		
+		#end
+		
 		// quit if no graphic is assigned
 		if (_buffer == null) return;
 		
@@ -150,6 +190,8 @@ class Image extends Graphic
 		_matrix.tx += originX + _point.x;
 		_matrix.ty += originY + _point.y;
 		target.draw(_bitmap, _matrix, null, blend, null, smooth);
+		
+		
 	}
 	
 	/**
@@ -361,4 +403,10 @@ class Image extends Graphic
 	private var _flipped:Bool;
 	private var _flip:BitmapData;
 	private static var _flips:Hash<BitmapData> = new Hash<BitmapData>();
+	
+
+	#if cpp
+	private var _tileSheet:Tilesheet;
+	private var imageID:Int;
+	#end
 }

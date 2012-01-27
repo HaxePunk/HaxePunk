@@ -9,8 +9,8 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 #if flash
 import flash.media.SoundMixer;
-import flash.media.SoundTransform;
 #end
+import flash.media.SoundTransform;
 import flash.system.System;
 import flash.utils.ByteArray;
 import com.haxepunk.Graphic;
@@ -80,6 +80,20 @@ class HXP
 	 * The current screen buffer, drawn to in the render loop.
 	 */
 	public static var buffer:BitmapData;
+	
+	#if cpp
+	public static var tileSheet:nme.display.Tilesheet;
+	public static var tileData:Array<Float>;
+	public static var flags:Int = 0;
+	/**
+	 * @private Used internally, used to determine which index to set the data in tileData
+	 */
+	public static var currentPos:Int = 0;
+	public static inline var TILE_SCALE = 0x0001;
+	public static inline var TILE_ROTATION = 0x0002;
+	public static inline var TILE_RGB = 0x0004;
+	public static inline var TILE_ALPHA = 0x0008;
+	#end
 	
 	/**
 	 * A rectangle representing the size of the screen.
@@ -157,8 +171,8 @@ class HXP
 	{
 		if (value < 0) value = 0;
 		if (_volume == value) return value;
-		#if flash
 		_soundTransform.volume = _volume = value;
+		#if flash
 		SoundMixer.soundTransform = _soundTransform;
 		#end
 		return _volume;
@@ -174,8 +188,8 @@ class HXP
 		if (value < -1) value = -1;
 		if (value > 1) value = 1;
 		if (_pan == value) return value;
-		#if flash
 		_soundTransform.pan = _pan = value;
+		#if flash
 		SoundMixer.soundTransform = _soundTransform;
 		#end
 		return _pan;
@@ -337,7 +351,7 @@ class HXP
 	 * @param	y2		The second y-position.
 	 * @return	The distance.
 	 */
-	public static function distance(x1:Float, y1:Float, x2:Float = 0, y2:Float = 0):Float
+	public static inline function distance(x1:Float, y1:Float, x2:Float = 0, y2:Float = 0):Float
 	{
 		return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 	}
@@ -815,9 +829,8 @@ class HXP
 	// Volume control.
 	private static var _volume:Float = 1;
 	private static var _pan:Float = 0;
-	#if flash
 	private static var _soundTransform:SoundTransform = new SoundTransform();
-	#end
+	
 	
 	// Used for rad-to-deg and deg-to-rad conversion.
 	public static inline var DEG:Float = -180 / Math.PI;

@@ -3,6 +3,7 @@ package com.haxepunk.masks;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.geom.Point;
+import flash.geom.Point;
 import flash.geom.Rectangle;
 import com.haxepunk.HXP;
 import com.haxepunk.Mask;
@@ -277,19 +278,23 @@ class Grid extends Hitbox
 		#if flash
 		return _data.hitTest(HXP.zero, 1, _rect);
 		#else
-		if (_grid[Std.int(_rect.x)][Std.int(_rect.y)] == 1) 
+		var xx = Std.int(_rect.x);
+		var yy = Std.int(_rect.y);
+		var ww = Std.int(_rect.y +_rect.height);
+		var hh = Std.int(_rect.x +_rect.width);
+		if (_grid[xx][yy] == 1) 
 		{
 			return true;
 		}
-		if (_grid[Std.int(_rect.x)][Std.int(_rect.y +_rect.height)] == 1) 
+		if (_grid[xx][yy + hh] == 1) 
 		{
 			return true;
 		}
-		if (_grid[Std.int(_rect.x +_rect.width)][Std.int(_rect.y)] == 1) 
+		if (_grid[xx + ww][yy] == 1) 
 		{
 			return true;
 		}
-		if (_grid[Std.int(_rect.x +_rect.width)][Std.int(_rect.y +_rect.height)] == 1) 
+		if (_grid[xx + ww][yy + hh] == 1) 
 		{
 			return true;
 		}
@@ -301,6 +306,7 @@ class Grid extends Hitbox
 	private function collidePixelmask(other:Pixelmask):Bool
 	{
 		#if !flash
+		trace('Pixelmasks will not work in targets other than flash due to hittest not being implemented in NME.');
 		return true;
 		#end
 		
@@ -334,6 +340,20 @@ class Grid extends Hitbox
 			_tile.y += _tile.height;
 		}
 		return false;
+	}
+	
+	public function squareProjection(axis:Point, point:Point):Void 
+	{
+		if (axis.x < axis.y) 
+		{
+			point.x = axis.x;
+			point.y = axis.y;
+		}
+		else
+		{
+			point.y = axis.x;
+			point.x = axis.y;
+		}
 	}
 	
 	// Grid information.

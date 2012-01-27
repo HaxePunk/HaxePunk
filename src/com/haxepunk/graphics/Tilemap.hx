@@ -36,6 +36,7 @@ class Tilemap extends Canvas
 		_height = height - (height % tileHeight);
 		_columns = Std.int(_width / tileWidth);
 		_rows = Std.int(_height / tileHeight);
+		if (_columns == 0 || _rows == 0) throw "Cannot create a bitmapdata of width/height = 0";
 		_map = new BitmapData(_columns, _rows, false, 0);
 		_temp = _map.clone();
 		_tile = new Rectangle(0, 0, tileWidth, tileHeight);

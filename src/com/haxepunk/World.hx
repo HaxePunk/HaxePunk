@@ -112,6 +112,11 @@ class World extends Tweener
 				fe = fe._renderPrev;
 			}
 		}
+		
+		#if cpp
+		HXP.tileSheet = new nme.display.Tilesheet(nme.Assets.getBitmapData(MyAssets.strGFXPlayer));
+		HXP.tileSheet.drawTiles(HXP.stage.graphics, HXP.tileData, false, HXP.flags);
+		#end
 	}
 	
 	/**
@@ -438,6 +443,9 @@ class World extends Tweener
 	{
 		var e:Entity,
 			fe:FriendEntity = _typeFirst.get(type);
+		var a = new Array<Entity>();
+		getType(control.Global.UNIT, a);
+		trace(a.length);
 		while (fe != null)
 		{
 			e = cast(fe, Entity);

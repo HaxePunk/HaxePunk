@@ -150,11 +150,11 @@ class Input
 	{
 		if (!_enabled && HXP.stage != null)
 		{
-			HXP.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-			HXP.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
-			HXP.stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-			HXP.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
-			HXP.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
+			HXP.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, false, 2);
+			HXP.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false, 2);
+			HXP.stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown, false, 2);
+			HXP.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false, 2);
+			HXP.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel, false, 2);
 		}
 	}
 	
