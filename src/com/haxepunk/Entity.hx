@@ -199,7 +199,7 @@ class Entity extends Tweener
 			&& y - originY < e.y - e.originY + e.height
 			&& e.collidable && e != this)
 			{
-				if (_mask.collide(e._mask != null ? e._mask : e.HITBOX))//TODO: e.HITBOX is likely iunnecesary
+				if (_mask.collide(e._mask != null ? e._mask : e.HITBOX))
 				{
 					this.x = _x; this.y = _y;
 					return e;
