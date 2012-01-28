@@ -4,6 +4,8 @@ import flash.geom.Point;
 import com.haxepunk.utils.Input;
 import com.haxepunk.Entity;
 import com.haxepunk.Tweener;
+import flash.geom.Rectangle;
+import nme.Lib;
 
 /**
  * Updated by Engine, main game container that holds all currently active Entities.
@@ -56,7 +58,7 @@ class World extends Tweener
 	 */
 	public function begin()
 	{
-		
+
 	}
 	
 	/**
@@ -98,6 +100,7 @@ class World extends Tweener
 	 */
 	public function render() 
 	{
+		
 		// render the entities in order of depth
 		var e:Entity,
 			fe:FriendEntity,
@@ -112,10 +115,9 @@ class World extends Tweener
 				fe = fe._renderPrev;
 			}
 		}
-		
 		#if cpp
-		HXP.tileSheet = new nme.display.Tilesheet(nme.Assets.getBitmapData(MyAssets.strGFXPlayer));
-		HXP.tileSheet.drawTiles(HXP.stage.graphics, HXP.tileData, false, HXP.flags);
+		HXP.engine.graphics.clear();
+		HXP.tilesheet.drawTiles(HXP.engine.graphics,  HXP.tileData, false, HXP.TILE_ALPHA);
 		#end
 	}
 	
@@ -443,9 +445,6 @@ class World extends Tweener
 	{
 		var e:Entity,
 			fe:FriendEntity = _typeFirst.get(type);
-		var a = new Array<Entity>();
-		getType(control.Global.UNIT, a);
-		trace(a.length);
 		while (fe != null)
 		{
 			e = cast(fe, Entity);

@@ -1,4 +1,4 @@
-package collision;
+package com.haxepunk.masks;
 
 /**
  * ...

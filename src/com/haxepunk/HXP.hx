@@ -82,9 +82,9 @@ class HXP
 	public static var buffer:BitmapData;
 	
 	#if cpp
-	public static var tileSheet:nme.display.Tilesheet;
-	public static var tileData:Array<Float>;
-	public static var flags:Int = 0;
+	public static var tilesheet:nme.display.Tilesheet;
+	public static var tileData:Array<Float> = new Array<Float>();
+	public static var tilesheetFlags:Int = 0;
 	/**
 	 * @private Used internally, used to determine which index to set the data in tileData
 	 */

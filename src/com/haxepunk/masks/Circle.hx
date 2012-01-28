@@ -1,4 +1,4 @@
-package collision;
+package com.haxepunk.masks;
 
 import com.haxepunk.Mask;
 import com.haxepunk.masks.Grid;
@@ -9,6 +9,7 @@ import flash.geom.Point;
  */
 
  using Std;
+
 class Circle extends Mask
 {
 	/**
@@ -120,7 +121,6 @@ class Circle extends Mask
 		collisionInfo.max = _radius;
 	}
 	
-	#if debug
 	override public function debugDraw():Void 
 	{
 		if (parent != null)
@@ -128,8 +128,6 @@ class Circle extends Mask
 		else
 			com.haxepunk.utils.Draw.circle(x.int(), y.int(), radius.int(), 0xFF0000);
 	}
-	
-	#end
 	
 	/**
 	 * X offset.
@@ -175,14 +173,15 @@ class Circle extends Mask
 	/** Updates the parent's bounds for this mask. */
 	override public function update() 
 	{
-		 update entity bounds
+		//update entity bounds
 		parent.originX = -_x;
 		parent.originY = -_y;
-		parent.width = _width;
-		parent.height = _height;
+		parent.width = _radius.int();
+		parent.height = _radius.int();
 		
 		// update parent list
-		if (list != null) list.update();
+		if (list != null) 
+			list.update();
 	}
 	
 	// Hitbox information.

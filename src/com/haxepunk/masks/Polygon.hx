@@ -1,6 +1,5 @@
-package collision;
-import collision.Mask;
-import logic.Unit;
+package com.haxepunk.masks;
+import com.haxepunk.Mask;
 import flash.geom.Point;
 import flash.Vector;
 import flash.Vector;

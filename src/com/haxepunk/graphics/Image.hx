@@ -3,7 +3,6 @@ package com.haxepunk.graphics;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.BlendMode;
-import flash.display.Tilesheet;
 import flash.geom.ColorTransform;
 import flash.geom.Matrix;
 import flash.geom.Point;
@@ -96,7 +95,7 @@ class Image extends Graphic
 		}
 		
 		#if cpp
-		_tileSheet = HXP.tileSheet;
+		_tileSheet = HXP.tilesheet;
 	
 		
 		#end
@@ -132,12 +131,13 @@ class Image extends Graphic
 	override public function render(target:BitmapData, point:Point, camera:Point) 
 	{
 		#if cpp
-		var useScale = (HXP.flags & HXP.TILE_SCALE) > 0;
-		var useRotation = (HXP.flags & HXP.TILE_ROTATION) > 0;
-		var useRGB = (HXP.flags & HXP.TILE_RGB) > 0;
-		var useAlpha = (HXP.flags & HXP.TILE_ALPHA) > 0;
+		var useScale = (HXP.tilesheetFlags & HXP.TILE_SCALE) > 0;
+		var useRotation = (HXP.tilesheetFlags & HXP.TILE_ROTATION) > 0;
+		var useRGB = (HXP.tilesheetFlags & HXP.TILE_RGB) > 0;
+		var useAlpha = (HXP.tilesheetFlags & HXP.TILE_ALPHA) > 0;
 		HXP.tileData[HXP.currentPos++] = x;
 		HXP.tileData[HXP.currentPos++] = y;
+		HXP.tileData[HXP.currentPos++] = imageID;
 		
 		if (useScale)
 		{
@@ -161,7 +161,7 @@ class Image extends Graphic
 			HXP.tileData[HXP.currentPos++] = _alpha;
 		}
 		
-		#end
+		#else
 		
 		// quit if no graphic is assigned
 		if (_buffer == null) return;
@@ -191,7 +191,7 @@ class Image extends Graphic
 		_matrix.ty += originY + _point.y;
 		target.draw(_bitmap, _matrix, null, blend, null, smooth);
 		
-		
+		#end
 	}
 	
 	/**
@@ -406,7 +406,7 @@ class Image extends Graphic
 	
 
 	#if cpp
-	private var _tileSheet:Tilesheet;
+	private var _tileSheet:nme.display.Tilesheet;
 	private var imageID:Int;
 	#end
 }

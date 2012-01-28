@@ -5,7 +5,6 @@ import com.haxepunk.HXP;
 import com.haxepunk.DataLoader;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
-import haxe.FastList;
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.BlendMode;
@@ -102,28 +101,7 @@ class Console
 	
 	public function traceLog(v:Dynamic, ?infos:PosInfos)
 	{
-		var string = infos.className + "(" + infos.lineNumber + "): " + Std.string(v);
-		if (string.length > 90) 
-		{
-			var len = string.length;
-			var ii = string.indexOf(" ", 80);
-			LOG.push(string.substr(0, ii));//Tries to split the string at a location with a space
-			
-			while (ii < string.length) 
-			{
-				var next = string.indexOf(" ", ii + 60);
-				
-				if (next == -1 || next - ii > 80)
-				{
-					next = string.indexOf(",", ii + 60);
-					if (next == -1 || next - ii > 80)
-						next = ii + 60;
-				}
-				LOG.push("\t\t" + string.substr(ii, next));
-				ii += next;
-			}
-		}
-		else LOG.push(string);
+		LOG.push(infos.className + "(" + infos.lineNumber + "): " + Std.string(v));
 		if (_enabled && _sprite.visible) updateLog();
 	}
 	
