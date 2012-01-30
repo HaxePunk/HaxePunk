@@ -474,7 +474,7 @@ class Entity extends Tweener
 	 */
 	public var layer(getLayer, setLayer):Int;
 	inline private function getLayer():Int { return _layer; }
-	inline private function setLayer(value:Int):Int
+	private function setLayer(value:Int):Int
 	{
 		if (_layer == value) return _layer;
 		#if debug
@@ -499,7 +499,7 @@ class Entity extends Tweener
 	 */
 	public var type(getType, setType):String;
 	inline private function getType():String { return _type; }
-	inline private function setType(value:String):String
+	private function setType(value:String):String
 	{
 		if (_type == value) return _type;
 		if (!_added)
@@ -519,7 +519,7 @@ class Entity extends Tweener
 	 */
 	public var mask(getMask, setMask):Mask;
 	inline private function getMask():Mask { return _mask; }
-	inline private function setMask(value:Mask):Mask
+	private function setMask(value:Mask):Mask
 	{
 		if (_mask == value) return value;
 		if (_mask != null) _mask.assignTo(null);
@@ -533,7 +533,7 @@ class Entity extends Tweener
 	 */
 	public var graphic(getGraphic, setGraphic):Graphic;
 	inline private function getGraphic():Graphic { return _graphic; }
-	inline private function setGraphic(value:Graphic):Graphic
+	private function setGraphic(value:Graphic):Graphic
 	{
 		if (_graphic == value) return value;
 		_graphic = value;

@@ -110,7 +110,7 @@ class HXP
 	 */
 	public static var world(getWorld, setWorld):World;
 	inline private static function getWorld():World { return _world; }
-	inline private static function setWorld(value:World):World
+	private static function setWorld(value:World):World
 	{
 		if (_world == value) return value;
 		_goto = value;
@@ -154,7 +154,7 @@ class HXP
 	 */
 	public static var volume(getVolume, setVolume):Float;
 	inline private static function getVolume():Float { return _volume; }
-	inline private static function setVolume(value:Float):Float
+	private static function setVolume(value:Float):Float
 	{
 		if (value < 0) value = 0;
 		if (_volume == value) return value;
@@ -170,7 +170,7 @@ class HXP
 	 */
 	public static var pan(getPan, setPan):Float;
 	inline private static function getPan():Float { return _pan; }
-	inline private static function setPan(value:Float):Float
+	private static function setPan(value:Float):Float
 	{
 		if (value < -1) value = -1;
 		if (value > 1) value = 1;
@@ -197,7 +197,7 @@ class HXP
 	 * @param	value		The Float to evaluate.
 	 * @return	1 if value > 0, -1 if value < 0, and 0 when value == 0.
 	 */
-	inline public static inline function sign(value:Float):Int
+	public static inline function sign(value:Float):Int
 	{
 		return value < 0 ? -1 : (value > 0 ? 1 : 0);
 	}
@@ -324,7 +324,7 @@ class HXP
 	 * @param	anchor		Anchor to rotate around.
 	 * @param	angle		The amount of degrees to rotate by.
 	 */
-	inline public static function rotateAround(object:Dynamic, anchor:Dynamic, angle:Float = 0, relative:Bool = true)
+	public static inline function rotateAround(object:Dynamic, anchor:Dynamic, angle:Float = 0, relative:Bool = true)
 	{
 		if (relative) angle += HXP.angle(anchor.x, anchor.y, object.x, object.y);
 		HXP.angleXY(object, angle, HXP.distance(anchor.x, anchor.y, object.x, object.y), anchor.x, anchor.y);
@@ -421,7 +421,7 @@ class HXP
 	 * @param	max			The maximum range.
 	 * @return	The clamped value.
 	 */
-	public static inline function clamp(value:Float, min:Float, max:Float):Float
+	public static function clamp(value:Float, min:Float, max:Float):Float
 	{
 		if (max > min)
 		{
@@ -522,7 +522,7 @@ class HXP
 		return Std.int((_seed / 2147483647.0) * amount);
 	}
 	
-	private static inline function indexOf<T>(a:Array<T>, v:T):Int
+	private static function indexOf<T>(a:Array<T>, v:T):Int
 	{
 		var i = 0;
 		for( v2 in a ) {
@@ -540,7 +540,7 @@ class HXP
 	 * @param	loop		If true, will jump to the first item after the last item is reached.
 	 * @return	The next item in the list.
 	 */
-	public static inline function next<T>(current:T, options:Array<T>, loop:Bool = true):Dynamic
+	public static function next<T>(current:T, options:Array<T>, loop:Bool = true):Dynamic
 	{
 		if (loop) return options[(indexOf(options, current) + 1) % options.length];
 		return options[Std.int(Math.max(indexOf(options, current) + 1, options.length - 1))];
@@ -553,7 +553,7 @@ class HXP
 	 * @param	loop		If true, will jump to the last item after the first is reached.
 	 * @return	The previous item in the list.
 	 */
-	public static inline function prev<T>(current:T, options:Array<T>, loop:Bool = true):Dynamic
+	public static function prev<T>(current:T, options:Array<T>, loop:Bool = true):Dynamic
 	{
 		if (loop) return options[((indexOf(options, current) - 1) + options.length) % options.length];
 		return options[Std.int(Math.max(indexOf(options, current) - 1, 0))];

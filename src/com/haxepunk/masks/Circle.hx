@@ -133,12 +133,13 @@ class Circle extends Mask
 	 */
 	public var x(getX, setX):Int;
 	inline private function getX():Int { return _x; }
-	inline private function setX(value:Int):Int
+	private function setX(value:Int):Int
 	{
 		if (_x == value) return value;
 		_x = value;
-		if (parent != null) update();
-		else if (parent != null) update();		return _x;
+		if (list != null) update();
+		else if (parent != null) update();	
+		return _x;
 	}
 	
 	/**
@@ -146,12 +147,13 @@ class Circle extends Mask
 	 */
 	public var y(getY, setY):Int;
 	inline private function getY():Int { return _y; }
-	inline private function setY(value:Int):Int
+	private function setY(value:Int):Int
 	{
 		if (_y == value) return value;
 		_y = value;
-		if (parent != null) update();
-		else if (parent != null) update();		return _y;
+		if (list != null) update();
+		else if (parent != null) update();		
+		return _y;
 	}
 	
 	/**
@@ -159,13 +161,13 @@ class Circle extends Mask
 	 */
 	public var radius(getRadius, setRadius):Float;
 	inline private function getRadius():Float { return _radius; }
-	inline private function setRadius(value:Float):Float
+	private function setRadius(value:Float):Float
 	{
 		if (_radius == value) return value;
 		_radius = value;
 		_squaredRadius = value * value;
-		if (parent != null) update();
-		else if (parent != null) update();
+		if (list != null) update();
+		else if (parent != null) update();	
 		return _radius;
 	}
 	

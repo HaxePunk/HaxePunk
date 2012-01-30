@@ -881,7 +881,7 @@ class World extends Tweener
 	 * @param	layer		The layer to check.
 	 * @return	The Entity.
 	 */
-	inline public function layerFirst(layer:Int):Entity
+	public function layerFirst(layer:Int):Entity
 	{
 		if (_updateFirst == null) return null;
 		return cast(_renderFirst[layer], Entity);
@@ -892,7 +892,7 @@ class World extends Tweener
 	 * @param	layer		The layer to check.
 	 * @return	The Entity.
 	 */
-	inline public function layerLast(layer:Int):Entity
+	public function layerLast(layer:Int):Entity
 	{
 		if (_updateFirst == null) return null;
 		return cast(_renderLast[layer], Entity);
@@ -902,7 +902,7 @@ class World extends Tweener
 	 * The Entity that will be rendered first by the World.
 	 */
 	public var farthest(getFarthest, null):Entity;
-	inline private function getFarthest():Entity
+	private function getFarthest():Entity
 	{
 		if (_updateFirst == null) return null;
 		return cast(_renderLast[_layerList[_layerList.length - 1]], Entity);
@@ -912,7 +912,7 @@ class World extends Tweener
 	 * The Entity that will be rendered last by the world.
 	 */
 	public var nearest(getNearest, null):Entity;
-	inline private function getNearest():Entity
+	private function getNearest():Entity
 	{
 		if (_updateFirst == null) return null;
 		return cast(_renderFirst[_layerList[0]], Entity);
@@ -922,7 +922,7 @@ class World extends Tweener
 	 * The layer that will be rendered first by the World.
 	 */
 	public var layerFarthest(getLayerFarthest, null):Int;
-	inline private function getLayerFarthest():Int
+	private function getLayerFarthest():Int
 	{
 		if (_updateFirst == null) return 0;
 		return _layerList[_layerList.length - 1];
@@ -932,7 +932,7 @@ class World extends Tweener
 	 * The layer that will be rendered last by the World.
 	 */
 	public var layerNearest(getLayerNearest, null):Int;
-	inline private function getLayerNearest():Int
+	private function getLayerNearest():Int
 	{
 		if (_updateFirst == null) return 0;
 		return _layerList[0];

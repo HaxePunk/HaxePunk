@@ -341,25 +341,21 @@ class Polygon extends Mask
 	#if debug
 	override public function debugDraw(graphics:Graphics):Void 
 	{
-		com.haxepunk.utils.Draw.setTarget(com.haxepunk.HXP.buffer, com.haxepunk.HXP.camera);
-		
-		var len = _points.length - 1;
 		if (parent != null) 
 		{
-			
-			for (ii in 0...len) 
+			graphics.moveTo(_points[_points.length - 1].x + parent.x, _points[_points.length - 1].y + parent.y);
+			for (ii in 0..._points.length)
 			{
-				com.haxepunk.utils.Draw.line((_points[ii].x + parent.x).int(), _points[ii].y.int()+ parent.y.int(), _points[ii+1].x.int() + parent.x.int(), _points[ii+1].y.int()+ parent.y.int(), 0xFF0000);
+				graphics.lineTo(_points[ii].x + parent.x, _points[ii].y + parent.y);
 			}
-			com.haxepunk.utils.Draw.line((_points[len].x + parent.x).int(), _points[len].y.int()+ parent.y.int(), _points[0].x.int() + parent.x.int(), _points[0].y.int()+ parent.y.int(), 0xFF0000);
 		}
 		else 
 		{
-			for (ii in 0..._points.length - 1) 
+			graphics.moveTo(_points[_points.length - 1].x + x, _points[_points.length - 1].y + y);
+			for (ii in 0..._points.length)
 			{
-				com.haxepunk.utils.Draw.line((_points[ii].x + x).int(), _points[ii].y.int()+ y.int(), _points[ii+1].x.int() + x.int(), _points[ii+1].y.int()+ y.int(), 0xFF0000);
+				graphics.lineTo(_points[ii].x + x, _points[ii].y + y);
 			}
-			com.haxepunk.utils.Draw.line((_points[len].x + x).int(), _points[len].y.int()+ y.int(), _points[0].x.int() + x.int(), _points[0].y.int()+ y.int(), 0xFF0000);
 		}
 	}
 	#end
@@ -374,6 +370,7 @@ class Polygon extends Mask
 		if (_x == value) return value;
 		_x = value;
 		if (parent != null) update();
+		else if (parent != null) update();
 		return _x;
 	}
 	
@@ -382,11 +379,12 @@ class Polygon extends Mask
 	 */
 	public var y(getY, setY):Int;
 	private inline function getY():Int { return _y; }
-	private inline function setY(value:Int):Int
+	private function setY(value:Int):Int
 	{
 		if (_y == value) return value;
 		_y = value;
-		if (parent != null) update();
+		if (list != null) update();
+		else if (parent != null) update();	
 		return _y;
 	}
 	
@@ -395,11 +393,12 @@ class Polygon extends Mask
 	 */
 	public var width(getWidth, setWidth):Int;
 	inline private function getWidth():Int { return _width; }
-	inline private function setWidth(value:Int):Int
+	private function setWidth(value:Int):Int
 	{
 		if (_width == value) return value;
 		_width = value;
-		if (parent != null) update();
+		if (list != null) update();
+		else if (parent != null) update();	
 		return _width;
 	}
 	
@@ -409,11 +408,13 @@ class Polygon extends Mask
 	public var height(getHeight, setHeight):Int;
 	
 	inline private function getHeight():Int { return _height; }
-	inline private function setHeight(value:Int):Int
+	private function setHeight(value:Int):Int
 	{
 		if (_height == value) return value;
 		_height = value;
-		if (parent != null) update();
+		if (list != null)
+		if (list != null) update();
+		else if (parent != null) update();	
 		return _height;
 	}
 	
@@ -421,12 +422,13 @@ class Polygon extends Mask
 	public var angle(get_angle, set_angle):Float;
 	inline private function get_angle():Float { return _angle; }
 	
-	inline private function set_angle(value:Float):Float 
+	private function set_angle(value:Float):Float 
 	{
 		if (value == _angle) return value;
 		var diff = _angle - value;
 		rotate(diff);
-		
+		if (list != null) update();
+		else if (parent != null) update();	
 		return _angle = value;
 	}
 	
@@ -434,11 +436,11 @@ class Polygon extends Mask
 	/** Updates the parent's bounds for this mask. */
 	override public function update() 
 	{
-		// update entity bounds
-		//parent.originX = -_x;
-		//parent.originY = -_y;
-		//parent.width = _width;
-		//parent.height = _height;
+		//update entity bounds
+		parent.originX = -_x;
+		parent.originY = -_y;
+		parent.width = _width;
+		parent.height = _height;
 	}
 	
 	/**

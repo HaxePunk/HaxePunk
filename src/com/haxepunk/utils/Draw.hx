@@ -1,5 +1,6 @@
-package com.haxepunk.utils;
 
+package com.haxepunk.utils;
+#if !neko
 import flash.display.BitmapData;
 import flash.display.BlendMode;
 import flash.display.Graphics;
@@ -386,3 +387,4 @@ class Draw
 	private static var _rect:Rectangle = HXP.rect;
 	private static var _matrix:Matrix = new Matrix();
 }
+#end
