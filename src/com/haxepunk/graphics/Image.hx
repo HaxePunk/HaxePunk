@@ -75,6 +75,9 @@ class Image extends Graphic
 		
 		if (Std.is(source, BitmapData))
 		{
+			#if hardware
+			imageID = -1;
+			#end
 			_source = source;
 			_class = name;
 		}
@@ -84,8 +87,22 @@ class Image extends Graphic
 			else _class = name;
 			_source = HXP.getBitmap(source);
 		}
+		#if hardware
+		imageID = HXP.getBitmapIndex(source);
+		_bufferRect = HXP.sheetRectangles[imageID];
+		_tileSheet = HXP.tilesheet;
+		
+		if (imageID == -1) //Temporary fix
+		{
+			_sourceRect = source.rect;
+			_bufferRect = source.rect;
+			createBuffer();
+			updateBuffer();
+		}
+		#else
 		if (_source == null) throw "Invalid source image.";
 		_sourceRect = _source.rect;
+		
 		
 		if (clipRect != null)
 		{
@@ -94,14 +111,9 @@ class Image extends Graphic
 			_sourceRect = clipRect;
 		}
 		
-		#if cpp
-		_tileSheet = HXP.tilesheet;
-	
-		
-		#end
-		
 		createBuffer();
 		updateBuffer();
+		#end
 	}
 	
 	/** @private Initialize variables */
@@ -130,38 +142,41 @@ class Image extends Graphic
 	/** Renders the image. */
 	override public function render(target:BitmapData, point:Point, camera:Point) 
 	{
-		#if cpp
-		var useScale = (HXP.tilesheetFlags & HXP.TILE_SCALE) > 0;
-		var useRotation = (HXP.tilesheetFlags & HXP.TILE_ROTATION) > 0;
-		var useRGB = (HXP.tilesheetFlags & HXP.TILE_RGB) > 0;
-		var useAlpha = (HXP.tilesheetFlags & HXP.TILE_ALPHA) > 0;
-		HXP.tileData[HXP.currentPos++] = x;
-		HXP.tileData[HXP.currentPos++] = y;
-		HXP.tileData[HXP.currentPos++] = imageID;
-		
-		if (useScale)
+		#if hardware
+		if (imageID > -1) 
 		{
-			HXP.tileData[HXP.currentPos++] = scale;
+			var useScale = (HXP.tilesheetFlags & HXP.TILE_SCALE) > 0;
+			var useRotation = (HXP.tilesheetFlags & HXP.TILE_ROTATION) > 0;
+			var useRGB = (HXP.tilesheetFlags & HXP.TILE_RGB) > 0;
+			var useAlpha = (HXP.tilesheetFlags & HXP.TILE_ALPHA) > 0;
+			HXP.tileData[HXP.currentPos++] = point.x + x - camera.x * scrollX;
+			HXP.tileData[HXP.currentPos++] = point.y + y - camera.y * scrollY;
+			HXP.tileData[HXP.currentPos++] = imageID;
+			if (useScale)
+			{
+				HXP.tileData[HXP.currentPos++] = scale;
+			}
+			
+			if (useRotation)
+			{
+				HXP.tileData[HXP.currentPos++] = angle;
+			}
+			
+			if (useRGB)
+			{
+				HXP.tileData[HXP.currentPos++] = _tint.redMultiplier;
+				HXP.tileData[HXP.currentPos++] = _tint.greenMultiplier;
+				HXP.tileData[HXP.currentPos++] = _tint.blueMultiplier;
+			}
+			
+			if (useAlpha)
+			{
+				HXP.tileData[HXP.currentPos++] = _alpha;
+			}
+			return;
 		}
 		
-		if (useRotation)
-		{
-			HXP.tileData[HXP.currentPos++] = angle;
-		}
-		
-		if (useRGB)
-		{
-			HXP.tileData[HXP.currentPos++] = _tint.redMultiplier;
-			HXP.tileData[HXP.currentPos++] = _tint.greenMultiplier;
-			HXP.tileData[HXP.currentPos++] = _tint.blueMultiplier;
-		}
-		
-		if (useAlpha)
-		{
-			HXP.tileData[HXP.currentPos++] = _alpha;
-		}
-		
-		#else
+		#end
 		
 		// quit if no graphic is assigned
 		if (_buffer == null) return;
@@ -190,8 +205,6 @@ class Image extends Graphic
 		_matrix.tx += originX + _point.x;
 		_matrix.ty += originY + _point.y;
 		target.draw(_bitmap, _matrix, null, blend, null, smooth);
-		
-		#end
 	}
 	
 	/**
@@ -404,9 +417,4 @@ class Image extends Graphic
 	private var _flip:BitmapData;
 	private static var _flips:Hash<BitmapData> = new Hash<BitmapData>();
 	
-
-	#if cpp
-	private var _tileSheet:nme.display.Tilesheet;
-	private var imageID:Int;
-	#end
 }

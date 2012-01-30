@@ -29,7 +29,11 @@ class Text extends Image
 		#if flash
 		_field.embedFonts = true;
 		#end
-		var font = ApplicationMain.getAsset ("Assets/04B_03__.ttf");
+		#if nme
+		var font = ApplicationMain.getAsset ("source/com/haxepunk/graphics/04B_03__.TTF");
+		#else
+		var font = new TextFormat("source/com/haxepunk/graphics/04B_03__", 16, 0xFFFFFF);
+		#end
 		_field.defaultTextFormat = _form = new TextFormat(font.fontName, 16, 0xFFFFFF);
 		_field.text = _text = text;
 		if (width == 0) width = Std.int(_field.textWidth + 4);

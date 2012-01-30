@@ -49,14 +49,37 @@ class Spritemap extends Image
 		if (frameWidth == 0) _rect.width = this.source.width;
 		if (frameHeight == 0) _rect.height = this.source.height;
 		
+		#if hardware
+		_baseID = HXP.getBitmapIndex(source);
+		var _imageRect = HXP.sheetRectangles[imageID];
+		trace(_imageRect);
+		trace(imageID);
+		return;
+		_width = Std.int(_imageRect.width);
+		_height = Std.int(_imageRect.height);
+		var numberOfFrames = Std.int(_imageRect.width / frameWidth * _imageRect.height / frameHeight);
+		while (_frame < numberOfFrames) 
+		{
+			_rect.x = _rect.width * _frame;
+			_rect.y = Std.int(_rect.x / _width) * _rect.height + _imageRect.y;
+			_rect.x = _rect.x % _width + _imageRect.x;
+			
+			HXP.tilesheet.addTileRect(_rect);
+			
+			_frame++;
+		}
+		#else
 		_width = this.source.width;
 		_height = this.source.height;
+		#end
 		_columns = Std.int(_width / _rect.width);
 		_rows = Std.int(_height / _rect.height);
 		_frameCount = _columns * _rows;
 		callbackFunc = cbFunc;
+		
 		updateBuffer();
 		active = true;
+		
 	}
 	
 	/**
@@ -64,6 +87,9 @@ class Spritemap extends Image
 	 */
 	override public function updateBuffer(clearBefore:Bool = false) 
 	{
+		#if hardware
+		return;
+		#end
 		// get position of the current frame
 		_rect.x = _rect.width * _frame;
 		_rect.y = Std.int(_rect.x / _width) * _rect.height;
@@ -267,4 +293,8 @@ class Spritemap extends Image
 	private var _index:Int;
 	private var _frame:Int;
 	private var _timer:Float;
+	
+	#if hardware
+	private var _baseID:Int;
+	#end
 }

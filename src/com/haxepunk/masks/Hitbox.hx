@@ -4,7 +4,10 @@ import com.haxepunk.Mask;
 import flash.geom.Point;
 import com.haxepunk.masks.Polygon;
 
-/** * Uses parent's hitbox to determine collision. This class is used * internally by FlashPunk, you don't need to use this class because * this is the default behaviour of Entities without a Mask object. */class Hitbox extends Mask
+/** Uses parent's hitbox to determine collision. 
+ * This class is used * internally by FlashPunk, you don't need to use this class because
+ * this is the default behaviour of Entities without a Mask object. */
+class Hitbox extends Mask
 {
 	/**
 	 * Constructor.
@@ -20,7 +23,6 @@ import com.haxepunk.masks.Polygon;
 		_height = height;
 		_x = x;
 		_y = y;
-		//_check.set(Type.getClassName(Mask), collideMask);
 		_check.set(Type.getClassName(Hitbox), collideHitbox);
 	}
 	

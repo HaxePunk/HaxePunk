@@ -34,7 +34,7 @@ class VarTween extends Tween
 		// Check to make sure we have valid parameters
 		if (!Reflect.isObject(object))
 			throw "A valid object was not passed.";
-		#if flash //Getting errors in cpp even when the object has the field
+		#if !cpp //Getting errors in cpp even when the object has the field
 		if (!Reflect.hasField(object, property))
 			throw "The Object does not have the property\"" + property + "\", or it is not accessible.";
 		#end

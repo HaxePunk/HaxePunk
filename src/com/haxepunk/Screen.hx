@@ -33,6 +33,12 @@ class Screen
 		_width = HXP.width;
 		_height = HXP.height;
 		update();
+		
+		
+		//Added this so that the tilesheet can use a graphics object which is in front of the ones wused by software rendering
+		#if cpp
+		HXP.engine.addChild(HXP.sprite);
+		#end
 	}
 	
 	public function init()

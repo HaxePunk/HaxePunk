@@ -3,6 +3,7 @@ package com.haxepunk;
 import com.haxepunk.Entity;
 import com.haxepunk.masks.Hitbox;
 import com.haxepunk.masks.Masklist;
+import flash.display.Graphics;
 
 typedef MaskCallback = Dynamic -> Bool;
 
@@ -67,7 +68,7 @@ class Mask
 	/**
 	 * Override this
 	 */
-	public function debugDraw():Void 
+	public function debugDraw(graphics:Graphics):Void 
 	{
 		
 	}

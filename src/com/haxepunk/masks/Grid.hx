@@ -2,7 +2,7 @@ package com.haxepunk.masks;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
-import flash.geom.Point;
+import flash.display.Graphics;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import com.haxepunk.HXP;
@@ -340,6 +340,19 @@ class Grid extends Hitbox
 			_tile.y += _tile.height;
 		}
 		return false;
+	}
+	
+	override public function debugDraw(graphics:Graphics):Void //Not 100% tested
+	{
+		HXP.matrix.b = HXP.matrix.c = 0;
+		HXP.matrix.a = tileWidth;//Scale X
+		HXP.matrix.d = tileHeight;//Scale Y
+		HXP.matrix.tx = -_x * HXP.matrix.a;//Translation X
+		HXP.matrix.ty = -_y * HXP.matrix.d;//Translation Y
+		//if (angle != 0) HXP.matrix.rotate(angle * HXP.RAD); //Rotation
+		HXP.matrix.tx += _x + parent.x - HXP.camera.x;
+		HXP.matrix.ty += _y + parent.y - HXP.camera.y;
+		HXP.buffer.draw(_data, HXP.matrix);
 	}
 	
 	public function squareProjection(axis:Point, point:Point):Void 

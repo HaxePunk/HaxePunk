@@ -1,5 +1,6 @@
 package com.haxepunk.masks;
 import com.haxepunk.Mask;
+import flash.display.Graphics;
 import flash.geom.Point;
 import flash.Vector;
 import flash.Vector;
@@ -338,7 +339,7 @@ class Polygon extends Mask
 	}
 	
 	#if debug
-	override public function debugDraw():Void 
+	override public function debugDraw(graphics:Graphics):Void 
 	{
 		com.haxepunk.utils.Draw.setTarget(com.haxepunk.HXP.buffer, com.haxepunk.HXP.camera);
 		

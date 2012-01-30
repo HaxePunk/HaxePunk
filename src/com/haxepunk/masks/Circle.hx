@@ -1,7 +1,9 @@
 package com.haxepunk.masks;
 
+import com.haxepunk.Graphic;
 import com.haxepunk.Mask;
 import com.haxepunk.masks.Grid;
+import flash.display.Graphics;
 import flash.geom.Point;
 
 /**
@@ -121,12 +123,9 @@ class Circle extends Mask
 		collisionInfo.max = _radius;
 	}
 	
-	override public function debugDraw():Void 
+	override public function debugDraw(graphics:Graphics):Void 
 	{
-		if (parent != null)
-			com.haxepunk.utils.Draw.circle(parent.x.int(), parent.y.int(), radius.int(), 0xFF0000);
-		else
-			com.haxepunk.utils.Draw.circle(x.int(), y.int(), radius.int(), 0xFF0000);
+		graphics.drawCircle(parent.x + _x, parent.y + _y, radius);
 	}
 	
 	/**
@@ -176,8 +175,8 @@ class Circle extends Mask
 		//update entity bounds
 		parent.originX = -_x;
 		parent.originY = -_y;
-		parent.width = _radius.int();
-		parent.height = _radius.int();
+		parent.width = (_radius + _radius).int();
+		parent.height = (_radius + _radius).int();
 		
 		// update parent list
 		if (list != null) 
