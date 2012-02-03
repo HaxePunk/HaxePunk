@@ -220,25 +220,25 @@ class Grid extends Hitbox
 	 * The tile width.
 	 */
 	public var tileWidth(getTileWidth, null):Int;
-	private function getTileWidth():Int { return Std.int(_tile.width); }
+	private inline function getTileWidth():Int { return Std.int(_tile.width); }
 	
 	/**
 	 * The tile height.
 	 */
 	public var tileHeight(getTileHeight, null):Int;
-	private function getTileHeight():Int { return Std.int(_tile.height); }
+	private inline function getTileHeight():Int { return Std.int(_tile.height); }
 	
 	/**
 	 * How many columns the grid has
 	 */
 	public var columns(getColumns, null):Int;
-	private function getColumns():Int { return _columns; }
+	private inline function getColumns():Int { return _columns; }
 	
 	/**
 	 * How many rows the grid has.
 	 */
 	public var rows(getRows, null):Int;
-	private function getRows():Int { return _rows; }
+	private inline function getRows():Int { return _rows; }
 	
 	/**
 	 * The grid data.
@@ -366,7 +366,7 @@ class Grid extends Hitbox
 		#end
 	}
 	
-	override public function debugDraw(graphics:Graphics):Void //Not 100% tested
+	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void //Not 100% tested
 	{
 		#if flash
 		HXP.matrix.b = HXP.matrix.c = 0;

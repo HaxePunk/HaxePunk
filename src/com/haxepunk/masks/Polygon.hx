@@ -1,8 +1,8 @@
 package com.haxepunk.masks;
+import com.haxepunk.HXP;
 import com.haxepunk.Mask;
 import flash.display.Graphics;
 import flash.geom.Point;
-import flash.Vector;
 import flash.Vector;
 /**
  * ...
@@ -30,8 +30,13 @@ class Polygon extends Mask
 		_check.set(Type.getClassName(Hitbox), collideHitbox);
 		_check.set(Type.getClassName(Circle), collideCircle);
 		_check.set(Type.getClassName(Polygon), collidePolygon);
-		//_check.set(Type.getClassName(Grid), collideGrid);
+		_check.set(Type.getClassName(Grid), collideGrid);
 		
+		pointsAdded();
+	}
+	
+	private inline function pointsAdded():Void 
+	{
 		generateAxes();
 		removeDuplicateAxes();
 		
@@ -89,6 +94,68 @@ class Polygon extends Mask
 				}
 			}
 		}
+	}
+	
+	/**
+	 * May be very slow, mainly added for completeness sake
+	 * Checks for collisions along the edges of the polygon
+	 * @param	grid
+	 * @return
+	 */
+	public function collideGrid(grid:Grid):Bool 
+	{
+		for (ii in 0..._points.length - 1) 
+		{
+			var p1X = (parent.x + _points[ii].x) / grid.tileWidth;
+			var p1Y = (parent.y + _points[ii].y) / grid.tileHeight;
+			var p2X = (parent.x + _points[ii + 1].x) / grid.tileWidth;
+			var p2Y = (parent.y +  _points[ii + 1].y) / grid.tileHeight;
+			
+			var k = (p2Y - p1Y) / (p2X - p1X);
+			var m = p1Y - k * p1X;
+			
+			var min:Float;
+			var max:Float;
+			
+			if (p2X > p1X) { min = p1X; max = p2X; }
+			else { max = p1X; min = p2X; }
+			
+			var x = min;
+			while (x < max) 
+			{
+				var y = Std.int(k * x + m);
+				if (grid.getTile(Std.int(x), y))
+					return true;
+					
+				x++;
+			}
+		}
+		//Check the last point -> first point
+		var p1X = (parent.x + _points[_points.length - 1].x) / grid.tileWidth;
+		var p1Y = (parent.y + _points[_points.length - 1].y) / grid.tileHeight;
+		var p2X = (parent.x + _points[0].x) / grid.tileWidth;
+		var p2Y = (parent.y +  _points[0].y) / grid.tileHeight;
+		
+		var k = (p2Y - p1Y) / (p2X - p1X);
+		var m = p1Y - k * p1X;
+		
+		var min:Float;
+		var max:Float;
+		
+		if (p2X > p1X) { min = p1X; max = p2X; }
+		else { max = p1X; min = p2X; }
+		
+		var x = min;
+		while (x < max) 
+		{
+			var y = Std.int(k * x + m);
+			if (grid.getTile(Std.int(x), y))
+				return true;
+				
+			x++;
+		}
+		
+		return false;
 	}
 	
 	/*public function collideGrid(grid:Grid):Bool 
@@ -339,53 +406,33 @@ class Polygon extends Mask
 	}
 	
 	#if debug
-	override public function debugDraw(graphics:Graphics):Void 
+	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void 
 	{
 		if (parent != null) 
 		{
-			graphics.moveTo(_points[_points.length - 1].x + parent.x, _points[_points.length - 1].y + parent.y);
+			var	offsetX = parent.x - HXP.camera.x,
+				offsetY = parent.y - HXP.camera.y;
+				
+			graphics.moveTo((points[_points.length - 1].x + offsetX) * scaleX , (_points[_points.length - 1].y + offsetY) * scaleY);
 			for (ii in 0..._points.length)
 			{
-				graphics.lineTo(_points[ii].x + parent.x, _points[ii].y + parent.y);
-			}
-		}
-		else 
-		{
-			graphics.moveTo(_points[_points.length - 1].x + x, _points[_points.length - 1].y + y);
-			for (ii in 0..._points.length)
-			{
-				graphics.lineTo(_points[ii].x + x, _points[ii].y + y);
+				graphics.lineTo((_points[ii].x + offsetX) * scaleX, (_points[ii].y + offsetY) * scaleY);
 			}
 		}
 	}
 	#end
 	
-	/**
-	 * X offset.
-	 */
-	public var x(getX, setX):Int;
-	private inline function getX():Int { return _x; }
-	private inline function setX(value:Int):Int
-	{
-		if (_x == value) return value;
-		_x = value;
-		if (parent != null) update();
-		else if (parent != null) update();
-		return _x;
-	}
+	public var angle(get_angle, set_angle):Float;
+	inline private function get_angle():Float { return _angle; }
 	
-	/**
-	 * Y offset.
-	 */
-	public var y(getY, setY):Int;
-	private inline function getY():Int { return _y; }
-	private function setY(value:Int):Int
+	private function set_angle(value:Float):Float 
 	{
-		if (_y == value) return value;
-		_y = value;
+		if (value == _angle) return value;
+		var diff = _angle - value;
+		rotate(diff);
 		if (list != null) update();
 		else if (parent != null) update();	
-		return _y;
+		return _angle = value;
 	}
 	
 	/**
@@ -407,29 +454,30 @@ class Polygon extends Mask
 	 */
 	public var height(getHeight, setHeight):Int;
 	
-	inline private function getHeight():Int { return _height; }
+	private inline function getHeight():Int { return _height; }
 	private function setHeight(value:Int):Int
 	{
 		if (_height == value) return value;
 		_height = value;
-		if (list != null)
 		if (list != null) update();
 		else if (parent != null) update();	
 		return _height;
 	}
 	
 	
-	public var angle(get_angle, set_angle):Float;
-	inline private function get_angle():Float { return _angle; }
+	public var points(getPoints, setPoints):Vector<Point>;
 	
-	private function set_angle(value:Float):Float 
+	private inline function getPoints():Vector<Point> { return _points; }
+	private function setPoints(value:Vector<Point>):Vector<Point> 
 	{
-		if (value == _angle) return value;
-		var diff = _angle - value;
-		rotate(diff);
+		if (_points == value) return value;
+		_points = value;
+		
+		pointsAdded();
+		
 		if (list != null) update();
 		else if (parent != null) update();	
-		return _angle = value;
+		return _points;
 	}
 	
 	

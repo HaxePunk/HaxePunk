@@ -747,7 +747,7 @@ class Console
 						g.lineStyle(1, 0xFF0000);
 						if (e.mask != null) 
 						{
-							e.mask.debugDraw(g);
+							e.mask.debugDraw(g, sx, sy);
 						}
 						g.drawRect((e.x - e.originX - HXP.camera.x) * sx, (e.y - e.originY - HXP.camera.y) * sy, e.width * sx, e.height * sy);
 					}
@@ -763,7 +763,7 @@ class Console
 						
 						if (e.mask != null) 
 						{
-							e.mask.debugDraw(g);
+							e.mask.debugDraw(g, sx, sy);
 						}
 						g.drawRect((e.x - e.originX - HXP.camera.x) * sx, (e.y - e.originY - HXP.camera.y) * sy, e.width * sx, e.height * sy);
 					}

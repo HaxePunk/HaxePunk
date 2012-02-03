@@ -57,7 +57,11 @@ class Mask
 			&& parent.y - parent.originY < other.parent.y - other.parent.originY + other.parent.height;
 	}
 	
-	private function collideMasklist(other:Masklist):Bool	{		return other.collide(this);	}	
+	private function collideMasklist(other:Masklist):Bool	
+	{		
+		return other.collide(this);	
+	}
+	
 	/** @private Assigns the mask to the parent. */
 	public function assignTo(parent:Entity)
 	{
@@ -68,7 +72,7 @@ class Mask
 	/**
 	 * Override this
 	 */
-	public function debugDraw(graphics:Graphics):Void 
+	public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void 
 	{
 		
 	}

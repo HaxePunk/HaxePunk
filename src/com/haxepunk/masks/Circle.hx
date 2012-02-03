@@ -123,9 +123,9 @@ class Circle extends Mask
 		collisionInfo.max = _radius;
 	}
 	
-	override public function debugDraw(graphics:Graphics):Void 
+	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void 
 	{
-		graphics.drawCircle(parent.x + _x, parent.y + _y, radius);
+		graphics.drawCircle((parent.x + _x) * scaleX, (parent.y + _y) * scaleY, radius * scaleX);
 	}
 	
 	/**
