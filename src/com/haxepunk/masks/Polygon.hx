@@ -20,12 +20,10 @@ class Polygon extends Mask
 	 * @param	x			X offset of the circle.
 	 * @param	y			Y offset of the circle.
 	 */
-	public function new(points:Vector<Point>, x:Int = 0, y:Int = 0) 
+	public function new(points:Vector<Point>) 
 	{
 		super();
 		_points = points;
-		_x = x;
-		_y = y;
 		
 		_check.set(Type.getClassName(Hitbox), collideHitbox);
 		_check.set(Type.getClassName(Circle), collideCircle);
@@ -485,8 +483,6 @@ class Polygon extends Mask
 	override public function update() 
 	{
 		//update entity bounds
-		parent.originX = -_x;
-		parent.originY = -_y;
 		parent.width = _width;
 		parent.height = _height;
 	}
@@ -542,8 +538,6 @@ class Polygon extends Mask
 	// Hitbox information.
 	private var _width:Int;
 	private var _height:Int;
-	private var _x:Int;
-	private var _y:Int;
 	private var _angle:Float;
 	private var _points:Vector<Point>;
 	private var _axes:Vector<Point>;

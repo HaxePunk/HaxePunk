@@ -249,7 +249,7 @@ class World extends Tweener
 	 * @param	addToWorld		Add it to the World immediately.
 	 * @return	The new Entity object.
 	 */
-	public function create(classType:Dynamic, addToWorld:Bool = true):Entity
+	public function create(classType:Class<Dynamic>, addToWorld:Bool = true):Entity
 	{
 		var className:String = Type.getClassName(classType);
 		var fe:FriendEntity = _recycled.get(className);

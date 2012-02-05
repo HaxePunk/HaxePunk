@@ -36,8 +36,8 @@ class Circle extends Mask
 	{
 		return parent.x + _x + _radius > other.parent.x - other.parent.originX
 			&& parent.y + _y + _radius > other.parent.y - other.parent.originY
-			&& parent.x + _x < other.parent.x - other.parent.originX + other.parent.width
-			&& parent.y + _y < other.parent.y - other.parent.originY + other.parent.height;
+			&& parent.x - parent.originX + _x < other.parent.x - other.parent.originX + other.parent.width
+			&& parent.y - parent.originY + _y < other.parent.y - other.parent.originY + other.parent.height;
 	}
 	
 	private function collideCircle(other:Circle):Bool 
