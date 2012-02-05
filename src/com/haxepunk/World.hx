@@ -5,7 +5,6 @@ import com.haxepunk.utils.Input;
 import com.haxepunk.Entity;
 import com.haxepunk.Tweener;
 import flash.geom.Rectangle;
-import nme.Lib;
 
 /**
  * Updated by Engine, main game container that holds all currently active Entities.
