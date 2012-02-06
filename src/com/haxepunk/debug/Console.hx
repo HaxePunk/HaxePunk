@@ -737,7 +737,6 @@ class Console
 			g.clear();
 			for (e in SCREEN_LIST)
 			{
-				trace(e.mask);
 				// If the Entity is not selected.
 				if (Lambda.indexOf(SELECT_LIST, e) < 0)
 				{

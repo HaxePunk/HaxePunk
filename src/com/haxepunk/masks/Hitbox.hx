@@ -140,7 +140,4 @@ class Hitbox extends Mask
 	private var _height:Int;
 	private var _x:Int;
 	private var _y:Int;
-	
-	public static var vertical = new Point(0, 1);
-	public static var horizontal = new Point(1, 0);
 }

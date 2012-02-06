@@ -30,19 +30,9 @@ class Polygon extends Mask
 		_check.set(Type.getClassName(Polygon), collidePolygon);
 		_check.set(Type.getClassName(Grid), collideGrid);
 		
-		pointsAdded();
+		updateAxes();
 	}
 	
-	private inline function pointsAdded():Void 
-	{
-		generateAxes();
-		removeDuplicateAxes();
-		
-		projectOn(Hitbox.vertical, firstCollisionInfo);//height
-		height = Std.int(firstCollisionInfo.max - firstCollisionInfo.min);
-		projectOn(Hitbox.horizontal, secondCollisionInfo);//width
-		width = Std.int(firstCollisionInfo.max - firstCollisionInfo.min);
-	}
 	
 	private function generateAxes():Void 
 	{
@@ -266,24 +256,22 @@ class Polygon extends Mask
 		var offsetX = parent.x - hitbox.parent.x;
 		var offsetY = parent.y - hitbox.parent.y;
 		
-		projectOn(Hitbox.vertical, firstCollisionInfo);//Project on the horizontal axis of the hitbox
-		hitbox.projectOn(Hitbox.vertical, secondCollisionInfo);
+		projectOn(vertical, firstCollisionInfo);//Project on the horizontal axis of the hitbox
+		hitbox.projectOn(vertical, secondCollisionInfo);
 		
-		var offset = offsetX * Hitbox.vertical.x + offsetY * Hitbox.vertical.y;
-		firstCollisionInfo.min += offset;
-		firstCollisionInfo.max += offset;
+		firstCollisionInfo.min += offsetY;
+		firstCollisionInfo.max += offsetY;
 		
 		if (firstCollisionInfo.min > secondCollisionInfo.max || firstCollisionInfo.max < secondCollisionInfo.min) 
 		{
 			return false;
 		}
 		
-		projectOn(Hitbox.horizontal, firstCollisionInfo);//Project on the vertical axis of the hitbox
-		hitbox.projectOn(Hitbox.horizontal, secondCollisionInfo);
+		projectOn(horizontal, firstCollisionInfo);//Project on the vertical axis of the hitbox
+		hitbox.projectOn(horizontal, secondCollisionInfo);
 		
-		var offset = offsetX * Hitbox.horizontal.x + offsetY * Hitbox.horizontal.y;
-		firstCollisionInfo.min += offset;
-		firstCollisionInfo.max += offset;
+		firstCollisionInfo.min += offsetX;
+		firstCollisionInfo.max += offsetX;
 		
 		if (firstCollisionInfo.min > secondCollisionInfo.max || firstCollisionInfo.max < secondCollisionInfo.min) 
 		{
@@ -352,9 +340,7 @@ class Polygon extends Mask
 	}
 	
 	/**
-	 * Project p1 on p2 returns the projected point (using _point)
-	 * @param	p1
-	 * @param	p2
+	 * Calculates the dotProduct between two points
 	 */
 	inline function dot(p1:Point, p2:Point):Float 
 	{
@@ -436,31 +422,13 @@ class Polygon extends Mask
 	/**
 	 * Width.
 	 */
-	public var width(getWidth, setWidth):Int;
-	inline private function getWidth():Int { return _width; }
-	private function setWidth(value:Int):Int
-	{
-		if (_width == value) return value;
-		_width = value;
-		if (list != null) update();
-		else if (parent != null) update();	
-		return _width;
-	}
+	public var width(default, null):Int;
+	
 	
 	/**
 	 * Height.
 	 */
-	public var height(getHeight, setHeight):Int;
-	
-	private inline function getHeight():Int { return _height; }
-	private function setHeight(value:Int):Int
-	{
-		if (_height == value) return value;
-		_height = value;
-		if (list != null) update();
-		else if (parent != null) update();	
-		return _height;
-	}
+	public var height(default, null):Int;
 	
 	
 	public var points(getPoints, setPoints):Vector<Point>;
@@ -471,8 +439,6 @@ class Polygon extends Mask
 		if (_points == value) return value;
 		_points = value;
 		
-		pointsAdded();
-		
 		if (list != null) update();
 		else if (parent != null) update();	
 		return _points;
@@ -482,9 +448,26 @@ class Polygon extends Mask
 	/** Updates the parent's bounds for this mask. */
 	override public function update() 
 	{
+		updateAxes();
+		
 		//update entity bounds
-		parent.width = _width;
-		parent.height = _height;
+		parent.width = width;
+		parent.height = height;
+		
+		//Since the collisioninfos haven't changed we can use them to calculate hitbox placement
+		parent.originX = Std.int((width - firstCollisionInfo.max - firstCollisionInfo.min)/2);
+		parent.originY = Std.int((height - secondCollisionInfo.max - secondCollisionInfo.min )/2);
+	}
+	
+	public inline function updateAxes() 
+	{
+		generateAxes();
+		removeDuplicateAxes();
+		
+		projectOn(horizontal, firstCollisionInfo);//width
+		width = Std.int(firstCollisionInfo.max - firstCollisionInfo.min);
+		projectOn(vertical, secondCollisionInfo);//height
+		height = Std.int(secondCollisionInfo.max - secondCollisionInfo.min);
 	}
 	
 	/**
@@ -536,8 +519,6 @@ class Polygon extends Mask
 	
 	
 	// Hitbox information.
-	private var _width:Int;
-	private var _height:Int;
 	private var _angle:Float;
 	private var _points:Vector<Point>;
 	private var _axes:Vector<Point>;
@@ -545,4 +526,6 @@ class Polygon extends Mask
 	private static var _axis = new Point();
 	private static var firstCollisionInfo = new CollisionInfo();
 	private static var secondCollisionInfo = new CollisionInfo();
+	public static var vertical = new Point(0, 1);
+	public static var horizontal = new Point(1, 0);
 }
