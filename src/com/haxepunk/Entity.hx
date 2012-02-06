@@ -407,7 +407,7 @@ class Entity extends Tweener
 	 * If the Entity collides with the camera rectangle.
 	 */
 	public var onCamera(getOnCamera, null):Bool;
-	private function getOnCamera():Bool
+	inline private function getOnCamera():Bool
 	{
 		return collideRect(x, y, HXP.camera.x, HXP.camera.y, HXP.width, HXP.height);
 	}
@@ -416,7 +416,7 @@ class Entity extends Tweener
 	 * The World object this Entity has been added to.
 	 */
 	public var world(getWorld, null):World;
-	private function getWorld():World
+	inline private function getWorld():World
 	{
 		return _world;
 	}
@@ -425,55 +425,55 @@ class Entity extends Tweener
 	 * Half the Entity's width.
 	 */
 	public var halfWidth(getHalfWidth, null):Float;
-	private function getHalfWidth():Float { return width / 2; }
+	inline private function getHalfWidth():Float { return width / 2; }
 	
 	/**
 	 * Half the Entity's height.
 	 */
 	public var halfHeight(getHalfHeight, null):Float;
-	private function getHalfHeight():Float { return height / 2; }
+	inline private function getHalfHeight():Float { return height / 2; }
 	
 	/**
 	 * The center x position of the Entity's hitbox.
 	 */
 	public var centerX(getCenterX, null):Float;
-	private function getCenterX():Float { return x - originX + width / 2; }
+	inline private function getCenterX():Float { return x - originX + width / 2; }
 	
 	/**
 	 * The center y position of the Entity's hitbox.
 	 */
 	public var centerY(getCenterY, null):Float;
-	private function getCenterY():Float { return y - originY + height / 2; }
+	inline private function getCenterY():Float { return y - originY + height / 2; }
 	
 	/**
 	 * The leftmost position of the Entity's hitbox.
 	 */
 	public var left(getLeft, null):Float;
-	private function getLeft():Float { return x - originX; }
+	inline private function getLeft():Float { return x - originX; }
 	
 	/**
 	 * The rightmost position of the Entity's hitbox.
 	 */
 	public var right(getRight, null):Float;
-	private function getRight():Float { return x - originX + width; }
+	inline private function getRight():Float { return x - originX + width; }
 	
 	/**
 	 * The topmost position of the Entity's hitbox.
 	 */
 	public var top(getTop, null):Float;
-	private function getTop():Float { return y - originY; }
+	inline private function getTop():Float { return y - originY; }
 	
 	/**
 	 * The bottommost position of the Entity's hitbox.
 	 */
 	public var bottom(getBottom, null):Float;
-	private function getBottom():Float { return y - originY + height; }
+	inline private function getBottom():Float { return y - originY + height; }
 	
 	/**
 	 * The rendering layer of this Entity. Higher layers are rendered first.
 	 */
 	public var layer(getLayer, setLayer):Int;
-	private function getLayer():Int { return _layer; }
+	inline private function getLayer():Int { return _layer; }
 	private function setLayer(value:Int):Int
 	{
 		if (_layer == value) return _layer;
@@ -498,7 +498,7 @@ class Entity extends Tweener
 	 * The collision type, used for collision checking.
 	 */
 	public var type(getType, setType):String;
-	private function getType():String { return _type; }
+	inline private function getType():String { return _type; }
 	private function setType(value:String):String
 	{
 		if (_type == value) return _type;
@@ -518,7 +518,7 @@ class Entity extends Tweener
 	 * not assigned, collision checks will use the Entity's hitbox by default.
 	 */
 	public var mask(getMask, setMask):Mask;
-	private function getMask():Mask { return _mask; }
+	inline private function getMask():Mask { return _mask; }
 	private function setMask(value:Mask):Mask
 	{
 		if (_mask == value) return value;
@@ -532,7 +532,7 @@ class Entity extends Tweener
 	 * Graphical component to render to the screen.
 	 */
 	public var graphic(getGraphic, setGraphic):Graphic;
-	private function getGraphic():Graphic { return _graphic; }
+	inline private function getGraphic():Graphic { return _graphic; }
 	private function setGraphic(value:Graphic):Graphic
 	{
 		if (_graphic == value) return value;
@@ -564,7 +564,7 @@ class Entity extends Tweener
 	 * @param	originX		X origin of the hitbox.
 	 * @param	originY		Y origin of the hitbox.
 	 */
-	public function setHitbox(width:Int = 0, height:Int = 0, originX:Int = 0, originY:Int = 0)
+	inline public function setHitbox(width:Int = 0, height:Int = 0, originX:Int = 0, originY:Int = 0)
 	{
 		this.width = width;
 		this.height = height;
@@ -585,8 +585,8 @@ class Entity extends Tweener
 			if (o.hasOwnProperty("height")) height = o.height;
 			if (o.hasOwnProperty("originX") && !Std.is(o, Graphic)) originX = o.originX;
 			else if (o.hasOwnProperty("x")) originX = Std.int(-o.x);
-			if (o.hasOwnProperty("originY") && !Std.is(o, Graphic)) originX = o.originY;
-			else if (o.hasOwnProperty("y")) originX = Std.int(-o.y);
+			if (o.hasOwnProperty("originY") && !Std.is(o, Graphic)) originY = o.originY;
+			else if (o.hasOwnProperty("y")) originX = Std.int( -o.y);
 		}
 	}
 	
@@ -595,7 +595,7 @@ class Entity extends Tweener
 	 * @param	x		X origin.
 	 * @param	y		Y origin.
 	 */
-	public function setOrigin(x:Int = 0, y:Int = 0)
+	inline public function setOrigin(x:Int = 0, y:Int = 0)
 	{
 		originX = x;
 		originY = y;
@@ -604,7 +604,7 @@ class Entity extends Tweener
 	/**
 	 * Center's the Entity's origin (half width & height).
 	 */
-	public function centerOrigin()
+	inline public function centerOrigin()
 	{
 		originX = Std.int(width / 2);
 		originY = Std.int(height / 2);
@@ -616,7 +616,7 @@ class Entity extends Tweener
 	 * @param	useHitboxes		If hitboxes should be used to determine the distance. If not, the Entities' x/y positions are used.
 	 * @return	The distance.
 	 */
-	public function distanceFrom(e:Entity, useHitboxes:Bool = false):Float
+	inline public function distanceFrom(e:Entity, useHitboxes:Bool = false):Float
 	{
 		if (!useHitboxes) return Math.sqrt((x - e.x) * (x - e.x) + (y - e.y) * (y - e.y));
 		return HXP.distanceRects(x - originX, y - originY, width, height, e.x - e.originX, e.y - e.originY, e.width, e.height);
@@ -629,7 +629,7 @@ class Entity extends Tweener
 	 * @param	useHitboxes		If hitboxes should be used to determine the distance. If not, the Entities' x/y positions are used.
 	 * @return	The distance.
 	 */
-	public function distanceToPoint(px:Float, py:Float, useHitbox:Bool = false):Float
+	inline public function distanceToPoint(px:Float, py:Float, useHitbox:Bool = false):Float
 	{
 		if (!useHitbox) return Math.sqrt((x - px) * (x - px) + (y - py) * (y - py));
 		return HXP.distanceRectPoint(px, py, x - originX, y - originY, width, height);
@@ -643,7 +643,7 @@ class Entity extends Tweener
 	 * @param	rheight		Height of the rectangle.
 	 * @return	The distance.
 	 */
-	public function distanceToRect(rx:Float, ry:Float, rwidth:Float, rheight:Float):Float
+	inline public function distanceToRect(rx:Float, ry:Float, rwidth:Float, rheight:Float):Float
 	{
 		return HXP.distanceRects(rx, ry, rwidth, rheight, x - originX, y - originY, width, height);
 	}
@@ -732,7 +732,7 @@ class Entity extends Tweener
 	 * @param	solidType	An optional collision type to stop flush against upon collision.
 	 * @param	sweep		If sweeping should be used (prevents fast-moving objects from going through solidType).
 	 */
-	public function moveTo(x:Float, y:Float, solidType:String = null, sweep:Bool = false)
+	inline public function moveTo(x:Float, y:Float, solidType:String = null, sweep:Bool = false)
 	{
 		moveBy(x - this.x, y - this.y, solidType, sweep);
 	}
@@ -745,7 +745,7 @@ class Entity extends Tweener
 	 * @param	solidType	An optional collision type to stop flush against upon collision.
 	 * @param	sweep		If sweeping should be used (prevents fast-moving objects from going through solidType).
 	 */
-	public function moveTowards(x:Float, y:Float, amount:Float, solidType:String = null, sweep:Bool = false)
+	inline public function moveTowards(x:Float, y:Float, amount:Float, solidType:String = null, sweep:Bool = false)
 	{
 		_point.x = x - this.x;
 		_point.y = y - this.y;
@@ -777,7 +777,7 @@ class Entity extends Tweener
 	 * @param	right		Right bounds.
 	 * @param	padding		Optional padding on the clamp.
 	 */
-	public function clampHorizontal(left:Float, right:Float, padding:Float = 0)
+	inline public function clampHorizontal(left:Float, right:Float, padding:Float = 0)
 	{
 		if (x - originX < left + padding) x = left + originX + padding;
 		if (x - originX + width > right - padding) x = right - width + originX - padding;
@@ -789,7 +789,7 @@ class Entity extends Tweener
 	 * @param	bottom		Max bounds.
 	 * @param	padding		Optional padding on the clamp.
 	 */
-	public function clampVertical(top:Float, bottom:Float, padding:Float = 0)
+	inline public function clampVertical(top:Float, bottom:Float, padding:Float = 0)
 	{
 		if (y - originY < top + padding) y = top + originY + padding;
 		if (y - originY + height > bottom - padding) y = bottom - height + originY - padding;

@@ -2,6 +2,7 @@ package com.haxepunk;
 
 import flash.display.BitmapData;
 import flash.display.Bitmap;
+import flash.display.Graphics;
 import flash.display.Sprite;
 import flash.display.Stage;
 import flash.geom.Matrix;
@@ -9,8 +10,8 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 #if flash
 import flash.media.SoundMixer;
-import flash.media.SoundTransform;
 #end
+import flash.media.SoundTransform;
 import flash.system.System;
 import flash.utils.ByteArray;
 import com.haxepunk.Graphic;
@@ -95,20 +96,20 @@ class HXP
 	 * Half the screen width.
 	 */
 	public static var halfWidth(getHalfWidth, null):Float;
-	private static function getHalfWidth():Float { return width / 2; }
+	inline private static function getHalfWidth():Float { return width / 2; }
 	
 	/**
 	 * Half the screen height.
 	 */
 	public static var halfHeight(getHalfHeight, null):Float;
-	private static function getHalfHeight():Float { return height / 2; }
+	inline private static function getHalfHeight():Float { return height / 2; }
 	
 	/**
 	 * The currently active World object. When you set this, the World is flagged
 	 * to switch, but won't actually do so until the end of the current frame.
 	 */
 	public static var world(getWorld, setWorld):World;
-	private static function getWorld():World { return _world; }
+	inline private static function getWorld():World { return _world; }
 	private static function setWorld(value:World):World
 	{
 		if (_world == value) return value;
@@ -116,13 +117,13 @@ class HXP
 		return _world;
 	}
 	
-	public static function swapWorld()
+	inline public static function swapWorld()
 	{
 		_world = _goto;
 		_goto = null;
 	}
 	
-	public static function clear(array:Array<Dynamic>)
+	inline public static function clear(array:Array<Dynamic>)
 	{
 		var i:Int;
 		for (i in 0...array.length)
@@ -134,7 +135,7 @@ class HXP
 	 * @param	x	X position.
 	 * @param	y	Y position.
 	 */
-	public static function setCamera(x:Float = 0, y:Float = 0)
+	inline public static function setCamera(x:Float = 0, y:Float = 0)
 	{
 		camera.x = x;
 		camera.y = y;
@@ -143,7 +144,7 @@ class HXP
 	/**
 	 * Resets the camera position.
 	 */
-	public static function resetCamera()
+	inline public static function resetCamera()
 	{
 		camera.x = camera.y = 0;
 	}
@@ -152,13 +153,13 @@ class HXP
 	 * Global volume factor for all sounds, a value from 0 to 1.
 	 */
 	public static var volume(getVolume, setVolume):Float;
-	private static function getVolume():Float { return _volume; }
+	inline private static function getVolume():Float { return _volume; }
 	private static function setVolume(value:Float):Float
 	{
 		if (value < 0) value = 0;
 		if (_volume == value) return value;
-		#if flash
 		_soundTransform.volume = _volume = value;
+		#if flash
 		SoundMixer.soundTransform = _soundTransform;
 		#end
 		return _volume;
@@ -168,14 +169,14 @@ class HXP
 	 * Global panning factor for all sounds, a value from -1 to 1.
 	 */
 	public static var pan(getPan, setPan):Float;
-	private static function getPan():Float { return _pan; }
+	inline private static function getPan():Float { return _pan; }
 	private static function setPan(value:Float):Float
 	{
 		if (value < -1) value = -1;
 		if (value > 1) value = 1;
 		if (_pan == value) return value;
-		#if flash
 		_soundTransform.pan = _pan = value;
+		#if flash
 		SoundMixer.soundTransform = _soundTransform;
 		#end
 		return _pan;
@@ -186,7 +187,7 @@ class HXP
 	 * @param	objs		The Objects you want to randomly choose from. Can be ints, Floats, Points, etc.
 	 * @return	A randomly chosen one of the provided parameters.
 	 */
-	public static function choose(objs:Array<Dynamic>):Dynamic
+	inline public static function choose(objs:Array<Dynamic>):Dynamic
 	{
 		return objs[rand(objs.length)];
 	}
@@ -208,7 +209,7 @@ class HXP
 	 * @param	amount	How much you want the value to approach target by.
 	 * @return	The new value.
 	 */
-	public static function approach(value:Float, target:Float, amount:Float):Float
+	inline public static function approach(value:Float, target:Float, amount:Float):Float
 	{
 		return value < target ? (target < value + amount ? target : value + amount) : (target > value - amount ? target : value - amount);
 	}
@@ -220,7 +221,7 @@ class HXP
 	 * @param	t		Interpolation factor.
 	 * @return	When t=0, returns a. When t=1, returns b. When t=0.5, will return halfway between a and b. Etc.
 	 */
-	public static function lerp(a:Float, b:Float, t:Float = 1):Float
+	inline public static function lerp(a:Float, b:Float, t:Float = 1):Float
 	{
 		return a + (b - a) * t;
 	}
@@ -232,7 +233,7 @@ class HXP
 	 * @param	t				Interpolation value. Clamped to the range [0, 1].
 	 * return	RGB component-interpolated color value.
 	 */
-	public static function colorLerp(fromColor:Int, toColor:Int, t:Float = 1):Int
+	inline public static function colorLerp(fromColor:Int, toColor:Int, t:Float = 1):Int
 	{
 		if (t <= 0) { return fromColor; }
 		if (t >= 1) { return toColor; }
@@ -279,7 +280,7 @@ class HXP
 	 * @param	anchor		The anchor object.
 	 * @param	distance	The max distance object can be anchored to the anchor.
 	 */
-	public static function anchorTo(object:Dynamic, anchor:Dynamic, distance:Float = 0)
+	inline public static function anchorTo(object:Dynamic, anchor:Dynamic, distance:Float = 0)
 	{
 		point.x = object.x - anchor.x;
 		point.y = object.y - anchor.y;
@@ -296,7 +297,7 @@ class HXP
 	 * @param	y2		The second y-position.
 	 * @return	The angle from (x1, y1) to (x2, y2).
 	 */
-	public static function angle(x1:Float, y1:Float, x2:Float, y2:Float):Float
+	inline public static function angle(x1:Float, y1:Float, x2:Float, y2:Float):Float
 	{
 		var a:Float = Math.atan2(y2 - y1, x2 - x1) * DEG;
 		return a < 0 ? a + 360 : a;
@@ -310,7 +311,7 @@ class HXP
 	 * @param	x			X offset.
 	 * @param	y			Y offset.
 	 */
-	public static function angleXY(object:Dynamic, angle:Float, length:Float = 1, x:Float = 0, y:Float = 0)
+	inline public static function angleXY(object:Dynamic, angle:Float, length:Float = 1, x:Float = 0, y:Float = 0)
 	{
 		angle *= RAD;
 		object.x = Math.cos(angle) * length + x;
@@ -323,7 +324,7 @@ class HXP
 	 * @param	anchor		Anchor to rotate around.
 	 * @param	angle		The amount of degrees to rotate by.
 	 */
-	public static function rotateAround(object:Dynamic, anchor:Dynamic, angle:Float = 0, relative:Bool = true)
+	public static inline function rotateAround(object:Dynamic, anchor:Dynamic, angle:Float = 0, relative:Bool = true)
 	{
 		if (relative) angle += HXP.angle(anchor.x, anchor.y, object.x, object.y);
 		HXP.angleXY(object, angle, HXP.distance(anchor.x, anchor.y, object.x, object.y), anchor.x, anchor.y);
@@ -337,7 +338,7 @@ class HXP
 	 * @param	y2		The second y-position.
 	 * @return	The distance.
 	 */
-	public static function distance(x1:Float, y1:Float, x2:Float = 0, y2:Float = 0):Float
+	public static inline function distance(x1:Float, y1:Float, x2:Float = 0, y2:Float = 0):Float
 	{
 		return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 	}
@@ -439,7 +440,7 @@ class HXP
 	 * @param	width		Rectangle's width.
 	 * @param	height		Rectangle's height.
 	 */
-	public static function clampInRect(object:Dynamic, x:Float, y:Float, width:Float, height:Float, padding:Float = 0)
+	public static inline function clampInRect(object:Dynamic, x:Float, y:Float, width:Float, height:Float, padding:Float = 0)
 	{
 		object.x = clamp(object.x, x + padding, x + width - padding);
 		object.y = clamp(object.y, y + padding, y + height - padding);
@@ -454,7 +455,7 @@ class HXP
 	 * @param	max2		The maximum range of the second scale.
 	 * @return	The scaled value.
 	 */
-	public static function scale(value:Float, min:Float, max:Float, min2:Float, max2:Float):Float
+	public static inline function scale(value:Float, min:Float, max:Float, min2:Float, max2:Float):Float
 	{
 		return min2 + ((value - min) / (max - min)) * (max2 - min2);
 	}
@@ -484,8 +485,8 @@ class HXP
 	 * The random seed used by FP's random functions.
 	 */
 	public static var randomSeed(getRandomSeed, setRandomSeed):Int;
-	private static function getRandomSeed():Int { return _getSeed; }
-	private static function setRandomSeed(value:Int):Int
+	private static inline function getRandomSeed():Int { return _getSeed; }
+	private static inline function setRandomSeed(value:Int):Int
 	{
 		_seed = Std.int(clamp(value, 1.0, 2147483646.0));
 		_getSeed = _seed;
@@ -495,7 +496,7 @@ class HXP
 	/**
 	 * Randomizes the random seed using Flash's Math.random() function.
 	 */
-	public static function randomizeSeed()
+	public static inline function randomizeSeed()
 	{
 		randomSeed = Std.int(2147483647.0 * Math.random());
 	}
@@ -504,7 +505,7 @@ class HXP
 	 * A pseudo-random Float produced using FP's random seed, where 0 <= Float < 1.
 	 */
 	public static var random(getRandom, null):Float;
-	private static function getRandom():Float
+	private static inline function getRandom():Float
 	{
 		_seed = Std.int((_seed * 16807.0) % 2147483647.0);
 		return _seed / 2147483647.0;
@@ -515,13 +516,13 @@ class HXP
 	 * @param	amount		The returned Int will always be 0 <= Int < amount.
 	 * @return	The Int.
 	 */
-	public static function rand(amount:Int):Int
+	public static inline function rand(amount:Int):Int
 	{
 		_seed = Std.int((_seed * 16807.0) % 2147483647.0);
 		return Std.int((_seed / 2147483647.0) * amount);
 	}
 	
-	private static function indexOf(a:Array<Dynamic>, v:Dynamic):Int
+	private static function indexOf<T>(a:Array<T>, v:T):Int
 	{
 		var i = 0;
 		for( v2 in a ) {
@@ -539,7 +540,7 @@ class HXP
 	 * @param	loop		If true, will jump to the first item after the last item is reached.
 	 * @return	The next item in the list.
 	 */
-	public static function next(current:Dynamic, options:Array<Dynamic>, loop:Bool = true):Dynamic
+	public static function next<T>(current:T, options:Array<T>, loop:Bool = true):Dynamic
 	{
 		if (loop) return options[(indexOf(options, current) + 1) % options.length];
 		return options[Std.int(Math.max(indexOf(options, current) + 1, options.length - 1))];
@@ -552,7 +553,7 @@ class HXP
 	 * @param	loop		If true, will jump to the last item after the first is reached.
 	 * @return	The previous item in the list.
 	 */
-	public static function prev(current:Dynamic, options:Array<Dynamic>, loop:Bool = true):Dynamic
+	public static function prev<T>(current:T, options:Array<T>, loop:Bool = true):Dynamic
 	{
 		if (loop) return options[((indexOf(options, current) - 1) + options.length) % options.length];
 		return options[Std.int(Math.max(indexOf(options, current) - 1, 0))];
@@ -565,7 +566,7 @@ class HXP
 	 * @param	b			Item b.
 	 * @return	Returns a if current is b, and b if current is a.
 	 */
-	public static function swap(current:Dynamic, a:Dynamic, b:Dynamic):Dynamic
+	public static inline function swap(current:Dynamic, a:Dynamic, b:Dynamic):Dynamic
 	{
 		return current == a ? b : a;
 	}
@@ -577,7 +578,7 @@ class HXP
 	 * @param	B		The blue value of the color, from 0 to 255.
 	 * @return	The color Int.
 	 */
-	public static function getColorRGB(R:Int = 0, G:Int = 0, B:Int = 0):Int
+	public static inline function getColorRGB(R:Int = 0, G:Int = 0, B:Int = 0):Int
 	{
 		return R << 16 | G << 8 | B;
 	}
@@ -615,7 +616,7 @@ class HXP
 	 * @param	color		The color to evaluate.
 	 * @return	A Int from 0 to 255.
 	 */
-	public static function getRed(color:Int):Int
+	public static inline function getRed(color:Int):Int
 	{
 		return color >> 16 & 0xFF;
 	}
@@ -625,7 +626,7 @@ class HXP
 	 * @param	color		The color to evaluate.
 	 * @return	A Int from 0 to 255.
 	 */
-	public static function getGreen(color:Int):Int
+	public static inline function getGreen(color:Int):Int
 	{
 		return color >> 8 & 0xFF;
 	}
@@ -635,7 +636,7 @@ class HXP
 	 * @param	color		The color to evaluate.
 	 * @return	A Int from 0 to 255.
 	 */
-	public static function getBlue(color:Int):Int
+	public static inline function getBlue(color:Int):Int
 	{
 		return color & 0xFF;
 	}
@@ -656,11 +657,53 @@ class HXP
 		return data;
 	}
 	
+	#if hardware
+	public static function getBitmapIndex(source:Dynamic):Int 
+	{
+		var name:String = Std.string(source);
+		if (_bitmapIndex.exists(name))
+			return _bitmapIndex.get(name);
+		
+		trace('Could not find the image : ' + Std.string(source));
+		return -1;
+	}
+	
+	/**
+	 * Takes a bitmapdata and creates the tilesheet has an optional parameter which can take the string from the SpriteSHeetPacker found here
+	 * http://spritesheetpacker.codeplex.com/ which will generate the rectangles as well
+	 * @param	source
+	 * @param	?rectangleData	 A string where a rectangle is formatted as 'name = x y width height\n'
+	 */
+	public static function loadTilesheet(source:BitmapData, ?rectangleData:String):Void 
+	{
+		HXP.tilesheet = new nme.display.Tilesheet(source);
+		
+		if (rectangleData != null) 
+		{
+			
+			var array:Array<String> = rectangleData.split('\n');
+			
+			for (ii in 0...array.length) 
+			{
+				
+				var data = array[ii].split(' ');
+				var name = data[0];
+				
+				var rectangle = new Rectangle(Std.parseInt(data[2]), Std.parseInt(data[3]), Std.parseInt(data[4]), Std.parseInt(data[5]));
+				
+				HXP.sheetRectangles.push(rectangle);
+				HXP.tilesheet.addTileRect(rectangle);
+				
+				HXP._bitmapIndex.set(name, ii);
+			}
+		}
+	}
+	#end
 	/**
 	 * Sets a time flag.
 	 * @return	Time elapsed (in milliseconds) since the last time flag was set.
 	 */
-	public static function timeFlag():Float
+	public static inline function timeFlag():Float
 	{
 		var t:Float = Timer.stamp(),
 			e:Float = t - _time;
@@ -672,7 +715,7 @@ class HXP
 	 * The global Console object.
 	 */
 	public static var console(getConsole, null):Console;
-	private static function getConsole():Console
+	private static inline function getConsole():Console
 	{
 		if (_console == null) _console = new Console();
 		return _console;
@@ -784,12 +827,12 @@ class HXP
 	}
 	
 	public static var time(null, setTime):Float;
-	private static function setTime(value:Float):Float {
+	private static inline function setTime(value:Float):Float {
 		_time = value;
 		return _time;
 	}
 	
-	public static function gotoIsNull():Bool { return (_goto == null); }
+	public static inline function gotoIsNull():Bool { return (_goto == null); }
 	
 	// World information.
 	private static var _world:World = new World();
@@ -807,7 +850,7 @@ class HXP
 	
 	// Bitmap storage.
 	private static var _bitmap:Hash<BitmapData> = new Hash<BitmapData>();
-	
+
 	// Pseudo-random number generation (the seed is set in Engine's contructor).
 	private static var _seed:Int = 0;
 	private static var _getSeed:Int;
@@ -815,9 +858,10 @@ class HXP
 	// Volume control.
 	private static var _volume:Float = 1;
 	private static var _pan:Float = 0;
-	#if flash
 	private static var _soundTransform:SoundTransform = new SoundTransform();
-	#end
+	
+	
+	
 	
 	// Used for rad-to-deg and deg-to-rad conversion.
 	public static inline var DEG:Float = -180 / Math.PI;
@@ -835,4 +879,48 @@ class HXP
 	public static var matrix:Matrix = new Matrix();
 	public static var sprite:Sprite = new Sprite();
 	public static var entity:Entity;
+	
+	
+	#if hardware
+	/**
+	 * Currently only one tilesheet for simplicity, should probably be a list later on (and not static?)
+	 */
+	public static var tilesheet:nme.display.Tilesheet;
+	
+	/**
+	 * Stores the x, y, ID, flags... which are then passed through NME
+	 */
+	public static var tileData:Array<Float> = new Array<Float>();
+	
+	/**
+	 * Stores the rectangles in an array where the index is the respective ID that the rectangle has in the tilesheet
+	 */
+	static public var sheetRectangles:Array<Rectangle> = new Array<Rectangle>();
+	
+	/**
+	 * Flags are added with
+	 * flags = TILE_SCALE | TILE_ROTATION | TILE_RGB;
+	 */
+	public static var tilesheetFlags:Int = 0;
+	
+	static private var _bitmapIndex:Hash<Int> = new Hash<Int>();
+	
+	/**
+	 * @private Used internally, used to determine which index to set the data in tileData
+	 */
+	public static var currentPos:Int = 0;
+	/**
+	 * Used to determine if there are less objects to render, ïf there are then we need to splice the array so that we dont render any
+	 * entities which have been removed
+	 */
+	public static var previousLength = 0;
+	
+	/**
+	 * Flags that are copied over from the nme.display.Tilesheet class for easier access
+	 */
+	public static inline var TILE_SCALE = 0x0001;
+	public static inline var TILE_ROTATION = 0x0002;
+	public static inline var TILE_RGB = 0x0004;
+	public static inline var TILE_ALPHA = 0x0008;
+	#end
 }

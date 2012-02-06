@@ -51,12 +51,15 @@ class Spritemap extends Image
 		
 		_width = this.source.width;
 		_height = this.source.height;
+		
 		_columns = Std.int(_width / _rect.width);
 		_rows = Std.int(_height / _rect.height);
 		_frameCount = _columns * _rows;
 		callbackFunc = cbFunc;
+		
 		updateBuffer();
 		active = true;
+		
 	}
 	
 	/**
@@ -64,6 +67,9 @@ class Spritemap extends Image
 	 */
 	override public function updateBuffer(clearBefore:Bool = false) 
 	{
+		#if hardware
+		return;
+		#end
 		// get position of the current frame
 		_rect.x = _rect.width * _frame;
 		_rect.y = Std.int(_rect.x / _width) * _rect.height;
@@ -267,4 +273,8 @@ class Spritemap extends Image
 	private var _index:Int;
 	private var _frame:Int;
 	private var _timer:Float;
+	
+	#if hardware
+	private var _baseID:Int;
+	#end
 }

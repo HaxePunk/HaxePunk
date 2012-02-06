@@ -87,4 +87,9 @@ class Graphic
 	private var _assign:AssignCallback;
 	private var _scroll:Bool;
 	private var _point:Point;
+	
+	#if hardware
+	private var _tileSheet:nme.display.Tilesheet;
+	private var imageID:Int;
+	#end
 }

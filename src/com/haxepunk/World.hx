@@ -4,6 +4,7 @@ import flash.geom.Point;
 import com.haxepunk.utils.Input;
 import com.haxepunk.Entity;
 import com.haxepunk.Tweener;
+import flash.geom.Rectangle;
 
 /**
  * Updated by Engine, main game container that holds all currently active Entities.
@@ -56,7 +57,7 @@ class World extends Tweener
 	 */
 	public function begin()
 	{
-		
+
 	}
 	
 	/**
@@ -98,6 +99,9 @@ class World extends Tweener
 	 */
 	public function render() 
 	{
+		#if hardware
+		HXP.currentPos = 0;
+		#end
 		// render the entities in order of depth
 		var e:Entity,
 			fe:FriendEntity,
@@ -112,13 +116,23 @@ class World extends Tweener
 				fe = fe._renderPrev;
 			}
 		}
+		#if hardware
+		if (HXP.currentPos < HXP.previousLength) 
+		{
+			//If we have removed entities we need to splice the array so that we dont render the objects again
+			HXP.tileData.splice(HXP.currentPos, HXP.previousLength - HXP.currentPos);
+		}
+		HXP.previousLength = HXP.currentPos;
+		HXP.sprite.graphics.clear();
+		HXP.tilesheet.drawTiles(HXP.sprite.graphics,  HXP.tileData, Turn.kSmooth, HXP.tilesheetFlags);
+		#end
 	}
 	
 	/**
 	 * X position of the mouse in the World.
 	 */
 	public var mouseX(getMouseX, null):Int;
-	private function getMouseX():Int
+	inline private function getMouseX():Int
 	{
 		return Std.int(HXP.screen.mouseX + HXP.camera.x);
 	}
@@ -127,7 +141,7 @@ class World extends Tweener
 	 * Y position of the mouse in the world.
 	 */
 	public var mouseY(getMouseY, null):Int;
-	private function getMouseY():Int
+	inline private function getMouseY():Int
 	{
 		return Std.int(HXP.screen.mouseY + HXP.camera.y);
 	}
@@ -234,7 +248,7 @@ class World extends Tweener
 	 * @param	addToWorld		Add it to the World immediately.
 	 * @return	The new Entity object.
 	 */
-	public function create(classType:Dynamic, addToWorld:Bool = true):Entity
+	public function create(classType:Class<Dynamic>, addToWorld:Bool = true):Entity
 	{
 		var className:String = Type.getClassName(classType);
 		var fe:FriendEntity = _recycled.get(className);
@@ -388,7 +402,7 @@ class World extends Tweener
 	 * @param	e		The Entity to check.
 	 * @return	True or false.
 	 */
-	public function isAtFront(e:Entity):Bool
+	inline public function isAtFront(e:Entity):Bool
 	{
 		var fe:FriendEntity = e;
 		return fe._renderPrev == null;
@@ -399,7 +413,7 @@ class World extends Tweener
 	 * @param	e		The Entity to check.
 	 * @return	True or false.
 	 */
-	public function isAtBack(e:Entity):Bool
+	inline public function isAtBack(e:Entity):Bool
 	{
 		var fe:FriendEntity = e;
 		return fe._renderNext == null;
@@ -787,14 +801,14 @@ class World extends Tweener
 	 * How many Entities are in the World.
 	 */
 	public var count(getCount, null):Int;
-	private function getCount():Int { return _count; }
+	inline private function getCount():Int { return _count; }
 	
 	/**
 	 * Returns the amount of Entities of the type are in the World.
 	 * @param	type		The type (or Class type) to count.
 	 * @return	How many Entities of type exist in the World.
 	 */
-	public function typeCount(type:String):Int
+	inline public function typeCount(type:String):Int
 	{
 		return _typeCount.get(type);
 	}
@@ -804,7 +818,7 @@ class World extends Tweener
 	 * @param	c		The Class type to count.
 	 * @return	How many Entities of Class exist in the World.
 	 */
-	public function classCount(c:String):Int
+	inline public function classCount(c:String):Int
 	{
 		return _classCount.get(c);
 	}
@@ -814,7 +828,7 @@ class World extends Tweener
 	 * @param	layer		The layer to count Entities on.
 	 * @return	How many Entities are on the layer.
 	 */
-	public function layerCount(layer:Int):Int
+	inline public function layerCount(layer:Int):Int
 	{
 		return _layerCount[layer];
 	}
@@ -823,13 +837,13 @@ class World extends Tweener
 	 * The first Entity in the World.
 	 */
 	public var first(getFirst, null):Entity;
-	private function getFirst():Entity { return cast(_updateFirst, Entity); }
+	inline private function getFirst():Entity { return cast(_updateFirst, Entity); }
 	
 	/**
 	 * How many Entity layers the World has.
 	 */
 	public var layers(getLayers, null):Int;
-	private function getLayers():Int { return _layerList.length; }
+	inline private function getLayers():Int { return _layerList.length; }
 	
 	/**
 	 * The first Entity of the type.
@@ -927,7 +941,7 @@ class World extends Tweener
 	 * How many different types have been added to the World.
 	 */
 	public var uniqueTypes(getUniqueTypes, null):Int;
-	private function getUniqueTypes():Int
+	inline private function getUniqueTypes():Int
 	{
 		var i:Int = 0;
 		var type:String;

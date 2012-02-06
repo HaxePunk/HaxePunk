@@ -1,5 +1,6 @@
 package com.haxepunk.masks;
 
+import com.haxepunk.Mask;
 import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Rectangle;
