@@ -1,12 +1,12 @@
 package com.haxepunk.masks;
 
 import com.haxepunk.Mask;
+import flash.geom.Point;
+import com.haxepunk.masks.Polygon;
 
-/**
- * Uses parent's hitbox to determine collision. This class is used
- * internally by FlashPunk, you don't need to use this class because
- * this is the default behaviour of Entities without a Mask object.
- */
+/** Uses parent's hitbox to determine collision. 
+ * This class is used * internally by FlashPunk, you don't need to use this class because
+ * this is the default behaviour of Entities without a Mask object. */
 class Hitbox extends Mask
 {
 	/**
@@ -23,7 +23,6 @@ class Hitbox extends Mask
 		_height = height;
 		_x = x;
 		_y = y;
-		_check.set(Type.getClassName(Mask), collideMask);
 		_check.set(Type.getClassName(Hitbox), collideHitbox);
 	}
 	
@@ -43,6 +42,25 @@ class Hitbox extends Mask
 			&& parent.y + _y + _height > other.parent.y + other._y
 			&& parent.x + _x < other.parent.x + other._x + other._width
 			&& parent.y + _y < other.parent.y + other._y + other._height;
+	}
+	
+	public inline function projectOn(axis:Point, collisionInfo:CollisionInfo):Void 
+	{
+		if (axis.x < axis.y) 
+		{
+			collisionInfo.min = axis.x;
+			collisionInfo.max = axis.y;
+		}
+		else
+		{
+			collisionInfo.max = axis.x;
+			collisionInfo.min = axis.y;
+		}
+	}
+	
+	inline function dot(p1x:Float, p1y:Float, p2x:Float, p2y:Float):Float 
+	{
+		return p1x * p2x + p1y * p2y;
 	}
 	
 	/**
@@ -68,7 +86,7 @@ class Hitbox extends Mask
 	{
 		if (_y == value) return value;
 		_y = value;
-		if (list!= null) list.update();
+		if (list != null) list.update();
 		else if (parent != null) update();
 		return _y;
 	}
@@ -104,17 +122,17 @@ class Hitbox extends Mask
 	/** Updates the parent's bounds for this mask. */
 	override public function update() 
 	{
-		if (parent != null) 
+		if (parent != null) 		
 		{
-			// update entity bounds
-			parent.originX = -_x;
-			parent.originY = -_y;
-			parent.width = _width;
-			parent.height = _height;
-			
-			// update parent list
-			if (list != null) list.update();
-		}
+			// update entity bounds			
+			parent.originX = -_x;			
+			parent.originY = -_y;			
+			parent.width = _width;			
+			parent.height = _height;		
+			// update parent list			
+			if (list != null) 
+				list.update();		
+		}	
 	}
 	
 	// Hitbox information.

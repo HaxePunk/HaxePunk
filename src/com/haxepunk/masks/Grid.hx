@@ -2,6 +2,7 @@ package com.haxepunk.masks;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
+import flash.display.Graphics;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import com.haxepunk.HXP;
@@ -49,7 +50,7 @@ class Grid extends Hitbox
 		// set grid properties
 		_columns = Std.int(width / tileWidth);
 		_rows = Std.int(height / tileHeight);
-		_data = new BitmapData(_columns, _rows, true, 0);
+		
 		_tile = new Rectangle(0, 0, tileWidth, tileHeight);
 		_x = x;
 		_y = y;
@@ -61,7 +62,9 @@ class Grid extends Hitbox
 		_check.set(Type.getClassName(Hitbox), collideHitbox);
 		_check.set(Type.getClassName(Pixelmask), collidePixelmask);
 		
-		#if !flash
+		#if flash
+		_data = new BitmapData(_columns, _rows, true, 0);
+		#else
 		_grid = new Array2D();
 		for (x in 0..._columns)
 		{
@@ -113,7 +116,12 @@ class Grid extends Hitbox
 			column = Std.int(column / _tile.width);
 			row = Std.int(row / _tile.height);
 		}
-		return _data.getPixel32(column, row) > 0;
+		return 
+		#if flash
+		_data.getPixel32(column, row) > 0;
+		#else
+		_grid[column][row] == 1;
+		#end
 	}
 	
 	/**
@@ -133,11 +141,22 @@ class Grid extends Hitbox
 			width = Std.int(width / _tile.width);
 			height = Std.int(height / _tile.height);
 		}
+		#if flash
 		_rect.x = column;
 		_rect.y = row;
 		_rect.width = width;
 		_rect.height = height;
 		_data.fillRect(_rect, solid ? 0xFFFFFFFF : 0);
+		#else
+		var setTo = solid ? 1:0;
+		for (xx in column...column + width) 
+		{
+			for (yy in row...row + height) 
+			{
+				_grid[xx][yy] = setTo;
+			}
+		}
+		#end
 	}
 	
 	/**
@@ -201,31 +220,36 @@ class Grid extends Hitbox
 	 * The tile width.
 	 */
 	public var tileWidth(getTileWidth, null):Int;
-	private function getTileWidth():Int { return Std.int(_tile.width); }
+	private inline function getTileWidth():Int { return Std.int(_tile.width); }
 	
 	/**
 	 * The tile height.
 	 */
 	public var tileHeight(getTileHeight, null):Int;
-	private function getTileHeight():Int { return Std.int(_tile.height); }
+	private inline function getTileHeight():Int { return Std.int(_tile.height); }
 	
 	/**
 	 * How many columns the grid has
 	 */
 	public var columns(getColumns, null):Int;
-	private function getColumns():Int { return _columns; }
+	private inline function getColumns():Int { return _columns; }
 	
 	/**
 	 * How many rows the grid has.
 	 */
 	public var rows(getRows, null):Int;
-	private function getRows():Int { return _rows; }
+	private inline function getRows():Int { return _rows; }
 	
 	/**
 	 * The grid data.
 	 */
+	#if flash
 	public var data(getData, null):BitmapData;
-	private function getData():BitmapData { return _data; }
+	private inline function getData():BitmapData { return _data; }
+	#else
+	public var data(getData, null):Array2D;
+	private inline function getData():Array2D { return _grid; }
+	#end
 	
 	/** @private Collides against an Entity. */
 	override private function collideMask(other:Mask):Bool
@@ -277,19 +301,23 @@ class Grid extends Hitbox
 		#if flash
 		return _data.hitTest(HXP.zero, 1, _rect);
 		#else
-		if (_grid[Std.int(_rect.x)][Std.int(_rect.y)] == 1) 
+		var xx = Std.int(_rect.x);
+		var yy = Std.int(_rect.y);
+		var ww = Std.int(_rect.y +_rect.height);
+		var hh = Std.int(_rect.x +_rect.width);
+		if (_grid[xx][yy] == 1) 
 		{
 			return true;
 		}
-		if (_grid[Std.int(_rect.x)][Std.int(_rect.y +_rect.height)] == 1) 
+		if (_grid[xx][yy + hh] == 1) 
 		{
 			return true;
 		}
-		if (_grid[Std.int(_rect.x +_rect.width)][Std.int(_rect.y)] == 1) 
+		if (_grid[xx + ww][yy] == 1) 
 		{
 			return true;
 		}
-		if (_grid[Std.int(_rect.x +_rect.width)][Std.int(_rect.y +_rect.height)] == 1) 
+		if (_grid[xx + ww][yy + hh] == 1) 
 		{
 			return true;
 		}
@@ -301,8 +329,9 @@ class Grid extends Hitbox
 	private function collidePixelmask(other:Pixelmask):Bool
 	{
 		#if !flash
+		trace('Pixelmasks will not work in targets other than flash due to hittest not being implemented in NME.');
 		return true;
-		#end
+		#else
 		
 		var x1:Int = Std.int(other.parent.x + other.x - parent.x - _x),
 			y1:Int = Std.int(other.parent.y + other.y - parent.y - _y),
@@ -334,10 +363,40 @@ class Grid extends Hitbox
 			_tile.y += _tile.height;
 		}
 		return false;
+		#end
+	}
+	
+	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void //Not 100% tested
+	{
+		#if flash
+		HXP.matrix.b = HXP.matrix.c = 0;
+		HXP.matrix.a = tileWidth;//Scale X
+		HXP.matrix.d = tileHeight;//Scale Y
+		HXP.matrix.tx = -_x * HXP.matrix.a;//Translation X
+		HXP.matrix.ty = -_y * HXP.matrix.d;//Translation Y
+		//if (angle != 0) HXP.matrix.rotate(angle * HXP.RAD); //Rotation
+		HXP.matrix.tx += _x + parent.x - HXP.camera.x;
+		HXP.matrix.ty += _y + parent.y - HXP.camera.y;
+		HXP.buffer.draw(_data, HXP.matrix);
+		#end
+	}
+	
+	public function squareProjection(axis:Point, point:Point):Void 
+	{
+		if (axis.x < axis.y) 
+		{
+			point.x = axis.x;
+			point.y = axis.y;
+		}
+		else
+		{
+			point.y = axis.x;
+			point.x = axis.y;
+		}
 	}
 	
 	// Grid information.
-	private var _data:BitmapData;
+	
 	private var _columns:Int;
 	private var _rows:Int;
 	private var _tile:Rectangle;
@@ -345,7 +404,9 @@ class Grid extends Hitbox
 	private var _point:Point;
 	private var _point2:Point;
 	
-	#if !flash
+	#if flash
+	private var _data:BitmapData;
+	#else
 	private var _grid:Array2D;
 	#end
 }

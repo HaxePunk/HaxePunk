@@ -34,9 +34,10 @@ class VarTween extends Tween
 		// Check to make sure we have valid parameters
 		if (!Reflect.isObject(object))
 			throw "A valid object was not passed.";
+		#if !cpp //Getting errors in cpp even when the object has the field
 		if (!Reflect.hasField(object, property))
 			throw "The Object does not have the property\"" + property + "\", or it is not accessible.";
-		
+		#end
 		_property = property;
 		_method = false;
 		var a:Float = Reflect.field(_object, property);
