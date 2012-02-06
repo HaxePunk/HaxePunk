@@ -16,42 +16,42 @@ class World extends Tweener
 	 * If the render() loop is performed.
 	 */
 	public var visible:Bool;
-	
+
 	/**
 	 * Point used to determine drawing offset in the render loop.
 	 */
 	public var camera:Point;
-	
+
 	// Flash equivalent: Number.MAX_VALUE
 #if flash
 	public static inline var NUMBER_MAX_VALUE = untyped __global__["Number"].MAX_VALUE;
 #else
 	public static inline var NUMBER_MAX_VALUE = 179 * Math.pow(10, 306); // 1.79e+308
 #end
-	
+
 	/**
 	 * Constructor.
 	 */
-	public function new() 
+	public function new()
 	{
 		super();
 		visible = true;
 		camera = new Point();
-		
+
 		_layerList = new Array<Int>();
 		_layerCount = new Array<Int>();
-		
+
 		_renderFirst = new Array<FriendEntity>();
 		_renderLast = new Array<FriendEntity>();
 		_typeFirst = new Hash<FriendEntity>();
-		
+
 		_add = new Array<Entity>();
 		_remove = new Array<Entity>();
 		_classCount = new Hash<Int>();
 		_typeCount = new Hash<Int>();
 		_recycled = new Hash<Entity>();
 	}
-	
+
 	/**
 	 * Override this; called when World is switch to, and set to the currently active world.
 	 */
@@ -59,21 +59,21 @@ class World extends Tweener
 	{
 
 	}
-	
+
 	/**
 	 * Override this; called when World is changed, and the active world is no longer this.
 	 */
 	public function end()
 	{
-		
+
 	}
-	
+
 	/**
 	 * Performed by the game loop, updates all contained Entities.
 	 * If you override this to give your World update code, remember
 	 * to call super.update() or your Entities will not be updated.
 	 */
-	override public function update() 
+	override public function update()
 	{
 		// update the entities
 		var e:Entity,
@@ -91,13 +91,13 @@ class World extends Tweener
 			fe = fe._updateNext;
 		}
 	}
-	
+
 	/**
 	 * Performed by the game loop, renders all contained Entities.
 	 * If you override this to give your World render code, remember
 	 * to call super.render() or your Entities will not be rendered.
 	 */
-	public function render() 
+	public function render()
 	{
 		#if hardware
 		HXP.currentPos = 0;
@@ -117,7 +117,7 @@ class World extends Tweener
 			}
 		}
 		#if hardware
-		if (HXP.currentPos < HXP.previousLength) 
+		if (HXP.currentPos < HXP.previousLength)
 		{
 			//If we have removed entities we need to splice the array so that we dont render the objects again
 			HXP.tileData.splice(HXP.currentPos, HXP.previousLength - HXP.currentPos);
@@ -127,25 +127,25 @@ class World extends Tweener
 		HXP.tilesheet.drawTiles(HXP.sprite.graphics,  HXP.tileData, Turn.kSmooth, HXP.tilesheetFlags);
 		#end
 	}
-	
+
 	/**
 	 * X position of the mouse in the World.
 	 */
 	public var mouseX(getMouseX, null):Int;
-	inline private function getMouseX():Int
+	private inline function getMouseX():Int
 	{
 		return Std.int(HXP.screen.mouseX + HXP.camera.x);
 	}
-	
+
 	/**
 	 * Y position of the mouse in the world.
 	 */
 	public var mouseY(getMouseY, null):Int;
-	inline private function getMouseY():Int
+	private inline function getMouseY():Int
 	{
 		return Std.int(HXP.screen.mouseY + HXP.camera.y);
 	}
-	
+
 	/**
 	 * Adds the Entity to the World at the end of the frame.
 	 * @param	e		Entity object you want to add.
@@ -159,7 +159,7 @@ class World extends Tweener
 		fe._world = this;
 		return e;
 	}
-	
+
 	/**
 	 * Removes the Entity from the World at the end of the frame.
 	 * @param	e		Entity object you want to remove.
@@ -173,7 +173,7 @@ class World extends Tweener
 		fe._world = null;
 		return e;
 	}
-	
+
 	/**
 	 * Removes all Entities from the World at the end of the frame.
 	 */
@@ -189,7 +189,7 @@ class World extends Tweener
 			fe = fe._updateNext;
 		}
 	}
-	
+
 	/**
 	 * Adds multiple Entities to the world.
 	 * @param	...list		Several Entities (as arguments) or an Array/Vector of Entities.
@@ -199,7 +199,7 @@ class World extends Tweener
 		var e:Entity;
 		for (e in list) add(e);
 	}
-	
+
 	/**
 	 * Removes multiple Entities from the world.
 	 * @param	...list		Several Entities (as arguments) or an Array/Vector of Entities.
@@ -209,7 +209,7 @@ class World extends Tweener
 		var e:Entity;
 		for (e in list) remove(e);
 	}
-	
+
 	/**
 	 * Adds an Entity to the World with the Graphic object.
 	 * @param	graphic		Graphic to assign the Entity.
@@ -225,7 +225,7 @@ class World extends Tweener
 		e.active = false;
 		return add(e);
 	}
-	
+
 	/**
 	 * Adds an Entity to the World with the Mask object.
 	 * @param	mask	Mask to assign the Entity.
@@ -241,7 +241,7 @@ class World extends Tweener
 		e.active = e.visible = false;
 		return add(e);
 	}
-	
+
 	/**
 	 * Returns a new Entity, or a stored recycled Entity if one exists.
 	 * @param	classType		The Class of the Entity you want to add.
@@ -262,7 +262,7 @@ class World extends Tweener
 		if (addToWorld) return add(e);
 		return e;
 	}
-	
+
 	/**
 	 * Removes the Entity from the World at the end of the frame and recycles it.
 	 * The recycled Entity can then be fetched again by calling the create() function.
@@ -277,7 +277,7 @@ class World extends Tweener
 		_recycled.set(fe._class, e);
 		return remove(e);
 	}
-	
+
 	/**
 	 * Clears stored reycled Entities of the Class type.
 	 * @param	classType		The Class type to clear.
@@ -296,7 +296,7 @@ class World extends Tweener
 		}
 		_recycled.set(classType, null);
 	}
-	
+
 	/**
 	 * Clears stored recycled Entities of all Class types.
 	 */
@@ -310,7 +310,7 @@ class World extends Tweener
 			clearRecycled(fe._class);
 		}
 	}
-	
+
 	/**
 	 * Brings the Entity to the front of its contained layer.
 	 * @param	e		The Entity to shift.
@@ -331,7 +331,7 @@ class World extends Tweener
 		fe._renderPrev = null;
 		return true;
 	}
-	
+
 	/**
 	 * Sends the Entity to the back of its contained layer.
 	 * @param	e		The Entity to shift.
@@ -352,7 +352,7 @@ class World extends Tweener
 		fe._renderNext = null;
 		return true;
 	}
-	
+
 	/**
 	 * Shifts the Entity one place towards the front of its contained layer.
 	 * @param	e		The Entity to shift.
@@ -374,7 +374,7 @@ class World extends Tweener
 		else _renderFirst[fe._layer] = e;
 		return true;
 	}
-	
+
 	/**
 	 * Shifts the Entity one place towards the back of its contained layer.
 	 * @param	e		The Entity to shift.
@@ -396,29 +396,29 @@ class World extends Tweener
 		else _renderLast[fe._layer] = e;
 		return true;
 	}
-	
+
 	/**
 	 * If the Entity as at the front of its layer.
 	 * @param	e		The Entity to check.
 	 * @return	True or false.
 	 */
-	inline public function isAtFront(e:Entity):Bool
+	public inline function isAtFront(e:Entity):Bool
 	{
 		var fe:FriendEntity = e;
 		return fe._renderPrev == null;
 	}
-	
+
 	/**
 	 * If the Entity as at the back of its layer.
 	 * @param	e		The Entity to check.
 	 * @return	True or false.
 	 */
-	inline public function isAtBack(e:Entity):Bool
+	public inline function isAtBack(e:Entity):Bool
 	{
 		var fe:FriendEntity = e;
 		return fe._renderNext == null;
 	}
-	
+
 	/**
 	 * Returns the first Entity that collides with the rectangular area.
 	 * @param	type		The Entity type to check for.
@@ -461,7 +461,7 @@ class World extends Tweener
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns the first Entity found that collides with the line.
 	 * @param	type		The Entity type to check for.
@@ -469,7 +469,7 @@ class World extends Tweener
 	 * @param	fromY		Start y of the line.
 	 * @param	toX			End x of the line.
 	 * @param	toY			End y of the line.
-	 * @param	precision		
+	 * @param	precision
 	 * @param	p
 	 * @return
 	 */
@@ -490,14 +490,14 @@ class World extends Tweener
 			}
 			else return collidePoint(type, fromX, toY);
 		}
-		
+
 		// Get information about the line we're about to raycast.
 		var xDelta:Int = Std.int(Math.abs(toX - fromX)),
 			yDelta:Int = Std.int(Math.abs(toY - fromY)),
 			xSign:Float = toX > fromX ? precision : -precision,
 			ySign:Float = toY > fromY ? precision : -precision,
 			x:Float = fromX, y:Float = fromY, e:Entity;
-		
+
 		// Do a raycast from the start to the end point.
 		if (xDelta > yDelta)
 		{
@@ -575,14 +575,14 @@ class World extends Tweener
 				}
 			}
 		}
-		
+
 		// Check the last position.
 		if (precision > 1)
 		{
 			if (p == null) return collidePoint(type, toX, toY);
 			if (collidePoint(type, toX, toY) != null) return collideLine(type, Std.int(x - xSign), Std.int(y - ySign), toX, toY, 1, p);
 		}
-		
+
 		// No collision, return the end point.
 		if (p != null)
 		{
@@ -591,7 +591,7 @@ class World extends Tweener
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Populates an array with all Entities that collide with the rectangle. This
 	 * function does not empty the array, that responsibility is left to the user.
@@ -614,7 +614,7 @@ class World extends Tweener
 			fe = fe._typeNext;
 		}
 	}
-	
+
 	/**
 	 * Populates an array with all Entities that collide with the circle. This
 	 * function does not empty the array, that responsibility is left to the user.
@@ -629,7 +629,7 @@ class World extends Tweener
 		var e:Entity,
 			fe:FriendEntity = _typeFirst.get(type),
 			n:Int = into.length;
-			
+
 		radius *= radius;//Square it to avoid the square root
 		while (fe != null)
 		{
@@ -638,7 +638,7 @@ class World extends Tweener
 			fe = fe._typeNext;
 		}
 	}
-	
+
 	/**
 	 * Populates an array with all Entities that collide with the position. This
 	 * function does not empty the array, that responsibility is left to the user.
@@ -660,7 +660,7 @@ class World extends Tweener
 			fe = fe._typeNext;
 		}
 	}
-	
+
 	/**
 	 * Finds the Entity nearest to the rectangle.
 	 * @param	type		The Entity type to check for.
@@ -689,7 +689,7 @@ class World extends Tweener
 		}
 		return near;
 	}
-	
+
 	/**
 	 * Finds the Entity nearest to another.
 	 * @param	type		The Entity type to check for.
@@ -720,8 +720,8 @@ class World extends Tweener
 		}
 		return near;
 	}
-	
-	
+
+
 	/**
 	 * Finds the Entity nearest to another.
 	 * @param	type		The Entity type to check for.
@@ -752,7 +752,7 @@ class World extends Tweener
 		}
 		return near;
 	}
-	
+
 	/**
 	 * Finds the Entity nearest to the position.
 	 * @param	type		The Entity type to check for.
@@ -796,55 +796,55 @@ class World extends Tweener
 		}
 		return near;
 	}
-	
+
 	/**
 	 * How many Entities are in the World.
 	 */
 	public var count(getCount, null):Int;
-	inline private function getCount():Int { return _count; }
-	
+	private inline function getCount():Int { return _count; }
+
 	/**
 	 * Returns the amount of Entities of the type are in the World.
 	 * @param	type		The type (or Class type) to count.
 	 * @return	How many Entities of type exist in the World.
 	 */
-	inline public function typeCount(type:String):Int
+	public inline function typeCount(type:String):Int
 	{
 		return _typeCount.get(type);
 	}
-	
+
 	/**
 	 * Returns the amount of Entities of the Class are in the World.
 	 * @param	c		The Class type to count.
 	 * @return	How many Entities of Class exist in the World.
 	 */
-	inline public function classCount(c:String):Int
+	public inline function classCount(c:String):Int
 	{
 		return _classCount.get(c);
 	}
-	
+
 	/**
 	 * Returns the amount of Entities are on the layer in the World.
 	 * @param	layer		The layer to count Entities on.
 	 * @return	How many Entities are on the layer.
 	 */
-	inline public function layerCount(layer:Int):Int
+	public inline function layerCount(layer:Int):Int
 	{
 		return _layerCount[layer];
 	}
-	
+
 	/**
 	 * The first Entity in the World.
 	 */
 	public var first(getFirst, null):Entity;
-	inline private function getFirst():Entity { return cast(_updateFirst, Entity); }
-	
+	private inline function getFirst():Entity { return cast(_updateFirst, Entity); }
+
 	/**
 	 * How many Entity layers the World has.
 	 */
 	public var layers(getLayers, null):Int;
-	inline private function getLayers():Int { return _layerList.length; }
-	
+	private inline function getLayers():Int { return _layerList.length; }
+
 	/**
 	 * The first Entity of the type.
 	 * @param	type		The type to check.
@@ -855,7 +855,7 @@ class World extends Tweener
 		if (_updateFirst == null) return null;
 		return cast(_typeFirst.get(type), Entity);
 	}
-	
+
 	/**
 	 * The first Entity of the Class.
 	 * @param	c		The Class type to check.
@@ -874,7 +874,7 @@ class World extends Tweener
 		return null;
 	}
 */
-	
+
 	/**
 	 * The first Entity on the Layer.
 	 * @param	layer		The layer to check.
@@ -885,7 +885,7 @@ class World extends Tweener
 		if (_updateFirst == null) return null;
 		return cast(_renderFirst[layer], Entity);
 	}
-	
+
 	/**
 	 * The last Entity on the Layer.
 	 * @param	layer		The layer to check.
@@ -896,7 +896,7 @@ class World extends Tweener
 		if (_updateFirst == null) return null;
 		return cast(_renderLast[layer], Entity);
 	}
-	
+
 	/**
 	 * The Entity that will be rendered first by the World.
 	 */
@@ -906,7 +906,7 @@ class World extends Tweener
 		if (_updateFirst == null) return null;
 		return cast(_renderLast[_layerList[_layerList.length - 1]], Entity);
 	}
-	
+
 	/**
 	 * The Entity that will be rendered last by the world.
 	 */
@@ -916,7 +916,7 @@ class World extends Tweener
 		if (_updateFirst == null) return null;
 		return cast(_renderFirst[_layerList[0]], Entity);
 	}
-	
+
 	/**
 	 * The layer that will be rendered first by the World.
 	 */
@@ -926,7 +926,7 @@ class World extends Tweener
 		if (_updateFirst == null) return 0;
 		return _layerList[_layerList.length - 1];
 	}
-	
+
 	/**
 	 * The layer that will be rendered last by the World.
 	 */
@@ -936,19 +936,19 @@ class World extends Tweener
 		if (_updateFirst == null) return 0;
 		return _layerList[0];
 	}
-	
+
 	/**
 	 * How many different types have been added to the World.
 	 */
 	public var uniqueTypes(getUniqueTypes, null):Int;
-	inline private function getUniqueTypes():Int
+	private inline function getUniqueTypes():Int
 	{
 		var i:Int = 0;
 		var type:String;
 		for (type in _typeCount) i++;
 		return i;
 	}
-	
+
 	/**
 	 * Pushes all Entities in the World of the type into the Array or Vector.
 	 * @param	type		The type to check.
@@ -967,7 +967,7 @@ class World extends Tweener
 			fe = fe._typeNext;
 		}
 	}
-	
+
 	/**
 	 * Pushes all Entities in the World of the Class into the Array or Vector.
 	 * @param	c			The Class type to check.
@@ -985,7 +985,7 @@ class World extends Tweener
 			fe = fe._updateNext;
 		}
 	}
-	
+
 	/**
 	 * Pushes all Entities in the World on the layer into the Array or Vector.
 	 * @param	layer		The layer to check.
@@ -1004,7 +1004,7 @@ class World extends Tweener
 			fe = fe._updatePrev;
 		}
 	}
-	
+
 	/**
 	 * Pushes all Entities in the World into the array.
 	 * @param	into		The Array or Vector to populate.
@@ -1022,7 +1022,7 @@ class World extends Tweener
 			fe = fe._updateNext;
 		}
 	}
-	
+
 	/**
 	 * Updates the add/remove lists at the end of the frame.
 	 */
@@ -1031,7 +1031,7 @@ class World extends Tweener
 		var e:Entity;
 		var fe:FriendEntity;
 		var ft:FriendTweener;
-		
+
 		// remove entities
 		if (_remove.length > 0)
 		{
@@ -1052,7 +1052,7 @@ class World extends Tweener
 			}
 			HXP.clear(_remove);
 		}
-		
+
 		// add entities
 		if (_add.length > 0)
 		{
@@ -1067,7 +1067,7 @@ class World extends Tweener
 			}
 			HXP.clear(_add);
 		}
-		
+
 		// sort the depth list
 		if (_layerSort)
 		{
@@ -1075,22 +1075,22 @@ class World extends Tweener
 			_layerSort = false;
 		}
 	}
-	
+
 	private function layerSort(a:Int, b:Int):Int
 	{
 		if (a > b)
 			return 1;
 		else if (a < b)
 			return -1;
-		
+
 		return 0;
 	}
-	
+
 	/** @private Adds Entity to the update list. */
 	private function addUpdate(e:Entity)
 	{
 		var fe:FriendEntity = e;
-		
+
 		// add to update list
 		if (_updateFirst != null)
 		{
@@ -1104,12 +1104,12 @@ class World extends Tweener
 		if (_classCount.get(fe._class) != 0) _classCount.set(fe._class, 0);
 		_classCount.set(fe._class, _classCount.get(fe._class) + 1); // increment
 	}
-	
+
 	/** @private Removes Entity from the update list. */
 	private function removeUpdate(e:Entity)
 	{
 		var fe:FriendEntity = e;
-		
+
 		// remove from the update list
 		if (_updateFirst == e) _updateFirst = fe._updateNext;
 		if (fe._updateNext != null) fe._updateNext._updatePrev = fe._updatePrev;
@@ -1118,7 +1118,7 @@ class World extends Tweener
 		_count --;
 		_classCount.set(fe._class, _classCount.get(fe._class) - 1); // decrement
 	}
-	
+
 	/** @private Adds Entity to the render list. */
 	public function addRender(e:Entity)
 	{
@@ -1143,7 +1143,7 @@ class World extends Tweener
 		_renderFirst[fe._layer] = e;
 		fe._renderPrev = null;
 	}
-	
+
 	/** @private Removes Entity from the render list. */
 	public function removeRender(e:Entity)
 	{
@@ -1169,7 +1169,7 @@ class World extends Tweener
 		_layerCount[fe._layer] --;
 		fe._renderNext = fe._renderPrev = null;
 	}
-	
+
 	/** @private Adds Entity to the type list. */
 	public function addType(e:Entity)
 	{
@@ -1189,7 +1189,7 @@ class World extends Tweener
 		fe._typePrev = null;
 		_typeFirst.set(fe._type, e);
 	}
-	
+
 	/** @private Removes Entity from the type list. */
 	public function removeType(e:Entity)
 	{
@@ -1201,7 +1201,7 @@ class World extends Tweener
 		fe._typeNext = fe._typePrev = null;
 		_typeCount.set(fe._type, _typeCount.get(fe._type) - 1);
 	}
-	
+
 	/** @private Calculates the squared distance between two rectangles. */
 	private static function squareRects(x1:Float, y1:Float, w1:Float, h1:Float, x2:Float, y2:Float, w2:Float, h2:Float):Float
 	{
@@ -1224,13 +1224,13 @@ class World extends Tweener
 		if (y1 > y2) return squarePoints(x1 + w1, y1, x2, y2 + h2);
 		return squarePoints(x1 + w1, y1 + h1, x2, y2);
 	}
-	
+
 	/** @private Calculates the squared distance between two points. */
 	private static function squarePoints(x1:Float, y1:Float, x2:Float, y2:Float):Float
 	{
 		return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
 	}
-	
+
 	/** @private Calculates the squared distance between a rectangle and a point. */
 	private static function squarePointRect(px:Float, py:Float, rx:Float, ry:Float, rw:Float, rh:Float):Float
 	{
@@ -1253,15 +1253,15 @@ class World extends Tweener
 		if (py > ry) return squarePoints(px, py, rx, ry + rh);
 		return squarePoints(px, py, rx, ry);
 	}
-	
+
 	// Adding and removal.
 	private var _add:Array<Entity>;
 	private var _remove:Array<Entity>;
-	
+
 	// Update information.
 	private var _updateFirst:FriendEntity;
 	private var _count:Int;
-	
+
 	// Render information.
 	private var _renderFirst:Array<FriendEntity>;
 	private var _renderLast:Array<FriendEntity>;
@@ -1269,7 +1269,7 @@ class World extends Tweener
 	private var _layerCount:Array<Int>;
 	private var _layerSort:Bool;
 	private var _tempArray:Array<Entity>;
-	
+
 	private var _classCount:Hash<Int>;
 	public var _typeFirst:Hash<FriendEntity>;
 	private var _typeCount:Hash<Int>;
