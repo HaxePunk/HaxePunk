@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
-	<app title="HaxePunk" main="ExampleMain" package="com.example.app" version="1.0.0" company="HaxePunk" />
-	<window width="640" height="480" fps="30" orientation="portrait" resizable="true" />
+	<app title="HaxePunk" main="ExampleMain"
+		package="com.example.app" version="1.0.0" company="HaxePunk" />
+	<window width="640" height="480" fps="30"
+		orientation="portrait" resizable="true" />
 
-	<set name="BUILD_DIR" value="nme" />
+	<set name="BUILD_DIR" value="bin" />
 
 	<classpath name="src" />
 	<haxelib name="nme" />
