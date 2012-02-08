@@ -195,6 +195,7 @@ class Polygon extends Mask
 	
 	public function collideCircle(circle:Circle):Bool
 	{
+		var offset:Float;
 		
 		//First find the point closest to the circle
 		var distanceSquared = 9999999999.;
@@ -224,7 +225,7 @@ class Polygon extends Mask
 		projectOn(_axis, firstCollisionInfo);
 		circle.projectOn(_axis, secondCollisionInfo);
 		
-		var offset = offsetX * _axis.x + offsetY * _axis.y;
+		offset = offsetX * _axis.x + offsetY * _axis.y;
 		firstCollisionInfo.min += offset;
 		firstCollisionInfo.max += offset;
 		
@@ -238,7 +239,7 @@ class Polygon extends Mask
 			projectOn(a, firstCollisionInfo);
 			circle.projectOn(a, secondCollisionInfo);
 			
-			var offset = offsetX * a.x + offsetY * a.y;
+			offset = offsetX * a.x + offsetY * a.y;
 			firstCollisionInfo.min += offset;
 			firstCollisionInfo.max += offset;
 			
@@ -253,8 +254,9 @@ class Polygon extends Mask
 	
 	public function collideHitbox(hitbox:Hitbox):Bool 
 	{
-		var offsetX = parent.x - hitbox.parent.x;
-		var offsetY = parent.y - hitbox.parent.y;
+		var offset:Float,
+			offsetX:Float = parent.x - hitbox.parent.x,
+			offsetY:Float = parent.y - hitbox.parent.y;
 		
 		projectOn(vertical, firstCollisionInfo);//Project on the horizontal axis of the hitbox
 		hitbox.projectOn(vertical, secondCollisionInfo);
@@ -282,6 +284,52 @@ class Polygon extends Mask
 		{
 			projectOn(a, firstCollisionInfo);
 			hitbox.projectOn(a, secondCollisionInfo);
+			
+			offset = offsetX * a.x + offsetY * a.y;
+			firstCollisionInfo.min += offset;
+			firstCollisionInfo.max += offset;
+			
+			if (firstCollisionInfo.min > secondCollisionInfo.max || firstCollisionInfo.max < secondCollisionInfo.min) 
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	
+	override private function collideMask(other:Mask):Bool 
+	{
+		var offset:Float,
+			offsetX:Float = parent.x - other.parent.x,
+			offsetY:Float = parent.y - other.parent.y;
+		
+		projectOn(vertical, firstCollisionInfo);//Project on the horizontal axis of the hitbox
+		other.projectMask(vertical, secondCollisionInfo);
+		
+		firstCollisionInfo.min += offsetX;
+		firstCollisionInfo.max += offsetY;
+		
+		if (firstCollisionInfo.min > secondCollisionInfo.max || firstCollisionInfo.max < secondCollisionInfo.min) 
+		{
+			return false;
+		}
+		
+		projectOn(horizontal, firstCollisionInfo);//Project on the vertical axis of the hitbox
+		other.projectMask(horizontal, secondCollisionInfo);
+		
+		firstCollisionInfo.min += offsetX;
+		firstCollisionInfo.max += offsetX;
+		
+		if (firstCollisionInfo.min > secondCollisionInfo.max || firstCollisionInfo.max < secondCollisionInfo.min) 
+		{
+			return false;
+		}
+		
+		for (a in _axes) 
+		{
+			projectOn(a, firstCollisionInfo);
+			other.projectMask(a, secondCollisionInfo);
 			
 			var offset = offsetX * a.x + offsetY * a.y;
 			firstCollisionInfo.min += offset;
@@ -349,12 +397,13 @@ class Polygon extends Mask
 	
 	public inline function projectOn(axis:Point, collisionInfo:CollisionInfo):Void 
 	{
-		var max:Float = -9999999999.;
-		var min:Float = 9999999999.;
+		var cur:Float,
+			max:Float = -9999999999.,
+			min:Float = 9999999999.;
 		
 		for (vertex in _points) 
 		{
-			var cur = dot(vertex, axis);
+			cur = dot(vertex, axis);
 			
 			if (cur < min) 
 			{
