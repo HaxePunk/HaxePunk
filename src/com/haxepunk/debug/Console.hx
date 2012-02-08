@@ -96,7 +96,6 @@ class Console
 		WATCH_LIST.push("x");
 		WATCH_LIST.push("y");
 		
-		Log.trace = traceLog;
 	}
 	
 	public function traceLog(v:Dynamic, ?infos:PosInfos)
@@ -153,6 +152,8 @@ class Console
 	{
 		// Quit if the console is already enabled.
 		if (_enabled) return;
+		
+		Log.trace = traceLog;
 		
 #if nme
 	_bmpLogo = new Bitmap(ApplicationMain.getAsset ("source/com/haxepunk/debug/console_logo.png"));

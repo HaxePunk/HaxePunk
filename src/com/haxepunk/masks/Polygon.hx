@@ -197,7 +197,7 @@ class Polygon extends Mask
 	{
 		
 		//First find the point closest to the circle
-		var distanceSquared = 9999999999999;
+		var distanceSquared = 9999999999.;
 		var closestPoint = null;
 		for (p in _points) 
 		{
@@ -349,8 +349,8 @@ class Polygon extends Mask
 	
 	public inline function projectOn(axis:Point, collisionInfo:CollisionInfo):Void 
 	{
-		var max:Float = -111111111111;
-		var min:Float = 11111111111111;
+		var max:Float = -9999999999.;
+		var min:Float = 9999999999.;
 		
 		for (vertex in _points) 
 		{

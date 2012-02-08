@@ -34,6 +34,7 @@ class ParticleType
 		_frameCount = frames.length;
 		
 		_gravity = 0;
+		_gravityRange = 0;
 	}
 	
 	/**

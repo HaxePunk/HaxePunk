@@ -261,6 +261,25 @@ class Emitter extends Graphic
 	}
 	
 	/**
+	 * Randomly emits the particle inside the specified radius
+	 * @param	name		Particle type to emit.
+	 * @param	x			X point to emit from.
+	 * @param	y			Y point to emit from.
+	 * @param	radius		
+	 */
+	public function emitInCircle(name:String, x:Float, y:Float, radius:Float):Particle 
+	{
+		var angle = Math.random() * Math.PI * 2;
+		radius *= Math.random();
+		return emit(name, x + Math.cos(angle) * radius, y + Math.sin(angle) * radius);
+	}
+	
+	public function emitInRectangle(name:String, x:Float, y:Float, width:Float ,height:Float):Particle 
+	{
+		return emit(name, x + HXP.random * width, y + HXP.random * height);
+	}
+	
+	/**
 	 * Amount of currently existing particles.
 	 */
 	public var particleCount(getParticleCount, null):Int;
