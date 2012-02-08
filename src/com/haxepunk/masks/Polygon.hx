@@ -259,7 +259,7 @@ class Polygon extends Mask
 			offsetY:Float = parent.y - hitbox.parent.y;
 		
 		projectOn(vertical, firstCollisionInfo);//Project on the horizontal axis of the hitbox
-		hitbox.projectOn(vertical, secondCollisionInfo);
+		hitbox.projectMask(vertical, secondCollisionInfo);
 		
 		firstCollisionInfo.min += offsetY;
 		firstCollisionInfo.max += offsetY;
@@ -270,7 +270,7 @@ class Polygon extends Mask
 		}
 		
 		projectOn(horizontal, firstCollisionInfo);//Project on the vertical axis of the hitbox
-		hitbox.projectOn(horizontal, secondCollisionInfo);
+		hitbox.projectMask(horizontal, secondCollisionInfo);
 		
 		firstCollisionInfo.min += offsetX;
 		firstCollisionInfo.max += offsetX;
@@ -283,7 +283,7 @@ class Polygon extends Mask
 		for (a in _axes) 
 		{
 			projectOn(a, firstCollisionInfo);
-			hitbox.projectOn(a, secondCollisionInfo);
+			hitbox.projectMask(a, secondCollisionInfo);
 			
 			offset = offsetX * a.x + offsetY * a.y;
 			firstCollisionInfo.min += offset;
