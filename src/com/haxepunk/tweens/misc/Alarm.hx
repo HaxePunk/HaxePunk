@@ -13,11 +13,11 @@ class Alarm extends Tween
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(duration:Float, ?complete:CompleteCallback, type:TweenType) 
+	public function new(duration:Float, ?complete:CompleteCallback, type:TweenType)
 	{
 		super(duration, type, complete, null);
 	}
-	
+
 	/**
 	 * Sets the alarm.
 	 * @param	duration	Duration of the alarm.
@@ -27,19 +27,19 @@ class Alarm extends Tween
 		_target = duration;
 		start();
 	}
-	
+
 	/**
 	 * How much time has passed since reset.
 	 */
 	public var elapsed(getElapsed, null):Float;
 	private function getElapsed():Float { return _time; }
-	
+
 	/**
 	 * Current alarm duration.
 	 */
 	public var duration(getDuration, null):Float;
 	private function getDuration():Float { return _target; }
-	
+
 	/**
 	 * Time remaining on the alarm.
 	 */

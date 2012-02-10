@@ -1,0 +1,36 @@
+<project name="HaxePunk" default="flash" basedir=".">
+	<description>Builds the haxepunk project</description>
+
+	<property file="ant.properties" />
+	<property name="final.dir" location="build"/>
+
+	<!-- compile assets file -->
+	<target name="assets">
+		<exec executable="samhaxe" dir="${src.dir}">
+			<arg line="${swf.assets}.xml" />
+			<arg line="${swf.assets}.swf" />
+		</exec>
+	</target>
+
+	<!-- build the swf file -->
+	<target name="flash" depends="assets">
+		<delete file="${bin.dir}/game.swf" />
+		<exec executable="haxe" dir=".">
+			<arg line="-swf9 ${bin.dir}/game.swf" />
+			<arg line="-swf-version 10" />
+			<arg line="-cp ${src.dir}" />
+			<arg line="-main ${app.class}" />
+			<arg line="-swf-header ${app.width}:${app.height}:30:333333" />
+			<arg line="-swf-lib ${swf.assets}.swf" />
+			<arg line="-D samhaxe" />
+		</exec>
+	</target>
+
+	<target name="android">
+		<exec executable="nme" dir=".">
+			<arg line="test build.nmml" />
+			<arg line="android" />
+		</exec>
+	</target>
+
+</project>
