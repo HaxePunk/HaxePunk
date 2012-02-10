@@ -96,20 +96,20 @@ class HXP
 	 * Half the screen width.
 	 */
 	public static var halfWidth(getHalfWidth, null):Float;
-	inline private static function getHalfWidth():Float { return width / 2; }
+	private inline static function getHalfWidth():Float { return width / 2; }
 	
 	/**
 	 * Half the screen height.
 	 */
 	public static var halfHeight(getHalfHeight, null):Float;
-	inline private static function getHalfHeight():Float { return height / 2; }
+	private inline static function getHalfHeight():Float { return height / 2; }
 	
 	/**
 	 * The currently active World object. When you set this, the World is flagged
 	 * to switch, but won't actually do so until the end of the current frame.
 	 */
 	public static var world(getWorld, setWorld):World;
-	inline private static function getWorld():World { return _world; }
+	private inline static function getWorld():World { return _world; }
 	private static function setWorld(value:World):World
 	{
 		if (_world == value) return value;
@@ -117,13 +117,13 @@ class HXP
 		return _world;
 	}
 	
-	inline public static function swapWorld()
+	public inline static function swapWorld()
 	{
 		_world = _goto;
 		_goto = null;
 	}
 	
-	inline public static function clear(array:Array<Dynamic>)
+	public inline static function clear(array:Array<Dynamic>)
 	{
 		var i:Int;
 		for (i in 0...array.length)
@@ -135,7 +135,7 @@ class HXP
 	 * @param	x	X position.
 	 * @param	y	Y position.
 	 */
-	inline public static function setCamera(x:Float = 0, y:Float = 0)
+	public inline static function setCamera(x:Float = 0, y:Float = 0)
 	{
 		camera.x = x;
 		camera.y = y;
@@ -144,7 +144,7 @@ class HXP
 	/**
 	 * Resets the camera position.
 	 */
-	inline public static function resetCamera()
+	public inline static function resetCamera()
 	{
 		camera.x = camera.y = 0;
 	}
@@ -153,7 +153,7 @@ class HXP
 	 * Global volume factor for all sounds, a value from 0 to 1.
 	 */
 	public static var volume(getVolume, setVolume):Float;
-	inline private static function getVolume():Float { return _volume; }
+	private inline static function getVolume():Float { return _volume; }
 	private static function setVolume(value:Float):Float
 	{
 		if (value < 0) value = 0;
@@ -169,7 +169,7 @@ class HXP
 	 * Global panning factor for all sounds, a value from -1 to 1.
 	 */
 	public static var pan(getPan, setPan):Float;
-	inline private static function getPan():Float { return _pan; }
+	private inline static function getPan():Float { return _pan; }
 	private static function setPan(value:Float):Float
 	{
 		if (value < -1) value = -1;
@@ -187,7 +187,7 @@ class HXP
 	 * @param	objs		The Objects you want to randomly choose from. Can be ints, Floats, Points, etc.
 	 * @return	A randomly chosen one of the provided parameters.
 	 */
-	inline public static function choose(objs:Array<Dynamic>):Dynamic
+	public inline static function choose(objs:Array<Dynamic>):Dynamic
 	{
 		return objs[rand(objs.length)];
 	}
@@ -209,7 +209,7 @@ class HXP
 	 * @param	amount	How much you want the value to approach target by.
 	 * @return	The new value.
 	 */
-	inline public static function approach(value:Float, target:Float, amount:Float):Float
+	public inline static function approach(value:Float, target:Float, amount:Float):Float
 	{
 		return value < target ? (target < value + amount ? target : value + amount) : (target > value - amount ? target : value - amount);
 	}
@@ -221,7 +221,7 @@ class HXP
 	 * @param	t		Interpolation factor.
 	 * @return	When t=0, returns a. When t=1, returns b. When t=0.5, will return halfway between a and b. Etc.
 	 */
-	inline public static function lerp(a:Float, b:Float, t:Float = 1):Float
+	public inline static function lerp(a:Float, b:Float, t:Float = 1):Float
 	{
 		return a + (b - a) * t;
 	}
@@ -233,7 +233,7 @@ class HXP
 	 * @param	t				Interpolation value. Clamped to the range [0, 1].
 	 * return	RGB component-interpolated color value.
 	 */
-	inline public static function colorLerp(fromColor:Int, toColor:Int, t:Float = 1):Int
+	public inline static function colorLerp(fromColor:Int, toColor:Int, t:Float = 1):Int
 	{
 		if (t <= 0) { return fromColor; }
 		if (t >= 1) { return toColor; }
@@ -280,7 +280,7 @@ class HXP
 	 * @param	anchor		The anchor object.
 	 * @param	distance	The max distance object can be anchored to the anchor.
 	 */
-	inline public static function anchorTo(object:Dynamic, anchor:Dynamic, distance:Float = 0)
+	public inline static function anchorTo(object:Dynamic, anchor:Dynamic, distance:Float = 0)
 	{
 		point.x = object.x - anchor.x;
 		point.y = object.y - anchor.y;
@@ -297,7 +297,7 @@ class HXP
 	 * @param	y2		The second y-position.
 	 * @return	The angle from (x1, y1) to (x2, y2).
 	 */
-	inline public static function angle(x1:Float, y1:Float, x2:Float, y2:Float):Float
+	public inline static function angle(x1:Float, y1:Float, x2:Float, y2:Float):Float
 	{
 		var a:Float = Math.atan2(y2 - y1, x2 - x1) * DEG;
 		return a < 0 ? a + 360 : a;
@@ -311,7 +311,7 @@ class HXP
 	 * @param	x			X offset.
 	 * @param	y			Y offset.
 	 */
-	inline public static function angleXY(object:Dynamic, angle:Float, length:Float = 1, x:Float = 0, y:Float = 0)
+	public inline static function angleXY(object:Dynamic, angle:Float, length:Float = 1, x:Float = 0, y:Float = 0)
 	{
 		angle *= RAD;
 		object.x = Math.cos(angle) * length + x;

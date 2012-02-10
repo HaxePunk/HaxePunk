@@ -15,12 +15,17 @@ using Std;
 class Polygon extends Mask
 {
 	/**
+	 * The polygon rotates around this point when the angle is set.
+	 */
+	public var centerPoint:Point;
+	
+	/**
 	 * Constructor.
 	 * @param	radius		Radius of the circle.
 	 * @param	x			X offset of the circle.
 	 * @param	y			Y offset of the circle.
 	 */
-	public function new(points:Vector<Point>) 
+	public function new(points:Vector<Point>, ?centerPoint:Point) 
 	{
 		super();
 		_points = points;
@@ -29,6 +34,9 @@ class Polygon extends Mask
 		_check.set(Type.getClassName(Circle), collideCircle);
 		_check.set(Type.getClassName(Polygon), collidePolygon);
 		_check.set(Type.getClassName(Grid), collideGrid);
+		
+		this.centerPoint = centerPoint != null ? centerPoint : new Point();
+		_angle = 0;
 		
 		updateAxes();
 	}
@@ -362,7 +370,6 @@ class Polygon extends Mask
 			
 			if (firstCollisionInfo.min > secondCollisionInfo.max || firstCollisionInfo.max < secondCollisionInfo.min) 
 			{
-				trace("first false");
 				return false;
 			}
 		}
@@ -379,11 +386,9 @@ class Polygon extends Mask
 			
 			if (firstCollisionInfo.min > secondCollisionInfo.max || firstCollisionInfo.max < secondCollisionInfo.min) 
 			{
-				trace("2nd false");
 				return false;
 			}
 		}
-		trace(true);
 		return true;
 	}
 	
@@ -418,22 +423,28 @@ class Polygon extends Mask
 		collisionInfo.max = max;
 	}
 	
-	public function rotate(angle:Float = 0, relative:Bool = true):Void 
+	private function rotate(angle:Float):Void 
 	{
-		//if (relative) angle += Math.atan2(dy, dx) * -180 / Math.PI;
-		
-		angle *= Math.PI / -180;
+		angle *= HXP.RAD;
 		
 		for (p in _points) 
 		{
-			var dx = p.x;
-			var dy = p.y;
+			var dx = p.x - centerPoint.x;
+			var dy = p.y - centerPoint.y;
 			
 			var currentAngle = Math.atan2(dy, dx);
 			var length = Math.sqrt(dx * dx + dy * dy);
 			
-			p.x = Math.cos(currentAngle + angle) * length;
-			p.y = Math.sin(currentAngle + angle) * length;
+			p.x = Math.cos(currentAngle + angle) * length + centerPoint.x;
+			p.y = Math.sin(currentAngle + angle) * length + centerPoint.y;
+		}
+		for (ax in _axes) 
+		{
+			
+			var currentAngle = Math.atan2(ax.y, ax.x);
+			
+			ax.x = Math.cos(currentAngle + angle);
+			ax.y = Math.sin(currentAngle + angle);
 		}
 		_angle += angle;
 	}
@@ -455,14 +466,16 @@ class Polygon extends Mask
 	}
 	#end
 	
+	/**
+	 * Angle in degress that the polygon is rotated.
+	 */
 	public var angle(get_angle, set_angle):Float;
-	inline private function get_angle():Float { return _angle; }
+	private inline function get_angle():Float { return _angle; }
 	
 	private function set_angle(value:Float):Float 
 	{
 		if (value == _angle) return value;
-		var diff = _angle - value;
-		rotate(diff);
+		rotate(_angle - value);
 		if (list != null) update();
 		else if (parent != null) update();	
 		return _angle = value;
@@ -480,6 +493,10 @@ class Polygon extends Mask
 	public var height(default, null):Int;
 	
 	
+	/**
+	 * The points representing the polygon. 
+	 * If you need to set a point yourself instead of passing in a new Vector<Point> you need to call update() to makes sure the axes update as well.
+	 */
 	public var points(getPoints, setPoints):Vector<Point>;
 	
 	private inline function getPoints():Vector<Point> { return _points; }
@@ -488,8 +505,8 @@ class Polygon extends Mask
 		if (_points == value) return value;
 		_points = value;
 		
-		if (list != null) update();
-		else if (parent != null) update();	
+		if (list != null) { updateAxes(); update(); }
+		else if (parent != null) {updateAxes(); update();  }	
 		return _points;
 	}
 	
@@ -497,7 +514,10 @@ class Polygon extends Mask
 	/** Updates the parent's bounds for this mask. */
 	override public function update() 
 	{
-		updateAxes();
+		projectOn(horizontal, firstCollisionInfo);//width
+		width = Std.int(firstCollisionInfo.max - firstCollisionInfo.min);
+		projectOn(vertical, secondCollisionInfo);//height
+		height = Std.int(secondCollisionInfo.max - secondCollisionInfo.min);
 		
 		//update entity bounds
 		parent.width = width;
@@ -512,11 +532,6 @@ class Polygon extends Mask
 	{
 		generateAxes();
 		removeDuplicateAxes();
-		
-		projectOn(horizontal, firstCollisionInfo);//width
-		width = Std.int(firstCollisionInfo.max - firstCollisionInfo.min);
-		projectOn(vertical, secondCollisionInfo);//height
-		height = Std.int(secondCollisionInfo.max - secondCollisionInfo.min);
 	}
 	
 	/**
@@ -546,7 +561,7 @@ class Polygon extends Mask
 		}
 		// return the point
 		var poly = new Polygon(points);
-		poly.rotate(angle);
+		poly.angle = angle;
 		return poly;
 	}
 	

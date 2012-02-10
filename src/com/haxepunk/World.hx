@@ -132,7 +132,7 @@ class World extends Tweener
 	 * X position of the mouse in the World.
 	 */
 	public var mouseX(getMouseX, null):Int;
-	inline private function getMouseX():Int
+	private inline function getMouseX():Int
 	{
 		return Std.int(HXP.screen.mouseX + HXP.camera.x);
 	}
@@ -141,7 +141,7 @@ class World extends Tweener
 	 * Y position of the mouse in the world.
 	 */
 	public var mouseY(getMouseY, null):Int;
-	inline private function getMouseY():Int
+	private inline function getMouseY():Int
 	{
 		return Std.int(HXP.screen.mouseY + HXP.camera.y);
 	}
@@ -402,7 +402,7 @@ class World extends Tweener
 	 * @param	e		The Entity to check.
 	 * @return	True or false.
 	 */
-	inline public function isAtFront(e:Entity):Bool
+	public inline function isAtFront(e:Entity):Bool
 	{
 		var fe:FriendEntity = e;
 		return fe._renderPrev == null;
@@ -413,7 +413,7 @@ class World extends Tweener
 	 * @param	e		The Entity to check.
 	 * @return	True or false.
 	 */
-	inline public function isAtBack(e:Entity):Bool
+	public inline function isAtBack(e:Entity):Bool
 	{
 		var fe:FriendEntity = e;
 		return fe._renderNext == null;
@@ -801,14 +801,14 @@ class World extends Tweener
 	 * How many Entities are in the World.
 	 */
 	public var count(getCount, null):Int;
-	inline private function getCount():Int { return _count; }
+	private inline function getCount():Int { return _count; }
 	
 	/**
 	 * Returns the amount of Entities of the type are in the World.
 	 * @param	type		The type (or Class type) to count.
 	 * @return	How many Entities of type exist in the World.
 	 */
-	inline public function typeCount(type:String):Int
+	public inline function typeCount(type:String):Int
 	{
 		return _typeCount.get(type);
 	}
@@ -818,7 +818,7 @@ class World extends Tweener
 	 * @param	c		The Class type to count.
 	 * @return	How many Entities of Class exist in the World.
 	 */
-	inline public function classCount(c:String):Int
+	public inline function classCount(c:String):Int
 	{
 		return _classCount.get(c);
 	}
@@ -828,7 +828,7 @@ class World extends Tweener
 	 * @param	layer		The layer to count Entities on.
 	 * @return	How many Entities are on the layer.
 	 */
-	inline public function layerCount(layer:Int):Int
+	public inline function layerCount(layer:Int):Int
 	{
 		return _layerCount[layer];
 	}
@@ -837,13 +837,13 @@ class World extends Tweener
 	 * The first Entity in the World.
 	 */
 	public var first(getFirst, null):Entity;
-	inline private function getFirst():Entity { return cast(_updateFirst, Entity); }
+	private inline function getFirst():Entity { return cast(_updateFirst, Entity); }
 	
 	/**
 	 * How many Entity layers the World has.
 	 */
 	public var layers(getLayers, null):Int;
-	inline private function getLayers():Int { return _layerList.length; }
+	private inline function getLayers():Int { return _layerList.length; }
 	
 	/**
 	 * The first Entity of the type.
@@ -941,7 +941,7 @@ class World extends Tweener
 	 * How many different types have been added to the World.
 	 */
 	public var uniqueTypes(getUniqueTypes, null):Int;
-	inline private function getUniqueTypes():Int
+	private inline function getUniqueTypes():Int
 	{
 		var i:Int = 0;
 		var type:String;
