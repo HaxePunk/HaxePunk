@@ -157,38 +157,30 @@ class Console
 		// Quit if the console is already enabled.
 		if (_enabled) return;
 
+		// load assets based on embedding method
 #if nme
-	_bmpLogo = new Bitmap(Assets.getBitmapData("assets/console_logo.png"));
-	_butDebug = new Bitmap(Assets.getBitmapData("assets/console_debug.png"));
-	_butOutput = new Bitmap(Assets.getBitmapData("assets/console_output.png"));
-	_butPlay = new Bitmap(Assets.getBitmapData("assets/console_play.png"));
-	_butPause = new Bitmap(Assets.getBitmapData("assets/console_pause.png"));
-	_butStep = new Bitmap(Assets.getBitmapData("assets/console_step.png"));
-	onLoaded();
-#else
-	// Use embedded images for flash
-	#if !swfmill
-		_bmpLogo = new GfxConsoleLogo();
-		_butDebug = new GfxConsoleDebug();
-		_butOutput = new GfxConsoleOutput();
-		_butPlay = new GfxConsolePlay();
-		_butPause = new GfxConsolePause();
-		_butStep = new GfxConsoleStep();
-	#else
-		// Flashdevelop version
+		_bmpLogo = new Bitmap(Assets.getBitmapData("assets/console_logo.png"));
+		_butDebug = new Bitmap(Assets.getBitmapData("assets/console_debug.png"));
+		_butOutput = new Bitmap(Assets.getBitmapData("assets/console_output.png"));
+		_butPlay = new Bitmap(Assets.getBitmapData("assets/console_play.png"));
+		_butPause = new Bitmap(Assets.getBitmapData("assets/console_pause.png"));
+		_butStep = new Bitmap(Assets.getBitmapData("assets/console_step.png"));
+#elseif swfmill // Flashdevelop
 		_bmpLogo = new Bitmap(new GfxConsoleLogo(0, 0));
 		_butDebug = new Bitmap(new GfxConsoleDebug(0, 0));
 		_butOutput = new Bitmap(new GfxConsoleOutput(0, 0));
 		_butPlay = new Bitmap(new GfxConsolePlay(0, 0));
 		_butPause = new Bitmap(new GfxConsolePause(0, 0));
 		_butStep = new Bitmap(new GfxConsoleStep(0, 0));
-	#end
-		onLoaded();
+#else // samhaxe
+		_bmpLogo = new GfxConsoleLogo();
+		_butDebug = new GfxConsoleDebug();
+		_butOutput = new GfxConsoleOutput();
+		_butPlay = new GfxConsolePlay();
+		_butPause = new GfxConsolePause();
+		_butStep = new GfxConsoleStep();
 #end
-	}
 
-	private function onLoaded()
-	{
 		// Enable it and add the Sprite to the stage.
 		_enabled = true;
 		HXP.engine.addChild(_sprite);
