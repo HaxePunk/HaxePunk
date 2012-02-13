@@ -1,5 +1,7 @@
 *.swf
 obj
+*.sublime*
+*.zip
 
 # OS specific files
 .DS_Store
