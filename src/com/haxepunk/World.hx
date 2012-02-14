@@ -22,13 +22,6 @@ class World extends Tweener
 	 */
 	public var camera:Point;
 
-	// Flash equivalent: Number.MAX_VALUE
-#if flash
-	public static inline var NUMBER_MAX_VALUE = untyped __global__["Number"].MAX_VALUE;
-#else
-	public static inline var NUMBER_MAX_VALUE = 179 * Math.pow(10, 306); // 1.79e+308
-#end
-
 	/**
 	 * Constructor.
 	 */
@@ -674,7 +667,7 @@ class World extends Tweener
 	{
 		var n:Entity,
 			fe:FriendEntity = _typeFirst.get(type),
-			nearDist:Float = NUMBER_MAX_VALUE,
+			nearDist:Float = HXP.NUMBER_MAX_VALUE,
 			near:Entity = null, dist:Float;
 		while (fe != null)
 		{
@@ -702,7 +695,7 @@ class World extends Tweener
 		if (useHitboxes) return nearestToRect(type, e.x - e.originX, e.y - e.originY, e.width, e.height);
 		var n:Entity,
 			fe:FriendEntity = _typeFirst.get(type),
-			nearDist:Float = NUMBER_MAX_VALUE,
+			nearDist:Float = HXP.NUMBER_MAX_VALUE,
 			near:Entity = null,
 			dist:Float,
 			x:Float = e.x - e.originX,
@@ -734,7 +727,7 @@ class World extends Tweener
 		if (useHitboxes) return nearestToRect(type, e.x - e.originX, e.y - e.originY, e.width, e.height);
 		var n:Entity,
 			fe:FriendEntity = _typeFirst.get(type),
-			nearDist:Float = NUMBER_MAX_VALUE,
+			nearDist:Float = HXP.NUMBER_MAX_VALUE,
 			near:Entity = null,
 			dist:Float,
 			x:Float = e.x - e.originX,
@@ -765,7 +758,7 @@ class World extends Tweener
 	{
 		var n:Entity,
 			fe:FriendEntity = _typeFirst.get(type),
-			nearDist:Float = NUMBER_MAX_VALUE,
+			nearDist:Float = HXP.NUMBER_MAX_VALUE,
 			near:Entity = null,
 			dist:Float;
 		if (useHitboxes)

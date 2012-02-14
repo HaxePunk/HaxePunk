@@ -14,6 +14,7 @@ using Std;
 
 class Polygon extends Mask
 {
+
 	/**
 	 * Constructor.
 	 * @param	radius		Radius of the circle.
@@ -207,12 +208,12 @@ class Polygon extends Mask
 	{
 
 		//First find the point closest to the circle
-		var distanceSquared = 9999999999999;
-		var closestPoint = null;
+		var distanceSquared:Float = HXP.NUMBER_MAX_VALUE;
+		var closestPoint:Point = null;
 		for (p in _points)
 		{
-			var dx = parent.x + p.x - circle.parent.x;
-			var dy = parent.y + p.y - circle.parent.y;
+			var dx:Float = parent.x + p.x - circle.parent.x;
+			var dy:Float = parent.y + p.y - circle.parent.y;
 			var tempDistance = dx * dx + dy * dy;
 
 			if (tempDistance < distanceSquared)
@@ -363,8 +364,8 @@ class Polygon extends Mask
 
 	public inline function projectOn(axis:Point, collisionInfo:CollisionInfo):Void
 	{
-		var max:Float = -111111111111;
-		var min:Float = 11111111111111;
+		var max:Float = -HXP.NUMBER_MAX_VALUE;
+		var min:Float = HXP.NUMBER_MAX_VALUE;
 
 		for (vertex in _points)
 		{

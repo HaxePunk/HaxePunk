@@ -36,6 +36,15 @@ class HXP
 	 */
 	public static inline var BASELAYER:Int = 10;
 
+	/**
+	 * Flash equivalent: Number.MAX_VALUE
+	 */
+#if flash
+	public static inline var NUMBER_MAX_VALUE = untyped __global__["Number"].MAX_VALUE;
+#else
+	public static inline var NUMBER_MAX_VALUE = 179 * Math.pow(10, 306); // 1.79e+308
+#end
+
 
 	/**
 	 * Width of the game.

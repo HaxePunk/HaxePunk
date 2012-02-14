@@ -22,8 +22,6 @@ class ExampleMain extends Engine
 	{
 #if flash
 		if (Capabilities.isDebugger)
-#else
-		if (false)
 #end
 		{
 			HXP.console.enable();
