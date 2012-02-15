@@ -45,7 +45,6 @@ class HXP
 	public static inline var NUMBER_MAX_VALUE = 179 * Math.pow(10, 306); // 1.79e+308
 #end
 
-
 	/**
 	 * Width of the game.
 	 */
@@ -661,7 +660,11 @@ class HXP
 		if (_bitmap.exists(name))
 			return _bitmap.get(name);
 
+#if nme
+		var data:BitmapData = nme.Assets.getBitmapData(source);
+#else
 		var data:BitmapData = source.bitmapData;
+#end
 		_bitmap.set(name, data);
 		return data;
 	}
