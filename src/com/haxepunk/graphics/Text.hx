@@ -31,7 +31,7 @@ class Text extends Image
 #end
 
 #if nme
-		var font = nme.Assets.getFont("gfx/04B_03__.ttf");
+		var font = nme.Assets.getFont("assets/04B_03__.ttf");
 		_field.defaultTextFormat = _form = new TextFormat(font.fontName, 16, 0xFFFFFF);
 #else
 		_field.defaultTextFormat = _form = new TextFormat("default", 16, 0xFFFFFF);

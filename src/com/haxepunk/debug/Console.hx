@@ -52,7 +52,7 @@ class Console
 
 		_sprite = new Sprite();
 #if nme
-		var font = nme.Assets.getFont("gfx/04B_03__.ttf");
+		var font = nme.Assets.getFont("assets/04B_03__.ttf");
 		_format = new TextFormat(font.fontName, 8, 0xFFFFFF);
 #elseif flash
 		_format = new TextFormat("default");
