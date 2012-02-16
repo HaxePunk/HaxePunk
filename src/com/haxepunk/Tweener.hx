@@ -40,8 +40,15 @@ class Tweener
 		var ft:FriendTween = t;
 		if (ft._parent != this) throw "Core object does not contain Tween.";
 		if (ft._next != null) ft._next._prev = ft._prev;
-		if (ft._prev != null) ft._prev._next = ft._next;
-		else _tween = cast(ft._next, Tween);
+		if (ft._prev != null)
+		{
+			ft._prev._next = ft._next;
+		}
+		else
+		{
+			if (ft._next != null)
+				_tween = cast(ft._next, Tween);
+		}
 		ft._next = ft._prev = null;
 		ft._parent = null;
 		t.active = false;
