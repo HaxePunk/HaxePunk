@@ -1,9 +1,11 @@
 package com.haxepunk;
 
 import com.haxepunk.Entity;
+import com.haxepunk.masks.CollisionInfo;
 import com.haxepunk.masks.Hitbox;
 import com.haxepunk.masks.Masklist;
 import flash.display.Graphics;
+import flash.geom.Point;
 
 typedef MaskCallback = Dynamic -> Bool;
 
@@ -81,6 +83,40 @@ class Mask
 	public function update()
 	{
 		
+	}
+	
+	public inline function projectMask(axis:Point, collisionInfo:CollisionInfo):Void 
+	{
+		var cur:Float,
+			max:Float = -9999999999.,
+			min:Float = 9999999999.;
+		
+		cur = -parent.originX * axis.x - parent.originY * axis.y;
+		if (cur < min) 
+			min = cur;
+		if (cur > max) 
+			max = cur;
+			
+		cur = (-parent.originX + parent.width) * axis.x - parent.originY * axis.y;
+		if (cur < min) 
+			min = cur;
+		if (cur > max) 
+			max = cur;
+			
+		cur = -parent.originX * axis.x + (-parent.originY + parent.height) * axis.y;
+		if (cur < min) 
+			min = cur;
+		if (cur > max) 
+			max = cur;
+			
+		cur = (-parent.originX + parent.width) * axis.x + (-parent.originY + parent.height)* axis.y;
+		if (cur < min) 
+			min = cur;
+		if (cur > max) 
+			max = cur;
+		
+		collisionInfo.min = min;
+		collisionInfo.max = max;
 	}
 	
 	// Mask information.

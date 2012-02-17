@@ -69,6 +69,7 @@ class Tween
 		if (_target == 0)
 		{
 			active = false;
+			finish();
 			return;
 		}
 		active = true;

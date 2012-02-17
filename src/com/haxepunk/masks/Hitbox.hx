@@ -44,25 +44,6 @@ class Hitbox extends Mask
 			&& parent.y + _y < other.parent.y + other._y + other._height;
 	}
 	
-	public inline function projectOn(axis:Point, collisionInfo:CollisionInfo):Void 
-	{
-		if (axis.x < axis.y) 
-		{
-			collisionInfo.min = axis.x;
-			collisionInfo.max = axis.y;
-		}
-		else
-		{
-			collisionInfo.max = axis.x;
-			collisionInfo.min = axis.y;
-		}
-	}
-	
-	inline function dot(p1x:Float, p1y:Float, p2x:Float, p2y:Float):Float 
-	{
-		return p1x * p2x + p1y * p2y;
-	}
-	
 	/**
 	 * X offset.
 	 */
@@ -140,7 +121,4 @@ class Hitbox extends Mask
 	private var _height:Int;
 	private var _x:Int;
 	private var _y:Int;
-	
-	public static var vertical = new Point(0, 1);
-	public static var horizontal = new Point(1, 0);
 }
