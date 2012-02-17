@@ -15,12 +15,12 @@ typedef FriendEntity = {
 	private var _added:Bool;
 	private var _type:String;
 	private var _layer:Int;
-
+	
 	private var _updatePrev:FriendEntity;
 	private var _updateNext:FriendEntity;
 	private var _renderPrev:FriendEntity;
 	private var _renderNext:FriendEntity;
-
+	
 	private var _typePrev:FriendEntity;
 	private var _typeNext:FriendEntity;
 	private var _recycleNext:Entity;
@@ -35,47 +35,47 @@ class Entity extends Tweener
 	 * If the Entity should render.
 	 */
 	public var visible:Bool;
-
+	
 	/**
 	 * If the Entity should respond to collision checks.
 	 */
 	public var collidable:Bool;
-
+	
 	/**
 	 * X position of the Entity in the World.
 	 */
 	public var x:Float;
-
+	
 	/**
 	 * Y position of the Entity in the World.
 	 */
 	public var y:Float;
-
+	
 	/**
 	 * Width of the Entity's hitbox.
 	 */
 	public var width:Int;
-
+	
 	/**
 	 * Height of the Entity's hitbox.
 	 */
 	public var height:Int;
-
+	
 	/**
 	 * X origin of the Entity's hitbox.
 	 */
 	public var originX:Int;
-
+	
 	/**
 	 * Y origin of the Entity's hitbox.
 	 */
 	public var originY:Int;
-
+	
 	/**
 	 * The BitmapData target to draw the Entity to. Leave as null to render to the current screen buffer (default).
 	 */
 	public var renderTarget:BitmapData;
-
+	
 	/**
 	 * Constructor. Can be usd to place the Entity and assign a graphic and mask.
 	 * @param	x			X position to place the Entity.
@@ -83,52 +83,52 @@ class Entity extends Tweener
 	 * @param	graphic		Graphic to assign to the Entity.
 	 * @param	mask		Mask to assign to the Entity.
 	 */
-	public function new(x:Float = 0, y:Float = 0, graphic:Graphic = null, mask:Mask = null)
+	public function new(x:Float = 0, y:Float = 0, graphic:Graphic = null, mask:Mask = null) 
 	{
 		super();
 		visible = true;
 		collidable = true;
 		this.x = x;
 		this.y = y;
-
+		
 		_moveX = _moveY = 0;
-
+		
 		HITBOX = new Mask();
 		_point = HXP.point;
 		_camera = HXP.point2;
-
+		
 		if (graphic != null) this.graphic = graphic;
 		if (mask != null) this.mask = mask;
 		HITBOX.assignTo(this);
 		_class = Type.getClassName(Type.getClass(this));
-
+		
 		layer = HXP.BASELAYER;
 	}
-
+	
 	/**
 	 * Override this, called when the Entity is added to a World.
 	 */
 	public function added():Void
 	{
-
+		
 	}
-
+	
 	/**
 	 * Override this, called when the Entity is removed from a World.
 	 */
 	public function removed():Void
 	{
-
+		
 	}
-
+	
 	/**
 	 * Updates the Entity.
 	 */
 	override public function update():Void
 	{
-
+		
 	}
-
+	
 	/**
 	 * Renders the Entity. If you override this for special behaviour,
 	 * remember to call super.render() to render the Entity's graphic.
@@ -148,7 +148,7 @@ class Entity extends Tweener
 			_graphic.render((renderTarget != null) ? renderTarget : HXP.buffer, _point, _camera);
 		}
 	}
-
+	
 	/**
 	 * Checks for a collision against an Entity type.
 	 * @param	type		The Entity type to check for.
@@ -159,14 +159,14 @@ class Entity extends Tweener
 	public function collide(type:String, x:Float, y:Float):Entity
 	{
 		if (_world == null) return null;
-
+		
 		var e:Entity,
 			fe:FriendEntity = _world._typeFirst.get(type);
 		if (!collidable || fe == null) return null;
-
+		
 		_x = this.x; _y = this.y;
 		this.x = x; this.y = y;
-
+		
 		if (_mask == null)
 		{
 			while (fe != null)
@@ -189,7 +189,7 @@ class Entity extends Tweener
 			this.x = _x; this.y = _y;
 			return null;
 		}
-
+		
 		while (fe != null)
 		{
 			e = cast(fe, Entity);
@@ -210,7 +210,7 @@ class Entity extends Tweener
 		this.x = _x; this.y = _y;
 		return null;
 	}
-
+	
 	/**
 	 * Checks for collision against multiple Entity types.
 	 * @param	types		An Array or Vector of Entity types to check for.
@@ -229,7 +229,7 @@ class Entity extends Tweener
 		}
 		return null;
 	}
-
+	
 	/**
 	 * Checks if this Entity collides with a specific Entity.
 	 * @param	e		The Entity to collide against.
@@ -241,7 +241,7 @@ class Entity extends Tweener
 	{
 		_x = this.x; _y = this.y;
 		this.x = x; this.y = y;
-
+		
 		if (x - originX + width > e.x - e.originX
 		&& y - originY + height > e.y - e.originY
 		&& x - originX < e.x - e.originX + e.width
@@ -267,7 +267,7 @@ class Entity extends Tweener
 		this.x = _x; this.y = _y;
 		return null;
 	}
-
+	
 	/**
 	 * Checks if this Entity overlaps the specified rectangle.
 	 * @param	x			Virtual x position to place this Entity.
@@ -300,7 +300,7 @@ class Entity extends Tweener
 		}
 		return false;
 	}
-
+	
 	/**
 	 * Checks if this Entity overlaps the specified position.
 	 * @param	x			Virtual x position to place this Entity.
@@ -331,7 +331,7 @@ class Entity extends Tweener
 		}
 		return false;
 	}
-
+	
 	/**
 	 * Populates an array with all collided Entities of a type.
 	 * @param	type		The Entity type to check for.
@@ -343,15 +343,15 @@ class Entity extends Tweener
 	public function collideInto(type:String, x:Float, y:Float, array:Array<Entity>)
 	{
 		if (_world == null) return;
-
+		
 		var e:Entity,
 			fe:FriendEntity = _world._typeFirst.get(type);
 		if (!collidable || fe == null) return;
-
+		
 		_x = this.x; _y = this.y;
 		this.x = x; this.y = y;
 		var n:Int = array.length;
-
+		
 		if (_mask == null)
 		{
 			while (fe != null)
@@ -370,7 +370,7 @@ class Entity extends Tweener
 			this.x = _x; this.y = _y;
 			return;
 		}
-
+		
 		while (fe != null)
 		{
 			e = cast(fe, Entity);
@@ -387,7 +387,7 @@ class Entity extends Tweener
 		this.x = _x; this.y = _y;
 		return;
 	}
-
+	
 	/**
 	 * Populates an array with all collided Entities of multiple types.
 	 * @param	types		An array of Entity types to check for.
@@ -402,7 +402,7 @@ class Entity extends Tweener
 		var type:String;
 		for (type in types) collideInto(type, x, y, array);
 	}
-
+	
 	/**
 	 * If the Entity collides with the camera rectangle.
 	 */
@@ -411,7 +411,7 @@ class Entity extends Tweener
 	{
 		return collideRect(x, y, HXP.camera.x, HXP.camera.y, HXP.width, HXP.height);
 	}
-
+	
 	/**
 	 * The World object this Entity has been added to.
 	 */
@@ -420,55 +420,55 @@ class Entity extends Tweener
 	{
 		return _world;
 	}
-
+	
 	/**
 	 * Half the Entity's width.
 	 */
 	public var halfWidth(getHalfWidth, null):Float;
 	private inline function getHalfWidth():Float { return width / 2; }
-
+	
 	/**
 	 * Half the Entity's height.
 	 */
 	public var halfHeight(getHalfHeight, null):Float;
 	private inline function getHalfHeight():Float { return height / 2; }
-
+	
 	/**
 	 * The center x position of the Entity's hitbox.
 	 */
 	public var centerX(getCenterX, null):Float;
 	private inline function getCenterX():Float { return x - originX + width / 2; }
-
+	
 	/**
 	 * The center y position of the Entity's hitbox.
 	 */
 	public var centerY(getCenterY, null):Float;
 	private inline function getCenterY():Float { return y - originY + height / 2; }
-
+	
 	/**
 	 * The leftmost position of the Entity's hitbox.
 	 */
 	public var left(getLeft, null):Float;
 	private inline function getLeft():Float { return x - originX; }
-
+	
 	/**
 	 * The rightmost position of the Entity's hitbox.
 	 */
 	public var right(getRight, null):Float;
 	private inline function getRight():Float { return x - originX + width; }
-
+	
 	/**
 	 * The topmost position of the Entity's hitbox.
 	 */
 	public var top(getTop, null):Float;
 	private inline function getTop():Float { return y - originY; }
-
+	
 	/**
 	 * The bottommost position of the Entity's hitbox.
 	 */
 	public var bottom(getBottom, null):Float;
 	private inline function getBottom():Float { return y - originY + height; }
-
+	
 	/**
 	 * The rendering layer of this Entity. Higher layers are rendered first.
 	 */
@@ -478,7 +478,7 @@ class Entity extends Tweener
 	{
 		if (_layer == value) return _layer;
 		#if debug
-		if (value < 0)
+		if (value < 0) 
 		{
 			trace("Negative layers may not work properly if you aren't using flash");
 		}
@@ -493,7 +493,7 @@ class Entity extends Tweener
 		_world.addRender(this);
 		return _layer;
 	}
-
+	
 	/**
 	 * The collision type, used for collision checking.
 	 */
@@ -512,7 +512,7 @@ class Entity extends Tweener
 		if (value != "") _world.addType(this);
 		return _type;
 	}
-
+	
 	/**
 	 * An optional Mask component, used for specialized collision. If this is
 	 * not assigned, collision checks will use the Entity's hitbox by default.
@@ -527,7 +527,7 @@ class Entity extends Tweener
 		if (value != null) _mask.assignTo(this);
 		return _mask;
 	}
-
+	
 	/**
 	 * Graphical component to render to the screen.
 	 */
@@ -540,7 +540,7 @@ class Entity extends Tweener
 		if (value != null && value.assign != null) value.assign();
 		return _graphic;
 	}
-
+	
 	/**
 	 * Adds the graphic to the Entity via a Graphiclist.
 	 * @param	g		Graphic to add.
@@ -556,7 +556,7 @@ class Entity extends Tweener
 		}
 		return g;
 	}
-
+	
 	/**
 	 * Sets the Entity's hitbox properties.
 	 * @param	width		Width of the hitbox.
@@ -571,7 +571,7 @@ class Entity extends Tweener
 		this.originX = originX;
 		this.originY = originY;
 	}
-
+	
 	/**
 	 * Sets the Entity's hitbox to match that of the provided object.
 	 * @param	o		The object defining the hitbox (eg. an Image or Rectangle).
@@ -589,7 +589,7 @@ class Entity extends Tweener
 			else if (o.hasOwnProperty("y")) originX = Std.int( -o.y);
 		}
 	}
-
+	
 	/**
 	 * Sets the origin of the Entity.
 	 * @param	x		X origin.
@@ -600,7 +600,7 @@ class Entity extends Tweener
 		originX = x;
 		originY = y;
 	}
-
+	
 	/**
 	 * Center's the Entity's origin (half width & height).
 	 */
@@ -609,7 +609,7 @@ class Entity extends Tweener
 		originX = Std.int(width / 2);
 		originY = Std.int(height / 2);
 	}
-
+	
 	/**
 	 * Calculates the distance from another Entity.
 	 * @param	e				The other Entity.
@@ -621,7 +621,7 @@ class Entity extends Tweener
 		if (!useHitboxes) return Math.sqrt((x - e.x) * (x - e.x) + (y - e.y) * (y - e.y));
 		return HXP.distanceRects(x - originX, y - originY, width, height, e.x - e.originX, e.y - e.originY, e.width, e.height);
 	}
-
+	
 	/**
 	 * Calculates the distance from this Entity to the point.
 	 * @param	px				X position.
@@ -634,7 +634,7 @@ class Entity extends Tweener
 		if (!useHitbox) return Math.sqrt((x - px) * (x - px) + (y - py) * (y - py));
 		return HXP.distanceRectPoint(px, py, x - originX, y - originY, width, height);
 	}
-
+	
 	/**
 	 * Calculates the distance from this Entity to the rectangle.
 	 * @param	rx			X position of the rectangle.
@@ -647,7 +647,7 @@ class Entity extends Tweener
 	{
 		return HXP.distanceRects(rx, ry, rwidth, rheight, x - originX, y - originY, width, height);
 	}
-
+	
 	/**
 	 * Gets the class name as a string.
 	 * @return	A string representing the class name.
@@ -656,7 +656,7 @@ class Entity extends Tweener
 	{
 		return _class;
 	}
-
+	
 	/**
 	 * Moves the Entity by the amount, retaining integer values for its x and y.
 	 * @param	x			Horizontal offset.
@@ -724,7 +724,7 @@ class Entity extends Tweener
 			this.y += y;
 		}
 	}
-
+	
 	/**
 	 * Moves the Entity to the position, retaining integer values for its x and y.
 	 * @param	x			X position.
@@ -736,7 +736,7 @@ class Entity extends Tweener
 	{
 		moveBy(x - this.x, y - this.y, solidType, sweep);
 	}
-
+	
 	/**
 	 * Moves towards the target position, retaining integer values for its x and y.
 	 * @param	x			X target.
@@ -752,25 +752,25 @@ class Entity extends Tweener
 		_point.normalize(amount);
 		moveBy(_point.x, _point.y, solidType, sweep);
 	}
-
+	
 	/**
 	 * When you collide with an Entity on the x-axis with moveTo() or moveBy().
 	 * @param	e		The Entity you collided with.
 	 */
 	public function moveCollideX(e:Entity)
 	{
-
+		
 	}
-
+	
 	/**
 	 * When you collide with an Entity on the y-axis with moveTo() or moveBy().
 	 * @param	e		The Entity you collided with.
 	 */
 	public function moveCollideY(e:Entity)
 	{
-
+		
 	}
-
+	
 	/**
 	 * Clamps the Entity's hitbox on the x-axis.
 	 * @param	left		Left bounds.
@@ -782,7 +782,7 @@ class Entity extends Tweener
 		if (x - originX < left + padding) x = left + originX + padding;
 		if (x - originX + width > right - padding) x = right - width + originX - padding;
 	}
-
+	
 	/**
 	 * Clamps the Entity's hitbox on the y axis.
 	 * @param	top			Min bounds.
@@ -794,24 +794,24 @@ class Entity extends Tweener
 		if (y - originY < top + padding) y = top + originY + padding;
 		if (y - originY + height > bottom - padding) y = bottom - height + originY - padding;
 	}
-
-
+	
+	
 	// Entity information.
 	private var _class:String;
 	private var _world:World;
 	private var _added:Bool;
 	private var _type:String;
 	private var _layer:Int;
-
+	
 	private var _updatePrev:FriendEntity;
 	private var _updateNext:FriendEntity;
 	private var _renderPrev:FriendEntity;
 	private var _renderNext:FriendEntity;
-
+	
 	private var _typePrev:FriendEntity;
 	private var _typeNext:FriendEntity;
 	private var _recycleNext:Entity;
-
+	
 	// Collision information.
 	private var HITBOX:Mask;
 	private var _mask:Mask;
@@ -819,7 +819,7 @@ class Entity extends Tweener
 	private var _y:Float;
 	private var _moveX:Float;
 	private var _moveY:Float;
-
+	
 	// Rendering information.
 	private var _graphic:Graphic;
 	private var _point:Point;
