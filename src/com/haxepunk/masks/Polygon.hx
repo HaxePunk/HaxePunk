@@ -432,19 +432,19 @@ class Polygon extends Mask
 			var dx = p.x - centerPoint.x;
 			var dy = p.y - centerPoint.y;
 			
-			var currentAngle = Math.atan2(dy, dx);
+			var pointAngle = Math.atan2(dy, dx);
 			var length = Math.sqrt(dx * dx + dy * dy);
 			
-			p.x = Math.cos(currentAngle + angle) * length + centerPoint.x;
-			p.y = Math.sin(currentAngle + angle) * length + centerPoint.y;
+			p.x = Math.cos(pointAngle + angle) * length + centerPoint.x;
+			p.y = Math.sin(pointAngle + angle) * length + centerPoint.y;
 		}
 		for (ax in _axes) 
 		{
 			
-			var currentAngle = Math.atan2(ax.y, ax.x);
+			var axisAngle = Math.atan2(ax.y, ax.x);
 			
-			ax.x = Math.cos(currentAngle + angle);
-			ax.y = Math.sin(currentAngle + angle);
+			ax.x = Math.cos(axisAngle + angle);
+			ax.y = Math.sin(axisAngle + angle);
 		}
 		_angle += angle;
 	}
@@ -515,9 +515,9 @@ class Polygon extends Mask
 	override public function update() 
 	{
 		projectOn(horizontal, firstCollisionInfo);//width
-		width = Std.int(firstCollisionInfo.max - firstCollisionInfo.min);
+		width = Math.ceil(firstCollisionInfo.max - firstCollisionInfo.min);
 		projectOn(vertical, secondCollisionInfo);//height
-		height = Std.int(secondCollisionInfo.max - secondCollisionInfo.min);
+		height = Math.ceil(secondCollisionInfo.max - secondCollisionInfo.min);
 		
 		//update entity bounds
 		parent.width = width;

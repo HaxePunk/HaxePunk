@@ -30,7 +30,7 @@ class Text extends Image
 		_field.embedFonts = true;
 		#end
 		#if nme
-		var font = ApplicationMain.getAsset ("source/com/haxepunk/graphics/04B_03__.TTF");
+		var font = ApplicationMain.getAsset ("assets/04B_03__.TTF");
 		#else
 		var font = new TextFormat("source/com/haxepunk/graphics/04B_03__", 16, 0xFFFFFF);
 		#end
