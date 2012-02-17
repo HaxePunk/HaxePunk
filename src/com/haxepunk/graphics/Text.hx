@@ -26,15 +26,17 @@ class Text extends Image
 	public function new(text:String, x:Float = 0, y:Float = 0, width:Int = 0, height:Int = 0)
 	{
 		_field = new TextField();
-		#if flash
+#if flash
 		_field.embedFonts = true;
-		#end
-		#if nme
-		var font = ApplicationMain.getAsset ("assets/04B_03__.TTF");
-		#else
-		var font = new TextFormat("source/com/haxepunk/graphics/04B_03__", 16, 0xFFFFFF);
-		#end
+#end
+
+#if nme
+		var font = nme.Assets.getFont("assets/04B_03__.ttf");
 		_field.defaultTextFormat = _form = new TextFormat(font.fontName, 16, 0xFFFFFF);
+#else
+		_field.defaultTextFormat = _form = new TextFormat("default", 16, 0xFFFFFF);
+#end
+		
 		_field.text = _text = text;
 		if (width == 0) width = Std.int(_field.textWidth + 4);
 		if (height == 0) height = Std.int(_field.textHeight + 4);

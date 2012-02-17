@@ -24,86 +24,94 @@ import haxe.Timer;
 /**
  * Static catch-all class used to access global properties and functions.
  */
-class HXP 
+class HXP
 {
 	/**
-	 * The FlashPunk major version.
+	 * The HaxePunk major version.
 	 */
-	public static inline var VERSION:String = "1.4";
-	
+	public static inline var VERSION:String = "1.5";
+
 	/**
 	 * The standard layer used since only flash can handle negative indicies in arrays, set your layers to some offset of this
 	 */
 	public static inline var BASELAYER:Int = 10;
-	 
-	
+
+	/**
+	 * Flash equivalent: Number.MAX_VALUE
+	 */
+#if flash
+	public static inline var NUMBER_MAX_VALUE = untyped __global__["Number"].MAX_VALUE;
+#else
+	public static inline var NUMBER_MAX_VALUE = 179 * Math.pow(10, 306); // 1.79e+308
+#end
+
 	/**
 	 * Width of the game.
 	 */
 	public static var width:Int;
-	
+
 	/**
 	 * Height of the game.
 	 */
 	public static var height:Int;
-	
+
 	/**
 	 * If the game is running at a fixed framerate.
 	 */
 	public static var fixed:Bool;
-	
+
 	/**
 	 * The framerate assigned to the stage.
 	 */
 	public static var frameRate:Float;
-	
+
 	/**
 	 * The framerate assigned to the stage.
 	 */
 	public static var assignedFrameRate:Float;
-	
+
 	/**
 	 * Time elapsed since the last frame (non-fixed framerate only).
 	 */
 	public static var elapsed:Float;
-	
+
 	/**
 	 * Timescale applied to HXP.elapsed (non-fixed framerate only).
 	 */
 	public static var rate:Float = 1;
-	
+
 	/**
 	 * The Screen object, use to transform or offset the Screen.
 	 */
 	public static var screen:Screen;
-	
+
 	/**
 	 * The current screen buffer, drawn to in the render loop.
 	 */
 	public static var buffer:BitmapData;
-	
+
 	/**
 	 * A rectangle representing the size of the screen.
 	 */
 	public static var bounds:Rectangle;
-	
+
 	/**
 	 * Point used to determine drawing offset in the render loop.
 	 */
 	public static var camera:Point = new Point();
-	
+
 	/**
 	 * Half the screen width.
 	 */
 	public static var halfWidth(getHalfWidth, null):Float;
 	private inline static function getHalfWidth():Float { return width / 2; }
-	
+
 	/**
 	 * Half the screen height.
 	 */
 	public static var halfHeight(getHalfHeight, null):Float;
 	private inline static function getHalfHeight():Float { return height / 2; }
-	
+
 	/**
 	 * The currently active World object. When you set this, the World is flagged
 	 * to switch, but won't actually do so until the end of the current frame.
@@ -116,20 +124,20 @@ class HXP
 		_goto = value;
 		return _world;
 	}
-	
+
 	public inline static function swapWorld()
 	{
 		_world = _goto;
 		_goto = null;
 	}
-	
+
 	public inline static function clear(array:Array<Dynamic>)
 	{
 		var i:Int;
 		for (i in 0...array.length)
 			array.pop();
 	}
-	
+
 	/**
 	 * Sets the camera position.
 	 * @param	x	X position.
@@ -140,7 +148,7 @@ class HXP
 		camera.x = x;
 		camera.y = y;
 	}
-	
+
 	/**
 	 * Resets the camera position.
 	 */
@@ -148,7 +156,7 @@ class HXP
 	{
 		camera.x = camera.y = 0;
 	}
-	
+
 	/**
 	 * Global volume factor for all sounds, a value from 0 to 1.
 	 */
@@ -164,7 +172,7 @@ class HXP
 		#end
 		return _volume;
 	}
-	
+
 	/**
 	 * Global panning factor for all sounds, a value from -1 to 1.
 	 */
@@ -181,7 +189,7 @@ class HXP
 		#end
 		return _pan;
 	}
-	
+
 	/**
 	 * Randomly chooses and returns one of the provided values.
 	 * @param	objs		The Objects you want to randomly choose from. Can be ints, Floats, Points, etc.
@@ -191,7 +199,7 @@ class HXP
 	{
 		return objs[rand(objs.length)];
 	}
-	
+
 	/**
 	 * Finds the sign of the provided value.
 	 * @param	value		The Float to evaluate.
@@ -201,7 +209,7 @@ class HXP
 	{
 		return value < 0 ? -1 : (value > 0 ? 1 : 0);
 	}
-	
+
 	/**
 	 * Approaches the value towards the target, by the specified amount, without overshooting the target.
 	 * @param	value	The starting value.
@@ -213,7 +221,7 @@ class HXP
 	{
 		return value < target ? (target < value + amount ? target : value + amount) : (target > value - amount ? target : value - amount);
 	}
-	
+
 	/**
 	 * Linear interpolation between two values.
 	 * @param	a		First value.
@@ -225,7 +233,7 @@ class HXP
 	{
 		return a + (b - a) * t;
 	}
-	
+
 	/**
 	 * Linear interpolation between two colors.
 	 * @param	fromColor		First color.
@@ -251,7 +259,7 @@ class HXP
 		b += Std.int(dB * t);
 		return a << 24 | r << 16 | g << 8 | b;
 	}
-	
+
 	/**
 	 * Steps the object towards a point.
 	 * @param	object		Object to move (must have an x and y property).
@@ -273,7 +281,7 @@ class HXP
 		object.x += point.x;
 		object.y += point.y;
 	}
-	
+
 	/**
 	 * Anchors the object to a position.
 	 * @param	object		The object to anchor.
@@ -288,7 +296,7 @@ class HXP
 		object.x = anchor.x + point.x;
 		object.y = anchor.y + point.y;
 	}
-	
+
 	/**
 	 * Finds the angle (in degrees) from point 1 to point 2.
 	 * @param	x1		The first x-position.
@@ -302,7 +310,7 @@ class HXP
 		var a:Float = Math.atan2(y2 - y1, x2 - x1) * DEG;
 		return a < 0 ? a + 360 : a;
 	}
-	
+
 	/**
 	 * Sets the x/y values of the provided object to a vector of the specified angle and length.
 	 * @param	object		The object whose x/y properties should be set.
@@ -317,7 +325,7 @@ class HXP
 		object.x = Math.cos(angle) * length + x;
 		object.y = Math.sin(angle) * length + y;
 	}
-	
+
 	/**
 	 * Rotates the object around the anchor by the specified amount.
 	 * @param	object		Object to rotate around the anchor.
@@ -329,7 +337,7 @@ class HXP
 		if (relative) angle += HXP.angle(anchor.x, anchor.y, object.x, object.y);
 		HXP.angleXY(object, angle, HXP.distance(anchor.x, anchor.y, object.x, object.y), anchor.x, anchor.y);
 	}
-	
+
 	/**
 	 * Find the distance between two points.
 	 * @param	x1		The first x-position.
@@ -342,12 +350,12 @@ class HXP
 	{
 		return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 	}
-	
-	public static inline function distanceSquared(x1:Float, y1:Float, x2:Float = 0, y2:Float = 0):Float 
+
+	public static inline function distanceSquared(x1:Float, y1:Float, x2:Float = 0, y2:Float = 0):Float
 	{
 		return (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
 	}
-	
+
 	/**
 	 * Find the distance between two rectangles. Will return 0 if the rectangles overlap.
 	 * @param	x1		The x-position of the first rect.
@@ -381,7 +389,7 @@ class HXP
 		if (y1 > y2) return distance(x1 + w1, y1, x2, y2 + h2);
 		return distance(x1 + w1, y1 + h1, x2, y2);
 	}
-	
+
 	/**
 	 * Find the distance between a point and a rectangle. Returns 0 if the point is within the rectangle.
 	 * @param	px		The x-position of the point.
@@ -413,7 +421,7 @@ class HXP
 		if (py > ry) return distance(px, py, rx, ry + rh);
 		return distance(px, py, rx, ry);
 	}
-	
+
 	/**
 	 * Clamps the value within the minimum and maximum values.
 	 * @param	value		The Float to evaluate.
@@ -431,7 +439,7 @@ class HXP
 		value = value < min ? value : min;
 		return value > max ? value : max;
 	}
-	
+
 	/**
 	 * Clamps the object inside the rectangle.
 	 * @param	object		The object to clamp (must have an x and y property).
@@ -445,7 +453,7 @@ class HXP
 		object.x = clamp(object.x, x + padding, x + width - padding);
 		object.y = clamp(object.y, y + padding, y + height - padding);
 	}
-	
+
 	/**
 	 * Transfers a value from one scale to another scale. For example, scale(.5, 0, 1, 10, 20) == 15, and scale(3, 0, 5, 100, 0) == 40.
 	 * @param	value		The value on the first scale.
@@ -459,7 +467,7 @@ class HXP
 	{
 		return min2 + ((value - min) / (max - min)) * (max2 - min2);
 	}
-	
+
 	/**
 	 * Transfers a value from one scale to another scale, but clamps the return value within the second scale.
 	 * @param	value		The value on the first scale.
@@ -480,7 +488,7 @@ class HXP
 		value = value < min2 ? value : min2;
 		return value > max2 ? value : max2;
 	}
-	
+
 	/**
 	 * The random seed used by FP's random functions.
 	 */
@@ -492,7 +500,7 @@ class HXP
 		_getSeed = _seed;
 		return _seed;
 	}
-	
+
 	/**
 	 * Randomizes the random seed using Flash's Math.random() function.
 	 */
@@ -500,7 +508,7 @@ class HXP
 	{
 		randomSeed = Std.int(2147483647.0 * Math.random());
 	}
-	
+
 	/**
 	 * A pseudo-random Float produced using FP's random seed, where 0 <= Float < 1.
 	 */
@@ -510,7 +518,7 @@ class HXP
 		_seed = Std.int((_seed * 16807.0) % 2147483647.0);
 		return _seed / 2147483647.0;
 	}
-	
+
 	/**
 	 * Returns a pseudo-random Int.
 	 * @param	amount		The returned Int will always be 0 <= Int < amount.
@@ -521,7 +529,7 @@ class HXP
 		_seed = Std.int((_seed * 16807.0) % 2147483647.0);
 		return Std.int((_seed / 2147483647.0) * amount);
 	}
-	
+
 	private static function indexOf<T>(a:Array<T>, v:T):Int
 	{
 		var i = 0;
@@ -532,7 +540,7 @@ class HXP
 		}
 		return -1;
 	}
-	
+
 	/**
 	 * Returns the next item after current in the list of options.
 	 * @param	current		The currently selected item (must be one of the options).
@@ -545,7 +553,7 @@ class HXP
 		if (loop) return options[(indexOf(options, current) + 1) % options.length];
 		return options[Std.int(Math.max(indexOf(options, current) + 1, options.length - 1))];
 	}
-	
+
 	/**
 	 * Returns the item previous to the current in the list of options.
 	 * @param	current		The currently selected item (must be one of the options).
@@ -558,7 +566,7 @@ class HXP
 		if (loop) return options[((indexOf(options, current) - 1) + options.length) % options.length];
 		return options[Std.int(Math.max(indexOf(options, current) - 1, 0))];
 	}
-	
+
 	/**
 	 * Swaps the current item between a and b. Useful for quick state/string/value swapping.
 	 * @param	current		The currently selected item.
@@ -570,7 +578,7 @@ class HXP
 	{
 		return current == a ? b : a;
 	}
-	
+
 	/**
 	 * Creates a color value by combining the chosen RGB values.
 	 * @param	R		The red value of the color, from 0 to 255.
@@ -582,7 +590,7 @@ class HXP
 	{
 		return R << 16 | G << 8 | B;
 	}
-	
+
 	/**
 	 * Creates a color value with the chosen HSV values.
 	 * @param	h		The hue of the color (from 0 to 1).
@@ -610,7 +618,7 @@ class HXP
 		}
 		return 0;
 	}
-	
+
 	/**
 	 * Finds the red factor of a color.
 	 * @param	color		The color to evaluate.
@@ -620,7 +628,7 @@ class HXP
 	{
 		return color >> 16 & 0xFF;
 	}
-	
+
 	/**
 	 * Finds the green factor of a color.
 	 * @param	color		The color to evaluate.
@@ -630,7 +638,7 @@ class HXP
 	{
 		return color >> 8 & 0xFF;
 	}
-	
+
 	/**
 	 * Finds the blue factor of a color.
 	 * @param	color		The color to evaluate.
@@ -640,7 +648,7 @@ class HXP
 	{
 		return color & 0xFF;
 	}
-	
+
 	/**
 	 * Fetches a stored BitmapData object represented by the source.
 	 * @param	source		Embedded Bitmap class.
@@ -651,49 +659,53 @@ class HXP
 		var name:String = Std.string(source);
 		if (_bitmap.exists(name))
 			return _bitmap.get(name);
-		
+
+#if nme
+		var data:BitmapData = nme.Assets.getBitmapData(source);
+#else
 		var data:BitmapData = source.bitmapData;
+#end
 		_bitmap.set(name, data);
 		return data;
 	}
-	
+
 	#if hardware
-	public static function getBitmapIndex(source:Dynamic):Int 
+	public static function getBitmapIndex(source:Dynamic):Int
 	{
 		var name:String = Std.string(source);
 		if (_bitmapIndex.exists(name))
 			return _bitmapIndex.get(name);
-		
+
 		trace('Could not find the image : ' + Std.string(source));
 		return -1;
 	}
-	
+
 	/**
 	 * Takes a bitmapdata and creates the tilesheet has an optional parameter which can take the string from the SpriteSHeetPacker found here
 	 * http://spritesheetpacker.codeplex.com/ which will generate the rectangles as well
 	 * @param	source
 	 * @param	?rectangleData	 A string where a rectangle is formatted as 'name = x y width height\n'
 	 */
-	public static function loadTilesheet(source:BitmapData, ?rectangleData:String):Void 
+	public static function loadTilesheet(source:BitmapData, ?rectangleData:String):Void
 	{
 		HXP.tilesheet = new nme.display.Tilesheet(source);
-		
-		if (rectangleData != null) 
+
+		if (rectangleData != null)
 		{
-			
+
 			var array:Array<String> = rectangleData.split('\n');
-			
-			for (ii in 0...array.length) 
+
+			for (ii in 0...array.length)
 			{
-				
+
 				var data = array[ii].split(' ');
 				var name = data[0];
-				
+
 				var rectangle = new Rectangle(Std.parseInt(data[2]), Std.parseInt(data[3]), Std.parseInt(data[4]), Std.parseInt(data[5]));
-				
+
 				HXP.sheetRectangles.push(rectangle);
 				HXP.tilesheet.addTileRect(rectangle);
-				
+
 				HXP._bitmapIndex.set(name, ii);
 			}
 		}
@@ -710,7 +722,7 @@ class HXP
 		_time = t;
 		return e;
 	}
-	
+
 	/**
 	 * The global Console object.
 	 */
@@ -720,7 +732,7 @@ class HXP
 		if (_console == null) _console = new Console();
 		return _console;
 	}
-	
+
 	/**
 	 * Logs data to the console.
 	 * @param	...data		The data parameters to log, can be variables, objects, etc. Parameters will be separated by a space (" ").
@@ -732,7 +744,7 @@ class HXP
 			_console.log(data);
 		}
 	});
-	
+
 	/**
 	 * Adds properties to watch in the console's debug panel.
 	 * @param	...properties		The properties (strings) to watch.
@@ -744,7 +756,7 @@ class HXP
 			_console.watch(properties);
 		}
 	});
-	
+
 	/**
 	 * Tweens numeric public properties of an Object. Shorthand for creating a MultiVarTween tween, starting it and adding it to a Tweener.
 	 * @param	object		The object containing the properties to tween.
@@ -756,7 +768,7 @@ class HXP
 	 * 						ease		Optional easer function.
 	 * 						tweener		The Tweener to add this Tween to.
 	 * @return	The added MultiVarTween object.
-	 * 
+	 *
 	 * Example: HXP.tween(object, { x: 500, y: 350 }, 2.0, { ease: easeFunction, complete: onComplete } );
 	 */
 	public static function tween(object:Dynamic, values:Dynamic, duration:Float, options:Dynamic = null):MultiVarTween
@@ -778,7 +790,7 @@ class HXP
 		tweener.addTween(tween);
 		return tween;
 	}
-	
+
 	/**
 	 * Gets an array of frame indices.
 	 * @param	from	Starting frame.
@@ -807,7 +819,7 @@ class HXP
 		}
 		return a;
 	}
-	
+
 	/**
 	 * Shuffles the elements in the array.
 	 * @param	a		The Object to shuffle (an Array or Vector).
@@ -825,52 +837,52 @@ class HXP
 			}
 		}
 	}
-	
+
 	public static var time(null, setTime):Float;
 	private static inline function setTime(value:Float):Float {
 		_time = value;
 		return _time;
 	}
-	
+
 	public static inline function gotoIsNull():Bool { return (_goto == null); }
-	
+
 	// World information.
 	private static var _world:World = new World();
 	private static var _goto:World;
-	
+
 	// Console information.
 	private static var _console:Console;
-	
+
 	// Time information.
 	private static var _time:Float;
 	public static var _updateTime:Float;
 	public static var _renderTime:Float;
 	public static var _gameTime:Float;
 	public static var _flashTime:Float;
-	
+
 	// Bitmap storage.
 	private static var _bitmap:Hash<BitmapData> = new Hash<BitmapData>();
 
 	// Pseudo-random number generation (the seed is set in Engine's contructor).
 	private static var _seed:Int = 0;
 	private static var _getSeed:Int;
-	
+
 	// Volume control.
 	private static var _volume:Float = 1;
 	private static var _pan:Float = 0;
 	private static var _soundTransform:SoundTransform = new SoundTransform();
-	
-	
-	
-	
+
+
+
+
 	// Used for rad-to-deg and deg-to-rad conversion.
 	public static inline var DEG:Float = -180 / Math.PI;
 	public static inline var RAD:Float = Math.PI / -180;
-	
+
 	// Global Flash objects.
 	public static var stage:Stage;
 	public static var engine:Engine;
-	
+
 	// Global objects used for rendering, collision, etc.
 	public static var point:Point = new Point();
 	public static var point2:Point = new Point();
@@ -879,32 +891,32 @@ class HXP
 	public static var matrix:Matrix = new Matrix();
 	public static var sprite:Sprite = new Sprite();
 	public static var entity:Entity;
-	
-	
+
+
 	#if hardware
 	/**
 	 * Currently only one tilesheet for simplicity, should probably be a list later on (and not static?)
 	 */
 	public static var tilesheet:nme.display.Tilesheet;
-	
+
 	/**
 	 * Stores the x, y, ID, flags... which are then passed through NME
 	 */
 	public static var tileData:Array<Float> = new Array<Float>();
-	
+
 	/**
 	 * Stores the rectangles in an array where the index is the respective ID that the rectangle has in the tilesheet
 	 */
 	static public var sheetRectangles:Array<Rectangle> = new Array<Rectangle>();
-	
+
 	/**
 	 * Flags are added with
 	 * flags = TILE_SCALE | TILE_ROTATION | TILE_RGB;
 	 */
 	public static var tilesheetFlags:Int = 0;
-	
+
 	static private var _bitmapIndex:Hash<Int> = new Hash<Int>();
-	
+
 	/**
 	 * @private Used internally, used to determine which index to set the data in tileData
 	 */
@@ -914,7 +926,7 @@ class HXP
 	 * entities which have been removed
 	 */
 	public static var previousLength = 0;
-	
+
 	/**
 	 * Flags that are copied over from the nme.display.Tilesheet class for easier access
 	 */

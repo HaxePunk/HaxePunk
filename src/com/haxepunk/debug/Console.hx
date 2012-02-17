@@ -20,9 +20,6 @@ import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
 import haxe.Log;
 import haxe.PosInfos;
-#if nme
-import nme.Assets;
-#end
 
 // Define classes for FlashDevelop
 #if (flash && swfmill)
@@ -55,12 +52,10 @@ class Console
 
 		_sprite = new Sprite();
 #if nme
-		var font:Font = Assets.getFont("assets/04B_03__.TTF");
-		_format = new TextFormat(font.fontName);
+		var font = nme.Assets.getFont("assets/04B_03__.ttf");
+		_format = new TextFormat(font.fontName, 8, 0xFFFFFF);
 #elseif flash
 		_format = new TextFormat("default");
-#else
-		_format = new TextFormat("assets/04B_03__.TTF");
 #end
 		_back = new Bitmap();
 
@@ -157,38 +152,30 @@ class Console
 		// Quit if the console is already enabled.
 		if (_enabled) return;
 
+		// load assets based on embedding method
 #if nme
-	_bmpLogo = new Bitmap(Assets.getBitmapData("assets/console_logo.png"));
-	_butDebug = new Bitmap(Assets.getBitmapData("assets/console_debug.png"));
-	_butOutput = new Bitmap(Assets.getBitmapData("assets/console_output.png"));
-	_butPlay = new Bitmap(Assets.getBitmapData("assets/console_play.png"));
-	_butPause = new Bitmap(Assets.getBitmapData("assets/console_pause.png"));
-	_butStep = new Bitmap(Assets.getBitmapData("assets/console_step.png"));
-	onLoaded();
-#else
-	// Use embedded images for flash
-	#if !swfmill
-		_bmpLogo = new GfxConsoleLogo();
-		_butDebug = new GfxConsoleDebug();
-		_butOutput = new GfxConsoleOutput();
-		_butPlay = new GfxConsolePlay();
-		_butPause = new GfxConsolePause();
-		_butStep = new GfxConsoleStep();
-	#else
-		// Flashdevelop version
+		_bmpLogo = new Bitmap(nme.Assets.getBitmapData("assets/console_logo.png"));
+		_butDebug = new Bitmap(nme.Assets.getBitmapData("assets/console_debug.png"));
+		_butOutput = new Bitmap(nme.Assets.getBitmapData("assets/console_output.png"));
+		_butPlay = new Bitmap(nme.Assets.getBitmapData("assets/console_play.png"));
+		_butPause = new Bitmap(nme.Assets.getBitmapData("assets/console_pause.png"));
+		_butStep = new Bitmap(nme.Assets.getBitmapData("assets/console_step.png"));
+#elseif swfmill // Flashdevelop
 		_bmpLogo = new Bitmap(new GfxConsoleLogo(0, 0));
 		_butDebug = new Bitmap(new GfxConsoleDebug(0, 0));
 		_butOutput = new Bitmap(new GfxConsoleOutput(0, 0));
 		_butPlay = new Bitmap(new GfxConsolePlay(0, 0));
 		_butPause = new Bitmap(new GfxConsolePause(0, 0));
 		_butStep = new Bitmap(new GfxConsoleStep(0, 0));
-	#end
-		onLoaded();
+#else // samhaxe
+		_bmpLogo = new GfxConsoleLogo();
+		_butDebug = new GfxConsoleDebug();
+		_butOutput = new GfxConsoleOutput();
+		_butPlay = new GfxConsolePlay();
+		_butPause = new GfxConsolePause();
+		_butStep = new GfxConsoleStep();
 #end
-	}
 
-	private function onLoaded()
-	{
 		// Enable it and add the Sprite to the stage.
 		_enabled = true;
 		HXP.engine.addChild(_sprite);
@@ -730,7 +717,7 @@ class Console
 			g.clear();
 			for (e in SCREEN_LIST)
 			{
-				trace(e.mask);
+				if (e.mask != null) trace(e.mask);
 				// If the Entity is not selected.
 				if (Lambda.indexOf(SELECT_LIST, e) < 0)
 				{

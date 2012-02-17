@@ -4,11 +4,6 @@ import com.haxepunk.Mask;
 import flash.display.Graphics;
 import flash.geom.Point;
 import flash.Vector;
-/**
- * ...
- * @author 
- */
-
 
 using Std;
  
@@ -40,7 +35,6 @@ class Polygon extends Mask
 		
 		updateAxes();
 	}
-	
 	
 	private function generateAxes():Void 
 	{
@@ -206,7 +200,7 @@ class Polygon extends Mask
 		var offset:Float;
 		
 		//First find the point closest to the circle
-		var distanceSquared = 9999999999.;
+		var distanceSquared:Float = HXP.NUMBER_MAX_VALUE;
 		var closestPoint = null;
 		for (p in _points) 
 		{
@@ -305,7 +299,6 @@ class Polygon extends Mask
 		return true;
 	}
 	
-	
 	override private function collideMask(other:Mask):Bool 
 	{
 		var offset:Float,
@@ -350,8 +343,6 @@ class Polygon extends Mask
 		}
 		return true;
 	}
-	
-
 	
 	public function collidePolygon(other:Polygon):Bool 
 	{
@@ -403,8 +394,8 @@ class Polygon extends Mask
 	public inline function projectOn(axis:Point, collisionInfo:CollisionInfo):Void 
 	{
 		var cur:Float,
-			max:Float = -9999999999.,
-			min:Float = 9999999999.;
+			max:Float = -HXP.NUMBER_MAX_VALUE,
+			min:Float = HXP.NUMBER_MAX_VALUE;
 		
 		for (vertex in _points) 
 		{
@@ -486,19 +477,16 @@ class Polygon extends Mask
 	 */
 	public var width(default, null):Int;
 	
-	
 	/**
 	 * Height.
 	 */
 	public var height(default, null):Int;
-	
 	
 	/**
 	 * The points representing the polygon. 
 	 * If you need to set a point yourself instead of passing in a new Vector<Point> you need to call update() to makes sure the axes update as well.
 	 */
 	public var points(getPoints, setPoints):Vector<Point>;
-	
 	private inline function getPoints():Vector<Point> { return _points; }
 	private function setPoints(value:Vector<Point>):Vector<Point> 
 	{
@@ -509,7 +497,6 @@ class Polygon extends Mask
 		else if (parent != null) {updateAxes(); update();  }	
 		return _points;
 	}
-	
 	
 	/** Updates the parent's bounds for this mask. */
 	override public function update() 
@@ -581,7 +568,6 @@ class Polygon extends Mask
 		return new Polygon(p);
 	}
 	
-	
 	// Hitbox information.
 	private var _angle:Float;
 	private var _points:Vector<Point>;
@@ -590,6 +576,7 @@ class Polygon extends Mask
 	private static var _axis = new Point();
 	private static var firstCollisionInfo = new CollisionInfo();
 	private static var secondCollisionInfo = new CollisionInfo();
+	
 	public static var vertical = new Point(0, 1);
 	public static var horizontal = new Point(1, 0);
 }

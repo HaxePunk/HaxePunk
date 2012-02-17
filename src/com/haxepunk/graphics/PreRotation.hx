@@ -29,7 +29,11 @@ class PreRotation extends Image
 		frameAngle = 0;
 		_last = _current = -1;
 		
-		var name:String = Type.getClassName(source);
+		var name:String = '';
+		if (Std.is(source, String))
+			name = source;
+		else
+			name = Type.getClassName(source);
 		
 		var r:BitmapData = _rotated.get(name);
 		var size:Int = _size.get(name);

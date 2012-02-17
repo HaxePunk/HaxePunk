@@ -23,7 +23,7 @@ class Sfx
 	 * @param	source		The embedded sound class to use.
 	 * @param	complete	Optional callback function for when the sound finishes playing.
 	 */
-	public function new(source:Sound, complete:AudioCompleteCallback = null) 
+	public function new(source:Dynamic, complete:AudioCompleteCallback = null) 
 	{
 		_transform = new SoundTransform();
 		_volume = 1;
@@ -31,13 +31,29 @@ class Sfx
 		_position = 0;
 		
 		if (source == null) throw "Invalid source Sound.";
-		var className:String = Type.getClassName(Type.getClass(source));
-		_sound = _sounds.get(className);
-		if (_sound == null)
+#if nme
+		if (Std.is(source, String))
 		{
-			_sound = source;
-			_sounds.set(className, source);
+#if flash
+			var ext:String = ".mp3";
+#else
+			var ext:String = ".wav";
+#end
+			_sound = nme.Assets.getSound(source + ext);
+			_sounds.set(source, _sound);
 		}
+		else
+#end
+		{
+			var className:String = Type.getClassName(Type.getClass(source));
+			_sound = _sounds.get(className);
+			if (_sound == null)
+			{
+				_sound = source;
+				_sounds.set(className, source);
+			}
+		}
+		
 		this.complete = complete;
 	}
 	
