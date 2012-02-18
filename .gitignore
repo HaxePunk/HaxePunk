@@ -1,9 +1,8 @@
 *.swf
-obj
 *.sublime*
 *.zip
 *.n
-bin
+test
 
 # OS specific files
 .DS_Store
