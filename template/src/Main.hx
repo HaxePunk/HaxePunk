@@ -4,7 +4,7 @@ import flash.system.Capabilities;
 import com.haxepunk.Engine;
 import com.haxepunk.HXP;
 
-class ExampleMain extends Engine
+class Main extends Engine
 {
 
 	public static inline var kScreenWidth:Int = 640;
@@ -33,7 +33,7 @@ class ExampleMain extends Engine
 
 	public static function main()
 	{
-		new ExampleMain();
+		new Main();
 	}
 
 }

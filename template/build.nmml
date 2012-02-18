@@ -10,8 +10,7 @@
 	<classpath name="src" />
 	<haxelib name="nme" />
 
-	<assets path="src/com/haxepunk/debug" rename="assets" include="*.png" />
-	<assets path="src/com/haxepunk/graphics" rename="assets" include="04B_03__.TTF" />
+	<assets path="assets/haxepunk" include="*" />
 
 	<ndll name="std" />
 	<ndll name="regexp" />
