@@ -26,11 +26,11 @@
 	</target>
 
 	<target name="haxelib" depends="tools">
+		<zip destfile="template.zip" basedir="template" />
 		<zip destfile="haxepunk.zip">
-			<zipfileset dir="" prefix="haxepunk" includes="run.n" />
+			<zipfileset dir="" prefix="haxepunk" includes="run.n,haxelib.xml,template.zip" />
 			<zipfileset dir="src" prefix="haxepunk" />
 			<zipfileset dir="tools" prefix="haxepunk/tools" />
-			<zipfileset dir="template" prefix="haxepunk/template" />
 		</zip>
 	</target>
 
@@ -40,6 +40,12 @@
 		</exec>
 		<exec executable="haxelib" dir="bin">
 			<arg line="run HaxePunk new" />
+		</exec>
+	</target>
+
+	<target name="deploy" depends="haxelib">
+		<exec executable="haxelib" dir=".">
+			<arg line="submit haxepunk.zip" />
 		</exec>
 	</target>
 

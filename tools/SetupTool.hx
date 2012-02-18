@@ -1,8 +1,12 @@
+import haxe.io.Bytes;
 import neko.Sys;
 import neko.Lib;
 import neko.FileSystem;
 import neko.io.File;
+import neko.io.FileInput;
+import neko.io.FileOutput;
 import neko.io.Path;
+import neko.zip.Reader;
 
 class SetupTool
 {
@@ -36,33 +40,43 @@ class SetupTool
 	public function newProject(args:Array<String>)
 	{
 		var destFolder:String = (new Path(args.shift())).toString();
-		var slash = destFolder.substr(-1);
-		if (slash=="/"|| slash=="\\")
-			destFolder = destFolder.substr(0, destFolder.length - 1);
-		
-		if (FileSystem.exists(destFolder) && FileSystem.isDirectory(destFolder))
-		{
-			var assetsFolder:String = destFolder + "/assets";
-			if ( ! FileSystem.exists(assetsFolder) )
-			{
-				FileSystem.createDirectory(assetsFolder);
-			}
 
-			var srcFolder:String = destFolder + "/src";
-			if ( ! FileSystem.exists(srcFolder) )
+		var slash:String = destFolder.substr(-1);
+		var destCheck:String = destFolder;
+		if (slash=="/"|| slash=="\\")
+			destCheck = destFolder.substr(0, destFolder.length - 1);
+
+		if (FileSystem.exists(destCheck) && FileSystem.isDirectory(destCheck))
+		{
+			// read the template zip file
+			var fin:FileInput = File.read("template.zip", true);
+			var entries:List<ZipEntry> = Reader.readZip(fin);
+			fin.close();
+
+			// unzip the file
+			for (entry in entries)
 			{
-				FileSystem.createDirectory(srcFolder);
+				var filename:String = entry.fileName;
+				slash = filename.substr(-1);
+				// check if it's a folder
+				if (slash=="/"|| slash=="\\")
+				{
+					filename = filename.substr(0, filename.length - 1);
+					var folder:String = destFolder + filename;
+					if ( ! FileSystem.exists(folder) )
+					{
+						FileSystem.createDirectory(folder);
+					}
+				}
+				else
+				{
+					// create the file
+					var bytes:Bytes = Reader.unzip(entry);
+					var fout:FileOutput = File.write(destFolder + filename, true);
+					fout.writeBytes(bytes, 0, bytes.length);
+					fout.close();
+				}
 			}
-			
-			File.copy('template/build.nmml', destFolder + '/build.nmml');
-			File.copy('com/haxepunk/debug/console_debug.png', assetsFolder + '/console_debug.png');
-			File.copy('com/haxepunk/debug/console_logo.png', assetsFolder + '/console_logo.png');
-			File.copy('com/haxepunk/debug/console_output.png', assetsFolder + '/console_output.png');
-			File.copy('com/haxepunk/debug/console_pause.png', assetsFolder + '/console_pause.png');
-			File.copy('com/haxepunk/debug/console_play.png', assetsFolder + '/console_play.png');
-			File.copy('com/haxepunk/debug/console_step.png', assetsFolder + '/console_step.png');
-			File.copy('com/haxepunk/graphics/04B_03__.ttf', assetsFolder + '/04B_03__.ttf');
-			File.copy('template/src/Main.hx', srcFolder + '/Main.hx');
 		}
 	}
 
