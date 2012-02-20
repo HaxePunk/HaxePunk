@@ -13,7 +13,7 @@
 		<zip destfile="haxepunk.zip">
 			<zipfileset dir="" prefix="haxepunk" includes="run.n,haxelib.xml,template.zip" />
 			<zipfileset dir="src" prefix="haxepunk" />
-			<zipfileset dir="tools" prefix="haxepunk/tools" />
+			<zipfileset dir="tools" prefix="haxepunk/tools" includes="*.hx" />
 		</zip>
 	</target>
 

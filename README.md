@@ -1,11 +1,27 @@
 # HaxePunk
+
 A HaXe port of the [FlashPunk](http://flashpunk.net) AS3 library.
 
-## Compilation
-First, make sure you have [HaXe](http://haxe.org) 2.07 or higher. You will need to also install [NME](http://haxenme.org) 3.2 or higher. The last step is to install HaxePunk through haxelib. You can also clone the GitHub project but there is more to setup if you do it that way.
+## Release build
 
-    haxelib install HaxePunk
-    haxelib run HaxePunk new MyProject # creates a project
+First, make sure you have [HaXe](http://haxe.org) 2.07 or higher. You will need to also install [NME](http://haxenme.org) 3.2 or higher. The last step is to install HaxePunk through haxelib.
+
+```bash
+haxelib install HaxePunk
+haxelib run HaxePunk new MyProject # creates a new project
+```
+
+## Development build
+
+You need to have ant installed to build a development version of HaxePunk. Make sure you set a default program for swf files to view the debug output.
+
+```bash
+git clone git@github.com:MattTuttle/HaxePunk
+ant
+```
+
+If everything goes well you should see a flash version pop up with the console enabled.
 
 ## Questions?
+
 Drop by the [HaxePunk forum](http://forum.haxepunk.com) to ask anything or send me an email, heardtheword (at) gmail (dot) com.
