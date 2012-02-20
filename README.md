@@ -2,13 +2,10 @@
 A HaXe port of the [FlashPunk](http://flashpunk.net) AS3 library.
 
 ## Compilation
-There are two methods you can use to compile HaxePunk. Make sure you have Haxe 2.07 or higher.
+First, make sure you have [HaXe](http://haxe.org) 2.07 or higher. You will need to also install [NME](http://haxenme.org) 3.2 or higher. The last step is to install HaxePunk through haxelib. You can also clone the GitHub project but there is more to setup if you do it that way.
 
-### FlashDevelop
-Use the HaxePunk.hxproj file to start your project. It has assets already setup and a Main class to get you started.
-
-### Command line compilation
-You will need to download SamHaXe to compile the assets file. Then just run `make` and everything should compile.
+    haxelib install HaxePunk
+    haxelib run HaxePunk new MyProject # creates a project
 
 ## Questions?
 Drop by the [HaxePunk forum](http://forum.haxepunk.com) to ask anything or send me an email, heardtheword (at) gmail (dot) com.
