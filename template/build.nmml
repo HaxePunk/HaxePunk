@@ -11,7 +11,6 @@
 	<haxelib name="nme" />
 	<haxelib name="HaxePunk" />
 
-	<assets path="assets/haxepunk" include="*" />
 	<assets path="assets/gfx" rename="gfx" type="image" include="*.png" />
 	<assets path="assets/sfx" rename="sfx" type="sound" include="*.wav" />
 	<assets path="assets/music" rename="music" type="music" include="*.mp3" />

@@ -154,12 +154,12 @@ class Console
 
 		// load assets based on embedding method
 #if nme
-		_bmpLogo = new Bitmap(nme.Assets.getBitmapData("gfx/console_logo.png"));
-		_butDebug = new Bitmap(nme.Assets.getBitmapData("gfx/console_debug.png"));
-		_butOutput = new Bitmap(nme.Assets.getBitmapData("gfx/console_output.png"));
-		_butPlay = new Bitmap(nme.Assets.getBitmapData("gfx/console_play.png"));
-		_butPause = new Bitmap(nme.Assets.getBitmapData("gfx/console_pause.png"));
-		_butStep = new Bitmap(nme.Assets.getBitmapData("gfx/console_step.png"));
+		_bmpLogo = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_logo.png"));
+		_butDebug = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_debug.png"));
+		_butOutput = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_output.png"));
+		_butPlay = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_play.png"));
+		_butPause = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_pause.png"));
+		_butStep = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_step.png"));
 #elseif swfmill // Flashdevelop
 		_bmpLogo = new Bitmap(new GfxConsoleLogo(0, 0));
 		_butDebug = new Bitmap(new GfxConsoleDebug(0, 0));

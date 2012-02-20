@@ -99,7 +99,7 @@ class HXP
 	 * The default font file to use
 	 */
 #if nme
-	public static var defaultFont:String = "fonts/04B_03__.ttf";
+	public static var defaultFont:String = "font/04B_03__.ttf";
 #else
 	public static var defaultFont:String = "default";
 #end
