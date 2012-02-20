@@ -96,6 +96,15 @@ class HXP
 	public static var bounds:Rectangle;
 
 	/**
+	 * The default font file to use
+	 */
+#if nme
+	public static var defaultFont:String = "fonts/04B_03__.ttf";
+#else
+	public static var defaultFont:String = "default";
+#end
+
+	/**
 	 * Point used to determine drawing offset in the render loop.
 	 */
 	public static var camera:Point = new Point();

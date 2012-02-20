@@ -14,7 +14,7 @@ import com.haxepunk.Graphic;
  */
 class Text extends Image
 {
-
+	
 	/**
 	 * Constructor.
 	 * @param	text		Text to display.
@@ -31,12 +31,12 @@ class Text extends Image
 #end
 
 #if nme
-		var font = nme.Assets.getFont(HXP.defaultFont);
+		var font = nme.Assets.getFont(HXP.defaultFon);
 		_field.defaultTextFormat = _form = new TextFormat(font.fontName, 16, 0xFFFFFF);
 #else
-		_field.defaultTextFormat = _form = new TextFormat(HXP.defaultFont, 16, 0xFFFFFF);
+		_field.defaultTextFormat = _form = new TextFormat("default", 16, 0xFFFFFF);
 #end
-
+		
 		_field.text = _text = text;
 		if (width == 0) width = Std.int(_field.textWidth + 4);
 		if (height == 0) height = Std.int(_field.textHeight + 4);
@@ -46,9 +46,9 @@ class Text extends Image
 		this.x = x;
 		this.y = y;
 	}
-
+	
 	/** @private Updates the drawing buffer. */
-	override public function updateBuffer(clearBefore:Bool = false)
+	override public function updateBuffer(clearBefore:Bool = false) 
 	{
 		_field.setTextFormat(_form);
 		_field.width = _field.textWidth + 4;
@@ -59,7 +59,7 @@ class Text extends Image
 		_source.draw(_field);
 		super.updateBuffer(clearBefore);
 	}
-
+	
 	/**
 	 * Text string.
 	 */
@@ -72,7 +72,7 @@ class Text extends Image
 		updateBuffer();
 		return _text;
 	}
-
+	
 	/**
 	 * Font family.
 	 */
@@ -85,7 +85,7 @@ class Text extends Image
 		updateBuffer();
 		return _font;
 	}
-
+	
 	/**
 	 * Font size.
 	 */
@@ -98,17 +98,17 @@ class Text extends Image
 		updateBuffer();
 		return _size;
 	}
-
+	
 	/**
 	 * Width of the text image.
 	 */
 	override private function getWidth():Int { return _width; }
-
+	
 	/**
 	 * Height of the text image.
 	 */
 	override private function getHeight():Int { return _height; }
-
+	
 	// Text information.
 	private var _field:TextField;
 	private var _width:Int;

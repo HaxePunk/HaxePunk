@@ -52,10 +52,10 @@ class Console
 
 		_sprite = new Sprite();
 #if nme
-		var font = nme.Assets.getFont("assets/haxepunk/04B_03__.ttf");
+		var font = nme.Assets.getFont(HXP.defaultFont);
 		_format = new TextFormat(font.fontName, 8, 0xFFFFFF);
 #elseif flash
-		_format = new TextFormat("default");
+		_format = new TextFormat(HXP.defaultFont);
 #end
 		_back = new Bitmap();
 
@@ -154,12 +154,12 @@ class Console
 
 		// load assets based on embedding method
 #if nme
-		_bmpLogo = new Bitmap(nme.Assets.getBitmapData("assets/haxepunk/console_logo.png"));
-		_butDebug = new Bitmap(nme.Assets.getBitmapData("assets/haxepunk/console_debug.png"));
-		_butOutput = new Bitmap(nme.Assets.getBitmapData("assets/haxepunk/console_output.png"));
-		_butPlay = new Bitmap(nme.Assets.getBitmapData("assets/haxepunk/console_play.png"));
-		_butPause = new Bitmap(nme.Assets.getBitmapData("assets/haxepunk/console_pause.png"));
-		_butStep = new Bitmap(nme.Assets.getBitmapData("assets/haxepunk/console_step.png"));
+		_bmpLogo = new Bitmap(nme.Assets.getBitmapData("gfx/console_logo.png"));
+		_butDebug = new Bitmap(nme.Assets.getBitmapData("gfx/console_debug.png"));
+		_butOutput = new Bitmap(nme.Assets.getBitmapData("gfx/console_output.png"));
+		_butPlay = new Bitmap(nme.Assets.getBitmapData("gfx/console_play.png"));
+		_butPause = new Bitmap(nme.Assets.getBitmapData("gfx/console_pause.png"));
+		_butStep = new Bitmap(nme.Assets.getBitmapData("gfx/console_step.png"));
 #elseif swfmill // Flashdevelop
 		_bmpLogo = new Bitmap(new GfxConsoleLogo(0, 0));
 		_butDebug = new Bitmap(new GfxConsoleDebug(0, 0));
