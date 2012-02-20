@@ -16,17 +16,9 @@ class SetupTool
 		var args:Array<String> = Sys.args();
 		if (args.length < 2)
 		{
-			Lib.println("USAGE: haxelib run HaxePunk new");
+			usage();
 			return;
 		}
-
-//		var last:String = (new Path(args[args.length-1])).toString();
-//		var slash = last.substr(-1);
-//		if (slash=="/"|| slash=="\\") 
-//			last = last.substr(0, last.length - 1);
-//		if (FileSystem.exists(last) && FileSystem.isDirectory(last)) {
-//			Sys.setCwd(last);
-//		}
 
 		var command:String = args.shift();
 
@@ -37,16 +29,36 @@ class SetupTool
 		}
 	}
 
+	public function usage()
+	{
+		Lib.println("USAGE: haxelib run HaxePunk new [project]");
+	}
+
 	public function newProject(args:Array<String>)
 	{
-		var destFolder:String = (new Path(args.shift())).toString();
+		var destFolder:String = "";
+		var slash:String = "";
+		if (args.length > 1)
+		{
+			var projectName:String = args.shift();
+			destFolder = (new Path(args.shift())).toString() + projectName;
+		}
+		else
+		{
+			destFolder = (new Path(args.shift())).toString();
+		}
 
-		var slash:String = destFolder.substr(-1);
+		slash = destFolder.substr(-1);
 		var destCheck:String = destFolder;
 		if (slash=="/"|| slash=="\\")
-			destCheck = destFolder.substr(0, destFolder.length - 1);
+			destFolder = destFolder.substr(0, destFolder.length - 1);
 
-		if (FileSystem.exists(destCheck) && FileSystem.isDirectory(destCheck))
+		if ( ! FileSystem.exists(destFolder) )
+		{
+			FileSystem.createDirectory(destFolder);
+		}
+
+		if ( FileSystem.isDirectory(destFolder) )
 		{
 			// read the template zip file
 			var fin:FileInput = File.read("template.zip", true);
@@ -54,7 +66,7 @@ class SetupTool
 			fin.close();
 
 			// unzip the file
-			for (entry in entries)
+			for ( entry in entries )
 			{
 				var filename:String = entry.fileName;
 				slash = filename.substr(-1);
@@ -62,7 +74,7 @@ class SetupTool
 				if (slash=="/"|| slash=="\\")
 				{
 					filename = filename.substr(0, filename.length - 1);
-					var folder:String = destFolder + filename;
+					var folder:String = destFolder + "/" + filename;
 					if ( ! FileSystem.exists(folder) )
 					{
 						FileSystem.createDirectory(folder);
@@ -72,11 +84,16 @@ class SetupTool
 				{
 					// create the file
 					var bytes:Bytes = Reader.unzip(entry);
-					var fout:FileOutput = File.write(destFolder + filename, true);
+					var fout:FileOutput = File.write(destFolder + "/" + filename, true);
 					fout.writeBytes(bytes, 0, bytes.length);
 					fout.close();
 				}
 			}
+		}
+		else
+		{
+			Lib.println("You must provide a directory");
+			usage();
 		}
 	}
 
