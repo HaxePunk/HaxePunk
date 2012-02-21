@@ -1,0 +1,6 @@
+-swf9 game.swf
+-main Main
+-cp src
+-cp template/src
+-swf-lib com.haxepunk.debug.swf
+-swf-header 640:480:30:333333

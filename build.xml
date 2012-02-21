@@ -35,10 +35,25 @@
 		</exec>
 	</target>
 
+	<target name="doc">
+		<exec executable="samhaxe" dir=".">
+			<arg line="com.haxepunk.debug.xml" />
+			<arg line="com.haxepunk.debug.swf" />
+		</exec>
+		<exec executable="haxe" dir=".">
+			<arg line="-xml haxedoc.xml" />
+			<arg line="build.hxml" />
+		</exec>
+		<exec executable="haxedoc" dir=".">
+			<arg line="haxedoc.xml" />
+		</exec>
+	</target>
+
 	<target name="clean">
 		<delete quiet="true">
 			<fileset dir="Test" />
-			<fileset dir="." includes="*.n,*.zip" />
+			<fileset dir="content" />
+			<fileset dir="." includes="*.n,*.zip,com.haxepunk.debug.swf,haxedoc.xml,index.html" />
 		</delete>
 	</target>
 
