@@ -1,4 +1,4 @@
-<project name="HaxePunk" default="test" basedir=".">
+<project name="HaxePunk" default="haxelib" basedir=".">
 	<description>Builds the haxepunk project</description>
 
 	<target name="tools">
@@ -20,7 +20,7 @@
 		</exec>
 	</target>
 
-	<target name="test" depends="haxelib">
+	<target name="build" depends="haxelib">
 		<exec executable="haxelib" dir=".">
 			<arg line="run HaxePunk new Test" />
 		</exec>
@@ -35,18 +35,15 @@
 		</exec>
 	</target>
 
-	<target name="doc" depends="haxelib">
-		<exec executable="haxelib" dir=".">
-			<arg line="run HaxePunk new Doc" />
-		</exec>
-		<exec executable="haxelib" dir="Doc" output="Doc/build.hxml">
+	<target name="doc" depends="build">
+		<exec executable="haxelib" dir="Test" output="Test/build.hxml">
 			<arg line="run nme display build.nmml flash" />
 		</exec>
-		<exec executable="haxe" dir="Doc">
+		<exec executable="haxe" dir="Test">
 			<arg line="-xml haxedoc.xml" />
 			<arg line="build.hxml" />
 		</exec>
-		<exec executable="chxdoc" dir="Doc">
+		<exec executable="chxdoc" dir="Test">
 			<arg line="haxedoc.xml" />
 		</exec>
 	</target>
@@ -54,7 +51,6 @@
 	<target name="clean">
 		<delete quiet="true">
 			<fileset dir="Test" />
-			<fileset dir="Doc" />
 			<fileset dir="." includes="*.n,*.zip,com.haxepunk.debug.swf" />
 		</delete>
 	</target>
