@@ -1,0 +1,8 @@
+-cpp all.swf
+-lib nme
+--remap flash:nme
+--no-output
+-D nme
+-xml all.xml
+-cp ../src
+--macro ImportAll.run()

@@ -35,16 +35,12 @@
 		</exec>
 	</target>
 
-	<target name="doc" depends="build">
-		<exec executable="haxelib" dir="Test" output="Test/build.hxml">
-			<arg line="run nme display build.nmml flash" />
+	<target name="doc">
+		<exec executable="haxe" dir="doc">
+			<arg line="doc.hxml" />
 		</exec>
-		<exec executable="haxe" dir="Test">
-			<arg line="-xml haxedoc.xml" />
-			<arg line="build.hxml" />
-		</exec>
-		<exec executable="chxdoc" dir="Test">
-			<arg line="haxedoc.xml" />
+		<exec executable="chxdoc" dir="doc">
+			<arg line="-o docs all.xml" />
 		</exec>
 	</target>
 
