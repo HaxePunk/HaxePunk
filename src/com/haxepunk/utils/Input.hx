@@ -149,6 +149,17 @@ class Input
 		return -1;
 	}
 
+	public static function joystick(id:Int)
+	{
+		var joy:Joystick = _joysticks.get(id);
+		if (joy == null)
+		{
+			joy = new Joystick();
+			_joysticks.set(id, joy);
+		}
+		return joy;
+	}
+
 	public static function enable()
 	{
 		if (!_enabled && HXP.stage != null)
@@ -241,27 +252,42 @@ class Input
 
 	private static function onJoyAxisMove(e:JoystickEvent)
 	{
+		var joy:Joystick = joystick(e.device);
 
+		joy.axis.x = e.x;
+		joy.axis.y = e.y;
 	}
 
 	private static function onJoyBallMove(e:JoystickEvent)
 	{
+		var joy:Joystick = joystick(e.device);
 
+		joy.ball.x = e.x;
+		joy.ball.y = e.y;
 	}
 
 	private static function onJoyButtonDown(e:JoystickEvent)
 	{
+		var joy:Joystick = joystick(e.device);
 
+		if (e.id < 8)
+			joy.buttons[e.id] = true;
 	}
 
 	private static function onJoyButtonUp(e:JoystickEvent)
 	{
+		var joy:Joystick = joystick(e.device);
 
+		if (e.id < 8)
+			joy.buttons[e.id] = false;
 	}
 
 	private static function onJoyHatMove(e:JoystickEvent)
 	{
+		var joy:Joystick = joystick(e.device);
 
+		joy.hat.x = e.x;
+		joy.hat.y = e.y;
 	}
 
 #end
@@ -269,6 +295,7 @@ class Input
 	private static inline var kKeyStringMax = 100;
 
 	private static var _enabled:Bool = false;
+	private static var _joysticks:IntHash<Joystick> = new IntHash<Joystick>();
 	private static var _key:Array<Bool> = new Array<Bool>();
 	private static var _keyNum:Int = 0;
 	private static var _press:Array<Int> = new Array<Int>();

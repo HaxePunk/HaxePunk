@@ -1,5 +1,5 @@
-
 package com.haxepunk.utils;
+
 #if !neko
 import flash.display.BitmapData;
 import flash.display.BlendMode;
@@ -17,7 +17,7 @@ import com.haxepunk.Graphic;
  * These functions are not meant to replace Graphic components
  * for Entities, but rather to help with testing and debugging.
  */
-class Draw 
+class Draw
 {
 	/**
 	 * The blending mode used by Draw functions. This will not
@@ -28,7 +28,7 @@ class Draw
 	#else
 	public static var blend:String;
 	#end
-	
+
 	/**
 	 * Sets the drawing target for Draw functions.
 	 * @param	target		The buffer to draw to.
@@ -50,7 +50,7 @@ class Draw
 		Draw.blend = blend;
 	}
 	#end
-	
+
 	/**
 	 * Resets the drawing target to the default. The same as calling Draw.setTarget(HXP.buffer, HXP.camera).
 	 */
@@ -60,7 +60,7 @@ class Draw
 		_camera = HXP.camera;
 		Draw.blend = null;
 	}
-	
+
 	/**
 	 * Draws a pixelated, non-antialiased line.
 	 * @param	x1		Starting x position.
@@ -72,20 +72,20 @@ class Draw
 	public static function line(x1:Int, y1:Int, x2:Int, y2:Int, color:Int = 0xFFFFFF)
 	{
 		if (color < 0xFF000000) color = 0xFF000000 | color;
-		
+
 		// get the drawing difference
 		var screen:BitmapData = _target,
 			X:Float = Math.abs(x2 - x1),
 			Y:Float = Math.abs(y2 - y1),
 			xx:Int,
 			yy:Int;
-		
+
 		// get drawing positions and clamp to bitmap boundaries
 		x1 = Std.int(HXP.clamp(x1 - _camera.x, 0, screen.width - 1));
 		y1 = Std.int(HXP.clamp(y1 - _camera.y, 0, screen.height - 1));
 		x2 = Std.int(HXP.clamp(x2 - _camera.x, 0, screen.width - 1));
 		y2 = Std.int(HXP.clamp(y2 - _camera.y, 0, screen.height - 1));
-		
+
 		// draw a single pixel
 		if (X == 0)
 		{
@@ -104,7 +104,7 @@ class Draw
 			screen.setPixel32(x2, y2, color);
 			return;
 		}
-		
+
 		if (Y == 0)
 		{
 			// draw a straight horizontal line
@@ -117,12 +117,12 @@ class Draw
 			screen.setPixel32(x2, y2, color);
 			return;
 		}
-		
+
 		xx = x2 > x1 ? 1 : -1;
 		yy = y2 > y1 ? 1 : -1;
 		var c:Float = 0,
 			slope:Float;
-		
+
 		if (X > Y)
 		{
 			slope = Y / X;
@@ -158,7 +158,7 @@ class Draw
 			screen.setPixel32(x2, y2, color);
 		}
 	}
-	
+
 	/**
 	 * Draws a smooth, antialiased line with optional alpha and thickness.
 	 * @param	x1		Starting x position.
@@ -177,7 +177,7 @@ class Draw
 		_graphics.lineTo(x2 - _camera.x, y2 - _camera.y);
 		_target.draw(HXP.sprite, null, null, blend);
 	}
-	
+
 	/**
 	 * Draws a filled rectangle.
 	 * @param	x			X position of the rectangle.
@@ -205,7 +205,7 @@ class Draw
 		_graphics.drawRect(x - _camera.x, y - _camera.y, width, height);
 		_target.draw(HXP.sprite, null, null, blend);
 	}
-	
+
 	/**
 	 * Draws a non-filled, pixelated circle.
 	 * @param	x			Center x position.
@@ -229,7 +229,7 @@ class Draw
 		_target.setPixel32(x - radius, y, color);
 		while (xx < yy)
 		{
-			if (f >= 0) 
+			if (f >= 0)
 			{
 				yy --;
 				fy += 2;
@@ -237,7 +237,7 @@ class Draw
 			}
 			xx ++;
 			fx += 2;
-			f += fx;    
+			f += fx;
 			_target.setPixel32(x + xx, y + yy, color);
 			_target.setPixel32(x - xx, y + yy, color);
 			_target.setPixel32(x + xx, y - yy, color);
@@ -248,7 +248,7 @@ class Draw
 			_target.setPixel32(x - yy, y - xx, color);
 		}
 	}
-	
+
 	/**
 	 * Draws a circle to the screen.
 	 * @param	x			X position of the circle's center.
@@ -275,7 +275,7 @@ class Draw
 		}
 		_target.draw(HXP.sprite, null, null, blend);
 	}
-	
+
 	/**
 	 * Draws the Entity's hitbox.
 	 * @param	e			The Entity whose hitbox is to be drawn.
@@ -321,7 +321,7 @@ class Draw
 		_graphics.drawRect(e.x - e.originX - _camera.x, e.y - e.originY - _camera.y, e.width, e.height);
 		_target.draw(HXP.sprite, null, null, blend);
 	}
-	
+
 	/**
 	 * Draws a quadratic curve.
 	 * @param	x1		X start.
@@ -341,7 +341,7 @@ class Draw
 		_graphics.curveTo(x2 - _camera.x, y2 - _camera.y, x3 - _camera.x, y3 - _camera.y);
 		_target.draw(HXP.sprite, null, null, blend);
 	}
-	
+
 	/**
 	 * Draws a graphic object.
 	 * @param	g		The Graphic to draw.
@@ -363,7 +363,7 @@ class Draw
 			g.render(_target, HXP.point, HXP.point2);
 		}
 	}
-	
+
 	/**
 	 * Draws an Entity object.
 	 * @param	e					The Entity to draw.
@@ -379,7 +379,7 @@ class Draw
 			else graphic(e.graphic, x, y);
 		}
 	}
-	
+
 	// Drawing information.
 	private static var _target:BitmapData;
 	private static var _camera:Point;
