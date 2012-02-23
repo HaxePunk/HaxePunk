@@ -2,7 +2,6 @@ package com.haxepunk.debug;
 
 import com.haxepunk.Entity;
 import com.haxepunk.HXP;
-import com.haxepunk.DataLoader;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 import flash.display.Bitmap;

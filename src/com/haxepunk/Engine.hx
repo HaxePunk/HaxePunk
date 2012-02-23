@@ -142,6 +142,7 @@ class Engine extends Sprite
 		HXP.stage.displayState = StageDisplayState.NORMAL;
 	}
 
+	/** @private Event handler for stage resize */
 	private function onResize(e:Event)
 	{
 		HXP.screen.resize(HXP.stage.stageWidth, HXP.stage.stageHeight);

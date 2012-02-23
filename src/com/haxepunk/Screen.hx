@@ -45,6 +45,11 @@ class Screen
 		_color = 0x202020;
 	}
 
+	/**
+	 * Resizes the screen by recreating the bitmap buffer
+	 * @param width the width of the screen
+	 * @param height the height of the screen
+	 */
 	public function resize(width:Float, height:Float)
 	{
 		if (_bitmap[0] != null)
