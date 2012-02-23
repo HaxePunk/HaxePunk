@@ -145,7 +145,6 @@ class Engine extends Sprite
 	private function onResize(e:Event)
 	{
 		HXP.screen.resize(HXP.stage.stageWidth, HXP.stage.stageHeight);
-		trace(HXP.width + ", " + HXP.height);
 	}
 
 	/** @private Event handler for stage entry. */
