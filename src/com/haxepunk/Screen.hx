@@ -19,28 +19,19 @@ class Screen
 	/**
 	 * Constructor.
 	 */
-	public function new() 
+	public function new()
 	{
 		init();
-		
+
 		// create screen buffers
-		_bitmap[0] = new Bitmap(new BitmapData(HXP.width, HXP.height, false, 0), PixelSnapping.NEVER);
-		_bitmap[1] = new Bitmap(new BitmapData(HXP.width, HXP.height, false, 0), PixelSnapping.NEVER);
 		HXP.engine.addChild(_sprite);
-		_sprite.addChild(_bitmap[0]).visible = true;
-		_sprite.addChild(_bitmap[1]).visible = false;
-		HXP.buffer = _bitmap[0].bitmapData;
-		_width = HXP.width;
-		_height = HXP.height;
-		update();
-		
-		
-		//Added this so that the tilesheet can use a graphics object which is in front of the ones wused by software rendering
+
+		//Added this so that the tilesheet can use a graphics object which is in front of the ones used by software rendering
 		#if cpp
 		HXP.engine.addChild(HXP.sprite);
 		#end
 	}
-	
+
 	public function init()
 	{
 		_sprite = new Sprite();
@@ -53,7 +44,30 @@ class Screen
 		_angle = 0;
 		_color = 0x202020;
 	}
-	
+
+	public function resize(width:Float, height:Float)
+	{
+		if (_bitmap[0] != null)
+		{
+			_sprite.removeChild(_bitmap[0]);
+			_sprite.removeChild(_bitmap[1]);
+		}
+
+		HXP.width = _width = Std.int(width);
+		HXP.height = _height = Std.int(height);
+		HXP.bounds.width = width;
+		HXP.bounds.height = height;
+
+		_bitmap[0] = new Bitmap(new BitmapData(_width, _height, false, 0), PixelSnapping.NEVER);
+		_bitmap[1] = new Bitmap(new BitmapData(_width, _height, false, 0), PixelSnapping.NEVER);
+
+		_sprite.addChild(_bitmap[0]).visible = true;
+		_sprite.addChild(_bitmap[1]).visible = false;
+		HXP.buffer = _bitmap[0].bitmapData;
+
+		update();
+	}
+
 	/**
 	 * Swaps screen buffers.
 	 */
@@ -62,12 +76,12 @@ class Screen
 		_current = 1 - _current;
 		HXP.buffer = _bitmap[_current].bitmapData;
 	}
-	
+
 	public function addFilter(filter:Array<Dynamic>)
 	{
 		_sprite.filters = filter;
 	}
-	
+
 	/**
 	 * Refreshes the screen.
 	 */
@@ -76,7 +90,7 @@ class Screen
 		// refreshes the screen
 		HXP.buffer.fillRect(HXP.bounds, _color);
 	}
-	
+
 	/**
 	 * Redraws the screen.
 	 */
@@ -86,7 +100,7 @@ class Screen
 		_bitmap[_current].visible = true;
 		_bitmap[1 - _current].visible = false;
 	}
-	
+
 	/** @private Re-applies transformation matrix. */
 	public function update()
 	{
@@ -100,14 +114,14 @@ class Screen
 		_matrix.ty += _originY * _scaleX * _scale + _y;
 		_sprite.transform.matrix = _matrix;
 	}
-	
+
 	/**
 	 * Refresh color of the screen.
 	 */
 	public var color(getColor, setColor):Int;
 	private function getColor():Int { return _color; }
 	private function setColor(value:Int):Int { _color = 0xFF000000 | value; return _color; }
-	
+
 	/**
 	 * X offset of the screen.
 	 */
@@ -120,7 +134,7 @@ class Screen
 		update();
 		return _x;
 	}
-	
+
 	/**
 	 * Y offset of the screen.
 	 */
@@ -133,7 +147,7 @@ class Screen
 		update();
 		return _y;
 	}
-	
+
 	/**
 	 * X origin of transformations.
 	 */
@@ -146,7 +160,7 @@ class Screen
 		update();
 		return _originX;
 	}
-	
+
 	/**
 	 * Y origin of transformations.
 	 */
@@ -159,7 +173,7 @@ class Screen
 		update();
 		return _originY;
 	}
-	
+
 	/**
 	 * X scale of the screen.
 	 */
@@ -172,7 +186,7 @@ class Screen
 		update();
 		return _scaleX;
 	}
-	
+
 	/**
 	 * Y scale of the screen.
 	 */
@@ -185,7 +199,7 @@ class Screen
 		update();
 		return _scaleY;
 	}
-	
+
 	/**
 	 * Scale factor of the screen. Final scale is scaleX * scale by scaleY * scale, so
 	 * you can use this factor to scale the screen both horizontally and vertically.
@@ -199,7 +213,7 @@ class Screen
 		update();
 		return _scale;
 	}
-	
+
 	/**
 	 * Rotation of the screen, in degrees.
 	 */
@@ -212,38 +226,38 @@ class Screen
 		update();
 		return _angle;
 	}
-	
+
 	/**
 	 * Whether screen smoothing should be used or not.
 	 */
 	public var smoothing(getSmoothing, setSmoothing):Bool;
 	private function getSmoothing():Bool { return _bitmap[0].smoothing; }
 	private function setSmoothing(value:Bool):Bool { _bitmap[0].smoothing = _bitmap[1].smoothing = value; return _bitmap[0].smoothing; }
-	
+
 	/**
 	 * Width of the screen.
 	 */
 	public var width(getWidth, null):Int;
 	private function getWidth():Int { return _width; }
-	
+
 	/**
 	 * Height of the screen.
 	 */
 	public var height(getHeight, null):Int;
 	private function getHeight():Int { return _height; }
-	
+
 	/**
 	 * X position of the mouse on the screen.
 	 */
 	public var mouseX(getMouseX, null):Int;
 	private function getMouseX():Int { return Std.int((HXP.stage.mouseX - _x) / (_scaleX * _scale)); }
-	
+
 	/**
 	 * Y position of the mouse on the screen.
 	 */
 	public var mouseY(getMouseY, null):Int;
 	private function getMouseY():Int { return Std.int((HXP.stage.mouseY - _y) / (_scaleY * _scale)); }
-	
+
 	/**
 	 * Captures the current screen as an Image object.
 	 * @return	A new Image object.
@@ -252,7 +266,7 @@ class Screen
 	{
 		return new Image(_bitmap[_current].bitmapData.clone());
 	}
-	
+
 	// Screen infromation.
 	private var _sprite:Sprite;
 	private var _bitmap:Array<Bitmap>;

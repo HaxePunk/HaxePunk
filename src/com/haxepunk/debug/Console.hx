@@ -219,7 +219,6 @@ class Console
 		#end
 		_entReadText.width = 100;
 		_entReadText.height = 20;
-		_entRead.x = width - _entReadText.width;
 
 		// The entity count panel.
 		_entRead.graphics.clear();
@@ -352,6 +351,8 @@ class Console
 	{
 		// Quit if the console isn't enabled.
 		if (!_enabled) return;
+
+		_entRead.x = width - _entReadText.width;
 
 		// If the console is paused.
 		if (_paused)
@@ -767,7 +768,7 @@ class Console
 #if flash
 			_logRead.graphics.drawRoundRectComplex(0, 0, _logReadText0.width, 20, 0, 20, 0, 0);
 #else
-			_logRead.graphics.drawRect(0, 0, _logReadText0.width, 20);
+			_logRead.graphics.drawRoundRect(0, 0, _logReadText0.width, 20, 20);
 #end
 			_logRead.graphics.drawRect(0, 20, width, _logHeight);
 
@@ -825,7 +826,7 @@ class Console
 #if flash
 			_logRead.graphics.drawRoundRectComplex(0, 0, _logReadText0.width, 20, 0, 20, 0, 0);
 #else
-			_logRead.graphics.drawRect(0, 0, _logReadText0.width, 20);
+			_logRead.graphics.drawRoundRect(0, 0, _logReadText0.width, 20, 20);
 #end
 			_logRead.graphics.drawRect(0, 20, width, 20);
 
@@ -900,8 +901,8 @@ class Console
 		_debRead.graphics.drawRoundRectComplex(0, 0, _debReadText0.width, 20, 0, 20, 0, 0);
 		_debRead.graphics.drawRoundRectComplex(0, 20, _debReadText1.width + 20, height - _debRead.y - 20, 0, 20, 0, 0);
 #else
-		_debRead.graphics.drawRect(0, 0, _debReadText0.width, 20);
-		_debRead.graphics.drawRect(0, 20, _debReadText1.width + 20, height - _debRead.y - 20);
+		_debRead.graphics.drawRoundRect(0, 0, _debReadText0.width, 20, 20);
+		_debRead.graphics.drawRoundRect(0, 20, _debReadText1.width + 20, height - _debRead.y - 20, 20);
 #end
 	}
 

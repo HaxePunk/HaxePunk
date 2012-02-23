@@ -24,22 +24,22 @@ class Engine extends Sprite
 	 * If the game should stop updating/rendering.
 	 */
 	public var paused:Bool;
-	
+
 	/**
 	 * Cap on the elapsed time (default at 30 FPS). Raise this to allow for lower framerates (eg. 1 / 10).
 	 */
 	public var maxElapsed:Float;
-	
+
 	/**
 	 * The max amount of frames that can be skipped in fixed framerate mode.
 	 */
 	public var maxFrameSkip:Int;
-	
+
 	/**
 	 * The amount of milliseconds between ticks in fixed framerate mode.
 	 */
 	public var tickRate:Int;
-	
+
 	/**
 	 * Constructor. Defines startup information about your game.
 	 * @param	width			The width of your game.
@@ -47,33 +47,32 @@ class Engine extends Sprite
 	 * @param	frameRate		The game framerate, in frames per second.
 	 * @param	fixed			If a fixed-framerate should be used.
 	 */
-	public function new(width:Int, height:Int, frameRate:Float = 60, fixed:Bool = false) 
+	public function new(width:Int, height:Int, frameRate:Float = 60, fixed:Bool = false)
 	{
 		super();
-		
+
 		// global game properties
-		HXP.width = width;
-		HXP.height = height;
+		HXP.bounds = new Rectangle(0, 0, width, height);
 		HXP.assignedFrameRate = frameRate;
 		HXP.fixed = fixed;
-		
+
 		// global game objects
 		HXP.engine = this;
 		HXP.screen = new Screen();
-		HXP.bounds = new Rectangle(0, 0, width, height);
-		
+		HXP.screen.resize(width, height);
+
 		// miscellanious startup stuff
 		if (HXP.randomSeed == 0) HXP.randomizeSeed();
 		HXP.entity = new Entity();
 		HXP.time = Lib.getTimer();
-		
+
 		paused = false;
 		maxElapsed = 0.0333;
 		maxFrameSkip = 5;
 		tickRate = 4;
 		_frameList = new Array<Int>();
 		_delta = 0;
-		
+
 		// on-stage event listener
 #if flash
 		if (Lib.current.stage != null) onStage();
@@ -83,15 +82,15 @@ class Engine extends Sprite
 		Lib.current.addChild(this);
 #end
 	}
-	
+
 	/**
 	 * Override this, called after Engine has been added to the stage.
 	 */
 	public function init()
 	{
-		
+
 	}
-	
+
 	/**
 	 * Updates the game, updating the World and Entities.
 	 */
@@ -106,7 +105,7 @@ class Engine extends Sprite
 		HXP.world.updateLists();
 		if (!HXP.gotoIsNull()) checkWorld();
 	}
-	
+
 	/**
 	 * Renders the game, rendering the World and Entities.
 	 */
@@ -115,14 +114,14 @@ class Engine extends Sprite
 		// timing stuff
 		var t:Float = Lib.getTimer();
 		if (_frameLast == 0) _frameLast = Std.int(t);
-		
+
 		// render loop
 		HXP.screen.swap();
 		Draw.resetTarget();
 		HXP.screen.refresh();
 		if (HXP.world.visible) HXP.world.render();
 		HXP.screen.redraw();
-		
+
 		// more timing stuff
 		t = Lib.getTimer();
 		_frameListSum += (_frameList[_frameList.length] = Std.int(t - _frameLast));
@@ -130,7 +129,7 @@ class Engine extends Sprite
 		HXP.frameRate = 1000 / (_frameListSum / _frameList.length);
 		_frameLast = t;
 	}
-	
+
 	/**
 	 * Sets the game's stage properties. Override this to set them differently.
 	 */
@@ -142,7 +141,13 @@ class Engine extends Sprite
 		HXP.stage.scaleMode = StageScaleMode.NO_SCALE;
 		HXP.stage.displayState = StageDisplayState.NORMAL;
 	}
-	
+
+	private function onResize(e:Event)
+	{
+		HXP.screen.resize(HXP.stage.stageWidth, HXP.stage.stageHeight);
+		trace(HXP.width + ", " + HXP.height);
+	}
+
 	/** @private Event handler for stage entry. */
 	private function onStage(e:Event = null)
 	{
@@ -157,16 +162,19 @@ class Engine extends Sprite
 		HXP.stage = stage;
 #end
 		setStageProperties();
-		
+
+		// set resize event
+		HXP.stage.addEventListener(Event.RESIZE, onResize);
+
 		// enable input
 		Input.enable();
-		
+
 		// switch worlds
 		if (!HXP.gotoIsNull()) checkWorld();
-		
+
 		// game start
 		init();
-		
+
 		// start game loop
 		_rate = 1000 / HXP.assignedFrameRate;
 		if (HXP.fixed)
@@ -184,7 +192,7 @@ class Engine extends Sprite
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 	}
-	
+
 	/** @private Framerate independent game loop. */
 	private function onEnterFrame(e:Event)
 	{
@@ -196,29 +204,29 @@ class Engine extends Sprite
 		if (HXP.elapsed > maxElapsed) HXP.elapsed = maxElapsed;
 		HXP.elapsed *= HXP.rate;
 		_last = _time;
-		
+
 		// update loop
 		if (!paused) update();
-		
+
 		// update console
 		if (HXP.console != null) HXP.console.update();
-		
+
 		// update input
 		Input.update();
-		
+
 		// update timer
 		_time = _renderTime = Lib.getTimer();
 		HXP._updateTime = _time - _updateTime;
-		
+
 		// render loop
 		if (!paused) render();
-		
+
 		// update timer
 		_time = _flashTime = Lib.getTimer();
 		HXP._renderTime = _time - _renderTime;
 		HXP._gameTime = _time - _gameTime;
 	}
-	
+
 	/** @private Fixed framerate game loop. */
 	private function onTimer()
 	{
@@ -226,14 +234,14 @@ class Engine extends Sprite
 		_time = Lib.getTimer();
 		_delta += (_time - _last);
 		_last = _time;
-		
+
 		// quit if a frame hasn't passed
 		if (_delta < _rate) return;
-		
+
 		// update timer
 		_gameTime = Std.int(_time);
 		HXP._flashTime = _time - _flashTime;
-		
+
 		// update loop
 		if (_delta > _skip) _delta = _skip;
 		while (_delta > _rate)
@@ -245,33 +253,33 @@ class Engine extends Sprite
 			if (HXP.elapsed > maxElapsed) HXP.elapsed = maxElapsed;
 			HXP.elapsed *= HXP.rate;
 			_prev = _time;
-			
+
 			// update loop
 			if (!paused) update();
-			
+
 			// update console
 			if (HXP.console != null) HXP.console.update();
-			
+
 			// update input
 			Input.update();
-			
+
 			// update timer
 			_time = Lib.getTimer();
 			HXP._updateTime = _time - _updateTime;
 		}
-		
+
 		// update timer
 		_renderTime = _time;
-		
+
 		// render loop
 		if (!paused) render();
-		
+
 		// update timer
 		_time = _flashTime = Lib.getTimer();
 		HXP._renderTime = _time - _renderTime;
 		HXP._gameTime =  _time - _gameTime;
 	}
-	
+
 	/** @private Switch Worlds if they've changed. */
 	private function checkWorld()
 	{
@@ -286,7 +294,7 @@ class Engine extends Sprite
 		HXP.world.begin();
 		HXP.world.updateLists();
 	}
-	
+
 	// Timing information.
 	private var _delta:Float;
 	private var _time:Float;
@@ -295,13 +303,13 @@ class Engine extends Sprite
 	private var	_rate:Float;
 	private var	_skip:Float;
 	private var _prev:Float;
-	
+
 	// Debug timing information.
 	private var _updateTime:Float;
 	private var _renderTime:Float;
 	private var _gameTime:Float;
 	private var _flashTime:Float;
-	
+
 	// FrameRate tracking.
 	private var _frameLast:Float;
 	private var _frameListSum:Int;
