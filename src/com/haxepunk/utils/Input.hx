@@ -12,6 +12,7 @@ class Input
 {
 
 	public static var keyString:String = "";
+	public static var deadZone:Float = 0.05; //joystick deadzone
 
 	public static var lastKey:Int;
 
@@ -254,22 +255,25 @@ class Input
 	{
 		var joy:Joystick = joystick(e.device);
 
-		joy.axis.x = e.x;
-		joy.axis.y = e.y;
+		joy.connected = true;
+		joy.axis.x = (Math.abs(e.x) < deadZone) ? 0 : e.x;
+		joy.axis.y = (Math.abs(e.y) < deadZone) ? 0 : e.y;
 	}
 
 	private static function onJoyBallMove(e:JoystickEvent)
 	{
 		var joy:Joystick = joystick(e.device);
 
-		joy.ball.x = e.x;
-		joy.ball.y = e.y;
+		joy.connected = true;
+		joy.ball.x = (Math.abs(e.x) < deadZone) ? 0 : e.x;
+		joy.ball.y = (Math.abs(e.y) < deadZone) ? 0 : e.y;
 	}
 
 	private static function onJoyButtonDown(e:JoystickEvent)
 	{
 		var joy:Joystick = joystick(e.device);
 
+		joy.connected = true;
 		if (e.id < 8)
 			joy.buttons[e.id] = true;
 	}
@@ -278,6 +282,7 @@ class Input
 	{
 		var joy:Joystick = joystick(e.device);
 
+		joy.connected = true;
 		if (e.id < 8)
 			joy.buttons[e.id] = false;
 	}
@@ -286,8 +291,9 @@ class Input
 	{
 		var joy:Joystick = joystick(e.device);
 
-		joy.hat.x = e.x;
-		joy.hat.y = e.y;
+		joy.connected = true;
+		joy.hat.x = (Math.abs(e.x) < deadZone) ? 0 : e.x;
+		joy.hat.y = (Math.abs(e.y) < deadZone) ? 0 : e.y;
 	}
 
 #end

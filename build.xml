@@ -29,6 +29,15 @@
 		</exec>
 	</target>
 
+	<target name="test" depends="haxelib">
+		<exec executable="haxelib" dir=".">
+			<arg line="run HaxePunk new Test" />
+		</exec>
+		<exec executable="haxelib" dir="Test">
+			<arg line="run nme test build.nmml flash -debug" />
+		</exec>
+	</target>
+
 	<target name="deploy" depends="haxelib">
 		<exec executable="haxelib" dir=".">
 			<arg line="submit haxepunk.zip" />

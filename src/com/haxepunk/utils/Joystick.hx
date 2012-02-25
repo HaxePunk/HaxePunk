@@ -8,6 +8,7 @@ class Joystick
 	public var axis:Point;
 	public var hat:Point;
 	public var ball:Point;
+	public var connected:Bool;
 
 	public function new()
 	{
@@ -15,6 +16,7 @@ class Joystick
 		ball = new Point(0, 0);
 		axis = new Point(0, 0);
 		hat = new Point(0, 0);
+		connected = false;
 	}
 
 }
