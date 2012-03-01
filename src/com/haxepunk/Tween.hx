@@ -16,7 +16,7 @@ typedef CompleteCallback = Void -> Void;
  */
 typedef FriendTween = {
 	private function finish():Void;
-	
+
 	private var _finish:Bool;
 	private var _parent:Tweener;
 	private var _prev:FriendTween;
@@ -27,7 +27,7 @@ class Tween
 {
 	public var active:Bool;
 	public var complete:CompleteCallback;
-	
+
 	/**
 	 * Constructor. Specify basic information about the Tween.
 	 * @param	duration		Duration of the tween (in seconds or frames).
@@ -44,7 +44,7 @@ class Tween
 		_ease = ease;
 		_t = 0;
 	}
-	
+
 	/**
 	 * Updates the Tween, called by World.
 	 */
@@ -59,7 +59,7 @@ class Tween
 			_finish = true;
 		}
 	}
-	
+
 	/**
 	 * Starts the Tween, or restarts it if it's currently running.
 	 */
@@ -69,12 +69,11 @@ class Tween
 		if (_target == 0)
 		{
 			active = false;
-			finish();
 			return;
 		}
 		active = true;
 	}
-	
+
 	/** @private Called when the Tween completes. */
 	private function finish()
 	{
@@ -96,21 +95,21 @@ class Tween
 		_finish = false;
 		if (complete != null) complete();
 	}
-	
+
 	public var percent(getPercent, setPercent):Float;
 	private function getPercent():Float { return _time / _target; }
 	private function setPercent(value:Float):Float { _time = _target * value; return _time; }
-	
+
 	public var scale(getScale, null):Float;
 	private function getScale():Float { return _t; }
-	
+
 	private var _type:TweenType;
 	private var _ease:EaseFunction;
 	private var _t:Float;
-	
+
 	private var _time:Float;
 	private var _target:Float;
-	
+
 	private var _finish:Bool;
 	private var _parent:Tweener;
 	private var _prev:FriendTween;
