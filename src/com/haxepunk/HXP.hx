@@ -674,7 +674,9 @@ class HXP
 #else
 		var data:BitmapData = source.bitmapData;
 #end
-		_bitmap.set(name, data);
+		if (data != null)
+			_bitmap.set(name, data);
+
 		return data;
 	}
 

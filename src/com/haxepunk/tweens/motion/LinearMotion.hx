@@ -20,7 +20,7 @@ class LinearMotion extends Motion
 		_distance = -1;
 		super(0,complete, type, null);
 	}
-	
+
 	/**
 	 * Starts moving along a line.
 	 * @param	fromX		X start.
@@ -41,7 +41,7 @@ class LinearMotion extends Motion
 		_ease = ease;
 		start();
 	}
-	
+
 	/**
 	 * Starts moving along a line at the speed.
 	 * @param	fromX		X start.
@@ -62,16 +62,16 @@ class LinearMotion extends Motion
 		_ease = ease;
 		start();
 	}
-	
+
 	/** @private Updates the Tween. */
-	override public function update() 
+	override public function update()
 	{
 		super.update();
 		x = _fromX + _moveX * _t;
 		y = _fromY + _moveY * _t;
-		if (x == _fromX + _moveX && y == _fromY + _moveY) finish();
+		if (x == _fromX + _moveX && y == _fromY + _moveY && active) finish();
 	}
-	
+
 	/**
 	 * Length of the current line of movement.
 	 */
@@ -81,7 +81,7 @@ class LinearMotion extends Motion
 		if (_distance >= 0) return _distance;
 		return (_distance = Math.sqrt(_moveX * _moveX + _moveY * _moveY));
 	}
-	
+
 	// Line information.
 	private var _fromX:Float;
 	private var _fromY:Float;
