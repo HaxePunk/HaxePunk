@@ -4,5 +4,5 @@
 	<tag v="cpp" />
 	<tag v="game" />
 	<description>A HaXe port of the FlashPunk AS3 engine.</description>
-	<version name="1.6.0">Supports screen resizing and joystick events</version>
+	<version name="1.6.1">Adding test cases, fixing neko build</version>
 </project>

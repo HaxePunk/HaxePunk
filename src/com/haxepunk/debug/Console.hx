@@ -183,27 +183,20 @@ class Console
 		var big:Bool = width >= 480;
 
 		// The transparent FlashPunk logo overlay bitmap.
-#if (flash || js)
 		_sprite.addChild(_back);
-		_back.bitmapData = new BitmapData(width, height, true, 0xFFFFFFFF);
+		_back.bitmapData = HXP.createBitmap(width, height, 0xFFFFFF);
 		HXP.matrix.identity();
 		HXP.matrix.tx = Math.max((_back.bitmapData.width - _bmpLogo.width) / 2, 0);
 		HXP.matrix.ty = Math.max((_back.bitmapData.height - _bmpLogo.height) / 2, 0);
 		HXP.matrix.scale(Math.min(width / _back.bitmapData.width, 1), Math.min(height / _back.bitmapData.height, 1));
+#if (flash || js)
 		_back.bitmapData.draw(_bmpLogo, HXP.matrix, null, BlendMode.MULTIPLY);
 		_back.bitmapData.draw(_back.bitmapData, null, null, BlendMode.INVERT);
-		_back.bitmapData.colorTransform(_back.bitmapData.rect, new ColorTransform(1, 1, 1, 0.5));
 #else
-		_sprite.addChild(_back);
-		_back.bitmapData = new BitmapData(width, height, true, 0xFFFFFFFF);
-		HXP.matrix.identity();
-		HXP.matrix.tx = Math.max((_back.bitmapData.width - _bmpLogo.width) / 2, 0);
-		HXP.matrix.ty = Math.max((_back.bitmapData.height - _bmpLogo.height) / 2, 0);
-		HXP.matrix.scale(Math.min(width / _back.bitmapData.width, 1), Math.min(height / _back.bitmapData.height, 1));
 		_back.bitmapData.draw(_bmpLogo, HXP.matrix, null, "multiply");
 		_back.bitmapData.draw(_back.bitmapData, null, null, "invert");
-		_back.bitmapData.colorTransform(_back.bitmapData.rect, new ColorTransform(1, 1, 1, 0.5));
 #end
+		_back.bitmapData.colorTransform(_back.bitmapData.rect, new ColorTransform(1, 1, 1, 0.5));
 
 		// The entity and selection sprites.
 		_sprite.addChild(_entScreen);

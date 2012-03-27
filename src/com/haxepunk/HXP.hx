@@ -46,6 +46,15 @@ class HXP
 #end
 
 	/**
+	 * The color black defined for neko (BitmapInt32) or flash (Int)
+	 */
+#if neko
+	public static inline var blackColor = { rgb: 0x000000, a: 1 }; // BitmapInt32
+#else
+	public static inline var blackColor = 0xFF000000;
+#end
+
+	/**
 	 * Width of the game.
 	 */
 	public static var width:Int;
@@ -680,6 +689,18 @@ class HXP
 		return data;
 	}
 
+	/**
+	 * Creates BitmapData based on platform specifics
+	 */
+	public static function createBitmap(width:Int, height:Int, ?color:Int, ?transparent:Bool = true):BitmapData
+	{
+#if neko
+		return new BitmapData(width, height, transparent, { rgb: color, a: 1 });
+#else
+		return new BitmapData(width, height, transparent, color);
+#end
+	}
+
 	#if hardware
 	public static function getBitmapIndex(source:Dynamic):Int
 	{
@@ -722,6 +743,7 @@ class HXP
 		}
 	}
 	#end
+
 	/**
 	 * Sets a time flag.
 	 * @return	Time elapsed (in milliseconds) since the last time flag was set.

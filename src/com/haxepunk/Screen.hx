@@ -63,8 +63,8 @@ class Screen
 		HXP.bounds.width = width;
 		HXP.bounds.height = height;
 
-		_bitmap[0] = new Bitmap(new BitmapData(_width, _height, false, 0), PixelSnapping.NEVER);
-		_bitmap[1] = new Bitmap(new BitmapData(_width, _height, false, 0), PixelSnapping.NEVER);
+		_bitmap[0] = new Bitmap(new BitmapData(_width, _height, false, HXP.blackColor), PixelSnapping.NEVER);
+		_bitmap[1] = new Bitmap(new BitmapData(_width, _height, false, HXP.blackColor), PixelSnapping.NEVER);
 
 		_sprite.addChild(_bitmap[0]).visible = true;
 		_sprite.addChild(_bitmap[1]).visible = false;
@@ -93,7 +93,11 @@ class Screen
 	public function refresh()
 	{
 		// refreshes the screen
+#if neko
+		HXP.buffer.fillRect(HXP.bounds, { rgb: _color, a: 1 });
+#else
 		HXP.buffer.fillRect(HXP.bounds, _color);
+#end
 	}
 
 	/**

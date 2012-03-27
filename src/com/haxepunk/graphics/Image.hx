@@ -138,7 +138,7 @@ class Image extends Graphic
 	/** @private Creates the buffer. */
 	private function createBuffer()
 	{
-		_buffer = new BitmapData(Std.int(_sourceRect.width), Std.int(_sourceRect.height), true, 0);
+		_buffer = new BitmapData(Std.int(_sourceRect.width), Std.int(_sourceRect.height), true, HXP.blackColor);
 		_bufferRect = _buffer.rect;
 		_bitmap.bitmapData = _buffer;
 	}
@@ -220,7 +220,13 @@ class Image extends Graphic
 	 */
 	public static function createRect(width:Int, height:Int, color:Int = 0xFFFFFF):Image
 	{
-		var source:BitmapData = new BitmapData(width, height, true, 0xFF000000 | color);
+#if neko
+		// convert to BitmapInt32
+		var colorResult = { rgb: color, a: 1 };
+#else
+		var colorResult = HXP.blackColor | color;
+#end
+		var source:BitmapData = new BitmapData(width, height, true, colorResult);
 		return new Image(source);
 	}
 
@@ -235,7 +241,7 @@ class Image extends Graphic
 		HXP.sprite.graphics.clear();
 		HXP.sprite.graphics.beginFill(color);
 		HXP.sprite.graphics.drawCircle(radius, radius, radius);
-		var data:BitmapData = new BitmapData(radius * 2, radius * 2, true, 0);
+		var data:BitmapData = new BitmapData(radius * 2, radius * 2, true, HXP.blackColor);
 		data.draw(HXP.sprite);
 		return new Image(data);
 	}
@@ -246,7 +252,7 @@ class Image extends Graphic
 	public function updateBuffer(clearBefore:Bool = false)
 	{
 		if (_source == null) return;
-		if (clearBefore) _buffer.fillRect(_bufferRect, 0);
+		if (clearBefore) _buffer.fillRect(_bufferRect, HXP.blackColor);
 		_buffer.copyPixels(_source, _sourceRect, HXP.zero);
 		if (_tint != null) _buffer.colorTransform(_bufferRect, _tint);
 	}
@@ -256,7 +262,7 @@ class Image extends Graphic
 	 */
 	public function clear()
 	{
-		_buffer.fillRect(_bufferRect, 0);
+		_buffer.fillRect(_bufferRect, HXP.blackColor);
 	}
 
 	/**
@@ -335,7 +341,7 @@ class Image extends Graphic
 			updateBuffer();
 			return _flipped;
 		}
-		_source = new BitmapData(_source.width, _source.height, true, 0);
+		_source = new BitmapData(_source.width, _source.height, true, HXP.blackColor);
 		_flips.set(_class, _source);
 		_flip = temp;
 		HXP.matrix.identity();

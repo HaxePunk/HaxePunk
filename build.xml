@@ -1,4 +1,4 @@
-<project name="HaxePunk" default="haxelib" basedir=".">
+<project name="HaxePunk" default="unit" basedir=".">
 	<description>Builds the haxepunk project</description>
 
 	<target name="tools">
@@ -26,6 +26,15 @@
 		</exec>
 		<exec executable="haxelib" dir="Test">
 			<arg line="run nme build build.nmml flash -debug" />
+		</exec>
+	</target>
+
+	<target name="unit" depends="haxelib">
+		<exec executable="haxe" dir="tests">
+			<arg line="compile.hxml" />
+		</exec>
+		<exec executable="neko" dir="tests">
+			<arg line="unit.n" />
 		</exec>
 	</target>
 
