@@ -1,14 +1,18 @@
-
-import haxe.unit.TestCase;
 import com.haxepunk.Mask;
+import com.haxepunk.Entity;
 import com.haxepunk.masks.Hitbox;
 
-class TestMasks extends TestCase
+class TestMasks extends haxe.unit.TestCase
 {
-	public function testHitboxToHitbox()
+	public function testHitbox()
 	{
-		var a:Mask = new Hitbox(50, 80, 4, 4);
-		var b:Mask = new Hitbox(20, 40, 3, 3);
+		var e = new Entity(0, 0);
+
+		var a = new Hitbox(30, 50, 10, 10);
+		a.assignTo(e);
+		var b = new Hitbox(70, 20);
+		b.assignTo(e);
+
 		assertTrue(b.collide(a));
 	}
 }
