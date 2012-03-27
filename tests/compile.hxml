@@ -1,0 +1,5 @@
+-neko unit.n
+--remap flash:nme
+-main TestMain
+-lib nme
+-lib HaxePunk
