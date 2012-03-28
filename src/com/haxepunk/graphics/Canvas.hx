@@ -23,13 +23,13 @@ class Canvas extends Graphic
 	#else
 	public var blend:String;
 	#end
-	
+
 	/**
 	 * Constructor.
 	 * @param	width		Width of the canvas.
 	 * @param	height		Height of the canvas.
 	 */
-	public function new(width:Int, height:Int) 
+	public function new(width:Int, height:Int)
 	{
 		super();
 		_buffers = new Array<BitmapData>();
@@ -40,12 +40,12 @@ class Canvas extends Graphic
 		_matrix = new Matrix();
 		_rect = new Rectangle();
 		_graphics = HXP.sprite.graphics;
-		
+
 		_width = width;
 		_height = height;
 		_refWidth = Math.ceil(width / _maxWidth);
 		_refHeight = Math.ceil(height / _maxHeight);
-		_ref = new BitmapData(_refWidth, _refHeight, false, 0);
+		_ref = HXP.createBitmap(_refWidth, _refHeight);
 		var x:Int = 0, y:Int = 0, w:Int, h:Int, i:Int = 0,
 			ww:Int = _width % _maxWidth,
 			hh:Int = _height % _maxHeight;
@@ -58,20 +58,20 @@ class Canvas extends Graphic
 			{
 				w = x < _refWidth - 1 ? _maxWidth : ww;
 				_ref.setPixel(x, y, i);
-				_buffers[i] = new BitmapData(w, h, true, 0);
+				_buffers[i] = HXP.createBitmap(w, h, true);
 				i ++; x ++;
 			}
 			x = 0; y ++;
 		}
 	}
-	
+
 	/** @private Renders the canvas. */
-	override public function render(target:BitmapData, point:Point, camera:Point) 
+	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
 		// determine drawing location
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;
-		
+
 		// render the buffers
 		var xx:Int = 0, yy:Int = 0, buffer:BitmapData, px:Float = _point.x;
 		while (yy < _refHeight)
@@ -95,7 +95,7 @@ class Canvas extends Graphic
 			yy ++;
 		}
 	}
-	
+
 	/**
 	 * Draws to the canvas.
 	 * @param	x			X position to draw.
@@ -120,7 +120,7 @@ class Canvas extends Graphic
 			}
 		}
 	}
-	
+
 	/**
 	 * Fills the rectangular area of the canvas. The previous contents of that area are completely removed.
 	 * @param	rect		Fill rectangle.
@@ -148,7 +148,7 @@ class Canvas extends Graphic
 			}
 		}
 	}
-	
+
 	/**
 	 * Draws over a rectangular area of the canvas.
 	 * @param	rect		Drawing rectangle.
@@ -162,7 +162,7 @@ class Canvas extends Graphic
 		{
 			_rect.width = rect.width;
 			_rect.height = rect.height;
-			
+
 			for (buffer in _buffers)
 			{
 				_rect.x = rect.x - xx;
@@ -192,7 +192,7 @@ class Canvas extends Graphic
 		}
 		_graphics.endFill();
 	}
-	
+
 	/**
 	 * Fills the rectangle area of the canvas with the texture.
 	 * @param	rect		Fill rectangle.
@@ -217,7 +217,7 @@ class Canvas extends Graphic
 		}
 		_graphics.endFill();
 	}
-	
+
 	/**
 	 * Draws the Graphic object to the canvas.
 	 * @param	x			X position to draw.
@@ -241,7 +241,7 @@ class Canvas extends Graphic
 			}
 		}
 	}
-	
+
 	/**
 	 * The tinted color of the Canvas. Use 0xFFFFFF to draw the it normally.
 	 */
@@ -264,7 +264,7 @@ class Canvas extends Graphic
 		_tint.alphaMultiplier = _alpha;
 		return _color;
 	}
-	
+
 	/**
 	 * Change the opacity of the Canvas, a value from 0 to 1.
 	 */
@@ -288,7 +288,7 @@ class Canvas extends Graphic
 		_tint.alphaMultiplier = _alpha;
 		return _alpha;
 	}
-	
+
 	/**
 	 * Shifts the canvas' pixels by the offset.
 	 * @param	x	Horizontal shift.
@@ -298,38 +298,38 @@ class Canvas extends Graphic
 	{
 		drawGraphic(x, y, this);
 	}
-	
+
 	/**
 	 * Width of the canvas.
 	 */
 	public var width(getWidth, null):Int;
 	private function getWidth():Int { return _width; }
-	
+
 	/**
 	 * Height of the canvas.
 	 */
 	public var height(getHeight, null):Int;
 	private function getHeight():Int { return _height; }
-	
+
 	// Buffer information.
 	private var _buffers:Array<BitmapData>;
 	private var _width:Int;
 	private var _height:Int;
 	private var _maxWidth:Int;
 	private var _maxHeight:Int;
-	
+
 	// Color tinting information.
 	private var _color:Int;
 	private var _alpha:Float;
 	private var _tint:ColorTransform;
 	private var _colorTransform:ColorTransform;
 	private var _matrix:Matrix;
-	
+
 	// Canvas reference information.
 	private var _ref:BitmapData;
 	private var _refWidth:Int;
 	private var _refHeight:Int;
-	
+
 	// Global objects.
 	private var _rect:Rectangle;
 	private var _graphics:Graphics;

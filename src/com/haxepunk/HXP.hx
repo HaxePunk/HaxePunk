@@ -29,7 +29,7 @@ class HXP
 	/**
 	 * The HaxePunk major version.
 	 */
-	public static inline var VERSION:String = "1.5.1";
+	public static inline var VERSION:String = "1.6.1";
 
 	/**
 	 * The standard layer used since only flash can handle negative indicies in arrays, set your layers to some offset of this
@@ -692,16 +692,28 @@ class HXP
 	/**
 	 * Creates BitmapData based on platform specifics
 	 */
-	public static function createBitmap(width:Int, height:Int, ?color:Int, ?transparent:Bool = true):BitmapData
+	public static function createBitmap(width:Int, height:Int, ?transparent:Bool = false, ?color:Int = 0):BitmapData
 	{
+#if flash
+	#if flash9
+		var sizeError:Bool = (width > 2880 || height > 2880);
+	#else
+		var sizeError:Bool = (width * height > 16777215); // flash 10 requires size to be under 16,777,215
+	#end
+		if (sizeError)
+		{
+			throw "BitmapData is too large (" + width + ", " + height + ")";
+		}
+#end // flash
+
 #if neko
 		return new BitmapData(width, height, transparent, { rgb: color, a: 1 });
 #else
 		return new BitmapData(width, height, transparent, color);
-#end
+#end // neko
 	}
 
-	#if hardware
+#if hardware
 	public static function getBitmapIndex(source:Dynamic):Int
 	{
 		var name:String = Std.string(source);
@@ -742,7 +754,7 @@ class HXP
 			}
 		}
 	}
-	#end
+#end // hardware
 
 	/**
 	 * Sets a time flag.

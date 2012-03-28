@@ -8,10 +8,6 @@ import flash.geom.Rectangle;
 import com.haxepunk.HXP;
 import com.haxepunk.Mask;
 
-
-#if !flash
-typedef Array2D = Array<Array<Int>>;
-#end
 /**
  * Uses a hash grid to determine collision, faster than
  * using hundreds of Entities for tiled levels, etc.
@@ -22,8 +18,8 @@ class Grid extends Hitbox
 	 * If x/y positions should be used instead of columns/rows.
 	 */
 	public var usePositions:Bool;
-	
-	
+
+
 	/**
 	 * Constructor.
 	 * @param	width			Width of the grid, in pixels.
@@ -33,7 +29,7 @@ class Grid extends Hitbox
 	 * @param	x				X offset of the grid.
 	 * @param	y				Y offset of the grid.
 	 */
-	public function new(width:Int, height:Int, tileWidth:Int, tileHeight:Int, x:Int = 0, y:Int = 0) 
+	public function new(width:Int, height:Int, tileWidth:Int, tileHeight:Int, x:Int = 0, y:Int = 0)
 	{
 		super();
 		// check for illegal grid size
@@ -42,37 +38,33 @@ class Grid extends Hitbox
 			tileWidth == 0 ||
 			tileHeight == 0)
 			throw "Illegal Grid, sizes cannot be 0.";
-		
+
 		_rect = HXP.rect;
 		_point = HXP.point;
 		_point2 = HXP.point2;
-		
+
 		// set grid properties
 		_columns = Std.int(width / tileWidth);
 		_rows = Std.int(height / tileHeight);
-		
+
 		_tile = new Rectangle(0, 0, tileWidth, tileHeight);
 		_x = x;
 		_y = y;
 		_width = width;
 		_height = height;
-		
+
 		// set callback functions
 		_check.set(Type.getClassName(Mask), collideMask);
 		_check.set(Type.getClassName(Hitbox), collideHitbox);
 		_check.set(Type.getClassName(Pixelmask), collidePixelmask);
-		
-		#if flash
-		_data = new BitmapData(_columns, _rows, true, 0);
-		#else
-		_grid = new Array2D();
+
+		_grid = new Array<Array<Bool>>();
 		for (x in 0..._columns)
 		{
-			_grid[x] = new Array();
+			_grid[x] = new Array<Bool>();
 		}
-		#end
 	}
-	
+
 	/**
 	 * Sets the value of the tile.
 	 * @param	column		Tile column.
@@ -86,13 +78,9 @@ class Grid extends Hitbox
 			column = Std.int(column / _tile.width);
 			row = Std.int(row / _tile.height);
 		}
-		#if flash
-		_data.setPixel32(column, row, solid ? 0xFFFFFFFF : 0);
-		#else
-		_grid[column][row] = (solid ? 1:0);
-		#end
+		_grid[column][row] = solid;
 	}
-	
+
 	/**
 	 * Makes the tile non-solid.
 	 * @param	column		Tile column.
@@ -102,7 +90,7 @@ class Grid extends Hitbox
 	{
 		setTile(column, row, false);
 	}
-	
+
 	/**
 	 * Gets the value of a tile.
 	 * @param	column		Tile column.
@@ -116,14 +104,9 @@ class Grid extends Hitbox
 			column = Std.int(column / _tile.width);
 			row = Std.int(row / _tile.height);
 		}
-		return 
-		#if flash
-		_data.getPixel32(column, row) > 0;
-		#else
-		_grid[column][row] == 1;
-		#end
+		return _grid[column][row];
 	}
-	
+
 	/**
 	 * Sets the value of a rectangle region of tiles.
 	 * @param	column		First column.
@@ -141,24 +124,16 @@ class Grid extends Hitbox
 			width = Std.int(width / _tile.width);
 			height = Std.int(height / _tile.height);
 		}
-		#if flash
-		_rect.x = column;
-		_rect.y = row;
-		_rect.width = width;
-		_rect.height = height;
-		_data.fillRect(_rect, solid ? 0xFFFFFFFF : 0);
-		#else
-		var setTo = solid ? 1:0;
-		for (xx in column...column + width) 
+
+		for (yy in row...(row + height))
 		{
-			for (yy in row...row + height) 
+			for (xx in column...(column + width))
 			{
-				_grid[xx][yy] = setTo;
+				_grid[xx][yy] = solid;
 			}
 		}
-		#end
 	}
-	
+
 	/**
 	 * Makes the rectangular region of tiles non-solid.
 	 * @param	column		First column.
@@ -170,7 +145,7 @@ class Grid extends Hitbox
 	{
 		setRect(column, row, width, height, false);
 	}
-	
+
 	/**
 	* Loads the grid data from a string.
 	* @param str			The string data, which is a set of tile values (0 or 1) separated by the columnSep and rowSep strings.
@@ -194,7 +169,7 @@ class Grid extends Hitbox
 			}
 		}
 	}
-	
+
 	/**
 	* Saves the grid data to a string.
 	* @param columnSep		The string that separates each tile value on a row, default is ",".
@@ -215,78 +190,60 @@ class Grid extends Hitbox
 		}
 		return s;
 	}
-	
+
 	/**
 	 * The tile width.
 	 */
 	public var tileWidth(getTileWidth, null):Int;
 	private inline function getTileWidth():Int { return Std.int(_tile.width); }
-	
+
 	/**
 	 * The tile height.
 	 */
 	public var tileHeight(getTileHeight, null):Int;
 	private inline function getTileHeight():Int { return Std.int(_tile.height); }
-	
+
 	/**
 	 * How many columns the grid has
 	 */
 	public var columns(getColumns, null):Int;
 	private inline function getColumns():Int { return _columns; }
-	
+
 	/**
 	 * How many rows the grid has.
 	 */
 	public var rows(getRows, null):Int;
 	private inline function getRows():Int { return _rows; }
-	
+
 	/**
 	 * The grid data.
 	 */
-	#if flash
-	public var data(getData, null):BitmapData;
-	private inline function getData():BitmapData { return _data; }
-	#else
-	public var data(getData, null):Array2D;
-	private inline function getData():Array2D { return _grid; }
-	#end
-	
+	public var data(getData, null):Array<Array<Bool>>;
+	private inline function getData():Array<Array<Bool>> { return _grid; }
+
 	/** @private Collides against an Entity. */
 	override private function collideMask(other:Mask):Bool
 	{
-		#if flash
-		_rect.x = other.parent.x - other.parent.originX - parent.x + parent.originX;
-		_rect.y = other.parent.y - other.parent.originY - parent.y + parent.originY;
-		_point.x = Std.int((_rect.x + other.parent.width - 1) / _tile.width) + 1;
-		_point.y = Std.int((_rect.y + other.parent.height -1) / _tile.height) + 1;
-		_rect.x = Std.int(_rect.x / _tile.width);
-		_rect.y = Std.int(_rect.y / _tile.height);
-		_rect.width = _point.x - _rect.x;
-		_rect.height = _point.y - _rect.y;
-		return _data.hitTest(HXP.zero, 1, _rect);
-		
-		
-		#else
 		var rectX = Std.int(other.parent.x - other.parent.originX - parent.x + parent.originX);
 		var rectY = Std.int(other.parent.y - other.parent.originY - parent.y + parent.originY);
 		var pX:Int = Std.int((rectX + other.parent.width - 1) / _tile.width) + 1;
 		var pY:Int = Std.int((rectY + other.parent.height -1) / _tile.height) + 1;
 		rectX = Std.int(rectX / _tile.width);
 		rectY = Std.int(rectY / _tile.height);
-		var rectWidth:Int = pX - rectX;
-		var rectHeight:Int = pY - rectY;
 
-		for (dx in 0...rectWidth) 
+		for (dy in rectY...pY)
 		{
-			for (dy in 0...rectHeight) 
+			for (dx in rectX...pX)
 			{
-				if (_grid[rectX + dx][rectY + dy] == 1) return true;
+				if (_grid[dx][dy])
+				{
+					return true;
+				}
 			}
 		}
 		return false;
-		#end
 	}
-	
+
 	/** @private Collides against a Hitbox. */
 	override private function collideHitbox(other:Hitbox):Bool
 	{
@@ -298,41 +255,34 @@ class Grid extends Hitbox
 		_rect.y = Std.int(_rect.y / _tile.height);
 		_rect.width = _point.x - _rect.x;
 		_rect.height = _point.y - _rect.y;
-		#if flash
-		return _data.hitTest(HXP.zero, 1, _rect);
-		#else
+
 		var xx = Std.int(_rect.x);
 		var yy = Std.int(_rect.y);
 		var ww = Std.int(_rect.y +_rect.height);
 		var hh = Std.int(_rect.x +_rect.width);
-		if (_grid[xx][yy] == 1) 
+		if (_grid[xx][yy])
 		{
 			return true;
 		}
-		if (_grid[xx][yy + hh] == 1) 
+		if (_grid[xx][yy + hh])
 		{
 			return true;
 		}
-		if (_grid[xx + ww][yy] == 1) 
+		if (_grid[xx + ww][yy])
 		{
 			return true;
 		}
-		if (_grid[xx + ww][yy + hh] == 1) 
+		if (_grid[xx + ww][yy + hh])
 		{
 			return true;
 		}
 		return false;
-		#end
 	}
-	
+
 	/** @private Collides against a Pixelmask. */
 	private function collidePixelmask(other:Pixelmask):Bool
 	{
-		#if !flash
-		trace('Pixelmasks will not work in targets other than flash due to hittest not being implemented in NME.');
-		return true;
-		#else
-		
+#if flash
 		var x1:Int = Std.int(other.parent.x + other.x - parent.x - _x),
 			y1:Int = Std.int(other.parent.y + other.y - parent.y - _y),
 			x2:Int = Std.int((x1 + other.width - 1) / _tile.width),
@@ -348,11 +298,9 @@ class Grid extends Hitbox
 		{
 			while (x1 <= x2)
 			{
-				if (_data.getPixel32(x1, y1) != 0)
+				if (_grid[x1][y1])
 				{
-					#if flash
 					if (other.data.hitTest(_point, 1, _tile)) return true;
-					#end
 				}
 				x1 ++;
 				_tile.x += _tile.width;
@@ -362,13 +310,14 @@ class Grid extends Hitbox
 			_tile.x = x1 * _tile.width;
 			_tile.y += _tile.height;
 		}
+#else
+		trace('Pixelmasks will not work in targets other than flash due to hittest not being implemented in NME.');
+#end
 		return false;
-		#end
 	}
-	
+
 	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void //Not 100% tested
 	{
-		#if flash
 		HXP.matrix.b = HXP.matrix.c = 0;
 		HXP.matrix.a = tileWidth;//Scale X
 		HXP.matrix.d = tileHeight;//Scale Y
@@ -377,13 +326,13 @@ class Grid extends Hitbox
 		//if (angle != 0) HXP.matrix.rotate(angle * HXP.RAD); //Rotation
 		HXP.matrix.tx += _x + parent.x - HXP.camera.x;
 		HXP.matrix.ty += _y + parent.y - HXP.camera.y;
-		HXP.buffer.draw(_data, HXP.matrix);
-		#end
+		// TODO: draw grid
+//		HXP.buffer.draw(_data, HXP.matrix);
 	}
-	
-	public function squareProjection(axis:Point, point:Point):Void 
+
+	public function squareProjection(axis:Point, point:Point):Void
 	{
-		if (axis.x < axis.y) 
+		if (axis.x < axis.y)
 		{
 			point.x = axis.x;
 			point.y = axis.y;
@@ -394,19 +343,15 @@ class Grid extends Hitbox
 			point.x = axis.y;
 		}
 	}
-	
+
 	// Grid information.
-	
+
 	private var _columns:Int;
 	private var _rows:Int;
 	private var _tile:Rectangle;
 	private var _rect:Rectangle;
 	private var _point:Point;
 	private var _point2:Point;
-	
-	#if flash
-	private var _data:BitmapData;
-	#else
-	private var _grid:Array2D;
-	#end
+
+	private var _grid:Array<Array<Bool>>;
 }

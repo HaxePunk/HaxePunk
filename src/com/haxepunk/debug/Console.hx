@@ -184,7 +184,7 @@ class Console
 
 		// The transparent FlashPunk logo overlay bitmap.
 		_sprite.addChild(_back);
-		_back.bitmapData = HXP.createBitmap(width, height, 0xFFFFFF);
+		_back.bitmapData = HXP.createBitmap(width, height, true, 0xFFFFFF);
 		HXP.matrix.identity();
 		HXP.matrix.tx = Math.max((_back.bitmapData.width - _bmpLogo.width) / 2, 0);
 		HXP.matrix.ty = Math.max((_back.bitmapData.height - _bmpLogo.height) / 2, 0);
@@ -218,16 +218,16 @@ class Console
 #if flash
 		_entRead.graphics.drawRoundRectComplex(0, 0, _entReadText.width, 20, 0, 0, 20, 0);
 #else
-		_entRead.graphics.drawRoundRect(0, -20, _entReadText.width + 40, 40, 20);
+		_entRead.graphics.drawRoundRect(0, -20, _entReadText.width + 40, 40, 20, 20);
 #end
 
 		// The FPS text.
 		_sprite.addChild(_fpsRead);
 		_fpsRead.addChild(_fpsReadText);
 		_fpsReadText.defaultTextFormat = format(16);
-		#if flash
+#if flash
 		_fpsReadText.embedFonts = true;
-		#end
+#end
 		_fpsReadText.width = 70;
 		_fpsReadText.height = 20;
 		_fpsReadText.x = 2;
@@ -239,7 +239,7 @@ class Console
 #if flash
 		_fpsRead.graphics.drawRoundRectComplex(0, 0, big ? 200 : 100, 20, 0, 0, 0, 20);
 #else
-		_fpsRead.graphics.drawRoundRect(-20, -20, (big ? 220 : 120), 40, 20);
+		_fpsRead.graphics.drawRoundRect(-20, -20, (big ? 220 : 120), 40, 20, 20);
 #end
 
 		// The frame timing text.
@@ -248,10 +248,10 @@ class Console
 		_fpsInfo.addChild(_fpsInfoText1);
 		_fpsInfoText0.defaultTextFormat = format(8, 0xAAAAAA);
 		_fpsInfoText1.defaultTextFormat = format(8, 0xAAAAAA);
-		#if flash
+#if flash
 		_fpsInfoText0.embedFonts = true;
 		_fpsInfoText1.embedFonts = true;
-		#end
+#end
 		_fpsInfoText0.width = _fpsInfoText1.width = 60;
 		_fpsInfoText0.height = _fpsInfoText1.height = 20;
 		_fpsInfo.x = 75;
@@ -263,10 +263,10 @@ class Console
 		_logRead.addChild(_logReadText1);
 		_logReadText0.defaultTextFormat = format(16, 0xFFFFFF);
 		_logReadText1.defaultTextFormat = format(big ? 16 : 8, 0xFFFFFF);
-		#if flash
+#if flash
 		_logReadText0.embedFonts = true;
 		_logReadText1.embedFonts = true;
-		#end
+#end
 		_logReadText0.selectable = false;
 		_logReadText0.width = 80;
 		_logReadText0.height = 20;
@@ -286,10 +286,10 @@ class Console
 		_debRead.addChild(_debReadText1);
 		_debReadText0.defaultTextFormat = format(16, 0xFFFFFF);
 		_debReadText1.defaultTextFormat = format(8, 0xFFFFFF);
-		#if flash
+#if flash
 		_debReadText0.embedFonts = true;
 		_debReadText1.embedFonts = true;
-		#end
+#end
 		_debReadText0.selectable = false;
 		_debReadText0.width = 80;
 		_debReadText0.height = 20;
@@ -317,7 +317,7 @@ class Console
 #if flash
 		_butRead.graphics.drawRoundRectComplex( -20, 0, 100, 20, 0, 0, 20, 20);
 #else
-		_butRead.graphics.drawRoundRect(-20, -20, 100, 40, 20);
+		_butRead.graphics.drawRoundRect(-20, -20, 100, 40, 20, 20);
 #end
 
 		// Set the state to unpaused.
@@ -760,7 +760,7 @@ class Console
 #if flash
 			_logRead.graphics.drawRoundRectComplex(0, 0, _logReadText0.width, 20, 0, 20, 0, 0);
 #else
-			_logRead.graphics.drawRoundRect(0, 0, _logReadText0.width, 20, 20);
+			_logRead.graphics.drawRoundRect(0, 0, _logReadText0.width, 20, 20, 20);
 #end
 			_logRead.graphics.drawRect(0, 20, width, _logHeight);
 
@@ -769,7 +769,7 @@ class Console
 #if flash
 			_logRead.graphics.drawRoundRectComplex(_logBar.x, _logBar.y, _logBar.width, _logBar.height, 8, 8, 8, 8);
 #else
-			_logRead.graphics.drawRoundRect(_logBar.x, _logBar.y, _logBar.width, _logBar.height, 8);
+			_logRead.graphics.drawRoundRect(_logBar.x, _logBar.y, _logBar.width, _logBar.height, 8, 8);
 #end
 
 			// If the log has more lines than the display limit.
@@ -781,7 +781,7 @@ class Console
 #if flash
 				_logRead.graphics.drawRoundRectComplex(_logBar.x + 2, y, 12, 12, 6, 6, 6, 6);
 #else
-				_logRead.graphics.drawRoundRect(_logBar.x + 2, y, 12, 12, 6);
+				_logRead.graphics.drawRoundRect(_logBar.x + 2, y, 12, 12, 6, 6);
 #end
 			}
 
@@ -818,7 +818,7 @@ class Console
 #if flash
 			_logRead.graphics.drawRoundRectComplex(0, 0, _logReadText0.width, 20, 0, 20, 0, 0);
 #else
-			_logRead.graphics.drawRoundRect(0, 0, _logReadText0.width, 20, 20);
+			_logRead.graphics.drawRoundRect(0, 0, _logReadText0.width, 20, 20, 20);
 #end
 			_logRead.graphics.drawRect(0, 20, width, 20);
 
@@ -893,8 +893,8 @@ class Console
 		_debRead.graphics.drawRoundRectComplex(0, 0, _debReadText0.width, 20, 0, 20, 0, 0);
 		_debRead.graphics.drawRoundRectComplex(0, 20, _debReadText1.width + 20, height - _debRead.y - 20, 0, 20, 0, 0);
 #else
-		_debRead.graphics.drawRoundRect(0, 0, _debReadText0.width, 20, 20);
-		_debRead.graphics.drawRoundRect(0, 20, _debReadText1.width + 20, height - _debRead.y - 20, 20);
+		_debRead.graphics.drawRoundRect(0, 0, _debReadText0.width, 20, 20, 20);
+		_debRead.graphics.drawRoundRect(0, 20, _debReadText1.width + 20, height - _debRead.y - 20, 20, 20);
 #end
 	}
 

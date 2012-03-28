@@ -9,7 +9,7 @@ import com.haxepunk.utils.Ease;
  * Template used to define a particle type used by the Emitter class. Instead
  * of creating this object yourself, fetch one with Emitter's add() function.
  */
-class ParticleType 
+class ParticleType
 {
 	/**
 	 * Constructor.
@@ -24,7 +24,7 @@ class ParticleType
 	{
 		_red = _green = _blue = _alpha = 1;
 		_redRange = _greenRange = _blueRange = _alphaRange = 0;
-		
+
 		_name = name;
 		_source = source;
 		_width = source.width;
@@ -32,11 +32,11 @@ class ParticleType
 		if (frames == null) frames = new Array<Int>();
 		_frames = frames;
 		_frameCount = frames.length;
-		
+
 		_gravity = 0;
 		_gravityRange = 0;
 	}
-	
+
 	/**
 	 * Defines the motion range for this particle type.
 	 * @param	angle			Launch Direction.
@@ -59,7 +59,7 @@ class ParticleType
 		_ease = ease;
 		return this;
 	}
-	
+
 	/**
 	 * Defines the motion range for this particle type based on the vector.
 	 * @param	x				X distance to move.
@@ -78,7 +78,7 @@ class ParticleType
 		_ease = ease;
 		return this;
 	}
-	
+
 	/**
 	* Sets the gravity range of this particle type.
 	* @param gravity Gravity amount to affect to the particle y velocity.
@@ -109,7 +109,7 @@ class ParticleType
 		createBuffer();
 		return this;
 	}
-	
+
 	/**
 	 * Sets the color range of this particle type.
 	 * @param	start		The starting color.
@@ -131,15 +131,15 @@ class ParticleType
 		createBuffer();
 		return this;
 	}
-	
+
 	/** @private Creates the buffer if it doesn't exist. */
 	private function createBuffer()
 	{
 		if (_buffer != null) return;
-		_buffer = new BitmapData(Std.int(_frame.width), Std.int(_frame.height), true, 0);
+		_buffer = HXP.createBitmap(Std.int(_frame.width), Std.int(_frame.height), true);
 		_bufferRect = _buffer.rect;
 	}
-	
+
 	// Particle information.
 	public var _name:String;
 	public var _source:BitmapData;
@@ -147,7 +147,7 @@ class ParticleType
 	public var _frame:Rectangle;
 	public var _frames:Array<Int>;
 	public var _frameCount:Int;
-	
+
 	// Motion information.
 	public var _angle:Float;
 	public var _angleRange:Float;
@@ -156,16 +156,16 @@ class ParticleType
 	public var _duration:Float;
 	public var _durationRange:Float;
 	public var _ease:EaseFunction;
-	
+
 	// Gravity information.
 	public var _gravity:Float;
 	public var _gravityRange:Float;
-	
+
 	// Alpha information.
 	public var _alpha:Float;
 	public var _alphaRange:Float;
 	public var _alphaEase:EaseFunction;
-	
+
 	// Color information.
 	public var _red:Float;
 	public var _redRange:Float;
@@ -174,7 +174,7 @@ class ParticleType
 	public var _blue:Float;
 	public var _blueRange:Float;
 	public var _colorEase:EaseFunction;
-	
+
 	// Buffer information.
 	public var _buffer:BitmapData;
 	public var _bufferRect:Rectangle;

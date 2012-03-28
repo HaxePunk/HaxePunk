@@ -25,23 +25,23 @@ class TiledImage extends Image
 		_height = height;
 		super(texture, clipRect);
 	}
-	
+
 	/** @private Creates the buffer. */
-	override private function createBuffer() 
+	override private function createBuffer()
 	{
 		if (_width == 0) _width = Std.int(_sourceRect.width);
 		if (_height == 0) _height = Std.int(_sourceRect.height);
-		_buffer = new BitmapData(_width, _height, true, 0);
+		_buffer = HXP.createBitmap(_width, _height, true);
 		_bufferRect = _buffer.rect;
 	}
-	
+
 	/** @private Updates the buffer. */
 	override public function updateBuffer(clearBefore:Bool = false)
 	{
 		if (_source == null) return;
 		if (_texture == null)
 		{
-			_texture = new BitmapData(Std.int(_sourceRect.width), Std.int(_sourceRect.height), true, 0);
+			_texture = HXP.createBitmap(Std.int(_sourceRect.width), Std.int(_sourceRect.height), true);
 			_texture.copyPixels(_source, _sourceRect, HXP.zero);
 		}
 		_buffer.fillRect(_bufferRect, 0);
@@ -57,7 +57,7 @@ class TiledImage extends Image
 		_graphics.drawRect(0, 0, _width, _height);
 		_buffer.draw(HXP.sprite, null, _tint);
 	}
-	
+
 	/**
 	 * The x-offset of the texture.
 	 */
@@ -70,7 +70,7 @@ class TiledImage extends Image
 		updateBuffer();
 		return _offsetX;
 	}
-	
+
 	/**
 	 * The y-offset of the texture.
 	 */
@@ -83,7 +83,7 @@ class TiledImage extends Image
 		updateBuffer();
 		return _offsetY;
 	}
-	
+
 	/**
 	 * Sets the texture offset.
 	 * @param	x		The x-offset.
@@ -96,7 +96,7 @@ class TiledImage extends Image
 		_offsetY = y;
 		updateBuffer();
 	}
-	
+
 	// Drawing information.
 	private var _graphics:Graphics;
 	private var _texture:BitmapData;

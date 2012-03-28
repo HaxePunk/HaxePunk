@@ -17,28 +17,28 @@ class PreRotation extends Image
 	 * Current angle to fetch the pre-rotated frame from.
 	 */
 	public var frameAngle:Float;
-	
+
 	/**
 	 * Constructor.
 	 * @param	source			The source image to be rotated.
 	 * @param	frameCount		How many frames to use. More frames result in smoother rotations.
 	 * @param	smooth			Make the rotated graphic appear less pixelly.
 	 */
-	public function new(source:Dynamic, frameCount:Int = 36, smooth:Bool = false) 
+	public function new(source:Dynamic, frameCount:Int = 36, smooth:Bool = false)
 	{
 		frameAngle = 0;
 		_last = _current = -1;
-		
+
 		var name:String = '';
 		if (Std.is(source, String))
 			name = source;
 		else
 			name = Type.getClassName(source);
-		
+
 		var r:BitmapData = _rotated.get(name);
 		var size:Int = _size.get(name);
 		_frame = new Rectangle(0, 0, size, size);
-		
+
 		if (r == null)
 		{
 			// produce a rotated bitmap strip
@@ -53,7 +53,7 @@ class PreRotation extends Image
 				width = Std.int(_MAX_WIDTH - (_MAX_WIDTH % _frame.width));
 				height = Std.int(Math.ceil(frameCount / (width / _frame.width)) * _frame.height);
 			}
-			r = new BitmapData(width, height, true, 0);
+			r = HXP.createBitmap(width, height, true);
 			_rotated.set(name, r);
 			var m:Matrix = HXP.matrix,
 				a:Float = 0,
@@ -84,9 +84,9 @@ class PreRotation extends Image
 		_frameCount = frameCount;
 		super(_source, _frame);
 	}
-	
+
 	/** Renders the PreRotated graphic. */
-	override public function render(target:BitmapData, point:Point, camera:Point) 
+	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
 		frameAngle %= 360;
 		if (frameAngle < 0) frameAngle += 360;
@@ -101,18 +101,18 @@ class PreRotation extends Image
 		}
 		super.render(target, point, camera);
 	}
-	
+
 	// Rotation information.
 	private var _width:Int;
 	private var _frame:Rectangle;
 	private var _frameCount:Int;
 	private var _last:Int;
 	private var _current:Int;
-	
+
 	// Global information.
 	private static var _rotated:Hash<BitmapData> = new Hash<BitmapData>();
 	private static var _size:Hash<Int> = new Hash<Int>();
-	
+
 	private static inline var _MAX_WIDTH:Int = 3000;
 	private static inline var _MAX_HEIGHT:Int = 4000;
 }

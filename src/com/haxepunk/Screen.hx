@@ -27,9 +27,9 @@ class Screen
 		HXP.engine.addChild(_sprite);
 
 		//Added this so that the tilesheet can use a graphics object which is in front of the ones used by software rendering
-		#if cpp
+#if cpp
 		HXP.engine.addChild(HXP.sprite);
-		#end
+#end
 	}
 
 	public function init()
@@ -63,8 +63,8 @@ class Screen
 		HXP.bounds.width = width;
 		HXP.bounds.height = height;
 
-		_bitmap[0] = new Bitmap(new BitmapData(_width, _height, false, HXP.blackColor), PixelSnapping.NEVER);
-		_bitmap[1] = new Bitmap(new BitmapData(_width, _height, false, HXP.blackColor), PixelSnapping.NEVER);
+		_bitmap[0] = new Bitmap(HXP.createBitmap(_width, _height), PixelSnapping.NEVER);
+		_bitmap[1] = new Bitmap(HXP.createBitmap(_width, _height), PixelSnapping.NEVER);
 
 		_sprite.addChild(_bitmap[0]).visible = true;
 		_sprite.addChild(_bitmap[1]).visible = false;

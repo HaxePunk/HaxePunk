@@ -14,12 +14,12 @@ class TiledSpritemap extends Spritemap
 	 * Constructs the tiled spritemap.
 	 * @param	source			Source image.
 	 * @param	frameWidth		Frame width.
-	 * @param	frameHeight		Frame height.	
+	 * @param	frameHeight		Frame height.
 	 * @param	width			Width of the block to render.
 	 * @param	height			Height of the block to render.
 	 * @param	callback		Optional callback function for animation end.
 	 */
-	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, width:Int = 0, height:Int = 0, callbackFunc:CallbackFunction = null) 
+	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, width:Int = 0, height:Int = 0, callbackFunc:CallbackFunction = null)
 	{
 		_graphics = HXP.sprite.graphics;
 		_offsetX = _offsetY = 0;
@@ -27,25 +27,25 @@ class TiledSpritemap extends Spritemap
 		_imageHeight = height;
 		super(source, frameWidth, frameHeight, callbackFunc);
 	}
-	
+
 	/** @private Creates the buffer. */
-	override private function createBuffer() 
+	override private function createBuffer()
 	{
 		if (_imageWidth == 0) _imageWidth = Std.int(_sourceRect.width);
 		if (_imageHeight == 0) _imageHeight = Std.int(_sourceRect.height);
-		_buffer = new BitmapData(_imageWidth, _imageHeight, true, 0);
+		_buffer = HXP.createBitmap(_imageWidth, _imageHeight, true);
 		_bufferRect = _buffer.rect;
 	}
-	
+
 	/** @private Updates the buffer. */
-	override public function updateBuffer(clearBefore:Bool = false) 
+	override public function updateBuffer(clearBefore:Bool = false)
 	{
 		// get position of the current frame
 		_rect.x = _rect.width * _frame;
 		_rect.y = Std.int(_rect.x / _width) * _rect.height;
 		_rect.x %= _width;
 		if (_flipped) _rect.x = (_width - _rect.width) - _rect.x;
-		
+
 		// render it repeated to the buffer
 		var xx:Int = Std.int(_offsetX) % _imageWidth,
 			yy:Int = Std.int(_offsetY) % _imageHeight;
@@ -63,11 +63,11 @@ class TiledSpritemap extends Spritemap
 			HXP.point.x = xx;
 			HXP.point.y += _sourceRect.height;
 		}
-		
+
 		// tint the buffer
 		if (_tint != null) _buffer.colorTransform(_bufferRect, _tint);
 	}
-	
+
 	/**
 	 * The x-offset of the texture.
 	 */
@@ -80,7 +80,7 @@ class TiledSpritemap extends Spritemap
 		updateBuffer();
 		return _offsetX;
 	}
-	
+
 	/**
 	 * The y-offset of the texture.
 	 */
@@ -93,7 +93,7 @@ class TiledSpritemap extends Spritemap
 		updateBuffer();
 		return _offsetY;
 	}
-	
+
 	/**
 	 * Sets the texture offset.
 	 * @param	x		The x-offset.
@@ -106,7 +106,7 @@ class TiledSpritemap extends Spritemap
 		_offsetY = y;
 		updateBuffer();
 	}
-	
+
 	private var _graphics:Graphics;
 	private var _imageWidth:Int;
 	private var _imageHeight:Int;
