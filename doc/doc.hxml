@@ -1,8 +1,8 @@
--neko all
+-neko all.n
 -lib nme
 --remap flash:nme
 --no-output
--D nme
+-D desktop
 -xml all.xml
 -cp ../src
 --macro ImportAll.run()

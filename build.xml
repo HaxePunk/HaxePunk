@@ -54,7 +54,6 @@
 			<arg line="-o docs" />
 			<arg line="--title=HaxePunk" />
 			<arg line="--subtitle=http://haxepunk.com" />
-			<arg line="--exclude=haxe,nme,sys,cpp,flash" />
 			<arg line="all.xml" />
 		</exec>
 	</target>
