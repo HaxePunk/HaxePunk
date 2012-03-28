@@ -1,4 +1,4 @@
-<project name="HaxePunk" default="build" basedir=".">
+<project name="HaxePunk" default="all" basedir=".">
 	<description>Builds the haxepunk project</description>
 
 	<target name="tools">
@@ -30,7 +30,6 @@
 	</target>
 
 	<target name="build" depends="haxelib">
-		<delete dir="Test" />
 		<exec executable="haxelib" dir=".">
 			<arg line="run HaxePunk new Test" />
 		</exec>
@@ -73,5 +72,7 @@
 			<fileset dir="." includes="*.n,*.zip,com.haxepunk.debug.swf" />
 		</delete>
 	</target>
+
+	<target name="all" depends="clean, build, unit" />
 
 </project>
