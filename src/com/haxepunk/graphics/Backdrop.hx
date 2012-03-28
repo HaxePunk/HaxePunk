@@ -19,8 +19,8 @@ class Backdrop extends Canvas
 	 */
 	public function new(texture:Dynamic, repeatX:Bool = true, repeatY:Bool = true)
 	{
-		if (Std.is(texture, Dynamic)) _texture = HXP.getBitmap(texture);
-		else if (Std.is(texture, BitmapData)) _texture = texture;
+		if (Std.is(texture, BitmapData)) _texture = texture;
+		else if (Std.is(texture, Dynamic)) _texture = HXP.getBitmap(texture);
 		if (_texture == null) _texture = new BitmapData(HXP.width, HXP.height, true, 0);
 
 		_repeatX = repeatX;
