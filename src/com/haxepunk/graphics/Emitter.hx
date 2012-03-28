@@ -22,17 +22,17 @@ class Emitter extends Graphic
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
 	 */
-	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0) 
+	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0)
 	{
 		super();
 		_p = new Point();
 		_tint = new ColorTransform();
 		_types = new Hash<ParticleType>();
-		
+
 		setSource(source, frameWidth, frameHeight);
 		active = true;
 	}
-	
+
 	/**
 	 * Changes the source image to use for newly added particle types.
 	 * @param	source			Source image.
@@ -49,24 +49,24 @@ class Emitter extends Graphic
 		_frameHeight = (frameHeight != 0) ? frameHeight : _height;
 		_frameCount = Std.int(_width / _frameWidth) * Std.int(_height / _frameHeight);
 	}
-	
-	override public function update() 
+
+	override public function update()
 	{
 		// quit if there are no particles
 		if (_particle == null) return;
-		
+
 		// particle info
 		var e:Float = HXP.fixed ? 1 : HXP.elapsed,
 			p:Particle = _particle,
 			n:Particle, t:Float;
-		
+
 		// loop through the particles
 		while (p != null)
 		{
 			// update time scale
 			p._time += e;
 			t = p._time / p._duration;
-			
+
 			// remove on time-out
 			if (p._time >= p._duration)
 			{
@@ -81,74 +81,74 @@ class Emitter extends Graphic
 				_particleCount --;
 				continue;
 			}
-			
+
 			// get next particle
 			p = p._next;
 		}
 	}
-	
+
 	/** @private Renders the particles. */
-	override public function render(target:BitmapData, point:Point, camera:Point) 
+	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
 		// quit if there are no particles
 		if (_particle == null) return;
-		
+
 		// get rendering position
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;
-		
+
 		// particle info
 		var t:Float, td:Float,
 			p:Particle = _particle,
 			type:ParticleType,
 			rect:Rectangle;
-		
+
 		// loop through the particles
 		while (p != null)
 		{
 			// get time scale
 			t = p._time / p._duration;
-			
+
 			// get particle type
 			type = p._type;
 			rect = type._frame;
-			
+
 			// get position
 			td = (type._ease == null) ? t : type._ease(t);
 			_p.x = _point.x + p._x + p._moveX * td;
 			_p.y = _point.y + p._y + p._moveY * td;
 			p._moveY += p._gravity * td;
-			
+
 			// get frame
 			rect.x = rect.width * type._frames[Std.int(td * type._frameCount)];
 			rect.y = Std.int(rect.x / type._width) * rect.height;
 			rect.x %= type._width;
-			
+
 			// draw particle
 			if (type._buffer != null)
 			{
 				// get alpha
 				_tint.alphaMultiplier = type._alpha + type._alphaRange * ((type._alphaEase == null) ? t : type._alphaEase(t));
-				
+
 				// get color
 				td = (type._colorEase == null) ? t : type._colorEase(t);
 				_tint.redMultiplier = type._red + type._redRange * td;
 				_tint.greenMultiplier = type._green + type._greenRange * td;
 				_tint.blueMultiplier  = type._blue + type._blueRange * td;
-				type._buffer.fillRect(type._bufferRect, 0);
+				type._buffer.fillRect(type._bufferRect, HXP.blackColor);
 				type._buffer.copyPixels(type._source, rect, HXP.zero);
 				type._buffer.colorTransform(type._bufferRect, _tint);
-				
+
 				// draw particle
 				target.copyPixels(type._buffer, type._bufferRect, _p, null, null, true);
 			}
 			else target.copyPixels(type._source, rect, _p, null, null, true);
-			
+
 			// get next particle
 			p = p._next;
 		}
 	}
-	
+
 	/**
 	 * Creates a new Particle type for this Emitter.
 	 * @param	name		Name of the particle type.
@@ -163,7 +163,7 @@ class Emitter extends Graphic
 		_types.set(name, pt);
 		return pt;
 	}
-	
+
 	/**
 	 * Defines the motion range for a particle type.
 	 * @param	name			The particle type.
@@ -193,7 +193,7 @@ class Emitter extends Graphic
 	{
 		return cast(_types.get(name) , ParticleType).setGravity(gravity, gravityRange);
 	}
-	
+
 	/**
 	 * Sets the alpha range of the particle type.
 	 * @param	name		The particle type.
@@ -208,7 +208,7 @@ class Emitter extends Graphic
 		if (pt == null) return null;
 		return pt.setAlpha(start, finish, ease);
 	}
-	
+
 	/**
 	 * Sets the color range of the particle type.
 	 * @param	name		The particle type.
@@ -223,7 +223,7 @@ class Emitter extends Graphic
 		if (pt == null) return null;
 		return pt.setColor(start, finish, ease);
 	}
-	
+
 	/**
 	 * Emits a particle.
 	 * @param	name		Particle type to emit.
@@ -235,7 +235,7 @@ class Emitter extends Graphic
 	{
 		var p:Particle, type:ParticleType = _types.get(name);
 		if (type == null) throw "Particle type \"" + name + "\" does not exist.";
-		
+
 		if (_cache != null)
 		{
 			p = _cache;
@@ -245,7 +245,7 @@ class Emitter extends Graphic
 		p._next = _particle;
 		p._prev = null;
 		if (p._next != null) p._next._prev = p;
-		
+
 		p._type = type;
 		p._time = 0;
 		p._duration = type._duration + type._durationRange * HXP.random;
@@ -259,38 +259,38 @@ class Emitter extends Graphic
 		_particleCount ++;
 		return (_particle = p);
 	}
-	
+
 	/**
 	 * Randomly emits the particle inside the specified radius
 	 * @param	name		Particle type to emit.
 	 * @param	x			X point to emit from.
 	 * @param	y			Y point to emit from.
-	 * @param	radius		
+	 * @param	radius
 	 */
-	public function emitInCircle(name:String, x:Float, y:Float, radius:Float):Particle 
+	public function emitInCircle(name:String, x:Float, y:Float, radius:Float):Particle
 	{
 		var angle = Math.random() * Math.PI * 2;
 		radius *= Math.random();
 		return emit(name, x + Math.cos(angle) * radius, y + Math.sin(angle) * radius);
 	}
-	
-	public function emitInRectangle(name:String, x:Float, y:Float, width:Float ,height:Float):Particle 
+
+	public function emitInRectangle(name:String, x:Float, y:Float, width:Float ,height:Float):Particle
 	{
 		return emit(name, x + HXP.random * width, y + HXP.random * height);
 	}
-	
+
 	/**
 	 * Amount of currently existing particles.
 	 */
 	public var particleCount(getParticleCount, null):Int;
 	private function getParticleCount():Int { return _particleCount; }
-	
+
 	// Particle infromation.
 	private var _types:Hash<ParticleType>;
 	private var _particle:Particle;
 	private var _cache:Particle;
 	private var _particleCount:Int;
-	
+
 	// Source information.
 	private var _source:BitmapData;
 	private var _width:Int;
@@ -298,7 +298,7 @@ class Emitter extends Graphic
 	private var _frameWidth:Int;
 	private var _frameHeight:Int;
 	private var _frameCount:Int;
-	
+
 	// Drawing information.
 	private var _p:Point;
 	private var _tint:ColorTransform;

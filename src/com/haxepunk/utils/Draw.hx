@@ -50,19 +50,10 @@ class Draw
 	private static inline function drawToScreen()
 	{
 		// TODO: talk to nme guys about changing BlendMode for neko
-#if neko
+#if (neko || cpp)
 		_target.draw(HXP.sprite, null, null, Type.getEnumName(Type.getEnum(blend)));
 #else
 		_target.draw(HXP.sprite, null, null, blend);
-#end
-	}
-
-	private static inline function convertColor(color:Int):Dynamic
-	{
-#if neko
-		return { rgb: color, a: 1 };
-#else
-		return color; // do nothing
 #end
 	}
 
@@ -96,17 +87,17 @@ class Draw
 		{
 			if (Y == 0)
 			{
-				screen.setPixel32(x1, y1, convertColor(color));
+				screen.setPixel32(x1, y1, HXP.convertColor(color));
 				return;
 			}
 			// draw a straight vertical line
 			yy = y2 > y1 ? 1 : -1;
 			while (y1 != y2)
 			{
-				screen.setPixel32(x1, y1, convertColor(color));
+				screen.setPixel32(x1, y1, HXP.convertColor(color));
 				y1 += yy;
 			}
-			screen.setPixel32(x2, y2, convertColor(color));
+			screen.setPixel32(x2, y2, HXP.convertColor(color));
 			return;
 		}
 
@@ -116,10 +107,10 @@ class Draw
 			xx = x2 > x1 ? 1 : -1;
 			while (x1 != x2)
 			{
-				screen.setPixel32(x1, y1, convertColor(color));
+				screen.setPixel32(x1, y1, HXP.convertColor(color));
 				x1 += xx;
 			}
-			screen.setPixel32(x2, y2, convertColor(color));
+			screen.setPixel32(x2, y2, HXP.convertColor(color));
 			return;
 		}
 
@@ -134,7 +125,7 @@ class Draw
 			c = .5;
 			while (x1 != x2)
 			{
-				screen.setPixel32(x1, y1, convertColor(color));
+				screen.setPixel32(x1, y1, HXP.convertColor(color));
 				x1 += xx;
 				c += slope;
 				if (c >= 1)
@@ -143,7 +134,7 @@ class Draw
 					c -= 1;
 				}
 			}
-			screen.setPixel32(x2, y2, convertColor(color));
+			screen.setPixel32(x2, y2, HXP.convertColor(color));
 		}
 		else
 		{
@@ -151,7 +142,7 @@ class Draw
 			c = .5;
 			while (y1 != y2)
 			{
-				screen.setPixel32(x1, y1, convertColor(color));
+				screen.setPixel32(x1, y1, HXP.convertColor(color));
 				y1 += yy;
 				c += slope;
 				if (c >= 1)
@@ -160,7 +151,7 @@ class Draw
 					c -= 1;
 				}
 			}
-			screen.setPixel32(x2, y2, convertColor(color));
+			screen.setPixel32(x2, y2, HXP.convertColor(color));
 		}
 	}
 
@@ -201,7 +192,7 @@ class Draw
 			_rect.y = y - _camera.y;
 			_rect.width = width;
 			_rect.height = height;
-			_target.fillRect(_rect, convertColor(color));
+			_target.fillRect(_rect, HXP.convertColor(color));
 			return;
 		}
 		if (color >= 0xFF000000) color = 0xFFFFFF & color;
@@ -228,10 +219,10 @@ class Draw
 			fy:Int = -2 * radius,
 			xx:Int = 0,
 			yy:Int = radius;
-		_target.setPixel32(x, y + radius, convertColor(color));
-		_target.setPixel32(x, y - radius, convertColor(color));
-		_target.setPixel32(x + radius, y, convertColor(color));
-		_target.setPixel32(x - radius, y, convertColor(color));
+		_target.setPixel32(x, y + radius, HXP.convertColor(color));
+		_target.setPixel32(x, y - radius, HXP.convertColor(color));
+		_target.setPixel32(x + radius, y, HXP.convertColor(color));
+		_target.setPixel32(x - radius, y, HXP.convertColor(color));
 		while (xx < yy)
 		{
 			if (f >= 0)
@@ -243,14 +234,14 @@ class Draw
 			xx ++;
 			fx += 2;
 			f += fx;
-			_target.setPixel32(x + xx, y + yy, convertColor(color));
-			_target.setPixel32(x - xx, y + yy, convertColor(color));
-			_target.setPixel32(x + xx, y - yy, convertColor(color));
-			_target.setPixel32(x - xx, y - yy, convertColor(color));
-			_target.setPixel32(x + yy, y + xx, convertColor(color));
-			_target.setPixel32(x - yy, y + xx, convertColor(color));
-			_target.setPixel32(x + yy, y - xx, convertColor(color));
-			_target.setPixel32(x - yy, y - xx, convertColor(color));
+			_target.setPixel32(x + xx, y + yy, HXP.convertColor(color));
+			_target.setPixel32(x - xx, y + yy, HXP.convertColor(color));
+			_target.setPixel32(x + xx, y - yy, HXP.convertColor(color));
+			_target.setPixel32(x - xx, y - yy, HXP.convertColor(color));
+			_target.setPixel32(x + yy, y + xx, HXP.convertColor(color));
+			_target.setPixel32(x - yy, y + xx, HXP.convertColor(color));
+			_target.setPixel32(x + yy, y - xx, HXP.convertColor(color));
+			_target.setPixel32(x - yy, y - xx, HXP.convertColor(color));
 		}
 	}
 
@@ -299,15 +290,15 @@ class Draw
 			_rect.y = y;
 			_rect.width = e.width;
 			_rect.height = 1;
-			_target.fillRect(_rect, convertColor(color));
+			_target.fillRect(_rect, HXP.convertColor(color));
 			_rect.y += e.height - 1;
-			_target.fillRect(_rect, convertColor(color));
+			_target.fillRect(_rect, HXP.convertColor(color));
 			_rect.y = y;
 			_rect.width = 1;
 			_rect.height = e.height;
-			_target.fillRect(_rect, convertColor(color));
+			_target.fillRect(_rect, HXP.convertColor(color));
 			_rect.x += e.width - 1;
-			_target.fillRect(_rect, convertColor(color));
+			_target.fillRect(_rect, HXP.convertColor(color));
 			return;
 		}
 		if (alpha >= 1 && blend == null)
@@ -317,7 +308,7 @@ class Draw
 			_rect.y = e.y - e.originY - _camera.y;
 			_rect.width = e.width;
 			_rect.height = e.height;
-			_target.fillRect(_rect, convertColor(color));
+			_target.fillRect(_rect, HXP.convertColor(color));
 			return;
 		}
 		if (color >= 0xFF000000) color = 0xFFFFFF & color;

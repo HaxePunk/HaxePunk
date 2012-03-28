@@ -13,7 +13,6 @@
 		<zip destfile="haxepunk.zip">
 			<zipfileset dir="" prefix="haxepunk" includes="run.n,haxelib.xml,template.zip" />
 			<zipfileset dir="src" prefix="haxepunk" />
-			<zipfileset dir="tools" prefix="haxepunk/tools" includes="*.hx" />
 		</zip>
 		<exec executable="haxelib" dir=".">
 			<arg line="test haxepunk.zip" />
@@ -31,25 +30,19 @@
 
 	<target name="build" depends="haxelib">
 		<exec executable="haxelib" dir=".">
-			<arg line="run HaxePunk new Test" />
+			<arg line="run HaxePunk new Example" />
 		</exec>
-		<exec executable="haxelib" dir="Test">
+		<exec executable="haxelib" dir="Example">
 			<arg line="run nme build build.nmml" />
 			<arg line="flash -debug" />
 		</exec>
-		<exec executable="haxelib" dir="Test">
+		<exec executable="haxelib" dir="Example">
 			<arg line="run nme build build.nmml" />
 			<arg line="neko -debug" />
 		</exec>
-		<exec executable="haxelib" dir="Test">
+		<exec executable="haxelib" dir="Example">
 			<arg line="run nme build build.nmml" />
 			<arg line="html5 -debug" />
-		</exec>
-	</target>
-
-	<target name="deploy" depends="haxelib">
-		<exec executable="haxelib" dir=".">
-			<arg line="submit haxepunk.zip" />
 		</exec>
 	</target>
 
@@ -68,7 +61,7 @@
 
 	<target name="clean">
 		<delete quiet="true">
-			<fileset dir="Test" />
+			<fileset dir="Example" />
 			<fileset dir="." includes="*.n,*.zip,com.haxepunk.debug.swf" />
 		</delete>
 	</target>

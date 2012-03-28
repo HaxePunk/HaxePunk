@@ -1,4 +1,4 @@
--cpp all.swf
+-neko all
 -lib nme
 --remap flash:nme
 --no-output

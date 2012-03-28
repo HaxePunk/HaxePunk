@@ -40,7 +40,7 @@ class Text extends Image
 		_field.text = _text = text;
 		if (width == 0) width = Std.int(_field.textWidth + 4);
 		if (height == 0) height = Std.int(_field.textHeight + 4);
-		_source = new BitmapData(width, height, true, 0);
+		_source = HXP.createBitmap(width, height, true);
 		super(_source);
 		updateBuffer();
 		this.x = x;
@@ -55,7 +55,7 @@ class Text extends Image
 		_field.height = _field.textHeight + 4;
 		_width = Std.int(_field.width);
 		_height = Std.int(_field.height);
-		_source.fillRect(_sourceRect, 0);
+		_source.fillRect(_sourceRect, HXP.blackColor);
 		_source.draw(_field);
 		super.updateBuffer(clearBefore);
 	}

@@ -2,7 +2,7 @@
 *.sublime*
 *.zip
 *.n
-test
+Example/
 
 # OS specific files
 .DS_Store

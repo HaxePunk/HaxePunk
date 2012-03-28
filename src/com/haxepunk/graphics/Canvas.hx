@@ -139,7 +139,7 @@ class Canvas extends Graphic
 		{
 			_rect.x = rect.x - xx;
 			_rect.y = rect.y - yy;
-			buffer.fillRect(_rect, color);
+			buffer.fillRect(_rect, HXP.convertColor(color));
 			xx += _maxWidth;
 			if (xx >= _width)
 			{
@@ -167,7 +167,7 @@ class Canvas extends Graphic
 			{
 				_rect.x = rect.x - xx;
 				_rect.y = rect.y - yy;
-				buffer.fillRect(_rect, 0xFF000000 | color);
+				buffer.fillRect(_rect, HXP.convertColor(0xFF000000 | color));
 				xx += _maxWidth;
 				if (xx >= _width)
 				{

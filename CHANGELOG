@@ -1,0 +1,21 @@
+HaxePunk CHANGELOG
+
+v1.6.1
+------------------------------
+
+* Fixed compilation errors for neko and html5 targets
+* Changed grid to use a boolean array instead of BitmapData
+* Added HXP.createBitmap to handle BitmapData creation. It checks dimensions and converts the color format in neko
+* Minor adjustments to build.xml to ease development
+* Fixed flash.Capabilities compile error for html5 target
+
+v1.6.0
+------------------------------
+
+* Screen can now be resized. This is done by destroying the BitmapData buffer object and recreating it.
+* Fixed several crash bugs in cpp targets
+
+v1.5.0
+------------------------------
+
+* Initial port

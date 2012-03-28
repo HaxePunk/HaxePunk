@@ -44,7 +44,7 @@ class TiledImage extends Image
 			_texture = HXP.createBitmap(Std.int(_sourceRect.width), Std.int(_sourceRect.height), true);
 			_texture.copyPixels(_source, _sourceRect, HXP.zero);
 		}
-		_buffer.fillRect(_bufferRect, 0);
+		_buffer.fillRect(_bufferRect, HXP.blackColor);
 		_graphics.clear();
 		if (_offsetX != 0 || _offsetY != 0)
 		{

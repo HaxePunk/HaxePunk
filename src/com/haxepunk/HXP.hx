@@ -702,15 +702,24 @@ class HXP
 	#end
 		if (sizeError)
 		{
-			throw "BitmapData is too large (" + width + ", " + height + ")";
+			trace("BitmapData is too large (" + width + ", " + height + ")");
+			return null;
 		}
 #end // flash
 
+		return new BitmapData(width, height, transparent, HXP.convertColor(color));
+	}
+
+	/**
+	 * Converts a color to platform specific type (BitmapInt32)
+	 */
+	public static inline function convertColor(color:Int):Dynamic
+	{
 #if neko
-		return new BitmapData(width, height, transparent, { rgb: color, a: 1 });
+		return { rgb: color, a: 1 };
 #else
-		return new BitmapData(width, height, transparent, color);
-#end // neko
+		return color; // do nothing
+#end
 	}
 
 #if hardware

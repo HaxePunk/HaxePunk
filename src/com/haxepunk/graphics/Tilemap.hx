@@ -18,7 +18,7 @@ class Tilemap extends Canvas
 	 * If x/y positions should be used instead of columns/rows.
 	 */
 	public var usePositions:Bool;
-	
+
 	/**
 	 * Constructor.
 	 * @param	tileset			The source tileset image.
@@ -27,25 +27,25 @@ class Tilemap extends Canvas
 	 * @param	tileWidth		Tile width.
 	 * @param	tileHeight		Tile height.
 	 */
-	public function new(tileset:Dynamic, width:Int, height:Int, tileWidth:Int, tileHeight:Int) 
+	public function new(tileset:Dynamic, width:Int, height:Int, tileWidth:Int, tileHeight:Int)
 	{
 		_rect = HXP.rect;
-		
+
 		// set some tilemap information
 		_width = width - (width % tileWidth);
 		_height = height - (height % tileHeight);
 		_columns = Std.int(_width / tileWidth);
 		_rows = Std.int(_height / tileHeight);
 		if (_columns == 0 || _rows == 0) throw "Cannot create a bitmapdata of width/height = 0";
-		_map = new BitmapData(_columns, _rows, false, 0);
+		_map = HXP.createBitmap(_columns, _rows);
 		_temp = _map.clone();
 		_tile = new Rectangle(0, 0, tileWidth, tileHeight);
-		
+
 		// create the canvas
 		_maxWidth -= _maxWidth % tileWidth;
 		_maxHeight -= _maxHeight % tileHeight;
 		super(_width, _height);
-		
+
 		// load the tileset graphic
 		if (Std.is(tileset, Class)) _set = HXP.getBitmap(tileset);
 		else if (Std.is(tileset, BitmapData)) _set = tileset;
@@ -54,7 +54,7 @@ class Tilemap extends Canvas
 		_setRows = Std.int(_set.height / tileHeight);
 		_setCount = _setColumns * _setRows;
 	}
-	
+
 	/**
 	 * Sets the index of the tile at the position.
 	 * @param	column		Tile column.
@@ -76,7 +76,7 @@ class Tilemap extends Canvas
 		_map.setPixel(column, row, index);
 		draw(Std.int(column * _tile.width), Std.int(row * _tile.height), _set, _tile);
 	}
-	
+
 	/**
 	 * Clears the tile at the position.
 	 * @param	column		Tile column.
@@ -95,7 +95,7 @@ class Tilemap extends Canvas
 		_tile.y = row * _tile.height;
 		fill(_tile, 0, 0);
 	}
-	
+
 	/**
 	 * Gets the tile index at the position.
 	 * @param	column		Tile column.
@@ -111,7 +111,7 @@ class Tilemap extends Canvas
 		}
 		return _map.getPixel(column % _columns, row % _rows);
 	}
-	
+
 	/**
 	 * Sets a rectangular region of tiles to the index.
 	 * @param	column		First tile column.
@@ -148,7 +148,7 @@ class Tilemap extends Canvas
 		}
 		usePositions = u;
 	}
-	
+
 	/**
 	 * Clears the rectangular region of tiles.
 	 * @param	column		First tile column.
@@ -184,8 +184,8 @@ class Tilemap extends Canvas
 		}
 		usePositions = u;
 	}
-	
-	public function loadFrom2DArray(array:Array2D):Void 
+
+	public function loadFrom2DArray(array:Array2D):Void
 	{
 		for (x in 0...array.length)
 		{
@@ -195,7 +195,7 @@ class Tilemap extends Canvas
 			}
 		}
 	}
-	
+
 	/**
 	* Loads the Tilemap tile index data from a string.
 	* @param str			The string data, which is a set of tile values separated by the columnSep and rowSep strings.
@@ -219,7 +219,7 @@ class Tilemap extends Canvas
 			}
 		}
 	}
-	
+
 	/**
 	* Saves the Tilemap tile index data to a string.
 	* @param columnSep		The string that separates each tile value on a row, default is ",".
@@ -240,7 +240,7 @@ class Tilemap extends Canvas
 		}
 		return s;
 	}
-	
+
 	/**
 	 * Gets the index of a tile, based on its column and row in the tileset.
 	 * @param	tilesColumn		Tileset column.
@@ -251,7 +251,7 @@ class Tilemap extends Canvas
 	{
 		return (tilesRow % _setRows) * _setColumns + (tilesColumn % _setColumns);
 	}
-	
+
 	/**
 	 * Shifts all the tiles in the tilemap.
 	 * @param	columns		Horizontal shift.
@@ -265,9 +265,9 @@ class Tilemap extends Canvas
 			columns = Std.int(columns / _tile.width);
 			rows = Std.int(rows / _tile.height);
 		}
-		
-		if (!wrap) _temp.fillRect(_temp.rect, 0);
-		
+
+		if (!wrap) _temp.fillRect(_temp.rect, HXP.blackColor);
+
 		if (columns != 0)
 		{
 			shift(Std.int(columns * _tile.width), 0);
@@ -276,14 +276,14 @@ class Tilemap extends Canvas
 			_point.y = 0;
 			_point.x = columns > 0 ? columns - _columns : columns + _columns;
 			_map.copyPixels(_temp, _temp.rect, _point);
-			
+
 			_rect.x = columns > 0 ? 0 : _columns + columns;
 			_rect.y = 0;
 			_rect.width = Math.abs(columns);
 			_rect.height = _rows;
 			updateRect(_rect, !wrap);
 		}
-		
+
 		if (rows != 0)
 		{
 			shift(0, Std.int(rows * _tile.height));
@@ -292,7 +292,7 @@ class Tilemap extends Canvas
 			_point.x = 0;
 			_point.y = rows > 0 ? rows - _rows : rows + _rows;
 			_map.copyPixels(_temp, _temp.rect, _point);
-			
+
 			_rect.x = 0;
 			_rect.y = rows > 0 ? 0 : _rows + rows;
 			_rect.width = _columns;
@@ -300,7 +300,7 @@ class Tilemap extends Canvas
 			updateRect(_rect, !wrap);
 		}
 	}
-	
+
 	/** @private Used by shiftTiles to update a rectangle of tiles from the tilemap. */
 	private function updateRect(rect:Rectangle, clear:Bool)
 	{
@@ -330,43 +330,43 @@ class Tilemap extends Canvas
 		}
 		usePositions = u;
 	}
-	
+
 	/** @private Used by shiftTiles to update a tile from the tilemap. */
 	private function updateTile(column:Int, row:Int)
 	{
 		setTile(column, row, _map.getPixel(column % _columns, row % _rows));
 	}
-	
+
 	/**
 	 * The tile width.
 	 */
 	public var tileWidth(getTileWidth, null):Int;
 	private function getTileWidth():Int { return Std.int(_tile.width); }
-	
+
 	/**
 	 * The tile height.
 	 */
 	public var tileHeight(getTileHeight, null):Int;
 	private function getTileHeight():Int { return Std.int(_tile.height); }
-	
+
 	/**
 	 * How many columns the tilemap has.
 	 */
 	public var columns(getColumns, null):Int;
 	private function getColumns():Int { return _columns; }
-	
+
 	/**
 	 * How many rows the tilemap has.
 	 */
 	public var rows(getRows, null):Int;
 	private function getRows():Int { return _rows; }
-	
+
 	// Tilemap information.
 	private var _map:BitmapData;
 	private var _temp:BitmapData;
 	private var _columns:Int;
 	private var _rows:Int;
-	
+
 	// Tileset information.
 	private var _set:BitmapData;
 	private var _setColumns:Int;

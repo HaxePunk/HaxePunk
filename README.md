@@ -20,7 +20,14 @@ git clone git@github.com:MattTuttle/HaxePunk
 ant
 ```
 
-If everything goes well you should see a flash version pop up with the console enabled.
+This will install a dev version of HaxePunk through haxelib, run several unit tests, and build an example project for flash/neko/js. If you fix an issue, feel free to create a pull request.
+
+Generating documentation is just as simple. Run the commands below to create a new set of docs with chxdoc. The first command is optional if you already have chxdoc installed.
+
+```bash
+haxelib install chxdoc
+ant doc
+```
 
 ## Questions?
 
