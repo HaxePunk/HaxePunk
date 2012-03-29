@@ -19,17 +19,17 @@ class Spritemap extends Image
 	 * If the animation has stopped.
 	 */
 	public var complete:Bool;
-	
+
 	/**
 	 * Optional callback function for animation end.
 	 */
 	public var callbackFunc:CallbackFunction;
-	
+
 	/**
 	 * Animation speed factor, alter this to speed up/slow down all animations.
 	 */
 	public var rate:Float;
-	
+
 	/**
 	 * Constructor.
 	 * @param	source			Source image.
@@ -37,52 +37,55 @@ class Spritemap extends Image
 	 * @param	frameHeight		Frame height.
 	 * @param	callback		Optional callback function for animation end.
 	 */
-	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, cbFunc:CallbackFunction = null, name:String = "") 
+	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, cbFunc:CallbackFunction = null, name:String = "")
 	{
 		complete = true;
 		rate = 1;
 		_anims = new Hash<Animation>();
-		_timer = 0;
-		
+		_timer = _frame = 0;
+
 		_rect = new Rectangle(0, 0, frameWidth, frameHeight);
 		super(source, _rect, name);
-		if (frameWidth == 0) _rect.width = this.source.width;
-		if (frameHeight == 0) _rect.height = this.source.height;
-		
-		_width = this.source.width;
-		_height = this.source.height;
-		
+		if (frameWidth == 0) _rect.width = _source.width;
+		if (frameHeight == 0) _rect.height = _source.height;
+
+		_width = _source.width;
+		_height = _source.height;
+
 		_columns = Std.int(_width / _rect.width);
 		_rows = Std.int(_height / _rect.height);
 		_frameCount = _columns * _rows;
 		callbackFunc = cbFunc;
-		
+
 		updateBuffer();
 		active = true;
-		
+
 	}
-	
+
 	/**
 	 * Updates the spritemap's buffer.
 	 */
-	override public function updateBuffer(clearBefore:Bool = false) 
+	override public function updateBuffer(clearBefore:Bool = false)
 	{
-		#if hardware
+#if hardware
 		return;
-		#end
+#end
+#if neko
+		if (_width == null) return;
+#end
 		// get position of the current frame
 		_rect.x = _rect.width * _frame;
 		_rect.y = Std.int(_rect.x / _width) * _rect.height;
 		_rect.x = _rect.x % _width;
-		
+
 		if (_flipped) _rect.x = (_width - _rect.width) - _rect.x;
-		
+
 		// update the buffer
 		super.updateBuffer(clearBefore);
 	}
-	
+
 	/** @private Updates the animation. */
-	override public function update() 
+	override public function update()
 	{
 		if (_anim != null && !complete)
 		{
@@ -114,7 +117,7 @@ class Spritemap extends Image
 			}
 		}
 	}
-	
+
 	/**
 	 * Add an Animation.
 	 * @param	name		Name of the animation.
@@ -131,7 +134,7 @@ class Spritemap extends Image
 		anim.parent = this;
 		return anim;
 	}
-	
+
 	/**
 	 * Plays an animation.
 	 * @param	name		Name of the animation to play.
@@ -156,7 +159,7 @@ class Spritemap extends Image
 		updateBuffer();
 		return _anim;
 	}
-	
+
 	/**
 	 * Gets the frame index based on the column and row of the source image.
 	 * @param	column		Frame column.
@@ -167,7 +170,7 @@ class Spritemap extends Image
 	{
 		return (row % _rows) * _columns + (column % _columns);
 	}
-	
+
 	/**
 	 * Sets the current display frame based on the column and row of the source image.
 	 * When you set the frame, any animations playing will be stopped to force the frame.
@@ -182,7 +185,7 @@ class Spritemap extends Image
 		_frame = frame;
 		updateBuffer();
 	}
-	
+
 	/**
 	 * Assigns the Spritemap to a random frame.
 	 */
@@ -190,7 +193,7 @@ class Spritemap extends Image
 	{
 		frame = HXP.rand(_frameCount);
 	}
-	
+
 	/**
 	 * Sets the frame to the frame index of an animation.
 	 * @param	name	Animation to draw the frame frame.
@@ -203,7 +206,7 @@ class Spritemap extends Image
 		if (index < 0) index += frames.length;
 		frame = frames[index];
 	}
-	
+
 	/**
 	 * Sets the current frame index. When you set this, any
 	 * animations playing will be stopped to force the frame.
@@ -220,7 +223,7 @@ class Spritemap extends Image
 		updateBuffer();
 		return _frame;
 	}
-	
+
 	/**
 	 * Current index of the playing animation.
 	 */
@@ -236,31 +239,31 @@ class Spritemap extends Image
 		updateBuffer();
 		return _index;
 	}
-	
+
 	/**
 	 * The amount of frames in the Spritemap.
 	 */
 	public var frameCount(getFrameCount, null):Int;
 	private function getFrameCount():Int { return _frameCount; }
-	
+
 	/**
 	 * Columns in the Spritemap.
 	 */
 	public var columns(getColumns, null):Int;
 	private function getColumns():Int { return _columns; }
-	
+
 	/**
 	 * Rows in the Spritemap.
 	 */
 	public var rows(getRows, null):Int;
 	private function getRows():Int { return _rows; }
-	
+
 	/**
 	 * The currently playing animation.
 	 */
 	public var currentAnim(getCurrentAnim, null):String;
 	private function getCurrentAnim():String { return (_anim != null) ? _anim.name : ""; }
-	
+
 	// Spritemap information.
 	private var _rect:Rectangle;
 	private var _width:Int;
@@ -273,7 +276,7 @@ class Spritemap extends Image
 	private var _index:Int;
 	private var _frame:Int;
 	private var _timer:Float;
-	
+
 	#if hardware
 	private var _baseID:Int;
 	#end

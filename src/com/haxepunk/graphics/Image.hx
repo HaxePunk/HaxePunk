@@ -50,11 +50,11 @@ class Image extends Graphic
 	 * Optional blend mode to use when drawing this image.
 	 * Use constants from the flash.display.BlendMode class.
 	 */
-	#if (flash || js)
+#if (flash || js)
 	public var blend:BlendMode;
-	#else
+#else
 	public var blend:String;
-	#end
+#end
 
 	/**
 	 * If the image should be drawn transformed with pixel smoothing.
@@ -75,9 +75,9 @@ class Image extends Graphic
 
 		if (Std.is(source, BitmapData))
 		{
-			#if hardware
+#if hardware
 			imageID = -1;
-			#end
+#end
 			_source = source;
 			_class = name;
 		}
@@ -91,7 +91,7 @@ class Image extends Graphic
 				_class = name;
 			_source = HXP.getBitmap(source);
 		}
-		#if hardware
+#if hardware
 		imageID = HXP.getBitmapIndex(source);
 		_bufferRect = HXP.sheetRectangles[imageID];
 		_tileSheet = HXP.tilesheet;
@@ -103,7 +103,7 @@ class Image extends Graphic
 			createBuffer();
 			updateBuffer();
 		}
-		#else
+#else
 		if (_source == null) throw "Invalid source image.";
 		_sourceRect = _source.rect;
 
@@ -117,7 +117,7 @@ class Image extends Graphic
 
 		createBuffer();
 		updateBuffer();
-		#end
+#end
 	}
 
 	/** @private Initialize variables */
@@ -146,7 +146,7 @@ class Image extends Graphic
 	/** Renders the image. */
 	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
-		#if hardware
+#if hardware
 		if (imageID > -1)
 		{
 			var useScale = (HXP.tilesheetFlags & HXP.TILE_SCALE) > 0;
@@ -180,7 +180,7 @@ class Image extends Graphic
 			return;
 		}
 
-		#end
+#end
 
 		// quit if no graphic is assigned
 		if (_buffer == null) return;
