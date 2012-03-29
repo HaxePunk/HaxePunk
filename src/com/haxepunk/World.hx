@@ -30,6 +30,7 @@ class World extends Tweener
 		super();
 		visible = true;
 		camera = new Point();
+		_count = 0;
 
 		_layerList = new Array<Int>();
 		_layerCount = new Array<Int>();

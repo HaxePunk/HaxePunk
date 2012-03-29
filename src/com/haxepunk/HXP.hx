@@ -72,7 +72,7 @@ class HXP
 	/**
 	 * The framerate assigned to the stage.
 	 */
-	public static var frameRate:Float;
+	public static var frameRate:Float = 0;
 
 	/**
 	 * The framerate assigned to the stage.

@@ -34,15 +34,24 @@
 		</exec>
 		<exec executable="haxelib" dir="Example">
 			<arg line="run nme build build.nmml" />
-			<arg line="flash -debug" />
+			<arg line="flash" />
 		</exec>
 		<exec executable="haxelib" dir="Example">
 			<arg line="run nme build build.nmml" />
-			<arg line="neko -debug" />
+			<arg line="neko" />
 		</exec>
 		<exec executable="haxelib" dir="Example">
 			<arg line="run nme build build.nmml" />
-			<arg line="html5 -debug" />
+			<arg line="html5" />
+		</exec>
+	</target>
+
+	<target name="test" depends="haxelib">
+		<exec executable="haxelib" dir=".">
+			<arg line="run HaxePunk new Example" />
+		</exec>
+		<exec executable="haxelib" dir="Example">
+			<arg line="run nme test build.nmml neko -debug" />
 		</exec>
 	</target>
 
@@ -65,6 +74,6 @@
 		</delete>
 	</target>
 
-	<target name="all" depends="clean, build, unit" />
+	<target name="all" depends="clean, test" />
 
 </project>

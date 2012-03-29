@@ -37,11 +37,9 @@ class Screen
 		_sprite = new Sprite();
 		_matrix = new Matrix();
 		_bitmap = new Array<Bitmap>();
-		_current = 0;
-		_scaleX = 1;
-		_scaleY = 1;
-		_scale = 1;
-		_angle = 0;
+		_x = _y = _originX = _originY = 0;
+		_angle = _current = 0;
+		_scale = _scaleX = _scaleY = 1;
 		_color = 0x202020;
 	}
 

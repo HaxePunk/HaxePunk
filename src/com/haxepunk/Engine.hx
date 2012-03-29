@@ -71,7 +71,8 @@ class Engine extends Sprite
 		maxFrameSkip = 5;
 		tickRate = 4;
 		_frameList = new Array<Int>();
-		_delta = 0;
+		_flashTime = _delta = _frameListSum = 0;
+		_frameLast = 0;
 
 		// on-stage event listener
 #if flash
