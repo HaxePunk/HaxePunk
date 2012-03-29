@@ -20,7 +20,7 @@ class Circle extends Mask
 	 * @param	x			X offset of the circle.
 	 * @param	y			Y offset of the circle.
 	 */
-	public function new(radius:Int = 1, x:Int = 0, y:Int = 0) 
+	public function new(radius:Int = 1, x:Int = 0, y:Int = 0)
 	{
 		super();
 		this.radius = radius;
@@ -30,36 +30,36 @@ class Circle extends Mask
 		_check.set(Type.getClassName(Circle), collideCircle);
 		_check.set(Type.getClassName(Hitbox), collideHitbox);
 	}
-	
+
 	/** @private Collides against an Entity. */
 	override private function collideMask(other:Mask):Bool
 	{
 		var distanceX = Math.abs(parent.x + _x - other.parent.x - other.parent.width * 0.5),
 			distanceY = Math.abs(parent.y + _y - other.parent.y - other.parent.height * 0.5);
-		
+
 		if (distanceX > other.parent.width * 0.5 + radius
 			|| distanceY > other.parent.height * 0.5 + radius)
 		{
 			return false;//The hitbox is to far away so return false
 		}
-		if (distanceX <= other.parent.width * 0.5|| distanceY <= other.parent.height * 0.5) 
+		if (distanceX <= other.parent.width * 0.5|| distanceY <= other.parent.height * 0.5)
 		{
 			return true;
 		}
 		var distanceToCorner = (distanceX - other.parent.width * 0.5) * (distanceX - other.parent.width * 0.5)
 			+ (distanceY - other.parent.height * 0.5) * (distanceY - other.parent.height * 0.5);
-			
+
 		return distanceToCorner <= _squaredRadius;
 	}
-	
-	private function collideCircle(other:Circle):Bool 
+
+	private function collideCircle(other:Circle):Bool
 	{
 		return (parent.x + _x + _radius - other.parent.x - other._x - other._radius) * (parent.x + _x + _radius - other.parent.x - other._x - other._radius)
-				+ (parent.y + _y + _radius - other.parent.y - other._y - other._radius) * (parent.y + _y + _radius - other.parent.y - other._y - other._radius) 
+				+ (parent.y + _y + _radius - other.parent.y - other._y - other._radius) * (parent.y + _y + _radius - other.parent.y - other._y - other._radius)
 				< _radius + other._radius;
 	}
-	
-	private function collideGrid(other:Grid):Bool 
+
+	private function collideGrid(other:Grid):Bool
 	{
 		var thisX:Float = parent.x + _x,
 			thisY:Float = parent.y +_y,
@@ -67,21 +67,21 @@ class Circle extends Mask
 			miny:Int = Math.floor((thisY + _y - radius - other.y) / other.tileHeight),
 			maxx:Int = Math.ceil((thisX + _x + radius - other.x) / other.tileWidth),
 			maxy:Int = Math.ceil((thisY + _y + radius - other.x) / other.tileHeight),
-			
+
 			midx:Int = Math.floor((maxx + minx)/2),
 			midy:Int = Math.floor((maxy + miny)/2),
-			
+
 			entityDistX:Float = thisX - other.x,
 			entityDistY:Float = thisY - other.y,
 			dx:Float, dy:Float;
-		
+
 		for (xx in minx...maxx)
 		{
-			for (yy in miny...maxy) 
+			for (yy in miny...maxy)
 			{
-				if (other.getTile(xx, yy)) 
+				if (other.getTile(xx, yy))
 				{
-					if (xx <= midx) 
+					if (xx <= midx)
 					{
 						if (yy <= midy) //Lower right
 						{
@@ -98,7 +98,7 @@ class Circle extends Mask
 								return true;
 						}
 					}
-					else 
+					else
 					{
 						if (yy <= midy) //Lower left
 						{
@@ -127,33 +127,33 @@ class Circle extends Mask
 	{
 		var distanceX = Math.abs(parent.x + _x - other.parent.x - other.x - other.width * 0.5),
 			distanceY = Math.abs(parent.y + _y - other.parent.y - other.y - other.height * 0.5);
-		
+
 		if (distanceX > other.width * 0.5 + radius
 			|| distanceY > other.height * 0.5 + radius)
 		{
 			return false;//The hitbox is to far away so return false
 		}
-		if (distanceX <= other.width * 0.5|| distanceY <= other.height * 0.5) 
+		if (distanceX <= other.width * 0.5|| distanceY <= other.height * 0.5)
 		{
 			return true;
 		}
 		var distanceToCorner = (distanceX - other.width * 0.5) * (distanceX - other.width * 0.5)
 			+ (distanceY - other.height * 0.5) * (distanceY - other.height * 0.5);
-			
+
 		return distanceToCorner <= _squaredRadius;
 	}
-	
-	public inline function projectOn(axis:Point, collisionInfo:CollisionInfo):Void 
+
+	public inline function projectOn(axis:Point, collisionInfo:CollisionInfo):Void
 	{
 		collisionInfo.min = -_radius;
 		collisionInfo.max = _radius;
 	}
-	
-	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void 
+
+	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
 	{
-		graphics.drawCircle((parent.x + _x) * scaleX, (parent.y + _y) * scaleY, radius * scaleX);
+		graphics.drawCircle((parent.x + _x - HXP.camera.x) * scaleX, (parent.y + _y - HXP.camera.y) * scaleY, radius * scaleX);
 	}
-	
+
 	/**
 	 * X offset.
 	 */
@@ -163,11 +163,11 @@ class Circle extends Mask
 	{
 		if (_x == value) return value;
 		_x = value;
-		if (list != null) update();
-		else if (parent != null) update();	
+		if (list != null) list.update();
+		else if (parent != null) update();
 		return _x;
 	}
-	
+
 	/**
 	 * Y offset.
 	 */
@@ -177,11 +177,11 @@ class Circle extends Mask
 	{
 		if (_y == value) return value;
 		_y = value;
-		if (list != null) update();
-		else if (parent != null) update();		
+		if (list != null) list.update();
+		else if (parent != null) update();
 		return _y;
 	}
-	
+
 	/**
 	 * Radius.
 	 */
@@ -192,28 +192,31 @@ class Circle extends Mask
 		if (_radius == value) return value;
 		_radius = value;
 		_squaredRadius = value * value;
-		if (list != null) update();
-		else if (parent != null) update();	
+		if (list != null) list.update();
+		else if (parent != null) update();
 		return _radius;
 	}
-	
+
 	/** Updates the parent's bounds for this mask. */
-	override public function update() 
+	override public function update()
 	{
-		//update entity bounds
-		parent.originX = -_x + radius;
-		parent.originY = -_y + radius;
-		parent.width = radius + radius;
-		parent.height = parent.width;
-		
-		// update parent list
-		if (list != null) 
-			list.update();
+		if (parent != null)
+		{
+			//update entity bounds
+			parent.originX = -_x + radius;
+			parent.originY = -_y + radius;
+			parent.width = radius + radius;
+			parent.height = parent.width;
+
+			// update parent list
+			if (list != null)
+				list.update();
+		}
 	}
-	
+
 	// Hitbox information.
 	private var _x:Int;
 	private var _y:Int;
 	private var _radius:Int;
-	private var _squaredRadius:Int;//Set automatically through the setter for radius
+	private var _squaredRadius:Int; //Set automatically through the setter for radius
 }

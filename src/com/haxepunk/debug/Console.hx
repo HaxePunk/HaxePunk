@@ -184,7 +184,7 @@ class Console
 
 		// The transparent FlashPunk logo overlay bitmap.
 		_sprite.addChild(_back);
-		_back.bitmapData = HXP.createBitmap(width, height, true, 0xFFFFFF);
+		_back.bitmapData = HXP.createBitmap(width, height, true, 0xFFFFFFFF);
 		HXP.matrix.identity();
 		HXP.matrix.tx = Math.max((_back.bitmapData.width - _bmpLogo.width) / 2, 0);
 		HXP.matrix.ty = Math.max((_back.bitmapData.height - _bmpLogo.height) / 2, 0);
@@ -718,11 +718,13 @@ class Console
 					if (e.width != 0 && e.height != 0)
 					{
 						g.lineStyle(1, 0xFF0000);
+						g.drawRect((e.x - e.originX - HXP.camera.x) * sx, (e.y - e.originY - HXP.camera.y) * sy, e.width * sx, e.height * sy);
+
 						if (e.mask != null)
 						{
+							g.lineStyle(1, 0x0000FF);
 							e.mask.debugDraw(g, sx, sy);
 						}
-						g.drawRect((e.x - e.originX - HXP.camera.x) * sx, (e.y - e.originY - HXP.camera.y) * sy, e.width * sx, e.height * sy);
 					}
 					g.lineStyle(1, 0x00FF00);
 					g.drawRect((e.x - HXP.camera.x) * sx - 3, (e.y - HXP.camera.y) * sy - 3, 6, 6);
@@ -733,12 +735,13 @@ class Console
 					if (e.width != 0 && e.height != 0)
 					{
 						g.lineStyle(1, 0xFFFFFF);
+						g.drawRect((e.x - e.originX - HXP.camera.x) * sx, (e.y - e.originY - HXP.camera.y) * sy, e.width * sx, e.height * sy);
 
 						if (e.mask != null)
 						{
+							g.lineStyle(1, 0x0000FF);
 							e.mask.debugDraw(g, sx, sy);
 						}
-						g.drawRect((e.x - e.originX - HXP.camera.x) * sx, (e.y - e.originY - HXP.camera.y) * sy, e.width * sx, e.height * sy);
 					}
 					g.lineStyle(1, 0xFFFFFF);
 					g.drawRect((e.x - HXP.camera.x) * sx - 3, (e.y - HXP.camera.y) * sy - 3, 6, 6);

@@ -296,8 +296,20 @@ class Grid extends Hitbox
 		var xx:Int = x1;
 		while (y1 <= y2)
 		{
+			if (y1 < 0 || y1 >= _grid[0].length)
+			{
+				y1 ++;
+				continue;
+			}
+
 			while (x1 <= x2)
 			{
+				if (x1 < 0 || x1 >= _grid.length)
+				{
+					x1 ++;
+					continue;
+				}
+
 				if (_grid[x1][y1])
 				{
 					if (other.data.hitTest(_point, 1, _tile)) return true;
