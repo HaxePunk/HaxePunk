@@ -664,7 +664,7 @@ class Entity extends Tweener
 	 * @param	solidType	An optional collision type to stop flush against upon collision.
 	 * @param	sweep		If sweeping should be used (prevents fast-moving objects from going through solidType).
 	 */
-	public function moveBy(x:Float, y:Float, solidType:String = null, sweep:Bool = false)
+	public function moveBy(x:Float, y:Float, solidType:Array<String> = null, sweep:Bool = false)
 	{
 		_moveX += x;
 		_moveY += y;
@@ -677,12 +677,12 @@ class Entity extends Tweener
 			var sign:Int, e:Entity;
 			if (x != 0)
 			{
-				if (collidable && (sweep || collide(solidType, this.x + x, this.y) != null))
+				if (collidable && (sweep || collideTypes(solidType, this.x + x, this.y) != null))
 				{
 					sign = x > 0 ? 1 : -1;
 					while (x != 0)
 					{
-						if ((e = collide(solidType, this.x + sign, this.y)) != null)
+						if ((e = collideTypes(solidType, this.x + sign, this.y)) != null)
 						{
 							moveCollideX(e);
 							break;
@@ -698,12 +698,12 @@ class Entity extends Tweener
 			}
 			if (y != 0)
 			{
-				if (collidable && (sweep || collide(solidType, this.x, this.y + y) != null))
+				if (collidable && (sweep || collideTypes(solidType, this.x, this.y + y) != null))
 				{
 					sign = y > 0 ? 1 : -1;
 					while (y != 0)
 					{
-						if ((e = collide(solidType, this.x, this.y + sign)) != null)
+						if ((e = collideTypes(solidType, this.x, this.y + sign)) != null)
 						{
 							moveCollideY(e);
 							break;
@@ -732,7 +732,7 @@ class Entity extends Tweener
 	 * @param	solidType	An optional collision type to stop flush against upon collision.
 	 * @param	sweep		If sweeping should be used (prevents fast-moving objects from going through solidType).
 	 */
-	public inline function moveTo(x:Float, y:Float, solidType:String = null, sweep:Bool = false)
+	public inline function moveTo(x:Float, y:Float, solidType:Array<String> = null, sweep:Bool = false)
 	{
 		moveBy(x - this.x, y - this.y, solidType, sweep);
 	}
@@ -745,7 +745,7 @@ class Entity extends Tweener
 	 * @param	solidType	An optional collision type to stop flush against upon collision.
 	 * @param	sweep		If sweeping should be used (prevents fast-moving objects from going through solidType).
 	 */
-	public inline function moveTowards(x:Float, y:Float, amount:Float, solidType:String = null, sweep:Bool = false)
+	public inline function moveTowards(x:Float, y:Float, amount:Float, solidType:Array<String> = null, sweep:Bool = false)
 	{
 		_point.x = x - this.x;
 		_point.y = y - this.y;
