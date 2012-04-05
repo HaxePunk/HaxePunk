@@ -94,9 +94,11 @@ class Console
 		WATCH_LIST.push("y");
 
 		Log.trace = traceLog;
+		LOG.push("-- HaxePunk v" + HXP.VERSION + " --");
+		if (_enabled && _sprite.visible) updateLog();
 	}
 
-	public function traceLog(v:Dynamic, ?infos:PosInfos)
+	private function traceLog(v:Dynamic, ?infos:PosInfos)
 	{
 		LOG.push(infos.className + "(" + infos.lineNumber + "): " + Std.string(v));
 		if (_enabled && _sprite.visible) updateLog();

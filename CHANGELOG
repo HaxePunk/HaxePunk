@@ -3,6 +3,7 @@ HaxePunk CHANGELOG
 v1.6.2
 ------------------------------
 * moveBy/moveTowards can now handle Array<String> as well as String values. Thanks to MarekkPie!
+* added version info to first line of the console log
 
 v1.6.1
 ------------------------------
