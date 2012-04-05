@@ -32,6 +32,7 @@ class Grid extends Hitbox
 	public function new(width:Int, height:Int, tileWidth:Int, tileHeight:Int, x:Int = 0, y:Int = 0)
 	{
 		super();
+
 		// check for illegal grid size
 		if (width == 0 || height == 0 || tileWidth == 0 || tileHeight == 0)
 		{
@@ -51,6 +52,7 @@ class Grid extends Hitbox
 		_y = y;
 		_width = width;
 		_height = height;
+		usePositions = false;
 
 		// set callback functions
 		_check.set(Type.getClassName(Mask), collideMask);
@@ -72,6 +74,8 @@ class Grid extends Hitbox
 	 */
 	public function setTile(column:Int = 0, row:Int = 0, solid:Bool = true)
 	{
+		if ( ! checkTile(column, row) ) return;
+
 		if (usePositions)
 		{
 			column = Std.int(column / _tile.width);
@@ -90,6 +94,17 @@ class Grid extends Hitbox
 		setTile(column, row, false);
 	}
 
+	private function checkTile(column:Int, row:Int):Bool
+	{
+		// check that tile is valid
+		if (column < 0 || column > _grid.length - 1 || row < 0 || row > _grid[0].length - 1)
+		{
+			trace('Tile out of bounds: ' + column + ', ' + row);
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * Gets the value of a tile.
 	 * @param	column		Tile column.
@@ -98,6 +113,8 @@ class Grid extends Hitbox
 	 */
 	public function getTile(column:Int = 0, row:Int = 0):Bool
 	{
+		if ( ! checkTile(column, row) ) return false;
+
 		if (usePositions)
 		{
 			column = Std.int(column / _tile.width);
@@ -128,7 +145,7 @@ class Grid extends Hitbox
 		{
 			for (xx in column...(column + width))
 			{
-				_grid[xx][yy] = solid;
+				setTile(xx, yy, solid);
 			}
 		}
 	}

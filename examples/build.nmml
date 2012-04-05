@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	<app title="HaxePunk" main="Main"
+		package="com.example.app" version="1.0.0" company="HaxePunk" />
+	<window width="640" height="480" fps="30"
+		orientation="portrait" resizable="true" />
+
+	<set name="BUILD_DIR" value="bin" />
+
+	<classpath name="src" />
+	<haxelib name="nme" />
+	<haxelib name="HaxePunk" />
+
+	<assets path="assets/gfx" rename="gfx" type="image" include="*.png" />
+	<assets path="assets/sfx" rename="sfx" type="sound" include="*.wav" />
+	<assets path="assets/music" rename="music" type="music" include="*.mp3" />
+	<assets path="assets/font" rename="font" type="font" include="*.ttf" />
+
+	<ndll name="std" />
+	<ndll name="regexp" />
+	<ndll name="zlib" />
+	<ndll name="nme" haxelib="nme" />
+</project>
