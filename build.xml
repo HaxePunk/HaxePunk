@@ -74,6 +74,6 @@
 		</delete>
 	</target>
 
-	<target name="all" depends="clean, test" />
+	<target name="all" depends="clean, build, unit" />
 
 </project>
