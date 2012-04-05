@@ -33,11 +33,10 @@ class Grid extends Hitbox
 	{
 		super();
 		// check for illegal grid size
-		if (width == 0 ||
-			height == 0 ||
-			tileWidth == 0 ||
-			tileHeight == 0)
+		if (width == 0 || height == 0 || tileWidth == 0 || tileHeight == 0)
+		{
 			throw "Illegal Grid, sizes cannot be 0.";
+		}
 
 		_rect = HXP.rect;
 		_point = HXP.point;

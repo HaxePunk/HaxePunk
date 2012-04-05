@@ -47,7 +47,7 @@ class Tilemap extends Canvas
 		super(_width, _height);
 
 		// load the tileset graphic
-		if (Std.is(tileset, Class)) _set = HXP.getBitmap(tileset);
+		if (Std.is(tileset, Class) || Std.is(tileset, String)) _set = HXP.getBitmap(tileset);
 		else if (Std.is(tileset, BitmapData)) _set = tileset;
 		if (_set == null) throw "Invalid tileset graphic provided.";
 		_setColumns = Std.int(_set.width / tileWidth);
