@@ -7,6 +7,7 @@ v1.6.2
 * Tilemap constructor now handles asset strings
 * added platformer example project
 * fixed several neko crash bugs (initialize to zero)
+* Image.createRect fixed so it no longer creates a transparent image
 
 v1.6.1
 ------------------------------

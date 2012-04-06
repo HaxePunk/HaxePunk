@@ -220,7 +220,7 @@ class Image extends Graphic
 	 */
 	public static function createRect(width:Int, height:Int, color:Int = 0xFFFFFF):Image
 	{
-		var source:BitmapData = HXP.createBitmap(width, height, true, 0x000000 | color);
+		var source:BitmapData = HXP.createBitmap(width, height, true, 0xFF000000 | color);
 		return new Image(source);
 	}
 
