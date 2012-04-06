@@ -24,11 +24,11 @@ class Character extends Physics
 		setHitbox(16, 32, -8);
 
 		// Set physics properties
-		gravity.y = 2.6;
+		gravity.y = 2.2;
 		maxVelocity.y = kJumpForce;
 		maxVelocity.x = kMoveSpeed * 4;
-		friction.x = 0.7; // floor friction
-		friction.y = 2.0; // wall friction
+		friction.x = 0.92; // floor friction
+		friction.y = 0.99; // wall friction
 
 		// Define input keys
 		Input.define("left", [Key.A, Key.LEFT]);
@@ -81,7 +81,7 @@ class Character extends Physics
 
 	private var sprite:Spritemap;
 
-	private static inline var kMoveSpeed:Int = 2;
+	private static inline var kMoveSpeed:Float = 1.2;
 	private static inline var kJumpForce:Int = 20;
 
 }

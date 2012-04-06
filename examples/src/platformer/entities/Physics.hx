@@ -19,7 +19,7 @@ class Physics extends Entity
 	public function new(x:Float, y:Float)
 	{
 		super(x, y);
-		_onGround = _onWall = false;
+		_onGround = false;
 
 		velocity     = new Point();
 		acceleration = new Point();
@@ -31,9 +31,6 @@ class Physics extends Entity
 	public var onGround(getOnGround, null): Bool;
 	private function getOnGround():Bool { return _onGround; }
 
-	public var onWall(getOnWall, null): Bool;
-	private function getOnWall():Bool { return _onWall; }
-
 	override public function update()
 	{
 		// Apply acceleration and velocity
@@ -42,7 +39,6 @@ class Physics extends Entity
 		applyVelocity();
 		applyGravity();
 		checkMaxVelocity();
-		applyFriction();
 		super.update();
 	}
 
@@ -66,49 +62,24 @@ class Physics extends Entity
 		}
 	}
 
-	private function applyFriction()
+	public override function moveCollideY(e:Entity)
 	{
-		// If we're on the ground, apply friction
-		if (onGround && friction.x != 0)
+		if (velocity.y > 0)
 		{
-			if (velocity.x > 0)
-			{
-				velocity.x -= friction.x;
-				if (velocity.x < 0)
-				{
-					velocity.x = 0;
-				}
-			}
-			else if (velocity.x < 0)
-			{
-				velocity.x += friction.x;
-				if (velocity.x > 0)
-				{
-					velocity.x = 0;
-				}
-			}
+			_onGround = true;
 		}
+		velocity.y = 0;
 
-		// Apply friction if on a wall
-		if (onWall && friction.y != 0)
-		{
-			if (velocity.y > 0)
-			{
-				velocity.y -= friction.y;
-				if (velocity.y < 0)
-				{
-					velocity.y = 0;
-				}
-			}
-			else if (velocity.y < 0)
-			{
-				velocity.y += friction.y;
-				if (velocity.y > 0)
-				{
-					velocity.y = 0;
-				}
-			}
-		}
+		velocity.x *= friction.x;
+		if (Math.abs(velocity.x) < 1) velocity.x = 0;
+	}
+
+	public override function moveCollideX(e:Entity)
+	{
+		velocity.x = 0;
+
+		velocity.y *= friction.y;
+		if (Math.abs(velocity.y) < 1) velocity.y = 0;
 	}
 
 	private function applyVelocity()
@@ -116,39 +87,10 @@ class Physics extends Entity
 		var i:Int;
 
 		_onGround = false;
-		_onWall = false;
 
-		for (i in 0...Math.floor(Math.abs(velocity.x)))
-		{
-			if (collide(solid, x + HXP.sign(velocity.x), y) != null)
-			{
-				_onWall = true;
-				velocity.x = 0;
-				break;
-			}
-			else
-			{
-				x += HXP.sign(velocity.x);
-			}
-		}
-
-		for (i in 0...Math.floor(Math.abs(velocity.y)))
-		{
-			if (collide(solid, x, y + HXP.sign(velocity.y)) != null)
-			{
-				if (HXP.sign(velocity.y) == HXP.sign(gravity.y))
-					_onGround = true;
-				velocity.y = 0;
-				break;
-			}
-			else
-			{
-				y += HXP.sign(velocity.y);
-			}
-		}
+		moveBy(velocity.x, velocity.y, solid);
 	}
 
 	private var _onGround:Bool;
-	private var _onWall:Bool;
 
 }
