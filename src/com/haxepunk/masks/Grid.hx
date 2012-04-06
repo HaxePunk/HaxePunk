@@ -62,7 +62,7 @@ class Grid extends Hitbox
 		_grid = new Array<Array<Bool>>();
 		for (x in 0..._columns)
 		{
-			_grid[x] = new Array<Bool>();
+			_grid.push(new Array<Bool>());
 		}
 	}
 
@@ -97,7 +97,7 @@ class Grid extends Hitbox
 	private function checkTile(column:Int, row:Int):Bool
 	{
 		// check that tile is valid
-		if (column < 0 || column > _grid.length - 1 || row < 0 || row > _grid[0].length - 1)
+		if (column < 0 || column > _columns - 1 || row < 0 || row > _rows - 1)
 		{
 			trace('Tile out of bounds: ' + column + ', ' + row);
 			return false;

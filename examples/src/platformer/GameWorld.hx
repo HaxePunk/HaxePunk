@@ -24,7 +24,7 @@ class GameWorld extends World
 		// Create tilemap
 		var tilemap:Tilemap = new Tilemap("gfx/block.png", HXP.screen.width, HXP.screen.height, 32, 32);
 		// Create grid mask
-		var grid:Grid = new Grid(tilemap.columns, tilemap.rows, tilemap.tileWidth, tilemap.tileHeight);
+		var grid:Grid = new Grid(tilemap.columns * tilemap.tileWidth, tilemap.rows * tilemap.tileHeight, tilemap.tileWidth, tilemap.tileHeight);
 
 		// Fill the tilemap and grid programatically
 		var i:Int;

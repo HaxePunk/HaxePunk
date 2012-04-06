@@ -16,9 +16,9 @@ class Character extends Physics
 
 		sprite = new Spritemap("gfx/character.png", 32, 32);
 
-		sprite.add("idle", [19, 19, 19, 20], 0.1, true);
-		sprite.add("walk", [0, 1, 2, 3, 4, 5, 6, 7], 0.25, true);
-		sprite.add("jump", [21]);
+		sprite.add("idle", [8, 8, 8, 9], 4, true);
+		sprite.add("walk", [0, 1, 2, 3, 4, 5, 6, 7], 12, true);
+		sprite.add("jump", [10]);
 
 		graphic = sprite;
 		setHitbox(16, 32, -8);
@@ -26,7 +26,7 @@ class Character extends Physics
 		// Set physics properties
 		gravity.y = 2.6;
 		maxVelocity.y = kJumpForce;
-		maxVelocity.x = kMoveSpeed * 2;
+		maxVelocity.x = kMoveSpeed * 4;
 		friction.x = 0.7; // floor friction
 		friction.y = 2.0; // wall friction
 
@@ -59,9 +59,9 @@ class Character extends Physics
 
 		// Always face the direction we were last heading
 		if (velocity.x < 0)
-			sprite.flipped = false;
+			sprite.flipped = true; // left
 		else if (velocity.x > 0)
-			sprite.flipped = true;
+			sprite.flipped = false; // right
 	}
 
 	private function setAnimation()

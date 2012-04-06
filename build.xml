@@ -29,6 +29,10 @@
 	</target>
 
 	<target name="build" depends="haxelib">
+		<exec executable="haxelib" dir="examples">
+			<arg line="run nme test build.nmml" />
+			<arg line="flash -debug" />
+		</exec>
 		<exec executable="haxelib" dir=".">
 			<arg line="run HaxePunk new Example" />
 		</exec>
