@@ -251,7 +251,7 @@ class Grid extends Hitbox
 		{
 			for (dx in rectX...pX)
 			{
-				if (_grid[dx][dy])
+				if (getTile(dx, dy))
 				{
 					return true;
 				}

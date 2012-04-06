@@ -91,7 +91,10 @@ class Entity extends Tweener
 		this.x = x;
 		this.y = y;
 
+		originX = originY = 0;
+		width = height = 0;
 		_moveX = _moveY = 0;
+		_type = "";
 
 		HITBOX = new Mask();
 		_point = HXP.point;

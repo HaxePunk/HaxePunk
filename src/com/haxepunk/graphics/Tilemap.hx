@@ -42,8 +42,13 @@ class Tilemap extends Canvas
 		_tile = new Rectangle(0, 0, tileWidth, tileHeight);
 
 		// create the canvas
+#if neko
+		_maxWidth = 4000 - 4000 % tileWidth;
+		_maxHeight = 4000 - 4000 % tileHeight;
+#else
 		_maxWidth -= _maxWidth % tileWidth;
 		_maxHeight -= _maxHeight % tileHeight;
+#end
 		super(_width, _height);
 
 		// load the tileset graphic
