@@ -6,6 +6,13 @@ import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 import platformer.entities.Physics;
 
+private enum JumpStyle
+{
+	Normal;
+	Gravity;
+	Disable;
+}
+
 // Example character class using simple physics
 class Character extends Physics
 {
@@ -19,6 +26,10 @@ class Character extends Physics
 		sprite.add("idle", [8, 8, 8, 9], 4, true);
 		sprite.add("walk", [0, 1, 2, 3, 4, 5, 6, 7], 12, true);
 		sprite.add("jump", [10]);
+
+		sprite.add("down_idle", [19, 19, 19, 20], 4, true);
+		sprite.add("down_walk", [11, 12, 13, 14, 15, 16, 17, 18], 12, true);
+		sprite.add("down_jump", [21]);
 
 		graphic = sprite;
 		setHitbox(16, 32, -8);
@@ -48,8 +59,14 @@ class Character extends Physics
 
 		if (Input.pressed("jump") && onGround)
 		{
-			acceleration.y = -HXP.sign(gravity.y) * kJumpForce;
-			acceleration.x = -HXP.sign(gravity.x) * kJumpForce;
+			switch (kJumpStyle)
+			{
+				case Normal:
+					acceleration.y = -HXP.sign(gravity.y) * kJumpForce;
+				case Gravity:
+					gravity.y = -gravity.y;
+				case Disable:
+			}
 		}
 
 		// Make animation changes here
@@ -66,21 +83,26 @@ class Character extends Physics
 
 	private function setAnimation()
 	{
+		var anim:String = "";
+		if (gravity.y < 0) {
+			anim = "down_";
+		}
 		if (onGround)
 		{
 			if (velocity.x == 0)
-				sprite.play("idle");
+				sprite.play(anim+"idle");
 			else
-				sprite.play("walk");
+				sprite.play(anim+"walk");
 		}
 		else
 		{
-			sprite.play("jump");
+			sprite.play(anim+"jump");
 		}
 	}
 
 	private var sprite:Spritemap;
 
+	private static inline var kJumpStyle:JumpStyle = Gravity;
 	private static inline var kMoveSpeed:Float = 1.2;
 	private static inline var kJumpForce:Int = 20;
 

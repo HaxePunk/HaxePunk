@@ -64,7 +64,7 @@ class Physics extends Entity
 
 	public override function moveCollideY(e:Entity)
 	{
-		if (velocity.y > 0)
+		if (velocity.y * HXP.sign(gravity.y) > 0)
 		{
 			_onGround = true;
 		}
@@ -88,7 +88,7 @@ class Physics extends Entity
 
 		_onGround = false;
 
-		moveBy(velocity.x, velocity.y, solid);
+		moveBy(velocity.x, velocity.y, solid, true);
 	}
 
 	private var _onGround:Bool;
