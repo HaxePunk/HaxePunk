@@ -24,8 +24,9 @@ class Circle extends Mask
 	{
 		super();
 		this.radius = radius;
-		_x = x;
-		_y = y;
+		_x = x + radius;
+		_y = y + radius;
+
 		_check.set(Type.getClassName(Mask), collideMask);
 		_check.set(Type.getClassName(Circle), collideCircle);
 		_check.set(Type.getClassName(Hitbox), collideHitbox);
@@ -54,15 +55,15 @@ class Circle extends Mask
 
 	private function collideCircle(other:Circle):Bool
 	{
-		return (parent.x + _x + _radius - other.parent.x - other._x - other._radius) * (parent.x + _x + _radius - other.parent.x - other._x - other._radius)
-				+ (parent.y + _y + _radius - other.parent.y - other._y - other._radius) * (parent.y + _y + _radius - other.parent.y - other._y - other._radius)
-				< _radius + other._radius;
+		var dx:Float = (parent.x + _x) - (other.parent.x + other._x);
+		var dy:Float = (parent.y + _y) - (other.parent.y + other._y);
+		return (dx * dx + dy * dy) < Math.pow(_radius + other._radius, 2);
 	}
 
 	private function collideGrid(other:Grid):Bool
 	{
 		var thisX:Float = parent.x + _x,
-			thisY:Float = parent.y +_y,
+			thisY:Float = parent.y + _y,
 			minx:Int = Math.floor((thisX - radius - other.x) / other.tileWidth),
 			miny:Int = Math.floor((thisY + _y - radius - other.y) / other.tileHeight),
 			maxx:Int = Math.ceil((thisX + _x + radius - other.x) / other.tileWidth),
