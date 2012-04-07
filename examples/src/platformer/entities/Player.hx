@@ -14,7 +14,7 @@ private enum JumpStyle
 }
 
 // Example character class using simple physics
-class Character extends Physics
+class Player extends Physics
 {
 
 	public function new(x:Float, y:Float)
@@ -23,22 +23,22 @@ class Character extends Physics
 
 		sprite = new Spritemap("gfx/character.png", 32, 32);
 
-		sprite.add("idle", [8, 8, 8, 9], 4, true);
-		sprite.add("walk", [0, 1, 2, 3, 4, 5, 6, 7], 12, true);
-		sprite.add("jump", [10]);
+		sprite.add("norm_idle", [8, 8, 8, 9], 4, true);
+		sprite.add("norm_walk", [0, 1, 2, 3, 4, 5, 6, 7], 12, true);
+		sprite.add("norm_jump", [10]);
 
-		sprite.add("down_idle", [19, 19, 19, 20], 4, true);
-		sprite.add("down_walk", [11, 12, 13, 14, 15, 16, 17, 18], 12, true);
-		sprite.add("down_jump", [21]);
+		sprite.add("grav_idle", [19, 19, 19, 20], 4, true);
+		sprite.add("grav_walk", [11, 12, 13, 14, 15, 16, 17, 18], 12, true);
+		sprite.add("grav_jump", [21]);
 
 		graphic = sprite;
 		setHitbox(16, 32, -8);
 
 		// Set physics properties
-		gravity.y = 2.2;
+		gravity.y = 1.8;
 		maxVelocity.y = kJumpForce;
 		maxVelocity.x = kMoveSpeed * 4;
-		friction.x = 0.92; // floor friction
+		friction.x = 0.82; // floor friction
 		friction.y = 0.99; // wall friction
 
 		// Define input keys
@@ -57,9 +57,19 @@ class Character extends Physics
 		if (Input.check("right"))
 			acceleration.x = kMoveSpeed;
 
+		if (Input.pressed(Key.J))
+		{
+			switch (jumpStyle)
+			{
+				case Normal:  jumpStyle = Gravity; trace("Gravity jump");
+				case Gravity: jumpStyle = Disable; trace("Jump disabled");
+				case Disable: jumpStyle = Normal;  trace("Normal jump");
+			}
+		}
+
 		if (Input.pressed("jump") && onGround)
 		{
-			switch (kJumpStyle)
+			switch (jumpStyle)
 			{
 				case Normal:
 					acceleration.y = -HXP.sign(gravity.y) * kJumpForce;
@@ -83,26 +93,27 @@ class Character extends Physics
 
 	private function setAnimation()
 	{
-		var anim:String = "";
+		var anim:String = "norm_";
 		if (gravity.y < 0) {
-			anim = "down_";
+			anim = "grav_";
 		}
+
 		if (onGround)
 		{
 			if (velocity.x == 0)
-				sprite.play(anim+"idle");
+				sprite.play(anim + "idle");
 			else
-				sprite.play(anim+"walk");
+				sprite.play(anim + "walk");
 		}
 		else
 		{
-			sprite.play(anim+"jump");
+			sprite.play(anim + "jump");
 		}
 	}
 
 	private var sprite:Spritemap;
 
-	private static inline var kJumpStyle:JumpStyle = Gravity;
+	private static var jumpStyle:JumpStyle = Normal;
 	private static inline var kMoveSpeed:Float = 1.2;
 	private static inline var kJumpForce:Int = 20;
 

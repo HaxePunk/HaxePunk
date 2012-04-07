@@ -5,10 +5,28 @@ import com.haxepunk.World;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Tilemap;
 import com.haxepunk.masks.Grid;
-import platformer.entities.Character;
+import platformer.entities.Player;
 
 class GameWorld extends World
 {
+
+	private static var map:Array<Array<Int>> = [
+		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+		[1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1],
+		[1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1],
+		[1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1],
+		[1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1],
+		[1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1],
+		[1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1],
+		[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1],
+		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1],
+		[1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1],
+		[1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1],
+		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+	];
 
 	public function new()
 	{
@@ -19,32 +37,27 @@ class GameWorld extends World
 	{
 		HXP.screen.color = 0x8EDFFA;
 
-		add(new Character(HXP.screen.width / 2, HXP.screen.height - 64));
+		add(new Player(HXP.screen.width / 2, HXP.screen.height - 64));
+
+		var mapWidth:Int = map[0].length;
+		var mapHeight:Int = map.length;
 
 		// Create tilemap
-		var tilemap:Tilemap = new Tilemap("gfx/block.png", HXP.screen.width, HXP.screen.height, 32, 32);
+		var tilemap:Tilemap = new Tilemap("gfx/block.png", mapWidth * 32, mapHeight * 32, 32, 32);
 		// Create grid mask
 		var grid:Grid = new Grid(tilemap.columns * tilemap.tileWidth, tilemap.rows * tilemap.tileHeight, tilemap.tileWidth, tilemap.tileHeight);
 
 		// Fill the tilemap and grid programatically
-		var i:Int;
 		for (i in 0...tilemap.columns)
 		{
-			// top wall
-			tilemap.setTile(i, 0, 1);
-			grid.setTile(i, 0, true);
-			// bottom wall
-			tilemap.setTile(i, tilemap.rows - 1, 1);
-			grid.setTile(i, tilemap.rows - 1, true);
-		}
-		for (i in 0...tilemap.rows)
-		{
-			// left wall
-			tilemap.setTile(0, i, 1);
-			grid.setTile(0, i, true);
-			// right wall
-			tilemap.setTile(tilemap.columns - 1, i, 1);
-			grid.setTile(tilemap.columns - 1, i, true);
+			for (j in 0...tilemap.rows)
+			{
+				var tile = map[j][i];
+				if (tile != 0) {
+					tilemap.setTile(i, j, tile);
+					grid.setTile(i, j, true);
+				}
+			}
 		}
 
 		// Create a new entity to use as a tilemap

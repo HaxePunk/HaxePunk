@@ -71,7 +71,7 @@ class Physics extends Entity
 		velocity.y = 0;
 
 		velocity.x *= friction.x;
-		if (Math.abs(velocity.x) < 1) velocity.x = 0;
+		if (Math.abs(velocity.x) < 0.5) velocity.x = 0;
 	}
 
 	public override function moveCollideX(e:Entity)
