@@ -1,5 +1,6 @@
 package masks;
 
+import com.haxepunk.HXP;
 import com.haxepunk.World;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Image;
@@ -37,9 +38,11 @@ class GameWorld extends World
 
 	public override function begin()
 	{
-		circle = createCircle(25, 25, 40, 0xFF0000FF);
+		// create a circle entity we can move around
+		circle = createCircle(25, 25, 30, 0xFF0000FF);
 
-		createCircle(300, 50, 50, 0xFFFF00FF);
+		// these are static objects
+		createCircle(300, 50, 150, 0xFFFF00FF);
 		createBox(150, 200, 50, 50, 0xFF00FFFF);
 	}
 
@@ -49,18 +52,18 @@ class GameWorld extends World
 		var x:Int = 0, y:Int = 0;
 
 		if (Input.check(Key.LEFT))
-			x = -5;
+			x = -8;
 
 		if (Input.check(Key.RIGHT))
-			x = 5;
+			x = 8;
 
 		if (Input.check(Key.UP))
-			y = -5;
+			y = -8;
 
 		if (Input.check(Key.DOWN))
-			y = 5;
+			y = 8;
 
-		circle.moveBy(x, y, "solid", true);
+		circle.moveBy(x, y, "solid");
 	}
 
 	var circle:Entity;

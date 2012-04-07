@@ -695,10 +695,10 @@ class HXP
 	public static function createBitmap(width:Int, height:Int, ?transparent:Bool = false, ?color:Int = 0):BitmapData
 	{
 #if flash
-	#if flash9
+	#if flash8
 		var sizeError:Bool = (width > 2880 || height > 2880);
 	#else
-		var sizeError:Bool = (width * height > 16777215); // flash 10 requires size to be under 16,777,215
+		var sizeError:Bool = (width * height > 16777215 || width > 8191 || height > 8191); // flash 10 requires size to be under 16,777,215
 	#end
 		if (sizeError)
 		{

@@ -10,8 +10,6 @@ import flash.geom.Point;
  * Uses circular area to determine collision.
  */
 
- using Std;
-
 class Circle extends Mask
 {
 	/**
