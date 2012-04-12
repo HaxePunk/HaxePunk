@@ -3,6 +3,7 @@ package platformer;
 import com.haxepunk.HXP;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Tilemap;
+import com.haxepunk.graphics.Backdrop;
 import com.haxepunk.masks.Grid;
 import platformer.entities.Player;
 
@@ -34,7 +35,13 @@ class GameWorld extends DemoWorld
 
 	public override function begin()
 	{
-		add(new Player(HXP.screen.width / 2, HXP.screen.height - 64));
+		backdrop = new Backdrop("gfx/tile.png", true, true);
+		addGraphic(backdrop);
+
+		player = new Player(HXP.screen.width / 2, HXP.screen.height - 64);
+		add(player);
+
+		overlayText.text = "Arrow keys to move - Press 'j' to change jump mode";
 
 		var mapWidth:Int = map[0].length;
 		var mapHeight:Int = map.length;
@@ -64,5 +71,15 @@ class GameWorld extends DemoWorld
 		entity.type = "solid";
 		add(entity);
 	}
+
+	public override function update()
+	{
+		backdrop.x += 1;
+		backdrop.y += 2 * HXP.sign(player.gravity.y);
+		super.update();
+	}
+
+	private var player:Player;
+	private var backdrop:Backdrop;
 
 }

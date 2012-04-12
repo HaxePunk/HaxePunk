@@ -61,9 +61,9 @@ class Player extends Physics
 		{
 			switch (jumpStyle)
 			{
-				case Normal:  jumpStyle = Gravity; trace("Gravity jump");
-				case Gravity: jumpStyle = Disable; trace("Jump disabled");
-				case Disable: jumpStyle = Normal;  trace("Normal jump");
+				case Normal:  jumpStyle = Gravity;
+				case Gravity: jumpStyle = Normal;
+				case Disable: trace('disabled');
 			}
 		}
 

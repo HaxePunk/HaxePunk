@@ -1,5 +1,7 @@
 import com.haxepunk.HXP;
 import com.haxepunk.World;
+import com.haxepunk.Entity;
+import com.haxepunk.graphics.Text;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 
@@ -13,6 +15,11 @@ class DemoWorld extends World
 	public function new()
 	{
 		super();
+
+		overlayText = new Text("Press '[' and ']' to switch demos", 0, 0, HXP.screen.width, 20);
+		var overlay:Entity = new Entity(0, HXP.screen.height - 20, overlayText);
+		overlay.layer = 0;
+		add(overlay);
 	}
 
 	private function loadWorld():Bool
@@ -48,6 +55,8 @@ class DemoWorld extends World
 		}
 		super.update();
 	}
+
+	private var overlayText:Text;
 
 	private static var _currentWorld:Int = 0;
 	private static var _worlds:Array<String> = [
