@@ -1,7 +1,6 @@
 package masks;
 
 import com.haxepunk.HXP;
-import com.haxepunk.World;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Image;
 import com.haxepunk.graphics.Tilemap;
@@ -11,12 +10,30 @@ import com.haxepunk.masks.Hitbox;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 
-class GameWorld extends World
+class GameWorld extends DemoWorld
 {
 
 	public function new()
 	{
+		// change the screen draw color
+		HXP.screen.color = 0x8EDFFA;
 		super();
+	}
+
+	public override function begin()
+	{
+		// create a circle entity we can move around
+		circle = createCircle(25, 25, 30, 0xFF0000FF);
+
+		createGrid(32, 256, 64, 64, [
+				[0, 0, 0, 1, 0],
+				[1, 0, 1, 1, 1],
+				[1, 1, 1, 0, 0]
+			], 0xFF00FF00);
+
+		// these are static objects
+		createCircle(352, 32, 150, 0xFFFF00FF);
+		createBox(128, 196, 400, 50, 0xFF00FFFF);
 	}
 
 	private function createBox(x:Int, y:Int, w:Int, h:Int, color:Int = 0xFFFFFFFF):Entity
@@ -45,6 +62,7 @@ class GameWorld extends World
 		var height:Int = tiles.length;
 		var e:Entity = new Entity(x, y);
 
+		// create a tilemap using a single color
 		var tilemap:Tilemap = new Tilemap(
 				HXP.createBitmap(tileWidth, tileHeight, false, color),
 				width * tileWidth, height * tileHeight,
@@ -68,22 +86,6 @@ class GameWorld extends World
 		e.type = "solid";
 		add(e);
 		return e;
-	}
-
-	public override function begin()
-	{
-		// create a circle entity we can move around
-		circle = createCircle(25, 25, 30, 0xFF0000FF);
-
-		createGrid(32, 256, 64, 64, [
-				[0, 0, 0, 1, 0],
-				[1, 0, 1, 1, 1],
-				[1, 1, 1, 0, 0]
-			], 0xFF00FF00);
-
-		// these are static objects
-		createCircle(352, 32, 150, 0xFFFF00FF);
-		createBox(128, 196, 400, 50, 0xFF00FFFF);
 	}
 
 	public override function update()

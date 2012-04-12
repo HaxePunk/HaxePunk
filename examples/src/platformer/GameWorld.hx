@@ -1,13 +1,12 @@
 package platformer;
 
 import com.haxepunk.HXP;
-import com.haxepunk.World;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Tilemap;
 import com.haxepunk.masks.Grid;
 import platformer.entities.Player;
 
-class GameWorld extends World
+class GameWorld extends DemoWorld
 {
 
 	private static var map:Array<Array<Int>> = [
@@ -35,8 +34,6 @@ class GameWorld extends World
 
 	public override function begin()
 	{
-		HXP.screen.color = 0x8EDFFA;
-
 		add(new Player(HXP.screen.width / 2, HXP.screen.height - 64));
 
 		var mapWidth:Int = map[0].length;
