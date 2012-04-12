@@ -23,12 +23,12 @@ class Player extends Physics
 
 		sprite = new Spritemap("gfx/character.png", 32, 32);
 
-		sprite.add("norm_idle", [8, 8, 8, 9], 4, true);
-		sprite.add("norm_walk", [0, 1, 2, 3, 4, 5, 6, 7], 12, true);
+		sprite.add("norm_idle", [8, 8, 8, 9], 3, true);
+		sprite.add("norm_walk", [0, 1, 2, 3, 4, 5, 6, 7], 19, true);
 		sprite.add("norm_jump", [10]);
 
-		sprite.add("grav_idle", [19, 19, 19, 20], 4, true);
-		sprite.add("grav_walk", [11, 12, 13, 14, 15, 16, 17, 18], 12, true);
+		sprite.add("grav_idle", [19, 19, 19, 20], 2, true);
+		sprite.add("grav_walk", [11, 12, 13, 14, 15, 16, 17, 18], 19, true);
 		sprite.add("grav_jump", [21]);
 
 		graphic = sprite;
@@ -114,7 +114,7 @@ class Player extends Physics
 	private var sprite:Spritemap;
 
 	private static var jumpStyle:JumpStyle = Normal;
-	private static inline var kMoveSpeed:Float = 1.2;
+	private static inline var kMoveSpeed:Float = 0.8;
 	private static inline var kJumpForce:Int = 20;
 
 }

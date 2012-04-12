@@ -43,6 +43,7 @@ class Tilemap extends Canvas
 
 		// create the canvas
 #if neko
+		// HACK! stupid initialization issues
 		_maxWidth = 4000 - 4000 % tileWidth;
 		_maxHeight = 4000 - 4000 % tileHeight;
 #else

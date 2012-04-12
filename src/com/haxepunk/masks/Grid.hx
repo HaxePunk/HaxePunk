@@ -81,7 +81,7 @@ class Grid extends Hitbox
 			column = Std.int(column / _tile.width);
 			row = Std.int(row / _tile.height);
 		}
-		_grid[column][row] = solid;
+		_grid[row][column] = solid;
 	}
 
 	/**
@@ -120,7 +120,7 @@ class Grid extends Hitbox
 			column = Std.int(column / _tile.width);
 			row = Std.int(row / _tile.height);
 		}
-		return _grid[column][row];
+		return _grid[row][column];
 	}
 
 	/**
@@ -346,16 +346,44 @@ class Grid extends Hitbox
 
 	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void //Not 100% tested
 	{
-		HXP.matrix.b = HXP.matrix.c = 0;
-		HXP.matrix.a = tileWidth;//Scale X
-		HXP.matrix.d = tileHeight;//Scale Y
-		HXP.matrix.tx = -_x * HXP.matrix.a;//Translation X
-		HXP.matrix.ty = -_y * HXP.matrix.d;//Translation Y
-		//if (angle != 0) HXP.matrix.rotate(angle * HXP.RAD); //Rotation
-		HXP.matrix.tx += _x + parent.x - HXP.camera.x;
-		HXP.matrix.ty += _y + parent.y - HXP.camera.y;
-		// TODO: draw grid
-//		HXP.buffer.draw(_data, HXP.matrix);
+		HXP.point.x = _x + parent.x - HXP.camera.x;
+		HXP.point.y = _y + parent.y - HXP.camera.y;
+		var color = HXP.convertColor(0xFF0000FF);
+
+		HXP.buffer.lock();
+		for (i in 1..._columns)
+		{
+			HXP.rect.x = HXP.point.x + i * tileWidth;
+			HXP.rect.y = HXP.point.y;
+			HXP.rect.width = 1;
+			HXP.rect.height = _height;
+			HXP.buffer.fillRect(HXP.rect, color);
+		}
+
+		for (i in 1..._rows)
+		{
+			HXP.rect.x = HXP.point.x;
+			HXP.rect.y = HXP.point.y + i * tileHeight;
+			HXP.rect.width = _width;
+			HXP.rect.height = 1;
+			HXP.buffer.fillRect(HXP.rect, color);
+		}
+
+		HXP.rect.width = tileWidth;
+		HXP.rect.height = tileHeight;
+		for (y in 0..._rows)
+		{
+			HXP.rect.y = HXP.point.y + y * tileHeight;
+			for (x in 0..._columns)
+			{
+				HXP.rect.x = HXP.point.x + x * tileWidth;
+				if (_grid[y][x])
+				{
+					HXP.buffer.fillRect(HXP.rect, color);
+				}
+			}
+		}
+		HXP.buffer.unlock();
 	}
 
 	public function squareProjection(axis:Point, point:Point):Void

@@ -28,6 +28,7 @@ class Circle extends Mask
 		_check.set(Type.getClassName(Mask), collideMask);
 		_check.set(Type.getClassName(Circle), collideCircle);
 		_check.set(Type.getClassName(Hitbox), collideHitbox);
+		_check.set(Type.getClassName(Grid), collideGrid);
 	}
 
 	/** @private Collides against an Entity. */
@@ -62,16 +63,23 @@ class Circle extends Mask
 	{
 		var thisX:Float = parent.x + _x,
 			thisY:Float = parent.y + _y,
-			minx:Int = Math.floor((thisX - radius - other.x) / other.tileWidth),
-			miny:Int = Math.floor((thisY + _y - radius - other.y) / other.tileHeight),
-			maxx:Int = Math.ceil((thisX + _x + radius - other.x) / other.tileWidth),
-			maxy:Int = Math.ceil((thisY + _y + radius - other.x) / other.tileHeight),
+			otherX:Float = other.parent.x + other.x,
+			otherY:Float = other.parent.y + other.y,
+			entityDistX:Float = thisX - otherX,
+			entityDistY:Float = thisY - otherY;
 
-			midx:Int = Math.floor((maxx + minx)/2),
-			midy:Int = Math.floor((maxy + miny)/2),
+		var minx:Int = Math.floor((entityDistX - radius) / other.tileWidth),
+			miny:Int = Math.floor((entityDistY - radius) / other.tileHeight),
+			maxx:Int = Math.ceil((entityDistX + radius) / other.tileWidth),
+			maxy:Int = Math.ceil((entityDistY + radius) / other.tileHeight);
 
-			entityDistX:Float = thisX - other.x,
-			entityDistY:Float = thisY - other.y,
+		if (minx < 0) minx = 0;
+		if (miny < 0) miny = 0;
+		if (maxx > other.columns) maxx = other.columns;
+		if (maxy > other.rows)    maxy = other.rows;
+
+		var midx:Int = Math.floor((maxx + minx) / 2),
+			midy:Int = Math.floor((maxy + miny) / 2),
 			dx:Float, dy:Float;
 
 		for (xx in minx...maxx)
@@ -124,22 +132,19 @@ class Circle extends Mask
 	/** @private Collides against a Hitbox. */
 	private function collideHitbox(other:Hitbox):Bool
 	{
-		var distanceX = Math.abs(parent.x + _x - other.parent.x - other.x - other.width * 0.5),
-			distanceY = Math.abs(parent.y + _y - other.parent.y - other.y - other.height * 0.5);
+		var dx = Math.abs(parent.x + _x - other.parent.x + other.x),
+			dy = Math.abs(parent.y + _y - other.parent.y + other.y);
 
-		if (distanceX > other.width * 0.5 + radius
-			|| distanceY > other.height * 0.5 + radius)
-		{
-			return false;//The hitbox is to far away so return false
-		}
-		if (distanceX <= other.width * 0.5|| distanceY <= other.height * 0.5)
+		if (dx <= other.width || dy <= other.height)
 		{
 			return true;
 		}
-		var distanceToCorner = (distanceX - other.width * 0.5) * (distanceX - other.width * 0.5)
-			+ (distanceY - other.height * 0.5) * (distanceY - other.height * 0.5);
+		if (dx > other.width + radius || dy > other.height + radius)
+		{
+			return false; //The hitbox is to far away so return false
+		}
 
-		return distanceToCorner <= _squaredRadius;
+		return (dx * dx + dy * dy) <= _squaredRadius;
 	}
 
 	public inline function projectOn(axis:Point, collisionInfo:CollisionInfo):Void
