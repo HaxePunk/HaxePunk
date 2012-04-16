@@ -4,19 +4,18 @@ import com.haxepunk.Entity;
 import com.haxepunk.HXP;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
+
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.BlendMode;
 import flash.display.Graphics;
 import flash.display.Sprite;
-import flash.display.Stage;
 import flash.geom.ColorTransform;
 import flash.geom.Rectangle;
-import flash.Lib;
-import flash.text.Font;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
+
 import haxe.Log;
 import haxe.PosInfos;
 

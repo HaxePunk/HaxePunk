@@ -1,7 +1,6 @@
 package com.haxepunk;
 
 import flash.geom.Point;
-import com.haxepunk.utils.Input;
 import com.haxepunk.Entity;
 import com.haxepunk.Tweener;
 import flash.geom.Rectangle;

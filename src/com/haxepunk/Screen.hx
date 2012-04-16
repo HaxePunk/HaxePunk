@@ -7,8 +7,6 @@ import flash.display.PixelSnapping;
 import flash.display.Sprite;
 import flash.filters.BitmapFilter;
 import flash.geom.Matrix;
-import flash.geom.Point;
-import flash.geom.Transform;
 import com.haxepunk.graphics.Image;
 
 /**
@@ -35,12 +33,13 @@ class Screen
 	public function init()
 	{
 		_sprite = new Sprite();
-		_matrix = new Matrix();
 		_bitmap = new Array<Bitmap>();
-		_x = _y = _originX = _originY = 0;
+		x = y = originX = originY = 0;
 		_angle = _current = 0;
-		_scale = _scaleX = _scaleY = 1;
+		scale = scaleX = scaleY = 1;
 		_color = 0x202020;
+		_matrix = new Matrix();
+		update();
 	}
 
 	/**
@@ -48,7 +47,7 @@ class Screen
 	 * @param width the width of the screen
 	 * @param height the height of the screen
 	 */
-	public function resize(width:Float, height:Float)
+	public function resize(w:Float, h:Float)
 	{
 		if (_bitmap[0] != null)
 		{
@@ -56,13 +55,13 @@ class Screen
 			_sprite.removeChild(_bitmap[1]);
 		}
 
-		HXP.width = _width = Std.int(width);
-		HXP.height = _height = Std.int(height);
+		HXP.width = width = Std.int(w);
+		HXP.height = height = Std.int(h);
 		HXP.bounds.width = width;
 		HXP.bounds.height = height;
 
-		_bitmap[0] = new Bitmap(HXP.createBitmap(_width, _height), PixelSnapping.NEVER);
-		_bitmap[1] = new Bitmap(HXP.createBitmap(_width, _height), PixelSnapping.NEVER);
+		_bitmap[0] = new Bitmap(HXP.createBitmap(width, height), PixelSnapping.NEVER);
+		_bitmap[1] = new Bitmap(HXP.createBitmap(width, height), PixelSnapping.NEVER);
 
 		_sprite.addChild(_bitmap[0]).visible = true;
 		_sprite.addChild(_bitmap[1]).visible = false;
@@ -111,14 +110,15 @@ class Screen
 	/** @private Re-applies transformation matrix. */
 	public function update()
 	{
+		if (_matrix == null) return; // prevent update on init
 		_matrix.b = _matrix.c = 0;
-		_matrix.a = _scaleX * _scale;
-		_matrix.d = _scaleY * _scale;
-		_matrix.tx = -_originX * _matrix.a;
-		_matrix.ty = -_originY * _matrix.d;
+		_matrix.a = scaleX * scale;
+		_matrix.d = scaleY * scale;
+		_matrix.tx = -originX * _matrix.a;
+		_matrix.ty = -originY * _matrix.d;
 		if (_angle != 0) _matrix.rotate(_angle);
-		_matrix.tx += _originX * _scaleX * _scale + _x;
-		_matrix.ty += _originY * _scaleX * _scale + _y;
+		_matrix.tx += originX * scaleX * scale + x;
+		_matrix.ty += originY * scaleX * scale + y;
 		_sprite.transform.matrix = _matrix;
 	}
 
@@ -132,93 +132,86 @@ class Screen
 	/**
 	 * X offset of the screen.
 	 */
-	public var x(getX, setX):Int;
-	private function getX():Int { return _x; }
+	public var x(default, setX):Int;
 	private function setX(value:Int):Int
 	{
-		if (_x == value) return value;
-		_x = value;
+		if (x == value) return value;
+		x = value;
 		update();
-		return _x;
+		return x;
 	}
 
 	/**
 	 * Y offset of the screen.
 	 */
-	public var y(getY, setY):Int;
-	private function getY():Int { return _y; }
+	public var y(default, setY):Int;
 	private function setY(value:Int):Int
 	{
-		if (_y == value) return value;
-		_y = value;
+		if (y == value) return value;
+		y = value;
 		update();
-		return _y;
+		return y;
 	}
 
 	/**
 	 * X origin of transformations.
 	 */
-	public var originX(getOriginX, setOriginX):Int;
-	private function getOriginX():Int { return _originX; }
+	public var originX(default, setOriginX):Int;
 	private function setOriginX(value:Int):Int
 	{
-		if (_originX == value) return value;
-		_originX = value;
+		if (originX == value) return value;
+		originX = value;
 		update();
-		return _originX;
+		return originX;
 	}
 
 	/**
 	 * Y origin of transformations.
 	 */
-	public var originY(getOriginY, setOriginY):Int;
-	private function getOriginY():Int { return _originY; }
+	public var originY(default, setOriginY):Int;
 	private function setOriginY(value:Int):Int
 	{
-		if (_originY == value) return value;
-		_originY = value;
+		if (originY == value) return value;
+		originY = value;
 		update();
-		return _originY;
+		return originY;
 	}
 
 	/**
 	 * X scale of the screen.
 	 */
-	public var scaleX(getScaleX, setScaleX):Float;
-	private function getScaleX():Float { return _scaleX; }
+	public var scaleX(default, setScaleX):Float;
 	private function setScaleX(value:Float):Float
 	{
-		if (_scaleX == value) return value;
-		_scaleX = value;
+		if (scaleX == value) return value;
+		scaleX = value;
 		update();
-		return _scaleX;
+		return scaleX;
 	}
 
 	/**
 	 * Y scale of the screen.
 	 */
-	public var scaleY(getScaleY, setScaleY):Float;
-	private function getScaleY():Float { return _scaleY; }
+	public var scaleY(default, setScaleY):Float;
 	private function setScaleY(value:Float):Float
 	{
-		if (_scaleY == value) return value;
-		_scaleY = value;
+		if (scaleY == value) return value;
+		scaleY = value;
 		update();
-		return _scaleY;
+		return scaleY;
 	}
 
 	/**
 	 * Scale factor of the screen. Final scale is scaleX * scale by scaleY * scale, so
 	 * you can use this factor to scale the screen both horizontally and vertically.
 	 */
-	public var scale(getScale, setScale):Float;
-	private function getScale():Float { return _scale; }
+	public var scale(default, setScale):Float;
 	private function setScale(value:Float):Float
 	{
-		if (_scale == value) return value;
-		_scale = value;
+		if (scale == value) return value;
+		scale = value;
 		update();
-		return _scale;
+		return scale;
 	}
 
 	/**
@@ -239,31 +232,29 @@ class Screen
 	 */
 	public var smoothing(getSmoothing, setSmoothing):Bool;
 	private function getSmoothing():Bool { return _bitmap[0].smoothing; }
-	private function setSmoothing(value:Bool):Bool { _bitmap[0].smoothing = _bitmap[1].smoothing = value; return _bitmap[0].smoothing; }
+	private function setSmoothing(value:Bool):Bool { _bitmap[0].smoothing = _bitmap[1].smoothing = value; return value; }
 
 	/**
 	 * Width of the screen.
 	 */
-	public var width(getWidth, null):Int;
-	private function getWidth():Int { return _width; }
+	public var width(default, null):Int;
 
 	/**
 	 * Height of the screen.
 	 */
-	public var height(getHeight, null):Int;
-	private function getHeight():Int { return _height; }
+	public var height(default, null):Int;
 
 	/**
 	 * X position of the mouse on the screen.
 	 */
 	public var mouseX(getMouseX, null):Int;
-	private function getMouseX():Int { return Std.int((HXP.stage.mouseX - _x) / (_scaleX * _scale)); }
+	private function getMouseX():Int { return Std.int((HXP.stage.mouseX - x) / (scaleX * scale)); }
 
 	/**
 	 * Y position of the mouse on the screen.
 	 */
 	public var mouseY(getMouseY, null):Int;
-	private function getMouseY():Int { return Std.int((HXP.stage.mouseY - _y) / (_scaleY * _scale)); }
+	private function getMouseY():Int { return Std.int((HXP.stage.mouseY - y) / (scaleY * scale)); }
 
 	/**
 	 * Captures the current screen as an Image object.
@@ -279,15 +270,6 @@ class Screen
 	private var _bitmap:Array<Bitmap>;
 	private var _current:Int;
 	private var _matrix:Matrix;
-	private var _x:Int;
-	private var _y:Int;
-	private var _width:Int;
-	private var _height:Int;
-	private var _originX:Int;
-	private var _originY:Int;
-	private var _scaleX:Float;
-	private var _scaleY:Float;
-	private var _scale:Float;
 	private var _angle:Float;
 	private var _color:Int;
 }

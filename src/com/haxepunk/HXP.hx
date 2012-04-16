@@ -122,20 +122,20 @@ class HXP
 	 * Half the screen width.
 	 */
 	public static var halfWidth(getHalfWidth, null):Float;
-	private inline static function getHalfWidth():Float { return width / 2; }
+	private static inline function getHalfWidth():Float { return width / 2; }
 
 	/**
 	 * Half the screen height.
 	 */
 	public static var halfHeight(getHalfHeight, null):Float;
-	private inline static function getHalfHeight():Float { return height / 2; }
+	private static inline function getHalfHeight():Float { return height / 2; }
 
 	/**
 	 * The currently active World object. When you set this, the World is flagged
 	 * to switch, but won't actually do so until the end of the current frame.
 	 */
 	public static var world(getWorld, setWorld):World;
-	private inline static function getWorld():World { return _world; }
+	private static inline function getWorld():World { return _world; }
 	private static function setWorld(value:World):World
 	{
 		if (_world == value) return value;
@@ -143,13 +143,17 @@ class HXP
 		return _world;
 	}
 
-	public inline static function swapWorld()
+	public static inline function swapWorld()
 	{
 		_world = _goto;
 		_goto = null;
 	}
 
-	public inline static function clear(array:Array<Dynamic>)
+	/**
+	 * Empties an array of its' contents
+	 * @param array filled array
+	 */
+	public static inline function clear(array:Array<Dynamic>)
 	{
 		var i:Int;
 		for (i in 0...array.length)
@@ -161,7 +165,7 @@ class HXP
 	 * @param	x	X position.
 	 * @param	y	Y position.
 	 */
-	public inline static function setCamera(x:Float = 0, y:Float = 0)
+	public static inline function setCamera(x:Float = 0, y:Float = 0)
 	{
 		camera.x = x;
 		camera.y = y;
@@ -170,7 +174,7 @@ class HXP
 	/**
 	 * Resets the camera position.
 	 */
-	public inline static function resetCamera()
+	public static inline function resetCamera()
 	{
 		camera.x = camera.y = 0;
 	}
@@ -179,7 +183,7 @@ class HXP
 	 * Global volume factor for all sounds, a value from 0 to 1.
 	 */
 	public static var volume(getVolume, setVolume):Float;
-	private inline static function getVolume():Float { return _volume; }
+	private static inline function getVolume():Float { return _volume; }
 	private static function setVolume(value:Float):Float
 	{
 		if (value < 0) value = 0;
@@ -195,7 +199,7 @@ class HXP
 	 * Global panning factor for all sounds, a value from -1 to 1.
 	 */
 	public static var pan(getPan, setPan):Float;
-	private inline static function getPan():Float { return _pan; }
+	private static inline function getPan():Float { return _pan; }
 	private static function setPan(value:Float):Float
 	{
 		if (value < -1) value = -1;
@@ -213,7 +217,7 @@ class HXP
 	 * @param	objs		The Objects you want to randomly choose from. Can be ints, Floats, Points, etc.
 	 * @return	A randomly chosen one of the provided parameters.
 	 */
-	public inline static function choose(objs:Array<Dynamic>):Dynamic
+	public static inline function choose(objs:Array<Dynamic>):Dynamic
 	{
 		return objs[rand(objs.length)];
 	}
@@ -235,7 +239,7 @@ class HXP
 	 * @param	amount	How much you want the value to approach target by.
 	 * @return	The new value.
 	 */
-	public inline static function approach(value:Float, target:Float, amount:Float):Float
+	public static inline function approach(value:Float, target:Float, amount:Float):Float
 	{
 		return value < target ? (target < value + amount ? target : value + amount) : (target > value - amount ? target : value - amount);
 	}
@@ -247,7 +251,7 @@ class HXP
 	 * @param	t		Interpolation factor.
 	 * @return	When t=0, returns a. When t=1, returns b. When t=0.5, will return halfway between a and b. Etc.
 	 */
-	public inline static function lerp(a:Float, b:Float, t:Float = 1):Float
+	public static inline function lerp(a:Float, b:Float, t:Float = 1):Float
 	{
 		return a + (b - a) * t;
 	}
@@ -259,7 +263,7 @@ class HXP
 	 * @param	t				Interpolation value. Clamped to the range [0, 1].
 	 * return	RGB component-interpolated color value.
 	 */
-	public inline static function colorLerp(fromColor:Int, toColor:Int, t:Float = 1):Int
+	public static inline function colorLerp(fromColor:Int, toColor:Int, t:Float = 1):Int
 	{
 		if (t <= 0) { return fromColor; }
 		if (t >= 1) { return toColor; }
@@ -306,7 +310,7 @@ class HXP
 	 * @param	anchor		The anchor object.
 	 * @param	distance	The max distance object can be anchored to the anchor.
 	 */
-	public inline static function anchorTo(object:Dynamic, anchor:Dynamic, distance:Float = 0)
+	public static inline function anchorTo(object:Dynamic, anchor:Dynamic, distance:Float = 0)
 	{
 		point.x = object.x - anchor.x;
 		point.y = object.y - anchor.y;
@@ -323,7 +327,7 @@ class HXP
 	 * @param	y2		The second y-position.
 	 * @return	The angle from (x1, y1) to (x2, y2).
 	 */
-	public inline static function angle(x1:Float, y1:Float, x2:Float, y2:Float):Float
+	public static inline function angle(x1:Float, y1:Float, x2:Float, y2:Float):Float
 	{
 		var a:Float = Math.atan2(y2 - y1, x2 - x1) * DEG;
 		return a < 0 ? a + 360 : a;
@@ -337,7 +341,7 @@ class HXP
 	 * @param	x			X offset.
 	 * @param	y			Y offset.
 	 */
-	public inline static function angleXY(object:Dynamic, angle:Float, length:Float = 1, x:Float = 0, y:Float = 0)
+	public static inline function angleXY(object:Dynamic, angle:Float, length:Float = 1, x:Float = 0, y:Float = 0)
 	{
 		angle *= RAD;
 		object.x = Math.cos(angle) * length + x;
@@ -566,10 +570,12 @@ class HXP
 	 * @param	loop		If true, will jump to the first item after the last item is reached.
 	 * @return	The next item in the list.
 	 */
-	public static function next<T>(current:T, options:Array<T>, loop:Bool = true):Dynamic
+	public static inline function next<T>(current:T, options:Array<T>, loop:Bool = true):Dynamic
 	{
-		if (loop) return options[(indexOf(options, current) + 1) % options.length];
-		return options[Std.int(Math.max(indexOf(options, current) + 1, options.length - 1))];
+		if (loop)
+			return options[(indexOf(options, current) + 1) % options.length];
+		else
+			return options[Std.int(Math.max(indexOf(options, current) + 1, options.length - 1))];
 	}
 
 	/**
@@ -579,10 +585,12 @@ class HXP
 	 * @param	loop		If true, will jump to the last item after the first is reached.
 	 * @return	The previous item in the list.
 	 */
-	public static function prev<T>(current:T, options:Array<T>, loop:Bool = true):Dynamic
+	public static inline function prev<T>(current:T, options:Array<T>, loop:Bool = true):Dynamic
 	{
-		if (loop) return options[((indexOf(options, current) - 1) + options.length) % options.length];
-		return options[Std.int(Math.max(indexOf(options, current) - 1, 0))];
+		if (loop)
+			return options[((indexOf(options, current) - 1) + options.length) % options.length];
+		else
+			return options[Std.int(Math.max(indexOf(options, current) - 1, 0))];
 	}
 
 	/**
@@ -734,7 +742,7 @@ class HXP
 	}
 
 	/**
-	 * Takes a bitmapdata and creates the tilesheet has an optional parameter which can take the string from the SpriteSHeetPacker found here
+	 * Takes a bitmapdata and creates the tilesheet has an optional parameter which can take the string from the SpriteSheetPacker found here
 	 * http://spritesheetpacker.codeplex.com/ which will generate the rectangles as well
 	 * @param	source
 	 * @param	?rectangleData	 A string where a rectangle is formatted as 'name = x y width height\n'

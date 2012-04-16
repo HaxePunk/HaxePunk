@@ -44,8 +44,8 @@ class Grid extends Hitbox
 		_point2 = HXP.point2;
 
 		// set grid properties
-		_columns = Std.int(width / tileWidth);
-		_rows = Std.int(height / tileHeight);
+		columns = Std.int(width / tileWidth);
+		rows = Std.int(height / tileHeight);
 
 		_tile = new Rectangle(0, 0, tileWidth, tileHeight);
 		_x = x;
@@ -59,10 +59,10 @@ class Grid extends Hitbox
 		_check.set(Type.getClassName(Hitbox), collideHitbox);
 		_check.set(Type.getClassName(Pixelmask), collidePixelmask);
 
-		_grid = new Array<Array<Bool>>();
-		for (x in 0..._columns)
+		data = new Array<Array<Bool>>();
+		for (x in 0...columns)
 		{
-			_grid.push(new Array<Bool>());
+			data.push(new Array<Bool>());
 		}
 	}
 
@@ -81,7 +81,7 @@ class Grid extends Hitbox
 			column = Std.int(column / _tile.width);
 			row = Std.int(row / _tile.height);
 		}
-		_grid[row][column] = solid;
+		data[row][column] = solid;
 	}
 
 	/**
@@ -89,20 +89,23 @@ class Grid extends Hitbox
 	 * @param	column		Tile column.
 	 * @param	row			Tile row.
 	 */
-	public function clearTile(column:Int = 0, row:Int = 0)
+	public inline function clearTile(column:Int = 0, row:Int = 0)
 	{
 		setTile(column, row, false);
 	}
 
-	private function checkTile(column:Int, row:Int):Bool
+	private inline function checkTile(column:Int, row:Int):Bool
 	{
 		// check that tile is valid
-		if (column < 0 || column > _columns - 1 || row < 0 || row > _rows - 1)
+		if (column < 0 || column > columns - 1 || row < 0 || row > rows - 1)
 		{
 			trace('Tile out of bounds: ' + column + ', ' + row);
 			return false;
 		}
-		return true;
+		else
+		{
+			return true;
+		}
 	}
 
 	/**
@@ -120,7 +123,7 @@ class Grid extends Hitbox
 			column = Std.int(column / _tile.width);
 			row = Std.int(row / _tile.height);
 		}
-		return _grid[row][column];
+		return data[row][column];
 	}
 
 	/**
@@ -136,8 +139,8 @@ class Grid extends Hitbox
 		if (usePositions)
 		{
 			column = Std.int(column / _tile.width);
-			row = Std.int(row / _tile.height);
-			width = Std.int(width / _tile.width);
+			row    = Std.int(row / _tile.height);
+			width  = Std.int(width / _tile.width);
 			height = Std.int(height / _tile.height);
 		}
 
@@ -157,7 +160,7 @@ class Grid extends Hitbox
 	 * @param	width		Columns to fill.
 	 * @param	height		Rows to fill.
 	 */
-	public function clearRect(column:Int = 0, row:Int = 0, width:Int = 1, height:Int = 1)
+	public inline function clearRect(column:Int = 0, row:Int = 0, width:Int = 1, height:Int = 1)
 	{
 		setRect(column, row, width, height, false);
 	}
@@ -195,14 +198,14 @@ class Grid extends Hitbox
 	{
 		var s:String = '',
 			x:Int, y:Int;
-		for (y in 0..._rows)
+		for (y in 0...rows)
 		{
-			for (x in 0..._columns)
+			for (x in 0...columns)
 			{
 				s += Std.string(getTile(x, y));
-				if (x != _columns - 1) s += columnSep;
+				if (x != columns - 1) s += columnSep;
 			}
-			if (y != _rows - 1) s += rowSep;
+			if (y != rows - 1) s += rowSep;
 		}
 		return s;
 	}
@@ -210,46 +213,41 @@ class Grid extends Hitbox
 	/**
 	 * The tile width.
 	 */
-	public var tileWidth(getTileWidth, null):Int;
+	public var tileWidth(getTileWidth, never):Int;
 	private inline function getTileWidth():Int { return Std.int(_tile.width); }
 
 	/**
 	 * The tile height.
 	 */
-	public var tileHeight(getTileHeight, null):Int;
+	public var tileHeight(getTileHeight, never):Int;
 	private inline function getTileHeight():Int { return Std.int(_tile.height); }
 
 	/**
 	 * How many columns the grid has
 	 */
-	public var columns(getColumns, null):Int;
-	private inline function getColumns():Int { return _columns; }
+	public var columns(default, null):Int;
 
 	/**
 	 * How many rows the grid has.
 	 */
-	public var rows(getRows, null):Int;
-	private inline function getRows():Int { return _rows; }
+	public var rows(default, null):Int;
 
 	/**
 	 * The grid data.
 	 */
-	public var data(getData, null):Array<Array<Bool>>;
-	private inline function getData():Array<Array<Bool>> { return _grid; }
+	public var data(default, null):Array<Array<Bool>>;
 
 	/** @private Collides against an Entity. */
 	override private function collideMask(other:Mask):Bool
 	{
-		var rectX = Std.int(other.parent.x - other.parent.originX - parent.x + parent.originX);
-		var rectY = Std.int(other.parent.y - other.parent.originY - parent.y + parent.originY);
-		var pX:Int = Std.int((rectX + other.parent.width - 1) / _tile.width) + 1;
-		var pY:Int = Std.int((rectY + other.parent.height -1) / _tile.height) + 1;
-		rectX = Std.int(rectX / _tile.width);
-		rectY = Std.int(rectY / _tile.height);
+		var rectX:Int  = Std.int((other.parent.x - other.parent.originX - parent.x + parent.originX) / _tile.width);
+		var rectY:Int  = Std.int((other.parent.y - other.parent.originY - parent.y + parent.originY) / _tile.height);
+		var pointX:Int = rectX + Std.int((other.parent.width  - 1) / _tile.width)  + 1;
+		var pointY:Int = rectY + Std.int((other.parent.height - 1) / _tile.height) + 1;
 
-		for (dy in rectY...pY)
+		for (dy in rectY...pointY)
 		{
-			for (dx in rectX...pX)
+			for (dx in rectX...pointX)
 			{
 				if (getTile(dx, dy))
 				{
@@ -263,34 +261,20 @@ class Grid extends Hitbox
 	/** @private Collides against a Hitbox. */
 	override private function collideHitbox(other:Hitbox):Bool
 	{
-		_rect.x = other.parent.x + other._x - parent.x - _x;
-		_rect.y = other.parent.y + other._y - parent.y - _y;
-		_point.x = Std.int((_rect.x + other._width - 1) / _tile.width) + 1;
-		_point.y = Std.int((_rect.y + other._height -1) / _tile.height) + 1;
-		_rect.x = Std.int(_rect.x / _tile.width);
-		_rect.y = Std.int(_rect.y / _tile.height);
-		_rect.width = _point.x - _rect.x;
-		_rect.height = _point.y - _rect.y;
+		var rectX:Int  = Std.int((other.parent.x + other._x - parent.x - _x) / _tile.width);
+		var rectY:Int  = Std.int((other.parent.y + other._y - parent.y - _y) / _tile.height);
+		var pointX:Int = rectX + Std.int((other._width  - 1) / _tile.width)  + 1;
+		var pointY:Int = rectY + Std.int((other._height - 1) / _tile.height) + 1;
 
-		var xx = Std.int(_rect.x);
-		var yy = Std.int(_rect.y);
-		var ww = Std.int(_rect.y +_rect.height);
-		var hh = Std.int(_rect.x +_rect.width);
-		if (_grid[xx][yy])
+		for (dy in rectY...pointY)
 		{
-			return true;
-		}
-		if (_grid[xx][yy + hh])
-		{
-			return true;
-		}
-		if (_grid[xx + ww][yy])
-		{
-			return true;
-		}
-		if (_grid[xx + ww][yy + hh])
-		{
-			return true;
+			for (dx in rectX...pointX)
+			{
+				if (getTile(dx, dy))
+				{
+					return true;
+				}
+			}
 		}
 		return false;
 	}
@@ -312,7 +296,7 @@ class Grid extends Hitbox
 		var xx:Int = x1;
 		while (y1 <= y2)
 		{
-			if (y1 < 0 || y1 >= _grid[0].length)
+			if (y1 < 0 || y1 >= data.length)
 			{
 				y1 ++;
 				continue;
@@ -320,13 +304,13 @@ class Grid extends Hitbox
 
 			while (x1 <= x2)
 			{
-				if (x1 < 0 || x1 >= _grid.length)
+				if (x1 < 0 || x1 >= data[0].length)
 				{
 					x1 ++;
 					continue;
 				}
 
-				if (_grid[x1][y1])
+				if (data[y1][x1])
 				{
 					if (other.data.hitTest(_point, 1, _tile)) return true;
 				}
@@ -344,14 +328,14 @@ class Grid extends Hitbox
 		return false;
 	}
 
-	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void //Not 100% tested
+	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
 	{
 		HXP.point.x = _x + parent.x - HXP.camera.x;
 		HXP.point.y = _y + parent.y - HXP.camera.y;
 		var color = HXP.convertColor(0xFF0000FF);
 
 		HXP.buffer.lock();
-		for (i in 1..._columns)
+		for (i in 1...columns)
 		{
 			HXP.rect.x = HXP.point.x + i * tileWidth;
 			HXP.rect.y = HXP.point.y;
@@ -360,7 +344,7 @@ class Grid extends Hitbox
 			HXP.buffer.fillRect(HXP.rect, color);
 		}
 
-		for (i in 1..._rows)
+		for (i in 1...rows)
 		{
 			HXP.rect.x = HXP.point.x;
 			HXP.rect.y = HXP.point.y + i * tileHeight;
@@ -371,13 +355,13 @@ class Grid extends Hitbox
 
 		HXP.rect.width = tileWidth;
 		HXP.rect.height = tileHeight;
-		for (y in 0..._rows)
+		for (y in 0...rows)
 		{
 			HXP.rect.y = HXP.point.y + y * tileHeight;
-			for (x in 0..._columns)
+			for (x in 0...columns)
 			{
 				HXP.rect.x = HXP.point.x + x * tileWidth;
-				if (_grid[y][x])
+				if (data[y][x])
 				{
 					HXP.buffer.fillRect(HXP.rect, color);
 				}
@@ -401,13 +385,8 @@ class Grid extends Hitbox
 	}
 
 	// Grid information.
-
-	private var _columns:Int;
-	private var _rows:Int;
 	private var _tile:Rectangle;
 	private var _rect:Rectangle;
 	private var _point:Point;
 	private var _point2:Point;
-
-	private var _grid:Array<Array<Bool>>;
 }

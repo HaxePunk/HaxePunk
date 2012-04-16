@@ -2,7 +2,6 @@ package com.haxepunk;
 
 import com.haxepunk.Entity;
 import com.haxepunk.masks.CollisionInfo;
-import com.haxepunk.masks.Hitbox;
 import com.haxepunk.masks.Masklist;
 import flash.display.Graphics;
 import flash.geom.Point;
