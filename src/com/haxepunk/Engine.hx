@@ -59,7 +59,7 @@ class Engine extends Sprite
 		// global game objects
 		HXP.engine = this;
 		HXP.screen = new Screen();
-		HXP.screen.resize(width, height);
+		HXP.resize(width, height);
 
 		// miscellanious startup stuff
 		if (HXP.randomSeed == 0) HXP.randomizeSeed();
@@ -146,7 +146,7 @@ class Engine extends Sprite
 	/** @private Event handler for stage resize */
 	private function onResize(e:Event)
 	{
-		HXP.screen.resize(HXP.stage.stageWidth, HXP.stage.stageHeight);
+		HXP.resize(HXP.stage.stageWidth, HXP.stage.stageHeight);
 	}
 
 	/** @private Event handler for stage entry. */

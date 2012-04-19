@@ -121,14 +121,12 @@ class HXP
 	/**
 	 * Half the screen width.
 	 */
-	public static var halfWidth(getHalfWidth, null):Float;
-	private static inline function getHalfWidth():Float { return width / 2; }
+	public static var halfWidth(default, null):Float;
 
 	/**
 	 * Half the screen height.
 	 */
-	public static var halfHeight(getHalfHeight, null):Float;
-	private static inline function getHalfHeight():Float { return height / 2; }
+	public static var halfHeight(default, null):Float;
 
 	/**
 	 * The currently active World object. When you set this, the World is flagged
@@ -147,6 +145,22 @@ class HXP
 	{
 		_world = _goto;
 		_goto = null;
+	}
+
+	/**
+	 * Resize the screen.
+	 * @param width		New width.
+	 * @param height	New height.
+	 */
+	public static function resize(width:Int, height:Int)
+	{
+		HXP.width = width;
+		HXP.height = height;
+		HXP.halfWidth = width / 2;
+		HXP.halfHeight = height / 2;
+		HXP.bounds.width = width;
+		HXP.bounds.height = height;
+		HXP.screen.resize();
 	}
 
 	/**

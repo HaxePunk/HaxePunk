@@ -7,6 +7,8 @@
 
 	<set name="BUILD_DIR" value="bin" />
 
+	<app preloader="com.haxepunk.Preloader" />
+
 	<classpath name="src" />
 	<haxelib name="nme" />
 	<haxelib name="HaxePunk" />

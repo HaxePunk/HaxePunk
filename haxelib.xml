@@ -3,6 +3,7 @@
 	<tag v="flash" />
 	<tag v="cpp" />
 	<tag v="game" />
+	<tag v="nme" />
 	<description>A HaXe port of the FlashPunk AS3 engine.</description>
 	<version name="1.6.3">See CHANGELOG</version>
 </project>

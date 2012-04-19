@@ -47,18 +47,19 @@ class Screen
 	 * @param width the width of the screen
 	 * @param height the height of the screen
 	 */
-	public function resize(w:Float, h:Float)
+	public function resize()
 	{
 		if (_bitmap[0] != null)
 		{
 			_sprite.removeChild(_bitmap[0]);
 			_sprite.removeChild(_bitmap[1]);
+
+			_bitmap[0].bitmapData.dispose();
+			_bitmap[1].bitmapData.dispose();
 		}
 
-		HXP.width = width = Std.int(w);
-		HXP.height = height = Std.int(h);
-		HXP.bounds.width = width;
-		HXP.bounds.height = height;
+		width = HXP.width;
+		height = HXP.height;
 
 		_bitmap[0] = new Bitmap(HXP.createBitmap(width, height), PixelSnapping.NEVER);
 		_bitmap[1] = new Bitmap(HXP.createBitmap(width, height), PixelSnapping.NEVER);
@@ -67,7 +68,7 @@ class Screen
 		_sprite.addChild(_bitmap[1]).visible = false;
 		HXP.buffer = _bitmap[0].bitmapData;
 
-		update();
+		_current = 0;
 	}
 
 	/**
@@ -79,7 +80,7 @@ class Screen
 		HXP.buffer = _bitmap[_current].bitmapData;
 	}
 
-	public function addFilter(filter:Array<Dynamic>)
+	public function addFilter(filter:Array<BitmapFilter>)
 	{
 		_sprite.filters = filter;
 	}

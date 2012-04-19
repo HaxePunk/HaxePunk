@@ -583,6 +583,7 @@ class Entity extends Tweener
 	 */
 	public inline function setHitbox(width:Int = 0, height:Int = 0, originX:Int = 0, originY:Int = 0)
 	{
+		HXP.log(width, height, originX, originY);
 		this.width = width;
 		this.height = height;
 		this.originX = originX;
@@ -595,15 +596,21 @@ class Entity extends Tweener
 	 */
 	public function setHitboxTo(o:Dynamic)
 	{
-		if (Std.is(o, Image) || Std.is(o, Rectangle)) setHitbox(Std.int(o.width), Std.int(o.height), -Std.int(o.x), -Std.int(o.y));
+		width = Reflect.getProperty(o, "width");
+		height = Reflect.getProperty(o, "height");
+
+		if (Std.is(o, Graphic) || Std.is(o, Rectangle))
+		{
+			originX = Reflect.getProperty(o, "x");
+			originY = Reflect.getProperty(o, "y");
+
+			originX = -originX;
+			originY = -originY;
+		}
 		else
 		{
-			if (o.hasOwnProperty("width")) width = o.width;
-			if (o.hasOwnProperty("height")) height = o.height;
-			if (o.hasOwnProperty("originX") && !Std.is(o, Graphic)) originX = o.originX;
-			else if (o.hasOwnProperty("x")) originX = Std.int(-o.x);
-			if (o.hasOwnProperty("originY") && !Std.is(o, Graphic)) originY = o.originY;
-			else if (o.hasOwnProperty("y")) originX = Std.int( -o.y);
+			originX = Reflect.getProperty(o, "originX");
+			originY = Reflect.getProperty(o, "originY");
 		}
 	}
 

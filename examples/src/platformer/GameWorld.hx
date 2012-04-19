@@ -38,7 +38,7 @@ class GameWorld extends DemoWorld
 		backdrop = new Backdrop("gfx/tile.png", true, true);
 		addGraphic(backdrop);
 
-		player = new Player(HXP.screen.width / 2, HXP.screen.height - 64);
+		player = new Player(10 * 32, 11 * 32);
 		add(player);
 
 		overlayText.text = "Arrow keys to move - Press 'j' to change jump mode";

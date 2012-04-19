@@ -91,10 +91,6 @@ class Console
 		WATCH_LIST = new List<String>();
 		WATCH_LIST.push("x");
 		WATCH_LIST.push("y");
-
-		Log.trace = traceLog;
-		LOG.push("-- HaxePunk v" + HXP.VERSION + " --");
-		if (_enabled && _sprite.visible) updateLog();
 	}
 
 	private function traceLog(v:Dynamic, ?infos:PosInfos)
@@ -154,12 +150,17 @@ class Console
 
 		// load assets based on embedding method
 #if nme
-		_bmpLogo = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_logo.png"));
-		_butDebug = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_debug.png"));
-		_butOutput = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_output.png"));
-		_butPlay = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_play.png"));
-		_butPause = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_pause.png"));
-		_butStep = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_step.png"));
+		try
+		{
+			_bmpLogo = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_logo.png"));
+			_butDebug = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_debug.png"));
+			_butOutput = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_output.png"));
+			_butPlay = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_play.png"));
+			_butPause = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_pause.png"));
+			_butStep = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_step.png"));
+		} catch (e:Dynamic) {
+			return;
+		}
 #elseif swfmill // Flashdevelop
 		_bmpLogo = new Bitmap(new GfxConsoleLogo(0, 0));
 		_butDebug = new Bitmap(new GfxConsoleDebug(0, 0));
@@ -323,6 +324,10 @@ class Console
 
 		// Set the state to unpaused.
 		paused = false;
+
+		Log.trace = traceLog;
+		LOG.push("-- HaxePunk v" + HXP.VERSION + " --");
+		if (_enabled && _sprite.visible) updateLog();
 	}
 
 	/**
