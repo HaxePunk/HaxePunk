@@ -1,4 +1,4 @@
-﻿package com.haxepunk.tweens.motion;
+package com.haxepunk.tweens.motion;
 
 import com.haxepunk.Tween;
 import com.haxepunk.utils.Ease;
@@ -20,7 +20,7 @@ class LinearPath extends Motion
 		_pointD = new Array<Float>();
 		_pointT = new Array<Float>();
 
-		_distance = _speed = _index = 0;
+		distance = _speed = _index = 0;
 
 		super(0, complete, type, null);
 		_pointD[0] = _pointT[0] = 0;
@@ -35,7 +35,7 @@ class LinearPath extends Motion
 	{
 		updatePath();
 		_target = duration;
-		_speed = _distance / duration;
+		_speed = distance / duration;
 		_ease = ease;
 		start();
 	}
@@ -48,7 +48,7 @@ class LinearPath extends Motion
 	public function setMotionSpeed(speed:Float, ease:EaseFunction = null)
 	{
 		updatePath();
-		_target = _distance / speed;
+		_target = distance / speed;
 		_speed = speed;
 		_ease = ease;
 
@@ -64,8 +64,8 @@ class LinearPath extends Motion
 	{
 		if (_last != null)
 		{
-			_distance += Math.sqrt((x - _last.x) * (x - _last.x) + (y - _last.y) * (y - _last.y));
-			_pointD[_points.length] = _distance;
+			distance += Math.sqrt((x - _last.x) * (x - _last.x) + (y - _last.y) * (y - _last.y));
+			_pointD[_points.length] = distance;
 		}
 		_points[_points.length] = _last = new Point(x, y);
 	}
@@ -112,14 +112,13 @@ class LinearPath extends Motion
 		if (_pointD.length == _pointT.length) return;
 		// evaluate t for each point
 		var i:Int = 0;
-		while (i < _points.length) _pointT[i] = _pointD[i ++] / _distance;
+		while (i < _points.length) _pointT[i] = _pointD[i ++] / distance;
 	}
 
 	/**
 	 * The full length of the path.
 	 */
-	public var distance(getDistance, null):Float;
-	private function getDistance():Float { return _distance; }
+	public var distance(default, null):Float;
 
 	/**
 	 * How many points are on the path.
@@ -131,7 +130,6 @@ class LinearPath extends Motion
 	private var _points:Array<Point>;
 	private var _pointD:Array<Float>;
 	private var _pointT:Array<Float>;
-	private var _distance:Float;
 	private var _speed:Float;
 	private var _index:Int;
 

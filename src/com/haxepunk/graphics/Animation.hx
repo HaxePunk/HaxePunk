@@ -13,64 +13,54 @@ class Animation
 	 * @param	frameRate	Animation speed.
 	 * @param	loop		If the animation should loop.
 	 */
-	public function new(name:String, frames:Array<Int>, frameRate:Float = 0, loop:Bool = true) 
+	public function new(name:String, frames:Array<Int>, frameRate:Float = 0, loop:Bool = true)
 	{
-		_name = name;
-		_frames = frames;
-		_frameRate = frameRate;
-		_loop = loop;
-		_frameCount = frames.length;
+        this.name       = name;
+        this.frames     = frames;
+        this.frameRate  = frameRate;
+        this.loop       = loop;
+        this.frameCount = frames.length;
 	}
-	
+
 	/**
 	 * Plays the animation.
 	 * @param	reset		If the animation should force-restart if it is already playing.
 	 */
 	public function play(reset:Bool = false)
 	{
-		_parent.play(_name, reset);
+		_parent.play(name, reset);
 	}
-	
+
 	public var parent(null, setParent):Spritemap;
 	private function setParent(value:Spritemap):Spritemap {
 		_parent = value;
 		return _parent;
 	}
-	
+
 	/**
 	 * Name of the animation.
 	 */
-	public var name(getName, null):String;
-	private function getName():String { return _name; }
-	
+	public var name(default, null):String;
+
 	/**
 	 * Array of frame indices to animate.
 	 */
-	public var frames(getFrames, null):Array<Int>;
-	private function getFrames():Array<Int> { return _frames; }
-	
+	public var frames(default, null):Array<Int>;
+
 	/**
 	 * Animation speed.
 	 */
-	public var frameRate(getFrameRate, null):Float;
-	private function getFrameRate():Float { return _frameRate; }
-	
+	public var frameRate(default, null):Float;
+
 	/**
 	 * Amount of frames in the animation.
 	 */
-	public var frameCount(getFrameCount, null):Int;
-	private function getFrameCount():Int { return _frameCount; }
-	
+	public var frameCount(default, null):Int;
+
 	/**
 	 * If the animation loops.
 	 */
-	public var loop(getLoop, null):Bool;
-	private function getLoop():Bool { return _loop; }
-	
+	public var loop(default, null):Bool;
+
 	private var _parent:Spritemap;
-	private var _name:String;
-	private var _frames:Array<Int>;
-	private var _frameRate:Float;
-	private var _frameCount:Int;
-	private var _loop:Bool;
 }
