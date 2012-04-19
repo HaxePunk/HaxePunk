@@ -13,23 +13,23 @@ class ColorTween extends Tween
 	 * The current color.
 	 */
 	public var color:Int;
-	
+
 	/**
 	 * The current alpha.
 	 */
 	public var alpha:Float;
-	
+
 	/**
 	 * Constructor.
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:CompleteCallback, type:TweenType) 
+	public function new(?complete:CompleteCallback, type:TweenType)
 	{
 		alpha = 1;
 		super(0, type, complete);
 	}
-	
+
 	/**
 	 * Tweens the color to a new color and an alpha to a new alpha.
 	 * @param	duration		Duration of the tween.
@@ -44,12 +44,12 @@ class ColorTween extends Tween
 		fromColor &= 0xFFFFFF;
 		toColor &= 0xFFFFFF;
 		color = fromColor;
-		_r = fromColor >> 16 & 0xFF;
-		_g = fromColor >> 8 & 0xFF;
-		_b = fromColor & 0xFF;
-		_startR = _r / 255;
-		_startG = _g / 255;
-		_startB = _b / 255;
+		red = fromColor >> 16 & 0xFF;
+		green = fromColor >> 8 & 0xFF;
+		blue = fromColor & 0xFF;
+		_startR = red / 255;
+		_startG = green / 255;
+		_startB = blue / 255;
 		_rangeR = ((toColor >> 16 & 0xFF) / 255) - _startR;
 		_rangeG = ((toColor >> 8 & 0xFF) / 255) - _startG;
 		_rangeB = ((toColor & 0xFF) / 255) - _startB;
@@ -59,40 +59,34 @@ class ColorTween extends Tween
 		_ease = ease;
 		start();
 	}
-	
+
 	/** @private Updates the Tween. */
-	override public function update() 
+	override public function update()
 	{
 		super.update();
 		alpha = _startA + _rangeA * _t;
-		_r = Std.int((_startR + _rangeR * _t) * 255);
-		_g = Std.int((_startG + _rangeG * _t) * 255);
-		_b = Std.int((_startB + _rangeB * _t) * 255);
-		color = _r << 16 | _g << 8 | _b;
+		red = Std.int((_startR + _rangeR * _t) * 255);
+		green = Std.int((_startG + _rangeG * _t) * 255);
+		blue = Std.int((_startB + _rangeB * _t) * 255);
+		color = red << 16 | green << 8 | blue;
 	}
-	
+
 	/**
 	 * Red value of the current color, from 0 to 255.
 	 */
-	public var red(getRed, null):Int;
-	private function getRed():Int { return _r; }
-	
+	public var red(default, null):Int;
+
 	/**
 	 * Green value of the current color, from 0 to 255.
 	 */
-	public var green(getGreen, null):Int;
-	private function getGreen():Int { return _g; }
-	
+	public var green(default, null):Int;
+
 	/**
 	 * Blue value of the current color, from 0 to 255.
 	 */
-	public var blue(getBlue, null):Int;
-	private function getBlue():Int { return _b; }
-	
+	public var blue(default, null):Int;
+
 	// Color information.
-	private var _r:Int;
-	private var _g:Int;
-	private var _b:Int;
 	private var _startA:Float;
 	private var _startR:Float;
 	private var _startG:Float;

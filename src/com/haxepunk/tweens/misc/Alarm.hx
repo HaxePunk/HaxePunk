@@ -31,18 +31,18 @@ class Alarm extends Tween
 	/**
 	 * How much time has passed since reset.
 	 */
-	public var elapsed(getElapsed, null):Float;
+	public var elapsed(getElapsed, never):Float;
 	private function getElapsed():Float { return _time; }
 
 	/**
 	 * Current alarm duration.
 	 */
-	public var duration(getDuration, null):Float;
+	public var duration(getDuration, never):Float;
 	private function getDuration():Float { return _target; }
 
 	/**
 	 * Time remaining on the alarm.
 	 */
-	public var remaining(getRemaining, null):Float;
+	public var remaining(getRemaining, never):Float;
 	private function getRemaining():Float { return _target - _time; }
 }

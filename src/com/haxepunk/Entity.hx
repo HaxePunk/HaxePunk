@@ -583,7 +583,6 @@ class Entity extends Tweener
 	 */
 	public inline function setHitbox(width:Int = 0, height:Int = 0, originX:Int = 0, originY:Int = 0)
 	{
-		HXP.log(width, height, originX, originY);
 		this.width = width;
 		this.height = height;
 		this.originX = originX;

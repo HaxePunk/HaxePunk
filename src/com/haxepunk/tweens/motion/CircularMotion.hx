@@ -18,11 +18,11 @@ class CircularMotion extends Motion
 	public function new(?complete:CompleteCallback, ?type:TweenType)
 	{
 		_centerX = _centerY = 0;
-		_radius = _angle = 0;
+		_radius = angle = 0;
 		_angleStart = _angleFinish = 0;
 		super(0, complete, type, null);
 	}
-	
+
 	/**
 	 * Starts moving along a circle.
 	 * @param	centerX		X position of the circle's center.
@@ -38,13 +38,13 @@ class CircularMotion extends Motion
 		_centerX = centerX;
 		_centerY = centerY;
 		_radius = radius;
-		_angle = _angleStart = angle * HXP.RAD;
+		this.angle = _angleStart = angle * HXP.RAD;
 		_angleFinish = _CIRC * (clockwise ? 1 : -1);
 		_target = duration;
 		_ease = ease;
 		start();
 	}
-	
+
 	/**
 	 * Starts moving along a circle at the speed.
 	 * @param	centerX		X position of the circle's center.
@@ -60,39 +60,37 @@ class CircularMotion extends Motion
 		_centerX = centerX;
 		_centerY = centerY;
 		_radius = radius;
-		_angle = _angleStart = angle * HXP.RAD;
+		this.angle = _angleStart = angle * HXP.RAD;
 		_angleFinish = _CIRC * (clockwise ? 1 : -1);
 		_target = (_radius * _CIRC) / speed;
 		_ease = ease;
 		start();
 	}
-	
+
 	/** @private Updates the Tween. */
-	override public function update() 
+	override public function update()
 	{
 		super.update();
-		_angle = _angleStart + _angleFinish * _t;
-		x = _centerX + Math.cos(_angle) * _radius;
-		y = _centerY + Math.sin(_angle) * _radius;
+		angle = _angleStart + _angleFinish * _t;
+		x = _centerX + Math.cos(angle) * _radius;
+		y = _centerY + Math.sin(angle) * _radius;
 	}
-	
+
 	/**
 	 * The current position on the circle.
 	 */
-	public var angle(getAngle, null):Float;
-	private function getAngle():Float { return _angle; }
-	
+	public var angle(default, null):Float;
+
 	/**
 	 * The circumference of the current circle motion.
 	 */
-	public var circumference(getCircumference, null):Float;
+	public var circumference(getCircumference, never):Float;
 	private function getCircumference():Float { return _radius * _CIRC; }
-	
+
 	// Circle information.
 	private var _centerX:Float;
 	private var _centerY:Float;
 	private var _radius:Float;
-	private var _angle:Float;
 	private var _angleStart:Float;
 	private var _angleFinish:Float;
 	private static inline var _CIRC:Float = Math.PI * 2;

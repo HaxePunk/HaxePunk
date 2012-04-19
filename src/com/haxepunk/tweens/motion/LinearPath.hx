@@ -14,18 +14,18 @@ class LinearPath extends Motion
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:CompleteCallback, ?type:TweenType) 
+	public function new(?complete:CompleteCallback, ?type:TweenType)
 	{
 		_points = new Array<Point>();
 		_pointD = new Array<Float>();
 		_pointT = new Array<Float>();
-		
+
 		_distance = _speed = _index = 0;
-		
+
 		super(0, complete, type, null);
 		_pointD[0] = _pointT[0] = 0;
 	}
-	
+
 	/**
 	 * Starts moving along the path.
 	 * @param	duration		Duration of the movement.
@@ -39,7 +39,7 @@ class LinearPath extends Motion
 		_ease = ease;
 		start();
 	}
-	
+
 	/**
 	 * Starts moving along the path at the speed.
 	 * @param	speed		Speed of the movement.
@@ -51,10 +51,10 @@ class LinearPath extends Motion
 		_target = _distance / speed;
 		_speed = speed;
 		_ease = ease;
-		
+
 		start();
 	}
-	
+
 	/**
 	 * Adds the point to the path.
 	 * @param	x		X position.
@@ -69,7 +69,7 @@ class LinearPath extends Motion
 		}
 		_points[_points.length] = _last = new Point(x, y);
 	}
-	
+
 	/**
 	 * Gets a point on the path.
 	 * @param	index		Index of the point.
@@ -80,16 +80,16 @@ class LinearPath extends Motion
 		if (_points.length == 0) throw "No points have been added to the path yet.";
 		return _points[index % _points.length];
 	}
-	
+
 	/** @private Starts the Tween. */
-	override public function start() 
+	override public function start()
 	{
 		_index = 0;
 		super.start();
 	}
-	
+
 	/** @private Updates the Tween. */
-	override public function update() 
+	override public function update()
 	{
 		super.update();
 		if (_index < _points.length - 1)
@@ -104,7 +104,7 @@ class LinearPath extends Motion
 		x = _prevPoint.x + (_nextPoint.x - _prevPoint.x) * td;
 		y = _prevPoint.y + (_nextPoint.y - _prevPoint.y) * td;
 	}
-	
+
 	/** @private Updates the path, preparing it for motion. */
 	private function updatePath()
 	{
@@ -114,19 +114,19 @@ class LinearPath extends Motion
 		var i:Int = 0;
 		while (i < _points.length) _pointT[i] = _pointD[i ++] / _distance;
 	}
-	
+
 	/**
 	 * The full length of the path.
 	 */
 	public var distance(getDistance, null):Float;
 	private function getDistance():Float { return _distance; }
-	
+
 	/**
 	 * How many points are on the path.
 	 */
-	public var pointCount(getPointCount, null):Float;
+	public var pointCount(getPointCount, never):Float;
 	private function getPointCount():Float { return _points.length; }
-	
+
 	// Path information.
 	private var _points:Array<Point>;
 	private var _pointD:Array<Float>;
@@ -134,7 +134,7 @@ class LinearPath extends Motion
 	private var _distance:Float;
 	private var _speed:Float;
 	private var _index:Int;
-	
+
 	// Line information.
 	private var _last:Point;
 	private var _prevPoint:Point;

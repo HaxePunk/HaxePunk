@@ -48,7 +48,7 @@
 
 	<target name="examples" depends="haxelib">
 		<exec executable="haxelib" dir="examples">
-			<arg line="run nme test build.nmml" />
+			<arg line="run nme build build.nmml" />
 			<arg line="flash -debug" />
 		</exec>
 	</target>
