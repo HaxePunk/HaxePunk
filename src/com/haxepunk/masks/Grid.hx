@@ -60,7 +60,7 @@ class Grid extends Hitbox
 		_check.set(Type.getClassName(Pixelmask), collidePixelmask);
 
 		data = new Array<Array<Bool>>();
-		for (x in 0...columns)
+		for (x in 0...rows)
 		{
 			data.push(new Array<Bool>());
 		}
