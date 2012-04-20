@@ -11,7 +11,7 @@
 	<target name="haxelib" depends="tools">
 		<zip destfile="template.zip" basedir="template" />
 		<zip destfile="haxepunk.zip">
-			<zipfileset dir="" prefix="haxepunk" includes="run.n,haxelib.xml,template.zip" />
+			<zipfileset dir="" prefix="haxepunk" includes="run.n,haxelib.xml,template.zip,CHANGELOG,LICENSE" />
 			<zipfileset dir="src" prefix="haxepunk" />
 		</zip>
 		<exec executable="haxelib" dir=".">
