@@ -1,4 +1,5 @@
 package com.haxepunk.masks;
+
 import com.haxepunk.HXP;
 import com.haxepunk.Mask;
 import flash.display.Graphics;
@@ -385,7 +386,7 @@ class Polygon extends Mask
 	/**
 	 * Calculates the dotProduct between two points
 	 */
-	inline function dot(p1:Point, p2:Point):Float
+	private inline function dot(p1:Point, p2:Point):Float
 	{
 		return p1.x * p2.x + p1.y * p2.y;
 	}
@@ -459,10 +460,9 @@ class Polygon extends Mask
 	/**
 	 * Angle in degress that the polygon is rotated.
 	 */
-	public var angle(get_angle, set_angle):Float;
-	private inline function get_angle():Float { return _angle; }
-
-	private function set_angle(value:Float):Float
+	public var angle(getAngle, setAngle):Float;
+	private inline function getAngle():Float { return _angle; }
+	private function setAngle(value:Float):Float
 	{
 		if (value == _angle) return value;
 		rotate(_angle - value);
