@@ -388,7 +388,7 @@ class Image extends Graphic
 	/**
 	 * The scaled height of the image.
 	 */
-	public var scaleHeight(getScaledHeight, null):Int;
+	public var scaledHeight(getScaledHeight, null):Int;
 	private function getScaledHeight():Int { return Std.int(_bufferRect.height * scaleY * scale); }
 
 	/**
