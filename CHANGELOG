@@ -8,6 +8,8 @@ v1.6.4
 * Console draws properly when window resizes
 * Added global tweener
 * Functions added for focus gained/lost
+* Added Draw.text
+* Fixed several neko bugs
 
 v1.6.3
 ------------------------------
