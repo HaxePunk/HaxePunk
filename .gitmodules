@@ -1,0 +1,3 @@
+[submodule "src/com/haxepunk/ui"]
+	path = src/com/haxepunk/ui
+	url = git@github.com:MattTuttle/HaxePunk-UI.git
