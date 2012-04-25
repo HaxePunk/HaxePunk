@@ -1,13 +1,25 @@
 package com.haxepunk.graphics;
 
 import flash.display.BitmapData;
+import flash.display.BlendMode;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.text.TextField;
 import flash.text.TextFormat;
+import flash.text.TextFormatAlign;
 
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
+
+typedef TextOptions = {
+	@:optional var font:String;
+	@:optional var size:Int;
+	@:optional var align:TextFormatAlign;
+	@:optional var wordWrap:Bool;
+	@:optional var resizable:Bool;
+	@:optional var color:Int;
+	@:optional var leading:Float;
+};
 
 /**
  * Used for drawing text using embedded fonts.
@@ -17,104 +29,143 @@ class Text extends Image
 
 	/**
 	 * Constructor.
-	 * @param	text		Text to display.
-	 * @param	x			X offset.
-	 * @param	y			Y offset.
-	 * @param	width		Image width (leave as 0 to size to the starting text string).
-	 * @param	height		Image height (leave as 0 to size to the starting text string).
+	 * @param text    Text to display.
+	 * @param x       X offset.
+	 * @param y       Y offset.
+	 * @param width   Image width (leave as 0 to size to the starting text string).
+	 * @param height  Image height (leave as 0 to size to the starting text string).
+	 * @param options An object containing optional parameters contained in TextOptions
 	 */
-	public function new(text:String, x:Float = 0, y:Float = 0, width:Int = 0, height:Int = 0)
+	public function new(text:String, ?x:Float = 0, ?y:Float = 0, ?width:Int = 0, ?height:Int = 0, ?options:TextOptions = null)
 	{
+		if (options == null)
+		{
+			options = {};
+			options.color = 0xFFFFFF;
+		}
+
+		if (options.font == null)  options.font = HXP.defaultFont;
+		if (options.size == 0)     options.size = 16;
+		if (options.align == null) options.align = TextFormatAlign.LEFT;
+
+#if nme
+		var fontObj = nme.Assets.getFont(options.font);
+		_form = new TextFormat(fontObj.fontName, options.size, options.color);
+#else
+		_form = new TextFormat(options.font, options.size, options.color);
+#end
+		_form.align = options.align;
+		_form.leading = options.leading;
+
 		_field = new TextField();
 #if flash
 		_field.embedFonts = true;
 #end
+		_field.wordWrap = options.wordWrap;
+		_field.defaultTextFormat = _form;
+		_field.text = text;
 
-#if nme
-		var font = nme.Assets.getFont(HXP.defaultFont);
-		_field.defaultTextFormat = _form = new TextFormat(font.fontName, 16, 0xFFFFFF);
-#else
-		_field.defaultTextFormat = _form = new TextFormat(HXP.defaultFont, 16, 0xFFFFFF);
-#end
-
-		_field.text = _text = text;
 		if (width == 0) width = Std.int(_field.textWidth + 4);
 		if (height == 0) height = Std.int(_field.textHeight + 4);
+		this.width = width;
+		this.height = height;
+
 		_source = HXP.createBitmap(width, height, true);
 		super(_source);
-		updateBuffer();
+
+		this.text = text;
 		this.x = x;
 		this.y = y;
 	}
 
 	/** @private Updates the drawing buffer. */
-	override public function updateBuffer(clearBefore:Bool = false)
+	public override function updateBuffer(clearBefore:Bool = false)
 	{
 		_field.setTextFormat(_form);
-		_field.width = _field.textWidth + 4;
-		_field.height = _field.textHeight + 4;
-		_width = Std.int(_field.width);
-		_height = Std.int(_field.height);
-		_source.fillRect(_sourceRect, HXP.blackColor);
+
+		_field.width = width;
+		textWidth = Std.int(_field.textWidth + 4);
+		textHeight = Std.int(_field.textHeight + 4);
+
+		if (resizable && (textWidth > width || textHeight > height))
+		{
+			if (width < textWidth) width = textWidth;
+			if (height < textHeight) height = textHeight;
+		}
+
+		if (width > _source.width || height > _source.height)
+		{
+			_source = new BitmapData(
+				Std.int(Math.max(width, _source.width)),
+				Std.int(Math.max(height, _source.height)),
+				true, 0);
+
+			_sourceRect = _source.rect;
+			createBuffer();
+		}
+		else
+		{
+			_source.fillRect(_sourceRect, HXP.blackColor);
+		}
+
+		_field.width = textWidth;
+		_field.height = textHeight;
+
 		_source.draw(_field);
 		super.updateBuffer(clearBefore);
 	}
 
+	public var resizable:Bool;
+	public var textWidth(default, null):Int;
+	public var textHeight(default, null):Int;
+
 	/**
 	 * Text string.
 	 */
-	public var text(getText, setText):String;
-	private function getText():String { return _text; }
+	public var text(default, setText):String;
 	private function setText(value:String):String
 	{
-		if (_text == value) return value;
-		_field.text = _text = value;
+		if (text == value) return value;
+		_field.text = text = value;
 		updateBuffer();
-		return _text;
+		return text;
 	}
 
 	/**
 	 * Font family.
 	 */
-	public var font(getFont, setFont):String;
-	private function getFont():String { return _font; }
+	public var font(default, setFont):String;
 	private function setFont(value:String):String
 	{
-		if (_font == value) return value;
-		_form.font = _font = value;
+		if (font == value) return value;
+		_form.font = font = value;
 		updateBuffer();
-		return _font;
+		return font;
 	}
 
 	/**
 	 * Font size.
 	 */
-	public var size(getSize, setSize):Int;
-	private function getSize():Int { return _size; }
+	public var size(default, setSize):Int;
 	private function setSize(value:Int):Int
 	{
-		if (_size == value) return value;
-		_form.size = _size = value;
+		if (size == value) return value;
+		_form.size = size = value;
 		updateBuffer();
-		return _size;
+		return value;
 	}
 
 	/**
 	 * Width of the text image.
 	 */
-	override private function getWidth():Int { return _width; }
+	private override function getWidth():Int { return width; }
 
 	/**
 	 * Height of the text image.
 	 */
-	override private function getHeight():Int { return _height; }
+	private override function getHeight():Int { return height; }
 
 	// Text information.
 	private var _field:TextField;
-	private var _width:Int;
-	private var _height:Int;
 	private var _form:TextFormat;
-	private var _text:String;
-	private var _font:String;
-	private var _size:Int;
 }
