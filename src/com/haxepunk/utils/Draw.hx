@@ -10,6 +10,7 @@ import flash.geom.Rectangle;
 import com.haxepunk.Entity;
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
+import com.haxepunk.graphics.Text;
 
 /**
  * Static class with access to miscellanious drawing functions.
@@ -367,13 +368,26 @@ class Draw
 	 * @param	y					Y position.
 	 * @param	addEntityPosition	Adds the Entity's x and y position to the target position.
 	 */
-	public static function entity(e:Entity, x:Int = 0, y:Int = 0, addEntityPosition:Bool = false)
+	public static function entity(e:Entity, ?x:Int = 0, ?y:Int = 0, ?addEntityPosition:Bool = false)
 	{
 		if (e.visible && e.graphic != null)
 		{
 			if (addEntityPosition) graphic(e.graphic, Std.int(x + e.x), Std.int(y + e.y));
 			else graphic(e.graphic, x, y);
 		}
+	}
+
+	/**
+	 * Draws text.
+	 * @param  text    The text to render.
+	 * @param  x       X position.
+	 * @param  y       Y position.
+	 * @param  options Options (see Text constructor).
+	 */
+	public static function text(text:String, ?x:Float = 0, ?y:Float = 0, ?options:TextOptions = null)
+	{
+		var textGfx:Text = new Text(text, x, y, 0, 0, options);
+		textGfx.render(_target, HXP.zero, _camera);
 	}
 
 	// Drawing information.

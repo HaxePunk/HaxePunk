@@ -3,13 +3,14 @@ package com.haxepunk.utils;
 class Key
 {
 	public inline static var ANY = -1;
-	
+
 	public inline static var LEFT = 37;
 	public inline static var UP = 38;
 	public inline static var RIGHT = 39;
 	public inline static var DOWN = 40;
-	
+
 	public inline static var ENTER = 13;
+	public inline static var COMMAND = 15;
 	public inline static var CONTROL = 17;
 	public inline static var SPACE = 32;
 	public inline static var SHIFT = 16;
@@ -82,7 +83,7 @@ class Key
 	public inline static var Y = 121;
 	public inline static var Z = 122;
 #end
-	
+
 	public inline static var F1 = 112;
 	public inline static var F2 = 113;
 	public inline static var F3 = 114;
@@ -98,7 +99,7 @@ class Key
 	public inline static var F13 = 124;
 	public inline static var F14 = 125;
 	public inline static var F15 = 126;
-	
+
 	public inline static var DIGIT_0 = 48;
 	public inline static var DIGIT_1 = 49;
 	public inline static var DIGIT_2 = 50;
@@ -109,7 +110,7 @@ class Key
 	public inline static var DIGIT_7 = 55;
 	public inline static var DIGIT_8 = 56;
 	public inline static var DIGIT_9 = 57;
-	
+
 	public inline static var NUMPAD_0 = 96;
 	public inline static var NUMPAD_1 = 97;
 	public inline static var NUMPAD_2 = 98;
@@ -126,13 +127,13 @@ class Key
 	public inline static var NUMPAD_ENTER = 108;
 	public inline static var NUMPAD_MULTIPLY = 106;
 	public inline static var NUMPAD_SUBTRACT = 109;
-	
+
 	/**
 	 * Returns the name of the key.
 	 * @param	char		The key to name.
 	 * @return	The name.
 	 */
-	public static function nameOfKey(char):String
+	public static function nameOfKey(char:Int):String
 	{
 		if (char >= A && char <= Z) return String.fromCharCode(char);
 		if (char >= F1 && char <= F15) return "F" + Std.string(char - 111);
@@ -143,7 +144,7 @@ class Key
 			case UP:    return "UP";
 			case RIGHT: return "RIGHT";
 			case DOWN:  return "DOWN";
-				
+
 			case ENTER:     return "ENTER";
 			case CONTROL:   return "CONTROL";
 			case SPACE:     return "SPACE";
@@ -158,16 +159,13 @@ class Key
 			case TAB:       return "TAB";
 			case PAGE_DOWN: return "PAGE DOWN";
 			case PAGE_UP:   return "PAGE UP";
-				
+
 			case NUMPAD_ADD:      return "NUMPAD ADD";
 			case NUMPAD_DECIMAL:  return "NUMPAD DECIMAL";
 			case NUMPAD_DIVIDE:   return "NUMPAD DIVIDE";
 			case NUMPAD_ENTER:    return "NUMPAD ENTER";
 			case NUMPAD_MULTIPLY: return "NUMPAD MULTIPLY";
 			case NUMPAD_SUBTRACT: return "NUMPAD SUBTRACT";
-			
-			default:
-				return String.fromCharCode(char);
 		}
 		return String.fromCharCode(char);
 	}

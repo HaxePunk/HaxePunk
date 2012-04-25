@@ -61,7 +61,7 @@ class Input
 	/**
 	 * Defines a new input.
 	 * @param	name		String to map the input to.
-	 * @param	...keys		The keys to use for the Input.
+	 * @param	keys		The keys to use for the Input.
 	 */
 	public static function define(name:String, keys:Array<Int>)
 	{
@@ -200,10 +200,10 @@ class Input
 		{
 			if (keyString.length > kKeyStringMax) keyString = keyString.substr(1);
 			var char:String = String.fromCharCode(code);
-			#if flash
+#if flash
 			if (e.shiftKey || Keyboard.capsLock) char = char.toUpperCase();
 			else char = char.toLowerCase();
-			#end
+#end
 			keyString += char;
 		}
 

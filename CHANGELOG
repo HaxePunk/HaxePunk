@@ -6,6 +6,8 @@ v1.6.4
 * Updated Text class with extra options
 * scaleHeight in Entity is now scaledHeight
 * Console draws properly when window resizes
+* Added global tweener
+* Functions added for focus gained/lost
 
 v1.6.3
 ------------------------------

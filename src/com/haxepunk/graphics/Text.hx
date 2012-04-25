@@ -6,7 +6,6 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.text.TextField;
 import flash.text.TextFormat;
-import flash.text.TextFormatAlign;
 
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
@@ -14,7 +13,11 @@ import com.haxepunk.Graphic;
 typedef TextOptions = {
 	@:optional var font:String;
 	@:optional var size:Int;
-	@:optional var align:TextFormatAlign;
+#if flash
+	@:optional var align:flash.text.TextFormatAlign;
+#else
+	@:optional var align:String;
+#end
 	@:optional var wordWrap:Bool;
 	@:optional var resizable:Bool;
 	@:optional var color:Int;
@@ -46,7 +49,11 @@ class Text extends Image
 
 		if (options.font == null)  options.font = HXP.defaultFont;
 		if (options.size == 0)     options.size = 16;
-		if (options.align == null) options.align = TextFormatAlign.LEFT;
+#if flash
+		if (options.align == null) options.align = flash.text.TextFormatAlign.LEFT;
+#else
+		if (options.align == null) options.align = "left";
+#end
 
 #if nme
 		var fontObj = nme.Assets.getFont(options.font);
@@ -98,7 +105,7 @@ class Text extends Image
 			_source = new BitmapData(
 				Std.int(Math.max(width, _source.width)),
 				Std.int(Math.max(height, _source.height)),
-				true, 0);
+				true, HXP.blackColor);
 
 			_sourceRect = _source.rect;
 			createBuffer();
