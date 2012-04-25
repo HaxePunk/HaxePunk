@@ -2,7 +2,8 @@ HaxePunk CHANGELOG
 
 v1.6.4
 ------------------------------
-
+* Fixed black background on Text graphics
+* Updated Text class with extra options
 
 v1.6.3
 ------------------------------
