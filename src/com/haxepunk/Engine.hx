@@ -61,7 +61,7 @@ class Engine extends Sprite
 		HXP.screen = new Screen();
 		HXP.resize(width, height);
 
-		// miscellanious startup stuff
+		// miscellaneous startup stuff
 		if (HXP.randomSeed == 0) HXP.randomizeSeed();
 		HXP.entity = new Entity();
 		HXP.time = Lib.getTimer();
@@ -87,20 +87,28 @@ class Engine extends Sprite
 	/**
 	 * Override this, called after Engine has been added to the stage.
 	 */
-	public function init()
-	{
+	public function init() { }
 
-	}
+	/**
+	 * Override this, called when game gains focus
+	 */
+	public function focusGained() { }
+
+	/**
+	 * Override this, called when game loses focus
+	 */
+	public function focusLost() { }
 
 	/**
 	 * Updates the game, updating the World and Entities.
 	 */
 	public function update()
 	{
+		if (HXP.tweener.active && HXP.tweener.hasTween) HXP.tweener.updateTweens();
+
 		if (HXP.world.active)
 		{
-			var ft:FriendTweener = HXP.world;
-			if (ft._tween != null) HXP.world.updateTweens();
+			if (HXP.world.hasTween) HXP.world.updateTweens();
 			HXP.world.update();
 		}
 		HXP.world.updateLists();
@@ -141,10 +149,27 @@ class Engine extends Sprite
 		HXP.stage.quality = StageQuality.HIGH;
 		HXP.stage.scaleMode = StageScaleMode.NO_SCALE;
 		HXP.stage.displayState = StageDisplayState.NORMAL;
+
+		// set resize event
+		HXP.stage.addEventListener(Event.RESIZE, function (e:Event) {
+			resize();
+		});
+
+		HXP.stage.addEventListener(Event.ACTIVATE, function (e:Event) {
+			HXP.focused = true;
+			focusGained();
+			HXP.world.focusGained();
+		});
+
+		HXP.stage.addEventListener(Event.DEACTIVATE, function (e:Event) {
+			HXP.focused = false;
+			focusLost();
+			HXP.world.focusLost();
+		});
 	}
 
 	/** @private Event handler for stage resize */
-	private function onResize(e:Event)
+	private function resize()
 	{
 		HXP.resize(HXP.stage.stageWidth, HXP.stage.stageHeight);
 	}
@@ -164,9 +189,6 @@ class Engine extends Sprite
 #end
 		setStageProperties();
 
-		// set resize event
-		HXP.stage.addEventListener(Event.RESIZE, onResize);
-
 		// enable input
 		Input.enable();
 
@@ -181,7 +203,7 @@ class Engine extends Sprite
 		if (HXP.fixed)
 		{
 			// fixed framerate
-			_skip = _rate * maxFrameSkip;
+			_skip = _rate * (maxFrameSkip + 1);
 			_last = _prev = Lib.getTimer();
 			_timer = new Timer(tickRate);
 			_timer.run = onTimer;
@@ -245,14 +267,13 @@ class Engine extends Sprite
 
 		// update loop
 		if (_delta > _skip) _delta = _skip;
-		while (_delta > _rate)
+		while (_delta >= _rate)
 		{
+			HXP.elapsed = _rate * HXP.rate * 0.001;
+
 			// update timer
 			_updateTime = _time;
 			_delta -= _rate;
-			HXP.elapsed = (_time - _prev) / 1000;
-			if (HXP.elapsed > maxElapsed) HXP.elapsed = maxElapsed;
-			HXP.elapsed *= HXP.rate;
 			_prev = _time;
 
 			// update loop
@@ -285,15 +306,18 @@ class Engine extends Sprite
 	private function checkWorld()
 	{
 		if (HXP.gotoIsNull()) return;
-		HXP.world.end();
-		HXP.world.updateLists();
-		var ft:FriendTweener = HXP.world;
-		if (HXP.world != null && HXP.world.autoClear && ft._tween != null) HXP.world.clearTweens();
-		HXP.swapWorld();
-		HXP.camera = HXP.world.camera;
-		HXP.world.updateLists();
-		HXP.world.begin();
-		HXP.world.updateLists();
+
+		if (HXP.world != null)
+		{
+			HXP.world.end();
+			HXP.world.updateLists();
+			if (HXP.world.autoClear && HXP.world.hasTween) HXP.world.clearTweens();
+			HXP.swapWorld();
+			HXP.camera = HXP.world.camera;
+			HXP.world.updateLists();
+			HXP.world.begin();
+			HXP.world.updateLists();
+		}
 	}
 
 	// Timing information.

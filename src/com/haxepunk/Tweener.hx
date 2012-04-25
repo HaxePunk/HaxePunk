@@ -2,26 +2,22 @@ package com.haxepunk;
 
 import com.haxepunk.Tween;
 
-typedef FriendTweener = {
-	private var _tween:Tween;
-}
-
 class Tweener
 {
 	public var active:Bool;
 	public var autoClear:Bool;
-	
+
 	public function new()
 	{
 		active = true;
 		autoClear = false;
 	}
-	
+
 	public function update()
 	{
-		
+
 	}
-	
+
 	public function addTween(t:Tween, start:Bool = false):Tween
 	{
 		var ft:FriendTween = t;
@@ -34,7 +30,7 @@ class Tweener
 		if (start) _tween.start();
 		return t;
 	}
-	
+
 	public function removeTween(t:Tween):Tween
 	{
 		var ft:FriendTween = t;
@@ -54,7 +50,7 @@ class Tweener
 		t.active = false;
 		return t;
 	}
-	
+
 	public function clearTweens()
 	{
 		var t:Tween,
@@ -67,7 +63,7 @@ class Tweener
 			ft = fn;
 		}
 	}
-	
+
 	public function updateTweens()
 	{
 		var t:Tween,
@@ -83,6 +79,9 @@ class Tweener
 			ft = ft._next;
 		}
 	}
-	
+
+	public var hasTween(getTween, never):Bool;
+	private function getTween():Bool { return (_tween != null); }
+
 	private var _tween:Tween;
 }

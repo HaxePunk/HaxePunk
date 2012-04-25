@@ -48,18 +48,22 @@ class World extends Tweener
 	/**
 	 * Override this; called when World is switch to, and set to the currently active world.
 	 */
-	public function begin()
-	{
-
-	}
+	public function begin() { }
 
 	/**
 	 * Override this; called when World is changed, and the active world is no longer this.
 	 */
-	public function end()
-	{
+	public function end() { }
 
-	}
+	/**
+	 * Override this, called when game gains focus
+	 */
+	public function focusGained() { }
+
+	/**
+	 * Override this, called when game loses focus
+	 */
+	public function focusLost() { }
 
 	/**
 	 * Performed by the game loop, updates all contained Entities.
@@ -70,14 +74,13 @@ class World extends Tweener
 	{
 		// update the entities
 		var e:Entity,
-			ft:FriendTweener,
 			fe:FriendEntity = _updateFirst;
 		while (fe != null)
 		{
-			ft = e = cast(fe, Entity);
+			e = cast(fe, Entity);
 			if (e.active)
 			{
-				if (ft._tween != null) e.updateTweens();
+				if (e.hasTween) e.updateTweens();
 				e.update();
 			}
 			if (e.graphic != null && e.graphic.active) e.graphic.update();
@@ -1023,14 +1026,13 @@ class World extends Tweener
 	{
 		var e:Entity;
 		var fe:FriendEntity;
-		var ft:FriendTweener;
 
 		// remove entities
 		if (_remove.length > 0)
 		{
 			for (e in _remove)
 			{
-				fe = e; ft = e;
+				fe = e;
 				if (fe._added != true && Lambda.indexOf(_add, e) >= 0)
 				{
 					_add.splice(Lambda.indexOf(_add, e), 1);
@@ -1041,7 +1043,7 @@ class World extends Tweener
 				removeUpdate(e);
 				removeRender(e);
 				if (fe._type != "") removeType(e);
-				if (e.autoClear && ft._tween != null) e.clearTweens();
+				if (e.autoClear && e.hasTween) e.clearTweens();
 			}
 			HXP.clear(_remove);
 		}

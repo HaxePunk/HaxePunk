@@ -119,6 +119,16 @@ class HXP
 	public static var camera:Point = new Point();
 
 	/**
+	 * Global tweener for tweening between multiple worlds
+	 */
+	public static var tweener:Tweener = new Tweener();
+
+	/**
+	 * Whether the game has focus or not
+	 */
+	public static var focused:Bool = false;
+
+	/**
 	 * Half the screen width.
 	 */
 	public static var halfWidth(default, null):Float;
@@ -852,7 +862,7 @@ class HXP
 		var type:TweenType = TweenType.OneShot,
 			complete:CompleteCallback = null,
 			ease:EaseFunction = null,
-			tweener:Tweener = HXP.world;
+			tweener:Tweener = HXP.tweener;
 		if (Std.is(object, Tweener)) tweener = cast(object, Tweener);
 		if (options)
 		{
