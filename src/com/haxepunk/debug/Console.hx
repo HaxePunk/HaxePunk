@@ -13,6 +13,7 @@ import flash.display.Sprite;
 import flash.events.Event;
 import flash.geom.ColorTransform;
 import flash.geom.Rectangle;
+import flash.system.System;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
@@ -51,10 +52,10 @@ class Console
 
 		_sprite = new Sprite();
 #if nme
-		var font = nme.Assets.getFont(HXP.defaultFont);
+		var font = nme.Assets.getFont("font/04B_03__.ttf");
 		_format = new TextFormat(font.fontName, 8, 0xFFFFFF);
 #elseif flash
-		_format = new TextFormat(HXP.defaultFont);
+		_format = new TextFormat("console");
 #end
 		_back = new Bitmap();
 
@@ -63,6 +64,7 @@ class Console
 		_fpsInfo = new Sprite();
 		_fpsInfoText0 = new TextField();
 		_fpsInfoText1 = new TextField();
+		_memReadText = new TextField();
 
 		_logRead = new Sprite();
 		_logReadText0 = new TextField();
@@ -102,7 +104,7 @@ class Console
 
 	/**
 	 * Logs data to the console.
-	 * @param	...data		The data parameters to log, can be variables, objects, etc. Parameters will be separated by a space (" ").
+	 * @param	data		The data parameters to log, can be variables, objects, etc. Parameters will be separated by a space (" ").
 	 */
 	public function log(data:Array<Dynamic>)
 	{
@@ -129,7 +131,7 @@ class Console
 
 	/**
 	 * Adds properties to watch in the console's debug panel.
-	 * @param	...properties		The properties (strings) to watch.
+	 * @param	properties		The properties (strings) to watch.
 	 */
 	public function watch(properties:Array<Dynamic>)
 	{
@@ -138,7 +140,10 @@ class Console
 		{
 			for (i in properties) WATCH_LIST.push(i);
 		}
-		else WATCH_LIST.push(properties[0]);
+		else
+		{
+			WATCH_LIST.push(properties[0]);
+		}
 	}
 
 	/**
@@ -247,6 +252,14 @@ class Console
 		_fpsInfo.x = 75;
 		_fpsInfoText1.x = 60;
 
+		_fpsRead.addChild(_memReadText);
+		_memReadText.defaultTextFormat = format(16);
+		_memReadText.embedFonts = true;
+		_memReadText.width = 110;
+		_memReadText.height = 20;
+		_memReadText.x = _fpsInfo.x + _fpsInfo.width + 5;
+		_memReadText.y = 1;
+
 		// The output log text.
 		_sprite.addChild(_logRead);
 		_logRead.addChild(_logReadText0);
@@ -309,6 +322,8 @@ class Console
 #else
 		_butRead.graphics.drawRoundRect(-20, -20, 100, 40, 20, 20);
 #end
+		debug = true;
+
 		// redraws the logo
 		HXP.stage.addEventListener(Event.RESIZE, onResize);
 
@@ -829,6 +844,7 @@ class Console
 			_fpsReadText.selectable = true;
 			_fpsInfoText0.selectable = true;
 			_fpsInfoText1.selectable = true;
+			_memReadText.selectable = true;
 			_entReadText.selectable = true;
 			_debReadText1.selectable = true;
 		}
@@ -856,6 +872,7 @@ class Console
 			_fpsReadText.selectable = false;
 			_fpsInfoText0.selectable = false;
 			_fpsInfoText1.selectable = false;
+			_memReadText.selectable = false;
 			_entReadText.selectable = false;
 			_debReadText0.selectable = false;
 			_debReadText1.selectable = false;
@@ -873,6 +890,8 @@ class Console
 		_fpsInfoText1.text =
 			"Game: " + Std.string(HXP._gameTime) + "ms\n" +
 			"Flash: " + Std.string(HXP._flashTime) + "ms";
+		_memReadText.text =
+			"Mem: " + HXP.round(System.totalMemory / 1024 / 1024, 2) + "MB";
 	}
 
 	/** @private Update the debug panel text. */
@@ -898,7 +917,11 @@ class Console
 				s += "\n\n- " + Type.getClassName(Type.getClass(e)) + " -\n";
 				for (str in WATCH_LIST)
 				{
-					if (Reflect.hasField(e, str)) s += "\n" + str + ": " + Reflect.field(e, str).toString();
+					var field = Reflect.getProperty(e, str);
+					if (field != null)
+					{
+						s += "\n" + str + ": " + field.toString();
+					}
 				}
 			}
 		}
@@ -1015,6 +1038,7 @@ class Console
 	private var _fpsInfo:Sprite;
 	private var _fpsInfoText0:TextField;
 	private var _fpsInfoText1:TextField;
+	private var _memReadText:TextField;
 
 	// Output panel information.
 	private var _logRead:Sprite;

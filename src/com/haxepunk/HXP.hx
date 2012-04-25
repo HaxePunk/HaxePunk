@@ -385,6 +385,18 @@ class HXP
 	}
 
 	/**
+	 * Round a float to the nearest decimal
+	 * @param   num        The number to round,
+	 * @param   precision  The decimal place to round to.
+	 * @return  The rounded float.
+	 */
+	public static inline function round(num:Float, precision:Int):Float
+	{
+		var exp:Float = Math.pow(10, precision);
+		return Math.round(num * exp) / exp;
+	}
+
+	/**
 	 * Find the distance between two points.
 	 * @param	x1		The first x-position.
 	 * @param	y1		The first y-position.

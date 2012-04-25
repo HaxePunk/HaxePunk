@@ -1,5 +1,10 @@
 HaxePunk CHANGELOG
 
+v1.6.5
+------------------------------
+* Improved console output (memory usage, handles properties)
+* Added HXP.round for rounding to the nearest decimal
+
 v1.6.4
 ------------------------------
 * Fixed black background on Text graphics
