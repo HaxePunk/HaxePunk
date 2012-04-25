@@ -10,6 +10,7 @@ import flash.display.BitmapData;
 import flash.display.BlendMode;
 import flash.display.Graphics;
 import flash.display.Sprite;
+import flash.events.Event;
 import flash.geom.ColorTransform;
 import flash.geom.Rectangle;
 import flash.text.TextField;
@@ -186,19 +187,6 @@ class Console
 
 		// The transparent FlashPunk logo overlay bitmap.
 		_sprite.addChild(_back);
-		_back.bitmapData = HXP.createBitmap(width, height, true, 0xFFFFFFFF);
-		HXP.matrix.identity();
-		HXP.matrix.tx = Math.max((_back.bitmapData.width - _bmpLogo.width) / 2, 0);
-		HXP.matrix.ty = Math.max((_back.bitmapData.height - _bmpLogo.height) / 2, 0);
-		HXP.matrix.scale(Math.min(width / _back.bitmapData.width, 1), Math.min(height / _back.bitmapData.height, 1));
-#if (flash || js)
-		_back.bitmapData.draw(_bmpLogo, HXP.matrix, null, BlendMode.MULTIPLY);
-		_back.bitmapData.draw(_back.bitmapData, null, null, BlendMode.INVERT);
-#else
-		_back.bitmapData.draw(_bmpLogo, HXP.matrix, null, "multiply");
-		_back.bitmapData.draw(_back.bitmapData, null, null, "invert");
-#end
-		_back.bitmapData.colorTransform(_back.bitmapData.rect, new ColorTransform(1, 1, 1, 0.5));
 
 		// The entity and selection sprites.
 		_sprite.addChild(_entScreen);
@@ -321,6 +309,8 @@ class Console
 #else
 		_butRead.graphics.drawRoundRect(-20, -20, 100, 40, 20, 20);
 #end
+		// redraws the logo
+		HXP.stage.addEventListener(Event.RESIZE, onResize);
 
 		// Set the state to unpaused.
 		paused = false;
@@ -328,6 +318,28 @@ class Console
 		Log.trace = traceLog;
 		LOG.push("-- HaxePunk v" + HXP.VERSION + " --");
 		if (_enabled && _sprite.visible) updateLog();
+	}
+
+	public function onResize(e:Event)
+	{
+		if (_back.bitmapData != null)
+		{
+			_back.bitmapData.dispose();
+		}
+		_back.bitmapData = HXP.createBitmap(width, height, true, 0xFFFFFFFF);
+		HXP.matrix.identity();
+		HXP.matrix.tx = Math.max((_back.bitmapData.width - _bmpLogo.width) / 2, 0);
+		HXP.matrix.ty = Math.max((_back.bitmapData.height - _bmpLogo.height) / 2, 0);
+		HXP.matrix.scale(Math.min(width / _back.bitmapData.width, 1), Math.min(height / _back.bitmapData.height, 1));
+#if (flash || js)
+		_back.bitmapData.draw(_bmpLogo, HXP.matrix, null, BlendMode.MULTIPLY);
+		_back.bitmapData.draw(_back.bitmapData, null, null, BlendMode.INVERT);
+#else
+		_back.bitmapData.draw(_bmpLogo, HXP.matrix, null, "multiply");
+		_back.bitmapData.draw(_back.bitmapData, null, null, "invert");
+#end
+		_back.bitmapData.colorTransform(_back.bitmapData.rect, new ColorTransform(1, 1, 1, 0.5));
+		updateLog();
 	}
 
 	/**
@@ -759,6 +771,9 @@ class Console
 	/** @private Updates the log window. */
 	private function updateLog()
 	{
+		_logHeight = height - 60;
+		_logBar.height = _logHeight - 8;
+
 		// If the console is paused.
 		if (_paused)
 		{

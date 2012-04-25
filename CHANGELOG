@@ -5,6 +5,7 @@ v1.6.4
 * Fixed black background on Text graphics
 * Updated Text class with extra options
 * scaleHeight in Entity is now scaledHeight
+* Console draws properly when window resizes
 
 v1.6.3
 ------------------------------
