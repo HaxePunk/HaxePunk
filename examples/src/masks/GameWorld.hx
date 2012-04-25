@@ -39,8 +39,9 @@ class GameWorld extends DemoWorld
 	private function createBox(x:Int, y:Int, w:Int, h:Int, color:Int = 0xFFFFFFFF):Entity
 	{
 		var e:Entity = new Entity(x, y);
-		e.graphic = Image.createRect(w, h, color);
-		e.setHitbox(w, h);
+		var image = Image.createRect(w, h, color);
+		e.graphic = image;
+		e.setHitboxTo(image);
 		e.type = "solid";
 		add(e);
 		return e;

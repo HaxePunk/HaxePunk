@@ -29,7 +29,7 @@ class HXP
 	/**
 	 * The HaxePunk major version.
 	 */
-	public static inline var VERSION:String = "1.6.3";
+	public static inline var VERSION:String = "1.6.4";
 
 	/**
 	 * The standard layer used since only flash can handle negative indicies in arrays, set your layers to some offset of this
@@ -51,7 +51,7 @@ class HXP
 #if neko
 	public static inline var blackColor = { rgb: 0x000000, a: 1 }; // BitmapInt32
 #else
-	public static inline var blackColor = 0xFF000000;
+	public static inline var blackColor = 0x00000000;
 #end
 
 	/**

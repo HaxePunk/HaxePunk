@@ -16,7 +16,8 @@ class DemoWorld extends World
 	{
 		super();
 
-		overlayText = new Text("Press '[' and ']' to switch demos", 0, 0, HXP.screen.width, 20);
+		overlayText = new Text("Press '[' and ']' to switch demos", 0, 0);
+		overlayText.resizable = true;
 		var overlay:Entity = new Entity(0, HXP.screen.height - 20, overlayText);
 		overlay.layer = 0;
 		add(overlay);
