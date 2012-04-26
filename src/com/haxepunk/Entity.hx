@@ -642,7 +642,7 @@ class Entity extends Tweener
 	public inline function distanceFrom(e:Entity, useHitboxes:Bool = false):Float
 	{
 		if (!useHitboxes) return Math.sqrt((x - e.x) * (x - e.x) + (y - e.y) * (y - e.y));
-		return HXP.distanceRects(x - originX, y - originY, width, height, e.x - e.originX, e.y - e.originY, e.width, e.height);
+		else return HXP.distanceRects(x - originX, y - originY, width, height, e.x - e.originX, e.y - e.originY, e.width, e.height);
 	}
 
 	/**
@@ -655,7 +655,7 @@ class Entity extends Tweener
 	public inline function distanceToPoint(px:Float, py:Float, useHitbox:Bool = false):Float
 	{
 		if (!useHitbox) return Math.sqrt((x - px) * (x - px) + (y - py) * (y - py));
-		return HXP.distanceRectPoint(px, py, x - originX, y - originY, width, height);
+		else return HXP.distanceRectPoint(px, py, x - originX, y - originY, width, height);
 	}
 
 	/**
