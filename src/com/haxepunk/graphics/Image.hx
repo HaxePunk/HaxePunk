@@ -75,9 +75,6 @@ class Image extends Graphic
 
 		if (Std.is(source, BitmapData))
 		{
-#if hardware
-			imageID = -1;
-#end
 			_source = source;
 			_class = name;
 		}
@@ -149,39 +146,32 @@ class Image extends Graphic
 #if hardware
 		if (imageID > -1)
 		{
-			var useScale = (HXP.tilesheetFlags & HXP.TILE_SCALE) > 0;
-			var useRotation = (HXP.tilesheetFlags & HXP.TILE_ROTATION) > 0;
-			var useRGB = (HXP.tilesheetFlags & HXP.TILE_RGB) > 0;
-			var useAlpha = (HXP.tilesheetFlags & HXP.TILE_ALPHA) > 0;
 			HXP.tileData[HXP.currentPos++] = point.x + x - camera.x * scrollX;
 			HXP.tileData[HXP.currentPos++] = point.y + y - camera.y * scrollY;
 			HXP.tileData[HXP.currentPos++] = imageID;
-			if (useScale)
+			if ((HXP.tilesheetFlags & HXP.TILE_SCALE) > 0)
 			{
 				HXP.tileData[HXP.currentPos++] = scale;
 			}
 
-			if (useRotation)
+			if ((HXP.tilesheetFlags & HXP.TILE_ROTATION) > 0)
 			{
 				HXP.tileData[HXP.currentPos++] = angle;
 			}
 
-			if (useRGB)
+			if ((HXP.tilesheetFlags & HXP.TILE_RGB) > 0)
 			{
 				HXP.tileData[HXP.currentPos++] = _tint.redMultiplier;
 				HXP.tileData[HXP.currentPos++] = _tint.greenMultiplier;
 				HXP.tileData[HXP.currentPos++] = _tint.blueMultiplier;
 			}
 
-			if (useAlpha)
+			if ((HXP.tilesheetFlags & HXP.TILE_ALPHA) > 0)
 			{
 				HXP.tileData[HXP.currentPos++] = _alpha;
 			}
-			return;
 		}
-
-#end
-
+#else
 		// quit if no graphic is assigned
 		if (_buffer == null) return;
 
@@ -209,6 +199,7 @@ class Image extends Graphic
 		_matrix.tx += originX + _point.x;
 		_matrix.ty += originY + _point.y;
 		target.draw(_bitmap, _matrix, null, blend, null, smooth);
+#end // hardware
 	}
 
 	/**

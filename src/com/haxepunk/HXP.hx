@@ -760,7 +760,7 @@ class HXP
 	public static inline function convertColor(color:Int):Dynamic
 	{
 #if neko
-		return { rgb: color, a: 1 };
+		return { rgb: color & 0x00FFFFFF, a: color >> 24 };
 #else
 		return color; // do nothing
 #end
@@ -771,7 +771,9 @@ class HXP
 	{
 		var name:String = Std.string(source);
 		if (_bitmapIndex.exists(name))
+		{
 			return _bitmapIndex.get(name);
+		}
 
 		trace('Could not find the image : ' + Std.string(source));
 		return -1;
@@ -991,7 +993,7 @@ class HXP
 	public static var entity:Entity;
 
 
-	#if hardware
+#if hardware
 	/**
 	 * Currently only one tilesheet for simplicity, should probably be a list later on (and not static?)
 	 */
@@ -1032,5 +1034,5 @@ class HXP
 	public static inline var TILE_ROTATION = 0x0002;
 	public static inline var TILE_RGB = 0x0004;
 	public static inline var TILE_ALPHA = 0x0008;
-	#end
+#end
 }

@@ -53,6 +53,10 @@ class Console
 		_sprite = new Sprite();
 #if nme
 		var font = nme.Assets.getFont("font/04B_03__.ttf");
+		if (font == null)
+		{
+			font = nme.Assets.getFont(HXP.defaultFont);
+		}
 		_format = new TextFormat(font.fontName, 8, 0xFFFFFF);
 #elseif flash
 		_format = new TextFormat("console");
@@ -743,7 +747,7 @@ class Console
 			g.clear();
 			for (e in SCREEN_LIST)
 			{
-				if (e.mask != null) trace(e.mask);
+//				if (e.mask != null) HXP.log(e.mask);
 				// If the Entity is not selected.
 				if (Lambda.indexOf(SELECT_LIST, e) < 0)
 				{
@@ -917,7 +921,11 @@ class Console
 				s += "\n\n- " + Type.getClassName(Type.getClass(e)) + " -\n";
 				for (str in WATCH_LIST)
 				{
+#if flash
 					var field = Reflect.getProperty(e, str);
+#else
+					var field = Reflect.field(e, str);
+#end
 					if (field != null)
 					{
 						s += "\n" + str + ": " + field.toString();

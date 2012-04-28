@@ -41,7 +41,7 @@ class GameWorld extends DemoWorld
 		var e:Entity = new Entity(x, y);
 		var image = Image.createRect(w, h, color);
 		e.graphic = image;
-		e.setHitboxTo(image);
+		e.setHitbox(w, h);
 		e.type = "solid";
 		add(e);
 		return e;
