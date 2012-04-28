@@ -550,12 +550,11 @@ class HXP
 	/**
 	 * The random seed used by FP's random functions.
 	 */
-	public static var randomSeed(getRandomSeed, setRandomSeed):Int;
-	private static inline function getRandomSeed():Int { return _getSeed; }
+	public static var randomSeed(default, setRandomSeed):Int;
 	private static inline function setRandomSeed(value:Int):Int
 	{
 		_seed = Std.int(clamp(value, 1.0, 2147483646.0));
-		_getSeed = _seed;
+		randomSeed = _seed;
 		return _seed;
 	}
 
@@ -965,7 +964,6 @@ class HXP
 
 	// Pseudo-random number generation (the seed is set in Engine's contructor).
 	private static var _seed:Int = 0;
-	private static var _getSeed:Int;
 
 	// Volume control.
 	private static var _volume:Float = 1;

@@ -8,6 +8,7 @@ import com.haxepunk.utils.Key;
 // have to import worlds for compilation
 import platformer.GameWorld;
 import masks.GameWorld;
+import effects.GameWorld;
 
 class DemoWorld extends World
 {
@@ -61,6 +62,7 @@ class DemoWorld extends World
 
 	private static var _currentWorld:Int = 0;
 	private static var _worlds:Array<String> = [
+		'effects.GameWorld',
 		'masks.GameWorld',
 		'platformer.GameWorld'
 	];

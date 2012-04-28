@@ -27,7 +27,7 @@ class Main extends Engine
 #end
 		HXP.screen.color = kClearColor;
 		HXP.screen.scale = 1;
-		HXP.world = new masks.GameWorld();
+		HXP.world = new effects.GameWorld();
 	}
 
 	public static function main()

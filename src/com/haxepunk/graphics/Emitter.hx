@@ -31,6 +31,7 @@ class Emitter extends Graphic
 
 		setSource(source, frameWidth, frameHeight);
 		active = true;
+		particleCount = 0;
 	}
 
 	/**
@@ -39,9 +40,16 @@ class Emitter extends Graphic
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
 	 */
-	public function setSource(source:BitmapData, frameWidth:Int = 0, frameHeight:Int = 0)
+	public function setSource(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0)
 	{
-		_source = source;
+		if (Std.is(source, BitmapData))
+		{
+			_source = source;
+		}
+		else
+		{
+			_source = HXP.getBitmap(source);
+		}
 		if (_source == null) throw "Invalid source image.";
 		_width = _source.width;
 		_height = _source.height;
@@ -78,7 +86,7 @@ class Emitter extends Graphic
 				p._prev = null;
 				_cache = p;
 				p = n;
-				_particleCount --;
+				particleCount --;
 				continue;
 			}
 
@@ -120,7 +128,7 @@ class Emitter extends Graphic
 			p._moveY += p._gravity * td;
 
 			// get frame
-			rect.x = rect.width * type._frames[Std.int(td * type._frameCount)];
+			rect.x = rect.width * type._frames[Std.int(td * type._frames.length)];
 			rect.y = Std.int(rect.x / type._width) * rect.height;
 			rect.x %= type._width;
 
@@ -142,7 +150,10 @@ class Emitter extends Graphic
 				// draw particle
 				target.copyPixels(type._buffer, type._bufferRect, _p, null, null, true);
 			}
-			else target.copyPixels(type._source, rect, _p, null, null, true);
+			else
+			{
+				target.copyPixels(type._source, rect, _p, null, null, true);
+			}
 
 			// get next particle
 			p = p._next;
@@ -176,12 +187,13 @@ class Emitter extends Graphic
 	 * @param	ease			Optional easer function.
 	 * @return	This ParticleType object.
 	 */
-	public function setMotion(name:String, angle:Float, distance:Float, duration:Float, angleRange:Float = 0, distanceRange:Float = 0, durationRange:Float = 0, ease:EaseFunction = null):ParticleType
+	public function setMotion(name:String, angle:Float, distance:Float, duration:Float, ?angleRange:Float = 0, ?distanceRange:Float = 0, ?durationRange:Float = 0, ?ease:EaseFunction = null):ParticleType
 	{
 		var pt:ParticleType = _types.get(name);
 		if (pt == null) return null;
 		return pt.setMotion(angle, distance, duration, angleRange, distanceRange, durationRange, ease);
 	}
+
 	/**
 	 * Sets the gravity range for a particle type.
 	 * @param  name      The particle type.
@@ -189,7 +201,7 @@ class Emitter extends Graphic
 	 * @param  gravityRange  Random amount to add to the particle's gravity.
 	 * @return  This ParticleType object.
 	 */
-	public function setGravity(name:String, gravity:Float = 0, gravityRange:Float = 0):ParticleType
+	public function setGravity(name:String, ?gravity:Float = 0, ?gravityRange:Float = 0):ParticleType
 	{
 		return cast(_types.get(name) , ParticleType).setGravity(gravity, gravityRange);
 	}
@@ -202,7 +214,7 @@ class Emitter extends Graphic
 	 * @param	ease		Optional easer function.
 	 * @return	This ParticleType object.
 	 */
-	public function setAlpha(name:String, start:Float = 1, finish:Float = 0, ease:EaseFunction = null):ParticleType
+	public function setAlpha(name:String, ?start:Float = 1, ?finish:Float = 0, ?ease:EaseFunction = null):ParticleType
 	{
 		var pt:ParticleType = _types.get(name);
 		if (pt == null) return null;
@@ -217,7 +229,7 @@ class Emitter extends Graphic
 	 * @param	ease		Optional easer function.
 	 * @return	This ParticleType object.
 	 */
-	public function setColor(name:String, start:Int = 0xFFFFFF, finish:Int = 0, ease:EaseFunction = null):ParticleType
+	public function setColor(name:String, ?start:Int = 0xFFFFFF, ?finish:Int = 0, ?ease:EaseFunction = null):ParticleType
 	{
 		var pt:ParticleType = _types.get(name);
 		if (pt == null) return null;
@@ -231,7 +243,7 @@ class Emitter extends Graphic
 	 * @param	y			Y point to emit from.
 	 * @return
 	 */
-	public function emit(name:String, x:Float, y:Float):Particle
+	public function emit(name:String, ?x:Float = 0, ?y:Float = 0):Particle
 	{
 		var p:Particle, type:ParticleType = _types.get(name);
 		if (type == null) throw "Particle type \"" + name + "\" does not exist.";
@@ -241,7 +253,10 @@ class Emitter extends Graphic
 			p = _cache;
 			_cache = p._next;
 		}
-		else p = new Particle();
+		else
+		{
+			p = new Particle();
+		}
 		p._next = _particle;
 		p._prev = null;
 		if (p._next != null) p._next._prev = p;
@@ -256,7 +271,7 @@ class Emitter extends Graphic
 		p._x = x;
 		p._y = y;
 		p._gravity = type._gravity + type._gravityRange * HXP.random;
-		_particleCount ++;
+		particleCount ++;
 		return (_particle = p);
 	}
 
@@ -274,6 +289,14 @@ class Emitter extends Graphic
 		return emit(name, x + Math.cos(angle) * radius, y + Math.sin(angle) * radius);
 	}
 
+	/**
+	 * Randomly emits the particle inside the specified area
+	 * @param	name		Particle type to emit
+	 * @param	x			X point to emit from.
+	 * @param	y			Y point to emit from.
+	 * @param	width
+	 * @param	height
+	 */
 	public function emitInRectangle(name:String, x:Float, y:Float, width:Float ,height:Float):Particle
 	{
 		return emit(name, x + HXP.random * width, y + HXP.random * height);
@@ -282,14 +305,12 @@ class Emitter extends Graphic
 	/**
 	 * Amount of currently existing particles.
 	 */
-	public var particleCount(getParticleCount, null):Int;
-	private function getParticleCount():Int { return _particleCount; }
+	public var particleCount(default, null):Int;
 
-	// Particle infromation.
+	// Particle information.
 	private var _types:Hash<ParticleType>;
 	private var _particle:Particle;
 	private var _cache:Particle;
-	private var _particleCount:Int;
 
 	// Source information.
 	private var _source:BitmapData;

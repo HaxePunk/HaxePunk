@@ -13,7 +13,7 @@ import com.haxepunk.Graphic;
 typedef TextOptions = {
 	@:optional var font:String;
 	@:optional var size:Int;
-#if flash
+#if (flash || js)
 	@:optional var align:flash.text.TextFormatAlign;
 #else
 	@:optional var align:String;
@@ -21,7 +21,7 @@ typedef TextOptions = {
 	@:optional var wordWrap:Bool;
 	@:optional var resizable:Bool;
 	@:optional var color:Int;
-	@:optional var leading:Float;
+	@:optional var leading:Int;
 };
 
 /**
@@ -49,7 +49,7 @@ class Text extends Image
 
 		if (options.font == null)  options.font = HXP.defaultFont;
 		if (options.size == 0)     options.size = 16;
-#if flash
+#if (flash || js)
 		if (options.align == null) options.align = flash.text.TextFormatAlign.LEFT;
 #else
 		if (options.align == null) options.align = "left";

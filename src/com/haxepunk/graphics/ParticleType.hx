@@ -31,10 +31,15 @@ class ParticleType
 		_frame = new Rectangle(0, 0, frameWidth, frameHeight);
 		if (frames == null) frames = new Array<Int>();
 		_frames = frames;
-		_frameCount = frames.length;
 
-		_gravity = 0;
-		_gravityRange = 0;
+        _angle    = _angleRange    = 0;
+        _gravity  = _gravityRange  = 0;
+        _duration = _durationRange = 0;
+        _distance = _distanceRange = 0;
+        _alpha    = _alphaRange    = 0;
+
+        _red = _green = _blue = 1;
+        _redRange = _greenRange = _blueRange = 0;
 	}
 
 	/**
@@ -146,7 +151,6 @@ class ParticleType
 	public var _width:Int;
 	public var _frame:Rectangle;
 	public var _frames:Array<Int>;
-	public var _frameCount:Int;
 
 	// Motion information.
 	public var _angle:Float;

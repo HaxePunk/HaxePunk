@@ -62,7 +62,12 @@ class Engine extends Sprite
 		HXP.resize(width, height);
 
 		// miscellaneous startup stuff
+#if neko
+		if (HXP.randomSeed == null) HXP.randomizeSeed();
+#else
 		if (HXP.randomSeed == 0) HXP.randomizeSeed();
+#end
+
 		HXP.entity = new Entity();
 		HXP.time = Lib.getTimer();
 
