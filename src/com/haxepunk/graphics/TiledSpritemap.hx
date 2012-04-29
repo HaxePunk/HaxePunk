@@ -44,7 +44,7 @@ class TiledSpritemap extends Spritemap
 		_rect.x = _rect.width * _frame;
 		_rect.y = Std.int(_rect.x / _width) * _rect.height;
 		_rect.x %= _width;
-		if (_flipped) _rect.x = (_width - _rect.width) - _rect.x;
+		if (flipped) _rect.x = (_width - _rect.width) - _rect.x;
 
 		// render it repeated to the buffer
 		var xx:Int = Std.int(_offsetX) % _imageWidth,

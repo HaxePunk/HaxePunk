@@ -127,6 +127,7 @@ class Image extends Graphic
 
 		_bitmap = new Bitmap();
 		_alpha = 1;
+		_flipped = false;
 		_color = 0x00FFFFFF;
 		_colorTransform = new ColorTransform();
 		_matrix = HXP.matrix;
@@ -361,25 +362,25 @@ class Image extends Graphic
 	/**
 	 * Width of the image.
 	 */
-	public var width(getWidth, null):Int;
+	public var width(getWidth, never):Int;
 	private function getWidth():Int { return Std.int(_bufferRect.width); }
 
 	/**
 	 * Height of the image.
 	 */
-	public var height(getHeight, null):Int;
+	public var height(getHeight, never):Int;
 	private function getHeight():Int { return Std.int(_bufferRect.height); }
 
 	/**
 	 * The scaled width of the image.
 	 */
-	public var scaledWidth(getScaledWidth, null):Int;
+	public var scaledWidth(getScaledWidth, never):Int;
 	private function getScaledWidth():Int { return Std.int(_bufferRect.width * scaleX * scale); }
 
 	/**
 	 * The scaled height of the image.
 	 */
-	public var scaledHeight(getScaledHeight, null):Int;
+	public var scaledHeight(getScaledHeight, never):Int;
 	private function getScaledHeight():Int { return Std.int(_bufferRect.height * scaleY * scale); }
 
 	/**

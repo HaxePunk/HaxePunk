@@ -74,8 +74,6 @@ class Text extends Image
 
 		if (width == 0) width = Std.int(_field.textWidth + 4);
 		if (height == 0) height = Std.int(_field.textHeight + 4);
-		this.width = width;
-		this.height = height;
 
 		_source = HXP.createBitmap(width, height, true);
 		super(_source);
@@ -96,16 +94,16 @@ class Text extends Image
 
 		if (resizable && (textWidth > width || textHeight > height))
 		{
-			if (width < textWidth) width = textWidth;
-			if (height < textHeight) height = textHeight;
+			if (width < textWidth) _bufferRect.width = textWidth;
+			if (height < textHeight) _bufferRect.height = textHeight;
 		}
 
 		if (width > _source.width || height > _source.height)
 		{
-			_source = new BitmapData(
+			_source = HXP.createBitmap(
 				Std.int(Math.max(width, _source.width)),
 				Std.int(Math.max(height, _source.height)),
-				true, HXP.blackColor);
+				true);
 
 			_sourceRect = _source.rect;
 			createBuffer();

@@ -78,7 +78,7 @@ class Spritemap extends Image
 		_rect.y = Std.int(_rect.x / _width) * _rect.height;
 		_rect.x = _rect.x % _width;
 
-		if (_flipped) _rect.x = (_width - _rect.width) - _rect.x;
+		if (flipped) _rect.x = (_width - _rect.width) - _rect.x;
 
 		// update the buffer
 		super.updateBuffer(clearBefore);
