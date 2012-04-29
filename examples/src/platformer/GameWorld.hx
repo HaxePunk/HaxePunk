@@ -36,7 +36,7 @@ class GameWorld extends DemoWorld
 	public override function begin()
 	{
 		backdrop = new Backdrop("gfx/tile.png", true, true);
-		addGraphic(backdrop);
+		addGraphic(backdrop).layer = 20;
 
 		player = new Player(10 * 32, 11 * 32);
 		add(player);

@@ -765,51 +765,6 @@ class HXP
 #end
 	}
 
-#if hardware
-	public static function getBitmapIndex(source:Dynamic):Int
-	{
-		var name:String = Std.string(source);
-		if (_bitmapIndex.exists(name))
-		{
-			return _bitmapIndex.get(name);
-		}
-
-		trace('Could not find the image : ' + Std.string(source));
-		return -1;
-	}
-
-	/**
-	 * Takes a bitmapdata and creates the tilesheet has an optional parameter which can take the string from the SpriteSheetPacker found here
-	 * http://spritesheetpacker.codeplex.com/ which will generate the rectangles as well
-	 * @param	source
-	 * @param	?rectangleData	 A string where a rectangle is formatted as 'name = x y width height\n'
-	 */
-	public static function loadTilesheet(source:BitmapData, ?rectangleData:String):Void
-	{
-		HXP.tilesheet = new nme.display.Tilesheet(source);
-
-		if (rectangleData != null)
-		{
-
-			var array:Array<String> = rectangleData.split('\n');
-
-			for (ii in 0...array.length)
-			{
-
-				var data = array[ii].split(' ');
-				var name = data[0];
-
-				var rectangle = new Rectangle(Std.parseInt(data[2]), Std.parseInt(data[3]), Std.parseInt(data[4]), Std.parseInt(data[5]));
-
-				HXP.sheetRectangles.push(rectangle);
-				HXP.tilesheet.addTileRect(rectangle);
-
-				HXP._bitmapIndex.set(name, ii);
-			}
-		}
-	}
-#end // hardware
-
 	/**
 	 * Sets a time flag.
 	 * @return	Time elapsed (in milliseconds) since the last time flag was set.
@@ -970,9 +925,6 @@ class HXP
 	private static var _pan:Float = 0;
 	private static var _soundTransform:SoundTransform = new SoundTransform();
 
-
-
-
 	// Used for rad-to-deg and deg-to-rad conversion.
 	public static inline var DEG:Float = -180 / Math.PI;
 	public static inline var RAD:Float = Math.PI / -180;
@@ -989,48 +941,4 @@ class HXP
 	public static var matrix:Matrix = new Matrix();
 	public static var sprite:Sprite = new Sprite();
 	public static var entity:Entity;
-
-
-#if hardware
-	/**
-	 * Currently only one tilesheet for simplicity, should probably be a list later on (and not static?)
-	 */
-	public static var tilesheet:nme.display.Tilesheet;
-
-	/**
-	 * Stores the x, y, ID, flags... which are then passed through NME
-	 */
-	public static var tileData:Array<Float> = new Array<Float>();
-
-	/**
-	 * Stores the rectangles in an array where the index is the respective ID that the rectangle has in the tilesheet
-	 */
-	static public var sheetRectangles:Array<Rectangle> = new Array<Rectangle>();
-
-	/**
-	 * Flags are added with
-	 * flags = TILE_SCALE | TILE_ROTATION | TILE_RGB;
-	 */
-	public static var tilesheetFlags:Int = 0;
-
-	static private var _bitmapIndex:Hash<Int> = new Hash<Int>();
-
-	/**
-	 * @private Used internally, used to determine which index to set the data in tileData
-	 */
-	public static var currentPos:Int = 0;
-	/**
-	 * Used to determine if there are less objects to render, ïf there are then we need to splice the array so that we dont render any
-	 * entities which have been removed
-	 */
-	public static var previousLength = 0;
-
-	/**
-	 * Flags that are copied over from the nme.display.Tilesheet class for easier access
-	 */
-	public static inline var TILE_SCALE = 0x0001;
-	public static inline var TILE_ROTATION = 0x0002;
-	public static inline var TILE_RGB = 0x0004;
-	public static inline var TILE_ALPHA = 0x0008;
-#end
 }

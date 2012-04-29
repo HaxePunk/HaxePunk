@@ -95,9 +95,6 @@ class World extends Tweener
 	 */
 	public function render()
 	{
-#if hardware
-		HXP.currentPos = 0;
-#end
 		// render the entities in order of depth
 		var e:Entity,
 			fe:FriendEntity,
@@ -112,16 +109,6 @@ class World extends Tweener
 				fe = fe._renderPrev;
 			}
 		}
-#if hardware
-		if (HXP.currentPos < HXP.previousLength)
-		{
-			//If we have removed entities we need to splice the array so that we dont render the objects again
-			HXP.tileData.splice(HXP.currentPos, HXP.previousLength - HXP.currentPos);
-		}
-		HXP.previousLength = HXP.currentPos;
-		HXP.sprite.graphics.clear();
-		HXP.tilesheet.drawTiles(HXP.sprite.graphics,  HXP.tileData, Turn.kSmooth, HXP.tilesheetFlags);
-#end
 	}
 
 	/**

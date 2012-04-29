@@ -67,7 +67,7 @@ class Spritemap extends Image
 	 */
 	override public function updateBuffer(clearBefore:Bool = false)
 	{
-#if hardware
+#if cpp
 		return;
 #end
 #if neko
@@ -277,7 +277,7 @@ class Spritemap extends Image
 	private var _frame:Int;
 	private var _timer:Float;
 
-	#if hardware
+	#if cpp
 	private var _baseID:Int;
 	#end
 }

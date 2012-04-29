@@ -85,7 +85,7 @@ class Graphic
 	private var _scroll:Bool;
 	private var _point:Point;
 
-#if hardware
+#if cpp
 	private var _tileSheet:nme.display.Tilesheet;
 	private var imageID:Int;
 #end
