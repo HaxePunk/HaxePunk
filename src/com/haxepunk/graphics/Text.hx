@@ -92,7 +92,7 @@ class Text extends Image
 		textWidth = Std.int(_field.textWidth + 4);
 		textHeight = Std.int(_field.textHeight + 4);
 
-		if (resizable && (textWidth > width || textHeight > height))
+		if (resizable)
 		{
 			if (width < textWidth) _bufferRect.width = textWidth;
 			if (height < textHeight) _bufferRect.height = textHeight;
@@ -159,16 +159,6 @@ class Text extends Image
 		updateBuffer();
 		return value;
 	}
-
-	/**
-	 * Width of the text image.
-	 */
-	private override function getWidth():Int { return width; }
-
-	/**
-	 * Height of the text image.
-	 */
-	private override function getHeight():Int { return height; }
 
 	// Text information.
 	private var _field:TextField;
