@@ -55,6 +55,12 @@ class Stamp extends Graphic
 		if (_source != null) _sourceRect = _source.rect;
 		return _source;
 	}
+
+	public var width(getWidth, never):Int;
+	private function getWidth():Int { return _source.width; }
+
+	public var height(getHeight, never):Int;
+	private function getHeight():Int { return _source.height; }
 	
 	// Stamp information.
 	private var _source:BitmapData;
