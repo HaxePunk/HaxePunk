@@ -2,8 +2,9 @@ HaxePunk CHANGELOG
 
 v1.6.5
 ------------------------------
-* Improved console output (memory usage, handles properties)
+* Improved console output (memory usage, handles properties, terminal output)
 * Added HXP.round for rounding to the nearest decimal
+* Added width/height to Stamp [mkosler]
 
 v1.6.4
 ------------------------------

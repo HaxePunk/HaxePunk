@@ -18,32 +18,32 @@ class Stamp extends Graphic
 	 * @param	x			X offset.
 	 * @param	y			Y offset.
 	 */
-	public function new(source:Dynamic, x:Int = 0, y:Int = 0) 
+	public function new(source:Dynamic, x:Int = 0, y:Int = 0)
 	{
 		super();
-		
+
 		// set the origin
 		this.x = x;
 		this.y = y;
-		
+
 		// set the graphic
 		if (Std.is(source, BitmapData)) _source = source;
 		else _source = HXP.getBitmap(source);
-		
+
 		if (_source == null) throw "Invalid source image.";
-		
+
 		_sourceRect = _source.rect;
 	}
-	
+
 	/** @private Renders the Graphic. */
-	override public function render(target:BitmapData, point:Point, camera:Point) 
+	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
 		if (_source == null) return;
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;
 		target.copyPixels(_source, _sourceRect, _point, null, null, true);
 	}
-	
+
 	/**
 	 * Source BitmapData image.
 	 */
@@ -55,7 +55,13 @@ class Stamp extends Graphic
 		if (_source != null) _sourceRect = _source.rect;
 		return _source;
 	}
-	
+
+	public var width(getWidth, never):Int;
+	private function getWidth():Int { return _source.width; }
+
+	public var height(getHeight, never):Int;
+	private function getHeight():Int { return _source.height; }
+
 	// Stamp information.
 	private var _source:BitmapData;
 	private var _sourceRect:Rectangle;
