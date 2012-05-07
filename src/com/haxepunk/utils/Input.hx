@@ -4,7 +4,7 @@ import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
 import flash.ui.Keyboard;
 import com.haxepunk.HXP;
-#if nme
+#if (nme && (cpp || neko))
 import nme.events.JoystickEvent;
 #end
 
@@ -171,7 +171,7 @@ class Input
 			HXP.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false,  2);
 			HXP.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel, false,  2);
 
-#if nme
+#if (nme && (cpp || neko))
 			HXP.stage.addEventListener(JoystickEvent.AXIS_MOVE, onJoyAxisMove);
 			HXP.stage.addEventListener(JoystickEvent.BALL_MOVE, onJoyBallMove);
 			HXP.stage.addEventListener(JoystickEvent.BUTTON_DOWN, onJoyButtonDown);
@@ -249,7 +249,7 @@ class Input
 		_mouseWheelDelta = e.delta;
 	}
 
-#if nme
+#if (nme && (cpp || neko))
 
 	private static function onJoyAxisMove(e:JoystickEvent)
 	{
