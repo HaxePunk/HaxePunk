@@ -844,19 +844,17 @@ class World extends Tweener
 	 * @param	c		The Class type to check.
 	 * @return	The Entity.
 	 */
-/*
-	public function classFirst(c:Class):Entity
+	public function classFirst(c:Class<Dynamic>):Entity
 	{
-		if (!_updateFirst) return null;
-		var e:Entity = _updateFirst;
-		while (e)
+		if (_updateFirst == null) return null;
+		var fe:FriendEntity = _updateFirst;
+		while (fe != null)
 		{
-			if (Std.is(e, c)) return e;
-			e = e._updateNext;
+			if (Std.is(fe, c)) return cast(fe, Entity);
+			fe = fe._updateNext;
 		}
 		return null;
 	}
-*/
 
 	/**
 	 * The first Entity on the Layer.

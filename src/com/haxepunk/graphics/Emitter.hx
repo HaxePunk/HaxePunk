@@ -128,7 +128,10 @@ class Emitter extends Graphic
 			p._moveY += p._gravity * td;
 
 			// get frame
-			rect.x = rect.width * type._frames[Std.int(td * type._frames.length)];
+			if (type._frames.length == 0)
+				rect.x = 0;
+			else
+				rect.x = rect.width * type._frames[Std.int(td * type._frames.length)];
 			rect.y = Std.int(rect.x / type._width) * rect.height;
 			rect.x %= type._width;
 

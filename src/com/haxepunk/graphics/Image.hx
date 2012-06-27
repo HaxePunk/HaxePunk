@@ -108,9 +108,8 @@ class Image extends Graphic
 	private function init()
 	{
 		angle = 0;
-		scale = 1;
-		scaleX = 1;
-		scaleY = 1;
+		scale = scaleX = scaleY = 1;
+		originX = originY = 0;
 
 		_bitmap = new Bitmap();
 		_alpha = 1;

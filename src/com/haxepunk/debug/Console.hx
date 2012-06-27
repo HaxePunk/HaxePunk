@@ -124,7 +124,7 @@ class Console
 			while (i < data.length)
 			{
 				if (i > 0) s += " ";
-				s += data[i ++].toString();
+				s += Std.string(data[i++]);
 			}
 		}
 		else s = data[0].toString();

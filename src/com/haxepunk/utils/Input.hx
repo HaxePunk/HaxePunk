@@ -86,7 +86,7 @@ class Input
 					if (_keyNum > 0) return true;
 					continue;
 				}
-				if (_key[v[i]]) return true;
+				if (_key[v[i]] == true) return true;
 			}
 			return false;
 		}
