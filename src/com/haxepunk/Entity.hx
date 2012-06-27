@@ -569,6 +569,7 @@ class Entity extends Tweener
 		{
 			var list:Graphiclist = new Graphiclist();
 			if (graphic != null) list.add(graphic);
+			list.add(g);
 			graphic = list;
 		}
 		return g;
