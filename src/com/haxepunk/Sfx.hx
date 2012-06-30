@@ -34,12 +34,7 @@ class Sfx
 #if nme
 		if (Std.is(source, String))
 		{
-#if flash
-			var ext:String = ".mp3";
-#else
-			var ext:String = ".wav";
-#end
-			_sound = nme.Assets.getSound(source + ext);
+			_sound = nme.Assets.getSound(source);
 			_sounds.set(source, _sound);
 		}
 		else

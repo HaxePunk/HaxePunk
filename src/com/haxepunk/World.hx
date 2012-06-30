@@ -938,13 +938,11 @@ class World extends Tweener
 	 */
 	public function getType(type:String, into:Array<Entity>)
 	{
-		var e:Entity,
-			fe:FriendEntity = _typeFirst.get(type),
+		var fe:FriendEntity = _typeFirst.get(type),
 			n:Int = into.length;
 		while (fe != null)
 		{
-			e = cast(fe, Entity);
-			into[n++] = e;
+			into[n++] = cast(fe, Entity);
 			fe = fe._typeNext;
 		}
 	}

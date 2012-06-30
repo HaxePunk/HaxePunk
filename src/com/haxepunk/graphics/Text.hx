@@ -94,8 +94,8 @@ class Text extends Image
 
 		if (resizable)
 		{
-			if (width < textWidth) _bufferRect.width = textWidth;
-			if (height < textHeight) _bufferRect.height = textHeight;
+			_bufferRect.width = textWidth;
+			_bufferRect.height = textHeight;
 		}
 
 		if (width > _source.width || height > _source.height)
@@ -143,6 +143,9 @@ class Text extends Image
 	private function setFont(value:String):String
 	{
 		if (font == value) return value;
+#if nme
+		value = nme.Assets.getFont(value).fontName;
+#end
 		_form.font = font = value;
 		updateBuffer();
 		return font;

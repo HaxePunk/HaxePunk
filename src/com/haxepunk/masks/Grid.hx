@@ -99,7 +99,7 @@ class Grid extends Hitbox
 		// check that tile is valid
 		if (column < 0 || column > columns - 1 || row < 0 || row > rows - 1)
 		{
-			trace('Tile out of bounds: ' + column + ', ' + row);
+			//trace('Tile out of bounds: ' + column + ', ' + row);
 			return false;
 		}
 		else

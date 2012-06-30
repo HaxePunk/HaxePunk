@@ -13,11 +13,11 @@ class VarTween extends Tween
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:CompleteCallback, ?type:TweenType) 
+	public function new(?complete:CompleteCallback, ?type:TweenType)
 	{
 		super(0, type, complete);
 	}
-	
+
 	/**
 	 * Tweens a numeric public property.
 	 * @param	object		The object containing the property.
@@ -30,7 +30,7 @@ class VarTween extends Tween
 	{
 		_object = object;
 		_ease = ease;
-		
+
 		// Check to make sure we have valid parameters
 		if (!Reflect.isObject(object))
 			throw "A valid object was not passed.";
@@ -41,7 +41,7 @@ class VarTween extends Tween
 		_property = property;
 		_method = false;
 		var a:Float = Reflect.field(_object, property);
-		
+
 		// Check if we need to use a getter/setter method
 		if (Math.isNaN(a))
 		{
@@ -50,19 +50,19 @@ class VarTween extends Tween
 			var getter:Dynamic = getMethod("get" + property); // ex. getAlpha
 			_method = getMethod("set" + property); // ex. setAlpha
 			_property = "";
-			
+
 			a = cast(Reflect.callMethod(object, getter, []), Float);
-			
+
 			// still equal to nan??
 			if (Math.isNaN(a)) throw "The property \"" + property + "\" is not numeric.";
 		}
-		
+
 		_start = a;
 		_range = to - _start;
 		_target = duration;
 		start();
 	}
-	
+
 	private function getMethod(funcName:String):Dynamic
 	{
 		if (Reflect.hasField(_object, funcName))
@@ -71,13 +71,13 @@ class VarTween extends Tween
 			if (Reflect.isFunction(method))
 				return method;
 		}
-		
+
 		throw "The object doe not have the method \"" + funcName + "\", or it is not accessible.";
 		return null;
 	}
-	
+
 	/** @private Updates the Tween. */
-	override public function update() 
+	override public function update()
 	{
 		super.update();
 		var val:Float = _start + _range * _t;
@@ -90,7 +90,7 @@ class VarTween extends Tween
 			Reflect.callMethod(_object, _method, [val]);
 		}
 	}
-	
+
 	// Tween information.
 	private var _object:Dynamic;
 	private var _method:Dynamic;
