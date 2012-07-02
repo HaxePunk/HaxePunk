@@ -72,6 +72,8 @@ class Text extends Image
 		_field.defaultTextFormat = _form;
 		_field.text = text;
 
+		resizable = options.resizable;
+
 		if (width == 0) width = Std.int(_field.textWidth + 4);
 		if (height == 0) height = Std.int(_field.textHeight + 4);
 
@@ -113,8 +115,11 @@ class Text extends Image
 			_source.fillRect(_sourceRect, HXP.blackColor);
 		}
 
-		_field.width = textWidth;
-		_field.height = textHeight;
+		if (resizable)
+		{
+			_field.width = textWidth;
+			_field.height = textHeight;
+		}
 
 		_source.draw(_field);
 		super.updateBuffer(clearBefore);
