@@ -2,6 +2,7 @@
 *.sublime*
 *.zip
 *.n
+*.build
 Example/
 
 # OS specific files
