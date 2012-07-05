@@ -43,7 +43,6 @@ class MultiVarTween extends Tween
 		{
 			if (!Reflect.hasField(object, p)) throw "The Object does not have the property\"" + p + "\", or it is not accessible.";
 			var a:Float = Reflect.field(object, p);
-			if (a == 0) throw "The property \"" + p + "\" is not numeric.";
 			_vars.push(p);
 			_start.push(a);
 			_range.push(Reflect.field(values, p) - a);
