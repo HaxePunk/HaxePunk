@@ -1,5 +1,13 @@
 HaxePunk CHANGELOG
 
+v1.6.6
+------------------------------
+* Entity.addGraphic now correctly adds the new graphic if a list is created
+* Fixed text resizing when wordwrap is true and resizable is false
+* Removed automatic extensions from Sfx class
+* VarTween and MultiVarTween now support properties
+* [neko] Fixed more initialization errors
+
 v1.6.5
 ------------------------------
 * Improved console output (memory usage, handles properties, terminal output)
