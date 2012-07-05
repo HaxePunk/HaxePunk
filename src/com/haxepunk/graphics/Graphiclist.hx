@@ -15,24 +15,25 @@ class Graphiclist extends Graphic
 	 * Constructor.
 	 * @param	...graphic		Graphic objects to add to the list.
 	 */
-	public function new(graphic:Array<Dynamic> = null) 
+	public function new(graphic:Array<Dynamic> = null)
 	{
 		super();
-		
-		
+
+
 		_graphics = new Array<Graphic>();
 		_temp = new Array<Graphic>();
 		_camera = new Point();
-		
+		_count = 0;
+
 		if (graphic != null)
 		{
 			var g:Graphic;
 			for (g in graphic) if (cast(g, Graphic) != null) add(g);
 		}
 	}
-	
+
 	/** @private Updates the graphics in the list. */
-	override public function update() 
+	override public function update()
 	{
 		var g:Graphic;
 		for (g in _graphics)
@@ -40,15 +41,15 @@ class Graphiclist extends Graphic
 			if (g.active) g.update();
 		}
 	}
-	
+
 	/** @private Renders the Graphics in the list. */
-	override public function render(target:BitmapData, point:Point, camera:Point) 
+	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
 		point.x += x;
 		point.y += y;
 		camera.x *= scrollX;
 		camera.y *= scrollY;
-		
+
 		var g:Graphic;
 		for (g in _graphics)
 		{
@@ -66,7 +67,7 @@ class Graphiclist extends Graphic
 			}
 		}
 	}
-	
+
 	/**
 	 * Adds the Graphic to the list.
 	 * @param	graphic		The Graphic to add.
@@ -78,7 +79,7 @@ class Graphiclist extends Graphic
 		if (!active) active = graphic.active;
 		return graphic;
 	}
-	
+
 	/**
 	 * Removes the Graphic from the list.
 	 * @param	graphic		The Graphic to remove.
@@ -88,7 +89,7 @@ class Graphiclist extends Graphic
 	{
 		if (Lambda.indexOf(_graphics, graphic) < 0) return graphic;
 		HXP.clear(_temp);
-		
+
 		var g:Graphic;
 		for (g in _graphics)
 		{
@@ -101,7 +102,7 @@ class Graphiclist extends Graphic
 		updateCheck();
 		return graphic;
 	}
-	
+
 	/**
 	 * Removes the Graphic from the position in the list.
 	 * @param	index		Index to remove.
@@ -113,7 +114,7 @@ class Graphiclist extends Graphic
 		remove(_graphics[index % _graphics.length]);
 		updateCheck();
 	}
-	
+
 	/**
 	 * Removes all Graphics from the list.
 	 */
@@ -124,19 +125,19 @@ class Graphiclist extends Graphic
 		_count = 0;
 		active = false;
 	}
-	
+
 	/**
 	 * All Graphics in this list.
 	 */
 	public var children(getChildren, null):Array<Graphic>;
 	private function getChildren():Array<Graphic> { return _graphics; }
-	
+
 	/**
 	 * Amount of Graphics in this list.
 	 */
 	public var count(getCount, null):Int;
 	private function getCount():Int { return _count; }
-	
+
 	/**
 	 * Check if the Graphiclist should update.
 	 */
@@ -153,7 +154,7 @@ class Graphiclist extends Graphic
 			}
 		}
 	}
-	
+
 	// List information.
 	private var _graphics:Array<Graphic>;
 	private var _temp:Array<Graphic>;
