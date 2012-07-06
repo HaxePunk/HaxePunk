@@ -51,13 +51,14 @@ class MultiVarTween extends Tween
 
 		for (p in fields)
 		{
-			var a:Float = Reflect.getProperty(object, p);
-
 #if (cpp || neko)
+			var a:Float = Reflect.field(object, p);
 			if (a == null)
 			{
 				throw "The Object does not have the property \"" + p + "\", or it is not accessible.";
 			}
+#else
+			var a:Float = Reflect.getProperty(object, p);
 #end
 			if (Math.isNaN(a))
 			{
@@ -75,7 +76,16 @@ class MultiVarTween extends Tween
 	{
 		super.update();
 		var i:Int = _vars.length;
-		while (i-- > 0) Reflect.setProperty(_object, _vars[i], _start[i] + _range[i] * _t);
+		var setter:Dynamic->String->Dynamic->Void;
+#if (cpp || neko)
+		setter = Reflect.setField;
+#else
+		setter = Reflect.setProperty;
+#end
+		while (i-- > 0)
+		{
+			setter(_object, _vars[i], _start[i] + _range[i] * _t);
+		}
 	}
 
 	// Tween information.
