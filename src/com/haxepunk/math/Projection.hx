@@ -1,4 +1,4 @@
-package com.haxepunk.masks;
+package com.haxepunk.math;
 
 class Projection
 {

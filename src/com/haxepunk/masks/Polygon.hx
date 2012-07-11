@@ -2,6 +2,8 @@ package com.haxepunk.masks;
 
 import com.haxepunk.HXP;
 import com.haxepunk.Mask;
+import com.haxepunk.math.Projection;
+import com.haxepunk.math.Vector;
 import flash.display.Graphics;
 import flash.geom.Point;
 
@@ -36,12 +38,12 @@ class Polygon extends Mask
 
 	private inline function generateAxes():Void
 	{
-		_axes = new Array<Point>();
+		_axes = new Array<Vector>();
 		var store:Float;
 		var numberOfPoints:Int = _points.length - 1;
 		for (i in 0...numberOfPoints)
 		{
-			var edge = new Point();
+			var edge = new Vector();
 			edge.x = _points[i].x - _points[i + 1].x;
 			edge.y = _points[i].y - _points[i + 1].y;
 
@@ -53,7 +55,7 @@ class Polygon extends Mask
 
 			_axes.push(edge);
 		}
-		var edge = new Point();
+		var edge = new Vector();
 		//Add the last edge
 		edge.x = _points[numberOfPoints].x - _points[0].x;
 		edge.y = _points[numberOfPoints].y - _points[0].y;
@@ -175,8 +177,8 @@ class Polygon extends Mask
 		_axis.y = parent.x + closestPoint.x - circle.parent.x;
 		_axis.normalize(1);
 
-		projectOn(_axis, firstProj);
-		circle.projectOn(_axis, secondProj);
+		project(_axis, firstProj);
+		circle.project(_axis, secondProj);
 
 		offset = offsetX * _axis.x + offsetY * _axis.y;
 		firstProj.min += offset;
@@ -189,8 +191,8 @@ class Polygon extends Mask
 
 		for (a in _axes)
 		{
-			projectOn(a, firstProj);
-			circle.projectOn(a, secondProj);
+			project(a, firstProj);
+			circle.project(a, secondProj);
 
 			offset = offsetX * a.x + offsetY * a.y;
 			firstProj.min += offset;
@@ -211,8 +213,8 @@ class Polygon extends Mask
 			offsetX:Float = parent.x - hitbox.parent.x,
 			offsetY:Float = parent.y - hitbox.parent.y;
 
-		projectOn(vertical, firstProj);//Project on the horizontal axis of the hitbox
-		hitbox.projectMask(vertical, secondProj);
+		project(vertical, firstProj);//Project on the horizontal axis of the hitbox
+		hitbox.project(vertical, secondProj);
 
 		firstProj.min += offsetY;
 		firstProj.max += offsetY;
@@ -222,8 +224,8 @@ class Polygon extends Mask
 			return false;
 		}
 
-		projectOn(horizontal, firstProj);//Project on the vertical axis of the hitbox
-		hitbox.projectMask(horizontal, secondProj);
+		project(horizontal, firstProj);//Project on the vertical axis of the hitbox
+		hitbox.project(horizontal, secondProj);
 
 		firstProj.min += offsetX;
 		firstProj.max += offsetX;
@@ -235,8 +237,8 @@ class Polygon extends Mask
 
 		for (a in _axes)
 		{
-			projectOn(a, firstProj);
-			hitbox.projectMask(a, secondProj);
+			project(a, firstProj);
+			hitbox.project(a, secondProj);
 
 			offset = offsetX * a.x + offsetY * a.y;
 			firstProj.min += offset;
@@ -256,8 +258,8 @@ class Polygon extends Mask
 			offsetX:Float = parent.x - other.parent.x,
 			offsetY:Float = parent.y - other.parent.y;
 
-		projectOn(vertical, firstProj); //Project on the horizontal axis of the hitbox
-		other.projectMask(vertical, secondProj);
+		project(vertical, firstProj); //Project on the horizontal axis of the hitbox
+		other.project(vertical, secondProj);
 
 		firstProj.min += offsetX;
 		firstProj.max += offsetY;
@@ -267,8 +269,8 @@ class Polygon extends Mask
 			return false;
 		}
 
-		projectOn(horizontal, firstProj); //Project on the vertical axis of the hitbox
-		other.projectMask(horizontal, secondProj);
+		project(horizontal, firstProj); //Project on the vertical axis of the hitbox
+		other.project(horizontal, secondProj);
 
 		firstProj.min += offsetX;
 		firstProj.max += offsetX;
@@ -280,8 +282,8 @@ class Polygon extends Mask
 
 		for (a in _axes)
 		{
-			projectOn(a, firstProj);
-			other.projectMask(a, secondProj);
+			project(a, firstProj);
+			other.project(a, secondProj);
 
 			var offset = offsetX * a.x + offsetY * a.y;
 			firstProj.min += offset;
@@ -302,8 +304,8 @@ class Polygon extends Mask
 
 		for (a in _axes)
 		{
-			projectOn(a, firstProj);
-			other.projectOn(a, secondProj);
+			project(a, firstProj);
+			other.project(a, secondProj);
 
 			//Shift the first info with the offset
 			var offset = offsetX * a.x + offsetY * a.y;
@@ -318,8 +320,8 @@ class Polygon extends Mask
 
 		for (a in other._axes)
 		{
-			projectOn(a, firstProj);
-			other.projectOn(a, secondProj);
+			project(a, firstProj);
+			other.project(a, secondProj);
 
 			//Shift the first info with the offset
 			var offset = offsetX * a.x + offsetY * a.y;
@@ -334,29 +336,20 @@ class Polygon extends Mask
 		return true;
 	}
 
-	/**
-	 * Calculates the dotProduct between two points
-	 */
-	private inline function dot(p1:Point, p2:Point):Float
+	public override function project(axis:Vector, projection:Projection):Void
 	{
-		return p1.x * p2.x + p1.y * p2.y;
-	}
+		var min:Float = axis.dot(_points[0]),
+			max:Float = min;
 
-	public inline function projectOn(axis:Point, projection:Projection):Void
-	{
-		var cur:Float,
-			max:Float = -HXP.NUMBER_MAX_VALUE,
-			min:Float = HXP.NUMBER_MAX_VALUE;
-
-		for (vertex in _points)
+		for (i in 1..._points.length)
 		{
-			cur = dot(vertex, axis);
+			var cur = axis.dot(_points[i]);
 
 			if (cur < min)
 			{
 				min = cur;
 			}
-			if (cur > max)
+			else if (cur > max)
 			{
 				max = cur;
 			}
@@ -451,9 +444,9 @@ class Polygon extends Mask
 	/** Updates the parent's bounds for this mask. */
 	override public function update()
 	{
-		projectOn(horizontal, firstProj);//width
+		project(horizontal, firstProj); //width
 		width = Math.ceil(firstProj.max - firstProj.min);
-		projectOn(vertical, secondProj);//height
+		project(vertical, secondProj); //height
 		height = Math.ceil(secondProj.max - secondProj.min);
 
 		//update entity bounds
@@ -521,12 +514,12 @@ class Polygon extends Mask
 	// Hitbox information.
 	private var _angle:Float;
 	private var _points:Array<Point>;
-	private var _axes:Array<Point>;
+	private var _axes:Array<Vector>;
 
-	private static var _axis = new Point();
+	private static var _axis = new Vector();
 	private static var firstProj = new Projection();
 	private static var secondProj = new Projection();
 
-	public static var vertical = new Point(0, 1);
-	public static var horizontal = new Point(1, 0);
+	public static var vertical = new Vector(0, 1);
+	public static var horizontal = new Vector(1, 0);
 }

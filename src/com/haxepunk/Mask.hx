@@ -1,7 +1,8 @@
 package com.haxepunk;
 
 import com.haxepunk.Entity;
-import com.haxepunk.masks.Projection;
+import com.haxepunk.math.Projection;
+import com.haxepunk.math.Vector;
 import com.haxepunk.masks.Masklist;
 import flash.display.Graphics;
 import flash.geom.Point;
@@ -90,11 +91,11 @@ class Mask
 
 	}
 
-	public inline function projectMask(axis:Point, projection:Projection):Void
+	public function project(axis:Vector, projection:Projection):Void
 	{
 		var cur:Float,
-			max:Float = -9999999999.,
-			min:Float = 9999999999.;
+			max:Float = -9999999999.0,
+			min:Float = 9999999999.0;
 
 		cur = -parent.originX * axis.x - parent.originY * axis.y;
 		if (cur < min)

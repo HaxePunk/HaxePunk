@@ -3,6 +3,8 @@ package com.haxepunk.masks;
 import com.haxepunk.Graphic;
 import com.haxepunk.Mask;
 import com.haxepunk.masks.Grid;
+import com.haxepunk.math.Projection;
+import com.haxepunk.math.Vector;
 import flash.display.Graphics;
 import flash.geom.Point;
 
@@ -147,7 +149,7 @@ class Circle extends Mask
 		return (dx * dx + dy * dy) <= _squaredRadius;
 	}
 
-	public inline function projectOn(axis:Point, projection:Projection):Void
+	public override function project(axis:Vector, projection:Projection):Void
 	{
 		projection.min = -_radius;
 		projection.max = _radius;
