@@ -5,14 +5,12 @@ import com.haxepunk.Mask;
 import flash.display.Graphics;
 import flash.geom.Point;
 
-using Std;
-
 class Polygon extends Mask
 {
 	/**
 	 * The polygon rotates around this point when the angle is set.
 	 */
-	public var centerPoint:Point;
+	public var origin:Point;
 
 	/**
 	 * Constructor.
@@ -20,7 +18,7 @@ class Polygon extends Mask
 	 * @param	x			X offset of the circle.
 	 * @param	y			Y offset of the circle.
 	 */
-	public function new(points:Array<Point>, ?centerPoint:Point)
+	public function new(points:Array<Point>, ?origin:Point)
 	{
 		super();
 		_points = points;
@@ -30,13 +28,13 @@ class Polygon extends Mask
 		_check.set(Type.getClassName(Polygon), collidePolygon);
 		_check.set(Type.getClassName(Grid), collideGrid);
 
-		this.centerPoint = centerPoint != null ? centerPoint : new Point();
+		this.origin = origin != null ? origin : new Point();
 		_angle = 0;
 
 		updateAxes();
 	}
 
-	private function generateAxes():Void
+	private inline function generateAxes():Void
 	{
 		_axes = new Array<Point>();
 		var store:Float;
@@ -67,7 +65,7 @@ class Polygon extends Mask
 		_axes.push(edge);
 	}
 
-	private function removeDuplicateAxes():Void
+	private inline function removeDuplicateAxes():Void
 	{
 		for (ii in 0..._axes.length)
 		{
@@ -148,53 +146,6 @@ class Polygon extends Mask
 		return false;
 	}
 
-	/*public function collideGrid(grid:Grid):Bool
-	{
-		function collideSquare(x:Int, y:Int):Bool
-		{
-			projectOn(Hitbox.vertical, firstCollisionInfo);
-			grid.projectOn(Hitbox.vertical, secondCollisionInfo);
-
-			if (firstCollisionInfo.min > secondCollisionInfo.max || firstCollisionInfo.max < secondCollisionInfo.min)
-			{
-				return false;
-			}
-
-			projectOn(Hitbox.horizontal, firstCollisionInfo);
-			grid.projectOn(Hitbox.horizontal, secondCollisionInfo);
-
-			if (firstCollisionInfo.min > secondCollisionInfo.max || firstCollisionInfo.max < secondCollisionInfo.min)
-			{
-				return false;
-			}
-
-			for (a in _axes)
-			{
-				projectOn(a, firstCollisionInfo);
-				grid.projectOn(a, secondCollisionInfo);
-
-				if (firstCollisionInfo.min > secondCollisionInfo.max || firstCollisionInfo.max < secondCollisionInfo.min)
-				{
-					return false;
-				}
-			}
-			return true;
-		}
-		var startX = Std.int((x + parent.x) / grid.tileWidth);
-		var startY = Std.int((y + parent.y) / grid.tileHeight );
-		for (xx in startX...Std.int(startX + width / grid.tileWidth + 2))
-		{
-			for (yy in startY...Std.int(startY + height / grid.tileHeight + 2))
-			{
-				if (grid.getTile(xx, yy))
-				{
-					if (collideSquare(xx, yy)) return true;
-				}
-			}
-		}
-		return false;
-	}*/
-
 	public function collideCircle(circle:Circle):Bool
 	{
 		var offset:Float;
@@ -224,28 +175,28 @@ class Polygon extends Mask
 		_axis.y = parent.x + closestPoint.x - circle.parent.x;
 		_axis.normalize(1);
 
-		projectOn(_axis, firstCollisionInfo);
-		circle.projectOn(_axis, secondCollisionInfo);
+		projectOn(_axis, firstProj);
+		circle.projectOn(_axis, secondProj);
 
 		offset = offsetX * _axis.x + offsetY * _axis.y;
-		firstCollisionInfo.min += offset;
-		firstCollisionInfo.max += offset;
+		firstProj.min += offset;
+		firstProj.max += offset;
 
-		if (firstCollisionInfo.min > secondCollisionInfo.max || firstCollisionInfo.max < secondCollisionInfo.min)
+		if (firstProj.overlaps(secondProj))
 		{
 			return false;
 		}
 
 		for (a in _axes)
 		{
-			projectOn(a, firstCollisionInfo);
-			circle.projectOn(a, secondCollisionInfo);
+			projectOn(a, firstProj);
+			circle.projectOn(a, secondProj);
 
 			offset = offsetX * a.x + offsetY * a.y;
-			firstCollisionInfo.min += offset;
-			firstCollisionInfo.max += offset;
+			firstProj.min += offset;
+			firstProj.max += offset;
 
-			if (firstCollisionInfo.min > secondCollisionInfo.max || firstCollisionInfo.max < secondCollisionInfo.min)
+			if (firstProj.overlaps(secondProj))
 			{
 				return false;
 			}
@@ -260,38 +211,38 @@ class Polygon extends Mask
 			offsetX:Float = parent.x - hitbox.parent.x,
 			offsetY:Float = parent.y - hitbox.parent.y;
 
-		projectOn(vertical, firstCollisionInfo);//Project on the horizontal axis of the hitbox
-		hitbox.projectMask(vertical, secondCollisionInfo);
+		projectOn(vertical, firstProj);//Project on the horizontal axis of the hitbox
+		hitbox.projectMask(vertical, secondProj);
 
-		firstCollisionInfo.min += offsetY;
-		firstCollisionInfo.max += offsetY;
+		firstProj.min += offsetY;
+		firstProj.max += offsetY;
 
-		if (firstCollisionInfo.min > secondCollisionInfo.max || firstCollisionInfo.max < secondCollisionInfo.min)
+		if (firstProj.overlaps(secondProj))
 		{
 			return false;
 		}
 
-		projectOn(horizontal, firstCollisionInfo);//Project on the vertical axis of the hitbox
-		hitbox.projectMask(horizontal, secondCollisionInfo);
+		projectOn(horizontal, firstProj);//Project on the vertical axis of the hitbox
+		hitbox.projectMask(horizontal, secondProj);
 
-		firstCollisionInfo.min += offsetX;
-		firstCollisionInfo.max += offsetX;
+		firstProj.min += offsetX;
+		firstProj.max += offsetX;
 
-		if (firstCollisionInfo.min > secondCollisionInfo.max || firstCollisionInfo.max < secondCollisionInfo.min)
+		if (firstProj.overlaps(secondProj))
 		{
 			return false;
 		}
 
 		for (a in _axes)
 		{
-			projectOn(a, firstCollisionInfo);
-			hitbox.projectMask(a, secondCollisionInfo);
+			projectOn(a, firstProj);
+			hitbox.projectMask(a, secondProj);
 
 			offset = offsetX * a.x + offsetY * a.y;
-			firstCollisionInfo.min += offset;
-			firstCollisionInfo.max += offset;
+			firstProj.min += offset;
+			firstProj.max += offset;
 
-			if (firstCollisionInfo.min > secondCollisionInfo.max || firstCollisionInfo.max < secondCollisionInfo.min)
+			if (firstProj.overlaps(secondProj))
 			{
 				return false;
 			}
@@ -305,38 +256,38 @@ class Polygon extends Mask
 			offsetX:Float = parent.x - other.parent.x,
 			offsetY:Float = parent.y - other.parent.y;
 
-		projectOn(vertical, firstCollisionInfo);//Project on the horizontal axis of the hitbox
-		other.projectMask(vertical, secondCollisionInfo);
+		projectOn(vertical, firstProj); //Project on the horizontal axis of the hitbox
+		other.projectMask(vertical, secondProj);
 
-		firstCollisionInfo.min += offsetX;
-		firstCollisionInfo.max += offsetY;
+		firstProj.min += offsetX;
+		firstProj.max += offsetY;
 
-		if (firstCollisionInfo.min > secondCollisionInfo.max || firstCollisionInfo.max < secondCollisionInfo.min)
+		if (firstProj.overlaps(secondProj))
 		{
 			return false;
 		}
 
-		projectOn(horizontal, firstCollisionInfo);//Project on the vertical axis of the hitbox
-		other.projectMask(horizontal, secondCollisionInfo);
+		projectOn(horizontal, firstProj); //Project on the vertical axis of the hitbox
+		other.projectMask(horizontal, secondProj);
 
-		firstCollisionInfo.min += offsetX;
-		firstCollisionInfo.max += offsetX;
+		firstProj.min += offsetX;
+		firstProj.max += offsetX;
 
-		if (firstCollisionInfo.min > secondCollisionInfo.max || firstCollisionInfo.max < secondCollisionInfo.min)
+		if (firstProj.overlaps(secondProj))
 		{
 			return false;
 		}
 
 		for (a in _axes)
 		{
-			projectOn(a, firstCollisionInfo);
-			other.projectMask(a, secondCollisionInfo);
+			projectOn(a, firstProj);
+			other.projectMask(a, secondProj);
 
 			var offset = offsetX * a.x + offsetY * a.y;
-			firstCollisionInfo.min += offset;
-			firstCollisionInfo.max += offset;
+			firstProj.min += offset;
+			firstProj.max += offset;
 
-			if (firstCollisionInfo.min > secondCollisionInfo.max || firstCollisionInfo.max < secondCollisionInfo.min)
+			if (firstProj.overlaps(secondProj))
 			{
 				return false;
 			}
@@ -351,15 +302,15 @@ class Polygon extends Mask
 
 		for (a in _axes)
 		{
-			projectOn(a, firstCollisionInfo);
-			other.projectOn(a, secondCollisionInfo);
+			projectOn(a, firstProj);
+			other.projectOn(a, secondProj);
 
 			//Shift the first info with the offset
 			var offset = offsetX * a.x + offsetY * a.y;
-			firstCollisionInfo.min += offset;
-			firstCollisionInfo.max += offset;
+			firstProj.min += offset;
+			firstProj.max += offset;
 
-			if (firstCollisionInfo.min > secondCollisionInfo.max || firstCollisionInfo.max < secondCollisionInfo.min)
+			if (firstProj.overlaps(secondProj))
 			{
 				return false;
 			}
@@ -367,15 +318,15 @@ class Polygon extends Mask
 
 		for (a in other._axes)
 		{
-			projectOn(a, firstCollisionInfo);
-			other.projectOn(a, secondCollisionInfo);
+			projectOn(a, firstProj);
+			other.projectOn(a, secondProj);
 
 			//Shift the first info with the offset
 			var offset = offsetX * a.x + offsetY * a.y;
-			firstCollisionInfo.min += offset;
-			firstCollisionInfo.max += offset;
+			firstProj.min += offset;
+			firstProj.max += offset;
 
-			if (firstCollisionInfo.min > secondCollisionInfo.max || firstCollisionInfo.max < secondCollisionInfo.min)
+			if (firstProj.overlaps(secondProj))
 			{
 				return false;
 			}
@@ -391,7 +342,7 @@ class Polygon extends Mask
 		return p1.x * p2.x + p1.y * p2.y;
 	}
 
-	public inline function projectOn(axis:Point, collisionInfo:CollisionInfo):Void
+	public inline function projectOn(axis:Point, projection:Projection):Void
 	{
 		var cur:Float,
 			max:Float = -HXP.NUMBER_MAX_VALUE,
@@ -410,8 +361,8 @@ class Polygon extends Mask
 				max = cur;
 			}
 		}
-		collisionInfo.min = min;
-		collisionInfo.max = max;
+		projection.min = min;
+		projection.max = max;
 	}
 
 	private function rotate(angle:Float):Void
@@ -420,14 +371,14 @@ class Polygon extends Mask
 
 		for (p in _points)
 		{
-			var dx = p.x - centerPoint.x;
-			var dy = p.y - centerPoint.y;
+			var dx = p.x - origin.x;
+			var dy = p.y - origin.y;
 
 			var pointAngle = Math.atan2(dy, dx);
 			var length = Math.sqrt(dx * dx + dy * dy);
 
-			p.x = Math.cos(pointAngle + angle) * length + centerPoint.x;
-			p.y = Math.sin(pointAngle + angle) * length + centerPoint.y;
+			p.x = Math.cos(pointAngle + angle) * length + origin.x;
+			p.y = Math.sin(pointAngle + angle) * length + origin.y;
 		}
 		for (ax in _axes)
 		{
@@ -440,7 +391,7 @@ class Polygon extends Mask
 		_angle += angle;
 	}
 
-	#if debug
+#if debug
 	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
 	{
 		if (parent != null)
@@ -455,7 +406,7 @@ class Polygon extends Mask
 			}
 		}
 	}
-	#end
+#end
 
 	/**
 	 * Angle in degress that the polygon is rotated.
@@ -500,18 +451,18 @@ class Polygon extends Mask
 	/** Updates the parent's bounds for this mask. */
 	override public function update()
 	{
-		projectOn(horizontal, firstCollisionInfo);//width
-		width = Math.ceil(firstCollisionInfo.max - firstCollisionInfo.min);
-		projectOn(vertical, secondCollisionInfo);//height
-		height = Math.ceil(secondCollisionInfo.max - secondCollisionInfo.min);
+		projectOn(horizontal, firstProj);//width
+		width = Math.ceil(firstProj.max - firstProj.min);
+		projectOn(vertical, secondProj);//height
+		height = Math.ceil(secondProj.max - secondProj.min);
 
 		//update entity bounds
 		parent.width = width;
 		parent.height = height;
 
 		//Since the collisioninfos haven't changed we can use them to calculate hitbox placement
-		parent.originX = Std.int((width - firstCollisionInfo.max - firstCollisionInfo.min)/2);
-		parent.originY = Std.int((height - secondCollisionInfo.max - secondCollisionInfo.min )/2);
+		parent.originX = Std.int((width - firstProj.max - firstProj.min)/2);
+		parent.originY = Std.int((height - secondProj.max - secondProj.min )/2);
 	}
 
 	public inline function updateAxes()
@@ -573,8 +524,8 @@ class Polygon extends Mask
 	private var _axes:Array<Point>;
 
 	private static var _axis = new Point();
-	private static var firstCollisionInfo = new CollisionInfo();
-	private static var secondCollisionInfo = new CollisionInfo();
+	private static var firstProj = new Projection();
+	private static var secondProj = new Projection();
 
 	public static var vertical = new Point(0, 1);
 	public static var horizontal = new Point(1, 0);

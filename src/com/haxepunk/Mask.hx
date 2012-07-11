@@ -1,7 +1,7 @@
 package com.haxepunk;
 
 import com.haxepunk.Entity;
-import com.haxepunk.masks.CollisionInfo;
+import com.haxepunk.masks.Projection;
 import com.haxepunk.masks.Masklist;
 import flash.display.Graphics;
 import flash.geom.Point;
@@ -31,7 +31,8 @@ class Mask
 		_class = Type.getClassName(Type.getClass(this));
 		_check = new Hash<MaskCallback>();
 		_check.set(Type.getClassName(Mask), collideMask);
-		_check.set(Type.getClassName(Masklist), collideMasklist);	}
+		_check.set(Type.getClassName(Masklist), collideMasklist);
+	}
 
 	/**
 	 * Checks for collision with another Mask.
@@ -89,7 +90,7 @@ class Mask
 
 	}
 
-	public inline function projectMask(axis:Point, collisionInfo:CollisionInfo):Void
+	public inline function projectMask(axis:Point, projection:Projection):Void
 	{
 		var cur:Float,
 			max:Float = -9999999999.,
@@ -119,8 +120,8 @@ class Mask
 		if (cur > max)
 			max = cur;
 
-		collisionInfo.min = min;
-		collisionInfo.max = max;
+		projection.min = min;
+		projection.max = max;
 	}
 
 	// Mask information.

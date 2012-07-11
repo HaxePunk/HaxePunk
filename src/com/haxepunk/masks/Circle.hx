@@ -147,10 +147,10 @@ class Circle extends Mask
 		return (dx * dx + dy * dy) <= _squaredRadius;
 	}
 
-	public inline function projectOn(axis:Point, collisionInfo:CollisionInfo):Void
+	public inline function projectOn(axis:Point, projection:Projection):Void
 	{
-		collisionInfo.min = -_radius;
-		collisionInfo.max = _radius;
+		projection.min = -_radius;
+		projection.max = _radius;
 	}
 
 	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
