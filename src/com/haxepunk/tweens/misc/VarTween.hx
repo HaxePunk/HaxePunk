@@ -39,12 +39,6 @@ class VarTween extends Tween
 		var a:Float = Reflect.getProperty(_object, property);
 
 		// Check if the variable is a number
-#if (cpp || neko)
-		if (a == null)
-		{
-			throw "The Object does not have the property\"" + property + "\", or it is not accessible.";
-		}
-#end
 		if (Math.isNaN(a))
 		{
 			throw "The property \"" + property + "\" is not numeric.";
