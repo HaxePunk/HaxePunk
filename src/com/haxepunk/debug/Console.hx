@@ -1025,10 +1025,10 @@ class Console
 	 * Get the unscaled screen size for the Console.
 	 */
 	public var width(getWidth, null):Int;
-	private function getWidth():Int { return Std.int(HXP.width * HXP.screen.scaleX * HXP.screen.scale); }
+	private function getWidth():Int { return HXP.windowWidth; }
 
 	public var height(getHeight, null):Int;
-	private function getHeight():Int { return Std.int(HXP.height * HXP.screen.scaleY * HXP.screen.scale); }
+	private function getHeight():Int { return HXP.windowHeight; }
 
 	// Console state information.
 	private var _enabled:Bool;

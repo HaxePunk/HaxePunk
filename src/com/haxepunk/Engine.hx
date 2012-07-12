@@ -59,7 +59,8 @@ class Engine extends Sprite
 		// global game objects
 		HXP.engine = this;
 		HXP.screen = new Screen();
-		HXP.resize(width, height);
+		HXP.width = width;
+		HXP.height = height;
 
 		// miscellaneous startup stuff
 #if neko
@@ -155,6 +156,8 @@ class Engine extends Sprite
 		HXP.stage.scaleMode = StageScaleMode.NO_SCALE;
 		HXP.stage.displayState = StageDisplayState.NORMAL;
 
+		resize(); // call resize once to initialize the screen
+
 		// set resize event
 		HXP.stage.addEventListener(Event.RESIZE, function (e:Event) {
 			resize();
@@ -176,6 +179,9 @@ class Engine extends Sprite
 	/** @private Event handler for stage resize */
 	private function resize()
 	{
+		// calculate scale from width/height values
+		HXP.screen.scaleX = HXP.stage.stageWidth / HXP.width;
+		HXP.screen.scaleY = HXP.stage.stageHeight / HXP.height;
 		HXP.resize(HXP.stage.stageWidth, HXP.stage.stageHeight);
 	}
 

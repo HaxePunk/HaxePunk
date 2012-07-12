@@ -14,11 +14,13 @@ import flash.media.SoundMixer;
 import flash.media.SoundTransform;
 import flash.system.System;
 import flash.utils.ByteArray;
+
 import com.haxepunk.Graphic;
 import com.haxepunk.Tween;
-import com.haxepunk.utils.Ease;
 import com.haxepunk.debug.Console;
 import com.haxepunk.tweens.misc.MultiVarTween;
+import com.haxepunk.utils.Ease;
+
 import haxe.Timer;
 
 /**
@@ -29,7 +31,7 @@ class HXP
 	/**
 	 * The HaxePunk major version.
 	 */
-	public static inline var VERSION:String = "1.6.5";
+	public static inline var VERSION:String = "1.6.6";
 
 	/**
 	 * The standard layer used since only flash can handle negative indicies in arrays, set your layers to some offset of this
@@ -63,6 +65,16 @@ class HXP
 	 * Height of the game.
 	 */
 	public static var height:Int;
+
+	/**
+	 * Width of the window.
+	 */
+	public static var windowWidth:Int;
+
+	/**
+	 * Height of the window.
+	 */
+	public static var windowHeight:Int;
 
 	/**
 	 * If the game is running at a fixed framerate.
@@ -164,6 +176,11 @@ class HXP
 	 */
 	public static function resize(width:Int, height:Int)
 	{
+		HXP.windowWidth = width;
+		HXP.windowHeight = height;
+		// resize scene to scale
+		width = Std.int(width / HXP.screen.scale / HXP.screen.scaleX);
+		height = Std.int(height / HXP.screen.scale / HXP.screen.scaleY);
 		HXP.width = width;
 		HXP.height = height;
 		HXP.halfWidth = width / 2;
