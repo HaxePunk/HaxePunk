@@ -51,15 +51,8 @@ class MultiVarTween extends Tween
 
 		for (p in fields)
 		{
-#if (cpp || neko)
-			var a:Float = Reflect.field(object, p);
-			if (a == null)
-			{
-				throw "The Object does not have the property \"" + p + "\", or it is not accessible.";
-			}
-#else
 			var a:Float = Reflect.getProperty(object, p);
-#end
+
 			if (Math.isNaN(a))
 			{
 				throw "The property \"" + p + "\" is not numeric.";
