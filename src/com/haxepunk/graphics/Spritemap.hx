@@ -67,9 +67,6 @@ class Spritemap extends Image
 	 */
 	override public function updateBuffer(clearBefore:Bool = false)
 	{
-#if cpp
-		return;
-#end
 #if neko
 		if (_width == null) return;
 #end

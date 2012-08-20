@@ -851,7 +851,7 @@ class HXP
 			ease:EaseFunction = null,
 			tweener:Tweener = HXP.tweener;
 		if (Std.is(object, Tweener)) tweener = cast(object, Tweener);
-		if (options)
+		if (options != null)
 		{
 			if (Reflect.hasField(options, "type")) type = options.type;
 			if (Reflect.hasField(options, "complete")) complete = options.complete;
