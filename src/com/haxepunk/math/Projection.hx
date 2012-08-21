@@ -21,4 +21,9 @@ class Projection
 		return (max > other.max) ? max - other.min : other.max - min;
 	}
 
+	public function toString():String
+	{
+		return "[ " + min + ", " + max + " ]";
+	}
+
 }

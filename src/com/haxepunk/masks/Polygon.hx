@@ -157,8 +157,8 @@ class Polygon extends Mask
 		var closestPoint = null;
 		for (p in _points)
 		{
-			var dx = parent.x + p.x - circle.parent.x;
-			var dy = parent.y + p.y - circle.parent.y;
+			var dx = parent.x + p.x - circle.parent.x - circle.radius;
+			var dy = parent.y + p.y - circle.parent.y - circle.radius;
 			var tempDistance = dx * dx + dy * dy;
 
 			if (tempDistance < distanceSquared)
@@ -168,8 +168,8 @@ class Polygon extends Mask
 			}
 		}
 
-		var offsetX = parent.x - circle.parent.x;
-		var offsetY = parent.y - circle.parent.y;
+		var offsetX = parent.x - circle.parent.x - circle.radius;
+		var offsetY = parent.y - circle.parent.y - circle.radius;
 
 		//Get the vector between the closest point and the circle
 		//and get the normal of it
