@@ -20,7 +20,6 @@ class Data
 	{
 		var data:Dynamic = loadData(file);
 		_data = new Hash<Dynamic>();
-		var str:String;
 		for (str in Reflect.fields(data)) _data.set(str, Reflect.field(data, str));
 	}
 	
