@@ -19,14 +19,12 @@ class Masklist extends Hitbox
 		_masks = new Array<Mask>();
 		_temp = new Array<Mask>();
 		
-		var m:Mask;
 		for (m in masks) add(m);
 	}
 	
 	/** @private Collide against a mask. */
 	override public function collide(mask:Mask):Bool 
 	{
-		var m:Mask;
 		for (m in _masks)
 		{
 			if (m.collide(mask)) return true;
@@ -37,8 +35,6 @@ class Masklist extends Hitbox
 	/** @private Collide against a Masklist. */
 	override private function collideMasklist(other:Masklist):Bool 
 	{
-		var a:Mask;
-		var b:Mask;
 		for (a in _masks)
 		{
 			for (b in other._masks)
@@ -72,7 +68,6 @@ class Masklist extends Hitbox
 	{
 		if (Lambda.indexOf(_masks, mask) < 0) return mask;
 		HXP.clear(_temp);
-		var m:Mask;
 		for (m in _masks)
 		{
 			if (m == mask)
@@ -119,7 +114,6 @@ class Masklist extends Hitbox
 	 */
 	public function removeAll()
 	{
-		var m:Mask;
 		for (m in _masks) m.list = null;
 		_count = 0;
 		HXP.clear(_masks);

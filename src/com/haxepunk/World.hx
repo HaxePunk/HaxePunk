@@ -177,9 +177,8 @@ class World extends Tweener
 	 * Adds multiple Entities to the world.
 	 * @param	...list		Several Entities (as arguments) or an Array/Vector of Entities.
 	 */
-	public function addList(list:Array<Entity>)
+	public function addList<E:Entity>(list:Iterable<E>)
 	{
-		var e:Entity;
 		for (e in list) add(e);
 	}
 
@@ -187,9 +186,8 @@ class World extends Tweener
 	 * Removes multiple Entities from the world.
 	 * @param	...list		Several Entities (as arguments) or an Array/Vector of Entities.
 	 */
-	public function removeList(list:Array<Entity>)
+	public function removeList<E:Entity>(list:Iterable<E>)
 	{
-		var e:Entity;
 		for (e in list) remove(e);
 	}
 
@@ -585,14 +583,14 @@ class World extends Tweener
 	 * @param	rHeight		Height of the rectangle.
 	 * @param	into		The Array or Vector to populate with collided Entities.
 	 */
-	public function collideRectInto(type:String, rX:Float, rY:Float, rWidth:Float, rHeight:Float, into:Array<Entity>)
+	public function collideRectInto<E:Entity>(type:String, rX:Float, rY:Float, rWidth:Float, rHeight:Float, into:Array<E>)
 	{
-		var e:Entity,
+		var e:E,
 			fe:FriendEntity = _typeFirst.get(type),
 			n:Int = into.length;
 		while (fe != null)
 		{
-			e = cast(fe, Entity);
+			e = cast fe;
 			if (e.collideRect(e.x, e.y, rX, rY, rWidth, rHeight)) into[n ++] = e;
 			fe = fe._typeNext;
 		}
@@ -607,7 +605,7 @@ class World extends Tweener
 	 * @param	radius		The radius of the circle.
 	 * @param	into		The Array or Vector to populate with collided Entities.
 	 */
-	public function collideCircleInto(type:String, circleX:Float, circleY:Float, radius:Float , into:Array<Entity>)
+	public function collideCircleInto<E:Entity>(type:String, circleX:Float, circleY:Float, radius:Float , into:Array<E>)
 	{
 		var e:Entity,
 			fe:FriendEntity = _typeFirst.get(type),
@@ -616,8 +614,8 @@ class World extends Tweener
 		radius *= radius;//Square it to avoid the square root
 		while (fe != null)
 		{
-			e = cast(fe, Entity);
-			if (HXP.distanceSquared(circleX, circleY, e.x, e.y) < radius) into[n ++] = e;
+			e = cast fe;
+			if (HXP.distanceSquared(circleX, circleY, e.x, e.y) < radius) into[n ++] = cast e;
 			fe = fe._typeNext;
 		}
 	}
@@ -631,14 +629,14 @@ class World extends Tweener
 	 * @param	into		The Array or Vector to populate with collided Entities.
 	 * @return	The provided Array.
 	 */
-	public function collidePointInto(type:String, pX:Float, pY:Float, into:Array<Entity>)
+	public function collidePointInto<E:Entity>(type:String, pX:Float, pY:Float, into:Array<E>)
 	{
-		var e:Entity,
+		var e:E,
 			fe:FriendEntity = _typeFirst.get(type),
 			n:Int = into.length;
 		while (fe != null)
 		{
-			e = cast(fe, Entity);
+			e = cast fe;
 			if (e.collidePoint(e.x, e.y, pX, pY)) into[n ++] = e;
 			fe = fe._typeNext;
 		}
@@ -925,7 +923,6 @@ class World extends Tweener
 	private inline function getUniqueTypes():Int
 	{
 		var i:Int = 0;
-		var type:String;
 		for (type in _typeCount) i++;
 		return i;
 	}
@@ -936,13 +933,13 @@ class World extends Tweener
 	 * @param	into		The Array or Vector to populate.
 	 * @return	The same array, populated.
 	 */
-	public function getType(type:String, into:Array<Entity>)
+	public function getType<E:Entity>(type:String, into:Array<E>)
 	{
 		var fe:FriendEntity = _typeFirst.get(type),
 			n:Int = into.length;
 		while (fe != null)
 		{
-			into[n++] = cast(fe, Entity);
+			into[n++] = cast fe;
 			fe = fe._typeNext;
 		}
 	}
@@ -953,14 +950,14 @@ class World extends Tweener
 	 * @param	into		The Array or Vector to populate.
 	 * @return	The same array, populated.
 	 */
-	public function getClass(c:Class<Dynamic>, into:Array<Entity>)
+	public function getClass<E:Entity>(c:Class<E>, into:Array<E>)
 	{
 		var fe:FriendEntity = _updateFirst,
 			n:Int = into.length;
 		while (fe != null)
 		{
 			if (Std.is(fe, c))
-				into[n++] = cast(fe, Entity);
+				into[n++] = cast fe;
 			fe = fe._updateNext;
 		}
 	}
@@ -971,14 +968,14 @@ class World extends Tweener
 	 * @param	into		The Array or Vector to populate.
 	 * @return	The same array, populated.
 	 */
-	public function getLayer(layer:Int, into:Array<Entity>)
+	public function getLayer<E:Entity>(layer:Int, into:Array<E>)
 	{
-		var e:Entity,
+		var e:E,
 			fe:FriendEntity = _renderLast[layer],
 			n:Int = into.length;
 		while (fe != null)
 		{
-			e = cast(fe, Entity);
+			e = cast fe;
 			into[n ++] = e;
 			fe = fe._updatePrev;
 		}
@@ -989,14 +986,14 @@ class World extends Tweener
 	 * @param	into		The Array or Vector to populate.
 	 * @return	The same array, populated.
 	 */
-	public function getAll(into:Array<Entity>)
+	public function getAll<E:Entity>(into:Array<E>)
 	{
-		var e:Entity,
+		var e:E,
 			fe:FriendEntity = _updateFirst,
 			n:Int = into.length;
 		while (fe != null)
 		{
-			e = cast(fe, Entity);
+			e = cast fe;
 			into[n ++] = e;
 			fe = fe._updateNext;
 		}

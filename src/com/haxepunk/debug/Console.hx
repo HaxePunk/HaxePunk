@@ -561,7 +561,6 @@ class Console
 	/** @private Move the selected Entitites by the amount. */
 	private function moveSelected(xDelta:Int, yDelta:Int)
 	{
-		var e:Entity;
 		for (e in SELECT_LIST)
 		{
 			e.x += xDelta;
@@ -729,7 +728,6 @@ class Console
 
 		// Update the list of Entities on screen.
 		SCREEN_LIST.clear();
-		var e:Entity;
 		for (e in ENTITY_LIST)
 		{
 			if (e.collideRect(e.x, e.y, HXP.camera.x, HXP.camera.y, HXP.width, HXP.height))

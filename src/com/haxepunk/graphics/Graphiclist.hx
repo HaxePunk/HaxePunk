@@ -27,7 +27,6 @@ class Graphiclist extends Graphic
 
 		if (graphic != null)
 		{
-			var g:Graphic;
 			for (g in graphic) if (cast(g, Graphic) != null) add(g);
 		}
 	}
@@ -35,7 +34,6 @@ class Graphiclist extends Graphic
 	/** @private Updates the graphics in the list. */
 	override public function update()
 	{
-		var g:Graphic;
 		for (g in _graphics)
 		{
 			if (g.active) g.update();
@@ -50,7 +48,6 @@ class Graphiclist extends Graphic
 		camera.x *= scrollX;
 		camera.y *= scrollY;
 
-		var g:Graphic;
 		for (g in _graphics)
 		{
 			if (g.visible)
@@ -90,7 +87,6 @@ class Graphiclist extends Graphic
 		if (Lambda.indexOf(_graphics, graphic) < 0) return graphic;
 		HXP.clear(_temp);
 
-		var g:Graphic;
 		for (g in _graphics)
 		{
 			if (g == graphic) _count --;
@@ -144,7 +140,6 @@ class Graphiclist extends Graphic
 	private function updateCheck()
 	{
 		active = false;
-		var g:Graphic;
 		for (g in _graphics)
 		{
 			if (g.active)
