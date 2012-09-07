@@ -55,6 +55,7 @@ class Preloader extends NMEPreloader
 		progress.graphics.lineTo(width / 2 - padding, 0);
 
 		addEventListener(Event.ENTER_FRAME, onEnterFrame);
+		onEnterFrame(null); // initial render
 	}
 
 	public function onEnterFrame(e:Event)
