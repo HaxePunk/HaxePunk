@@ -43,6 +43,7 @@ class World extends Tweener
 		_classCount = new Hash<Int>();
 		_typeCount = new Hash<Int>();
 		_recycled = new Hash<Entity>();
+		_entityNames = new Hash<Entity>();
 	}
 
 	/**
@@ -1001,6 +1002,16 @@ class World extends Tweener
 			fe = fe._updateNext;
 		}
 	}
+	
+	/**
+	 * Returns the Entity with the instance name, or null if none exists
+	 * @param	name
+	 * @return
+	 */
+	public function getInstance(name:String):Entity
+	{
+		return _entityNames.get(name);
+	}
 
 	/**
 	 * Updates the add/remove lists at the end of the frame.
@@ -1026,6 +1037,7 @@ class World extends Tweener
 				removeUpdate(e);
 				removeRender(e);
 				if (fe._type != "") removeType(e);
+				if (fe._name != "") unregisterName(e);
 				if (e.autoClear && e.hasTween) e.clearTweens();
 			}
 			HXP.clear(_remove);
@@ -1041,6 +1053,7 @@ class World extends Tweener
 				addUpdate(e);
 				addRender(e);
 				if (fe._type != "") addType(e);
+				if (fe._name != "") registerName(e);
 				e.added();
 			}
 			HXP.clear(_add);
@@ -1179,6 +1192,20 @@ class World extends Tweener
 		fe._typeNext = fe._typePrev = null;
 		_typeCount.set(fe._type, _typeCount.get(fe._type) - 1);
 	}
+	
+	/** @private Register the entities instance name. */
+	public function registerName(e:Entity)
+	{
+		var fe:FriendEntity = e;
+		_entityNames.set(fe._name, e);
+	}
+	
+	/** @private Unregister the entities instance name. */
+	public function unregisterName(e:Entity):Void
+	{
+		var fe:FriendEntity = e;
+		_entityNames.remove(fe._name);
+	}
 
 	/** @private Calculates the squared distance between two rectangles. */
 	private static function squareRects(x1:Float, y1:Float, w1:Float, h1:Float, x2:Float, y2:Float, w2:Float, h2:Float):Float
@@ -1252,4 +1279,5 @@ class World extends Tweener
 	public var _typeFirst:Hash<FriendEntity>;
 	private var _typeCount:Hash<Int>;
 	private var _recycled:Hash<Entity>;
+	private var _entityNames:Hash<Entity>;
 }
