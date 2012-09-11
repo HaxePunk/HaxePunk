@@ -236,7 +236,6 @@ class Entity extends Tweener
 			if (a != null)
 			{
 				var e:Entity;
-				var type:String;
 				for (type in a)
 				{
 					e = collide(type, x, y);
@@ -358,11 +357,11 @@ class Entity extends Tweener
 	 * @param	array		The Array or Vector object to populate.
 	 * @return	The array, populated with all collided Entities.
 	 */
-	public function collideInto(type:String, x:Float, y:Float, array:Array<Entity>)
+	public function collideInto<E:Entity>(type:String, x:Float, y:Float, array:Array<E>)
 	{
 		if (_world == null) return;
 
-		var e:Entity,
+		var e:E,
 			fe:FriendEntity = _world._typeFirst.get(type);
 		if (!collidable || fe == null) return;
 
@@ -374,14 +373,14 @@ class Entity extends Tweener
 		{
 			while (fe != null)
 			{
-				e = cast(fe, Entity);
+				e = cast fe;
 				if (x - originX + width > e.x - e.originX
 				&& y - originY + height > e.y - e.originY
 				&& x - originX < e.x - e.originX + e.width
 				&& y - originY < e.y - e.originY + e.height
 				&& e.collidable && e != this)
 				{
-					if (e._mask == null || e._mask.collide(HITBOX)) array[n++] = e;
+					if ((untyped e._mask) == null || (untyped e._mask).collide(HITBOX)) array[n++] = e;
 				}
 				fe = fe._typeNext;
 			}
@@ -391,14 +390,14 @@ class Entity extends Tweener
 
 		while (fe != null)
 		{
-			e = cast(fe, Entity);
+			e = cast fe;
 			if (x - originX + width > e.x - e.originX
 			&& y - originY + height > e.y - e.originY
 			&& x - originX < e.x - e.originX + e.width
 			&& y - originY < e.y - e.originY + e.height
 			&& e.collidable && e != this)
 			{
-				if (_mask.collide(e._mask != null ? e._mask : e.HITBOX)) array[n++] = e;
+				if (_mask.collide((untyped e._mask) != null ? (untyped e._mask) : (untyped e.HITBOX))) array[n++] = e;
 			}
 			fe = fe._typeNext;
 		}
@@ -414,10 +413,9 @@ class Entity extends Tweener
 	 * @param	array		The Array or Vector object to populate.
 	 * @return	The array, populated with all collided Entities.
 	 */
-	public function collideTypesInto(types:Array<String>, x:Float, y:Float, array:Array<Entity>)
+	public function collideTypesInto<E:Entity>(types:Array<String>, x:Float, y:Float, array:Array<E>)
 	{
 		if (_world == null) return;
-		var type:String;
 		for (type in types) collideInto(type, x, y, array);
 	}
 

@@ -108,7 +108,6 @@ class Canvas extends Graphic
 	public function draw(x:Int, y:Int, source:BitmapData, rect:Rectangle = null)
 	{
 		var xx:Int = 0, yy:Int = 0;
-		var buffer:BitmapData;
 		for (buffer in _buffers)
 		{
 			_point.x = x - xx;
@@ -203,7 +202,6 @@ class Canvas extends Graphic
 	public function fillTexture(rect:Rectangle, texture:BitmapData)
 	{
 		var xx:Int = 0, yy:Int = 0;
-		var buffer:BitmapData;
 		for (buffer in _buffers)
 		{
 			_graphics.clear();
@@ -229,7 +227,6 @@ class Canvas extends Graphic
 	public function drawGraphic(x:Int, y:Int, source:Graphic)
 	{
 		var xx:Int = 0, yy:Int = 0;
-		var buffer:BitmapData;
 		for (buffer in _buffers)
 		{
 			_point.x = x - xx;
