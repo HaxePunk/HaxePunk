@@ -15,6 +15,7 @@ typedef FriendEntity = {
 	private var _added:Bool;
 	private var _type:String;
 	private var _layer:Int;
+	private var _name:String;
 
 	private var _updatePrev:FriendEntity;
 	private var _updateNext:FriendEntity;
@@ -557,6 +558,22 @@ class Entity extends Tweener
 		if (value != null && value.assign != null) value.assign();
 		return _graphic;
 	}
+	
+	public var name(getName, setName):String;
+	private inline function getName():String { return _name; }
+	private function setName(value:String):String
+	{
+		if (_name == value) return _name;
+		if (!_added)
+		{
+			_name = value;
+			return _name;
+		}
+		if (_name != "") _world.unregisterName(this);
+		_name = value;
+		if (value != "") _world.registerName(this);
+		return _name;
+	}
 
 	/**
 	 * Adds the graphic to the Entity via a Graphiclist.
@@ -596,7 +613,7 @@ class Entity extends Tweener
 	 */
 	public function setHitboxTo(o:Dynamic)
 	{
-#if flash
+#if (flash || android)
 		width = Reflect.getProperty(o, "width");
 		height = Reflect.getProperty(o, "height");
 
@@ -830,6 +847,7 @@ class Entity extends Tweener
 	private var _added:Bool;
 	private var _type:String;
 	private var _layer:Int;
+	private var _name:String;
 
 	private var _updatePrev:FriendEntity;
 	private var _updateNext:FriendEntity;
