@@ -135,7 +135,7 @@ class World extends Tweener
 	 * @param	e		Entity object you want to add.
 	 * @return	The added Entity object.
 	 */
-	public function add(e:Entity):Entity
+	public function add<E:Entity>(e:E):E
 	{
 		var fe:FriendEntity = e;
 		if (fe._world != null) return e;
@@ -149,7 +149,7 @@ class World extends Tweener
 	 * @param	e		Entity object you want to remove.
 	 * @return	The removed Entity object.
 	 */
-	public function remove(e:Entity):Entity
+	public function remove<E:Entity>(e:E):E
 	{
 		var fe:FriendEntity = e;
 		if (fe._world != this) return e;
@@ -230,7 +230,7 @@ class World extends Tweener
 	 * @param	addToWorld		Add it to the World immediately.
 	 * @return	The new Entity object.
 	 */
-	public function create(classType:Class<Dynamic>, addToWorld:Bool = true):Entity
+	public function create<E:Entity>(classType:Class<E>, addToWorld:Bool = true):E
 	{
 		var className:String = Type.getClassName(classType);
 		var fe:FriendEntity = _recycled.get(className);
@@ -240,7 +240,7 @@ class World extends Tweener
 			fe._recycleNext = null;
 		}
 		else fe = Type.createInstance(classType, []);
-		var e:Entity = cast(fe, Entity);
+		var e:E = cast fe;
 		if (addToWorld) return add(e);
 		return e;
 	}
@@ -251,7 +251,7 @@ class World extends Tweener
 	 * @param	e		The Entity to recycle.
 	 * @return	The recycled Entity.
 	 */
-	public function recycle(e:Entity):Entity
+	public function recycle<E:Entity>(e:E):E
 	{
 		var fe:FriendEntity = e;
 		if (fe._world != this) return e;
@@ -843,13 +843,13 @@ class World extends Tweener
 	 * @param	c		The Class type to check.
 	 * @return	The Entity.
 	 */
-	public function classFirst(c:Class<Dynamic>):Entity
+	public function classFirst<E:Entity>(c:Class<E>):E
 	{
 		if (_updateFirst == null) return null;
 		var fe:FriendEntity = _updateFirst;
 		while (fe != null)
 		{
-			if (Std.is(fe, c)) return cast(fe, Entity);
+			if (Std.is(fe, c)) return cast fe;
 			fe = fe._updateNext;
 		}
 		return null;

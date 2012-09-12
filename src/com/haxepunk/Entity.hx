@@ -254,7 +254,7 @@ class Entity extends Tweener
 	 * @param	y		Virtual y position to place this Entity.
 	 * @return	The Entity if they overlap, or null if they don't.
 	 */
-	public function collideWith(e:Entity, x:Float, y:Float):Entity
+	public function collideWith<E:Entity>(e:E, x:Float, y:Float):E
 	{
 		_x = this.x; _y = this.y;
 		this.x = x; this.y = y;
@@ -267,7 +267,7 @@ class Entity extends Tweener
 		{
 			if (_mask == null)
 			{
-				if (e._mask == null || e._mask.collide(HITBOX))
+				if ((untyped e._mask) == null || (untyped e._mask).collide(HITBOX))
 				{
 					this.x = _x; this.y = _y;
 					return e;
@@ -275,7 +275,7 @@ class Entity extends Tweener
 				this.x = _x; this.y = _y;
 				return null;
 			}
-			if (_mask.collide(e._mask != null ? e._mask : e.HITBOX))
+			if (_mask.collide((untyped e._mask) != null ? (untyped e._mask) : (untyped e.HITBOX)))
 			{
 				this.x = _x; this.y = _y;
 				return e;
