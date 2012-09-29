@@ -140,7 +140,6 @@ class World extends Tweener
 		var fe:FriendEntity = e;
 		if (fe._world != null) return e;
 		_add.push(e);
-		fe._world = this;
 		return e;
 	}
 
@@ -154,7 +153,6 @@ class World extends Tweener
 		var fe:FriendEntity = e;
 		if (fe._world != this) return e;
 		_remove.push(e);
-		fe._world = null;
 		return e;
 	}
 
@@ -169,7 +167,6 @@ class World extends Tweener
 		{
 			e = cast(fe, Entity);
 			_remove.push(e);
-			fe._world = null;
 			fe = fe._updateNext;
 		}
 	}
@@ -1031,6 +1028,7 @@ class World extends Tweener
 				}
 				fe._added = false;
 				e.removed();
+				fe._world = null;
 				removeUpdate(e);
 				removeRender(e);
 				if (fe._type != "") removeType(e);
@@ -1047,6 +1045,7 @@ class World extends Tweener
 			{
 				fe = e;
 				fe._added = true;
+				fe._world = this;
 				addUpdate(e);
 				addRender(e);
 				if (fe._type != "") addType(e);
