@@ -1,12 +1,20 @@
 HaxePunk CHANGELOG
 
+v1.6.7
+------------------------------
+* [jgroeneveld] HXP.tween fix for native targets
+* [jgroeneveld] Fixed spritemap for native targets
+* [andyli] API improvements and for loop optimizations
+* [MaskedPixel] Fixed entities missing world reference when remove called
+* [MaskedPixel] Entity can have instance names
+
 v1.6.6
 ------------------------------
 * Entity.addGraphic now correctly adds the new graphic if a list is created
 * Fixed text resizing when wordwrap is true and resizable is false
 * Removed automatic extensions from Sfx class
 * VarTween and MultiVarTween now support properties
-* [neko] Fixed more initialization errors
+* Fixed more initialization errors in neko
 
 v1.6.5
 ------------------------------
@@ -35,7 +43,7 @@ v1.6.3
 
 v1.6.2
 ------------------------------
-* moveBy/moveTowards can now handle Array<String> as well as String values. Thanks to MarekkPie!
+* [MarekkPie] moveBy/moveTowards can now handle Array<String> as well as String values.
 * added version info to first line of the console log
 * Tilemap constructor now handles asset strings
 * added platformer example project
