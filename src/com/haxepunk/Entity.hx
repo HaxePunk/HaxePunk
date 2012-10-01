@@ -96,6 +96,7 @@ class Entity extends Tweener
 		width = height = 0;
 		_moveX = _moveY = 0;
 		_type = "";
+		_name = "";
 
 		HITBOX = new Mask();
 		_point = HXP.point;
@@ -556,7 +557,7 @@ class Entity extends Tweener
 		if (value != null && value.assign != null) value.assign();
 		return _graphic;
 	}
-	
+
 	public var name(getName, setName):String;
 	private inline function getName():String { return _name; }
 	private function setName(value:String):String
