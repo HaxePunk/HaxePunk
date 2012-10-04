@@ -34,8 +34,8 @@ class World extends Tweener
 		_layerList = new Array<Int>();
 		_layerCount = new Array<Int>();
 
-		_renderFirst = new Array<FriendEntity>();
-		_renderLast = new Array<FriendEntity>();
+		_renderFirst = new IntHash<FriendEntity>();
+		_renderLast = new IntHash<FriendEntity>();
 		_typeFirst = new Hash<FriendEntity>();
 
 		_add = new Array<Entity>();
@@ -102,7 +102,7 @@ class World extends Tweener
 			i:Int = _layerList.length;
 		while (i-- > 0)
 		{
-			fe = _renderLast[_layerList[i]];
+			fe = _renderLast.get(_layerList[i]);
 			while (fe != null)
 			{
 				e = cast(fe, Entity);
@@ -302,11 +302,11 @@ class World extends Tweener
 		// pull from list
 		fe._renderPrev._renderNext = fe._renderNext;
 		if (fe._renderNext != null) fe._renderNext._renderPrev = fe._renderPrev;
-		else _renderLast[fe._layer] = fe._renderPrev;
+		else _renderLast.set(fe._layer, fe._renderPrev);
 		// place at the start
-		fe._renderNext = _renderFirst[fe._layer];
+		fe._renderNext = _renderFirst.get(fe._layer);
 		fe._renderNext._renderPrev = e;
-		_renderFirst[fe._layer] = e;
+		_renderFirst.set(fe._layer, e);
 		fe._renderPrev = null;
 		return true;
 	}
@@ -323,11 +323,11 @@ class World extends Tweener
 		// pull from list
 		fe._renderNext._renderPrev = fe._renderPrev;
 		if (fe._renderPrev != null) fe._renderPrev._renderNext = fe._renderNext;
-		else _renderFirst[fe._layer] = fe._renderNext;
+		else _renderFirst.set(fe._layer, fe._renderNext);
 		// place at the end
-		fe._renderPrev = _renderLast[fe._layer];
+		fe._renderPrev = _renderLast.get(fe._layer);
 		fe._renderPrev._renderNext = e;
-		_renderLast[fe._layer] = e;
+		_renderLast.set(fe._layer, e);
 		fe._renderNext = null;
 		return true;
 	}
@@ -344,13 +344,13 @@ class World extends Tweener
 		// pull from list
 		fe._renderPrev._renderNext = fe._renderNext;
 		if (fe._renderNext != null) fe._renderNext._renderPrev = fe._renderPrev;
-		else _renderLast[fe._layer] = fe._renderPrev;
+		else _renderLast.set(fe._layer, fe._renderPrev);
 		// shift towards the front
 		fe._renderNext = fe._renderPrev;
 		fe._renderPrev = fe._renderPrev._renderPrev;
 		fe._renderNext._renderPrev = e;
 		if (fe._renderPrev != null) fe._renderPrev._renderNext = e;
-		else _renderFirst[fe._layer] = e;
+		else _renderFirst.set(fe._layer, e);
 		return true;
 	}
 
@@ -366,13 +366,13 @@ class World extends Tweener
 		// pull from list
 		fe._renderNext._renderPrev = fe._renderPrev;
 		if (fe._renderPrev != null) fe._renderPrev._renderNext = fe._renderNext;
-		else _renderFirst[fe._layer] = fe._renderNext;
+		else _renderFirst.set(fe._layer, fe._renderNext);
 		// shift towards the back
 		fe._renderPrev = fe._renderNext;
 		fe._renderNext = fe._renderNext._renderNext;
 		fe._renderPrev._renderNext = e;
 		if (fe._renderNext != null) fe._renderNext._renderPrev = e;
-		else _renderLast[fe._layer] = e;
+		else _renderLast.set(fe._layer, e);
 		return true;
 	}
 
@@ -860,7 +860,7 @@ class World extends Tweener
 	public function layerFirst(layer:Int):Entity
 	{
 		if (_updateFirst == null) return null;
-		return cast(_renderFirst[layer], Entity);
+		return cast(_renderFirst.get(layer), Entity);
 	}
 
 	/**
@@ -871,7 +871,7 @@ class World extends Tweener
 	public function layerLast(layer:Int):Entity
 	{
 		if (_updateFirst == null) return null;
-		return cast(_renderLast[layer], Entity);
+		return cast(_renderLast.get(layer), Entity);
 	}
 
 	/**
@@ -881,7 +881,7 @@ class World extends Tweener
 	private function getFarthest():Entity
 	{
 		if (_updateFirst == null) return null;
-		return cast(_renderLast[_layerList[_layerList.length - 1]], Entity);
+		return cast(_renderLast.get(_layerList[_layerList.length - 1]), Entity);
 	}
 
 	/**
@@ -891,7 +891,7 @@ class World extends Tweener
 	private function getNearest():Entity
 	{
 		if (_updateFirst == null) return null;
-		return cast(_renderFirst[_layerList[0]], Entity);
+		return cast(_renderFirst.get(_layerList[0]), Entity);
 	}
 
 	/**
@@ -969,7 +969,7 @@ class World extends Tweener
 	public function getLayer<E:Entity>(layer:Int, into:Array<E>)
 	{
 		var e:E,
-			fe:FriendEntity = _renderLast[layer],
+			fe:FriendEntity = _renderLast.get(layer),
 			n:Int = into.length;
 		while (fe != null)
 		{
@@ -996,7 +996,7 @@ class World extends Tweener
 			fe = fe._updateNext;
 		}
 	}
-	
+
 	/**
 	 * Returns the Entity with the instance name, or null if none exists
 	 * @param	name
@@ -1110,7 +1110,7 @@ class World extends Tweener
 	public function addRender(e:Entity)
 	{
 		var fe:FriendEntity = e;
-		var f:FriendEntity = _renderFirst[fe._layer];
+		var f:FriendEntity = _renderFirst.get(fe._layer);
 		if (f != null)
 		{
 			// Append entity to existing layer.
@@ -1121,13 +1121,13 @@ class World extends Tweener
 		else
 		{
 			// Create new layer with entity.
-			_renderLast[fe._layer] = e;
+			_renderLast.set(fe._layer, e);
 			_layerList[_layerList.length] = fe._layer;
 			_layerSort = true;
 			fe._renderNext = null;
 			_layerCount[fe._layer] = 1;
 		}
-		_renderFirst[fe._layer] = e;
+		_renderFirst.set(fe._layer, e);
 		fe._renderPrev = null;
 	}
 
@@ -1136,12 +1136,12 @@ class World extends Tweener
 	{
 		var fe:FriendEntity = e;
 		if (fe._renderNext != null) fe._renderNext._renderPrev = fe._renderPrev;
-		else _renderLast[fe._layer] = fe._renderPrev;
+		else _renderLast.set(fe._layer, fe._renderPrev);
 		if (fe._renderPrev != null) fe._renderPrev._renderNext = fe._renderNext;
 		else
 		{
 			// Remove this entity from the layer.
-			_renderFirst[fe._layer] = fe._renderNext;
+			_renderFirst.set(fe._layer, fe._renderNext);
 			if (fe._renderNext == null)
 			{
 				// Remove the layer from the layer list if this was the last entity.
@@ -1188,14 +1188,14 @@ class World extends Tweener
 		fe._typeNext = fe._typePrev = null;
 		_typeCount.set(fe._type, _typeCount.get(fe._type) - 1);
 	}
-	
+
 	/** @private Register the entities instance name. */
 	public function registerName(e:Entity)
 	{
 		var fe:FriendEntity = e;
 		_entityNames.set(fe._name, e);
 	}
-	
+
 	/** @private Unregister the entities instance name. */
 	public function unregisterName(e:Entity):Void
 	{
@@ -1264,12 +1264,11 @@ class World extends Tweener
 	private var _count:Int;
 
 	// Render information.
-	private var _renderFirst:Array<FriendEntity>;
-	private var _renderLast:Array<FriendEntity>;
+	private var _renderFirst:IntHash<FriendEntity>;
+	private var _renderLast:IntHash<FriendEntity>;
 	private var _layerList:Array<Int>;
 	private var _layerCount:Array<Int>;
 	private var _layerSort:Bool;
-	private var _tempArray:Array<Entity>;
 
 	private var _classCount:Hash<Int>;
 	public var _typeFirst:Hash<FriendEntity>;
