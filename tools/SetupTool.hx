@@ -1,5 +1,5 @@
 import haxe.io.Bytes;
-import neko.Sys;
+import haxe.io.BytesInput;
 import neko.Lib;
 import neko.FileSystem;
 import neko.io.File;
@@ -13,12 +13,19 @@ class SetupTool
 
 	public function new()
 	{
-		var args:Array<String> = Sys.args();
+		var args:Array<String> = neko.Sys.args();
 		if (args.length < 2)
 		{
 			usage();
 			return;
 		}
+
+		// defaults
+		projectName  = "";
+        projectClass = "Main";
+        width        = "640";
+        height       = "480";
+        rate         = "30";
 
 		var command:String = args.shift();
 
@@ -26,65 +33,98 @@ class SetupTool
 		{
 			case "new":
 				newProject(args);
+			case "help":
+				usage();
 		}
 	}
 
 	public function usage()
 	{
-		Lib.println("USAGE: haxelib run HaxePunk new [project]");
+		Lib.println("USAGE: haxelib run HaxePunk new [-s WIDTHxHEIGHT] [-r FRAMERATE] [-c CLASS_NAME] [PROJECT_NAME]");
 	}
 
 	public function newProject(args:Array<String>)
 	{
-		var destFolder:String = "";
 		var slash:String = "";
-		if (args.length > 1)
+
+		var path = args.pop();
+
+		// parse command line arguments
+		var length = args.length;
+		var i = 0;
+		while (i < length)
 		{
-			var projectName:String = args.shift();
-			destFolder = (new Path(args.shift())).toString() + projectName;
-		}
-		else
-		{
-			destFolder = (new Path(args.shift())).toString();
+			switch (args[i])
+			{
+				case '-s':
+					i += 1;
+					var size = args[i].split('x');
+					width = size[0];
+					height = size[1];
+
+				case '-r':
+					i += 1;
+					rate = args[i];
+
+				case '-c':
+					projectClass = args[i].charAt(0).toUpperCase() + args[i].substr(1).toLowerCase();
+
+				default:
+					projectName = args[i];
+					path += projectName + '/';
+			}
+			i += 1;
 		}
 
-		slash = destFolder.substr(-1);
-		var destCheck:String = destFolder;
-		if (slash=="/"|| slash=="\\")
-			destFolder = destFolder.substr(0, destFolder.length - 1);
-
-		if ( ! FileSystem.exists(destFolder) )
+		path = new Path(path).dir;
+		if (!FileSystem.exists(path))
 		{
-			FileSystem.createDirectory(destFolder);
+			FileSystem.createDirectory(path);
 		}
 
-		if ( FileSystem.isDirectory(destFolder) )
+		if (FileSystem.isDirectory(path))
 		{
 			// read the template zip file
-			var fin:FileInput = File.read("template.zip", true);
-			var entries:List<ZipEntry> = Reader.readZip(fin);
-			fin.close();
+			var templateZip = File.read("template.zip", true);
+			var entries = Reader.readZip(templateZip);
+			templateZip.close();
 
 			// unzip the file
-			for ( entry in entries )
+			for (entry in entries)
 			{
 				var filename:String = entry.fileName;
-				slash = filename.substr(-1);
+
 				// check if it's a folder
-				if (slash=="/"|| slash=="\\")
+				if (StringTools.endsWith(filename, "/") || StringTools.endsWith(filename, "\\"))
 				{
-					filename = filename.substr(0, filename.length - 1);
-					var folder:String = destFolder + "/" + filename;
-					if ( ! FileSystem.exists(folder) )
+					filename = filename.substr(0, -1);
+
+					Lib.println(filename);
+
+					if (!FileSystem.exists(path + "/" + filename))
 					{
-						FileSystem.createDirectory(folder);
+						FileSystem.createDirectory(path + "/" + filename);
 					}
 				}
 				else
 				{
 					// create the file
 					var bytes:Bytes = Reader.unzip(entry);
-					var fout:FileOutput = File.write(destFolder + "/" + filename, true);
+
+					if (StringTools.endsWith(filename, ".hx") || StringTools.endsWith(filename, ".nmml"))
+					{
+						var text:String = new BytesInput(bytes).readString(bytes.length);
+
+						text = runTemplate(text);
+
+						bytes = Bytes.ofString(text);
+
+						filename = runTemplate(filename);
+					}
+
+					Lib.println(filename);
+
+					var fout:FileOutput = File.write(path + "/" + filename, true);
 					fout.writeBytes(bytes, 0, bytes.length);
 					fout.close();
 				}
@@ -97,9 +137,26 @@ class SetupTool
 		}
 	}
 
+	public function runTemplate(text:String):String
+	{
+		text = StringTools.replace(text, "{{PROJECT_NAME}}", projectName);
+		text = StringTools.replace(text, "{{PROJECT_CLASS}}", projectClass);
+		text = StringTools.replace(text, "{{WIDTH}}", width);
+		text = StringTools.replace(text, "{{HEIGHT}}", height);
+		text = StringTools.replace(text, "{{FRAMERATE}}", rate);
+
+		return text;
+	}
+
 	public static function main()
 	{
 		new SetupTool();
 	}
+
+	private var projectName:String;
+	private var projectClass:String;
+	private var width:String;
+	private var height:String;
+	private var rate:String;
 
 }
