@@ -799,11 +799,19 @@ class HXP
 	/**
 	 * The global Console object.
 	 */
-	public static var console(getConsole, null):Console;
+	public static var console(getConsole, never):Console;
 	private static inline function getConsole():Console
 	{
 		if (_console == null) _console = new Console();
 		return _console;
+	}
+
+	/**
+	 * Checks if the console is enabled.
+	 */
+	public static function consoleEnabled()
+	{
+		return _console != null;
 	}
 
 	/**

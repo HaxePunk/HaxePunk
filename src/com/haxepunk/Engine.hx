@@ -243,7 +243,7 @@ class Engine extends Sprite
 		if (!paused) update();
 
 		// update console
-		if (HXP.console != null) HXP.console.update();
+		if (HXP.consoleEnabled()) HXP.console.update();
 
 		// update input
 		Input.update();
@@ -291,7 +291,7 @@ class Engine extends Sprite
 			if (!paused) update();
 
 			// update console
-			if (HXP.console != null) HXP.console.update();
+			if (HXP.consoleEnabled()) HXP.console.update();
 
 			// update input
 			Input.update();
