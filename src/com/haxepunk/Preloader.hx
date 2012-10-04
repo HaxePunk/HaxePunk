@@ -1,5 +1,12 @@
 package com.haxepunk;
 
+#if js
+
+// html5 doesn't support drawTiles
+class Preloader extends NMEPreloader { }
+
+#else
+
 import nme.display.Bitmap;
 import nme.display.BitmapData;
 import nme.display.Graphics;
@@ -76,3 +83,5 @@ class Preloader extends NMEPreloader
 	private var tileData:Array<Float>;
 
 }
+
+#end
