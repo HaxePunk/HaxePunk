@@ -1044,6 +1044,7 @@ class World extends Tweener
 			for (e in _add)
 			{
 				fe = e;
+				if (fe._world != null) continue;
 				fe._added = true;
 				fe._world = this;
 				addUpdate(e);
