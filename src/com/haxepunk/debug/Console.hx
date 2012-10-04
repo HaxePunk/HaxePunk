@@ -888,7 +888,6 @@ class Console
 	/** @private Update the FPS/frame timing panel text. */
 	private function updateFPSRead()
 	{
-		var prec = 1000;
 		_fpsReadText.text = "FPS: " + Std.int(HXP.frameRate);
 		_fpsInfoText0.text =
 			"Update: " + Std.string(HXP._updateTime) + "ms\n" +
