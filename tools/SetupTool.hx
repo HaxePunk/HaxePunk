@@ -76,11 +76,7 @@ class SetupTool
 			i += 1;
 		}
 
-		path = new Path(path).dir;
-		if (!FileSystem.exists(path))
-		{
-			FileSystem.createDirectory(path);
-		}
+		createDirectory(path);
 
 		if (FileSystem.isDirectory(path))
 		{
@@ -97,14 +93,9 @@ class SetupTool
 				// check if it's a folder
 				if (StringTools.endsWith(filename, "/") || StringTools.endsWith(filename, "\\"))
 				{
-					filename = filename.substr(0, -1);
-
 					Lib.println(filename);
 
-					if (!FileSystem.exists(path + "/" + filename))
-					{
-						FileSystem.createDirectory(path + "/" + filename);
-					}
+					createDirectory(path + "/" + filename);
 				}
 				else
 				{
@@ -137,7 +128,20 @@ class SetupTool
 		}
 	}
 
-	public function runTemplate(text:String):String
+	/**
+	 * Creates a directory if it doesn't already exist
+	 */
+	private function createDirectory(path:String)
+	{
+		path = new Path(path).dir;
+
+		if (!FileSystem.exists(path))
+		{
+			FileSystem.createDirectory(path);
+		}
+	}
+
+	private function runTemplate(text:String):String
 	{
 		text = StringTools.replace(text, "{{PROJECT_NAME}}", projectName);
 		text = StringTools.replace(text, "{{PROJECT_CLASS}}", projectClass);
