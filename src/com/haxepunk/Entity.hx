@@ -580,7 +580,14 @@ class Entity extends Tweener
 	 */
 	public function addGraphic(g:Graphic):Graphic
 	{
-		if (Std.is(graphic, Graphiclist)) cast(graphic, Graphiclist).add(g);
+		if (graphic == null)
+		{
+			graphic = g;
+		}
+		else if (Std.is(graphic, Graphiclist))
+		{
+			cast(graphic, Graphiclist).add(g);
+		}
 		else
 		{
 			var list:Graphiclist = new Graphiclist();
