@@ -74,9 +74,9 @@ class QuadMotion extends Motion
 	}
 	
 	/** @private Updates the Tween. */
-	override public function update() 
+	override function _update()
 	{
-		super.update();
+		super._update();
 		x = _fromX * (1 - _t) * (1 - _t) + _controlX * 2 * (1 - _t) * _t + _toX * _t * _t;
 		y = _fromY * (1 - _t) * (1 - _t) + _controlY * 2 * (1 - _t) * _t + _toY * _t * _t;
 	}

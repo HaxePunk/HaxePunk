@@ -14,7 +14,7 @@ class Fader extends Tween
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:CompleteCallback, ?type:TweenType) 
+	public function new(?complete:CompleteCallback, ?type:TweenType)
 	{
 		super(0, type, complete);
 	}
@@ -36,9 +36,9 @@ class Fader extends Tween
 	}
 	
 	/** @private Updates the Tween. */
-	override public function update() 
+	override function _update()
 	{
-		super.update();
+		super._update();
 		HXP.volume = _start + _range * _t;
 	}
 	

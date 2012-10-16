@@ -19,7 +19,7 @@ class AngleTween extends Tween
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:CompleteCallback, type:TweenType) 
+	public function new(?complete:CompleteCallback, type:TweenType)
 	{
 		angle = 0;
 		super(0, type, complete);
@@ -46,9 +46,9 @@ class AngleTween extends Tween
 	}
 	
 	/** @private Updates the Tween. */
-	override public function update() 
+	override function _update()
 	{
-		super.update();
+		super._update();
 		angle = (_start + _range * _t) % 360;
 		if (angle < 0) angle += 360;
 	}
