@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	<meta title="{{PROJECT_NAME}}" package="com.example.app" version="1.0.0" company="" />
- 	
+
  	<app file="{{PROJECT_CLASS}}" main="{{PROJECT_CLASS}}" path="bin" />
-	<app preloader="com.haxepunk.Preloader" />
-	
+
 	<window width="{{WIDTH}}" height="{{HEIGHT}}" orientation="portrait" resizable="true" />
 	<window fps="{{FRAMERATE}}" />
 

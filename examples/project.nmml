@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	<meta title="HaxePunk" package="com.example.app" version="1.0.0" company="HaxePunk" />
- 	
+
  	<app file="HaxePunk" main="Main" path="bin" />
-	<app preloader="com.haxepunk.Preloader" />
-	
+
 	<window width="640" height="480" orientation="portrait" resizable="true" />
 	<window fps="30" />
 

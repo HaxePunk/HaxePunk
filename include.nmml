@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	<app preloader="com.haxepunk.Preloader" />
+
+	<assets path="assets/gfx" rename="gfx" type="image" include="*.png" />
+	<assets path="assets/font" rename="font" type="font" include="*.ttf" />
+</project>
