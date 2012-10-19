@@ -1,6 +1,8 @@
 package com.haxepunk;
 
-#if js
+#if doc
+
+#elseif js
 
 // html5 doesn't support drawTiles
 class Preloader extends NMEPreloader { }

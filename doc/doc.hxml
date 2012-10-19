@@ -2,7 +2,8 @@
 -lib nme
 --remap flash:nme
 --no-output
+-D doc
 -D desktop
 -xml all.xml
 -cp ../src
---macro ImportAll.run()
+--macro include('com.haxepunk')

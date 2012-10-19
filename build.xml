@@ -62,7 +62,7 @@
 			<arg line="-o docs" />
 			<arg line="--title=HaxePunk" />
 			<arg line="--subtitle=http://haxepunk.com" />
-			<arg line="all.xml" />
+			<arg line="--file=all.xml" />
 		</exec>
 	</target>
 
