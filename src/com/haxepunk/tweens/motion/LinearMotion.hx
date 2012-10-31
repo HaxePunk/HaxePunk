@@ -64,9 +64,9 @@ class LinearMotion extends Motion
 	}
 
 	/** @private Updates the Tween. */
-	override public function update()
+	override function _update()
 	{
-		super.update();
+		super._update();
 		x = _fromX + _moveX * _t;
 		y = _fromY + _moveY * _t;
 		if (x == _fromX + _moveX && y == _fromY + _moveY && active) finish();

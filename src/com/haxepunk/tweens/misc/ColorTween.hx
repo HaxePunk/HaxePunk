@@ -61,9 +61,9 @@ class ColorTween extends Tween
 	}
 
 	/** @private Updates the Tween. */
-	override public function update()
+	override function _update()
 	{
-		super.update();
+		super._update();
 		alpha = _startA + _rangeA * _t;
 		red = Std.int((_startR + _rangeR * _t) * 255);
 		green = Std.int((_startG + _rangeG * _t) * 255);
