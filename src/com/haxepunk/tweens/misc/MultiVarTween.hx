@@ -65,9 +65,9 @@ class MultiVarTween extends Tween
 	}
 
 	/** @private Updates the Tween. */
-	override public function update()
+	override function _update()
 	{
-		super.update();
+		super._update();
 		var i:Int = _vars.length;
 		var setter:Dynamic->String->Dynamic->Void;
 #if (cpp || neko)

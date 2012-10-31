@@ -27,6 +27,7 @@ class Tween
 {
 	public var active:Bool;
 	public var complete:CompleteCallback;
+	public var onUpdate:Void->Void;
 
 	/**
 	 * Constructor. Specify basic information about the Tween.
@@ -50,6 +51,11 @@ class Tween
 	 */
 	public function update()
 	{
+		_update();
+		_afterUpdate();
+	}
+	private function _update()
+	{
 		_time += HXP.fixed ? 1 : HXP.elapsed;
 		_t = _time / _target;
 		if (_ease != null && _t > 0 && _t < 1) _t = _ease(_t);
@@ -58,6 +64,11 @@ class Tween
 			_t = 1;
 			_finish = true;
 		}
+	}
+	private function _afterUpdate()
+	{
+		if (onUpdate != null)
+			onUpdate();
 	}
 
 	/**

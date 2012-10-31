@@ -15,7 +15,7 @@ class QuadPath extends Motion
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:CompleteCallback, type:TweenType) 
+	public function new(?complete:CompleteCallback, type:TweenType)
 	{
 		_points = new Array<Point>();
 		_curve = new Array<Point>();
@@ -80,16 +80,16 @@ class QuadPath extends Motion
 	}
 	
 	/** @private Starts the Tween. */
-	override public function start() 
+	override public function start()
 	{
 		_index = 0;
 		super.start();
 	}
 	
 	/** @private Updates the Tween. */
-	override public function update() 
+	override function _update()
 	{
-		super.update();
+		super._update();
 		if (_index < _curve.length - 1)
 		{
 			while (_t > _curveT[_index + 1]) _index ++;

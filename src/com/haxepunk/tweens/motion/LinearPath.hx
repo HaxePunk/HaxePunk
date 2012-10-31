@@ -89,9 +89,9 @@ class LinearPath extends Motion
 	}
 
 	/** @private Updates the Tween. */
-	override public function update()
+	override function _update()
 	{
-		super.update();
+		super._update();
 		if (_index < _points.length - 1)
 		{
 			while (_t > _pointT[_index + 1]) _index ++;

@@ -50,7 +50,7 @@ class CubicMotion extends Motion
 	}
 	
 	/** @private Updates the Tween. */
-	override public function update() 
+	override function _update()
 	{
 		super.update();
 		x = _t * _t * _t * (_toX + 3 * (_aX - _bX) - _fromX) + 3 * _t * _t * (_fromX - 2 * _aX + _bX) + 3 * _t * (_aX - _fromX) + _fromX;
