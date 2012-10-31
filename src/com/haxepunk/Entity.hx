@@ -619,7 +619,6 @@ class Entity extends Tweener
 	 */
 	public function setHitboxTo(o:Dynamic)
 	{
-#if (flash || android)
 		width = Reflect.getProperty(o, "width");
 		height = Reflect.getProperty(o, "height");
 
@@ -636,9 +635,6 @@ class Entity extends Tweener
 			originX = Reflect.getProperty(o, "originX");
 			originY = Reflect.getProperty(o, "originY");
 		}
-#else
-		HXP.log("setHitboxTo not supported on this platform");
-#end
 	}
 
 	/**
