@@ -1,6 +1,8 @@
 package com.haxepunk;
 
 import com.haxepunk.utils.Ease;
+import com.haxepunk.tweens.TweenEvent;
+import flash.events.EventDispatcher;
 
 enum TweenType
 {
@@ -9,7 +11,7 @@ enum TweenType
 	OneShot;
 }
 
-typedef CompleteCallback = Void -> Void;
+typedef CompleteCallback = Dynamic -> Void;
 
 /**
  * Friend class for access to Tween private members
@@ -23,10 +25,9 @@ typedef FriendTween = {
 	private var _next:FriendTween;
 }
 
-class Tween
+class Tween extends EventDispatcher
 {
 	public var active:Bool;
-	public var complete:CompleteCallback;
 
 	/**
 	 * Constructor. Specify basic information about the Tween.
@@ -40,9 +41,14 @@ class Tween
 		_target = duration;
 		if (type == null) type = TweenType.Persist;
 		_type = type;
-		this.complete = complete;
 		_ease = ease;
 		_t = 0;
+		super();
+
+		if (complete != null)
+		{
+			addEventListener(TweenEvent.FINISH, complete);
+		}
 	}
 
 	/**
@@ -58,6 +64,7 @@ class Tween
 			_t = 1;
 			_finish = true;
 		}
+		dispatchEvent(new TweenEvent(TweenEvent.UPDATE));
 	}
 
 	/**
@@ -72,6 +79,7 @@ class Tween
 			return;
 		}
 		active = true;
+		dispatchEvent(new TweenEvent(TweenEvent.START));
 	}
 
 	/** @private Called when the Tween completes. */
@@ -93,7 +101,7 @@ class Tween
 				_parent.removeTween(this);
 		}
 		_finish = false;
-		if (complete != null) complete();
+		dispatchEvent(new TweenEvent(TweenEvent.FINISH));
 	}
 
 	public var percent(getPercent, setPercent):Float;
