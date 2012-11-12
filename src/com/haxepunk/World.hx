@@ -430,15 +430,24 @@ class World extends Tweener
 	public function collidePoint(type:String, pX:Float, pY:Float):Entity
 	{
 		var e:Entity,
-			fe:FriendEntity = _typeFirst.get(type);
+			fe:FriendEntity = _typeFirst.get(type),
+			result:Entity = null;
 		while (fe != null)
 		{
 			e = cast(fe, Entity);
-			if (e.collidePoint(e.x, e.y, pX, pY))
-				return e;
+			// only look for entities that collide
+			if (e.collidePoint(e.x, e.y, pX, pY)) {
+				// the first one might be the front one
+				if (result == null) {
+					result = e;
+				// compare if the new collided entity is above the former one (lower valuer is toward, higher value is backward)
+				} else if(e.layer < result.layer){
+					result = e;
+				}
+			}
 			fe = fe._typeNext;
 		}
-		return null;
+		return result;
 	}
 
 	/**
