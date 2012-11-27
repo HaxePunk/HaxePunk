@@ -1,5 +1,13 @@
 HaxePunk CHANGELOG
 
+v1.7.1
+------------------------------
+* Get mouseX/mouseY correctly even when FP.screen is translated/rotated
+* Enforce frame index to stay within frame count boundaries
+* Refactor FP.approach and FP.clamp to return sooner
+* Prevent multiline Text objects from having final line cut off
+* [MattTuttle] Masklist supports Circle/Polygon and debugDraw
+
 v1.7.0
 ------------------------------
 * [Lythom] world.collidePoint returns the topmost entity

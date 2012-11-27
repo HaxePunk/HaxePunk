@@ -1,9 +1,9 @@
-<project name="HaxePunk" url="http://haxepunk.com" license="BSD">
+<project name="HaxePunk" url="http://haxepunk.com" license="MIT">
 	<user name="heardtheword" />
 	<tag v="flash" />
 	<tag v="cpp" />
 	<tag v="game" />
 	<tag v="nme" />
 	<description>A HaXe port of the FlashPunk AS3 engine.</description>
-	<version name="1.7.0">See CHANGELOG</version>
+	<version name="1.7.1">See CHANGELOG</version>
 </project>
