@@ -12,7 +12,7 @@ import flash.geom.Point;
  * Uses circular area to determine collision.
  */
 
-class Circle extends Mask
+class Circle extends Hitbox
 {
 	/**
 	 * Constructor.
@@ -132,7 +132,7 @@ class Circle extends Mask
 	}
 
 	/** @private Collides against a Hitbox. */
-	private function collideHitbox(other:Hitbox):Bool
+	private override function collideHitbox(other:Hitbox):Bool
 	{
 		var dx = Math.abs(parent.x + _x - other.parent.x + other.x),
 			dy = Math.abs(parent.y + _y - other.parent.y + other.y);
@@ -160,33 +160,8 @@ class Circle extends Mask
 		graphics.drawCircle((parent.x + _x - HXP.camera.x) * scaleX, (parent.y + _y - HXP.camera.y) * scaleY, radius * scaleX);
 	}
 
-	/**
-	 * X offset.
-	 */
-	public var x(getX, setX):Int;
-	private inline function getX():Int { return _x; }
-	private function setX(value:Int):Int
-	{
-		if (_x == value) return value;
-		_x = value;
-		if (list != null) list.update();
-		else if (parent != null) update();
-		return _x;
-	}
-
-	/**
-	 * Y offset.
-	 */
-	public var y(getY, setY):Int;
-	private inline function getY():Int { return _y; }
-	private function setY(value:Int):Int
-	{
-		if (_y == value) return value;
-		_y = value;
-		if (list != null) list.update();
-		else if (parent != null) update();
-		return _y;
-	}
+	private override function getX():Int { return _x - _radius; }
+	private override function getY():Int { return _y - _radius; }
 
 	/**
 	 * Radius.
@@ -198,6 +173,7 @@ class Circle extends Mask
 		if (_radius == value) return value;
 		_radius = value;
 		_squaredRadius = value * value;
+		height = width = _radius + _radius;
 		if (list != null) list.update();
 		else if (parent != null) update();
 		return _radius;
@@ -211,8 +187,7 @@ class Circle extends Mask
 			//update entity bounds
 			parent.originX = -_x + radius;
 			parent.originY = -_y + radius;
-			parent.width = radius + radius;
-			parent.height = parent.width;
+			parent.height = parent.width = radius + radius;
 
 			// update parent list
 			if (list != null)
@@ -221,8 +196,6 @@ class Circle extends Mask
 	}
 
 	// Hitbox information.
-	private var _x:Int;
-	private var _y:Int;
 	private var _radius:Int;
 	private var _squaredRadius:Int; //Set automatically through the setter for radius
 }

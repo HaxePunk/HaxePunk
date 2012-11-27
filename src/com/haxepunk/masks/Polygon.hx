@@ -7,7 +7,7 @@ import com.haxepunk.math.Vector;
 import flash.display.Graphics;
 import flash.geom.Point;
 
-class Polygon extends Mask
+class Polygon extends Hitbox
 {
 	/**
 	 * The polygon rotates around this point when the angle is set.
@@ -207,7 +207,7 @@ class Polygon extends Mask
 		return true;
 	}
 
-	public function collideHitbox(hitbox:Hitbox):Bool
+	public override function collideHitbox(hitbox:Hitbox):Bool
 	{
 		var offset:Float,
 			offsetX:Float = parent.x - hitbox.parent.x,
@@ -410,20 +410,9 @@ class Polygon extends Mask
 	{
 		if (value == _angle) return value;
 		rotate(_angle - value);
-		if (list != null) update();
-		else if (parent != null) update();
+		if (list != null || parent != null) update();
 		return _angle = value;
 	}
-
-	/**
-	 * Width.
-	 */
-	public var width(default, null):Int;
-
-	/**
-	 * Height.
-	 */
-	public var height(default, null):Int;
 
 	/**
 	 * The points representing the polygon.
@@ -436,8 +425,7 @@ class Polygon extends Mask
 		if (_points == value) return value;
 		_points = value;
 
-		if (list != null) { updateAxes(); update(); }
-		else if (parent != null) {updateAxes(); update();  }
+		if (list != null || parent != null) updateAxes();
 		return _points;
 	}
 
@@ -445,23 +433,32 @@ class Polygon extends Mask
 	override public function update()
 	{
 		project(horizontal, firstProj); //width
-		width = Math.ceil(firstProj.max - firstProj.min);
+		_x = Math.ceil(firstProj.min);
+		_width = Math.ceil(firstProj.max - firstProj.min);
 		project(vertical, secondProj); //height
-		height = Math.ceil(secondProj.max - secondProj.min);
+		_y = Math.ceil(secondProj.min);
+		_height = Math.ceil(secondProj.max - secondProj.min);
 
-		//update entity bounds
-		parent.width = width;
-		parent.height = height;
+		if (parent != null)
+		{
+			//update entity bounds
+			parent.width = _width;
+			parent.height = _height;
 
-		//Since the collisioninfos haven't changed we can use them to calculate hitbox placement
-		parent.originX = Std.int((width - firstProj.max - firstProj.min)/2);
-		parent.originY = Std.int((height - secondProj.max - secondProj.min )/2);
+			//Since the collisioninfos haven't changed we can use them to calculate hitbox placement
+			parent.originX = Std.int((_width - firstProj.max - firstProj.min)/2);
+			parent.originY = Std.int((_height - secondProj.max - secondProj.min )/2);
+		}
+
+		// update parent list
+		if (list != null) list.update();
 	}
 
 	public inline function updateAxes()
 	{
 		generateAxes();
 		removeDuplicateAxes();
+		update();
 	}
 
 	/**

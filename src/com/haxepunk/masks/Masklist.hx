@@ -3,6 +3,7 @@ package com.haxepunk.masks;
 import com.haxepunk.Entity;
 import com.haxepunk.HXP;
 import com.haxepunk.Mask;
+import flash.display.Graphics;
 
 /**
  * A Mask that can contain multiple Masks of one or various types.
@@ -13,17 +14,17 @@ class Masklist extends Hitbox
 	 * Constructor.
 	 * @param	...mask		Masks to add to the list.
 	 */
-	public function new(masks:Array<Dynamic>) 
+	public function new(masks:Array<Dynamic>)
 	{
 		super();
 		_masks = new Array<Mask>();
 		_temp = new Array<Mask>();
-		
+
 		for (m in masks) add(m);
 	}
-	
+
 	/** @private Collide against a mask. */
-	override public function collide(mask:Mask):Bool 
+	override public function collide(mask:Mask):Bool
 	{
 		for (m in _masks)
 		{
@@ -31,9 +32,9 @@ class Masklist extends Hitbox
 		}
 		return false;
 	}
-	
+
 	/** @private Collide against a Masklist. */
-	override private function collideMasklist(other:Masklist):Bool 
+	override private function collideMasklist(other:Masklist):Bool
 	{
 		for (a in _masks)
 		{
@@ -44,7 +45,7 @@ class Masklist extends Hitbox
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Adds a Mask to the list.
 	 * @param	mask		The Mask to add.
@@ -58,7 +59,7 @@ class Masklist extends Hitbox
 		update();
 		return mask;
 	}
-	
+
 	/**
 	 * Removes the Mask from the list.
 	 * @param	mask		The Mask to remove.
@@ -84,7 +85,7 @@ class Masklist extends Hitbox
 		_temp = temp;
 		return mask;
 	}
-	
+
 	/**
 	 * Removes the Mask at the index.
 	 * @param	index		The Mask index.
@@ -94,7 +95,7 @@ class Masklist extends Hitbox
 		HXP.clear(_temp);
 		var i:Int = _masks.length;
 		index %= i;
-		while (i-- > 0)	
+		while (i-- > 0)
 		{
 			if (i == index)
 			{
@@ -108,7 +109,7 @@ class Masklist extends Hitbox
 		_masks = _temp;
 		_temp = temp;
 	}
-	
+
 	/**
 	 * Removes all Masks from the list.
 	 */
@@ -120,7 +121,7 @@ class Masklist extends Hitbox
 		HXP.clear(_temp);
 		update();
 	}
-	
+
 	/**
 	 * Gets a Mask from the list.
 	 * @param	index		The Mask index.
@@ -130,29 +131,29 @@ class Masklist extends Hitbox
 	{
 		return _masks[index % _masks.length];
 	}
-	
-	override public function assignTo(parent:Entity):Void 
+
+	override public function assignTo(parent:Entity):Void
 	{
 		for (m in _masks) m.parent = parent;
 		super.assignTo(parent);
 	}
-	
+
 	/** @private Updates the parent's bounds for this mask. */
-	override public function update() 
+	override public function update()
 	{
 		// find bounds of the contained masks
-		var t:Int = 0, l:Int = 0, r:Int = 0, b:Int = 0, h:Hitbox, i:Int = _count;
-		while (i-- > 0)
+		var t:Int = 0, l:Int = 0, r:Int = 0, b:Int = 0, h:Hitbox;
+		for (m in _masks)
 		{
-			if ((h = cast(_masks[i], Hitbox)) != null)
+			if ((h = cast(m, Hitbox)) != null)
 			{
-				if (h._x < l) l = h._x;
-				if (h._y < t) t = h._y;
-				if (h._x + h._width > r) r = h._x + h._width;
-				if (h._y + h._height > b) b = h._y + h._height;
+				if (h.x < l) l = h.x;
+				if (h.y < t) t = h.y;
+				if (h.x + h.width > r) r = h.x + h.width;
+				if (h.y + h.height > b) b = h.y + h.height;
 			}
 		}
-		
+
 		// update hitbox bounds
 		_x = l;
 		_y = t;
@@ -160,13 +161,18 @@ class Masklist extends Hitbox
 		_height = b - t;
 		super.update();
 	}
-	
+
+	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
+	{
+		for (m in _masks) m.debugDraw(graphics, scaleX, scaleY);
+	}
+
 	/**
 	 * Amount of Masks in the list.
 	 */
 	public var count(getCount, null):Int;
 	private function getCount():Int { return _count; }
-	
+
 	// List information.
 	private var _masks:Array<Mask>;
 	private var _temp:Array<Mask>;
