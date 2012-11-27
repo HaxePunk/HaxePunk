@@ -91,8 +91,8 @@ class Text extends Image
 		_field.setTextFormat(_form);
 
 		_field.width = width;
-		textWidth = Std.int(_field.textWidth + 4);
-		textHeight = Std.int(_field.textHeight + 4);
+		_field.width = textWidth = Math.ceil(_field.textWidth + 4);
+		_field.height = textHeight = Math.ceil(_field.textHeight + 4);
 
 		if (resizable)
 		{
