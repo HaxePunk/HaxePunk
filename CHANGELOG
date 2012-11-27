@@ -1,5 +1,17 @@
 HaxePunk CHANGELOG
 
+v1.7.0
+------------------------------
+* [Lythom] world.collidePoint returns the topmost entity
+* [YAYitsAndrew] Tween.cancel added from FlashPunk
+* [zlumer/MattTuttle] Tween handles events (start, update, finish)
+* [MaskedPixel] Image originX/Y corrected to match FlashPunk
+* [MattTuttle/tangzero] Improved template creation (haxelib run HaxePunk new ...)
+* [MaskedPixel] Merged several changes from FlashPunk to HaxePunk
+* [MattTuttle] haxelib uses include.nmml file
+* [MattTuttle] addGraphic no longer creates a list when graphic=null
+* [MattTuttle] console can be removed entirely from a build
+
 v1.6.7
 ------------------------------
 * [jgroeneveld] HXP.tween fix for native targets
