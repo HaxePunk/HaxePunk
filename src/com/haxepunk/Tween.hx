@@ -76,6 +76,7 @@ class Tween extends EventDispatcher
 		if (_target == 0)
 		{
 			active = false;
+			dispatchEvent(new TweenEvent(TweenEvent.FINISH));
 			return;
 		}
 		active = true;

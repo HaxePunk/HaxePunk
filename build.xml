@@ -41,10 +41,12 @@
 			<arg line="run nme build project.nmml" />
 			<arg line="neko" />
 		</exec>
+		<!--
 		<exec executable="haxelib" dir="Example">
 			<arg line="run nme build project.nmml" />
 			<arg line="html5" />
 		</exec>
+		-->
 	</target>
 
 	<target name="examples" depends="haxelib">

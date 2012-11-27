@@ -76,7 +76,7 @@ class SetupTool
 			i += 1;
 		}
 
-		createDirectory(path);
+		path = createDirectory(path);
 
 		if (FileSystem.isDirectory(path))
 		{
@@ -131,7 +131,7 @@ class SetupTool
 	/**
 	 * Creates a directory if it doesn't already exist
 	 */
-	private function createDirectory(path:String)
+	private function createDirectory(path:String):String
 	{
 		path = new Path(path).dir;
 
@@ -139,6 +139,8 @@ class SetupTool
 		{
 			FileSystem.createDirectory(path);
 		}
+
+		return path;
 	}
 
 	private function runTemplate(text:String):String
