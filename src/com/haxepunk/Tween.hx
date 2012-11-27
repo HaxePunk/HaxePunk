@@ -105,6 +105,18 @@ class Tween extends EventDispatcher
 		dispatchEvent(new TweenEvent(TweenEvent.FINISH));
 	}
 
+	/**
+	 * Immediately stops the Tween and removes it from its Tweener without calling the complete callback.
+	 */
+	public function cancel()
+	{
+		active = false;
+		if (_parent != null)
+		{
+			_parent.removeTween(this);
+		}
+	}
+
 	public var percent(getPercent, setPercent):Float;
 	private function getPercent():Float { return _time / _target; }
 	private function setPercent(value:Float):Float { _time = _target * value; return _time; }
