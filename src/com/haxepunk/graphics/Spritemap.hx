@@ -52,8 +52,8 @@ class Spritemap extends Image
 		_width = _source.width;
 		_height = _source.height;
 
-		_columns = Std.int(_width / _rect.width);
-		_rows = Std.int(_height / _rect.height);
+		_columns = Math.ceil(_width / _rect.width);
+		_rows = Math.ceil(_height / _rect.height);
 		_frameCount = _columns * _rows;
 		callbackFunc = cbFunc;
 
@@ -126,6 +126,11 @@ class Spritemap extends Image
 	public function add(name:String, frames:Array<Int>, frameRate:Float = 0, loop:Bool = true):Animation
 	{
 		if (_anims.get(name) != null) throw "Cannot have multiple animations with the same name";
+		for (i in 0...frames.length)
+		{
+			frames[i] %= _frameCount;
+			if (frames[i] < 0) frames[i] += _frameCount;
+		}
 		var anim:Animation = new Animation(name, frames, frameRate, loop);
 		_anims.set(name, anim);
 		anim.parent = this;
