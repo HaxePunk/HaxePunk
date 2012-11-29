@@ -42,8 +42,7 @@ class Tweener
 		}
 		else
 		{
-			if (ft._next != null)
-				_tween = cast(ft._next, Tween);
+			_tween = (ft._next == null) ? null : cast(ft._next, Tween);
 		}
 		ft._next = ft._prev = null;
 		ft._parent = null;
