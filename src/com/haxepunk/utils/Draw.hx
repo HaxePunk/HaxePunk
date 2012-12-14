@@ -50,12 +50,18 @@ class Draw
 
 	private static inline function drawToScreen()
 	{
-		// TODO: talk to nme guys about changing BlendMode for neko
+		if (blend == null)
+		{
+			_target.draw(HXP.sprite);
+		}
+		else
+		{
 #if (neko || cpp)
-		_target.draw(HXP.sprite, null, null, Type.getEnumName(Type.getEnum(blend)));
+			_target.draw(HXP.sprite, null, null, Type.getEnumName(Type.getEnum(blend)));
 #else
-		_target.draw(HXP.sprite, null, null, blend);
+			_target.draw(HXP.sprite, null, null, blend);
 #end
+		}
 	}
 
 	/**
