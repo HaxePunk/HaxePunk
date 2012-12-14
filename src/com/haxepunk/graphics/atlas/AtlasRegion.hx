@@ -8,9 +8,9 @@ class AtlasRegion
 		this.tileIndex = tileIndex;
 	}
 
-	public function draw(x:Float, y:Float, angle:Float)
+	public function draw(x:Float, y:Float, scale:Float=0, angle:Float=0, color:Int=0xFFFFFFFF)
 	{
-
+		parent.prepareTile(tileIndex, x, y, scale, angle, color);
 	}
 
 	private var parent:TextureAtlas;
