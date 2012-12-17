@@ -59,7 +59,7 @@ class TextureAtlas
 	public function defineRegion(name:String, rect:Rectangle, ?center:Point)
 	{
 		_tilesheet.addTileRect(rect, center);
-		_regions.set(name, new AtlasRegion(this, _index));
+		_regions.set(name, new AtlasRegion(this, _index, rect.width, rect.height));
 		_index += 1;
 	}
 

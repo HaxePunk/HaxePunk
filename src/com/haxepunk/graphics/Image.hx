@@ -7,6 +7,7 @@ import flash.geom.ColorTransform;
 import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
+import com.haxepunk.graphics.atlas.AtlasRegion;
 import com.haxepunk.Graphic;
 import com.haxepunk.HXP;
 
@@ -73,10 +74,16 @@ class Image extends Graphic
 		super();
 		init();
 
+		_blit = true;
 		if (Std.is(source, BitmapData))
 		{
 			_source = source;
 			_class = name;
+		}
+		if (Std.is(source, AtlasRegion))
+		{
+			_blit = false;
+			_source = source;
 		}
 		else
 		{
@@ -100,12 +107,15 @@ class Image extends Graphic
 			_sourceRect = clipRect;
 		}
 
-		createBuffer();
-		updateBuffer();
+		if (_blit)
+		{
+			createBuffer();
+			updateBuffer();
+		}
 	}
 
 	/** @private Initialize variables */
-	private function init()
+	private inline function init()
 	{
 		angle = 0;
 		scale = scaleX = scaleY = 1;
@@ -130,33 +140,48 @@ class Image extends Graphic
 	/** Renders the image. */
 	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
-		// quit if no graphic is assigned
-		if (_buffer == null) return;
-
 		// determine drawing location
 		_point.x = point.x + x - originX - camera.x * scrollX;
 		_point.y = point.y + y - originY - camera.y * scrollY;
 
-		// render without transformation
-		if (angle == 0 &&
-			scaleX * scale == 1 &&
-			scaleY * scale == 1 &&
-			blend == null)
+		if (_blit)
 		{
-			target.copyPixels(_buffer, _bufferRect, _point, null, null, true);
-			return;
+			blitGraphic(target);
 		}
+		else
+		{
+			var color:Int = 0;
+			_source.draw(_point.x, _point.y, scale, angle * HXP.RAD, color);
+		}
+	}
 
-		// render with transformation
-		_matrix.b = _matrix.c = 0;
-		_matrix.a = scaleX * scale;
-		_matrix.d = scaleY * scale;
-		_matrix.tx = -originX * _matrix.a;
-		_matrix.ty = -originY * _matrix.d;
-		if (angle != 0) _matrix.rotate(angle * HXP.RAD);
-		_matrix.tx += originX + _point.x;
-		_matrix.ty += originY + _point.y;
-		target.draw(_bitmap, _matrix, null, blend, null, smooth);
+	private inline function blitGraphic(target:BitmapData)
+	{
+		// only draw if buffer exists
+		if (_buffer != null)
+		{
+			if (angle == 0 &&
+				scaleX * scale == 1 &&
+				scaleY * scale == 1 &&
+				blend == null)
+			{
+				// render without transformation
+				target.copyPixels(_buffer, _bufferRect, _point, null, null, true);
+			}
+			else
+			{
+				// render with transformation
+				_matrix.b = _matrix.c = 0;
+				_matrix.a = scaleX * scale;
+				_matrix.d = scaleY * scale;
+				_matrix.tx = -originX * _matrix.a;
+				_matrix.ty = -originY * _matrix.d;
+				if (angle != 0) _matrix.rotate(angle * HXP.RAD);
+				_matrix.tx += originX + _point.x;
+				_matrix.ty += originY + _point.y;
+				target.draw(_bitmap, _matrix, null, blend, null, smooth);
+			}
+		}
 	}
 
 	/**
@@ -319,25 +344,25 @@ class Image extends Graphic
 	 * Width of the image.
 	 */
 	public var width(getWidth, never):Int;
-	private function getWidth():Int { return Std.int(_bufferRect.width); }
+	private function getWidth():Int { return _blit ? Std.int(_bufferRect.width) : _source.width; }
 
 	/**
 	 * Height of the image.
 	 */
 	public var height(getHeight, never):Int;
-	private function getHeight():Int { return Std.int(_bufferRect.height); }
+	private function getHeight():Int { return _blit ? Std.int(_bufferRect.height) : _source.height; }
 
 	/**
 	 * The scaled width of the image.
 	 */
 	public var scaledWidth(getScaledWidth, never):Int;
-	private function getScaledWidth():Int { return Std.int(_bufferRect.width * scaleX * scale); }
+	private function getScaledWidth():Int { return Std.int(width * scaleX * scale); }
 
 	/**
 	 * The scaled height of the image.
 	 */
 	public var scaledHeight(getScaledHeight, never):Int;
-	private function getScaledHeight():Int { return Std.int(_bufferRect.height * scaleY * scale); }
+	private function getScaledHeight():Int { return Std.int(height * scaleY * scale); }
 
 	/**
 	 * Clipping rectangle for the image.
@@ -346,11 +371,12 @@ class Image extends Graphic
 	private function getClipRect():Rectangle { return _sourceRect; }
 
 	/** @private Source BitmapData image. */
-	private var source(getSource, null):BitmapData;
-	private function getSource():BitmapData { return _source; }
+	private var source(getSource, null):Dynamic;
+	private function getSource():Dynamic { return _source; }
 
 	// Source and buffer information.
-	private var _source:BitmapData;
+	private var _blit:Bool;
+	private var _source:Dynamic;
 	private var _sourceRect:Rectangle;
 	private var _buffer:BitmapData;
 	private var _bufferRect:Rectangle;
