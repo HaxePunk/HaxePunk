@@ -3,6 +3,7 @@ package com.haxepunk.utils;
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
 import flash.ui.Keyboard;
+import flash.ui.Mouse;
 import com.haxepunk.HXP;
 #if (nme && (cpp || neko))
 import nme.events.JoystickEvent;
@@ -16,11 +17,24 @@ class Input
 
 	public static var lastKey:Int;
 
+	public static var mouseCursor:String = "";
+
 	public static var mouseDown:Bool;
 	public static var mouseUp:Bool;
 	public static var mousePressed:Bool;
 	public static var mouseReleased:Bool;
 	public static var mouseWheel:Bool;
+
+	public static var mouseWheelDelta(getMouseWheelDelta, null):Int;
+	private static function getMouseWheelDelta():Int
+	{
+		if (mouseWheel)
+		{
+			mouseWheel = false;
+			return _mouseWheelDelta;
+		}
+		return 0;
+	}
 
 	/**
 	 * X position of the mouse on the screen.
@@ -170,6 +184,7 @@ class Input
 			HXP.stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown, false,  2);
 			HXP.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false,  2);
 			HXP.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel, false,  2);
+			HXP.stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove, false,  2);
 
 #if (nme && (cpp || neko))
 			HXP.stage.addEventListener(JoystickEvent.AXIS_MOVE, onJoyAxisMove);
@@ -178,6 +193,8 @@ class Input
 			HXP.stage.addEventListener(JoystickEvent.BUTTON_UP, onJoyButtonUp);
 			HXP.stage.addEventListener(JoystickEvent.HAT_MOVE, onJoyHatMove);
 #end
+
+			_enabled = true;
 		}
 	}
 
@@ -189,11 +206,44 @@ class Input
 		_releaseNum = 0;
 		if (mousePressed) mousePressed = false;
 		if (mouseReleased) mouseReleased = false;
+
+		if (mouseCursor != "")
+		{
+			if (mouseCursor == "hide")
+			{
+				if (_mouseVisible) Mouse.hide();
+				_mouseVisible = false;
+			}
+			else
+			{
+				if (!_mouseVisible) Mouse.show();
+#if flash
+				if (Mouse.cursor != mouseCursor) Mouse.cursor = mouseCursor;
+#end
+				_mouseVisible = true;
+			}
+		}
 	}
 
+	/**
+	 * Clears all input states
+	 */
+	public static function clear()
+	{
+		HXP.clear(_press);
+		_pressNum = 0;
+		HXP.clear(_release);
+		_releaseNum = 0;
+		HXP.clear(_key);
+		_keyNum = 0;
+	}
+
+	/** @private Event handler for key press. */
 	private static function onKeyDown(e:KeyboardEvent = null)
 	{
 		var code:Int = lastKey = e.keyCode;
+
+		if (code < 0 || code > 255) return;
 
 		if (code == Key.BACKSPACE) keyString = keyString.substr(0, keyString.length - 1);
 		else if ((code > 47 && code < 58) || (code > 64 && code < 91) || code == 32)
@@ -218,6 +268,9 @@ class Input
 	private static function onKeyUp(e:KeyboardEvent = null)
 	{
 		var code:Int = e.keyCode;
+
+		if (code < 0 || code > 255) return;
+
 		if (_key[code])
 		{
 			_key[code] = false;
@@ -247,6 +300,17 @@ class Input
 	{
 		mouseWheel = true;
 		_mouseWheelDelta = e.delta;
+	}
+
+	/** @private Event handler for mouse move events: only here for a bug workaround. */
+	private static function onMouseMove(e:MouseEvent)
+	{
+		if (mouseCursor == "hide") {
+			Mouse.show();
+			Mouse.hide();
+		}
+
+		HXP.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 	}
 
 #if (nme && (cpp || neko))
@@ -301,7 +365,9 @@ class Input
 	private static inline var kKeyStringMax = 100;
 
 	private static var _enabled:Bool = false;
+
 	private static var _joysticks:IntHash<Joystick> = new IntHash<Joystick>();
+
 	private static var _key:Array<Bool> = new Array<Bool>();
 	private static var _keyNum:Int = 0;
 	private static var _press:Array<Int> = new Array<Int>();
@@ -309,5 +375,7 @@ class Input
 	private static var _release:Array<Int> = new Array<Int>();
 	private static var _releaseNum:Int = 0;
 	private static var _control:Hash<Array<Int>> = new Hash<Array<Int>>();
+
 	private static var _mouseWheelDelta:Int = 0;
+	private static var _mouseVisible:Bool = true;
 }
