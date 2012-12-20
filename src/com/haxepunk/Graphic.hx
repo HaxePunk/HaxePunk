@@ -73,10 +73,7 @@ class Graphic
 	 * @param	point		The position to draw the graphic.
 	 * @param	camera		The camera offset.
 	 */
-	public function render(target:BitmapData, point:Point, camera:Point)
-	{
-
-	}
+	public function render(target:BitmapData, point:Point, camera:Point) { }
 
 	/** @private Callback for when the graphic is assigned to an Entity. */
 	public var assign(default, null):AssignCallback;
@@ -84,6 +81,11 @@ class Graphic
 	// Graphic information.
 	private var _scroll:Bool;
 	private var _point:Point;
+
+	/**
+	 * If we can blit the graphic or not (flash/html5)
+	 */
+	private var _blit:Bool;
 
 #if cpp
 	private var _tileSheet:nme.display.Tilesheet;

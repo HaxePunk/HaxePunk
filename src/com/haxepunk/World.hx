@@ -3,6 +3,7 @@ package com.haxepunk;
 import flash.geom.Point;
 import com.haxepunk.Entity;
 import com.haxepunk.Tweener;
+import com.haxepunk.graphics.atlas.TextureAtlas;
 import flash.geom.Rectangle;
 
 /**
@@ -96,6 +97,7 @@ class World extends Tweener
 	 */
 	public function render()
 	{
+		HXP.sprite.graphics.clear();
 		// render the entities in order of depth
 		var e:Entity,
 			fe:FriendEntity,
@@ -110,6 +112,7 @@ class World extends Tweener
 				fe = fe._renderPrev;
 			}
 		}
+		TextureAtlas.renderAll(HXP.sprite.graphics);
 	}
 
 	/**

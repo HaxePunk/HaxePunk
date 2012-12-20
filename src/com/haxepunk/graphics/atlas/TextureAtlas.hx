@@ -19,8 +19,10 @@ class TextureAtlas
 		_regions = new Hash<AtlasRegion>();
 		_index = 0;
 
-		_renderFlags = 0;
+		_renderFlags = Tilesheet.TILE_ALPHA | Tilesheet.TILE_BLEND_NORMAL | Tilesheet.TILE_ROTATION | Tilesheet.TILE_RGB | Tilesheet.TILE_SCALE;
 		_tileData = new Array<Float>();
+
+		_atlases.push(this);
 	}
 
 	public function render(g:Graphics, smooth:Bool=false)
@@ -34,19 +36,26 @@ class TextureAtlas
 #end
 	}
 
-	public function prepareTile(tile:Int, x:Float, y:Float, scale:Float, rotation:Float, color:Int)
+	public static function renderAll(g:Graphics, smooth:Bool=false)
 	{
-		var red = 0, green = 0, blue = 0, alpha = 1;
+		for (atlas in _atlases)
+		{
+			atlas.render(g, smooth);
+		}
+	}
+
+	public inline function prepareTile(tile:Int, x:Float, y:Float, scale:Float, rotation:Float, red:Float, green:Float, blue:Float, alpha:Float)
+	{
 		_tileData.push(x);
 		_tileData.push(y);
 		_tileData.push(tile);
 		_tileData.push(scale);
 		_tileData.push(rotation);
 
-		// _tileData.push(red);
-		// _tileData.push(green);
-		// _tileData.push(blue);
-		// _tileData.push(alpha);
+		_tileData.push(red);
+		_tileData.push(green);
+		_tileData.push(blue);
+		_tileData.push(alpha);
 	}
 
 	public function getRegion(name:String):AtlasRegion
@@ -69,4 +78,6 @@ class TextureAtlas
 	private var _index:Int;
 	private var _tilesheet:Tilesheet;
 	private var _regions:Hash<AtlasRegion>;
+
+	private static var _atlases:Array<TextureAtlas> = new Array<TextureAtlas>();
 }

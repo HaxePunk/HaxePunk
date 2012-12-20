@@ -23,11 +23,7 @@ class Screen
 
 		// create screen buffers
 		HXP.engine.addChild(_sprite);
-
-		//Added this so that the tilesheet can use a graphics object which is in front of the ones used by software rendering
-#if cpp
 		HXP.engine.addChild(HXP.sprite);
-#end
 	}
 
 	public function init()
@@ -42,6 +38,15 @@ class Screen
 		update();
 	}
 
+	private inline function disposeBitmap(bd:Bitmap)
+	{
+		if (bd != null)
+		{
+			_sprite.removeChild(bd);
+			bd.bitmapData.dispose();
+		}
+	}
+
 	/**
 	 * Resizes the screen by recreating the bitmap buffer
 	 * @param width the width of the screen
@@ -49,14 +54,8 @@ class Screen
 	 */
 	public function resize()
 	{
-		if (_bitmap[0] != null)
-		{
-			_sprite.removeChild(_bitmap[0]);
-			_sprite.removeChild(_bitmap[1]);
-
-			_bitmap[0].bitmapData.dispose();
-			_bitmap[1].bitmapData.dispose();
-		}
+		disposeBitmap(_bitmap[0]);
+		disposeBitmap(_bitmap[1]);
 
 		width = HXP.width;
 		height = HXP.height;

@@ -59,7 +59,6 @@ class Spritemap extends Image
 
 		updateBuffer();
 		active = true;
-
 	}
 
 	/**

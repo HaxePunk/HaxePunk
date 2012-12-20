@@ -6,6 +6,7 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
+import com.haxepunk.graphics.atlas.AtlasRegion;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 import com.haxepunk.utils.Ease;
@@ -44,18 +45,32 @@ class Emitter extends Graphic
 	{
 		if (Std.is(source, BitmapData))
 		{
-			_source = source;
+			setBitmapSource(source);
+		}
+		else if(Std.is(source, AtlasRegion))
+		{
+			_blit = false;
+			_region = source;
+			_width = Std.int(_region.width);
+			_height = Std.int(_region.height);
 		}
 		else
 		{
-			_source = HXP.getBitmap(source);
+			setBitmapSource(HXP.getBitmap(source));
 		}
-		if (_source == null) throw "Invalid source image.";
-		_width = _source.width;
-		_height = _source.height;
+		if (_source == null && _region == null) throw "Invalid source image.";
+
 		_frameWidth = (frameWidth != 0) ? frameWidth : _width;
 		_frameHeight = (frameHeight != 0) ? frameHeight : _height;
 		_frameCount = Std.int(_width / _frameWidth) * Std.int(_height / _frameHeight);
+	}
+
+	private inline function setBitmapSource(bitmap:BitmapData)
+	{
+		_blit = true;
+		_source = bitmap;
+		_width = Std.int(bitmap.width);
+		_height = Std.int(bitmap.height);
 	}
 
 	override public function update()
@@ -132,30 +147,42 @@ class Emitter extends Graphic
 				rect.x = 0;
 			else
 				rect.x = rect.width * type._frames[Std.int(td * type._frames.length)];
-			rect.y = Std.int(rect.x / type._width) * rect.height;
-			rect.x %= type._width;
+			rect.y = Std.int(rect.x / _width) * rect.height;
+			rect.x %= _width;
 
-			// draw particle
-			if (type._buffer != null)
+			if (_blit)
 			{
-				// get alpha
-				_tint.alphaMultiplier = type._alpha + type._alphaRange * ((type._alphaEase == null) ? t : type._alphaEase(t));
-
-				// get color
-				td = (type._colorEase == null) ? t : type._colorEase(t);
-				_tint.redMultiplier = type._red + type._redRange * td;
-				_tint.greenMultiplier = type._green + type._greenRange * td;
-				_tint.blueMultiplier  = type._blue + type._blueRange * td;
-				type._buffer.fillRect(type._bufferRect, HXP.blackColor);
-				type._buffer.copyPixels(type._source, rect, HXP.zero);
-				type._buffer.colorTransform(type._bufferRect, _tint);
-
 				// draw particle
-				target.copyPixels(type._buffer, type._bufferRect, _p, null, null, true);
+				if (type._buffer != null)
+				{
+					// get alpha
+					_tint.alphaMultiplier = type._alpha + type._alphaRange * ((type._alphaEase == null) ? t : type._alphaEase(t));
+
+					// get color
+					td = (type._colorEase == null) ? t : type._colorEase(t);
+					_tint.redMultiplier = type._red + type._redRange * td;
+					_tint.greenMultiplier = type._green + type._greenRange * td;
+					_tint.blueMultiplier  = type._blue + type._blueRange * td;
+					type._buffer.fillRect(type._bufferRect, HXP.blackColor);
+					type._buffer.copyPixels(_source, rect, HXP.zero);
+					type._buffer.colorTransform(type._bufferRect, _tint);
+
+					// draw particle
+					target.copyPixels(type._buffer, type._bufferRect, _p, null, null, true);
+				}
+				else
+				{
+					target.copyPixels(_source, rect, _p, null, null, true);
+				}
 			}
-			else
+			else // _blit
 			{
-				target.copyPixels(type._source, rect, _p, null, null, true);
+				_region.draw(_p.x, _p.y, 1,
+					type._angle,
+					type._red + type._redRange * td,
+					type._green + type._greenRange * td,
+					type._blue + type._blueRange * td,
+					type._alpha + type._alphaRange * ((type._alphaEase == null) ? t : type._alphaEase(t)));
 			}
 
 			// get next particle
@@ -173,7 +200,7 @@ class Emitter extends Graphic
 	{
 		var pt:ParticleType = _types.get(name);
 		if (pt != null) throw "Cannot add multiple particle types of the same name";
-		pt = new ParticleType(name, frames, _source, _frameWidth, _frameHeight);
+		pt = new ParticleType(name, frames, _width, _frameWidth, _frameHeight);
 		_types.set(name, pt);
 		return pt;
 	}
@@ -317,6 +344,7 @@ class Emitter extends Graphic
 
 	// Source information.
 	private var _source:BitmapData;
+	private var _region:AtlasRegion;
 	private var _width:Int;
 	private var _height:Int;
 	private var _frameWidth:Int;

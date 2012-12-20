@@ -20,14 +20,12 @@ class ParticleType
 	 * @param	frameHeight		Frame height.
 	 * @param	frameCount		Frame count.
 	 */
-	public function new(name:String, frames:Array<Int>, source:BitmapData, frameWidth:Int, frameHeight:Int)
+	public function new(name:String, frames:Array<Int>, width:Int, frameWidth:Int, frameHeight:Int)
 	{
 		_red = _green = _blue = _alpha = 1;
 		_redRange = _greenRange = _blueRange = _alphaRange = 0;
 
 		_name = name;
-		_source = source;
-		_width = source.width;
 		_frame = new Rectangle(0, 0, frameWidth, frameHeight);
 		if (frames == null) frames = new Array<Int>();
 		_frames = frames;
@@ -147,8 +145,6 @@ class ParticleType
 
 	// Particle information.
 	public var _name:String;
-	public var _source:BitmapData;
-	public var _width:Int;
 	public var _frame:Rectangle;
 	public var _frames:Array<Int>;
 

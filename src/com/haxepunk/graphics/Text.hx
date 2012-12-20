@@ -121,7 +121,7 @@ class Text extends Image
 			_field.height = textHeight;
 		}
 
-		_source.draw(_field);
+		cast(_source, BitmapData).draw(_field);
 		super.updateBuffer(clearBefore);
 	}
 

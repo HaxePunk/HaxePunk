@@ -74,16 +74,17 @@ class Image extends Graphic
 		super();
 		init();
 
-		_blit = true;
 		if (Std.is(source, BitmapData))
 		{
-			_source = source;
+			setBitmapSource(source);
 			_class = name;
 		}
 		else if (Std.is(source, AtlasRegion))
 		{
 			_blit = false;
-			_source = source;
+			_class = name;
+			_region = source;
+			_sourceRect = new Rectangle(0, 0, _region.width, _region.height);
 		}
 		else
 		{
@@ -93,12 +94,10 @@ class Image extends Graphic
 				_class = Type.getClassName(Type.getClass(source));
 			else
 				_class = name;
-			_source = HXP.getBitmap(source);
+			setBitmapSource(HXP.getBitmap(source));
 		}
 
-		if (_source == null) throw "Invalid source image.";
-		_sourceRect = _source.rect;
-
+		if (_source == null && _region == null) throw "Invalid source image.";
 
 		if (clipRect != null)
 		{
@@ -112,6 +111,13 @@ class Image extends Graphic
 			createBuffer();
 			updateBuffer();
 		}
+	}
+
+	private inline function setBitmapSource(bitmap:BitmapData)
+	{
+		_blit = true;
+		_sourceRect = bitmap.rect;
+		_source = bitmap;
 	}
 
 	/** @private Initialize variables */
@@ -146,41 +152,36 @@ class Image extends Graphic
 
 		if (_blit)
 		{
-			blitGraphic(target);
+			// only draw if buffer exists
+			if (_buffer != null)
+			{
+				if (angle == 0 &&
+					scaleX * scale == 1 &&
+					scaleY * scale == 1 &&
+					blend == null)
+				{
+					// render without transformation
+					target.copyPixels(_buffer, _bufferRect, _point, null, null, true);
+				}
+				else
+				{
+					// render with transformation
+					_matrix.b = _matrix.c = 0;
+					_matrix.a = scaleX * scale;
+					_matrix.d = scaleY * scale;
+					_matrix.tx = -originX * _matrix.a;
+					_matrix.ty = -originY * _matrix.d;
+					if (angle != 0) _matrix.rotate(angle * HXP.RAD);
+					_matrix.tx += originX + _point.x;
+					_matrix.ty += originY + _point.y;
+					target.draw(_bitmap, _matrix, null, blend, null, smooth);
+				}
+			}
 		}
-		else
+		else // _blit
 		{
 			var color:Int = 0;
-			_source.draw(_point.x, _point.y, scale, angle * HXP.RAD, color);
-		}
-	}
-
-	private inline function blitGraphic(target:BitmapData)
-	{
-		// only draw if buffer exists
-		if (_buffer != null)
-		{
-			if (angle == 0 &&
-				scaleX * scale == 1 &&
-				scaleY * scale == 1 &&
-				blend == null)
-			{
-				// render without transformation
-				target.copyPixels(_buffer, _bufferRect, _point, null, null, true);
-			}
-			else
-			{
-				// render with transformation
-				_matrix.b = _matrix.c = 0;
-				_matrix.a = scaleX * scale;
-				_matrix.d = scaleY * scale;
-				_matrix.tx = -originX * _matrix.a;
-				_matrix.ty = -originY * _matrix.d;
-				if (angle != 0) _matrix.rotate(angle * HXP.RAD);
-				_matrix.tx += originX + _point.x;
-				_matrix.ty += originY + _point.y;
-				target.draw(_bitmap, _matrix, null, blend, null, smooth);
-			}
+			_region.draw(_point.x, _point.y, scale, angle * HXP.RAD, color);
 		}
 	}
 
@@ -229,6 +230,7 @@ class Image extends Graphic
 	 */
 	public function clear()
 	{
+		if (_buffer == null) return;
 		_buffer.fillRect(_bufferRect, HXP.blackColor);
 	}
 
@@ -344,13 +346,13 @@ class Image extends Graphic
 	 * Width of the image.
 	 */
 	public var width(getWidth, never):Int;
-	private function getWidth():Int { return _blit ? Std.int(_bufferRect.width) : _source.width; }
+	private function getWidth():Int { return Std.int(_blit ? _source.width : _region.width); }
 
 	/**
 	 * Height of the image.
 	 */
 	public var height(getHeight, never):Int;
-	private function getHeight():Int { return _blit ? Std.int(_bufferRect.height) : _source.height; }
+	private function getHeight():Int { return Std.int(_blit ? _source.height : _region.height); }
 
 	/**
 	 * The scaled width of the image.
@@ -375,12 +377,12 @@ class Image extends Graphic
 	private function getSource():Dynamic { return _source; }
 
 	// Source and buffer information.
-	private var _blit:Bool;
-	private var _source:Dynamic;
+	private var _source:BitmapData;
 	private var _sourceRect:Rectangle;
 	private var _buffer:BitmapData;
 	private var _bufferRect:Rectangle;
 	private var _bitmap:Bitmap;
+	private var _region:AtlasRegion;
 
 	// Color and alpha information.
 	private var _alpha:Float;
