@@ -80,7 +80,7 @@ class Image extends Graphic
 			_source = source;
 			_class = name;
 		}
-		if (Std.is(source, AtlasRegion))
+		else if (Std.is(source, AtlasRegion))
 		{
 			_blit = false;
 			_source = source;
