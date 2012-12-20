@@ -33,8 +33,8 @@ class Backdrop extends Canvas
 		if (_blit)
 		{
 			HXP.rect.x = HXP.rect.y = 0;
-			HXP.rect.width = _textWidth;
-			HXP.rect.height = _textHeight;
+			HXP.rect.width = _width;
+			HXP.rect.height = _height;
 			fillTexture(HXP.rect, _source);
 		}
 	}

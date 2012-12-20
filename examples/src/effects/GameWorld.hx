@@ -15,16 +15,18 @@ class GameWorld extends DemoWorld
 	{
 		super();
 
+#if !flash
 		atlas = TextureAtlas.loadTexturePacker("atlas/assets.xml");
+#end
 
-		backdrop = new Backdrop(atlas.getRegion("tile.png"), true, true);
+		backdrop = new Backdrop(#if flash "gfx/tile.png" #else atlas.getRegion("tile.png") #end, true, true);
 		backdrop.color = 0x555555;
 		addGraphic(backdrop);
 	}
 
 	public override function begin()
 	{
-		smoke = new Emitter(atlas.getRegion("smoke.png"), 16, 16);
+		smoke = new Emitter(#if flash "gfx/smoke.png" #else atlas.getRegion("smoke.png") #end, 16, 16);
 		smoke.newType("exhaust", [0]);
 		smoke.setMotion("exhaust", 90, 30, 0.5, 360, 10, 0.5);
 		smoke.setAlpha("exhaust");
