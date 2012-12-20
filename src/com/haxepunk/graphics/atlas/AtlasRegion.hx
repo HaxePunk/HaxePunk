@@ -3,6 +3,7 @@ package com.haxepunk.graphics.atlas;
 class AtlasRegion
 {
 
+	public var rotated:Bool;
 	public var width(default, null):Float;
 	public var height(default, null):Float;
 

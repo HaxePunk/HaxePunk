@@ -25,6 +25,27 @@ class TextureAtlas
 		_atlases.push(this);
 	}
 
+	public static function loadTexturePacker(file:String):TextureAtlas
+	{
+		var xml = Xml.parse(nme.Assets.getText(file));
+		var root = xml.firstElement();
+		var atlas = new TextureAtlas(root.get("imagePath"));
+		var rect = new Rectangle();
+		for (sprite in root.elements())
+		{
+			rect.x = Std.parseInt(sprite.get("x"));
+			rect.y = Std.parseInt(sprite.get("y"));
+			if (sprite.exists("w")) rect.width = Std.parseInt(sprite.get("w"));
+			if (sprite.exists("h")) rect.height = Std.parseInt(sprite.get("h"));
+
+			// set the defined region
+			var region = atlas.defineRegion(sprite.get("n"), rect);
+
+			if (sprite.exists("r") && sprite.get("r") == "y") region.rotated = true;
+		}
+		return atlas;
+	}
+
 	public function render(g:Graphics, smooth:Bool=false)
 	{
 		_tilesheet.drawTiles(g, _tileData, smooth, _renderFlags);
@@ -65,11 +86,13 @@ class TextureAtlas
 		throw "Region has not be defined yet: " + name;
 	}
 
-	public function defineRegion(name:String, rect:Rectangle, ?center:Point)
+	public function defineRegion(name:String, rect:Rectangle, ?center:Point):AtlasRegion
 	{
 		_tilesheet.addTileRect(rect, center);
-		_regions.set(name, new AtlasRegion(this, _index, rect.width, rect.height));
+		var region = new AtlasRegion(this, _index, rect.width, rect.height);
+		_regions.set(name, region);
 		_index += 1;
+		return region;
 	}
 
 	private var _tileData:Array<Float>;

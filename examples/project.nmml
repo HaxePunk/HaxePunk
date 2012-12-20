@@ -5,7 +5,7 @@
  	<app file="HaxePunk" main="Main" path="bin" />
 
 	<window width="640" height="480" orientation="portrait" resizable="true" />
-	<window fps="30" />
+	<window fps="60" />
 
 	<source path="src" />
 
@@ -14,6 +14,7 @@
 
 	<assets path="assets/gfx" rename="gfx" type="image" include="*.png" />
 	<assets path="assets/font" rename="font" type="font" include="*.ttf" />
+	<assets path="assets/atlas" rename="atlas" type="text" include="*.xml" />
 
 	<ndll name="std" />
 	<ndll name="regexp" />
