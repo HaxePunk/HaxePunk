@@ -315,20 +315,22 @@ class HXP
 	public static inline function colorLerp(fromColor:Int, toColor:Int, t:Float = 1):Int
 	{
 		if (t <= 0) { return fromColor; }
-		if (t >= 1) { return toColor; }
-		var a:Int = fromColor >> 24 & 0xFF,
-			r:Int = fromColor >> 16 & 0xFF,
-			g:Int = fromColor >> 8 & 0xFF,
-			b:Int = fromColor & 0xFF,
-			dA:Int = (toColor >> 24 & 0xFF) - a,
-			dR:Int = (toColor >> 16 & 0xFF) - r,
-			dG:Int = (toColor >> 8 & 0xFF) - g,
-			dB:Int = (toColor & 0xFF) - b;
-		a += Std.int(dA * t);
-		r += Std.int(dR * t);
-		g += Std.int(dG * t);
-		b += Std.int(dB * t);
-		return a << 24 | r << 16 | g << 8 | b;
+		else if (t >= 1) { return toColor; }
+		else {
+			var a:Int = fromColor >> 24 & 0xFF,
+				r:Int = fromColor >> 16 & 0xFF,
+				g:Int = fromColor >> 8 & 0xFF,
+				b:Int = fromColor & 0xFF,
+				dA:Int = (toColor >> 24 & 0xFF) - a,
+				dR:Int = (toColor >> 16 & 0xFF) - r,
+				dG:Int = (toColor >> 8 & 0xFF) - g,
+				dB:Int = (toColor & 0xFF) - b;
+			a += Std.int(dA * t);
+			r += Std.int(dR * t);
+			g += Std.int(dG * t);
+			b += Std.int(dB * t);
+			return a << 24 | r << 16 | g << 8 | b;
+		}
 	}
 
 	/**
