@@ -3,7 +3,6 @@ package com.haxepunk.utils;
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
 import flash.ui.Keyboard;
-import flash.ui.Mouse;
 import com.haxepunk.HXP;
 #if (nme && (cpp || neko))
 import nme.events.JoystickEvent;
@@ -13,28 +12,15 @@ class Input
 {
 
 	public static var keyString:String = "";
-	public static var deadZone:Float = 0.05; //joystick deadzone
+	public static var deadZone:Float = 0.15; //joystick deadzone
 
 	public static var lastKey:Int;
-
-	public static var mouseCursor:String = "";
 
 	public static var mouseDown:Bool;
 	public static var mouseUp:Bool;
 	public static var mousePressed:Bool;
 	public static var mouseReleased:Bool;
 	public static var mouseWheel:Bool;
-
-	public static var mouseWheelDelta(getMouseWheelDelta, null):Int;
-	private static function getMouseWheelDelta():Int
-	{
-		if (mouseWheel)
-		{
-			mouseWheel = false;
-			return _mouseWheelDelta;
-		}
-		return 0;
-	}
 
 	/**
 	 * X position of the mouse on the screen.
@@ -164,7 +150,7 @@ class Input
 		return -1;
 	}
 
-	public static function joystick(id:Int)
+	public static function joystick(id:Int):Joystick
 	{
 		var joy:Joystick = _joysticks.get(id);
 		if (joy == null)
@@ -173,6 +159,20 @@ class Input
 			_joysticks.set(id, joy);
 		}
 		return joy;
+	}
+
+	public static var joysticks(getJoysticks, never):Int;
+	private static function getJoysticks():Int
+	{
+		var count:Int = 0;
+		for (joystick in _joysticks)
+		{
+			if (joystick.connected)
+			{
+				count += 1;
+			}
+		}
+		return count;
 	}
 
 	public static function enable()
@@ -184,7 +184,6 @@ class Input
 			HXP.stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown, false,  2);
 			HXP.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false,  2);
 			HXP.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel, false,  2);
-			HXP.stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove, false,  2);
 
 #if (nme && (cpp || neko))
 			HXP.stage.addEventListener(JoystickEvent.AXIS_MOVE, onJoyAxisMove);
@@ -193,8 +192,6 @@ class Input
 			HXP.stage.addEventListener(JoystickEvent.BUTTON_UP, onJoyButtonUp);
 			HXP.stage.addEventListener(JoystickEvent.HAT_MOVE, onJoyHatMove);
 #end
-
-			_enabled = true;
 		}
 	}
 
@@ -206,44 +203,14 @@ class Input
 		_releaseNum = 0;
 		if (mousePressed) mousePressed = false;
 		if (mouseReleased) mouseReleased = false;
-
-		if (mouseCursor != "")
-		{
-			if (mouseCursor == "hide")
-			{
-				if (_mouseVisible) Mouse.hide();
-				_mouseVisible = false;
-			}
-			else
-			{
-				if (!_mouseVisible) Mouse.show();
-#if flash
-				if (Mouse.cursor != mouseCursor) Mouse.cursor = mouseCursor;
+#if (nme && (cpp || neko))
+		for (joystick in _joysticks) joystick.update();
 #end
-				_mouseVisible = true;
-			}
-		}
 	}
 
-	/**
-	 * Clears all input states
-	 */
-	public static function clear()
-	{
-		HXP.clear(_press);
-		_pressNum = 0;
-		HXP.clear(_release);
-		_releaseNum = 0;
-		HXP.clear(_key);
-		_keyNum = 0;
-	}
-
-	/** @private Event handler for key press. */
 	private static function onKeyDown(e:KeyboardEvent = null)
 	{
 		var code:Int = lastKey = e.keyCode;
-
-		if (code < 0 || code > 255) return;
 
 		if (code == Key.BACKSPACE) keyString = keyString.substr(0, keyString.length - 1);
 		else if ((code > 47 && code < 58) || (code > 64 && code < 91) || code == 32)
@@ -268,9 +235,6 @@ class Input
 	private static function onKeyUp(e:KeyboardEvent = null)
 	{
 		var code:Int = e.keyCode;
-
-		if (code < 0 || code > 255) return;
-
 		if (_key[code])
 		{
 			_key[code] = false;
@@ -302,17 +266,6 @@ class Input
 		_mouseWheelDelta = e.delta;
 	}
 
-	/** @private Event handler for mouse move events: only here for a bug workaround. */
-	private static function onMouseMove(e:MouseEvent)
-	{
-		if (mouseCursor == "hide") {
-			Mouse.show();
-			Mouse.hide();
-		}
-
-		HXP.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-	}
-
 #if (nme && (cpp || neko))
 
 	private static function onJoyAxisMove(e:JoystickEvent)
@@ -338,8 +291,7 @@ class Input
 		var joy:Joystick = joystick(e.device);
 
 		joy.connected = true;
-		if (e.id < 8)
-			joy.buttons[e.id] = true;
+		joy.buttons.set(e.id, BUTTON_PRESSED);
 	}
 
 	private static function onJoyButtonUp(e:JoystickEvent)
@@ -347,8 +299,7 @@ class Input
 		var joy:Joystick = joystick(e.device);
 
 		joy.connected = true;
-		if (e.id < 8)
-			joy.buttons[e.id] = false;
+		joy.buttons.set(e.id, BUTTON_OFF);
 	}
 
 	private static function onJoyHatMove(e:JoystickEvent)
@@ -365,9 +316,7 @@ class Input
 	private static inline var kKeyStringMax = 100;
 
 	private static var _enabled:Bool = false;
-
 	private static var _joysticks:IntHash<Joystick> = new IntHash<Joystick>();
-
 	private static var _key:Array<Bool> = new Array<Bool>();
 	private static var _keyNum:Int = 0;
 	private static var _press:Array<Int> = new Array<Int>();
@@ -375,7 +324,5 @@ class Input
 	private static var _release:Array<Int> = new Array<Int>();
 	private static var _releaseNum:Int = 0;
 	private static var _control:Hash<Array<Int>> = new Hash<Array<Int>>();
-
 	private static var _mouseWheelDelta:Int = 0;
-	private static var _mouseVisible:Bool = true;
 }
