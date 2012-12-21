@@ -47,6 +47,29 @@ class Player extends Physics
 		Input.define("jump", [Key.W, Key.SPACE, Key.UP]);
 	}
 
+	private function doJump()
+	{
+		if (!onGround) return;
+		switch (jumpStyle)
+		{
+			case Normal:
+				acceleration.y = -HXP.sign(gravity.y) * kJumpForce;
+			case Gravity:
+				gravity.y = -gravity.y;
+			case Disable:
+		}
+	}
+
+	private function switchJumpStyle()
+	{
+		switch (jumpStyle)
+		{
+			case Normal:  jumpStyle = Gravity;
+			case Gravity: jumpStyle = Normal;
+			case Disable: trace('disabled');
+		}
+	}
+
 	override public function update()
 	{
 		acceleration.x = acceleration.y = 0;
@@ -59,25 +82,23 @@ class Player extends Physics
 
 		if (Input.pressed(Key.J))
 		{
-			switch (jumpStyle)
-			{
-				case Normal:  jumpStyle = Gravity;
-				case Gravity: jumpStyle = Normal;
-				case Disable: trace('disabled');
-			}
+			switchJumpStyle();
 		}
 
-		if (Input.pressed("jump") && onGround)
+		if (Input.pressed("jump"))
 		{
-			switch (jumpStyle)
-			{
-				case Normal:
-					acceleration.y = -HXP.sign(gravity.y) * kJumpForce;
-				case Gravity:
-					gravity.y = -gravity.y;
-				case Disable:
-			}
+			doJump();
 		}
+
+		var joystick = Input.joystick(0);
+		if (joystick.connected)
+		{
+			acceleration.x = joystick.axis.x;
+
+			if (joystick.pressed(0)) doJump();
+			if (joystick.pressed(2)) switchJumpStyle();
+		}
+
 
 		// Make animation changes here
 		setAnimation();

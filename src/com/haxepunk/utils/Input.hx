@@ -12,7 +12,7 @@ class Input
 {
 
 	public static var keyString:String = "";
-	public static var deadZone:Float = 0.05; //joystick deadzone
+	public static var deadZone:Float = 0.15; //joystick deadzone
 
 	public static var lastKey:Int;
 
@@ -150,7 +150,7 @@ class Input
 		return -1;
 	}
 
-	public static function joystick(id:Int)
+	public static function joystick(id:Int):Joystick
 	{
 		var joy:Joystick = _joysticks.get(id);
 		if (joy == null)
@@ -159,6 +159,20 @@ class Input
 			_joysticks.set(id, joy);
 		}
 		return joy;
+	}
+
+	public static var joysticks(getJoysticks, never):Int;
+	private static function getJoysticks():Int
+	{
+		var count:Int = 0;
+		for (joystick in _joysticks)
+		{
+			if (joystick.connected)
+			{
+				count += 1;
+			}
+		}
+		return count;
 	}
 
 	public static function enable()
@@ -189,6 +203,9 @@ class Input
 		_releaseNum = 0;
 		if (mousePressed) mousePressed = false;
 		if (mouseReleased) mouseReleased = false;
+#if (nme && (cpp || neko))
+		for (joystick in _joysticks) joystick.update();
+#end
 	}
 
 	private static function onKeyDown(e:KeyboardEvent = null)
@@ -274,8 +291,7 @@ class Input
 		var joy:Joystick = joystick(e.device);
 
 		joy.connected = true;
-		if (e.id < 8)
-			joy.buttons[e.id] = true;
+		joy.buttons.set(e.id, BUTTON_PRESSED);
 	}
 
 	private static function onJoyButtonUp(e:JoystickEvent)
@@ -283,8 +299,7 @@ class Input
 		var joy:Joystick = joystick(e.device);
 
 		joy.connected = true;
-		if (e.id < 8)
-			joy.buttons[e.id] = false;
+		joy.buttons.set(e.id, BUTTON_OFF);
 	}
 
 	private static function onJoyHatMove(e:JoystickEvent)
