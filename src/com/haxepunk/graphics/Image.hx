@@ -299,24 +299,21 @@ class Image extends Graphic
 		if (!value || _flip != null)
 		{
 			_source = _flip;
-			_flip = temp;
-			updateBuffer();
-			return _flipped;
 		}
-		if (_flips.exists(_class))
+		else if (_flips.exists(_class))
 		{
 			_source = _flips.get(_class);
-			_flip = temp;
-			updateBuffer();
-			return _flipped;
 		}
-		_source = HXP.createBitmap(_source.width, _source.height, true);
-		_flips.set(_class, _source);
+		else
+		{
+			_source = HXP.createBitmap(_source.width, _source.height, true);
+			_flips.set(_class, _source);
+			HXP.matrix.identity();
+			HXP.matrix.a = -1;
+			HXP.matrix.tx = _source.width;
+			_source.draw(temp, HXP.matrix);
+		}
 		_flip = temp;
-		HXP.matrix.identity();
-		HXP.matrix.a = -1;
-		HXP.matrix.tx = _source.width;
-		_source.draw(temp, HXP.matrix);
 		updateBuffer();
 		return _flipped;
 	}
