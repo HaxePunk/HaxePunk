@@ -93,7 +93,7 @@ class Player extends Physics
 		var joystick = Input.joystick(0);
 		if (joystick.connected)
 		{
-			acceleration.x = joystick.axis.x;
+			acceleration.x = joystick.getAxis(0);
 
 			if (joystick.pressed(0)) doJump();
 			if (joystick.pressed(2)) switchJumpStyle();
