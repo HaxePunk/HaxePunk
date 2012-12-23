@@ -56,11 +56,7 @@ class Draw
 		}
 		else
 		{
-#if (neko || cpp)
-			_target.draw(HXP.sprite, null, null, Type.getEnumName(Type.getEnum(blend)));
-#else
 			_target.draw(HXP.sprite, null, null, blend);
-#end
 		}
 	}
 

@@ -50,11 +50,7 @@ class Image extends Graphic
 	 * Optional blend mode to use when drawing this image.
 	 * Use constants from the flash.display.BlendMode class.
 	 */
-#if (flash || js)
 	public var blend:BlendMode;
-#else
-	public var blend:String;
-#end
 
 	/**
 	 * If the image should be drawn transformed with pixel smoothing.
