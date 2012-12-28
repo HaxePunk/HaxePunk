@@ -2,6 +2,6 @@
 <project>
 	<app preloader="com.haxepunk.Preloader" />
 
-	<assets path="assets/gfx" rename="gfx" type="image" include="*.png" />
-	<assets path="assets/font" rename="font" type="font" include="*.ttf" />
+	<assets path="assets/graphics" rename="gfx" include="*.png" />
+	<assets path="assets/font" rename="font" include="*.ttf" />
 </project>

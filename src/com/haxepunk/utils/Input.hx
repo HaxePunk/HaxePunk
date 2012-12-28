@@ -272,6 +272,7 @@ class Input
 		var joy:Joystick = joystick(e.device);
 
 		joy.connected = true;
+		trace(e.axis);
 		joy.axis = e.axis;
 	}
 

@@ -52,7 +52,7 @@
 	<target name="examples" depends="haxelib">
 		<exec executable="haxelib" dir="examples">
 			<arg line="run nme test project.nmml" />
-			<arg line="flash -debug" />
+			<arg line="neko -debug" />
 		</exec>
 	</target>
 
