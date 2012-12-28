@@ -12,11 +12,8 @@
 	<haxelib name="nme" />
 	<haxelib name="HaxePunk" />
 
-	<assets path="assets/gfx" rename="gfx" type="image" include="*.png" />
-	<assets path="assets/font" rename="font" type="font" include="*.ttf" />
+	<assets path="assets/gfx" rename="gfx" include="*.png|*.jpg" />
+	<assets path="assets/font" rename="font" include="*.ttf" />
 
-	<ndll name="std" />
-	<ndll name="regexp" />
-	<ndll name="zlib" />
 	<ndll name="nme" haxelib="nme" />
 </project>
