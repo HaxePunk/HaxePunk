@@ -16,7 +16,7 @@ class Joystick
 	public var axis(null, default):Array<Float>;
 	public var hat:Point;
 	public var ball:Point;
-	public var connected:Bool;
+	public var connected(get_connected, set_connected):Bool;
 
 	public static inline var deadZone:Float = 0.15; //joystick deadzone
 
@@ -62,8 +62,8 @@ class Joystick
 
 	public inline function getAxis(a:Int):Float
 	{
-		if (a < 0 || a >= axis.length) return 0;
-		else return (Math.abs(axis[a]) < deadZone) ? 0 : axis[a];
+		if (a < 1 || a > axis.length) return 0;
+		else return (Math.abs(axis[a-1]) < deadZone) ? 0 : axis[a-1];
 	}
 
 	private function get_connected():Bool
