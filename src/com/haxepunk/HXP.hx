@@ -31,7 +31,7 @@ class HXP
 	/**
 	 * The HaxePunk major version.
 	 */
-	public static inline var VERSION:String = "1.7.1";
+	public static inline var VERSION:String = "1.7.2";
 
 	/**
 	 * The standard layer used since only flash can handle negative indicies in arrays, set your layers to some offset of this

@@ -1,5 +1,14 @@
 HaxePunk CHANGELOG
 
+v1.7.2
+------------------------------
+* [MattTuttle] Improved joystick support (multiple axis, pressed/checked buttons)
+* [MaskedPixel] Fixed inline HXP.colorLerp on native targets
+* [MattTuttle] Updated to work with NME 3.5.x
+* [Lythom|MattTuttle] Added mouseWheelDelta and mouseCursor to Input class
+* [MattTuttle] Fixed drawToScreen when blendMode is null
+* [MattTuttle] Reorganized template assets folder
+
 v1.7.1
 ------------------------------
 * Get mouseX/mouseY correctly even when FP.screen is translated/rotated
