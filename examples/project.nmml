@@ -13,7 +13,4 @@
 	<haxelib name="HaxePunk" />
 
 	<assets path="assets/graphics" rename="gfx" include="*.png|*.jpg" />
-	<assets path="assets/font" rename="font" include="*.ttf" />
-
-	<ndll name="nme" haxelib="nme" />
 </project>
