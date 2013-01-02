@@ -4,25 +4,16 @@
 
  	<app file="HaxePunk" main="Main" path="bin" />
 
-	<window width="640" height="480" orientation="portrait" resizable="true" />
-	<window fps="60" />
+	<window fps="60" orientation="portrait" resizable="true" />
+	<window width="640" height="480" unless="mobile" />
+	<window fullscreen="true" if="mobile" />
 
 	<source path="src" />
 
 	<haxelib name="nme" />
 	<haxelib name="HaxePunk" />
 
-<<<<<<< HEAD
-	<assets path="assets/gfx" rename="gfx" type="image" include="*.png" />
-	<assets path="assets/font" rename="font" type="font" include="*.ttf" />
-	<assets path="assets/atlas" rename="atlas" type="text" include="*.xml" />
-
-	<ndll name="std" />
-	<ndll name="regexp" />
-	<ndll name="zlib" />
-	<ndll name="nme" haxelib="nme" />
-=======
 	<assets path="assets/graphics" rename="gfx" include="*.png|*.jpg" />
 	<assets path="assets/font" rename="font" include="*.ttf" />
->>>>>>> master
+	<assets path="assets/atlas" rename="atlas" include="*.xml" />
 </project>

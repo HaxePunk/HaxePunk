@@ -82,17 +82,18 @@ class Backdrop extends Canvas
 		}
 		else
 		{
-			var y = 0;
-			while (y <= _height)
+			var sx = HXP.screen.fullScaleX, sy = HXP.screen.fullScaleY;
+			var y:Float = 0;
+			while (y <= _height * sy)
 			{
-				var x = 0;
-				while (x <= _width)
+				var x:Float = 0;
+				while (x <= _width * sx)
 				{
-					_region.draw(_point.x + x, _point.y + y, 1, 0,
+					_region.draw(_point.x + x, _point.y + y, sx, sy, 0,
 						HXP.getRed(_color) / 255, HXP.getGreen(_color) / 255, HXP.getBlue(_color) / 255, _alpha);
-					x += _textWidth;
+					x += _textWidth * sx;
 				}
-				y += _textHeight;
+				y += _textHeight * sy;
 			}
 		}
 	}

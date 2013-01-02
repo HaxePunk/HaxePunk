@@ -176,8 +176,10 @@ class Image extends Graphic
 		}
 		else // _blit
 		{
-			var color:Int = 0;
-			_region.draw(_point.x, _point.y, scale, angle * HXP.RAD, color);
+			_region.draw(_point.x, _point.y,
+				HXP.screen.fullScaleX * scaleX * (_flipped ? -1 : 1),
+				HXP.screen.fullScaleY * scaleY,
+				angle);
 		}
 	}
 
@@ -291,26 +293,29 @@ class Image extends Graphic
 		if (_flipped == value || _class == "") return value;
 
 		_flipped = value;
-		var temp:BitmapData = _source;
-		if (!value || _flip != null)
+		if (_blit)
 		{
-			_source = _flip;
+			var temp:BitmapData = _source;
+			if (!value || _flip != null)
+			{
+				_source = _flip;
+			}
+			else if (_flips.exists(_class))
+			{
+				_source = _flips.get(_class);
+			}
+			else
+			{
+				_source = HXP.createBitmap(_source.width, _source.height, true);
+				_flips.set(_class, _source);
+				HXP.matrix.identity();
+				HXP.matrix.a = -1;
+				HXP.matrix.tx = _source.width;
+				_source.draw(temp, HXP.matrix);
+			}
+			_flip = temp;
+			updateBuffer();
 		}
-		else if (_flips.exists(_class))
-		{
-			_source = _flips.get(_class);
-		}
-		else
-		{
-			_source = HXP.createBitmap(_source.width, _source.height, true);
-			_flips.set(_class, _source);
-			HXP.matrix.identity();
-			HXP.matrix.a = -1;
-			HXP.matrix.tx = _source.width;
-			_source.draw(temp, HXP.matrix);
-		}
-		_flip = temp;
-		updateBuffer();
 		return _flipped;
 	}
 

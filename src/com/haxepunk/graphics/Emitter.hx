@@ -177,7 +177,9 @@ class Emitter extends Graphic
 			}
 			else // _blit
 			{
-				_region.draw(_p.x, _p.y, 1,
+				_region.draw(_p.x, _p.y,
+					HXP.screen.fullScaleX,
+					HXP.screen.fullScaleY,
 					type._angle,
 					type._red + type._redRange * td,
 					type._green + type._greenRange * td,

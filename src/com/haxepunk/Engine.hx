@@ -11,6 +11,7 @@ import flash.events.Event;
 import flash.geom.Rectangle;
 import flash.Lib;
 import haxe.Timer;
+import com.haxepunk.graphics.atlas.TextureAtlas;
 import com.haxepunk.utils.Draw;
 import com.haxepunk.utils.Input;
 import com.haxepunk.Tweener;
@@ -136,6 +137,7 @@ class Engine extends Sprite
 		HXP.screen.refresh();
 		if (HXP.world.visible) HXP.world.render();
 		HXP.screen.redraw();
+		TextureAtlas.renderAll();
 
 		// more timing stuff
 		t = Lib.getTimer();

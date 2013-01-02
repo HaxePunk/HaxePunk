@@ -1,12 +1,13 @@
 package com.haxepunk;
 
+import com.haxepunk.graphics.Image;
+
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.PixelSnapping;
 import flash.display.Sprite;
 import flash.filters.BitmapFilter;
 import flash.geom.Matrix;
-import com.haxepunk.graphics.Image;
 
 /**
  * Container for the main screen buffer. Can be used to transform the screen.
@@ -111,13 +112,13 @@ class Screen
 	{
 		if (_matrix == null) return; // prevent update on init
 		_matrix.b = _matrix.c = 0;
-		_matrix.a = scaleX * scale;
-		_matrix.d = scaleY * scale;
+		_matrix.a = fullScaleX;
+		_matrix.d = fullScaleY;
 		_matrix.tx = -originX * _matrix.a;
 		_matrix.ty = -originY * _matrix.d;
 		if (_angle != 0) _matrix.rotate(_angle);
-		_matrix.tx += originX * scaleX * scale + x;
-		_matrix.ty += originY * scaleX * scale + y;
+		_matrix.tx += originX * fullScaleX + x;
+		_matrix.ty += originY * fullScaleY + y;
 		_sprite.transform.matrix = _matrix;
 	}
 
@@ -214,6 +215,18 @@ class Screen
 	}
 
 	/**
+	 * Final X scale value of the screen
+	 */
+	public var fullScaleX(getFullScaleX, never):Float;
+	private function getFullScaleX():Float { return scaleX * scale; }
+
+	/**
+	 * Final Y scale value of the screen
+	 */
+	public var fullScaleY(getFullScaleY, never):Float;
+	private function getFullScaleY():Float { return scaleY * scale; }
+
+	/**
 	 * Rotation of the screen, in degrees.
 	 */
 	public var angle(getAngle, setAngle):Float;
@@ -247,13 +260,13 @@ class Screen
 	 * X position of the mouse on the screen.
 	 */
 	public var mouseX(getMouseX, null):Int;
-	private function getMouseX():Int { return Std.int(_sprite.mouseX); }
+	private function getMouseX():Int { return Std.int(_sprite.mouseX * fullScaleX); }
 
 	/**
 	 * Y position of the mouse on the screen.
 	 */
 	public var mouseY(getMouseY, null):Int;
-	private function getMouseY():Int { return Std.int(_sprite.mouseY); }
+	private function getMouseY():Int { return Std.int(_sprite.mouseY * fullScaleY); }
 
 	/**
 	 * Captures the current screen as an Image object.
