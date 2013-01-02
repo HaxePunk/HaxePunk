@@ -3,7 +3,7 @@
 *.zip
 *.n
 *.build
-Example/
+build-test/
 
 # OS specific files
 .DS_Store

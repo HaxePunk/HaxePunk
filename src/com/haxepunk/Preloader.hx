@@ -18,7 +18,7 @@ import nme.events.Event;
 import nme.geom.Point;
 import nme.geom.Rectangle;
 
-@:bitmap("assets/gfx/preloader/haxepunk.png")
+@:bitmap("assets/graphics/preloader/haxepunk.png")
 class HaxePunkLogo extends BitmapData {}
 
 class Preloader extends NMEPreloader

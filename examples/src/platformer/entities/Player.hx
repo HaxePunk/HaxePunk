@@ -74,6 +74,15 @@ class Player extends Physics
 	{
 		acceleration.x = acceleration.y = 0;
 
+		var joystick = Input.joystick(1);
+		if (joystick.connected)
+		{
+			acceleration.x = joystick.getAxis(1);
+
+			if (joystick.pressed(1)) doJump();
+			if (joystick.pressed(2)) switchJumpStyle();
+		}
+
 		if (Input.check("left"))
 			acceleration.x = -kMoveSpeed;
 
@@ -88,15 +97,6 @@ class Player extends Physics
 		if (Input.pressed("jump"))
 		{
 			doJump();
-		}
-
-		var joystick = Input.joystick(0);
-		if (joystick.connected)
-		{
-			acceleration.x = joystick.axis.x;
-
-			if (joystick.pressed(0)) doJump();
-			if (joystick.pressed(2)) switchJumpStyle();
 		}
 
 

@@ -13,16 +13,18 @@ enum JoyButtonState
 class Joystick
 {
 	public var buttons:IntHash<JoyButtonState>;
-	public var axis:Point;
+	public var axis(null, default):Array<Float>;
 	public var hat:Point;
 	public var ball:Point;
-	public var connected:Bool;
+	public var connected(get_connected, set_connected):Bool;
+
+	public static inline var deadZone:Float = 0.15; //joystick deadzone
 
 	public function new()
 	{
 		buttons = new IntHash<JoyButtonState>();
 		ball = new Point(0, 0);
-		axis = new Point(0, 0);
+		axis = new Array<Float>();
 		hat = new Point(0, 0);
 		connected = false;
 		_timeout = 0;
@@ -56,6 +58,12 @@ class Joystick
 			return buttons.get(button) != BUTTON_OFF;
 		}
 		return false;
+	}
+
+	public inline function getAxis(a:Int):Float
+	{
+		if (a < 1 || a > axis.length) return 0;
+		else return (Math.abs(axis[a-1]) < deadZone) ? 0 : axis[a-1];
 	}
 
 	private function get_connected():Bool

@@ -5,5 +5,5 @@
 	<tag v="game" />
 	<tag v="nme" />
 	<description>A HaXe port of the FlashPunk AS3 engine.</description>
-	<version name="1.7.1">See CHANGELOG</version>
+	<version name="1.7.2">See CHANGELOG</version>
 </project>

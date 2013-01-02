@@ -12,13 +12,8 @@
 	<haxelib name="nme" />
 	<haxelib name="HaxePunk" />
 
-	<assets path="assets/gfx" rename="gfx" type="image" include="*.png" />
-	<assets path="assets/sfx" rename="sfx" type="sound" include="*.wav" />
-	<assets path="assets/music" rename="music" type="music" include="*.mp3" />
-	<assets path="assets/font" rename="font" type="font" include="*.ttf" />
-
-	<ndll name="std" />
-	<ndll name="regexp" />
-	<ndll name="zlib" />
-	<ndll name="nme" haxelib="nme" />
+	<assets path="assets/graphics" rename="gfx" include="*.png|*.jpg" />
+	<assets path="assets/audio" rename="sfx" include="*.mp3" if="flash" />
+	<assets path="assets/audio" rename="sfx" include="*.wav|*.ogg" unless="flash" />
+	<assets path="assets/font" rename="font" include="*.ttf" />
 </project>

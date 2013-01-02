@@ -1,7 +1,6 @@
 package com.haxepunk.graphics;
 
 import flash.display.BitmapData;
-import flash.display.BlendMode;
 import flash.display.SpreadMethod;
 import flash.geom.Point;
 import flash.geom.Rectangle;

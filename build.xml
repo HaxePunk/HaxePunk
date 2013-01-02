@@ -31,18 +31,18 @@
 
 	<target name="build" depends="haxelib">
 		<exec executable="haxelib" dir=".">
-			<arg line="run HaxePunk new Example" />
+			<arg line="run HaxePunk new build-test" />
 		</exec>
-		<exec executable="haxelib" dir="Example">
+		<exec executable="haxelib" dir="build-test">
 			<arg line="run nme build project.nmml" />
 			<arg line="flash" />
 		</exec>
-		<exec executable="haxelib" dir="Example">
+		<exec executable="haxelib" dir="build-test">
 			<arg line="run nme build project.nmml" />
 			<arg line="neko" />
 		</exec>
 		<!--
-		<exec executable="haxelib" dir="Example">
+		<exec executable="haxelib" dir="build-test">
 			<arg line="run nme build project.nmml" />
 			<arg line="html5" />
 		</exec>
