@@ -48,7 +48,7 @@ class Engine extends Sprite
 	 * @param	frameRate		The game framerate, in frames per second.
 	 * @param	fixed			If a fixed-framerate should be used.
 	 */
-	public function new(width:Int, height:Int, frameRate:Float = 60, fixed:Bool = false)
+	public function new(width:Int = 0, height:Int = 0, frameRate:Float = 60, fixed:Bool = false)
 	{
 		super();
 
@@ -181,6 +181,8 @@ class Engine extends Sprite
 	/** @private Event handler for stage resize */
 	private function resize()
 	{
+		if (HXP.width == 0) HXP.width = HXP.stage.stageWidth;
+		if (HXP.height == 0) HXP.height = HXP.stage.stageHeight;
 		// calculate scale from width/height values
 		HXP.screen.scaleX = HXP.stage.stageWidth / HXP.width;
 		HXP.screen.scaleY = HXP.stage.stageHeight / HXP.height;

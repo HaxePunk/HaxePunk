@@ -36,7 +36,7 @@ class GameWorld extends DemoWorld
 
 	public override function update()
 	{
-		for (i in 0...10)
+		for (i in 0...100)
 		{
 			smoke.emit("exhaust", mouseX, mouseY);
 		}
