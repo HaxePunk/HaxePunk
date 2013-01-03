@@ -23,7 +23,6 @@ class Screen
 
 		// create screen buffers
 		HXP.engine.addChild(_sprite);
-		HXP.engine.addChild(HXP.sprite);
 	}
 
 	public function init()
