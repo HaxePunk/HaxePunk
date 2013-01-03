@@ -1,5 +1,9 @@
 HaxePunk CHANGELOG
 
+v2.0.0
+------------------------------
+* Hardware acceleration using TextureAtlas and the display list
+
 v1.7.2
 ------------------------------
 * [MattTuttle] Improved joystick support (multiple axis, pressed/checked buttons)
