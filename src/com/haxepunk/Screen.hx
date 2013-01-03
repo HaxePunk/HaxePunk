@@ -32,7 +32,7 @@ class Screen
 		x = y = originX = originY = 0;
 		_angle = _current = 0;
 		scale = scaleX = scaleY = 1;
-		_color = 0x202020;
+		_color = 0;
 		_matrix = new Matrix();
 		update();
 	}
@@ -59,8 +59,8 @@ class Screen
 		width = HXP.width;
 		height = HXP.height;
 
-		_bitmap[0] = new Bitmap(HXP.createBitmap(width, height), PixelSnapping.NEVER);
-		_bitmap[1] = new Bitmap(HXP.createBitmap(width, height), PixelSnapping.NEVER);
+		_bitmap[0] = new Bitmap(HXP.createBitmap(width, height, true), PixelSnapping.NEVER);
+		_bitmap[1] = new Bitmap(HXP.createBitmap(width, height, true), PixelSnapping.NEVER);
 
 		_sprite.addChild(_bitmap[0]).visible = true;
 		_sprite.addChild(_bitmap[1]).visible = false;
@@ -90,7 +90,7 @@ class Screen
 	{
 		// refreshes the screen
 #if neko
-		HXP.buffer.fillRect(HXP.bounds, { rgb: _color, a: 1 });
+		HXP.buffer.fillRect(HXP.bounds, { rgb: _color, a: 0 });
 #else
 		HXP.buffer.fillRect(HXP.bounds, _color);
 #end

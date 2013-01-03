@@ -19,7 +19,7 @@ class TextureAtlas
 		if (sprite == null)
 		{
 			sprite = new Sprite();
-			HXP.engine.addChild(sprite);
+			HXP.engine.addChildAt(sprite, 0);
 		}
 
 		_tilesheet = new Tilesheet(bd);
