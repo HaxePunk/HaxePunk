@@ -1,11 +1,13 @@
 package com.haxepunk.graphics;
 
+import com.haxepunk.HXP;
+import com.haxepunk.Graphic;
+import com.haxepunk.graphics.atlas.AtlasRegion;
+
 import flash.display.BitmapData;
 import flash.display.DisplayObject;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-import com.haxepunk.HXP;
-import com.haxepunk.Graphic;
 
 /**
  * A simple non-transformed, non-animated graphic.
@@ -27,42 +29,61 @@ class Stamp extends Graphic
 		this.y = y;
 
 		// set the graphic
-		if (Std.is(source, BitmapData)) _source = source;
-		else _source = HXP.getBitmap(source);
+		if (Std.is(source, AtlasRegion))
+		{
+			_blit = false;
+			_region = source;
+			if (_region == null) throw "Invalid source image.";
+			_sourceRect = new Rectangle(0, 0, _region.width, _region.height);
+		}
+		else if (Std.is(source, BitmapData))
+		{
+			setBitmapSource(source);
+		}
+		else
+		{
+			setBitmapSource(HXP.getBitmap(source));
+		}
+	}
 
-		if (_source == null) throw "Invalid source image.";
-
-		_sourceRect = _source.rect;
+	private inline function setBitmapSource(bitmap:BitmapData)
+	{
+		if (bitmap == null) throw "Invalid source image.";
+		_blit = true;
+		_sourceRect = bitmap.rect;
+		_source = bitmap;
 	}
 
 	/** @private Renders the Graphic. */
-	override public function render(target:BitmapData, point:Point, camera:Point)
+	public override function render(target:BitmapData, point:Point, camera:Point)
 	{
-		if (_source == null) return;
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;
-		target.copyPixels(_source, _sourceRect, _point, null, null, true);
+
+		if (_blit)
+		{
+			target.copyPixels(_source, _sourceRect, _point, null, null, true);
+		}
+		else
+		{
+			_region.draw(_point.x, _point.y, HXP.screen.fullScaleX, HXP.screen.fullScaleY);
+		}
 	}
 
 	/**
-	 * Source BitmapData image.
+	 * Width of the image.
 	 */
-	public var source(getSource, setSource):BitmapData;
-	private function getSource():BitmapData { return _source; }
-	private function setSource(value:BitmapData):BitmapData
-	{
-		_source = value;
-		if (_source != null) _sourceRect = _source.rect;
-		return _source;
-	}
-
 	public var width(getWidth, never):Int;
-	private function getWidth():Int { return _source.width; }
+	private function getWidth():Int { return Std.int(_blit ? _source.width : _region.width); }
 
+	/**
+	 * Height of the image.
+	 */
 	public var height(getHeight, never):Int;
-	private function getHeight():Int { return _source.height; }
+	private function getHeight():Int { return Std.int(_blit ? _source.height : _region.height); }
 
 	// Stamp information.
 	private var _source:BitmapData;
 	private var _sourceRect:Rectangle;
+	private var _region:AtlasRegion;
 }

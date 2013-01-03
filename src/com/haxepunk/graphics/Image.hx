@@ -370,10 +370,6 @@ class Image extends Graphic
 	public var clipRect(getClipRect, null):Rectangle;
 	private function getClipRect():Rectangle { return _sourceRect; }
 
-	/** @private Source BitmapData image. */
-	private var source(getSource, null):Dynamic;
-	private function getSource():Dynamic { return _source; }
-
 	// Source and buffer information.
 	private var _source:BitmapData;
 	private var _sourceRect:Rectangle;

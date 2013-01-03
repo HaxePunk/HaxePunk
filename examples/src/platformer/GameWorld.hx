@@ -2,6 +2,7 @@ package platformer;
 
 import com.haxepunk.HXP;
 import com.haxepunk.Entity;
+import com.haxepunk.graphics.atlas.TextureAtlas;
 import com.haxepunk.graphics.Tilemap;
 import com.haxepunk.graphics.Backdrop;
 import com.haxepunk.masks.Grid;
@@ -31,13 +32,16 @@ class GameWorld extends DemoWorld
 	public function new()
 	{
 		super();
+
+#if !flash
+		var atlas = TextureAtlas.loadTexturePacker("atlas/assets.xml");
+#end
+		backdrop = new Backdrop(#if flash "gfx/tile.png" #else atlas.getRegion("tile.png") #end, true, true);
+		addGraphic(backdrop).layer = 20;
 	}
 
 	public override function begin()
 	{
-		backdrop = new Backdrop("gfx/tile.png", true, true);
-		addGraphic(backdrop).layer = 20;
-
 		player = new Player(10 * 32, 11 * 32);
 		add(player);
 

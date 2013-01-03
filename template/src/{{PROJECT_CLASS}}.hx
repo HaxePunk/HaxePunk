@@ -14,7 +14,7 @@ class {{PROJECT_CLASS}} extends Engine
 			HXP.console.enable();
 		}
 #end
-		HXP.world = new YourWorld();
+		// HXP.world = new YourWorld();
 	}
 
 }

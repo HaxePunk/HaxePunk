@@ -1,10 +1,12 @@
 package com.haxepunk.graphics;
 
+import com.haxepunk.HXP;
+import com.haxepunk.graphics.atlas.TextureAtlas;
+
 import flash.display.BitmapData;
 import flash.display.SpreadMethod;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-import com.haxepunk.HXP;
 
 typedef CallbackFunction = Void -> Void;
 
@@ -44,12 +46,17 @@ class Spritemap extends Image
 		_timer = _frame = 0;
 
 		_rect = new Rectangle(0, 0, frameWidth, frameHeight);
+		if (Std.is(source, TextureAtlas))
+		{
+			_atlas = cast(source, TextureAtlas);
+			source = _atlas.getRegion(name + "_0.png");
+		}
 		super(source, _rect, name);
-		if (frameWidth == 0) _rect.width = _source.width;
-		if (frameHeight == 0) _rect.height = _source.height;
 
 		_width = _source.width;
 		_height = _source.height;
+		if (frameWidth == 0) _rect.width = _width;
+		if (frameHeight == 0) _rect.height = _height;
 
 		_columns = Math.ceil(_width / _rect.width);
 		_rows = Math.ceil(_height / _rect.height);
@@ -68,15 +75,22 @@ class Spritemap extends Image
 #if neko
 		if (_width == null) return;
 #end
-		// get position of the current frame
-		_rect.x = _rect.width * _frame;
-		_rect.y = Std.int(_rect.x / _width) * _rect.height;
-		_rect.x = _rect.x % _width;
+		if (_blit)
+		{
+			// get position of the current frame
+			_rect.x = _rect.width * _frame;
+			_rect.y = Std.int(_rect.x / _width) * _rect.height;
+			_rect.x = _rect.x % _width;
 
-		if (flipped) _rect.x = (_width - _rect.width) - _rect.x;
+			if (flipped) _rect.x = (_width - _rect.width) - _rect.x;
 
-		// update the buffer
-		super.updateBuffer(clearBefore);
+			// update the buffer
+			super.updateBuffer(clearBefore);
+		}
+		else
+		{
+			_region = _atlas.getRegion(_class + "_" + _frame +".png");
+		}
 	}
 
 	/** @private Updates the animation. */
@@ -129,7 +143,7 @@ class Spritemap extends Image
 			frames[i] %= _frameCount;
 			if (frames[i] < 0) frames[i] += _frameCount;
 		}
-		var anim:Animation = new Animation(name, frames, frameRate, loop);
+		var anim = new Animation(name, frames, frameRate, loop);
 		_anims.set(name, anim);
 		anim.parent = this;
 		return anim;
@@ -144,18 +158,19 @@ class Spritemap extends Image
 	public function play(name:String = "", reset:Bool = false):Animation
 	{
 		if (!reset && _anim != null && _anim.name == name) return _anim;
-		_anim = _anims.get(name);
-		if (_anim == null)
+		if (_anims.exists(name))
 		{
+			_anim = null;
 			_frame = _index = 0;
 			complete = true;
-			updateBuffer();
-			return null;
 		}
-		_index = 0;
-		_timer = 0;
-		_frame = _anim.frames[0];
-		complete = false;
+		else
+		{
+			_anim = _anims.get(name);
+			_timer = _index = 0;
+			_frame = _anim.frames[0];
+			complete = false;
+		}
 		updateBuffer();
 		return _anim;
 	}
@@ -276,6 +291,7 @@ class Spritemap extends Image
 	private var _index:Int;
 	private var _frame:Int;
 	private var _timer:Float;
+	private var _atlas:TextureAtlas;
 
 	#if cpp
 	private var _baseID:Int;
