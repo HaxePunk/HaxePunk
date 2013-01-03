@@ -22,6 +22,18 @@ class DemoWorld extends World
 		var overlay:Entity = new Entity(0, HXP.screen.height - 20, overlayText);
 		overlay.layer = 0;
 		add(overlay);
+
+		var c = Type.getClassName(Type.getClass(this));
+		for (i in 0..._worlds.length)
+		{
+			if (_worlds[i] == c)
+			{
+				_currentWorld = i;
+				break;
+			}
+		}
+
+		tapTime = 0;
 	}
 
 	private function loadWorld():Bool
@@ -36,34 +48,55 @@ class DemoWorld extends World
 		return true;
 	}
 
+	private inline function nextWorld()
+	{
+		_currentWorld -= 1;
+		if (_currentWorld < 0)
+			_currentWorld = _worlds.length - 1;
+
+		loadWorld();
+	}
+
+	private inline function previousWorld()
+	{
+		_currentWorld += 1;
+		if (_currentWorld > _worlds.length - 1)
+			_currentWorld = 0;
+
+		loadWorld();
+	}
+
 	public override function update()
 	{
+		tapTime -= HXP.elapsed;
+		if (Input.mousePressed)
+		{
+			if (tapTime > 0)
+			{
+				nextWorld();
+			}
+			tapTime = 0.6;
+		}
+
 		// cycle through worlds with '[' and ']'
 		if (Input.pressed(Key.LEFT_SQUARE_BRACKET))
 		{
-			_currentWorld -= 1;
-			if (_currentWorld < 0)
-				_currentWorld = _worlds.length - 1;
-
-			loadWorld();
+			nextWorld();
 		}
 		if (Input.pressed(Key.RIGHT_SQUARE_BRACKET))
 		{
-			_currentWorld += 1;
-			if (_currentWorld > _worlds.length - 1)
-				_currentWorld = 0;
-
-			loadWorld();
+			previousWorld();
 		}
 		super.update();
 	}
 
 	private var overlayText:Text;
+	private var tapTime:Float;
 
 	private static var _currentWorld:Int = 0;
 	private static var _worlds:Array<String> = [
-		'effects.GameWorld',
 		'masks.GameWorld',
+		'effects.GameWorld',
 		'platformer.GameWorld'
 	];
 
