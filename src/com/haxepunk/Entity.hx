@@ -735,14 +735,11 @@ class Entity extends Tweener
 					{
 						if ((e = collideTypes(solidType, this.x + sign, this.y)) != null)
 						{
-							moveCollideX(e);
-							break;
+							if(moveCollideX(e)) break;
+							else this.x += sign;
 						}
-						else
-						{
-							this.x += sign;
-							x -= sign;
-						}
+						else this.x += sign;
+						x -= sign;
 					}
 				}
 				else this.x += x;
@@ -756,14 +753,11 @@ class Entity extends Tweener
 					{
 						if ((e = collideTypes(solidType, this.x, this.y + sign)) != null)
 						{
-							moveCollideY(e);
-							break;
+							if(moveCollideY(e)) break;
+							else this.y += sign;
 						}
-						else
-						{
-							this.y += sign;
-							y -= sign;
-						}
+						else this.y += sign;
+						y -= sign;
 					}
 				}
 				else this.y += y;
@@ -808,18 +802,18 @@ class Entity extends Tweener
 	 * When you collide with an Entity on the x-axis with moveTo() or moveBy().
 	 * @param	e		The Entity you collided with.
 	 */
-	public function moveCollideX(e:Entity)
+	public function moveCollideX(e:Entity):Bool
 	{
-
+		return true;
 	}
 
 	/**
 	 * When you collide with an Entity on the y-axis with moveTo() or moveBy().
 	 * @param	e		The Entity you collided with.
 	 */
-	public function moveCollideY(e:Entity)
+	public function moveCollideY(e:Entity):Bool
 	{
-
+		return true;
 	}
 
 	/**
