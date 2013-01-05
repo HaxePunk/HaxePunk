@@ -62,7 +62,7 @@ class Physics extends Entity
 		}
 	}
 
-	public override function moveCollideY(e:Entity)
+	public override function moveCollideY(e:Entity):Bool
 	{
 		if (velocity.y * HXP.sign(gravity.y) > 0)
 		{
@@ -72,14 +72,16 @@ class Physics extends Entity
 
 		velocity.x *= friction.x;
 		if (Math.abs(velocity.x) < 0.5) velocity.x = 0;
+		return true;
 	}
 
-	public override function moveCollideX(e:Entity)
+	public override function moveCollideX(e:Entity):Bool
 	{
 		velocity.x = 0;
 
 		velocity.y *= friction.y;
 		if (Math.abs(velocity.y) < 1) velocity.y = 0;
+		return true;
 	}
 
 	private function applyVelocity()

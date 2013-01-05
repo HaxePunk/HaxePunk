@@ -40,6 +40,7 @@ class World extends Tweener
 
 		_add = new Array<Entity>();
 		_remove = new Array<Entity>();
+		_recycle = new Array<Entity>();
 		_classCount = new Hash<Int>();
 		_typeCount = new Hash<Int>();
 		_recycled = new Hash<Entity>();
@@ -137,9 +138,7 @@ class World extends Tweener
 	 */
 	public function add<E:Entity>(e:E):E
 	{
-		var fe:FriendEntity = e;
-		if (fe._world != null) return e;
-		_add.push(e);
+		_add[_add.length] = e;
 		return e;
 	}
 
@@ -150,9 +149,7 @@ class World extends Tweener
 	 */
 	public function remove<E:Entity>(e:E):E
 	{
-		var fe:FriendEntity = e;
-		if (fe._world != this) return e;
-		_remove.push(e);
+		_remove[_remove.length] = e;
 		return e;
 	}
 
@@ -161,12 +158,10 @@ class World extends Tweener
 	 */
 	public function removeAll()
 	{
-		var e:Entity,
-			fe:FriendEntity = _updateFirst;
+		var fe:FriendEntity = _updateFirst;
 		while (fe != null)
 		{
-			e = cast(fe, Entity);
-			_remove.push(e);
+			_remove[_remove.length] = cast(fe, Entity);
 			fe = fe._updateNext;
 		}
 	}
@@ -250,10 +245,7 @@ class World extends Tweener
 	 */
 	public function recycle<E:Entity>(e:E):E
 	{
-		var fe:FriendEntity = e;
-		if (fe._world != this) return e;
-		fe._recycleNext = _recycled.get(fe._class);
-		_recycled.set(fe._class, e);
+		_recycle[_recycle.length] = e;
 		return remove(e);
 	}
 
@@ -1030,12 +1022,14 @@ class World extends Tweener
 			for (e in _remove)
 			{
 				fe = e;
-				if (fe._added != true && Lambda.indexOf(_add, e) >= 0)
+				if (fe._world == null)
 				{
-					_add.splice(Lambda.indexOf(_add, e), 1);
+					var idx = Lambda.indexOf(_add, e);
+					if (idx >= 0) _add.splice(idx, 1);
 					continue;
 				}
-				fe._added = false;
+				if (fe._world != this)
+					continue;
 				e.removed();
 				fe._world = null;
 				removeUpdate(e);
@@ -1054,7 +1048,6 @@ class World extends Tweener
 			{
 				fe = e;
 				if (fe._world != null) continue;
-				fe._added = true;
 				fe._world = this;
 				addUpdate(e);
 				addRender(e);
@@ -1063,6 +1056,21 @@ class World extends Tweener
 				e.added();
 			}
 			HXP.clear(_add);
+		}
+
+		// recycle entities
+		if (_recycle.length > 0)
+		{
+			for (e in _recycle)
+			{
+				fe = e;
+				if (fe._world != null || fe._recycleNext != null)
+					continue;
+
+				fe._recycleNext = _recycled.get(fe._class);
+				_recycled.set(fe._class, e);
+			}
+			HXP.clear(_recycle);
 		}
 
 		// sort the depth list
@@ -1268,6 +1276,7 @@ class World extends Tweener
 	// Adding and removal.
 	private var _add:Array<Entity>;
 	private var _remove:Array<Entity>;
+	private var _recycle:Array<Entity>;
 
 	// Update information.
 	private var _updateFirst:FriendEntity;

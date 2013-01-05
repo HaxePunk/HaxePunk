@@ -12,7 +12,6 @@ import com.haxepunk.graphics.Graphiclist;
 typedef FriendEntity = {
 	private var _class:String;
 	private var _world:World;
-	private var _added:Bool;
 	private var _type:String;
 	private var _layer:Int;
 	private var _name:String;
@@ -148,8 +147,8 @@ class Entity extends Tweener
 				_point.y = y;
 			}
 			else _point.x = _point.y = 0;
-			_camera.x = HXP.camera.x;
-			_camera.y = HXP.camera.y;
+			_camera.x = _world == null ? HXP.camera.x : _world.camera.x;
+			_camera.y = _world == null ? HXP.camera.y : _world.camera.y;
 			_graphic.render((renderTarget != null) ? renderTarget : HXP.buffer, _point, _camera, _layer);
 		}
 	}
@@ -177,11 +176,11 @@ class Entity extends Tweener
 			while (fe != null)
 			{
 				e = cast(fe, Entity);
-				if (x - originX + width > e.x - e.originX
-				&& y - originY + height > e.y - e.originY
-				&& x - originX < e.x - e.originX + e.width
-				&& y - originY < e.y - e.originY + e.height
-				&& e.collidable && e != this)
+				if (e.collidable && e != this
+					&& x - originX + width > e.x - e.originX
+					&& y - originY + height > e.y - e.originY
+					&& x - originX < e.x - e.originX + e.width
+					&& y - originY < e.y - e.originY + e.height)
 				{
 					if (e._mask == null || e._mask.collide(HITBOX))
 					{
@@ -198,11 +197,11 @@ class Entity extends Tweener
 		while (fe != null)
 		{
 			e = cast(fe, Entity);
-			if (x - originX + width > e.x - e.originX
-			&& y - originY + height > e.y - e.originY
-			&& x - originX < e.x - e.originX + e.width
-			&& y - originY < e.y - e.originY + e.height
-			&& e.collidable && e != this)
+			if (e.collidable && e != this
+				&& x - originX + width > e.x - e.originX
+				&& y - originY + height > e.y - e.originY
+				&& x - originX < e.x - e.originX + e.width
+				&& y - originY < e.y - e.originY + e.height)
 			{
 				if (_mask.collide(e._mask != null ? e._mask : e.HITBOX))
 				{
@@ -260,11 +259,11 @@ class Entity extends Tweener
 		_x = this.x; _y = this.y;
 		this.x = x; this.y = y;
 
-		if (x - originX + width > e.x - e.originX
-		&& y - originY + height > e.y - e.originY
-		&& x - originX < e.x - e.originX + e.width
-		&& y - originY < e.y - e.originY + e.height
-		&& collidable && e.collidable)
+		if (collidable && e.collidable
+			&& x - originX + width > e.x - e.originX
+			&& y - originY + height > e.y - e.originY
+			&& x - originX < e.x - e.originX + e.width
+			&& y - originY < e.y - e.originY + e.height)
 		{
 			if (_mask == null)
 			{
@@ -298,8 +297,10 @@ class Entity extends Tweener
 	 */
 	public function collideRect(x:Float, y:Float, rX:Float, rY:Float, rWidth:Float, rHeight:Float):Bool
 	{
-		if (x - originX + width >= rX && y - originY + height >= rY
-		&& x - originX <= rX + rWidth && y - originY <= rY + rHeight)
+		if (x - originX + width >= rX &&
+			y - originY + height >= rY &&
+			x - originX <= rX + rWidth &&
+			y - originY <= rY + rHeight)
 		{
 			if (_mask == null) return true;
 			_x = this.x; _y = this.y;
@@ -329,8 +330,10 @@ class Entity extends Tweener
 	 */
 	public function collidePoint(x:Float, y:Float, pX:Float, pY:Float):Bool
 	{
-		if (pX >= x - originX && pY >= y - originY
-		&& pX < x - originX + width && pY < y - originY + height)
+		if (pX >= x - originX &&
+			pY >= y - originY &&
+			pX < x - originX + width &&
+			pY < y - originY + height)
 		{
 			if (_mask == null) return true;
 			_x = this.x; _y = this.y;
@@ -375,11 +378,11 @@ class Entity extends Tweener
 			while (fe != null)
 			{
 				e = cast fe;
-				if (x - originX + width > e.x - e.originX
-				&& y - originY + height > e.y - e.originY
-				&& x - originX < e.x - e.originX + e.width
-				&& y - originY < e.y - e.originY + e.height
-				&& e.collidable && e != this)
+				if (e.collidable && e != this
+					&& x - originX + width > e.x - e.originX
+					&& y - originY + height > e.y - e.originY
+					&& x - originX < e.x - e.originX + e.width
+					&& y - originY < e.y - e.originY + e.height)
 				{
 					if ((untyped e._mask) == null || (untyped e._mask).collide(HITBOX)) array[n++] = e;
 				}
@@ -392,11 +395,11 @@ class Entity extends Tweener
 		while (fe != null)
 		{
 			e = cast fe;
-			if (x - originX + width > e.x - e.originX
-			&& y - originY + height > e.y - e.originY
-			&& x - originX < e.x - e.originX + e.width
-			&& y - originY < e.y - e.originY + e.height
-			&& e.collidable && e != this)
+			if (e.collidable && e != this
+				&& x - originX + width > e.x - e.originX
+				&& y - originY + height > e.y - e.originY
+				&& x - originX < e.x - e.originX + e.width
+				&& y - originY < e.y - e.originY + e.height)
 			{
 				if (_mask.collide((untyped e._mask) != null ? (untyped e._mask) : (untyped e.HITBOX))) array[n++] = e;
 			}
@@ -426,7 +429,7 @@ class Entity extends Tweener
 	public var onCamera(getOnCamera, null):Bool;
 	private inline function getOnCamera():Bool
 	{
-		return collideRect(x, y, HXP.camera.x, HXP.camera.y, HXP.width, HXP.height);
+		return collideRect(x, y, _world.camera.x, _world.camera.y, HXP.width, HXP.height);
 	}
 
 	/**
@@ -500,7 +503,7 @@ class Entity extends Tweener
 			trace("Negative layers may not work properly if you aren't using flash");
 		}
 		#end
-		if (!_added)
+		if (_world == null)
 		{
 			_layer = value;
 			return _layer;
@@ -519,7 +522,7 @@ class Entity extends Tweener
 	private function setType(value:String):String
 	{
 		if (_type == value) return _type;
-		if (!_added)
+		if (_world == null)
 		{
 			_type = value;
 			return _type;
@@ -563,7 +566,7 @@ class Entity extends Tweener
 	private function setName(value:String):String
 	{
 		if (_name == value) return _name;
-		if (!_added)
+		if (_world == null)
 		{
 			_name = value;
 			return _name;
@@ -735,14 +738,14 @@ class Entity extends Tweener
 					{
 						if ((e = collideTypes(solidType, this.x + sign, this.y)) != null)
 						{
-							moveCollideX(e);
-							break;
+							if (moveCollideX(e)) break;
+							else this.x += sign;
 						}
 						else
 						{
 							this.x += sign;
-							x -= sign;
 						}
+						x -= sign;
 					}
 				}
 				else this.x += x;
@@ -756,14 +759,14 @@ class Entity extends Tweener
 					{
 						if ((e = collideTypes(solidType, this.x, this.y + sign)) != null)
 						{
-							moveCollideY(e);
-							break;
+							if (moveCollideY(e)) break;
+							else this.y += sign;
 						}
 						else
 						{
 							this.y += sign;
-							y -= sign;
 						}
+						y -= sign;
 					}
 				}
 				else this.y += y;
@@ -800,7 +803,10 @@ class Entity extends Tweener
 	{
 		_point.x = x - this.x;
 		_point.y = y - this.y;
-		_point.normalize(amount);
+		if (_point.x * _point.x + _point.y * _point.y > amount * amount)
+		{
+			_point.normalize(amount);
+		}
 		moveBy(_point.x, _point.y, solidType, sweep);
 	}
 
@@ -808,18 +814,18 @@ class Entity extends Tweener
 	 * When you collide with an Entity on the x-axis with moveTo() or moveBy().
 	 * @param	e		The Entity you collided with.
 	 */
-	public function moveCollideX(e:Entity)
+	public function moveCollideX(e:Entity):Bool
 	{
-
+		return true;
 	}
 
 	/**
 	 * When you collide with an Entity on the y-axis with moveTo() or moveBy().
 	 * @param	e		The Entity you collided with.
 	 */
-	public function moveCollideY(e:Entity)
+	public function moveCollideY(e:Entity):Bool
 	{
-
+		return true;
 	}
 
 	/**
@@ -850,7 +856,6 @@ class Entity extends Tweener
 	// Entity information.
 	private var _class:String;
 	private var _world:World;
-	private var _added:Bool;
 	private var _type:String;
 	private var _layer:Int;
 	private var _name:String;
