@@ -41,7 +41,7 @@ class Graphiclist extends Graphic
 	}
 
 	/** @private Renders the Graphics in the list. */
-	override public function render(target:BitmapData, point:Point, camera:Point)
+	override public function render(target:BitmapData, point:Point, camera:Point, layer:Int=HXP.BASELAYER)
 	{
 		point.x += x;
 		point.y += y;
@@ -60,7 +60,7 @@ class Graphiclist extends Graphic
 				else _point.x = _point.y = 0;
 				_camera.x = camera.x;
 				_camera.y = camera.y;
-				g.render(target, _point, _camera);
+				g.render(target, _point, _camera, layer);
 			}
 		}
 	}

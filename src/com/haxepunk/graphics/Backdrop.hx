@@ -56,7 +56,7 @@ class Backdrop extends Canvas
 	}
 
 	/** Renders the Backdrop. */
-	override public function render(target:BitmapData, point:Point, camera:Point)
+	public override function render(target:BitmapData, point:Point, camera:Point, layer:Int=HXP.BASELAYER)
 	{
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;
@@ -89,7 +89,7 @@ class Backdrop extends Canvas
 				var x:Float = 0;
 				while (x <= _width * sx)
 				{
-					_region.draw(_point.x + x, _point.y + y, sx, sy, 0,
+					_region.draw(_point.x + x, _point.y + y, layer, sx, sy, 0,
 						HXP.getRed(_color) / 255, HXP.getGreen(_color) / 255, HXP.getBlue(_color) / 255, _alpha);
 					x += _textWidth * sx;
 				}

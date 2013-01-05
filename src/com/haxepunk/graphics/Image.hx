@@ -140,7 +140,7 @@ class Image extends Graphic
 	}
 
 	/** Renders the image. */
-	override public function render(target:BitmapData, point:Point, camera:Point)
+	override public function render(target:BitmapData, point:Point, camera:Point, layer:Int=HXP.BASELAYER)
 	{
 		// determine drawing location
 		_point.x = point.x + x - originX - camera.x * scrollX;
@@ -176,7 +176,7 @@ class Image extends Graphic
 		}
 		else // _blit
 		{
-			_region.draw(_point.x, _point.y,
+			_region.draw(_point.x, _point.y, layer,
 				HXP.screen.fullScaleX * scaleX * (_flipped ? -1 : 1),
 				HXP.screen.fullScaleY * scaleY,
 				angle);

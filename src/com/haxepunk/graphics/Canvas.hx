@@ -62,7 +62,7 @@ class Canvas extends Graphic
 	}
 
 	/** @private Renders the canvas. */
-	override public function render(target:BitmapData, point:Point, camera:Point)
+	override public function render(target:BitmapData, point:Point, camera:Point, layer:Int=HXP.BASELAYER)
 	{
 		// determine drawing location
 		_point.x = point.x + x - camera.x * scrollX;

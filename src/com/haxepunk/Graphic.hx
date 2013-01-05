@@ -73,7 +73,7 @@ class Graphic
 	 * @param	point		The position to draw the graphic.
 	 * @param	camera		The camera offset.
 	 */
-	public function render(target:BitmapData, point:Point, camera:Point) { }
+	public function render(target:BitmapData, point:Point, camera:Point, layer:Int=HXP.BASELAYER) { }
 
 	/** @private Callback for when the graphic is assigned to an Entity. */
 	public var assign(default, null):AssignCallback;

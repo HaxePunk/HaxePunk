@@ -111,7 +111,7 @@ class Emitter extends Graphic
 	}
 
 	/** @private Renders the particles. */
-	override public function render(target:BitmapData, point:Point, camera:Point)
+	override public function render(target:BitmapData, point:Point, camera:Point, layer:Int=HXP.BASELAYER)
 	{
 		// quit if there are no particles
 		if (_particle == null) return;
@@ -177,7 +177,7 @@ class Emitter extends Graphic
 			}
 			else // _blit
 			{
-				_region.draw(_p.x, _p.y,
+				_region.draw(_p.x, _p.y, layer,
 					HXP.screen.fullScaleX,
 					HXP.screen.fullScaleY,
 					type._angle,

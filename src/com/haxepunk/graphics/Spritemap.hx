@@ -48,6 +48,7 @@ class Spritemap extends Image
 		_rect = new Rectangle(0, 0, frameWidth, frameHeight);
 		if (Std.is(source, TextureAtlas))
 		{
+			_blit = false;
 			_atlas = cast(source, TextureAtlas);
 			source = _atlas.getRegion(name + "_0.png");
 		}
@@ -160,16 +161,16 @@ class Spritemap extends Image
 		if (!reset && _anim != null && _anim.name == name) return _anim;
 		if (_anims.exists(name))
 		{
-			_anim = null;
-			_frame = _index = 0;
-			complete = true;
-		}
-		else
-		{
 			_anim = _anims.get(name);
 			_timer = _index = 0;
 			_frame = _anim.frames[0];
 			complete = false;
+		}
+		else
+		{
+			_anim = null;
+			_frame = _index = 0;
+			complete = true;
 		}
 		updateBuffer();
 		return _anim;

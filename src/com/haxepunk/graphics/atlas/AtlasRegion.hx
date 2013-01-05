@@ -27,12 +27,12 @@ class AtlasRegion
 	 * @param blue a blue tint value
 	 * @param alpha the tile's opacity
 	 */
-	public inline function draw(x:Float, y:Float,
+	public inline function draw(x:Float, y:Float, layer:Int,
 		scaleX:Float=1, scaleY:Float=1, angle:Float=0,
 		red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1)
 	{
 		if (rotated) angle = angle - 90;
-		parent.prepareTile(tileIndex, x, y, scaleX, scaleY, angle, red, green, blue, alpha);
+		parent.prepareTile(tileIndex, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha);
 	}
 
 	public function toString():String

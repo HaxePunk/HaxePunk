@@ -16,18 +16,12 @@ class TextureAtlas
 		if (Std.is(source, BitmapData)) bd = source;
 		else bd = HXP.getBitmap(source);
 
-		if (sprite == null)
-		{
-			sprite = new Sprite();
-			HXP.engine.addChildAt(sprite, 0);
-		}
-
 		_tilesheet = new Tilesheet(bd);
 		_regions = new Hash<AtlasRegion>();
 		_index = 0;
 
 		_renderFlags = Tilesheet.TILE_TRANS_2x2 | Tilesheet.TILE_ALPHA | Tilesheet.TILE_BLEND_NORMAL | Tilesheet.TILE_RGB;
-		_tileData = new Array<Float>();
+		_tileData = new IntHash<Array<Float>>();
 
 		_atlases.push(this);
 	}
@@ -62,18 +56,21 @@ class TextureAtlas
 	 * @param g the graphics context to draw in
 	 * @param smooth if rendering should use antialiasing
 	 */
-	public inline function render(g:Graphics, smooth:Bool=false)
+	public inline function render(smooth:Bool=false)
 	{
-		// check that we have something to draw
-		if (_tileData.length > 0)
+		var g:Graphics;
+		var td:Array<Float>;
+
+		for (layer in _tileData.keys())
 		{
-			g.drawTiles(_tilesheet, _tileData, smooth, _renderFlags);
-			// clear tile data
-#if (cpp || php)
-			_tileData.splice(0,_tileData.length);
-#else
-			untyped _tileData.length = 0;
-#end
+			td = _tileData.get(layer);
+			g = getSpriteByLayer(layer).graphics;
+			// check that we have something to draw
+			if (td.length > 0)
+			{
+				g.drawTiles(_tilesheet, td, smooth, _renderFlags);
+				HXP.clear(td);
+			}
 		}
 	}
 
@@ -83,12 +80,16 @@ class TextureAtlas
 	 */
 	public static inline function renderAll(smooth:Bool=false)
 	{
+		for (sprite in _sprites)
+		{
+			sprite.graphics.clear();
+		}
+
 		if (_atlases.length > 0)
 		{
-			sprite.graphics.clear(); // clear sprite
 			for (atlas in _atlases)
 			{
-				atlas.render(sprite.graphics, smooth);
+				atlas.render(smooth);
 			}
 		}
 	}
@@ -98,6 +99,7 @@ class TextureAtlas
 	 * @param tile the tile index of the tilesheet
 	 * @param x the x-axis location to draw the tile
 	 * @param y the y-axis location to draw the tile
+	 * @param layer the layer to draw on
 	 * @param scaleX the scale value for the x-axis
 	 * @param scaleY the scale value for the y-axis
 	 * @param angle an angle to rotate the tile
@@ -106,26 +108,38 @@ class TextureAtlas
 	 * @param blue a blue tint value
 	 * @param alpha the tile's opacity
 	 */
-	public inline function prepareTile(tile:Int, x:Float, y:Float,
+	public inline function prepareTile(tile:Int, x:Float, y:Float, layer:Int,
 		scaleX:Float, scaleY:Float, angle:Float,
 		red:Float, green:Float, blue:Float, alpha:Float)
 	{
-		_tileData.push(x);
-		_tileData.push(y);
-		_tileData.push(tile);
+		var t:Array<Float>;
+		if (_tileData.exists(layer))
+		{
+			t = _tileData.get(layer);
+		}
+		else
+		{
+			t = new Array<Float>();
+			_tileData.set(layer, t);
+		}
+		var i:Int = t.length;
+
+		t[i++] = x;
+		t[i++] = y;
+		t[i++] = tile;
 
 		// matrix transformation
 		var thetaCos = Math.cos(angle * HXP.RAD);
 		var thetaSin = Math.sin(angle * HXP.RAD);
-		_tileData.push(thetaCos * scaleX); // m00
-		_tileData.push(thetaSin * scaleX); // m01
-		_tileData.push(-thetaSin * scaleY); // m10
-		_tileData.push(thetaCos * scaleY); // m11
+		t[i++] = thetaCos * scaleX; // m00
+		t[i++] = thetaSin * scaleX; // m01
+		t[i++] = -thetaSin * scaleY; // m10
+		t[i++] = thetaCos * scaleY; // m11
 
-		_tileData.push(red);
-		_tileData.push(green);
-		_tileData.push(blue);
-		_tileData.push(alpha);
+		t[i++] = red;
+		t[i++] = green;
+		t[i++] = blue;
+		t[i++] = alpha;
 	}
 
 	/**
@@ -154,7 +168,23 @@ class TextureAtlas
 		return region;
 	}
 
-	private var _tileData:Array<Float>;
+	private inline function getSpriteByLayer(layer:Int):Sprite
+	{
+		if (_sprites.exists(layer))
+		{
+			return _sprites.get(layer);
+		}
+		else
+		{
+			var sprite = new Sprite();
+			_sprites.set(layer, sprite);
+			HXP.engine.addChildAt(sprite, 0);
+			trace("add sprite");
+			return sprite;
+		}
+	}
+
+	private var _tileData:IntHash<Array<Float>>;
 	private var _renderFlags:Int;
 
 	private var _index:Int;
@@ -162,5 +192,5 @@ class TextureAtlas
 	private var _regions:Hash<AtlasRegion>;
 
 	private static var _atlases:Array<TextureAtlas> = new Array<TextureAtlas>();
-	private static var sprite:Sprite = null;
+	private static var _sprites:IntHash<Sprite> = new IntHash<Sprite>();
 }

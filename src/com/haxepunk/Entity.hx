@@ -150,7 +150,7 @@ class Entity extends Tweener
 			else _point.x = _point.y = 0;
 			_camera.x = HXP.camera.x;
 			_camera.y = HXP.camera.y;
-			_graphic.render((renderTarget != null) ? renderTarget : HXP.buffer, _point, _camera);
+			_graphic.render((renderTarget != null) ? renderTarget : HXP.buffer, _point, _camera, _layer);
 		}
 	}
 
