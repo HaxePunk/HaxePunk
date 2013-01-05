@@ -3,6 +3,7 @@ HaxePunk CHANGELOG
 v2.0.0
 ------------------------------
 * Hardware acceleration using TextureAtlas and the display list
+* [DelishusCake] moveBy now checks moveCollideX/Y before moving
 
 v1.7.2
 ------------------------------
