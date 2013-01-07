@@ -7,7 +7,7 @@ class AtlasRegion
 	public var width(default, null):Float;
 	public var height(default, null):Float;
 
-	public function new(parent:TextureAtlas, tileIndex:Int, width:Float, height:Float)
+	public function new(parent:Atlas, tileIndex:Int, width:Float, height:Float)
 	{
 		this.parent = parent;
 		this.tileIndex = tileIndex;
@@ -40,6 +40,6 @@ class AtlasRegion
 		return "[AtlasRegion " + width + ", " + height + " " + tileIndex + "]";
 	}
 
-	private var parent:TextureAtlas;
+	private var parent:Atlas;
 	private var tileIndex:Int;
 }

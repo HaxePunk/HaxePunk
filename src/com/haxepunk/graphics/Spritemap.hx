@@ -1,7 +1,7 @@
 package com.haxepunk.graphics;
 
 import com.haxepunk.HXP;
-import com.haxepunk.graphics.atlas.TextureAtlas;
+import com.haxepunk.graphics.atlas.TileAtlas;
 
 import flash.display.BitmapData;
 import flash.display.SpreadMethod;
@@ -46,11 +46,11 @@ class Spritemap extends Image
 		_timer = _frame = 0;
 
 		_rect = new Rectangle(0, 0, frameWidth, frameHeight);
-		if (Std.is(source, TextureAtlas))
+		if (Std.is(source, TileAtlas))
 		{
 			_blit = false;
-			_atlas = cast(source, TextureAtlas);
-			source = _atlas.getRegion(name + "_0.png");
+			_atlas = cast(source, TileAtlas);
+			source = _atlas.getIndex(_frame);
 		}
 		super(source, _rect, name);
 
@@ -90,7 +90,7 @@ class Spritemap extends Image
 		}
 		else
 		{
-			_region = _atlas.getRegion(_class + "_" + _frame +".png");
+			_region = _atlas.getIndex(_frame);
 		}
 	}
 
@@ -292,7 +292,7 @@ class Spritemap extends Image
 	private var _index:Int;
 	private var _frame:Int;
 	private var _timer:Float;
-	private var _atlas:TextureAtlas;
+	private var _atlas:TileAtlas;
 
 	#if cpp
 	private var _baseID:Int;
