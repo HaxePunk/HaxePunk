@@ -83,6 +83,16 @@ class Player extends Physics
 			if (joystick.pressed(2)) switchJumpStyle();
 		}
 
+		if (Input.mouseDown)
+		{
+			if (_world.mouseX < x)
+				acceleration.x = -kMoveSpeed;
+			if (_world.mouseX > x)
+				acceleration.x = kMoveSpeed;
+			if (_world.mouseY < y - 32)
+				doJump();
+		}
+
 		if (Input.check("left"))
 			acceleration.x = -kMoveSpeed;
 
