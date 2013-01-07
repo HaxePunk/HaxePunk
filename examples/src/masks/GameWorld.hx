@@ -15,8 +15,6 @@ class GameWorld extends DemoWorld
 
 	public function new()
 	{
-		// change the screen draw color
-		HXP.screen.color = 0x8EDFFA;
 		super();
 	}
 

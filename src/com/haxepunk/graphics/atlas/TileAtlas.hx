@@ -30,8 +30,7 @@ class TileAtlas extends Atlas
 		HXP.rect.width = tileWidth;
 		HXP.rect.height = tileHeight;
 
-		HXP.point.x = tileWidth / 2;
-		HXP.point.y = tileHeight / 2;
+		HXP.point.x = HXP.point.y = 0;
 
 		for (y in 0...rows)
 		{

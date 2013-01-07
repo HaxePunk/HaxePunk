@@ -89,9 +89,6 @@ class Spritemap extends Image
 	 */
 	override public function updateBuffer(clearBefore:Bool = false)
 	{
-#if neko
-		if (_width == null) return;
-#end
 		if (_blit)
 		{
 			// get position of the current frame
@@ -106,7 +103,6 @@ class Spritemap extends Image
 		}
 		else
 		{
-			trace(_frame);
 			_region = _atlas.getRegion(_frame);
 		}
 	}
@@ -199,7 +195,7 @@ class Spritemap extends Image
 	 * @param	row			Frame row.
 	 * @return	Frame index.
 	 */
-	public function getFrame(column:Int = 0, row:Int = 0):Int
+	public inline function getFrame(column:Int = 0, row:Int = 0):Int
 	{
 		return (row % _rows) * _columns + (column % _columns);
 	}
@@ -213,7 +209,7 @@ class Spritemap extends Image
 	public function setFrame(column:Int = 0, row:Int = 0)
 	{
 		_anim = null;
-		var frame:Int = (row % _rows) * _columns + (column % _columns);
+		var frame:Int = getFrame(column, row);
 		if (_frame == frame) return;
 		_frame = frame;
 		updateBuffer();
@@ -310,8 +306,4 @@ class Spritemap extends Image
 	private var _frame:Int;
 	private var _timer:Float;
 	private var _atlas:TileAtlas;
-
-	#if cpp
-	private var _baseID:Int;
-	#end
 }
