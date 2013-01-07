@@ -76,8 +76,7 @@ class Text extends Image
 		if (width == 0) width = Std.int(_field.textWidth + 4);
 		if (height == 0) height = Std.int(_field.textHeight + 4);
 
-		_source = HXP.createBitmap(width, height, true);
-		super(_source);
+		super(HXP.createBitmap(width, height, true));
 
 		this.text = text;
 		this.x = x;

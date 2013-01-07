@@ -50,8 +50,16 @@ class Spritemap extends Image
 		{
 			_blit = false;
 			_atlas = cast(source, TileAtlas);
-			source = _atlas.getIndex(_frame);
+			_region = _atlas.getIndex(_frame);
 		}
+#if !flash // force hardware acceleration
+		else
+		{
+			_blit = false;
+			_atlas = new TileAtlas(source, frameWidth, frameHeight);
+			_region = _atlas.getIndex(_frame);
+		}
+#end
 		super(source, _rect, name);
 
 		_width = _source.width;

@@ -10,6 +10,7 @@ class TileAtlas extends Atlas
 		if (Std.is(source, BitmapData)) bd = source;
 		else bd = HXP.getBitmap(source);
 
+		_regions = new IntHash<AtlasRegion>();
 		super(bd);
 
 		prepareTiles(bd.width, bd.height, tileWidth, tileHeight);
@@ -20,7 +21,7 @@ class TileAtlas extends Atlas
 		return _regions.get(index);
 	}
 
-	private inline function prepareTiles(width:Int, height:Int, tileWidth:Int, tileHeight:Int)
+	private function prepareTiles(width:Int, height:Int, tileWidth:Int, tileHeight:Int)
 	{
 		var tile = 0;
 		var cols:Int = Math.floor(width / tileWidth);
@@ -41,6 +42,7 @@ class TileAtlas extends Atlas
 				HXP.rect.x = x * tileWidth;
 
 				_tilesheet.addTileRect(HXP.rect, HXP.point);
+				tile += 1;
 				_regions.set(tile, new AtlasRegion(this, tile, tileWidth, tileHeight));
 			}
 		}

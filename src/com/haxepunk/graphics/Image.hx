@@ -70,30 +70,34 @@ class Image extends Graphic
 		super();
 		init();
 
-		if (Std.is(source, BitmapData))
+		// check if the _source or _region were set in a higher class
+		if (_source == null && _region == null)
 		{
-			setBitmapSource(source);
-			_class = name;
-		}
-		else if (Std.is(source, AtlasRegion))
-		{
-			_blit = false;
-			_class = name;
-			_region = source;
-			_sourceRect = new Rectangle(0, 0, _region.width, _region.height);
-		}
-		else
-		{
-			if (Std.is(source, String))
-				_class = source;
-			else if (name == "")
-				_class = Type.getClassName(Type.getClass(source));
-			else
+			if (Std.is(source, BitmapData))
+			{
+				setBitmapSource(source);
 				_class = name;
-			setBitmapSource(HXP.getBitmap(source));
-		}
+			}
+			else if (Std.is(source, AtlasRegion))
+			{
+				_blit = false;
+				_class = name;
+				_region = source;
+				_sourceRect = new Rectangle(0, 0, _region.width, _region.height);
+			}
+			else
+			{
+				if (Std.is(source, String))
+					_class = source;
+				else if (name == "")
+					_class = Type.getClassName(Type.getClass(source));
+				else
+					_class = name;
+				setBitmapSource(HXP.getBitmap(source));
+			}
 
-		if (_source == null && _region == null) throw "Invalid source image.";
+			if (_source == null && _region == null) throw "Invalid source image.";
+		}
 
 		if (clipRect != null)
 		{
@@ -104,6 +108,9 @@ class Image extends Graphic
 
 		if (_blit)
 		{
+			_bitmap = new Bitmap();
+			_colorTransform = new ColorTransform();
+
 			createBuffer();
 			updateBuffer();
 		}
@@ -123,11 +130,9 @@ class Image extends Graphic
 		scale = scaleX = scaleY = 1;
 		originX = originY = 0;
 
-		_bitmap = new Bitmap();
 		_alpha = 1;
 		_flipped = false;
 		_color = 0x00FFFFFF;
-		_colorTransform = new ColorTransform();
 		_matrix = HXP.matrix;
 	}
 
@@ -242,18 +247,22 @@ class Image extends Graphic
 		value = value < 0 ? 0 : (value > 1 ? 1 : value);
 		if (_alpha == value) return value;
 		_alpha = value;
-		if (_alpha == 1 && _color == 0xFFFFFF)
+		if (_blit)
 		{
-			_tint = null;
+			if (_alpha == 1 && _color == 0xFFFFFF)
+			{
+				_tint = null;
+			}
+			else
+			{
+				_tint = _colorTransform;
+				_tint.redMultiplier = (_color >> 16 & 0xFF) / 255;
+				_tint.greenMultiplier = (_color >> 8 & 0xFF) / 255;
+				_tint.blueMultiplier = (_color & 0xFF) / 255;
+				_tint.alphaMultiplier = _alpha;
+			}
 			updateBuffer();
-			return _alpha;
 		}
-		_tint = _colorTransform;
-		_tint.redMultiplier = (_color >> 16 & 0xFF) / 255;
-		_tint.greenMultiplier = (_color >> 8 & 0xFF) / 255;
-		_tint.blueMultiplier = (_color & 0xFF) / 255;
-		_tint.alphaMultiplier = _alpha;
-		updateBuffer();
 		return _alpha;
 	}
 
@@ -267,18 +276,22 @@ class Image extends Graphic
 		value &= 0xFFFFFF;
 		if (_color == value) return value;
 		_color = value;
-		if (_alpha == 1 && _color == 0xFFFFFF)
+		if (_blit)
 		{
-			_tint = null;
+			if (_alpha == 1 && _color == 0xFFFFFF)
+			{
+				_tint = null;
+			}
+			else
+			{
+				_tint = _colorTransform;
+				_tint.redMultiplier = (_color >> 16 & 0xFF) / 255;
+				_tint.greenMultiplier = (_color >> 8 & 0xFF) / 255;
+				_tint.blueMultiplier = (_color & 0xFF) / 255;
+				_tint.alphaMultiplier = _alpha;
+			}
 			updateBuffer();
-			return _color;
 		}
-		_tint = _colorTransform;
-		_tint.redMultiplier = (_color >> 16 & 0xFF) / 255;
-		_tint.greenMultiplier = (_color >> 8 & 0xFF) / 255;
-		_tint.blueMultiplier = (_color & 0xFF) / 255;
-		_tint.alphaMultiplier = _alpha;
-		updateBuffer();
 		return _color;
 	}
 

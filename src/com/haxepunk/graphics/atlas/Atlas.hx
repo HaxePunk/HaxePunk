@@ -119,7 +119,6 @@ class Atlas
 			var sprite = new Sprite();
 			_sprites.set(layer, sprite);
 			HXP.engine.addChildAt(sprite, 0);
-			trace("add sprite");
 			return sprite;
 		}
 	}
