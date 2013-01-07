@@ -50,20 +50,28 @@ class Spritemap extends Image
 		{
 			_blit = false;
 			_atlas = cast(source, TileAtlas);
-			_region = _atlas.getIndex(_frame);
+			_region = _atlas.getRegion(_frame);
 		}
 #if !flash // force hardware acceleration
 		else
 		{
 			_blit = false;
 			_atlas = new TileAtlas(source, frameWidth, frameHeight);
-			_region = _atlas.getIndex(_frame);
+			_region = _atlas.getRegion(_frame);
 		}
 #end
 		super(source, _rect, name);
 
-		_width = _source.width;
-		_height = _source.height;
+		if (_blit)
+		{
+			_width = _source.width;
+			_height = _source.height;
+		}
+		else
+		{
+			_width = Std.int(_region.width);
+			_height = Std.int(_region.height);
+		}
 		if (frameWidth == 0) _rect.width = _width;
 		if (frameHeight == 0) _rect.height = _height;
 
@@ -98,7 +106,8 @@ class Spritemap extends Image
 		}
 		else
 		{
-			_region = _atlas.getIndex(_frame);
+			trace(_frame);
+			_region = _atlas.getRegion(_frame);
 		}
 	}
 

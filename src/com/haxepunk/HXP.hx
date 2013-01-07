@@ -51,7 +51,7 @@ class HXP
 	 * The color black defined for neko (BitmapInt32) or flash (Int)
 	 */
 #if neko
-	public static inline var blackColor = { rgb: 0x000000, a: 1 }; // BitmapInt32
+	public static inline var blackColor = { rgb: 0x000000, a: 0 }; // BitmapInt32
 #else
 	public static inline var blackColor = 0x00000000;
 #end

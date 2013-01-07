@@ -16,7 +16,7 @@ class TileAtlas extends Atlas
 		prepareTiles(bd.width, bd.height, tileWidth, tileHeight);
 	}
 
-	public function getIndex(index:Int):AtlasRegion
+	public function getRegion(index:Int):AtlasRegion
 	{
 		return _regions.get(index);
 	}
@@ -42,8 +42,8 @@ class TileAtlas extends Atlas
 				HXP.rect.x = x * tileWidth;
 
 				_tilesheet.addTileRect(HXP.rect, HXP.point);
-				tile += 1;
 				_regions.set(tile, new AtlasRegion(this, tile, tileWidth, tileHeight));
+				tile += 1;
 			}
 		}
 	}
