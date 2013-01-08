@@ -4,6 +4,7 @@ import flash.display.BitmapData;
 
 class TileAtlas extends Atlas
 {
+
 	public function new(source:Dynamic, tileWidth:Int, tileHeight:Int)
 	{
 		var bd:BitmapData;
