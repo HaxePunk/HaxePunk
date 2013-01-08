@@ -27,7 +27,7 @@ class Key
 	public inline static var LEFT_SQUARE_BRACKET = 219;
 	public inline static var RIGHT_SQUARE_BRACKET = 221;
 
-#if flash
+#if (flash || html5)
 	public inline static var A = 65;
 	public inline static var B = 66;
 	public inline static var C = 67;
