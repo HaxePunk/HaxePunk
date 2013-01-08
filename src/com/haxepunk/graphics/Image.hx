@@ -181,6 +181,7 @@ class Image extends Graphic
 		}
 		else // _blit
 		{
+			if (_flipped) _point.x += _sourceRect.width;
 			_region.draw(_point.x, _point.y, layer,
 				HXP.screen.fullScaleX * scaleX * (_flipped ? -1 : 1),
 				HXP.screen.fullScaleY * scaleY,

@@ -69,8 +69,8 @@ class Spritemap extends Image
 		}
 		else
 		{
-			_width = Std.int(_region.width);
-			_height = Std.int(_region.height);
+			_width = Std.int(_atlas.width);
+			_height = Std.int(_atlas.height);
 		}
 		if (frameWidth == 0) _rect.width = _width;
 		if (frameHeight == 0) _rect.height = _height;
@@ -96,7 +96,7 @@ class Spritemap extends Image
 			_rect.y = Std.int(_rect.x / _width) * _rect.height;
 			_rect.x = _rect.x % _width;
 
-			if (flipped) _rect.x = (_width - _rect.width) - _rect.x;
+			if (_flipped) _rect.x = (_width - _rect.width) - _rect.x;
 
 			// update the buffer
 			super.updateBuffer(clearBefore);

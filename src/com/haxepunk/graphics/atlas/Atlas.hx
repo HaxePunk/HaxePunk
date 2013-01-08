@@ -7,10 +7,17 @@ import nme.display.Tilesheet;
 
 class Atlas
 {
+
+	public var width(default, null):Int;
+	public var height(default, null):Int;
+
 	public function new(bd:BitmapData)
 	{
 		_tileData = new IntHash<Array<Float>>();
 		_tilesheet = new Tilesheet(bd);
+
+		width = bd.width;
+		height = bd.height;
 
 		_renderFlags = Tilesheet.TILE_TRANS_2x2 | Tilesheet.TILE_ALPHA | Tilesheet.TILE_BLEND_NORMAL | Tilesheet.TILE_RGB;
 
