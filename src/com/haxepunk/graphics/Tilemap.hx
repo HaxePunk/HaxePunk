@@ -5,6 +5,7 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import com.haxepunk.Graphic;
 import com.haxepunk.HXP;
+import com.haxepunk.graphics.atlas.TileAtlas;
 import com.haxepunk.masks.Grid;
 
 
@@ -37,27 +38,62 @@ class Tilemap extends Canvas
 		_columns = Std.int(_width / tileWidth);
 		_rows = Std.int(_height / tileHeight);
 		if (_columns == 0 || _rows == 0) throw "Cannot create a bitmapdata of width/height = 0";
-		_map = HXP.createBitmap(_columns, _rows);
-		_temp = _map.clone();
-		_tile = new Rectangle(0, 0, tileWidth, tileHeight);
 
 		// create the canvas
-#if neko
-		// HACK! stupid initialization issues
-		_maxWidth = 4000 - 4000 % tileWidth;
-		_maxHeight = 4000 - 4000 % tileHeight;
-#else
 		_maxWidth -= _maxWidth % tileWidth;
 		_maxHeight -= _maxHeight % tileHeight;
-#end
+
 		super(_width, _height);
 
+		// initialize map
+		_tile = new Rectangle(0, 0, tileWidth, tileHeight);
+		_map = new Array2D();
+		for (y in 0..._rows)
+		{
+			_map[y] = new Array<Int>();
+			for (x in 0..._columns)
+			{
+				_map[y][x] = -1;
+			}
+		}
+
 		// load the tileset graphic
-		if (Std.is(tileset, Class) || Std.is(tileset, String)) _set = HXP.getBitmap(tileset);
-		else if (Std.is(tileset, BitmapData)) _set = tileset;
-		if (_set == null) throw "Invalid tileset graphic provided.";
-		_setColumns = Std.int(_set.width / tileWidth);
-		_setRows = Std.int(_set.height / tileHeight);
+		if (Std.is(tileset, TileAtlas))
+		{
+			_blit = false;
+			_atlas = cast(tileset, TileAtlas);
+		}
+#if flash
+		if (Std.is(tileset, BitmapData))
+		{
+			_blit = true;
+			_set = tileset;
+		}
+		else
+		{
+			_blit = true;
+			_set = HXP.getBitmap(tileset);
+		}
+#else // force hardware acceleration
+		else
+		{
+			_blit = false;
+			_atlas = new TileAtlas(tileset, tileWidth, tileHeight);
+		}
+#end
+
+		if (_set == null && _atlas == null) throw "Invalid tileset graphic provided.";
+
+		if (_blit)
+		{
+			_setColumns = Std.int(_set.width / tileWidth);
+			_setRows = Std.int(_set.height / tileHeight);
+		}
+		else
+		{
+			_setColumns = Std.int(_atlas.width / tileWidth);
+			_setRows = Std.int(_atlas.height / tileHeight);
+		}
 		_setCount = _setColumns * _setRows;
 	}
 
@@ -79,8 +115,8 @@ class Tilemap extends Canvas
 		row %= _rows;
 		_tile.x = (index % _setColumns) * _tile.width;
 		_tile.y = Std.int(index / _setColumns) * _tile.height;
-		_map.setPixel(column, row, index);
-		draw(Std.int(column * _tile.width), Std.int(row * _tile.height), _set, _tile);
+		_map[row][column] = index;
+		if (_blit) draw(Std.int(column * _tile.width), Std.int(row * _tile.height), _set, _tile);
 	}
 
 	/**
@@ -99,7 +135,7 @@ class Tilemap extends Canvas
 		row %= _rows;
 		_tile.x = column * _tile.width;
 		_tile.y = row * _tile.height;
-		fill(_tile, 0, 0);
+		if (_blit) fill(_tile, 0, 0);
 	}
 
 	/**
@@ -115,7 +151,7 @@ class Tilemap extends Canvas
 			column = Std.int(column / _tile.width);
 			row = Std.int(row / _tile.height);
 		}
-		return _map.getPixel(column % _columns, row % _rows);
+		return _map[row % _rows][column % _columns];
 	}
 
 	/**
@@ -193,13 +229,14 @@ class Tilemap extends Canvas
 
 	public function loadFrom2DArray(array:Array2D):Void
 	{
-		for (x in 0...array.length)
-		{
-			for (y in 0...array[0].length)
-			{
-				setTile(x, y, array[x][y]);
-			}
-		}
+		// for (x in 0...array.length)
+		// {
+		// 	for (y in 0...array[0].length)
+		// 	{
+		// 		setTile(x, y, array[x][y]);
+		// 	}
+		// }
+		_map = array;
 	}
 
 	/**
@@ -253,7 +290,7 @@ class Tilemap extends Canvas
 	 * @param	tilesRow		Tileset row.
 	 * @return	Index of the tile.
 	 */
-	public function getIndex(tilesColumn:Int, tilesRow:Int):Int
+	public inline function getIndex(tilesColumn:Int, tilesRow:Int):Int
 	{
 		return (tilesRow % _setRows) * _setColumns + (tilesColumn % _setColumns);
 	}
@@ -272,38 +309,68 @@ class Tilemap extends Canvas
 			rows = Std.int(rows / _tile.height);
 		}
 
-		if (!wrap) _temp.fillRect(_temp.rect, HXP.blackColor);
-
 		if (columns != 0)
 		{
-			shift(Std.int(columns * _tile.width), 0);
-			if (wrap) _temp.copyPixels(_map, _map.rect, HXP.zero);
-			_map.scroll(columns, 0);
-			_point.y = 0;
-			_point.x = columns > 0 ? columns - _columns : columns + _columns;
-			_map.copyPixels(_temp, _temp.rect, _point);
+			for (y in 0..._rows)
+			{
+				var row = _map[y];
+				if (columns > 0)
+				{
+					for (x in 0...columns)
+					{
+						var tile:Int = row.pop();
+						if (wrap) row.unshift(tile);
+					}
+				}
+				else
+				{
+					for (x in 0...Std.int(Math.abs(columns)))
+					{
+						var tile:Int = row.shift();
+						if (wrap) row.push(tile);
+					}
+				}
+			}
+			_columns = _map[Std.int(y)].length;
 
+#if flash
+			shift(Std.int(columns * _tile.width), 0);
 			_rect.x = columns > 0 ? 0 : _columns + columns;
 			_rect.y = 0;
 			_rect.width = Math.abs(columns);
 			_rect.height = _rows;
 			updateRect(_rect, !wrap);
+#end
 		}
 
 		if (rows != 0)
 		{
-			shift(0, Std.int(rows * _tile.height));
-			if (wrap) _temp.copyPixels(_map, _map.rect, HXP.zero);
-			_map.scroll(0, rows);
-			_point.x = 0;
-			_point.y = rows > 0 ? rows - _rows : rows + _rows;
-			_map.copyPixels(_temp, _temp.rect, _point);
+			if (rows > 0)
+			{
+				for (y in 0...rows)
+				{
+					var row:Array<Int> = _map.pop();
+					if (wrap) _map.unshift(row);
+				}
+			}
+			else
+			{
+				for (y in 0...Std.int(Math.abs(rows)))
+				{
+					var row:Array<Int> = _map.shift();
+					if (wrap) _map.push(row);
+				}
+			}
+			_rows = _map.length;
 
+#if flash
+			shift(0, Std.int(rows * _tile.height));
 			_rect.x = 0;
 			_rect.y = rows > 0 ? 0 : _rows + rows;
 			_rect.width = _columns;
 			_rect.height = Math.abs(rows);
 			updateRect(_rect, !wrap);
+#end
 		}
 	}
 
@@ -337,22 +404,66 @@ class Tilemap extends Canvas
 		usePositions = u;
 	}
 
+	public override function render(target:BitmapData, point:Point, camera:Point, layer:Int=HXP.BASELAYER)
+	{
+		if (_blit)
+		{
+			super.render(target, point, camera, layer);
+		}
+		else
+		{
+			var wx:Float = 0, wy:Float = point.y - camera.y, tile:Int = 0,
+			tw:Int = tileWidth, th:Int = tileHeight; // call properties once
+
+			// determine start and end tiles to draw (optimization)
+			var dx = camera.x - point.x,
+				dy = camera.y - point.y,
+				sx = Math.floor(dx / tileWidth),
+				sy = Math.floor(dy / tileHeight),
+				ex = Math.ceil((dx + HXP.width) / tileWidth),
+				ey = Math.ceil((dy + HXP.height) / tileHeight);
+
+			if (sx < 0) sx = 0;
+			if (ex > _columns) ex = _columns;
+			if (sy < 0) sy = 0;
+			if (ey > _rows) ey = _rows;
+
+			for (y in sy...ey)
+			{
+				wx = point.x - camera.x;
+				for (x in sx...ex)
+				{
+					tile = getTile(x, y);
+					if (tile >= 0)
+					{
+						_atlas.prepareTile(tile, wx, wy, layer,
+							HXP.screen.fullScaleX, HXP.screen.fullScaleY, 0,
+							HXP.getRed(color)/255, HXP.getGreen(color)/255, HXP.getBlue(color)/255, alpha);
+					}
+
+					wx += tileWidth;
+				}
+				wy += tileHeight;
+			}
+		}
+	}
+
 	/** @private Used by shiftTiles to update a tile from the tilemap. */
 	private function updateTile(column:Int, row:Int)
 	{
-		setTile(column, row, _map.getPixel(column % _columns, row % _rows));
+		setTile(column, row, _map[row % _rows][column % _columns]);
 	}
 
 	/**
 	 * The tile width.
 	 */
-	public var tileWidth(getTileWidth, null):Int;
+	public var tileWidth(getTileWidth, never):Int;
 	private function getTileWidth():Int { return Std.int(_tile.width); }
 
 	/**
 	 * The tile height.
 	 */
-	public var tileHeight(getTileHeight, null):Int;
+	public var tileHeight(getTileHeight, never):Int;
 	private function getTileHeight():Int { return Std.int(_tile.height); }
 
 	/**
@@ -368,13 +479,13 @@ class Tilemap extends Canvas
 	private function getRows():Int { return _rows; }
 
 	// Tilemap information.
-	private var _map:BitmapData;
-	private var _temp:BitmapData;
+	private var _map:Array2D;
 	private var _columns:Int;
 	private var _rows:Int;
 
 	// Tileset information.
 	private var _set:BitmapData;
+	private var _atlas:TileAtlas;
 	private var _setColumns:Int;
 	private var _setRows:Int;
 	private var _setCount:Int;

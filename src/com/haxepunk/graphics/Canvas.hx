@@ -28,14 +28,13 @@ class Canvas extends Graphic
 	public function new(width:Int, height:Int)
 	{
 		super();
-		_buffers = new Array<BitmapData>();
-		_maxWidth = _maxHeight = 4000;
 		_color = 0xFFFFFF;
 		_alpha = 1;
-		_colorTransform = new ColorTransform();
+		_graphics = HXP.sprite.graphics;
 		_matrix = new Matrix();
 		_rect = new Rectangle();
-		_graphics = HXP.sprite.graphics;
+		_colorTransform = new ColorTransform();
+		_buffers = new Array<BitmapData>();
 
 		_width = width;
 		_height = height;
@@ -310,8 +309,8 @@ class Canvas extends Graphic
 	private var _buffers:Array<BitmapData>;
 	private var _width:Int;
 	private var _height:Int;
-	private var _maxWidth:Int;
-	private var _maxHeight:Int;
+	private var _maxWidth:Int = 4000;
+	private var _maxHeight:Int = 4000;
 
 	// Color tinting information.
 	private var _color:Int;
