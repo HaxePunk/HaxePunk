@@ -9,8 +9,8 @@
 	</target>
 
 	<target name="haxelib" depends="tools">
-		<zip destfile="template.zip" basedir="template" />
-		<zip destfile="haxepunk.zip">
+		<zip destfile="template.zip" useLanguageEncodingFlag="UTF-8" basedir="template" />
+		<zip destfile="haxepunk.zip" useLanguageEncodingFlag="UTF-8">
 			<zipfileset dir="" prefix="haxepunk" includes="run.n,haxelib.xml,include.nmml,template.zip,CHANGELOG,LICENSE" />
 			<zipfileset dir="src" prefix="haxepunk" />
 			<zipfileset dir="assets" prefix="haxepunk/assets" />
