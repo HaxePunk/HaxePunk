@@ -5,6 +5,27 @@ import nme.display.Graphics;
 import nme.display.Sprite;
 import nme.display.Tilesheet;
 
+class Layer
+{
+	public var data:Array<Float>;
+	public var index:Int;
+
+	public function new()
+	{
+		data = new Array<Float>();
+		index = 0;
+	}
+
+	public inline function prepare()
+	{
+		if (index < data.length)
+		{
+			data.splice(index, data.length - index);
+		}
+		index = 0; // reset index for next run
+	}
+}
+
 class Atlas
 {
 
@@ -13,7 +34,7 @@ class Atlas
 
 	public function new(bd:BitmapData)
 	{
-		_tileData = new IntHash<Array<Float>>();
+		_layers = new IntHash<Layer>();
 		_tilesheet = new Tilesheet(bd);
 
 		width = bd.width;
@@ -32,17 +53,17 @@ class Atlas
 	public inline function render(smooth:Bool=false)
 	{
 		var g:Graphics;
-		var td:Array<Float>;
+		var l:Layer;
 
-		for (layer in _tileData.keys())
+		for (layer in _layers.keys())
 		{
-			td = _tileData.get(layer);
-			g = getSpriteByLayer(layer).graphics;
+			l = _layers.get(layer);
 			// check that we have something to draw
-			if (td.length > 0)
+			if (l.index > 0)
 			{
-				g.drawTiles(_tilesheet, td, smooth, _renderFlags);
-				HXP.clear(td);
+				l.prepare();
+				g = getSpriteByLayer(layer).graphics;
+				g.drawTiles(_tilesheet, l.data, smooth, _renderFlags);
 			}
 		}
 	}
@@ -67,6 +88,20 @@ class Atlas
 		}
 	}
 
+	public inline function setLayer(layer:Int)
+	{
+		if (_layers.exists(layer))
+		{
+			_layer = _layers.get(layer);
+		}
+		else
+		{
+			_layer = new Layer();
+			_layers.set(layer, _layer);
+		}
+		_layerIndex = layer;
+	}
+
 	/**
 	 * Prepares tile data for rendering
 	 * @param tile the tile index of the tilesheet
@@ -85,34 +120,25 @@ class Atlas
 		scaleX:Float, scaleY:Float, angle:Float,
 		red:Float, green:Float, blue:Float, alpha:Float)
 	{
-		var t:Array<Float>;
-		if (_tileData.exists(layer))
-		{
-			t = _tileData.get(layer);
-		}
-		else
-		{
-			t = new Array<Float>();
-			_tileData.set(layer, t);
-		}
-		var i:Int = t.length;
+		if (_layerIndex != layer) setLayer(layer);
+		var d = _layer.data;
 
-		t[i++] = x;
-		t[i++] = y;
-		t[i++] = tile;
+		d[_layer.index++] = x;
+		d[_layer.index++] = y;
+		d[_layer.index++] = tile;
 
 		// matrix transformation
 		var thetaCos = Math.cos(angle * HXP.RAD);
 		var thetaSin = Math.sin(angle * HXP.RAD);
-		t[i++] = thetaCos * scaleX; // m00
-		t[i++] = thetaSin * scaleX; // m01
-		t[i++] = -thetaSin * scaleY; // m10
-		t[i++] = thetaCos * scaleY; // m11
+		d[_layer.index++] = thetaCos * scaleX; // m00
+		d[_layer.index++] = thetaSin * scaleX; // m01
+		d[_layer.index++] = -thetaSin * scaleY; // m10
+		d[_layer.index++] = thetaCos * scaleY; // m11
 
-		t[i++] = red;
-		t[i++] = green;
-		t[i++] = blue;
-		t[i++] = alpha;
+		d[_layer.index++] = red;
+		d[_layer.index++] = green;
+		d[_layer.index++] = blue;
+		d[_layer.index++] = alpha;
 	}
 
 	private static inline function getSpriteByLayer(layer:Int):Sprite
@@ -131,7 +157,9 @@ class Atlas
 	}
 
 	private var _tilesheet:Tilesheet;
-	private var _tileData:IntHash<Array<Float>>;
+	private var _layerIndex:Int;
+	private var _layer:Layer; // current layer
+	private var _layers:IntHash<Layer>;
 	private var _renderFlags:Int;
 
 	private static var _atlases:Array<Atlas> = new Array<Atlas>();
