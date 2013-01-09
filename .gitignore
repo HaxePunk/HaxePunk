@@ -3,6 +3,7 @@
 *.zip
 *.n
 *.build
+*.hash
 build-test/
 
 # OS specific files
