@@ -128,12 +128,23 @@ class Atlas
 		d[_layer.index++] = tile;
 
 		// matrix transformation
-		var thetaCos = Math.cos(angle * HXP.RAD);
-		var thetaSin = Math.sin(angle * HXP.RAD);
-		d[_layer.index++] = thetaCos * scaleX; // m00
-		d[_layer.index++] = thetaSin * scaleX; // m01
-		d[_layer.index++] = -thetaSin * scaleY; // m10
-		d[_layer.index++] = thetaCos * scaleY; // m11
+		if (angle == 0)
+		{
+			// fast defaults for non-rotated tiles (cos=1, sin=0)
+			d[_layer.index++] = scaleX; // m00
+			d[_layer.index++] = 0; // m01
+			d[_layer.index++] = 0; // m10
+			d[_layer.index++] = scaleY; // m11
+		}
+		else
+		{
+			var cos = Math.cos(angle * HXP.RAD);
+			var sin = Math.sin(angle * HXP.RAD);
+			d[_layer.index++] = cos * scaleX; // m00
+			d[_layer.index++] = sin * scaleX; // m01
+			d[_layer.index++] = -sin * scaleY; // m10
+			d[_layer.index++] = cos * scaleY; // m11
+		}
 
 		d[_layer.index++] = red;
 		d[_layer.index++] = green;
