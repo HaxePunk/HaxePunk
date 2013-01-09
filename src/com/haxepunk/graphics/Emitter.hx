@@ -123,6 +123,8 @@ class Emitter extends Graphic
 		// particle info
 		var t:Float, td:Float,
 			p:Particle = _particle,
+			scaleX:Float = HXP.screen.fullScaleX,
+			scaleY:Float = HXP.screen.fullScaleY,
 			type:ParticleType,
 			rect:Rectangle;
 
@@ -134,7 +136,6 @@ class Emitter extends Graphic
 
 			// get particle type
 			type = p._type;
-			rect = type._frame;
 
 			// get position
 			td = (type._ease == null) ? t : type._ease(t);
@@ -142,16 +143,18 @@ class Emitter extends Graphic
 			_p.y = _point.y + p._y + p._moveY * td;
 			p._moveY += p._gravity * td;
 
-			// get frame
-			if (type._frames.length == 0)
-				rect.x = 0;
-			else
-				rect.x = rect.width * type._frames[Std.int(td * type._frames.length)];
-			rect.y = Std.int(rect.x / _width) * rect.height;
-			rect.x %= _width;
-
 			if (_blit)
 			{
+				rect = type._frame;
+
+				// get frame
+				if (type._frames.length == 0)
+					rect.x = 0;
+				else
+					rect.x = rect.width * type._frames[Std.int(td * type._frames.length)];
+				rect.y = Std.int(rect.x / _width) * rect.height;
+				rect.x %= _width;
+
 				// draw particle
 				if (type._buffer != null)
 				{
@@ -178,9 +181,7 @@ class Emitter extends Graphic
 			else // _blit
 			{
 				_region.draw(_p.x, _p.y, layer,
-					HXP.screen.fullScaleX,
-					HXP.screen.fullScaleY,
-					type._angle,
+					scaleX, scaleY, type._angle,
 					type._red + type._redRange * td,
 					type._green + type._greenRange * td,
 					type._blue + type._blueRange * td,
