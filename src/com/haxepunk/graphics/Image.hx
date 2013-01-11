@@ -183,8 +183,8 @@ class Image extends Graphic
 		{
 			if (_flipped) _point.x += _sourceRect.width;
 			_region.draw(_point.x, _point.y, layer,
-				HXP.screen.fullScaleX * scaleX * (_flipped ? -1 : 1),
-				HXP.screen.fullScaleY * scaleY,
+				HXP.screen.fullScaleX * scale * scaleX * (_flipped ? -1 : 1),
+				HXP.screen.fullScaleY * scale * scaleY,
 				angle);
 		}
 	}
