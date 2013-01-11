@@ -182,10 +182,13 @@ class Image extends Graphic
 		else // _blit
 		{
 			if (_flipped) _point.x += _sourceRect.width;
-			_region.draw(_point.x, _point.y, layer,
-				HXP.screen.fullScaleX * scale * scaleX * (_flipped ? -1 : 1),
-				HXP.screen.fullScaleY * scale * scaleY,
-				angle);
+			var sx = HXP.screen.fullScaleX * scale * scaleX,
+				sy = HXP.screen.fullScaleY * scale * scaleY;
+
+			_region.draw(_point.x + originX - (originX * sx),
+				_point.y + originY - (originY * sy),
+				layer, sx * (_flipped ? -1 : 1), sy, angle,
+				HXP.getRed(_color)/255, HXP.getGreen(_color)/255, HXP.getBlue(_color)/255, _alpha);
 		}
 	}
 
@@ -257,9 +260,9 @@ class Image extends Graphic
 			else
 			{
 				_tint = _colorTransform;
-				_tint.redMultiplier = (_color >> 16 & 0xFF) / 255;
-				_tint.greenMultiplier = (_color >> 8 & 0xFF) / 255;
-				_tint.blueMultiplier = (_color & 0xFF) / 255;
+				_tint.redMultiplier = HXP.getRed(_color) / 255;
+				_tint.greenMultiplier = HXP.getGreen(_color) / 255;
+				_tint.blueMultiplier = HXP.getBlue(_color) / 255;
 				_tint.alphaMultiplier = _alpha;
 			}
 			updateBuffer();
@@ -286,9 +289,9 @@ class Image extends Graphic
 			else
 			{
 				_tint = _colorTransform;
-				_tint.redMultiplier = (_color >> 16 & 0xFF) / 255;
-				_tint.greenMultiplier = (_color >> 8 & 0xFF) / 255;
-				_tint.blueMultiplier = (_color & 0xFF) / 255;
+				_tint.redMultiplier = HXP.getRed(_color) / 255;
+				_tint.greenMultiplier = HXP.getGreen(_color) / 255;
+				_tint.blueMultiplier = HXP.getBlue(_color) / 255;
 				_tint.alphaMultiplier = _alpha;
 			}
 			updateBuffer();
