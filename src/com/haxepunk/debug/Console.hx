@@ -642,8 +642,8 @@ class Console
 		else if (rect.height == 0) rect.height = 1;
 
 		HXP.rect.width = HXP.rect.height = 6;
-		var sx:Float = HXP.screen.scaleX * HXP.screen.scale,
-			sy:Float = HXP.screen.scaleY * HXP.screen.scale,
+		var sx:Float = HXP.screen.fullScaleX,
+			sy:Float = HXP.screen.fullScaleY,
 			e:Entity;
 
 		if (Input.check(Key.CONTROL))
@@ -739,8 +739,8 @@ class Console
 		if (_debug)
 		{
 			var g:Graphics = _entScreen.graphics,
-				sx:Float = HXP.screen.scaleX * HXP.screen.scale,
-				sy:Float = HXP.screen.scaleY * HXP.screen.scale;
+				sx:Float = HXP.screen.fullScaleX,
+				sy:Float = HXP.screen.fullScaleY;
 			g.clear();
 			for (e in SCREEN_LIST)
 			{

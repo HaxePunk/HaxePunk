@@ -179,8 +179,8 @@ class HXP
 		HXP.windowWidth = width;
 		HXP.windowHeight = height;
 		// resize scene to scale
-		width = Std.int(width / HXP.screen.scale / HXP.screen.scaleX);
-		height = Std.int(height / HXP.screen.scale / HXP.screen.scaleY);
+		width = Std.int(width / HXP.screen.fullScaleX);
+		height = Std.int(height / HXP.screen.fullScaleY);
 		HXP.width = width;
 		HXP.height = height;
 		HXP.halfWidth = width / 2;

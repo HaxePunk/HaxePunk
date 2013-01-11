@@ -4,8 +4,9 @@
 
  	<app file="{{PROJECT_CLASS}}" main="{{PROJECT_CLASS}}" path="bin" />
 
-	<window width="{{WIDTH}}" height="{{HEIGHT}}" orientation="portrait" resizable="true" />
-	<window fps="{{FRAMERATE}}" />
+	<window fps="{{FRAMERATE}}" orientation="portrait" background="0x333333" />
+	<window width="{{WIDTH}}" height="{{HEIGHT}}" resizable="true" unless="mobile" />
+	<window fullscreen="true" if="mobile" />
 
 	<source path="src" />
 

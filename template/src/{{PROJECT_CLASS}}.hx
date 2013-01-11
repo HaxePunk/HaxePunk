@@ -7,12 +7,7 @@ class {{PROJECT_CLASS}} extends Engine
 	override public function init()
 	{
 #if debug
-	#if flash
-		if (flash.system.Capabilities.isDebugger)
-	#end
-		{
-			HXP.console.enable();
-		}
+		HXP.console.enable();
 #end
 		// HXP.world = new YourWorld();
 	}
