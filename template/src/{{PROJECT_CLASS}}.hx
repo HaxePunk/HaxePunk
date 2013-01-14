@@ -12,4 +12,6 @@ class {{PROJECT_CLASS}} extends Engine
 		// HXP.world = new YourWorld();
 	}
 
+	public static function main() { new {{PROJECT_CLASS}}(); }
+
 }
