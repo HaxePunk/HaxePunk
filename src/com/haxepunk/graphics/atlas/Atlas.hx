@@ -9,11 +9,12 @@ class Layer
 {
 	public var data:Array<Float>;
 	public var index:Int;
+	public var dirty:Bool;
 
 	public function new()
 	{
 		data = new Array<Float>();
-		index = 0;
+		prepare();
 	}
 
 	public inline function prepare()
@@ -23,6 +24,7 @@ class Layer
 			data.splice(index, data.length - index);
 		}
 		index = 0; // reset index for next run
+		dirty = false;
 	}
 }
 
@@ -52,18 +54,16 @@ class Atlas
 	 */
 	public inline function render(smooth:Bool=false)
 	{
-		var g:Graphics;
 		var l:Layer;
 
 		for (layer in _layers.keys())
 		{
 			l = _layers.get(layer);
 			// check that we have something to draw
-			if (l.index > 0)
+			if (l.dirty)
 			{
 				l.prepare();
-				g = getSpriteByLayer(layer).graphics;
-				g.drawTiles(_tilesheet, l.data, smooth, _renderFlags);
+				getSpriteByLayer(layer).graphics.drawTiles(_tilesheet, l.data, smooth, _renderFlags);
 			}
 		}
 	}
@@ -116,12 +116,13 @@ class Atlas
 	 * @param blue a blue tint value
 	 * @param alpha the tile's opacity
 	 */
-	public inline function prepareTile(tile:Int, x:Float, y:Float, layer:Int,
+	public function prepareTile(tile:Int, x:Float, y:Float, layer:Int,
 		scaleX:Float, scaleY:Float, angle:Float,
 		red:Float, green:Float, blue:Float, alpha:Float)
 	{
 		if (_layerIndex != layer) setLayer(layer);
 		var d = _layer.data;
+		_layer.dirty = true;
 
 		d[_layer.index++] = x;
 		d[_layer.index++] = y;
@@ -161,8 +162,14 @@ class Atlas
 		else
 		{
 			var sprite = new Sprite();
+			var idx = 0;
+			for (l in _sprites.keys())
+			{
+				if (l < layer) break;
+				idx += 1;
+			}
 			_sprites.set(layer, sprite);
-			HXP.engine.addChildAt(sprite, 0);
+			HXP.engine.addChildAt(sprite, idx);
 			return sprite;
 		}
 	}
