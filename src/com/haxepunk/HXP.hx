@@ -48,6 +48,15 @@ class HXP
 #end
 
 	/**
+	 * Flash equivalent: int.MAX_VALUE
+	 */
+#if neko
+	public static inline var INT_MAX_VALUE = 1073741823;
+#else
+	public static inline var INT_MAX_VALUE = 2147483646;
+#end
+
+	/**
 	 * The color black defined for neko (BitmapInt32) or flash (Int)
 	 */
 #if neko
@@ -586,7 +595,7 @@ class HXP
 	public static var randomSeed(default, setRandomSeed):Int;
 	private static inline function setRandomSeed(value:Int):Int
 	{
-		_seed = Std.int(clamp(value, 1.0, 2147483646.0));
+		_seed = Std.int(clamp(value, 1.0, INT_MAX_VALUE));
 		randomSeed = _seed;
 		return _seed;
 	}
@@ -596,7 +605,7 @@ class HXP
 	 */
 	public static inline function randomizeSeed()
 	{
-		randomSeed = Std.int(2147483647.0 * Math.random());
+		randomSeed = Std.int(INT_MAX_VALUE * Math.random());
 	}
 
 	/**
@@ -605,8 +614,8 @@ class HXP
 	public static var random(getRandom, null):Float;
 	private static inline function getRandom():Float
 	{
-		_seed = Std.int((_seed * 16807.0) % 2147483647.0);
-		return _seed / 2147483647.0;
+		_seed = Std.int((_seed * 16807.0) % INT_MAX_VALUE);
+		return _seed / INT_MAX_VALUE;
 	}
 
 	/**
@@ -616,8 +625,8 @@ class HXP
 	 */
 	public static inline function rand(amount:Int):Int
 	{
-		_seed = Std.int((_seed * 16807.0) % 2147483647.0);
-		return Std.int((_seed / 2147483647.0) * amount);
+		_seed = Std.int((_seed * 16807.0) % INT_MAX_VALUE);
+		return Std.int((_seed / INT_MAX_VALUE) * amount);
 	}
 
 	private static function indexOf<T>(a:Array<T>, v:T):Int

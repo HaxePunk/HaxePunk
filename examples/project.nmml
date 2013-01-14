@@ -4,7 +4,7 @@
 
  	<app file="HaxePunk" main="Main" path="bin" />
 
-	<window fps="60" orientation="portrait" resizable="true" />
+	<window fps="60" orientation="portrait" resizable="true" background="0x333333" />
 	<window width="640" height="480" unless="mobile" />
 	<window fullscreen="true" if="mobile" />
 
