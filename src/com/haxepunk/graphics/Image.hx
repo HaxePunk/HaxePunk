@@ -7,6 +7,7 @@ import flash.geom.ColorTransform;
 import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
+import com.haxepunk.graphics.atlas.TextureAtlas;
 import com.haxepunk.graphics.atlas.AtlasRegion;
 import com.haxepunk.Graphic;
 import com.haxepunk.HXP;
@@ -73,17 +74,18 @@ class Image extends Graphic
 		// check if the _source or _region were set in a higher class
 		if (_source == null && _region == null)
 		{
+			_class = name;
 			if (Std.is(source, BitmapData))
 			{
 				setBitmapSource(source);
-				_class = name;
+			}
+			else if (Std.is(source, TextureAtlas))
+			{
+				setAtlasRegion(cast(source, TextureAtlas).getRegion(name));
 			}
 			else if (Std.is(source, AtlasRegion))
 			{
-				_blit = false;
-				_class = name;
-				_region = source;
-				_sourceRect = new Rectangle(0, 0, _region.width, _region.height);
+				setAtlasRegion(source);
 			}
 			else
 			{
@@ -91,8 +93,6 @@ class Image extends Graphic
 					_class = source;
 				else if (name == "")
 					_class = Type.getClassName(Type.getClass(source));
-				else
-					_class = name;
 				setBitmapSource(HXP.getBitmap(source));
 			}
 
@@ -114,6 +114,13 @@ class Image extends Graphic
 			createBuffer();
 			updateBuffer();
 		}
+	}
+
+	private inline function setAtlasRegion(region:AtlasRegion)
+	{
+		_blit = false;
+		_region = region;
+		_sourceRect = new Rectangle(0, 0, _region.width, _region.height);
 	}
 
 	private inline function setBitmapSource(bitmap:BitmapData)
