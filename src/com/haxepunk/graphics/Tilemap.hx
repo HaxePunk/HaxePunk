@@ -429,7 +429,8 @@ class Tilemap extends Canvas
 			var startx = Math.floor(_point.x / tw),
 				starty = Math.floor(_point.y / th),
 				destx = Math.ceil((_point.x + HXP.width) / tw),
-				desty = Math.ceil((_point.y + HXP.height) / th);
+				desty = Math.ceil((_point.y + HXP.height) / th),
+				r = HXP.getRed(color)/255, g = HXP.getGreen(color)/255, b = HXP.getBlue(color)/255;
 
 			// clamp values to boundaries
 			if (startx < 0) startx = 0;
@@ -445,9 +446,7 @@ class Tilemap extends Canvas
 					tile = getTile(x, y);
 					if (tile >= 0)
 					{
-						_atlas.prepareTile(tile, wx, wy, layer,
-							scalex, scaley, 0,
-							HXP.getRed(color)/255, HXP.getGreen(color)/255, HXP.getBlue(color)/255, alpha);
+						_atlas.prepareTile(tile, wx, wy, layer, scalex, scaley, 0, r, g, b, alpha);
 					}
 
 					wx += tw;
