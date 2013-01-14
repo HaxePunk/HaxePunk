@@ -40,8 +40,13 @@ class Tilemap extends Canvas
 		if (_columns == 0 || _rows == 0) throw "Cannot create a bitmapdata of width/height = 0";
 
 		// create the canvas
+#if neko
+		_maxWidth = 4000 - 4000 % tileWidth;
+		_maxHeight = 4000 - 4000 % tileHeight;
+#else
 		_maxWidth -= _maxWidth % tileWidth;
 		_maxHeight -= _maxHeight % tileHeight;
+#end
 
 		super(_width, _height);
 
