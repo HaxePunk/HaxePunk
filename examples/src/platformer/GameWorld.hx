@@ -37,7 +37,7 @@ class GameWorld extends DemoWorld
 		var atlas = TextureAtlas.loadTexturePacker("atlas/assets.xml");
 #end
 		backdrop = new Backdrop(#if flash "gfx/tile.png" #else atlas.getRegion("tile.png") #end, true, true);
-		addGraphic(backdrop).layer = 20;
+		addGraphic(backdrop, 20);
 	}
 
 	public override function begin()

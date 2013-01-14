@@ -417,38 +417,42 @@ class Tilemap extends Canvas
 		}
 		else
 		{
-			var wx:Float = 0, wy:Float = point.y - camera.y, tile:Int = 0,
-			tw:Int = tileWidth, th:Int = tileHeight; // call properties once
+			// determine drawing location
+			_point.x = point.x + x - camera.x * scrollX;
+			_point.y = point.y + y - camera.y * scrollY;
+
+			var wx:Float = 0, wy:Float = _point.y, tile:Int = 0,
+			scalex:Float = HXP.screen.fullScaleX, scaley:Float = HXP.screen.fullScaleY,
+			tw:Int = Std.int(tileWidth * scalex), th:Int = Std.int(tileHeight * scaley);
 
 			// determine start and end tiles to draw (optimization)
-			var dx = camera.x - point.x,
-				dy = camera.y - point.y,
-				sx = Math.floor(dx / tileWidth),
-				sy = Math.floor(dy / tileHeight),
-				ex = Math.ceil((dx + HXP.width) / tileWidth),
-				ey = Math.ceil((dy + HXP.height) / tileHeight);
+			var startx = Math.floor(_point.x / tw),
+				starty = Math.floor(_point.y / th),
+				destx = Math.ceil((_point.x + HXP.width) / tw),
+				desty = Math.ceil((_point.y + HXP.height) / th);
 
-			if (sx < 0) sx = 0;
-			if (ex > _columns) ex = _columns;
-			if (sy < 0) sy = 0;
-			if (ey > _rows) ey = _rows;
+			// clamp values to boundaries
+			if (startx < 0) startx = 0;
+			if (destx > _columns) destx = _columns;
+			if (starty < 0) starty = 0;
+			if (desty > _rows) desty = _rows;
 
-			for (y in sy...ey)
+			for (y in starty...desty)
 			{
-				wx = point.x - camera.x;
-				for (x in sx...ex)
+				wx = _point.x;
+				for (x in startx...destx)
 				{
 					tile = getTile(x, y);
 					if (tile >= 0)
 					{
 						_atlas.prepareTile(tile, wx, wy, layer,
-							HXP.screen.fullScaleX, HXP.screen.fullScaleY, 0,
+							scalex, scaley, 0,
 							HXP.getRed(color)/255, HXP.getGreen(color)/255, HXP.getBlue(color)/255, alpha);
 					}
 
-					wx += tileWidth;
+					wx += tw;
 				}
-				wy += tileHeight;
+				wy += th;
 			}
 		}
 	}
