@@ -421,7 +421,7 @@ class Tilemap extends Canvas
 			_point.x = point.x + x - camera.x * scrollX;
 			_point.y = point.y + y - camera.y * scrollY;
 
-			var wx:Float = 0, wy:Float = _point.y, tile:Int = 0,
+			var wx:Float = _point.x, wy:Float = _point.y, tile:Int = 0,
 			scalex:Float = HXP.screen.fullScaleX, scaley:Float = HXP.screen.fullScaleY,
 			tw:Int = Std.int(tileWidth * scalex), th:Int = Std.int(tileHeight * scaley);
 
@@ -440,7 +440,6 @@ class Tilemap extends Canvas
 
 			for (y in starty...desty)
 			{
-				wx = _point.x;
 				for (x in startx...destx)
 				{
 					tile = getTile(x, y);
@@ -451,6 +450,7 @@ class Tilemap extends Canvas
 
 					wx += tw;
 				}
+				wx = _point.x;
 				wy += th;
 			}
 		}
