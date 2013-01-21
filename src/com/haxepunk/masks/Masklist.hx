@@ -19,6 +19,7 @@ class Masklist extends Hitbox
 		super();
 		_masks = new Array<Mask>();
 		_temp = new Array<Mask>();
+		_count = 0;
 
 		for (m in masks) add(m);
 	}
