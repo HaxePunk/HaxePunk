@@ -1,5 +1,11 @@
 HaxePunk CHANGELOG
 
+v2.0.1
+------------------------------
+* Fixed Tilemap rendering when camera moves (cpp/neko)
+* Initializing _count in Masklist to prevent neko crash
+* [AndyLi] Correctly resize the source of Text
+
 v2.0.0
 ------------------------------
 * Hardware acceleration using TextureAtlas and the display list
