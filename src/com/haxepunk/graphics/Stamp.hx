@@ -55,7 +55,7 @@ class Stamp extends Graphic
 	}
 
 	/** @private Renders the Graphic. */
-	public override function render(target:BitmapData, point:Point, camera:Point)
+	public override function render(target:BitmapData, point:Point, camera:Point, layer:Int=HXP.BASELAYER)
 	{
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;
@@ -66,7 +66,7 @@ class Stamp extends Graphic
 		}
 		else
 		{
-			_region.draw(_point.x, _point.y, HXP.screen.fullScaleX, HXP.screen.fullScaleY);
+			_region.draw(_point.x, _point.y, layer, HXP.screen.fullScaleX, HXP.screen.fullScaleY);
 		}
 	}
 

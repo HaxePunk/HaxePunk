@@ -86,7 +86,7 @@ class PreRotation extends Image
 	}
 
 	/** Renders the PreRotated graphic. */
-	override public function render(target:BitmapData, point:Point, camera:Point)
+	override public function render(target:BitmapData, point:Point, camera:Point, layer:Int=HXP.BASELAYER)
 	{
 		frameAngle %= 360;
 		if (frameAngle < 0) frameAngle += 360;
@@ -99,7 +99,7 @@ class PreRotation extends Image
 			_frame.x %= _width;
 			updateBuffer();
 		}
-		super.render(target, point, camera);
+		super.render(target, point, camera, layer);
 	}
 
 	// Rotation information.
