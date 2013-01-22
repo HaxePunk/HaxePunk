@@ -98,11 +98,11 @@ class Text extends Image
 			_bufferRect.height = textHeight;
 		}
 
-		if (width > _source.width || height > _source.height)
+		if (textWidth > _source.width || textHeight > _source.height)
 		{
 			_source = HXP.createBitmap(
-				Std.int(Math.max(width, _source.width)),
-				Std.int(Math.max(height, _source.height)),
+				Std.int(Math.max(textWidth, _source.width)),
+				Std.int(Math.max(textHeight, _source.height)),
 				true);
 
 			_sourceRect = _source.rect;
