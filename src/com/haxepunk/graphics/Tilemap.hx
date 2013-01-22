@@ -421,22 +421,32 @@ class Tilemap extends Canvas
 			_point.x = point.x + x - camera.x * scrollX;
 			_point.y = point.y + y - camera.y * scrollY;
 
-			var wx:Float = _point.x, wy:Float = _point.y, tile:Int = 0,
-			scalex:Float = HXP.screen.fullScaleX, scaley:Float = HXP.screen.fullScaleY,
-			tw:Int = Std.int(tileWidth * scalex), th:Int = Std.int(tileHeight * scaley);
+			var scalex:Float = HXP.screen.fullScaleX, scaley:Float = HXP.screen.fullScaleY,
+				tw:Int = Std.int(tileWidth * scalex), th:Int = Std.int(tileHeight * scaley);
 
 			// determine start and end tiles to draw (optimization)
-			var startx = Math.floor(_point.x / tw),
-				starty = Math.floor(_point.y / th),
-				destx = Math.ceil((_point.x + HXP.width) / tw),
-				desty = Math.ceil((_point.y + HXP.height) / th),
-				r = HXP.getRed(color)/255, g = HXP.getGreen(color)/255, b = HXP.getBlue(color)/255;
+			var startx = -Math.floor(_point.x / tw),
+				starty = -Math.floor(_point.y / th),
+				destx = startx + Math.ceil(HXP.width / tw),
+				desty = starty + Math.ceil(HXP.height / th);
+
+			// BUG? the starting point seems to be off by 1...
+			startx = startx - 1; starty = starty - 1;
+
+			// nothing will render if we're completely off screen
+			if (startx > _columns || starty > _rows || destx < 0 || desty < 0)
+				return;
 
 			// clamp values to boundaries
 			if (startx < 0) startx = 0;
 			if (destx > _columns) destx = _columns;
 			if (starty < 0) starty = 0;
 			if (desty > _rows) desty = _rows;
+
+			var r = HXP.getRed(color)/255, g = HXP.getGreen(color)/255, b = HXP.getBlue(color)/255,
+				wx = _point.x + startx * tw,
+				wy = _point.y + starty * th,
+				tile = 0;
 
 			for (y in starty...desty)
 			{
@@ -450,7 +460,7 @@ class Tilemap extends Canvas
 
 					wx += tw;
 				}
-				wx = _point.x;
+				wx = _point.x + startx * tw;
 				wy += th;
 			}
 		}
