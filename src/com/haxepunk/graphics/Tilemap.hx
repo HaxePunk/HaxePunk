@@ -422,7 +422,7 @@ class Tilemap extends Canvas
 			_point.y = point.y + y - camera.y * scrollY;
 
 			var scalex:Float = HXP.screen.fullScaleX, scaley:Float = HXP.screen.fullScaleY,
-				tw:Int = Std.int(tileWidth * scalex), th:Int = Std.int(tileHeight * scaley);
+				tw:Int = Std.int(tileWidth), th:Int = Std.int(tileHeight);
 
 			// determine start and end tiles to draw (optimization)
 			var startx = -Math.floor(_point.x / tw),
@@ -444,8 +444,8 @@ class Tilemap extends Canvas
 			if (desty > _rows) desty = _rows;
 
 			var r = HXP.getRed(color)/255, g = HXP.getGreen(color)/255, b = HXP.getBlue(color)/255,
-				wx = _point.x + startx * tw,
-				wy = _point.y + starty * th,
+				wx = (_point.x + startx * tw) * scalex,
+				wy = (_point.y + starty * th) * scaley,
 				tile = 0;
 
 			for (y in starty...desty)
@@ -458,10 +458,10 @@ class Tilemap extends Canvas
 						_atlas.prepareTile(tile, wx, wy, layer, scalex, scaley, 0, r, g, b, alpha);
 					}
 
-					wx += tw;
+					wx += tw * scalex;
 				}
-				wx = _point.x + startx * tw;
-				wy += th;
+				wx = (_point.x + startx * tw) * scalex;
+				wy += th * scaley;
 			}
 		}
 	}
