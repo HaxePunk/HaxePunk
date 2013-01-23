@@ -66,7 +66,8 @@ class Stamp extends Graphic
 		}
 		else
 		{
-			_region.draw(_point.x, _point.y, layer, HXP.screen.fullScaleX, HXP.screen.fullScaleY);
+			var sx = HXP.screen.fullScaleX, sy = HXP.screen.fullScaleY;
+			_region.draw(_point.x * sx, _point.y * sy, layer, sx, sy);
 		}
 	}
 

@@ -180,7 +180,7 @@ class Emitter extends Graphic
 			}
 			else // _blit
 			{
-				_region.draw(_p.x, _p.y, layer,
+				_region.draw(_p.x * scaleX, _p.y * scaleY, layer,
 					scaleX, scaleY, type._angle,
 					type._red + type._redRange * td,
 					type._green + type._greenRange * td,
