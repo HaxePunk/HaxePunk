@@ -949,7 +949,7 @@ class World extends Tweener
 	 * @param	into		The Array or Vector to populate.
 	 * @return	The same array, populated.
 	 */
-	public function getClass<E:Entity>(c:Class<E>, into:Array<E>)
+	public function getClass<E:Entity>(c:Class<Dynamic>, into:Array<E>)
 	{
 		var fe:FriendEntity = _updateFirst,
 			n:Int = into.length;
