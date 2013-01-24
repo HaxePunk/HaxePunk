@@ -259,13 +259,13 @@ class Screen
 	 * X position of the mouse on the screen.
 	 */
 	public var mouseX(getMouseX, null):Int;
-	private function getMouseX():Int { return Std.int(_sprite.mouseX * fullScaleX); }
+	private function getMouseX():Int { return Std.int(_sprite.mouseX); }
 
 	/**
 	 * Y position of the mouse on the screen.
 	 */
 	public var mouseY(getMouseY, null):Int;
-	private function getMouseY():Int { return Std.int(_sprite.mouseY * fullScaleY); }
+	private function getMouseY():Int { return Std.int(_sprite.mouseY); }
 
 	/**
 	 * Captures the current screen as an Image object.
