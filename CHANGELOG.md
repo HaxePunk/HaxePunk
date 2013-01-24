@@ -1,5 +1,10 @@
 HaxePunk CHANGELOG
 
+v2.0.2
+------------------------------
+* Bug fixes for x/y scaling values
+* World.getClass handles any input class (for interfaces)
+
 v2.0.1
 ------------------------------
 * Fixed Tilemap rendering when camera moves (cpp/neko)
