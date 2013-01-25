@@ -37,7 +37,7 @@ class Atlas
 	public var height(default, null):Int;
 
 	public static var drawCallThreshold:Int = 25000;
-	public static var smooth:Bool = true;
+	public static var smooth:Bool = false;
 
 	public function new(bd:BitmapData)
 	{

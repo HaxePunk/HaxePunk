@@ -1,5 +1,10 @@
 HaxePunk CHANGELOG
 
+v2.0.3
+------------------------------
+* Added clipping to Atlas regions
+* Added drawCallThreshold and smooth variables to Atlas (improves rendering)
+
 v2.0.2
 ------------------------------
 * Bug fixes for x/y scaling values

@@ -6,5 +6,5 @@
 	<tag v="nme" />
 	<depends name="nme" />
 	<description>A HaXe port of the FlashPunk AS3 engine.</description>
-	<version name="2.0.2">See CHANGELOG</version>
+	<version name="2.0.3">See CHANGELOG</version>
 </project>
