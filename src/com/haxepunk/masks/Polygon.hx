@@ -16,9 +16,8 @@ class Polygon extends Hitbox
 
 	/**
 	 * Constructor.
-	 * @param	radius		Radius of the circle.
-	 * @param	x			X offset of the circle.
-	 * @param	y			Y offset of the circle.
+	 * @param	points   an array of coordinates that define the polygon (must have at least 3)
+	 * @param	origin   origin point of the polygon
 	 */
 	public function new(points:Array<Point>, ?origin:Point)
 	{
