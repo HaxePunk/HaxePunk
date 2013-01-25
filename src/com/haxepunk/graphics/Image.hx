@@ -103,6 +103,10 @@ class Image extends Graphic
 		{
 			if (clipRect.width == 0) clipRect.width = _sourceRect.width;
 			if (clipRect.height == 0) clipRect.height = _sourceRect.height;
+			if (!_blit)
+			{
+				_region = _region.clip(clipRect); // create a new clipped region
+			}
 			_sourceRect = clipRect;
 		}
 

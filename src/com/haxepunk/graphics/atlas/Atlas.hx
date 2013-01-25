@@ -4,6 +4,8 @@ import nme.display.BitmapData;
 import nme.display.Graphics;
 import nme.display.Sprite;
 import nme.display.Tilesheet;
+import nme.geom.Rectangle;
+import nme.geom.Point;
 
 class Layer
 {
@@ -48,6 +50,7 @@ class Atlas
 		_renderFlags = Tilesheet.TILE_TRANS_2x2 | Tilesheet.TILE_ALPHA | Tilesheet.TILE_BLEND_NORMAL | Tilesheet.TILE_RGB;
 
 		_atlases.push(this);
+		_tileIndex = 0;
 	}
 
 	/**
@@ -185,6 +188,21 @@ class Atlas
 		}
 	}
 
+	/**
+	 * Creates a new AtlasRegion and assigns it to a name
+	 * @param name the region name to create
+	 * @param rect defines the rectangle of the tile on the tilesheet
+	 * @param center positions the local center point to pivot on
+	 */
+	public inline function createRegion(rect:Rectangle, ?center:Point):AtlasRegion
+	{
+		_tilesheet.addTileRect(rect, center);
+		var region = new AtlasRegion(this, _tileIndex, rect);
+		_tileIndex += 1;
+		return region;
+	}
+
+	private var _tileIndex:Int;
 	private var _tilesheet:Tilesheet;
 	private var _layerIndex:Int;
 	private var _layer:Layer; // current layer

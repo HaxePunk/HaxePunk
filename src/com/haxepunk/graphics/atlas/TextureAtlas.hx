@@ -14,7 +14,6 @@ class TextureAtlas extends Atlas
 		else bd = HXP.getBitmap(source);
 
 		_regions = new Hash<AtlasRegion>();
-		_index = 0;
 
 		super(bd);
 	}
@@ -62,13 +61,10 @@ class TextureAtlas extends Atlas
 	 */
 	public function defineRegion(name:String, rect:Rectangle, ?center:Point):AtlasRegion
 	{
-		_tilesheet.addTileRect(rect, center);
-		var region = new AtlasRegion(this, _index, rect.width, rect.height);
+		var region = createRegion(rect, center);
 		_regions.set(name, region);
-		_index += 1;
 		return region;
 	}
 
-	private var _index:Int; // keeps track of the current tile index
 	private var _regions:Hash<AtlasRegion>;
 }

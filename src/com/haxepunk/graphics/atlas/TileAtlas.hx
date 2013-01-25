@@ -1,6 +1,6 @@
 package com.haxepunk.graphics.atlas;
 
-import flash.display.BitmapData;
+import nme.display.BitmapData;
 
 class TileAtlas extends Atlas
 {
@@ -24,7 +24,6 @@ class TileAtlas extends Atlas
 
 	private function prepareTiles(width:Int, height:Int, tileWidth:Int, tileHeight:Int)
 	{
-		var tile = 0;
 		var cols:Int = Math.floor(width / tileWidth);
 		var rows:Int = Math.floor(height / tileHeight);
 
@@ -41,9 +40,8 @@ class TileAtlas extends Atlas
 			{
 				HXP.rect.x = x * tileWidth;
 
-				_tilesheet.addTileRect(HXP.rect, HXP.point);
-				_regions.set(tile, new AtlasRegion(this, tile, tileWidth, tileHeight));
-				tile += 1;
+				var region = createRegion(HXP.rect, HXP.point);
+				_regions.set(region.tileIndex, region);
 			}
 		}
 	}

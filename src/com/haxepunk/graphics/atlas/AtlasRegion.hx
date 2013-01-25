@@ -1,18 +1,45 @@
 package com.haxepunk.graphics.atlas;
 
+import nme.geom.Rectangle;
+import nme.geom.Point;
+
 class AtlasRegion
 {
 
 	public var rotated:Bool;
-	public var width(default, null):Float;
-	public var height(default, null):Float;
+	public var tileIndex(default, null):Int;
+	public var width(getWidth, never):Float;
+	public var height(getHeight, never):Float;
 
-	public function new(parent:Atlas, tileIndex:Int, width:Float, height:Float)
+	public function new(parent:Atlas, tileIndex:Int, rect:Rectangle)
 	{
 		this.parent = parent;
 		this.tileIndex = tileIndex;
-		this.width = width;
-		this.height = height;
+		this.rect = rect.clone();
+	}
+
+	/**
+	 * Clips an atlas region
+	 * @param clipRect a clip rectangle with coordinates local to the region
+	 * @param center the new center point
+	 * @return a new atlas region with the clipped coordinates
+	 */
+	public function clip(clipRect:Rectangle, ?center:Point):AtlasRegion
+	{
+		// only clip within the current region
+		if (clipRect.x + clipRect.width > rect.width)
+			clipRect.width = rect.width - clipRect.x;
+		if (clipRect.y + clipRect.height > rect.height)
+			clipRect.height = rect.height - clipRect.y;
+
+		// do not allow negative width/height
+		if (clipRect.width < 0) clipRect.width = 0;
+		if (clipRect.height < 0) clipRect.height = 0;
+
+		// position clip rect where the last image was
+		clipRect.x += rect.x;
+		clipRect.y += rect.y;
+		return parent.createRegion(clipRect, center);
 	}
 
 	/**
@@ -40,6 +67,10 @@ class AtlasRegion
 		return "[AtlasRegion " + width + ", " + height + " " + tileIndex + "]";
 	}
 
+	private inline function getWidth():Float { return rect.width; }
+	private inline function getHeight():Float { return rect.height; }
+
+	private var rect:Rectangle;
+	private var center:Point;
 	private var parent:Atlas;
-	private var tileIndex:Int;
 }
