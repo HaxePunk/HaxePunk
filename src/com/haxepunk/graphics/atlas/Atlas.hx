@@ -34,6 +34,9 @@ class Atlas
 	public var width(default, null):Int;
 	public var height(default, null):Int;
 
+	public static var drawCallThreshold:Int = 25000;
+	public static var smooth:Bool = true;
+
 	public function new(bd:BitmapData)
 	{
 		_layers = new IntHash<Layer>();
@@ -52,7 +55,7 @@ class Atlas
 	 * @param g the graphics context to draw in
 	 * @param smooth if rendering should use antialiasing
 	 */
-	public inline function render(smooth:Bool=false)
+	public inline function render()
 	{
 		var l:Layer;
 
@@ -68,22 +71,24 @@ class Atlas
 		}
 	}
 
-	/**
-	 * Called by the current World to draw all TextureAtlas
-	 * @param smooth if rendering should use antialiasing
-	 */
-	public static inline function renderAll(smooth:Bool=false)
+	public static inline function clear()
 	{
 		for (sprite in _sprites)
 		{
 			sprite.graphics.clear();
 		}
+	}
 
+	/**
+	 * Called by the current World to draw all TextureAtlas
+	 */
+	public static inline function renderAll()
+	{
 		if (_atlases.length > 0)
 		{
 			for (atlas in _atlases)
 			{
-				atlas.render(smooth);
+				atlas.render();
 			}
 		}
 	}
@@ -151,6 +156,12 @@ class Atlas
 		d[_layer.index++] = green;
 		d[_layer.index++] = blue;
 		d[_layer.index++] = alpha;
+
+		if (_layer.index > drawCallThreshold)
+		{
+			_layer.prepare();
+			getSpriteByLayer(layer).graphics.drawTiles(_tilesheet, _layer.data, smooth, _renderFlags);
+		}
 	}
 
 	private static inline function getSpriteByLayer(layer:Int):Sprite
@@ -169,7 +180,7 @@ class Atlas
 				idx += 1;
 			}
 			_sprites.set(layer, sprite);
-			HXP.engine.addChildAt(sprite, idx);
+			HXP.stage.addChildAt(sprite, idx);
 			return sprite;
 		}
 	}

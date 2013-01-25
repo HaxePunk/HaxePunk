@@ -135,6 +135,7 @@ class Engine extends Sprite
 		HXP.screen.swap();
 		Draw.resetTarget();
 		HXP.screen.refresh();
+		Atlas.clear();
 		if (HXP.world.visible) HXP.world.render();
 		HXP.screen.redraw();
 		Atlas.renderAll();
