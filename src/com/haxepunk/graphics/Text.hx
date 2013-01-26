@@ -166,15 +166,6 @@ class Text extends Image
 		return value;
 	}
 
-	private override function getWidth():Int
-	{
-		return Std.int(_field.textWidth);
-	}
-	private override function getHeight():Int
-	{
-		return Std.int(_field.textHeight);
-	}
-
 	// Text information.
 	private var _field:TextField;
 	private var _form:TextFormat;
