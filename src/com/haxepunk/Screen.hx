@@ -126,7 +126,15 @@ class Screen
 	 */
 	public var color(getColor, setColor):Int;
 	private function getColor():Int { return _color; }
-	private function setColor(value:Int):Int { _color = 0xFF000000 | value; return _color; }
+	private function setColor(value:Int):Int
+	{
+#if flash
+		_color = 0xFF000000 | value;
+#elseif debug
+		trace("screen.color shouldn't be set other than in flash");
+#end
+		return value;
+	}
 
 	/**
 	 * X offset of the screen.
