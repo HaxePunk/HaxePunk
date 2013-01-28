@@ -924,7 +924,7 @@ class Console
 #end
 					if (field != null)
 					{
-						s += "\n" + str + ": " + field.toString();
+						s += "\n" + str + ": " + Std.string(field);
 					}
 				}
 			}
