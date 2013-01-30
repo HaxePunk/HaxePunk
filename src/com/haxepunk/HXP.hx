@@ -912,7 +912,7 @@ class HXP
 	 * @param	tweener		The Tweener object to add this Alarm to. Defaults to HXP.tweener.
 	 * @return	The added Alarm object.
 	 * 
-	 * Example: HXP.alarm(5.0, callbackFunction, Tween.LOOPING); // Calls callbackFunction every 5 seconds
+	 * Example: HXP.alarm(5.0, callbackFunction, TweenType.Looping); // Calls callbackFunction every 5 seconds
 	 */
 	public static function alarm(delay:Float, complete:CompleteCallback, ?type:TweenType = null, tweener:Tweener = null):Alarm
 	{
