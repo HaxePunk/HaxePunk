@@ -2,8 +2,8 @@ package com.haxepunk.graphics;
 
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
-import flash.display.BitmapData;
-import flash.geom.Point;
+import nme.display.BitmapData;
+import nme.geom.Point;
 
 /**
  * A Graphic that can contain multiple Graphics of one or various types.

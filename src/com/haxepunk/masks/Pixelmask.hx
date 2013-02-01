@@ -1,13 +1,13 @@
 package com.haxepunk.masks;
 
 import com.haxepunk.Mask;
-import flash.display.BitmapData;
-import flash.geom.Point;
-import flash.geom.Rectangle;
+import nme.display.BitmapData;
+import nme.geom.Point;
+import nme.geom.Rectangle;
 import com.haxepunk.HXP;
 
 /**
- * A bitmap mask used for pixel-perfect collision. 
+ * A bitmap mask used for pixel-perfect collision.
  */
 class Pixelmask extends Hitbox
 {
@@ -15,7 +15,7 @@ class Pixelmask extends Hitbox
 	 * Alpha threshold of the bitmap used for collision.
 	 */
 	public var threshold:Int;
-	
+
 	/**
 	 * Constructor.
 	 * @param	source		The image to use as a mask.
@@ -25,30 +25,30 @@ class Pixelmask extends Hitbox
 	public function new(source:Dynamic, x:Int = 0, y:Int = 0)
 	{
 		super();
-		
+
 		// fetch mask data
 		if (Std.is(source, BitmapData)) _data = source;
 		else _data = HXP.getBitmap(source);
 		if (_data == null) throw "Invalid Pixelmask source image.";
-		
+
 		threshold = 1;
-		
+
 		_rect = HXP.rect;
 		_point = HXP.point;
 		_point2 = HXP.point2;
-		
+
 		// set mask properties
 		_width = data.width;
 		_height = data.height;
 		_x = x;
 		_y = y;
-		
+
 		// set callback functions
 		_check.set(Type.getClassName(Mask), collideMask);
 		_check.set(Type.getClassName(Pixelmask), collidePixelmask);
 		_check.set(Type.getClassName(Hitbox), collideHitbox);
 	}
-	
+
 	/** @private Collide against an Entity. */
 	override private function collideMask(other:Mask):Bool
 	{
@@ -64,7 +64,7 @@ class Pixelmask extends Hitbox
 		return false;
 		#end
 	}
-	
+
 	/** @private Collide against a Hitbox. */
 	override private function collideHitbox(other:Hitbox):Bool
 	{
@@ -80,7 +80,7 @@ class Pixelmask extends Hitbox
 		return false;
 		#end
 	}
-	
+
 	/** @private Collide against a Pixelmask. */
 	private function collidePixelmask(other:Pixelmask):Bool
 	{
@@ -94,7 +94,7 @@ class Pixelmask extends Hitbox
 		return false;
 		#end
 	}
-	
+
 	/**
 	 * Current BitmapData mask.
 	 */
@@ -108,10 +108,10 @@ class Pixelmask extends Hitbox
 		update();
 		return _data;
 	}
-	
+
 	// Pixelmask information.
 	private var _data:BitmapData;
-	
+
 	// Global objects.
 	private var _rect:Rectangle;
 	private var _point:Point;

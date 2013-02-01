@@ -1,7 +1,7 @@
 package com.haxepunk.masks;
 
 import com.haxepunk.Mask;
-import flash.geom.Point;
+import nme.geom.Point;
 import com.haxepunk.masks.Polygon;
 
 /** Uses parent's hitbox to determine collision.

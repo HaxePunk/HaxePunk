@@ -1,10 +1,11 @@
 package com.haxepunk.graphics;
 
-import flash.display.BitmapData;
-import flash.geom.Point;
-import flash.geom.Rectangle;
-import flash.text.TextField;
-import flash.text.TextFormat;
+import nme.display.BitmapData;
+import nme.geom.Point;
+import nme.geom.Rectangle;
+import nme.text.TextField;
+import nme.text.TextFormat;
+import nme.text.TextFormatAlign;
 
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
@@ -13,7 +14,7 @@ typedef TextOptions = {
 	@:optional var font:String;
 	@:optional var size:Int;
 #if (flash || js)
-	@:optional var align:flash.text.TextFormatAlign;
+	@:optional var align:TextFormatAlign;
 #else
 	@:optional var align:String;
 #end
@@ -49,7 +50,7 @@ class Text extends Image
 		if (options.font == null)  options.font = HXP.defaultFont;
 		if (options.size == 0)     options.size = 16;
 #if (flash || js)
-		if (options.align == null) options.align = flash.text.TextFormatAlign.LEFT;
+		if (options.align == null) options.align = TextFormatAlign.LEFT;
 #else
 		if (options.align == null) options.align = "left";
 #end

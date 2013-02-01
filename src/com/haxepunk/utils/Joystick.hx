@@ -1,6 +1,6 @@
 package com.haxepunk.utils;
 
-import flash.geom.Point;
+import nme.geom.Point;
 import com.haxepunk.HXP;
 
 enum JoyButtonState

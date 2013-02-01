@@ -5,8 +5,8 @@ import com.haxepunk.Mask;
 import com.haxepunk.masks.Grid;
 import com.haxepunk.math.Projection;
 import com.haxepunk.math.Vector;
-import flash.display.Graphics;
-import flash.geom.Point;
+import nme.display.Graphics;
+import nme.geom.Point;
 
 /**
  * Uses circular area to determine collision.

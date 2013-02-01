@@ -1,12 +1,12 @@
 package com.haxepunk.graphics;
 
-import flash.display.Bitmap;
-import flash.display.BitmapData;
-import flash.display.BlendMode;
-import flash.geom.ColorTransform;
-import flash.geom.Matrix;
-import flash.geom.Point;
-import flash.geom.Rectangle;
+import nme.display.Bitmap;
+import nme.display.BitmapData;
+import nme.display.BlendMode;
+import nme.geom.ColorTransform;
+import nme.geom.Matrix;
+import nme.geom.Point;
+import nme.geom.Rectangle;
 import com.haxepunk.graphics.atlas.TextureAtlas;
 import com.haxepunk.graphics.atlas.AtlasRegion;
 import com.haxepunk.Graphic;
@@ -50,7 +50,7 @@ class Image extends Graphic
 
 	/**
 	 * Optional blend mode to use when drawing this image.
-	 * Use constants from the flash.display.BlendMode class.
+	 * Use constants from the nme.display.BlendMode class.
 	 */
 	public var blend:BlendMode;
 

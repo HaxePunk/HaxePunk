@@ -1,7 +1,7 @@
 ﻿package com.haxepunk.tweens.motion;
 
 import com.haxepunk.Tween;
-import flash.geom.Point;
+import nme.geom.Point;
 import com.haxepunk.utils.Ease;
 
 /**
@@ -20,7 +20,7 @@ class CubicMotion extends Motion
 		_aX = _aY = _bX = _bY = 0;
 		super(0, complete, type, null);
 	}
-	
+
 	/**
 	 * Starts moving along the curve.
 	 * @param	fromX		X start.
@@ -48,15 +48,15 @@ class CubicMotion extends Motion
 		_ease = ease;
 		start();
 	}
-	
+
 	/** @private Updates the Tween. */
-	override public function update() 
+	override public function update()
 	{
 		super.update();
 		x = _t * _t * _t * (_toX + 3 * (_aX - _bX) - _fromX) + 3 * _t * _t * (_fromX - 2 * _aX + _bX) + 3 * _t * (_aX - _fromX) + _fromX;
 		y = _t * _t * _t * (_toY + 3 * (_aY - _bY) - _fromY) + 3 * _t * _t * (_fromY - 2 * _aY + _bY) + 3 * _t * (_aY - _fromY) + _fromY;
 	}
-	
+
 	// Curve information.
 	private var _fromX:Float;
 	private var _fromY:Float;

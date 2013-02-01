@@ -3,7 +3,7 @@
 import com.haxepunk.Tween;
 import com.haxepunk.HXP;
 import com.haxepunk.utils.Ease;
-import flash.geom.Point;
+import nme.geom.Point;
 
 /**
  * Determines motion along a quadratic curve.
@@ -22,7 +22,7 @@ class QuadMotion extends Motion
 		_controlX = _controlY = 0;
 		super(0, complete, type, null);
 	}
-	
+
 	/**
 	 * Starts moving along the curve.
 	 * @param	fromX		X start.
@@ -47,7 +47,7 @@ class QuadMotion extends Motion
 		_ease = ease;
 		start();
 	}
-	
+
 	/**
 	 * Starts moving along the curve at the speed.
 	 * @param	fromX		X start.
@@ -72,15 +72,15 @@ class QuadMotion extends Motion
 		_ease = ease;
 		start();
 	}
-	
+
 	/** @private Updates the Tween. */
-	override public function update() 
+	override public function update()
 	{
 		super.update();
 		x = _fromX * (1 - _t) * (1 - _t) + _controlX * 2 * (1 - _t) * _t + _toX * _t * _t;
 		y = _fromY * (1 - _t) * (1 - _t) + _controlY * 2 * (1 - _t) * _t + _toY * _t * _t;
 	}
-	
+
 	/**
 	 * The distance of the entire curve.
 	 */
@@ -104,7 +104,7 @@ class QuadMotion extends Motion
 			BA:Float = B / A2;
 		return (A32 * ABC + A2 * B * (ABC - C2) + (4 * C * A - B * B) * Math.log((2 * A2 + BA + ABC) / (BA + C2))) / (4 * A32);
 	}
-	
+
 	// Curve information.
 	private var _distance:Float;
 	private var _fromX:Float;

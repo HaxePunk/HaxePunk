@@ -1,8 +1,8 @@
 package com.haxepunk.graphics;
 
-import flash.display.BitmapData;
-import flash.geom.Point;
-import flash.geom.Rectangle;
+import nme.display.BitmapData;
+import nme.geom.Point;
+import nme.geom.Rectangle;
 
 /**
  * Used by the Emitter class to track an existing Particle.

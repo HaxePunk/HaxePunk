@@ -4,10 +4,10 @@ import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
 import com.haxepunk.graphics.atlas.AtlasRegion;
 
-import flash.display.BitmapData;
-import flash.display.DisplayObject;
-import flash.geom.Point;
-import flash.geom.Rectangle;
+import nme.display.BitmapData;
+import nme.display.DisplayObject;
+import nme.geom.Point;
+import nme.geom.Rectangle;
 
 /**
  * A simple non-transformed, non-animated graphic.

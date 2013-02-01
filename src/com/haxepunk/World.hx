@@ -1,9 +1,9 @@
 package com.haxepunk;
 
-import flash.geom.Point;
+import nme.geom.Point;
 import com.haxepunk.Entity;
 import com.haxepunk.Tweener;
-import flash.geom.Rectangle;
+import nme.geom.Rectangle;
 
 /**
  * Updated by Engine, main game container that holds all currently active Entities.

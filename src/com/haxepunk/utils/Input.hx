@@ -1,8 +1,8 @@
 package com.haxepunk.utils;
 
-import flash.events.KeyboardEvent;
-import flash.events.MouseEvent;
-import flash.ui.Keyboard;
+import nme.events.KeyboardEvent;
+import nme.events.MouseEvent;
+import nme.ui.Keyboard;
 import com.haxepunk.HXP;
 #if (nme && (cpp || neko))
 import nme.events.JoystickEvent;

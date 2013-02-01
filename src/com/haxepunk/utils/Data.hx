@@ -1,17 +1,17 @@
 package com.haxepunk.utils;
 
-import flash.net.SharedObject;
+import nme.net.SharedObject;
 
 /**
  * Static helper class used for saving and loading data from stored cookies.
  */
-class Data 
+class Data
 {
 	/**
 	 * If you want to share data between different SWFs on the same host, use this id.
 	 */
 	public static var id:String = "";
-	
+
 	/**
 	 * Overwrites the current data with the file.
 	 * @param	file		The filename to load.
@@ -22,7 +22,7 @@ class Data
 		_data = new Hash<Dynamic>();
 		for (str in Reflect.fields(data)) _data.set(str, Reflect.field(data, str));
 	}
-	
+
 	/**
 	 * Overwrites the file with the current data. The current data will not be saved until this function is called.
 	 * @param	file		The filename to save.
@@ -37,7 +37,7 @@ class Data
 		for (str in _data.keys()) Reflect.setField(data, str, _data.get(str));
 		_shared.flush(SIZE);
 	}
-	
+
 	/**
 	 * Reads an int from the current data.
 	 * @param	name			Property to read.
@@ -48,7 +48,7 @@ class Data
 	{
 		return Std.int(read(name, defaultValue));
 	}
-	
+
 	/**
 	 * Reads a Boolean from the current data.
 	 * @param	name			Property to read.
@@ -59,7 +59,7 @@ class Data
 	{
 		return read(name, defaultValue);
 	}
-	
+
 	/**
 	 * Reads a String from the current data.
 	 * @param	name			Property to read.
@@ -70,7 +70,7 @@ class Data
 	{
 		return Std.string(read(name, defaultValue));
 	}
-	
+
 	/**
 	 * Reads a property from the data object.
 	 * @param	name			Property to read.
@@ -82,7 +82,7 @@ class Data
 		if (_data.get(name) != null) return _data.get(name);
 		return defaultValue;
 	}
-	
+
 	/**
 	 * Writes a Dynamic object to the current data.
 	 * @param	name		Property to write.
@@ -92,7 +92,7 @@ class Data
 	{
 		_data.set(name, value);
 	}
-	
+
 	/** @private Loads the data file, or return it if you're loading the same one. */
 	private static function loadData(file:String):Dynamic
 	{
@@ -101,7 +101,7 @@ class Data
 		else _shared = SharedObject.getLocal(PREFIX + "/" + file);
 		return _shared.data;
 	}
-	
+
 	// Data information.
 	private static var _shared:SharedObject;
 	private static var _dir:String;

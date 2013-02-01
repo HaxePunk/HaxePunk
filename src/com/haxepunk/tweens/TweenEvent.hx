@@ -1,6 +1,6 @@
 package com.haxepunk.tweens;
 
-import flash.events.Event;
+import nme.events.Event;
 
 class TweenEvent extends Event
 {

@@ -1,6 +1,6 @@
 ﻿package com.haxepunk.tweens.motion;
 
-import flash.geom.Point;
+import nme.geom.Point;
 import com.haxepunk.HXP;
 import com.haxepunk.Tween;
 import com.haxepunk.utils.Ease;

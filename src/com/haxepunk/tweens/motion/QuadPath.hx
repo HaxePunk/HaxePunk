@@ -2,7 +2,7 @@
 
 import com.haxepunk.Tween;
 import com.haxepunk.utils.Ease;
-import flash.geom.Point;
+import nme.geom.Point;
 
 /**
  * A series of points which will determine a path from the
@@ -15,7 +15,7 @@ class QuadPath extends Motion
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:CompleteCallback, type:TweenType) 
+	public function new(?complete:CompleteCallback, type:TweenType)
 	{
 		_points = new Array<Point>();
 		_curve = new Array<Point>();
@@ -23,11 +23,11 @@ class QuadPath extends Motion
 		_curveT = new Array<Float>();
 		_distance = _speed = _index = 0;
 		_updateCurve = true;
-		
+
 		super(0, complete, type, null);
 		_curveT[0] = 0;
 	}
-	
+
 	/**
 	 * Starts moving along the path.
 	 * @param	duration	Duration of the movement.
@@ -41,7 +41,7 @@ class QuadPath extends Motion
 		_ease = ease;
 		start();
 	}
-	
+
 	/**
 	 * Starts moving along the path at the speed.
 	 * @param	speed		Speed of the movement.
@@ -55,7 +55,7 @@ class QuadPath extends Motion
 		_ease = ease;
 		start();
 	}
-	
+
 	/**
 	 * Adds the point to the path.
 	 * @param	x		X position.
@@ -67,7 +67,7 @@ class QuadPath extends Motion
 		if (_points.length == 0) _curve[0] = new Point(x, y);
 		_points[_points.length] = new Point(x, y);
 	}
-	
+
 	/**
 	 * Gets the point on the path.
 	 * @param	index		Index of the point.
@@ -78,16 +78,16 @@ class QuadPath extends Motion
 		if (_points.length == 0) throw "No points have been added to the path yet.";
 		return _points[index % _points.length];
 	}
-	
+
 	/** @private Starts the Tween. */
-	override public function start() 
+	override public function start()
 	{
 		_index = 0;
 		super.start();
 	}
-	
+
 	/** @private Updates the Tween. */
-	override public function update() 
+	override public function update()
 	{
 		super.update();
 		if (_index < _curve.length - 1)
@@ -103,14 +103,14 @@ class QuadPath extends Motion
 		x = _a.x * (1 - td) * (1 - td) + _b.x * 2 * (1 - td) * td + _c.x * td * td;
 		y = _a.y * (1 - td) * (1 - td) + _b.y * 2 * (1 - td) * td + _c.y * td * td;
 	}
-	
+
 	/** @private Updates the path, preparing the curve. */
 	private function updatePath()
 	{
 		if (_points.length < 3)	throw "A QuadPath must have at least 3 points to operate.";
 		if (!_updateCurve) return;
 		_updateCurve = false;
-		
+
 		// produce the curve points
 		var p:Point,
 			c:Point,
@@ -134,7 +134,7 @@ class QuadPath extends Motion
 			l = p;
 			i ++;
 		}
-		
+
 		// find the total distance of the path
 		i = 0;
 		_distance = 0;
@@ -143,7 +143,7 @@ class QuadPath extends Motion
 			_curveD[i] = curveLength(_curve[i], _points[i + 1], _curve[i + 1]);
 			_distance += _curveD[i ++];
 		}
-		
+
 		// find t for each point on the curve
 		i = 1;
 		var d:Float = 0;
@@ -154,13 +154,13 @@ class QuadPath extends Motion
 		}
 		_curveT[_curve.length - 1] = 1;
 	}
-	
+
 	/**
 	 * Amount of points on the path.
 	 */
 	public var pointCount(getPointCount, null):Float;
 	private function getPointCount():Float { return _points.length; }
-	
+
 	/** @private Calculates the lenght of the curve. */
 	private function curveLength(start:Point, control:Point, finish:Point):Float
 	{
@@ -180,19 +180,19 @@ class QuadPath extends Motion
 			BA:Float = B / A2;
 		return (A32 * ABC + A2 * B * (ABC - C2) + (4 * C * A - B * B) * Math.log((2 * A2 + BA + ABC) / (BA + C2))) / (4 * A32);
 	}
-	
+
 	// Path information.
 	private var _points:Array<Point>;
 	private var _distance:Float;
 	private var _speed:Float;
 	private var _index:Int;
-	
+
 	// Curve information.
 	private var _updateCurve:Bool;
 	private var _curve:Array<Point>;
 	private var _curveT:Array<Float>;
 	private var _curveD:Array<Float>;
-	
+
 	// Curve points.
 	private var _a:Point;
 	private var _b:Point;
