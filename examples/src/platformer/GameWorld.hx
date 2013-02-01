@@ -81,7 +81,7 @@ class GameWorld extends DemoWorld
 		backdrop.x += 1;
 		backdrop.y += 2 * HXP.sign(player.gravity.y);
 		HXP.camera.x = player.x - HXP.halfWidth;
-		HXP.camera.y = player.y - HXP.halfWidth;
+		HXP.camera.y = player.y - HXP.halfHeight;
 		super.update();
 	}
 
