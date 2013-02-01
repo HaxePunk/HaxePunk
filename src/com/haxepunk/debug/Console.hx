@@ -236,8 +236,8 @@ class Console
 		_memReadText.embedFonts = true;
 		_memReadText.width = 110;
 		_memReadText.height = 20;
-		_memReadText.x = _fpsInfo.x + _fpsInfo.width + 5;
-		_memReadText.y = 1;
+		_memReadText.x = 2;
+		_memReadText.y = _fpsInfo.height + 2;
 
 		// The output log text.
 		_sprite.addChild(_logRead);
@@ -860,8 +860,8 @@ class Console
 			"Update: " + Std.string(HXP._updateTime) + "ms\n" +
 			"Render: " + Std.string(HXP._renderTime) + "ms";
 		_fpsInfoText1.text =
-			"Game: " + Std.string(HXP._gameTime) + "ms\n" +
-			"Flash: " + Std.string(HXP._flashTime) + "ms";
+			"System: " + Std.string(HXP._systemTime) + "ms\n" +
+			"Game: " + Std.string(HXP._gameTime) + "ms";
 		_memReadText.text =
 			"Mem: " + HXP.round(System.totalMemory / 1024 / 1024, 2) + "MB";
 	}

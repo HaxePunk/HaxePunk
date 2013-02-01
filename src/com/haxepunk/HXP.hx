@@ -991,7 +991,7 @@ class HXP
 	public static var _updateTime:Float;
 	public static var _renderTime:Float;
 	public static var _gameTime:Float;
-	public static var _flashTime:Float;
+	public static var _systemTime:Float;
 
 	// Bitmap storage.
 	private static var _bitmap:Hash<BitmapData> = new Hash<BitmapData>();

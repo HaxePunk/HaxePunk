@@ -78,7 +78,7 @@ class Engine extends Sprite
 		maxFrameSkip = 5;
 		tickRate = 4;
 		_frameList = new Array<Int>();
-		_flashTime = _delta = _frameListSum = 0;
+		_systemTime = _delta = _frameListSum = 0;
 		_frameLast = 0;
 
 		// on-stage event listener
@@ -237,7 +237,7 @@ class Engine extends Sprite
 	{
 		// update timer
 		_time = _gameTime = Lib.getTimer();
-		HXP._flashTime = _time - _flashTime;
+		HXP._systemTime = _time - _systemTime;
 		_updateTime = _time;
 		HXP.elapsed = (_time - _last) / 1000;
 		if (HXP.elapsed > maxElapsed) HXP.elapsed = maxElapsed;
@@ -261,7 +261,7 @@ class Engine extends Sprite
 		if (!paused) render();
 
 		// update timer
-		_time = _flashTime = Lib.getTimer();
+		_time = _systemTime = Lib.getTimer();
 		HXP._renderTime = _time - _renderTime;
 		HXP._gameTime = _time - _gameTime;
 	}
@@ -279,7 +279,7 @@ class Engine extends Sprite
 
 		// update timer
 		_gameTime = Std.int(_time);
-		HXP._flashTime = _time - _flashTime;
+		HXP._systemTime = _time - _systemTime;
 
 		// update loop
 		if (_delta > _skip) _delta = _skip;
@@ -313,7 +313,7 @@ class Engine extends Sprite
 		if (!paused) render();
 
 		// update timer
-		_time = _flashTime = Lib.getTimer();
+		_time = _systemTime = Lib.getTimer();
 		HXP._renderTime = _time - _renderTime;
 		HXP._gameTime =  _time - _gameTime;
 	}
@@ -349,7 +349,7 @@ class Engine extends Sprite
 	private var _updateTime:Float;
 	private var _renderTime:Float;
 	private var _gameTime:Float;
-	private var _flashTime:Float;
+	private var _systemTime:Float;
 
 	// FrameRate tracking.
 	private var _frameLast:Float;
