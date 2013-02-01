@@ -9,7 +9,7 @@ import nme.geom.Matrix;
 import nme.geom.Point;
 import nme.geom.Rectangle;
 #if flash
-import nme.media.SoundMixer;
+import flash.media.SoundMixer;
 #end
 import nme.media.SoundTransform;
 import nme.system.System;
@@ -885,7 +885,7 @@ class HXP
 			HXP.alarm(delay, function (o:Dynamic):Void { HXP.tween(object, values, duration, options); });
 			return null;
 		}
-		
+
 		var type:TweenType = TweenType.OneShot,
 			complete:CompleteCallback = null,
 			ease:EaseFunction = null,
@@ -903,7 +903,7 @@ class HXP
 		tweener.addTween(tween);
 		return tween;
 	}
-	
+
 	/**
 	 * Schedules a callback for the future. Shorthand for creating an Alarm tween, starting it and adding it to a Tweener.
 	 * @param	delay		The duration to wait before calling the callback.
@@ -911,14 +911,14 @@ class HXP
 	 * @param	type		Tween type.
 	 * @param	tweener		The Tweener object to add this Alarm to. Defaults to HXP.tweener.
 	 * @return	The added Alarm object.
-	 * 
+	 *
 	 * Example: HXP.alarm(5.0, callbackFunction, TweenType.Looping); // Calls callbackFunction every 5 seconds
 	 */
 	public static function alarm(delay:Float, complete:CompleteCallback, ?type:TweenType = null, tweener:Tweener = null):Alarm
 	{
 		if (type == null) type = TweenType.OneShot;
 		if (tweener == null) tweener = HXP.tweener;
-		
+
 		var alarm:Alarm = new Alarm(delay, complete, type);
 		tweener.addTween(alarm, true);
 		return alarm;
