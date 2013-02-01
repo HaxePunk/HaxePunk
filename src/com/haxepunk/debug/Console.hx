@@ -5,6 +5,7 @@ import com.haxepunk.HXP;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 
+import nme.Assets;
 import nme.display.Bitmap;
 import nme.display.BitmapData;
 import nme.display.BlendMode;
@@ -20,16 +21,6 @@ import nme.text.TextFormatAlign;
 
 import haxe.Log;
 import haxe.PosInfos;
-
-// Define classes for FlashDevelop
-#if (flash && swfmill)
-	class GfxConsoleDebug  extends BitmapData { }
-	class GfxConsoleLogo   extends BitmapData { }
-	class GfxConsoleOutput extends BitmapData { }
-	class GfxConsolePause  extends BitmapData { }
-	class GfxConsolePlay   extends BitmapData { }
-	class GfxConsoleStep   extends BitmapData { }
-#end
 
 class Console
 {
@@ -51,16 +42,12 @@ class Console
 		toggleKey = 192; // Tilde (~) by default
 
 		_sprite = new Sprite();
-#if nme
-		var font = nme.Assets.getFont("font/04B_03__.ttf");
+		var font = Assets.getFont("font/04B_03__.ttf");
 		if (font == null)
 		{
-			font = nme.Assets.getFont(HXP.defaultFont);
+			font = Assets.getFont(HXP.defaultFont);
 		}
 		_format = new TextFormat(font.fontName, 8, 0xFFFFFF);
-#elseif flash
-		_format = new TextFormat("console");
-#end
 		_back = new Bitmap();
 
 		_fpsRead = new Sprite();
@@ -163,33 +150,17 @@ class Console
 		if (_enabled) return;
 
 		// load assets based on embedding method
-#if nme
 		try
 		{
-			_bmpLogo = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_logo.png"));
-			_butDebug = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_debug.png"));
-			_butOutput = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_output.png"));
-			_butPlay = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_play.png"));
-			_butPause = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_pause.png"));
-			_butStep = new Bitmap(nme.Assets.getBitmapData("gfx/debug/console_step.png"));
+			_bmpLogo = new Bitmap(Assets.getBitmapData("gfx/debug/console_logo.png"));
+			_butDebug = new Bitmap(Assets.getBitmapData("gfx/debug/console_debug.png"));
+			_butOutput = new Bitmap(Assets.getBitmapData("gfx/debug/console_output.png"));
+			_butPlay = new Bitmap(Assets.getBitmapData("gfx/debug/console_play.png"));
+			_butPause = new Bitmap(Assets.getBitmapData("gfx/debug/console_pause.png"));
+			_butStep = new Bitmap(Assets.getBitmapData("gfx/debug/console_step.png"));
 		} catch (e:Dynamic) {
 			return;
 		}
-#elseif swfmill // Flashdevelop
-		_bmpLogo = new Bitmap(new GfxConsoleLogo(0, 0));
-		_butDebug = new Bitmap(new GfxConsoleDebug(0, 0));
-		_butOutput = new Bitmap(new GfxConsoleOutput(0, 0));
-		_butPlay = new Bitmap(new GfxConsolePlay(0, 0));
-		_butPause = new Bitmap(new GfxConsolePause(0, 0));
-		_butStep = new Bitmap(new GfxConsoleStep(0, 0));
-#else // samhaxe
-		_bmpLogo = new GfxConsoleLogo();
-		_butDebug = new GfxConsoleDebug();
-		_butOutput = new GfxConsoleOutput();
-		_butPlay = new GfxConsolePlay();
-		_butPause = new GfxConsolePause();
-		_butStep = new GfxConsoleStep();
-#end
 
 		// Enable it and add the Sprite to the stage.
 		_enabled = true;
@@ -209,9 +180,9 @@ class Console
 		_sprite.addChild(_entRead);
 		_entRead.addChild(_entReadText);
 		_entReadText.defaultTextFormat = format(16, 0xFFFFFF, "right");
-		#if flash
+#if flash
 		_entReadText.embedFonts = true;
-		#end
+#end
 		_entReadText.width = 100;
 		_entReadText.height = 20;
 
@@ -334,6 +305,7 @@ class Console
 
 		// redraws the logo
 		HXP.stage.addEventListener(Event.RESIZE, onResize);
+		onResize(null);
 
 		// Set the state to unpaused.
 		paused = false;
