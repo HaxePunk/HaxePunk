@@ -78,13 +78,15 @@ class Console
 
 		LOG = new Array<String>();
 
+		LAYER_LIST  = new Array<Int>();
 		ENTITY_LIST = new Array<Entity>();
 		SCREEN_LIST = new List<Entity>();
 		SELECT_LIST = new List<Entity>();
 
 		WATCH_LIST = new List<String>();
-		WATCH_LIST.push("x");
-		WATCH_LIST.push("y");
+		WATCH_LIST.add("x");
+		WATCH_LIST.add("y");
+		WATCH_LIST.add("layer");
 	}
 
 	private function traceLog(v:Dynamic, ?infos:PosInfos)
@@ -133,11 +135,11 @@ class Console
 		var i:String;
 		if (properties.length > 1)
 		{
-			for (i in properties) WATCH_LIST.push(i);
+			for (i in properties) WATCH_LIST.add(i);
 		}
 		else
 		{
-			WATCH_LIST.push(properties[0]);
+			WATCH_LIST.add(properties[0]);
 		}
 	}
 
@@ -164,7 +166,7 @@ class Console
 
 		// Enable it and add the Sprite to the stage.
 		_enabled = true;
-		HXP.engine.addChild(_sprite);
+		HXP.stage.addChild(_sprite);
 
 		// Used to determine some text sizing.
 		var big:Bool = width >= 480;
@@ -690,6 +692,7 @@ class Console
 		if (fetchList)
 		{
 			HXP.clear(ENTITY_LIST);
+			HXP.clear(LAYER_LIST);
 			HXP.world.getAll(ENTITY_LIST);
 		}
 
@@ -697,9 +700,14 @@ class Console
 		SCREEN_LIST.clear();
 		for (e in ENTITY_LIST)
 		{
-			if (e.collideRect(e.x, e.y, HXP.camera.x, HXP.camera.y, HXP.width, HXP.height))
+			if (e.onCamera)
 				SCREEN_LIST.push(e);
+
+			if (Lambda.indexOf(LAYER_LIST, e.layer) < 0)
+				LAYER_LIST.push(e.layer);
 		}
+		// sort the layers
+		LAYER_LIST.sort(function (a:Int, b:Int):Int { return a - b; });
 	}
 
 	/** @private Renders the Entities positions and hitboxes. */
@@ -1054,6 +1062,7 @@ class Console
 	private var LOG:Array<String>;
 
 	// Entity lists.
+	private var LAYER_LIST:Array<Int>;
 	private var ENTITY_LIST:Array<Entity>;
 	private var SCREEN_LIST:List<Entity>;
 	private var SELECT_LIST:List<Entity>;

@@ -19,6 +19,7 @@ class DemoWorld extends World
 
 		overlayText = new Text("Press '[' and ']' to switch demos", 0, 0);
 		overlayText.resizable = true;
+		overlayText.scrollX = overlayText.scrollY = 0;
 		var overlay:Entity = new Entity(0, HXP.screen.height - 20, overlayText);
 		overlay.layer = 0;
 		add(overlay);
