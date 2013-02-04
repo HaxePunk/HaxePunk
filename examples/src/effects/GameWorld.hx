@@ -34,6 +34,13 @@ class GameWorld extends DemoWorld
 		smokeEntity = addGraphic(smoke);
 	}
 
+	public override function end()
+	{
+#if !flash
+		atlas.destroy();
+#end
+	}
+
 	public override function update()
 	{
 		for (i in 0...10)

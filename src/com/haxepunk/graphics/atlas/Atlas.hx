@@ -54,6 +54,14 @@ class Atlas
 	}
 
 	/**
+	 * Removes an atlas from the display list
+	 */
+	public function destroy()
+	{
+		_atlases.remove(this);
+	}
+
+	/**
 	 * Renders the current TextureAtlas
 	 * @param g the graphics context to draw in
 	 * @param smooth if rendering should use antialiasing

@@ -177,6 +177,16 @@ class Engine extends Sprite
 			focusLost();
 			HXP.world.focusLost();
 		});
+
+#if !flash
+		nme.display.Stage.shouldRotateInterface = function(orientation:Int):Bool {
+			var tmp = HXP.height;
+			HXP.height = HXP.width;
+			HXP.width = tmp;
+			resize();
+			return true;
+		}
+#end
 	}
 
 	/** @private Event handler for stage resize */

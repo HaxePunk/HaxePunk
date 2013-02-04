@@ -34,7 +34,7 @@ class GameWorld extends DemoWorld
 		super();
 
 #if !flash
-		var atlas = TextureAtlas.loadTexturePacker("atlas/assets.xml");
+		atlas = TextureAtlas.loadTexturePacker("atlas/assets.xml");
 #end
 		backdrop = new Backdrop(#if flash "gfx/tile.png" #else atlas.getRegion("tile.png") #end, true, true);
 		addGraphic(backdrop, 20);
@@ -76,6 +76,13 @@ class GameWorld extends DemoWorld
 		add(entity);
 	}
 
+	public override function end()
+	{
+#if !flash
+		atlas.destroy();
+#end
+	}
+
 	public override function update()
 	{
 		backdrop.x += 1;
@@ -87,5 +94,6 @@ class GameWorld extends DemoWorld
 
 	private var player:Player;
 	private var backdrop:Backdrop;
+	private var atlas:TextureAtlas;
 
 }
