@@ -118,6 +118,17 @@ class Atlas
 		_layerIndex = layer;
 	}
 
+	public static function toggleLayerVisibility(layer:Int):Bool
+	{
+		var sprite = _sprites.get(layer);
+		if (sprite != null)
+		{
+			sprite.visible = !sprite.visible;
+			return sprite.visible;
+		}
+		return false;
+	}
+
 	/**
 	 * Prepares tile data for rendering
 	 * @param tile the tile index of the tilesheet

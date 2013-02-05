@@ -57,6 +57,8 @@ class Console
 		_fpsInfoText1 = new TextField();
 		_memReadText = new TextField();
 
+		_layerList = new LayerList();
+
 		_logRead = new Sprite();
 		_logReadText0 = new TextField();
 		_logReadText1 = new TextField();
@@ -218,6 +220,10 @@ class Console
 		_fpsRead.graphics.drawRoundRect(-20, -20, (big ? 220 : 120), 40, 20, 20);
 #end
 
+		_sprite.addChild(_layerList);
+		_layerList.x = width - _layerList.width - 20;
+		_layerList.y = (height - _layerList.height) / 2;
+
 		// The frame timing text.
 		if (big) _sprite.addChild(_fpsInfo);
 		_fpsInfo.addChild(_fpsInfoText0);
@@ -356,11 +362,12 @@ class Console
 
 		_entRead.x = width - _entReadText.width;
 
+		// Update buttons.
+		if (_butRead.visible) updateButtons();
+
 		// If the console is paused.
 		if (_paused)
 		{
-			// Update buttons.
-			updateButtons();
 
 			// While in debug mode.
 			if (_debug)
@@ -408,6 +415,8 @@ class Console
 							if (Input.check("_ARROWS")) updateKeyPanning();
 						}
 					}
+
+					_layerList.update();
 				}
 				else
 				{
@@ -456,7 +465,10 @@ class Console
 		// Panel visibility.
 		_back.visible = value;
 		_entScreen.visible = value;
+		_layerList.visible = value;
+#if !mobile // buttons always show on mobile devices
 		_butRead.visible = value;
+#end
 
 		// If the console is paused.
 		if (value)
@@ -491,6 +503,7 @@ class Console
 		// Set the console to debug mode.
 		_debug = value;
 		_debRead.visible = value;
+		_layerList.visible = value;
 		_logRead.visible = !value;
 
 		// Update console state.
@@ -708,6 +721,7 @@ class Console
 		}
 		// sort the layers
 		LAYER_LIST.sort(function (a:Int, b:Int):Int { return a - b; });
+		_layerList.set(LAYER_LIST);
 	}
 
 	/** @private Renders the Entities positions and hitboxes. */
@@ -724,7 +738,6 @@ class Console
 			g.clear();
 			for (e in SCREEN_LIST)
 			{
-//				if (e.mask != null) HXP.log(e.mask);
 				// If the Entity is not selected.
 				if (Lambda.indexOf(SELECT_LIST, e) < 0)
 				{
@@ -940,10 +953,11 @@ class Console
 	{
 		// Button visibility.
 		_butRead.x = _fpsInfo.x + _fpsInfo.width + Std.int((_entRead.x - (_fpsInfo.x + _fpsInfo.width)) / 2) - 30;
-		_butDebug.visible = !_debug;
-		_butOutput.visible = _debug;
+		_butDebug.visible = _paused && !_debug;
+		_butOutput.visible = _paused && _debug;
 		_butPlay.visible = HXP.engine.paused;
 		_butPause.visible = !HXP.engine.paused;
+		_butStep.visible = _paused;
 
 		// Debug/Output button.
 		if (_butDebug.bitmapData.rect.contains(_butDebug.mouseX, _butDebug.mouseY))
@@ -1023,6 +1037,9 @@ class Console
 	private var _fpsInfoText0:TextField;
 	private var _fpsInfoText1:TextField;
 	private var _memReadText:TextField;
+
+	// Layer panel information
+	private var _layerList:LayerList;
 
 	// Output panel information.
 	private var _logRead:Sprite;
