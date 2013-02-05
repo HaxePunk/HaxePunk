@@ -22,9 +22,23 @@ class Input
 	public static var mouseWheel:Bool;
 
 	/**
+	 * If the mouse wheel was moved this frame, this was the delta.
+	 */
+	public static var mouseWheelDelta(getMouseWheelDelta, never):Int;
+	public static function getMouseWheelDelta():Int
+	{
+		if (mouseWheel)
+		{
+			mouseWheel = false;
+			return _mouseWheelDelta;
+		}
+		return 0;
+	}
+
+	/**
 	 * X position of the mouse on the screen.
 	 */
-	public static var mouseX(getMouseX, null):Int;
+	public static var mouseX(getMouseX, never):Int;
 	private static function getMouseX():Int
 	{
 		return HXP.screen.mouseX;
@@ -33,7 +47,7 @@ class Input
 	/**
 	 * Y position of the mouse on the screen.
 	 */
-	public static var mouseY(getMouseY, null):Int;
+	public static var mouseY(getMouseY, never):Int;
 	private static function getMouseY():Int
 	{
 		return HXP.screen.mouseY;
@@ -42,7 +56,7 @@ class Input
 	/**
 	 * The absolute mouse x position on the screen (unscaled).
 	 */
-	public static var mouseFlashX(getMouseFlashX, null):Int;
+	public static var mouseFlashX(getMouseFlashX, never):Int;
 	private static function getMouseFlashX():Int
 	{
 		return Std.int(HXP.stage.mouseX);
@@ -51,7 +65,7 @@ class Input
 	/**
 	 * The absolute mouse y position on the screen (unscaled).
 	 */
-	public static var mouseFlashY(getMouseFlashY, null):Int;
+	public static var mouseFlashY(getMouseFlashY, never):Int;
 	private static function getMouseFlashY():Int
 	{
 		return Std.int(HXP.stage.mouseY);
