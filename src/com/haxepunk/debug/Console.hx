@@ -221,8 +221,6 @@ class Console
 #end
 
 		_sprite.addChild(_layerList);
-		_layerList.x = width - _layerList.width - 20;
-		_layerList.y = (height - _layerList.height) / 2;
 
 		// The frame timing text.
 		if (big) _sprite.addChild(_fpsInfo);
@@ -360,7 +358,11 @@ class Console
 		// Quit if the console isn't enabled.
 		if (!_enabled) return;
 
+		// move on resize
 		_entRead.x = width - _entReadText.width;
+		_layerList.x = width - _layerList.width - 20;
+		_layerList.y = (height - _layerList.height) / 2;
+
 
 		// Update buttons.
 		if (_butRead.visible) updateButtons();
