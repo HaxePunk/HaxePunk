@@ -196,7 +196,8 @@ class Image extends Graphic
 			var sx = HXP.screen.fullScaleX * scale * scaleX,
 				sy = HXP.screen.fullScaleY * scale * scaleY;
 
-			_region.draw(_point.x * sx, _point.y * sy,
+			_region.draw(_point.x * HXP.screen.fullScaleX,
+				_point.y * HXP.screen.fullScaleY,
 				layer, sx * (_flipped ? -1 : 1), sy, angle,
 				HXP.getRed(_color)/255, HXP.getGreen(_color)/255, HXP.getBlue(_color)/255, _alpha);
 		}
