@@ -1,6 +1,7 @@
 package com.haxepunk.debug;
 
 import com.haxepunk.utils.Input;
+import com.haxepunk.graphics.atlas.Atlas;
 
 import nme.Assets;
 import nme.display.DisplayObject;
@@ -13,7 +14,16 @@ import nme.text.TextFormatAlign;
 
 class Label extends TextField
 {
-	public var layer:Int;
+	public var layer(default, setLayer):Int;
+	private function setLayer(value:Int):Int
+	{
+		if (layer != value)
+		{
+			layer = value;
+			text = "Layer: " + value;
+		}
+		return value;
+	}
 }
 
 class LayerList extends Sprite
@@ -41,7 +51,7 @@ class LayerList extends Sprite
 		{
 			font = Assets.getFont(HXP.defaultFont);
 		}
-		_textFormat = new TextFormat(font.fontName, 16, 0);
+		_textFormat = new TextFormat(font.fontName, 16, 0xFFFFFF);
 
 		_removeList = new Array<DisplayObject>();
 	}
@@ -61,7 +71,6 @@ class LayerList extends Sprite
 					var label = cast(child, Label);
 					if (i < list.length)
 					{
-						label.text = "Layer: " + list[i];
 						label.layer = list[i];
 						i += 1;
 					}
@@ -89,18 +98,22 @@ class LayerList extends Sprite
 			tf.height = 20;
 			tf.x = 6;
 			tf.y = i * 25 + 5;
-			tf.layer = list[i];
 #if flash
 			tf.embedFonts = true;
 #end
-			tf.text = "Layer: " + list[i];
+			tf.layer = list[i];
 		}
 	}
 
 	private function onClick(e:MouseEvent)
 	{
 		var label = cast(e.target, Label);
-		com.haxepunk.graphics.atlas.Atlas.toggleLayerVisibility(label.layer);
+		var visible = Atlas.toggleLayerVisibility(label.layer);
+		if (visible) {
+			label.alpha = 1;
+		} else {
+			label.alpha = 0.4;
+		}
 	}
 
 	public function update()

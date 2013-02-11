@@ -123,8 +123,7 @@ class Atlas
 		var sprite = _sprites.get(layer);
 		if (sprite != null)
 		{
-			sprite.visible = !sprite.visible;
-			return sprite.visible;
+			return sprite.visible = !sprite.visible;
 		}
 		return false;
 	}
