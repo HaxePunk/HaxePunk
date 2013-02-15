@@ -112,7 +112,7 @@ class Emitter extends Graphic
 	}
 
 	/** @private Renders the particles. */
-	override public function render(target:BitmapData, point:Point, camera:Point, layer:Int=HXP.BASELAYER)
+	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
 		// quit if there are no particles
 		if (_particle == null) return;

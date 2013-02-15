@@ -163,7 +163,7 @@ class Image extends Graphic
 	}
 
 	/** Renders the image. */
-	override public function render(target:BitmapData, point:Point, camera:Point, layer:Int=HXP.BASELAYER)
+	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
 		// determine drawing location
 		_point.x = point.x + x - originX - camera.x * scrollX;

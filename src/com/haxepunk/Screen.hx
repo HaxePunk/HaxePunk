@@ -22,7 +22,10 @@ class Screen
 		init();
 
 		// create screen buffers
-		HXP.engine.addChild(_sprite);
+		if (HXP.renderMode.has(RenderMode.BUFFER))
+		{
+			HXP.engine.addChild(_sprite);
+		}
 	}
 
 	public function init()

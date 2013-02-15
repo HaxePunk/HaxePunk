@@ -157,7 +157,7 @@ class Atlas
 	 * @param blue a blue tint value
 	 * @param alpha the tile's opacity
 	 */
-	public function prepareTile(tile:Int, x:Float, y:Float, layer:Int,
+	public inline function prepareTile(tile:Int, x:Float, y:Float, layer:Int,
 		scaleX:Float, scaleY:Float, angle:Float,
 		red:Float, green:Float, blue:Float, alpha:Float)
 	{

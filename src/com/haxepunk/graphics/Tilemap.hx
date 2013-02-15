@@ -409,11 +409,11 @@ class Tilemap extends Canvas
 		usePositions = u;
 	}
 
-	public override function render(target:BitmapData, point:Point, camera:Point, layer:Int=HXP.BASELAYER)
+	public override function render(target:BitmapData, point:Point, camera:Point)
 	{
 		if (_blit)
 		{
-			super.render(target, point, camera, layer);
+			super.render(target, point, camera);
 		}
 		else
 		{

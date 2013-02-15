@@ -47,6 +47,11 @@ class Graphic
 	public var relative:Bool;
 
 	/**
+	 * The layer to use for rendering, should only be set by the Entity
+	 */
+	public var layer(default, setLayer):Int;
+
+	/**
 	 * Constructor.
 	 */
 	public function new()
@@ -58,6 +63,7 @@ class Graphic
 		relative = true;
 		_scroll = true;
 		_point = new Point();
+		layer = HXP.BASELAYER;
 	}
 
 	/**
@@ -73,10 +79,12 @@ class Graphic
 	 * @param	point		The position to draw the graphic.
 	 * @param	camera		The camera offset.
 	 */
-	public function render(target:BitmapData, point:Point, camera:Point, layer:Int=HXP.BASELAYER) { }
+	public function render(target:BitmapData, point:Point, camera:Point) { }
 
-	/** @private Callback for when the graphic is assigned to an Entity. */
-	public var assign(default, null):AssignCallback;
+	private function setLayer(value:Int):Int
+	{
+		return layer = value;
+	}
 
 	// Graphic information.
 	private var _scroll:Bool;

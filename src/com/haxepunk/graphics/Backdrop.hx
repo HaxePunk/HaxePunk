@@ -61,7 +61,7 @@ class Backdrop extends Canvas
 	}
 
 	/** Renders the Backdrop. */
-	public override function render(target:BitmapData, point:Point, camera:Point, layer:Int=HXP.BASELAYER)
+	public override function render(target:BitmapData, point:Point, camera:Point)
 	{
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;

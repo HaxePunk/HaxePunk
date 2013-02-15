@@ -19,7 +19,6 @@ class Graphiclist extends Graphic
 	{
 		super();
 
-
 		_graphics = new Array<Graphic>();
 		_temp = new Array<Graphic>();
 		_camera = new Point();
@@ -41,7 +40,7 @@ class Graphiclist extends Graphic
 	}
 
 	/** @private Renders the Graphics in the list. */
-	override public function render(target:BitmapData, point:Point, camera:Point, layer:Int=HXP.BASELAYER)
+	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
 		point.x += x;
 		point.y += y;
@@ -60,7 +59,7 @@ class Graphiclist extends Graphic
 				else _point.x = _point.y = 0;
 				_camera.x = camera.x;
 				_camera.y = camera.y;
-				g.render(target, _point, _camera, layer);
+				g.render(target, _point, _camera);
 			}
 		}
 	}
@@ -133,6 +132,15 @@ class Graphiclist extends Graphic
 	 */
 	public var count(getCount, null):Int;
 	private function getCount():Int { return _count; }
+
+	private override function setLayer(value:Int):Int
+	{
+		if (layer == value) return value;
+		layer = value;
+		for (child in children)
+			child.layer = value;
+		return value;
+	}
 
 	/**
 	 * Check if the Graphiclist should update.

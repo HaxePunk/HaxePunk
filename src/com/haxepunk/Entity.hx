@@ -149,7 +149,7 @@ class Entity extends Tweener
 			else _point.x = _point.y = 0;
 			_camera.x = _world == null ? HXP.camera.x : _world.camera.x;
 			_camera.y = _world == null ? HXP.camera.y : _world.camera.y;
-			_graphic.render((renderTarget != null) ? renderTarget : HXP.buffer, _point, _camera, _layer);
+			_graphic.render((renderTarget != null) ? renderTarget : HXP.buffer, _point, _camera);
 		}
 	}
 
@@ -503,6 +503,10 @@ class Entity extends Tweener
 			trace("Negative layers may not work properly if you aren't using flash");
 		}
 		#end
+		if (_graphic != null)
+		{
+			_graphic.layer = value;
+		}
 		if (_world == null)
 		{
 			_layer = value;
@@ -556,8 +560,8 @@ class Entity extends Tweener
 	private function setGraphic(value:Graphic):Graphic
 	{
 		if (_graphic == value) return value;
+		if (value != null) value.layer = _layer;
 		_graphic = value;
-		if (value != null && value.assign != null) value.assign();
 		return _graphic;
 	}
 
@@ -583,6 +587,7 @@ class Entity extends Tweener
 	 */
 	public function addGraphic(g:Graphic):Graphic
 	{
+		g.layer = _layer;
 		if (graphic == null)
 		{
 			graphic = g;
