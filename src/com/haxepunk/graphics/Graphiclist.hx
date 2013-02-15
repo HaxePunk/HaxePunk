@@ -17,12 +17,12 @@ class Graphiclist extends Graphic
 	 */
 	public function new(graphic:Array<Dynamic> = null)
 	{
-		super();
-
 		_graphics = new Array<Graphic>();
 		_temp = new Array<Graphic>();
 		_camera = new Point();
 		_count = 0;
+
+		super();
 
 		if (graphic != null)
 		{
@@ -137,8 +137,8 @@ class Graphiclist extends Graphic
 	{
 		if (layer == value) return value;
 		layer = value;
-		for (child in children)
-			child.layer = value;
+		for (g in _graphics)
+			g.layer = value;
 		return value;
 	}
 
