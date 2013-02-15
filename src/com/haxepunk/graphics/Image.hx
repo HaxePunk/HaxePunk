@@ -7,6 +7,7 @@ import nme.geom.ColorTransform;
 import nme.geom.Matrix;
 import nme.geom.Point;
 import nme.geom.Rectangle;
+import com.haxepunk.graphics.atlas.Atlas;
 import com.haxepunk.graphics.atlas.TextureAtlas;
 import com.haxepunk.graphics.atlas.AtlasRegion;
 import com.haxepunk.Graphic;
@@ -75,11 +76,7 @@ class Image extends Graphic
 		if (_source == null && _region == null)
 		{
 			_class = name;
-			if (Std.is(source, BitmapData))
-			{
-				setBitmapSource(source);
-			}
-			else if (Std.is(source, TextureAtlas))
+			if (Std.is(source, TextureAtlas))
 			{
 				setAtlasRegion(cast(source, TextureAtlas).getRegion(name));
 			}
@@ -87,6 +84,11 @@ class Image extends Graphic
 			{
 				setAtlasRegion(source);
 			}
+			else if (Std.is(source, BitmapData))
+			{
+				setBitmapSource(source);
+			}
+#if flash
 			else
 			{
 				if (Std.is(source, String))
@@ -95,7 +97,12 @@ class Image extends Graphic
 					_class = Type.getClassName(Type.getClass(source));
 				setBitmapSource(HXP.getBitmap(source));
 			}
-
+#else // force hardware acceleration
+			else
+			{
+				setAtlasRegion(Atlas.loadImageAsRegion(source));
+			}
+#end
 			if (_source == null && _region == null) throw "Invalid source image.";
 		}
 
@@ -212,6 +219,12 @@ class Image extends Graphic
 	 */
 	public static function createRect(width:Int, height:Int, color:Int = 0xFFFFFF):Image
 	{
+#if debug
+		if (!HXP.renderMode.has(com.haxepunk.RenderMode.BUFFER))
+		{
+			HXP.log("Image.createRect not supported without buffer rendering");
+		}
+#end
 		var source:BitmapData = HXP.createBitmap(width, height, true, 0xFF000000 | color);
 		return new Image(source);
 	}
@@ -224,6 +237,12 @@ class Image extends Graphic
 	 */
 	public static function createCircle(radius:Int, color:Int = 0xFFFFFF):Image
 	{
+#if debug
+		if (!HXP.renderMode.has(com.haxepunk.RenderMode.BUFFER))
+		{
+			HXP.log("Image.createCircle not supported without buffer rendering");
+		}
+#end
 		HXP.sprite.graphics.clear();
 		HXP.sprite.graphics.beginFill(color);
 		HXP.sprite.graphics.drawCircle(radius, radius, radius);

@@ -21,6 +21,7 @@ class TextureAtlas extends Atlas
 	/**
 	 * Loads a TexturePacker xml file and generates all tile regions
 	 * @param file the TexturePacker file to load
+	 * @return a TextureAtlas with all packed images defined as regions
 	 */
 	public static function loadTexturePacker(file:String):TextureAtlas
 	{

@@ -4,6 +4,7 @@ import nme.display.BitmapData;
 import nme.geom.Point;
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
+import com.haxepunk.graphics.atlas.Atlas;
 import com.haxepunk.graphics.atlas.AtlasRegion;
 
 /**
@@ -20,10 +21,14 @@ class Backdrop extends Canvas
 	 */
 	public function new(source:Dynamic, repeatX:Bool = true, repeatY:Bool = true)
 	{
-		if (Std.is(source, BitmapData)) setBitmapSource(source);
-		else if (Std.is(source, AtlasRegion)) setAtlasRegion(source);
+		if (Std.is(source, AtlasRegion)) setAtlasRegion(source);
+#if flash
+		else if (Std.is(source, BitmapData)) setBitmapSource(source);
 		else if (Std.is(source, Dynamic)) setBitmapSource(HXP.getBitmap(source));
 		if (_source == null && _region == null) setBitmapSource(HXP.createBitmap(HXP.width, HXP.height, true));
+#else // force hardware acceleration
+		else setAtlasRegion(Atlas.loadImageAsRegion(source));
+#end
 
 		_repeatX = repeatX;
 		_repeatY = repeatY;

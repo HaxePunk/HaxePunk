@@ -77,15 +77,20 @@ class Engine extends Sprite
 		maxElapsed = 0.0333;
 		maxFrameSkip = 5;
 		tickRate = 4;
+		HXP.renderMode.init();
 		_frameList = new Array<Int>();
 		_systemTime = _delta = _frameListSum = 0;
 		_frameLast = 0;
 
 		// on-stage event listener
 #if flash
+		HXP.renderMode.set(RenderMode.BUFFER);
+
 		if (Lib.current.stage != null) onStage();
 		else Lib.current.addEventListener(Event.ADDED_TO_STAGE, onStage);
 #else
+		HXP.renderMode.set(RenderMode.HARDWARE);
+
 		addEventListener(Event.ADDED_TO_STAGE, onStage);
 		Lib.current.addChild(this);
 #end
@@ -132,13 +137,27 @@ class Engine extends Sprite
 		if (_frameLast == 0) _frameLast = Std.int(t);
 
 		// render loop
-		HXP.screen.swap();
-		Draw.resetTarget();
-		HXP.screen.refresh();
-		Atlas.clear();
+		if (HXP.renderMode.has(RenderMode.BUFFER))
+		{
+			HXP.screen.swap();
+			Draw.resetTarget();
+			HXP.screen.refresh();
+		}
+		if (HXP.renderMode.has(RenderMode.HARDWARE))
+		{
+			Atlas.clear();
+		}
+
 		if (HXP.world.visible) HXP.world.render();
-		HXP.screen.redraw();
-		Atlas.renderAll();
+
+		if (HXP.renderMode.has(RenderMode.BUFFER))
+		{
+			HXP.screen.redraw();
+		}
+		if (HXP.renderMode.has(RenderMode.HARDWARE))
+		{
+			Atlas.renderAll();
+		}
 
 		// more timing stuff
 		t = Lib.getTimer();

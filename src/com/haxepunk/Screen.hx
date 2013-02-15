@@ -90,7 +90,7 @@ class Screen
 	{
 		// refreshes the screen
 #if neko
-		HXP.buffer.fillRect(HXP.bounds, { rgb: _color, a: 0 });
+		HXP.buffer.fillRect(HXP.bounds, HXP.convertColor(_color));
 #else
 		HXP.buffer.fillRect(HXP.bounds, _color);
 #end
@@ -131,7 +131,7 @@ class Screen
 #if flash
 		_color = 0xFF000000 | value;
 #elseif debug
-		trace("screen.color shouldn't be set other than in flash");
+		HXP.log("screen.color shouldn't be set other than in flash");
 #end
 		return value;
 	}

@@ -129,6 +129,21 @@ class Atlas
 	}
 
 	/**
+	 * Loads an image and returns the full image as a region
+	 * @param source the image to use
+	 * @return an AtlasRegion containing the whole image
+	 */
+	public static function loadImageAsRegion(source:Dynamic):AtlasRegion
+	{
+		var bd:BitmapData;
+		if (Std.is(source, BitmapData)) bd = source;
+		else bd = HXP.getBitmap(source);
+
+		var atlas = new Atlas(bd);
+		return atlas.createRegion(new Rectangle(0, 0, atlas.width, atlas.height));
+	}
+
+	/**
 	 * Prepares tile data for rendering
 	 * @param tile the tile index of the tilesheet
 	 * @param x the x-axis location to draw the tile

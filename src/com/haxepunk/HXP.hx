@@ -22,6 +22,7 @@ import com.haxepunk.tweens.misc.Alarm;
 import com.haxepunk.tweens.misc.MultiVarTween;
 import com.haxepunk.utils.Ease;
 
+import haxe.EnumFlags;
 import haxe.Timer;
 
 /**
@@ -159,6 +160,11 @@ class HXP
 	 * Half the screen height.
 	 */
 	public static var halfHeight(default, null):Float;
+
+	/**
+	 * Defines how to render the world
+	 */
+	public static var renderMode:EnumFlags<RenderMode>;
 
 	/**
 	 * The currently active World object. When you set this, the World is flagged

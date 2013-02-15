@@ -6,6 +6,7 @@ import nme.geom.Point;
 import nme.geom.Rectangle;
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
+import com.haxepunk.graphics.atlas.Atlas;
 import com.haxepunk.graphics.atlas.AtlasRegion;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
@@ -43,21 +44,13 @@ class Emitter extends Graphic
 	 */
 	public function setSource(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0)
 	{
-		if (Std.is(source, BitmapData))
-		{
-			setBitmapSource(source);
-		}
-		else if(Std.is(source, AtlasRegion))
-		{
-			_blit = false;
-			_region = source;
-			_width = Std.int(_region.width);
-			_height = Std.int(_region.height);
-		}
-		else
-		{
-			setBitmapSource(HXP.getBitmap(source));
-		}
+		if (Std.is(source, BitmapData)) setBitmapSource(source);
+		else if(Std.is(source, AtlasRegion)) setAtlasRegion(source);
+#if flash
+		else setBitmapSource(HXP.getBitmap(source));
+#else // force hardware acceleration
+		else setAtlasRegion(Atlas.loadImageAsRegion(source));
+#end
 		if (_source == null && _region == null) throw "Invalid source image.";
 
 		_frameWidth = (frameWidth != 0) ? frameWidth : _width;
@@ -71,6 +64,14 @@ class Emitter extends Graphic
 		_source = bitmap;
 		_width = Std.int(bitmap.width);
 		_height = Std.int(bitmap.height);
+	}
+
+	private inline function setAtlasRegion(region:AtlasRegion)
+	{
+		_blit = false;
+		_region = region;
+		_width = Std.int(_region.width);
+		_height = Std.int(_region.height);
 	}
 
 	override public function update()
