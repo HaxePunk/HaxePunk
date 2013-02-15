@@ -86,9 +86,4 @@ class Graphic
 	 * If we can blit the graphic or not (flash/html5)
 	 */
 	private var _blit:Bool;
-
-#if cpp
-	private var _tileSheet:nme.display.Tilesheet;
-	private var imageID:Int;
-#end
 }
