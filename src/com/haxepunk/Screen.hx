@@ -195,6 +195,7 @@ class Screen
 	{
 		if (scaleX == value) return value;
 		scaleX = value;
+		fullScaleX = scaleX * scale;
 		update();
 		return scaleX;
 	}
@@ -207,6 +208,7 @@ class Screen
 	{
 		if (scaleY == value) return value;
 		scaleY = value;
+		fullScaleY = scaleY * scale;
 		update();
 		return scaleY;
 	}
@@ -220,6 +222,8 @@ class Screen
 	{
 		if (scale == value) return value;
 		scale = value;
+		fullScaleX = scaleX * scale;
+		fullScaleY = scaleY * scale;
 		update();
 		return scale;
 	}
@@ -227,14 +231,12 @@ class Screen
 	/**
 	 * Final X scale value of the screen
 	 */
-	public var fullScaleX(getFullScaleX, never):Float;
-	private function getFullScaleX():Float { return scaleX * scale; }
+	public var fullScaleX(default, null):Float;
 
 	/**
 	 * Final Y scale value of the screen
 	 */
-	public var fullScaleY(getFullScaleY, never):Float;
-	private function getFullScaleY():Float { return scaleY * scale; }
+	public var fullScaleY(default, null):Float;
 
 	/**
 	 * Rotation of the screen, in degrees.
