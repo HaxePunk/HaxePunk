@@ -200,7 +200,7 @@ class Atlas
 		}
 	}
 
-	private static inline function getSpriteByLayer(layer:Int):Sprite
+	public static inline function getSpriteByLayer(layer:Int):Sprite
 	{
 		if (_sprites.exists(layer))
 		{

@@ -57,6 +57,11 @@ class Engine extends Sprite
 		HXP.assignedFrameRate = frameRate;
 		HXP.fixed = fixed;
 		HXP.renderMode.init();
+#if flash
+		HXP.renderMode.set(RenderMode.BUFFER);
+#else
+		HXP.renderMode.set(RenderMode.HARDWARE);
+#end
 
 		// global game objects
 		HXP.engine = this;
@@ -84,13 +89,9 @@ class Engine extends Sprite
 
 		// on-stage event listener
 #if flash
-		HXP.renderMode.set(RenderMode.BUFFER);
-
 		if (Lib.current.stage != null) onStage();
 		else Lib.current.addEventListener(Event.ADDED_TO_STAGE, onStage);
 #else
-		HXP.renderMode.set(RenderMode.HARDWARE);
-
 		addEventListener(Event.ADDED_TO_STAGE, onStage);
 		Lib.current.addChild(this);
 #end

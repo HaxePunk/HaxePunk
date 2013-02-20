@@ -215,18 +215,11 @@ class Image extends Graphic
 	 * @param	width		Width of the rectangle.
 	 * @param	height		Height of the rectangle.
 	 * @param	color		Color of the rectangle.
-	 * @return	A new Image object.
+	 * @return	A new Rect object.
 	 */
-	public static function createRect(width:Int, height:Int, color:Int = 0xFFFFFF):Image
+	public static function createRect(width:Int, height:Int, color:Int = 0xFFFFFF):Graphic
 	{
-#if debug
-		if (!HXP.renderMode.has(com.haxepunk.RenderMode.BUFFER))
-		{
-			HXP.log("Image.createRect not supported without buffer rendering");
-		}
-#end
-		var source:BitmapData = HXP.createBitmap(width, height, true, 0xFF000000 | color);
-		return new Image(source);
+		return new com.haxepunk.graphics.prototype.Rect(width, height, color);
 	}
 
 	/**
@@ -235,20 +228,9 @@ class Image extends Graphic
 	 * @param	color		Color of the circle.
 	 * @return	A new Circle object.
 	 */
-	public static function createCircle(radius:Int, color:Int = 0xFFFFFF):Image
+	public static function createCircle(radius:Int, color:Int = 0xFFFFFF):Graphic
 	{
-#if debug
-		if (!HXP.renderMode.has(com.haxepunk.RenderMode.BUFFER))
-		{
-			HXP.log("Image.createCircle not supported without buffer rendering");
-		}
-#end
-		HXP.sprite.graphics.clear();
-		HXP.sprite.graphics.beginFill(color);
-		HXP.sprite.graphics.drawCircle(radius, radius, radius);
-		var data:BitmapData = HXP.createBitmap(radius * 2, radius * 2, true);
-		data.draw(HXP.sprite);
-		return new Image(data);
+		return new com.haxepunk.graphics.prototype.Circle(radius, color);
 	}
 
 	/**
