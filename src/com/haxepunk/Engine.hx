@@ -56,6 +56,7 @@ class Engine extends Sprite
 		HXP.bounds = new Rectangle(0, 0, width, height);
 		HXP.assignedFrameRate = frameRate;
 		HXP.fixed = fixed;
+		HXP.renderMode.init();
 
 		// global game objects
 		HXP.engine = this;
@@ -77,7 +78,6 @@ class Engine extends Sprite
 		maxElapsed = 0.0333;
 		maxFrameSkip = 5;
 		tickRate = 4;
-		HXP.renderMode.init();
 		_frameList = new Array<Int>();
 		_systemTime = _delta = _frameListSum = 0;
 		_frameLast = 0;
