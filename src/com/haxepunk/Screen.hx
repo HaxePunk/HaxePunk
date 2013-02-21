@@ -190,7 +190,7 @@ class Screen
 	/**
 	 * X scale of the screen.
 	 */
-	public var scaleX(default, setScaleX):Float;
+	public var scaleX(default, setScaleX):Float = 1;
 	private function setScaleX(value:Float):Float
 	{
 		if (scaleX == value) return value;
@@ -203,7 +203,7 @@ class Screen
 	/**
 	 * Y scale of the screen.
 	 */
-	public var scaleY(default, setScaleY):Float;
+	public var scaleY(default, setScaleY):Float = 1;
 	private function setScaleY(value:Float):Float
 	{
 		if (scaleY == value) return value;
@@ -217,7 +217,7 @@ class Screen
 	 * Scale factor of the screen. Final scale is scaleX * scale by scaleY * scale, so
 	 * you can use this factor to scale the screen both horizontally and vertically.
 	 */
-	public var scale(default, setScale):Float;
+	public var scale(default, setScale):Float = 1;
 	private function setScale(value:Float):Float
 	{
 		if (scale == value) return value;
@@ -231,12 +231,12 @@ class Screen
 	/**
 	 * Final X scale value of the screen
 	 */
-	public var fullScaleX(default, null):Float;
+	public var fullScaleX(default, null):Float = 1;
 
 	/**
 	 * Final Y scale value of the screen
 	 */
-	public var fullScaleY(default, null):Float;
+	public var fullScaleY(default, null):Float = 1;
 
 	/**
 	 * Rotation of the screen, in degrees.
