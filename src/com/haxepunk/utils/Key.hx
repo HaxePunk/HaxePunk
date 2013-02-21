@@ -27,7 +27,6 @@ class Key
 	public inline static var LEFT_SQUARE_BRACKET = 219;
 	public inline static var RIGHT_SQUARE_BRACKET = 221;
 
-#if (flash || html5)
 	public inline static var A = 65;
 	public inline static var B = 66;
 	public inline static var C = 67;
@@ -54,35 +53,6 @@ class Key
 	public inline static var X = 88;
 	public inline static var Y = 89;
 	public inline static var Z = 90;
-
-#else
-	public inline static var A = 97;
-	public inline static var B = 98;
-	public inline static var C = 99;
-	public inline static var D = 100;
-	public inline static var E = 101;
-	public inline static var F = 102;
-	public inline static var G = 103;
-	public inline static var H = 104;
-	public inline static var I = 105;
-	public inline static var J = 106;
-	public inline static var K = 107;
-	public inline static var L = 108;
-	public inline static var M = 109;
-	public inline static var N = 110;
-	public inline static var O = 111;
-	public inline static var P = 112;
-	public inline static var Q = 113;
-	public inline static var R = 114;
-	public inline static var S = 115;
-	public inline static var T = 116;
-	public inline static var U = 117;
-	public inline static var V = 118;
-	public inline static var W = 119;
-	public inline static var X = 120;
-	public inline static var Y = 121;
-	public inline static var Z = 122;
-#end
 
 	public inline static var F1 = 112;
 	public inline static var F2 = 113;
