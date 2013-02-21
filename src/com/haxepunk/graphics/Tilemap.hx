@@ -68,24 +68,27 @@ class Tilemap extends Canvas
 			_blit = false;
 			_atlas = cast(tileset, TileAtlas);
 		}
-#if flash
-		if (Std.is(tileset, BitmapData))
-		{
-			_blit = true;
-			_set = tileset;
-		}
 		else
 		{
-			_blit = true;
-			_set = HXP.getBitmap(tileset);
+			if (HXP.renderMode.has(RenderMode.HARDWARE))
+			{
+				_blit = false;
+				_atlas = new TileAtlas(tileset, tileWidth, tileHeight);
+			}
+			else
+			{
+				if (Std.is(tileset, BitmapData))
+				{
+					_blit = true;
+					_set = tileset;
+				}
+				else
+				{
+					_blit = true;
+					_set = HXP.getBitmap(tileset);
+				}
+			}
 		}
-#else // force hardware acceleration
-		else
-		{
-			_blit = false;
-			_atlas = new TileAtlas(tileset, tileWidth, tileHeight);
-		}
-#end
 
 		if (_set == null && _atlas == null) throw "Invalid tileset graphic provided.";
 

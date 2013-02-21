@@ -1,5 +1,12 @@
 package com.haxepunk.graphics;
 
+import com.haxepunk.graphics.atlas.Atlas;
+import com.haxepunk.graphics.atlas.TextureAtlas;
+import com.haxepunk.graphics.atlas.AtlasRegion;
+import com.haxepunk.Graphic;
+import com.haxepunk.HXP;
+import com.haxepunk.RenderMode;
+
 import nme.display.Bitmap;
 import nme.display.BitmapData;
 import nme.display.BlendMode;
@@ -7,11 +14,6 @@ import nme.geom.ColorTransform;
 import nme.geom.Matrix;
 import nme.geom.Point;
 import nme.geom.Rectangle;
-import com.haxepunk.graphics.atlas.Atlas;
-import com.haxepunk.graphics.atlas.TextureAtlas;
-import com.haxepunk.graphics.atlas.AtlasRegion;
-import com.haxepunk.Graphic;
-import com.haxepunk.HXP;
 
 /**
  * Performance-optimized non-animated image. Can be drawn to the screen with transformations.
@@ -88,21 +90,21 @@ class Image extends Graphic
 			{
 				setBitmapSource(source);
 			}
-#if flash
 			else
 			{
-				if (Std.is(source, String))
-					_class = source;
-				else if (name == "")
-					_class = Type.getClassName(Type.getClass(source));
-				setBitmapSource(HXP.getBitmap(source));
+				if (HXP.renderMode.has(RenderMode.HARDWARE))
+				{
+					setAtlasRegion(Atlas.loadImageAsRegion(source));
+				}
+				else
+				{
+					if (Std.is(source, String))
+						_class = source;
+					else if (name == "")
+						_class = Type.getClassName(Type.getClass(source));
+					setBitmapSource(HXP.getBitmap(source));
+				}
 			}
-#else // force hardware acceleration
-			else
-			{
-				setAtlasRegion(Atlas.loadImageAsRegion(source));
-			}
-#end
 			if (_source == null && _region == null) throw "Invalid source image.";
 		}
 

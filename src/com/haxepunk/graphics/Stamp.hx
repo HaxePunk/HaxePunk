@@ -2,6 +2,7 @@ package com.haxepunk.graphics;
 
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
+import com.haxepunk.graphics.atlas.Atlas;
 import com.haxepunk.graphics.atlas.AtlasRegion;
 
 import nme.display.BitmapData;
@@ -31,19 +32,34 @@ class Stamp extends Graphic
 		// set the graphic
 		if (Std.is(source, AtlasRegion))
 		{
-			_blit = false;
-			_region = source;
-			if (_region == null) throw "Invalid source image.";
-			_sourceRect = new Rectangle(0, 0, _region.width, _region.height);
-		}
-		else if (Std.is(source, BitmapData))
-		{
-			setBitmapSource(source);
+			setAtlasRegion(source);
 		}
 		else
 		{
-			setBitmapSource(HXP.getBitmap(source));
+			if (HXP.renderMode.has(RenderMode.HARDWARE))
+			{
+				setAtlasRegion(Atlas.loadImageAsRegion(source));
+			}
+			else
+			{
+				if (Std.is(source, BitmapData))
+				{
+					setBitmapSource(source);
+				}
+				else
+				{
+					setBitmapSource(HXP.getBitmap(source));
+				}
+			}
 		}
+	}
+
+	private inline function setAtlasRegion(region:AtlasRegion)
+	{
+		_blit = false;
+		_region = region;
+		if (_region == null) throw "Invalid source image.";
+		_sourceRect = new Rectangle(0, 0, _region.width, _region.height);
 	}
 
 	private inline function setBitmapSource(bitmap:BitmapData)

@@ -1,16 +1,18 @@
 package com.haxepunk.graphics;
 
+import com.haxepunk.Graphic;
+import com.haxepunk.graphics.atlas.Atlas;
+import com.haxepunk.graphics.atlas.AtlasRegion;
+import com.haxepunk.HXP;
+import com.haxepunk.RenderMode;
+import com.haxepunk.utils.Input;
+import com.haxepunk.utils.Key;
+import com.haxepunk.utils.Ease;
+
 import nme.display.BitmapData;
 import nme.geom.ColorTransform;
 import nme.geom.Point;
 import nme.geom.Rectangle;
-import com.haxepunk.HXP;
-import com.haxepunk.Graphic;
-import com.haxepunk.graphics.atlas.Atlas;
-import com.haxepunk.graphics.atlas.AtlasRegion;
-import com.haxepunk.utils.Input;
-import com.haxepunk.utils.Key;
-import com.haxepunk.utils.Ease;
 
 /**
  * Particle emitter used for emitting and rendering particle sprites.
@@ -46,11 +48,17 @@ class Emitter extends Graphic
 	{
 		if (Std.is(source, BitmapData)) setBitmapSource(source);
 		else if(Std.is(source, AtlasRegion)) setAtlasRegion(source);
-#if flash
-		else setBitmapSource(HXP.getBitmap(source));
-#else // force hardware acceleration
-		else setAtlasRegion(Atlas.loadImageAsRegion(source));
-#end
+		else
+		{
+			if (HXP.renderMode.has(RenderMode.HARDWARE))
+			{
+				setAtlasRegion(Atlas.loadImageAsRegion(source));
+			}
+			else
+			{
+				setBitmapSource(HXP.getBitmap(source));
+			}
+		}
 		if (_source == null && _region == null) throw "Invalid source image.";
 
 		_frameWidth = (frameWidth != 0) ? frameWidth : _width;

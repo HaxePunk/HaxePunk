@@ -52,14 +52,13 @@ class Spritemap extends Image
 			_atlas = cast(source, TileAtlas);
 			_region = _atlas.getRegion(_frame);
 		}
-#if !flash // force hardware acceleration
-		else
+		else if (HXP.renderMode.has(RenderMode.HARDWARE))
 		{
 			_blit = false;
 			_atlas = new TileAtlas(source, frameWidth, frameHeight);
 			_region = _atlas.getRegion(_frame);
 		}
-#end
+
 		super(source, _rect, name);
 
 		if (_blit)
