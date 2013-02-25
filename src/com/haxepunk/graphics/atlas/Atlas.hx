@@ -62,6 +62,20 @@ class Atlas
 	}
 
 	/**
+	 * Removes all atlases from the display list
+	 */
+	public static function destroyAll()
+	{
+		HXP.clear(_atlases);
+	}
+
+	/**
+	 * How many Atlases are active.
+	 */
+	public static var count(getCount, never):Int;
+	private static inline function getCount():Int { return _atlases.length; }
+
+	/**
 	 * Renders the current TextureAtlas
 	 * @param g the graphics context to draw in
 	 * @param smooth if rendering should use antialiasing

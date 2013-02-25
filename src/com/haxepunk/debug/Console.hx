@@ -220,7 +220,7 @@ class Console
 		_fpsRead.graphics.drawRoundRect(-20, -20, (big ? 220 : 120), 40, 20, 20);
 #end
 
-		_sprite.addChild(_layerList);
+		//_sprite.addChild(_layerList);
 
 		// The frame timing text.
 		if (big) _sprite.addChild(_fpsInfo);

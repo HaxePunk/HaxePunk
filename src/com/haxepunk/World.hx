@@ -780,7 +780,7 @@ class World extends Tweener
 	/**
 	 * How many Entities are in the World.
 	 */
-	public var count(getCount, null):Int;
+	public var count(getCount, never):Int;
 	private inline function getCount():Int { return _count; }
 
 	/**
