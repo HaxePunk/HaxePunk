@@ -976,6 +976,65 @@ class HXP
 			}
 		}
 	}
+	
+	/**
+	 * Get angle between two points.
+	 * @param	x1		Starting point x-position.
+	 * @param	y1		Starting point y-position.
+	 * @param	x2		End point x-position.
+	 * @param	y2		End point y-position.
+	 * @return	The angle.
+	 */
+	public static inline function getAngleTo(x1:Float, y1:Float, x2:Float, y2:Float):Float
+	{
+		var angle:Float = Math.atan2(y2 - y1, x2 - x1);
+		angle /= (Math.PI / 180);
+		angle = Math.abs((angle - 360) % 360);
+		
+		return angle;
+	}
+	
+	/**
+	 * Get difference between two angles. Result will be between -180 and 180.
+	 * @param	angle1	First angle.
+	 * @param	angle2	Second angle.
+	 * @return	The angle difference.
+	 */
+	public static inline function getAngleDifference(angle1:Float, angle2:Float):Float
+	{
+		var diff:Float = angle2 - angle1;
+		
+		while (diff < -180) diff += 360;
+		while (diff > 180) diff -= 360;
+		
+		return diff;
+	}
+	
+	/**
+	 * Get x-distance to distance of 1 at angle.
+	 * @param	angle	The angle.
+	 * @return	The x-distance.
+	 */
+	public static function getAngledDistanceX(angle:Float):Float
+	{
+		angle += 90;
+		angle *= Math.PI / 180;
+		
+		return Math.sin(angle);
+	}
+	
+	/**
+	 * Get y-distance to distance of 1 at angle.
+	 * @param	angle	The angle.
+	 * @return	The y-distance.
+	 */
+	public static function getAngledDistanceY(angle:Float):Float
+	{
+		angle += 90;
+		angle *= Math.PI / 180;
+		
+		return Math.cos(angle);
+	}
 
 	public static var time(null, setTime):Float;
 	private static inline function setTime(value:Float):Float {
