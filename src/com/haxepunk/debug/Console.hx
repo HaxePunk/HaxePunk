@@ -967,7 +967,7 @@ class Console
 			_butDebug.alpha = _butOutput.alpha = 1;
 			if (Input.mousePressed) debug = !_debug;
 		}
-		else _butDebug.alpha = _butOutput.alpha = .5;
+		else _butDebug.alpha = _butOutput.alpha = 0.5;
 
 		// Play/Pause button.
 		if (_butPlay.bitmapData.rect.contains(_butPlay.mouseX, _butPlay.mouseY))
@@ -979,7 +979,7 @@ class Console
 				renderEntities();
 			}
 		}
-		else _butPlay.alpha = _butPause.alpha = .5;
+		else _butPlay.alpha = _butPause.alpha = 0.5;
 
 		// Frame step button.
 		if (_butStep.bitmapData.rect.contains(_butStep.mouseX, _butStep.mouseY))
