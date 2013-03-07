@@ -2,6 +2,8 @@
 
 A HaXe port of the [FlashPunk](http://flashpunk.net) AS3 library.
 
+[![Build Status](https://travis-ci.org/MattTuttle/HaxePunk.png?branch=master)](https://travis-ci.org/MattTuttle/HaxePunk)
+
 ## Release build
 
 First, make sure you have [HaXe](http://haxe.org) 2.10 or higher. You will need to also install [NME](http://haxenme.org) 3.5.3 or higher. The last step is to install HaxePunk through haxelib.
