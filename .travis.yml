@@ -1,17 +1,13 @@
-language: node_js
-node_js:
-  - 0.6
+language: java
 
 before_install:
-  - sudo apt-get install libgc1c2
-  - curl http://haxe.org/file/hxinst-linux.tgz | tar zxf -
-  - echo y | sudo ./hxinst-linux > /dev/null
-  - echo | haxelib setup
+  - sudo add-apt-repository ppa:eyecreate/haxe -y
+  - sudo apt-get update -y
+  - sudo apt-get install haxe -y
+  - mkdir -p ~/.haxe/lib
+  - echo ~/.haxe/lib | haxelib setup
+  - haxelib install format
   - haxelib install nme
-  - haxelib install hxcpp
-
-before_script:
-  - ant haxelib
 
 script:
-  - "cd tests && haxe compile.hxml"
+  - ant clean build unit
