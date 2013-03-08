@@ -1,12 +1,15 @@
 package com.haxepunk.utils;
 
 import nme.events.KeyboardEvent;
-import nme.events.MouseEvent;
-import nme.ui.Keyboard;
-import com.haxepunk.HXP;
 #if (nme && (cpp || neko))
 import nme.events.JoystickEvent;
 #end
+import nme.events.MouseEvent;
+import nme.events.TouchEvent;
+import nme.ui.Keyboard;
+import nme.ui.Multitouch;
+import nme.ui.MultitouchInputMode;
+import com.haxepunk.HXP;
 
 class Input
 {
@@ -20,6 +23,8 @@ class Input
 	public static var mousePressed:Bool;
 	public static var mouseReleased:Bool;
 	public static var mouseWheel:Bool;
+
+	public static var multiTouchSupported(default, null):Bool = false;
 
 	/**
 	 * If the mouse wheel was moved this frame, this was the delta.
@@ -146,6 +151,14 @@ class Input
 		return (input < 0) ? _releaseNum != 0 : indexOf(_release, input) >= 0;
 	}
 
+	public static function touchPoints(touchCallback:Touch->Void)
+	{
+		for (touchPointID in _touches.keys())
+		{
+			touchCallback(_touches.get(touchPointID));
+		}
+	}
+
 	/**
 	 * Copy of Lambda.indexOf for speed/memory reasons
 	 * @param	a array to use
@@ -198,6 +211,16 @@ class Input
 			HXP.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false,  2);
 			HXP.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel, false,  2);
 
+			multiTouchSupported = Multitouch.supportsTouchEvents;
+			if (multiTouchSupported)
+			{
+				Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
+
+				HXP.stage.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
+				HXP.stage.addEventListener(TouchEvent.TOUCH_MOVE, onTouchMove);
+				HXP.stage.addEventListener(TouchEvent.TOUCH_END, onTouchEnd);
+			}
+
 #if (nme && (cpp || neko))
 			HXP.stage.addEventListener(JoystickEvent.AXIS_MOVE, onJoyAxisMove);
 			HXP.stage.addEventListener(JoystickEvent.BALL_MOVE, onJoyBallMove);
@@ -219,6 +242,7 @@ class Input
 #if (nme && (cpp || neko))
 		for (joystick in _joysticks) joystick.update();
 #end
+		for (touch in _touches) touch.update();
 	}
 
 	private static function onKeyDown(e:KeyboardEvent = null)
@@ -279,6 +303,26 @@ class Input
 		_mouseWheelDelta = e.delta;
 	}
 
+	private static function onTouchBegin(e:TouchEvent)
+	{
+		var touchPoint = new Touch(e.stageX, e.stageY, e.touchPointID);
+		_touches.set(e.touchPointID, touchPoint);
+		_touchNum += 1;
+	}
+
+	private static function onTouchMove(e:TouchEvent)
+	{
+		var point = _touches.get(e.touchPointID);
+		point.x = e.stageX;
+		point.y = e.stageY;
+	}
+
+	private static function onTouchEnd(e:TouchEvent)
+	{
+		_touches.remove(e.touchPointID);
+		_touchNum -= 1;
+	}
+
 #if (nme && (cpp || neko))
 
 	private static function onJoyAxisMove(e:JoystickEvent)
@@ -328,6 +372,8 @@ class Input
 	private static inline var kKeyStringMax = 100;
 
 	private static var _enabled:Bool = false;
+	private static var _touches:IntHash<Touch> = new IntHash<Touch>();
+	private static var _touchNum:Int = 0;
 	private static var _joysticks:IntHash<Joystick> = new IntHash<Joystick>();
 	private static var _key:Array<Bool> = new Array<Bool>();
 	private static var _keyNum:Int = 0;

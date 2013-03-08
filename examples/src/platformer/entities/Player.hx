@@ -109,7 +109,6 @@ class Player extends Physics
 			doJump();
 		}
 
-
 		// Make animation changes here
 		setAnimation();
 

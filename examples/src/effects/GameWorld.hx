@@ -41,16 +41,28 @@ class GameWorld extends DemoWorld
 #end
 	}
 
+	private function onTouch(touch:com.haxepunk.utils.Touch)
+	{
+		smoke.emit("exhaust", touch.worldX, touch.worldY);
+	}
+
 	public override function update()
 	{
-		for (i in 0...10)
+		if (Input.multiTouchSupported)
 		{
-			smoke.emit("exhaust", mouseX, mouseY);
+			Input.touchPoints(onTouch);
 		}
-
-		if (Input.mousePressed)
+		else
 		{
-			smoke.setColor("exhaust", HXP.rand(16777215), HXP.rand(16777215));
+			for (i in 0...10)
+			{
+				smoke.emit("exhaust", mouseX, mouseY);
+			}
+
+			if (Input.mousePressed)
+			{
+				smoke.setColor("exhaust", HXP.rand(16777215), HXP.rand(16777215));
+			}
 		}
 		super.update();
 	}
