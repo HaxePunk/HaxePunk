@@ -85,11 +85,11 @@ class Player extends Physics
 
 		if (Input.mouseDown)
 		{
-			if (_world.mouseX < x)
+			if (world.mouseX < x)
 				acceleration.x = -kMoveSpeed;
-			if (_world.mouseX > x)
+			if (world.mouseX > x)
 				acceleration.x = kMoveSpeed;
-			if (_world.mouseY < y - 32)
+			if (world.mouseY < y - 32)
 				doJump();
 		}
 

@@ -7,11 +7,11 @@ import com.haxepunk.graphics.Image;
 import com.haxepunk.graphics.Graphiclist;
 
 /**
- * Friend class used by World
+ * Friend class used by Scene
  */
 typedef FriendEntity = {
 	private var _class:String;
-	private var _world:World;
+	private var _scene:Scene;
 	private var _type:String;
 	private var _layer:Int;
 	private var _name:String;
@@ -27,7 +27,7 @@ typedef FriendEntity = {
 }
 
 /**
- * Main game Entity class updated by World.
+ * Main game Entity class updated by Scene.
  */
 class Entity extends Tweener
 {
@@ -42,12 +42,12 @@ class Entity extends Tweener
 	public var collidable:Bool;
 
 	/**
-	 * X position of the Entity in the World.
+	 * X position of the Entity in the Scene.
 	 */
 	public var x:Float;
 
 	/**
-	 * Y position of the Entity in the World.
+	 * Y position of the Entity in the Scene.
 	 */
 	public var y:Float;
 
@@ -110,7 +110,7 @@ class Entity extends Tweener
 	}
 
 	/**
-	 * Override this, called when the Entity is added to a World.
+	 * Override this, called when the Entity is added to a Scene.
 	 */
 	public function added():Void
 	{
@@ -118,7 +118,7 @@ class Entity extends Tweener
 	}
 
 	/**
-	 * Override this, called when the Entity is removed from a World.
+	 * Override this, called when the Entity is removed from a Scene.
 	 */
 	public function removed():Void
 	{
@@ -147,8 +147,8 @@ class Entity extends Tweener
 				_point.y = y;
 			}
 			else _point.x = _point.y = 0;
-			_camera.x = _world == null ? HXP.camera.x : _world.camera.x;
-			_camera.y = _world == null ? HXP.camera.y : _world.camera.y;
+			_camera.x = _scene == null ? HXP.camera.x : _scene.camera.x;
+			_camera.y = _scene == null ? HXP.camera.y : _scene.camera.y;
 			_graphic.render((renderTarget != null) ? renderTarget : HXP.buffer, _point, _camera);
 		}
 	}
@@ -162,10 +162,10 @@ class Entity extends Tweener
 	 */
 	public function collide(type:String, x:Float, y:Float):Entity
 	{
-		if (_world == null) return null;
+		if (_scene == null) return null;
 
 		var e:Entity,
-			fe:FriendEntity = _world._typeFirst.get(type);
+			fe:FriendEntity = _scene._typeFirst.get(type);
 		if (!collidable || fe == null) return null;
 
 		_x = this.x; _y = this.y;
@@ -224,7 +224,7 @@ class Entity extends Tweener
 	 */
 	public function collideTypes(types:Dynamic, x:Float, y:Float):Entity
 	{
-		if (_world == null) return null;
+		if (_scene == null) return null;
 
 		if (Std.is(types, String))
 		{
@@ -363,10 +363,10 @@ class Entity extends Tweener
 	 */
 	public function collideInto<E:Entity>(type:String, x:Float, y:Float, array:Array<E>)
 	{
-		if (_world == null) return;
+		if (_scene == null) return;
 
 		var e:E,
-			fe:FriendEntity = _world._typeFirst.get(type);
+			fe:FriendEntity = _scene._typeFirst.get(type);
 		if (!collidable || fe == null) return;
 
 		_x = this.x; _y = this.y;
@@ -419,7 +419,7 @@ class Entity extends Tweener
 	 */
 	public function collideTypesInto<E:Entity>(types:Array<String>, x:Float, y:Float, array:Array<E>)
 	{
-		if (_world == null) return;
+		if (_scene == null) return;
 		for (type in types) collideInto(type, x, y, array);
 	}
 
@@ -429,16 +429,17 @@ class Entity extends Tweener
 	public var onCamera(getOnCamera, null):Bool;
 	private inline function getOnCamera():Bool
 	{
-		return collideRect(x, y, _world.camera.x, _world.camera.y, HXP.width, HXP.height);
+		return collideRect(x, y, _scene.camera.x, _scene.camera.y, HXP.width, HXP.height);
 	}
 
 	/**
-	 * The World object this Entity has been added to.
+	 * The Scene object this Entity has been added to.
 	 */
-	public var world(getWorld, null):World;
-	private inline function getWorld():World
+	public var scene(getScene, never):Scene;
+	public var world(getScene, never):Scene;
+	private inline function getScene():Scene
 	{
-		return _world;
+		return _scene;
 	}
 
 	/**
@@ -507,14 +508,14 @@ class Entity extends Tweener
 		{
 			_graphic.layer = value;
 		}
-		if (_world == null)
+		if (_scene == null)
 		{
 			_layer = value;
 			return _layer;
 		}
-		_world.removeRender(this);
+		_scene.removeRender(this);
 		_layer = value;
-		_world.addRender(this);
+		_scene.addRender(this);
 		return _layer;
 	}
 
@@ -526,14 +527,14 @@ class Entity extends Tweener
 	private function setType(value:String):String
 	{
 		if (_type == value) return _type;
-		if (_world == null)
+		if (_scene == null)
 		{
 			_type = value;
 			return _type;
 		}
-		if (_type != "") _world.removeType(this);
+		if (_type != "") _scene.removeType(this);
 		_type = value;
-		if (value != "") _world.addType(this);
+		if (value != "") _scene.addType(this);
 		return _type;
 	}
 
@@ -570,14 +571,14 @@ class Entity extends Tweener
 	private function setName(value:String):String
 	{
 		if (_name == value) return _name;
-		if (_world == null)
+		if (_scene == null)
 		{
 			_name = value;
 			return _name;
 		}
-		if (_name != "") _world.unregisterName(this);
+		if (_name != "") _scene.unregisterName(this);
 		_name = value;
-		if (value != "") _world.registerName(this);
+		if (value != "") _scene.registerName(this);
 		return _name;
 	}
 
@@ -860,7 +861,7 @@ class Entity extends Tweener
 
 	// Entity information.
 	private var _class:String;
-	private var _world:World;
+	private var _scene:Scene;
 	private var _type:String;
 	private var _layer:Int;
 	private var _name:String;
