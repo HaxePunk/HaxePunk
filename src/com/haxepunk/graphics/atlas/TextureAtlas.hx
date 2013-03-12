@@ -7,15 +7,38 @@ import nme.geom.Rectangle;
 
 class TextureAtlas extends Atlas
 {
-	public function new(source:Dynamic)
+	private function new(bd:BitmapData)
 	{
-		var bd:BitmapData;
-		if (Std.is(source, BitmapData)) bd = source;
-		else bd = HXP.getBitmap(source);
-
 		_regions = new Hash<AtlasRegion>();
 
 		super(bd);
+	}
+
+	public static function create(source:Dynamic):TextureAtlas
+	{
+		var atlas:TextureAtlas;
+		if (Std.is(source, BitmapData))
+		{
+#if debug
+			HXP.log("Atlases using BitmapData will not be managed.");
+#end
+			atlas = new TextureAtlas(source);
+		}
+		else
+		{
+			if (Atlas._atlasPool.exists(source))
+			{
+				atlas = cast(Atlas._atlasPool.get(source), TextureAtlas);
+				atlas._refCount += 1;
+			}
+			else
+			{
+				atlas = new TextureAtlas(HXP.getBitmap(source));
+				atlas._name = source;
+				Atlas._atlasPool.set(source, atlas);
+			}
+		}
+		return atlas;
 	}
 
 	/**
@@ -27,7 +50,7 @@ class TextureAtlas extends Atlas
 	{
 		var xml = Xml.parse(nme.Assets.getText(file));
 		var root = xml.firstElement();
-		var atlas = new TextureAtlas(root.get("imagePath"));
+		var atlas = TextureAtlas.create(root.get("imagePath"));
 		for (sprite in root.elements())
 		{
 			HXP.rect.x = Std.parseInt(sprite.get("x"));

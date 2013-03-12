@@ -39,7 +39,7 @@ class Atlas
 	public static var drawCallThreshold:Int = 25000;
 	public static var smooth:Bool = false;
 
-	public function new(bd:BitmapData)
+	private function new(bd:BitmapData)
 	{
 		_layers = new IntHash<Layer>();
 		_tilesheet = new Tilesheet(bd);
@@ -51,6 +51,40 @@ class Atlas
 
 		_atlases.push(this);
 		_tileIndex = 0;
+		_refCount = 1;
+	}
+
+	/**
+	 * Loads an image and returns the full image as a region
+	 * @param source the image to use
+	 * @return an AtlasRegion containing the whole image
+	 */
+	public static function loadImageAsRegion(source:Dynamic):AtlasRegion
+	{
+		var atlas:Atlas;
+		if (Std.is(source, BitmapData))
+		{
+#if debug
+			HXP.log("Atlases using BitmapData will not be managed.");
+#end
+			atlas = new Atlas(source);
+		}
+		else
+		{
+			if (_atlasPool.exists(source))
+			{
+				atlas = _atlasPool.get(source);
+				atlas._refCount += 1;
+			}
+			else
+			{
+				atlas = new Atlas(HXP.getBitmap(source));
+				atlas._name = source;
+				_atlasPool.set(source, atlas);
+			}
+		}
+
+		return atlas.createRegion(new Rectangle(0, 0, atlas.width, atlas.height));
 	}
 
 	/**
@@ -58,7 +92,15 @@ class Atlas
 	 */
 	public function destroy()
 	{
-		_atlases.remove(this);
+		_refCount -= 1;
+		if (_refCount < 0)
+		{
+			if (_atlasPool.exists(_name))
+			{
+				_atlasPool.remove(_name);
+			}
+			_atlases.remove(this);
+		}
 	}
 
 	/**
@@ -66,7 +108,10 @@ class Atlas
 	 */
 	public static function destroyAll()
 	{
-		HXP.clear(_atlases);
+		for (atlas in _atlases)
+		{
+			atlas.destroy();
+		}
 	}
 
 	/**
@@ -140,21 +185,6 @@ class Atlas
 			return sprite.visible = !sprite.visible;
 		}
 		return false;
-	}
-
-	/**
-	 * Loads an image and returns the full image as a region
-	 * @param source the image to use
-	 * @return an AtlasRegion containing the whole image
-	 */
-	public static function loadImageAsRegion(source:Dynamic):AtlasRegion
-	{
-		var bd:BitmapData;
-		if (Std.is(source, BitmapData)) bd = source;
-		else bd = HXP.getBitmap(source);
-
-		var atlas = new Atlas(bd);
-		return atlas.createRegion(new Rectangle(0, 0, atlas.width, atlas.height));
 	}
 
 	/**
@@ -256,6 +286,11 @@ class Atlas
 	private var _layers:IntHash<Layer>;
 	private var _renderFlags:Int;
 
+	// used for pooling
+	private var _name:String;
+	private var _refCount:Int;
+
+	private static var _atlasPool:Hash<Atlas> = new Hash<Atlas>();
 	private static var _atlases:Array<Atlas> = new Array<Atlas>();
 	private static var _sprites:IntHash<Sprite> = new IntHash<Sprite>();
 

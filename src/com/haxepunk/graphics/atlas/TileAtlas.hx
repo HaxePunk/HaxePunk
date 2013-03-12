@@ -5,16 +5,38 @@ import nme.display.BitmapData;
 class TileAtlas extends Atlas
 {
 
-	public function new(source:Dynamic, tileWidth:Int, tileHeight:Int)
+	private function new(bd:BitmapData, tileWidth:Int, tileHeight:Int)
 	{
-		var bd:BitmapData;
-		if (Std.is(source, BitmapData)) bd = source;
-		else bd = HXP.getBitmap(source);
-
-		_regions = new IntHash<AtlasRegion>();
 		super(bd);
-
+		_regions = new IntHash<AtlasRegion>();
 		prepareTiles(bd.width, bd.height, tileWidth, tileHeight);
+	}
+
+	public static function create(source:Dynamic, tileWidth:Int, tileHeight:Int):TileAtlas
+	{
+		var atlas:TileAtlas;
+		if (Std.is(source, BitmapData))
+		{
+#if debug
+			HXP.log("Atlases using BitmapData will not be managed.");
+#end
+			atlas = new TileAtlas(source, tileWidth, tileHeight);
+		}
+		else
+		{
+			if (Atlas._atlasPool.exists(source))
+			{
+				atlas = cast(Atlas._atlasPool.get(source), TileAtlas);
+				atlas._refCount += 1;
+			}
+			else
+			{
+				atlas = new TileAtlas(HXP.getBitmap(source), tileWidth, tileHeight);
+				atlas._name = source;
+				Atlas._atlasPool.set(source, atlas);
+			}
+		}
+		return atlas;
 	}
 
 	public function getRegion(index:Int):AtlasRegion
