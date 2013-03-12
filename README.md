@@ -41,16 +41,16 @@ ant doc
 
 There are a few ways you can get involved with HaxePunk.
 
-* Drop by the [HaxePunk forum](http://forum.haxepunk.com) to ask something or show off what you've created.
-* Contact Matt directly
-** Email: heardtheword (at) gmail (dot) com
-** Twitter: @Matt_Tuttle
+*	Drop by the [HaxePunk forum](http://forum.haxepunk.com) to ask something or show off what you've created.
+*	Contact Matt directly
+	*	Email: heardtheword (at) gmail (dot) com
+	*	Twitter: @Matt_Tuttle
 
 ## Credits
 
-* [NME](http://www.nme.io) makes native targets possible and simplifies asset management in Flash. Thanks guys!
-* Github contributors: @Marwes, @MaskedPixel, @YAYitsAndrew, @andyli, @jgroeneveld, @noonat, @mkosler, @chrixko, @tangzero, @raistlin, @stevedecoded, @DelishusCake, @Lythom, @zlumer, @scriptorum
-* An small, but awesome, community that keeps this project going.
+*	[NME](http://www.nme.io) makes native targets possible and simplifies asset management in Flash. Thanks guys!
+*	Github contributors: @Marwes, @MaskedPixel, @YAYitsAndrew, @andyli, @jgroeneveld, @noonat, @mkosler, @chrixko, @tangzero, @raistlin, @stevedecoded, @DelishusCake, @Lythom, @zlumer, @scriptorum
+*	An small, but awesome, community that keeps this project going.
 
 ## MIT License
 
