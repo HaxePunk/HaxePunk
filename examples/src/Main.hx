@@ -14,7 +14,7 @@ class Main extends Engine
 			HXP.console.enable();
 		}
 #end
-		HXP.world = new effects.GameWorld();
+		HXP.scene = new effects.GameWorld();
 	}
 
 	public static function main() { new Main(); }

@@ -113,23 +113,23 @@ class Engine extends Sprite
 	public function focusLost() { }
 
 	/**
-	 * Updates the game, updating the World and Entities.
+	 * Updates the game, updating the Scene and Entities.
 	 */
 	public function update()
 	{
 		if (HXP.tweener.active && HXP.tweener.hasTween) HXP.tweener.updateTweens();
 
-		if (HXP.world.active)
+		if (HXP.scene.active)
 		{
-			if (HXP.world.hasTween) HXP.world.updateTweens();
-			HXP.world.update();
+			if (HXP.scene.hasTween) HXP.scene.updateTweens();
+			HXP.scene.update();
 		}
-		HXP.world.updateLists();
-		if (!HXP.gotoIsNull()) checkWorld();
+		HXP.scene.updateLists();
+		if (!HXP.gotoIsNull()) checkScene();
 	}
 
 	/**
-	 * Renders the game, rendering the World and Entities.
+	 * Renders the game, rendering the Scene and Entities.
 	 */
 	public function render()
 	{
@@ -149,7 +149,7 @@ class Engine extends Sprite
 			Atlas.clear();
 		}
 
-		if (HXP.world.visible) HXP.world.render();
+		if (HXP.scene.visible) HXP.scene.render();
 
 		if (HXP.renderMode.has(RenderMode.BUFFER))
 		{
@@ -189,13 +189,13 @@ class Engine extends Sprite
 		HXP.stage.addEventListener(Event.ACTIVATE, function (e:Event) {
 			HXP.focused = true;
 			focusGained();
-			HXP.world.focusGained();
+			HXP.scene.focusGained();
 		});
 
 		HXP.stage.addEventListener(Event.DEACTIVATE, function (e:Event) {
 			HXP.focused = false;
 			focusLost();
-			HXP.world.focusLost();
+			HXP.scene.focusLost();
 		});
 
 #if !flash
@@ -238,8 +238,8 @@ class Engine extends Sprite
 		// enable input
 		Input.enable();
 
-		// switch worlds
-		if (!HXP.gotoIsNull()) checkWorld();
+		// switch scenes
+		if (!HXP.gotoIsNull()) checkScene();
 
 		// game start
 		init();
@@ -348,21 +348,21 @@ class Engine extends Sprite
 		HXP._gameTime =  _time - _gameTime;
 	}
 
-	/** @private Switch Worlds if they've changed. */
-	private function checkWorld()
+	/** @private Switch scenes if they've changed. */
+	private function checkScene()
 	{
 		if (HXP.gotoIsNull()) return;
 
-		if (HXP.world != null)
+		if (HXP.scene != null)
 		{
-			HXP.world.end();
-			HXP.world.updateLists();
-			if (HXP.world.autoClear && HXP.world.hasTween) HXP.world.clearTweens();
-			HXP.swapWorld();
-			HXP.camera = HXP.world.camera;
-			HXP.world.updateLists();
-			HXP.world.begin();
-			HXP.world.updateLists();
+			HXP.scene.end();
+			HXP.scene.updateLists();
+			if (HXP.scene.autoClear && HXP.scene.hasTween) HXP.scene.clearTweens();
+			HXP.swapScene();
+			HXP.camera = HXP.scene.camera;
+			HXP.scene.updateLists();
+			HXP.scene.begin();
+			HXP.scene.updateLists();
 		}
 	}
 

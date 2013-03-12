@@ -1,5 +1,5 @@
 import com.haxepunk.HXP;
-import com.haxepunk.World;
+import com.haxepunk.Scene;
 import com.haxepunk.Entity;
 import com.haxepunk.graphics.Text;
 import com.haxepunk.utils.Input;
@@ -10,7 +10,7 @@ import platformer.GameWorld;
 import masks.GameWorld;
 import effects.GameWorld;
 
-class DemoWorld extends World
+class DemoWorld extends Scene
 {
 
 	public function new()

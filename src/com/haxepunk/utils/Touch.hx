@@ -17,11 +17,11 @@ class Touch
 		this.time = 0;
 	}
 
-	public var worldX(getWorldX, never):Float;
-	private inline function getWorldX():Float { return x + HXP.camera.x; }
+	public var sceneX(getSceneX, never):Float;
+	private inline function getSceneX():Float { return x + HXP.camera.x; }
 
-	public var worldY(getWorldY, never):Float;
-	private inline function getWorldY():Float { return y + HXP.camera.y; }
+	public var sceneY(getSceneY, never):Float;
+	private inline function getSceneY():Float { return y + HXP.camera.y; }
 
 	public var pressed(getPressed, never):Bool;
 	private inline function getPressed():Bool { return time == 0; }

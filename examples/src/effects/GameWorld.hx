@@ -43,7 +43,7 @@ class GameWorld extends DemoWorld
 
 	private function onTouch(touch:com.haxepunk.utils.Touch)
 	{
-		smoke.emit("exhaust", touch.worldX, touch.worldY);
+		smoke.emit("exhaust", touch.sceneX, touch.sceneY);
 	}
 
 	public override function update()

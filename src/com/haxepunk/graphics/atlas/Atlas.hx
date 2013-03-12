@@ -150,7 +150,7 @@ class Atlas
 	}
 
 	/**
-	 * Called by the current World to draw all TextureAtlas
+	 * Called by the current Scene to draw all TextureAtlas
 	 */
 	public static inline function renderAll()
 	{

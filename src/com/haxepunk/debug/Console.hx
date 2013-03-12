@@ -423,7 +423,7 @@ class Console
 				else
 				{
 					// Update info while the game runs.
-					updateEntityLists(HXP.world.count != ENTITY_LIST.length);
+					updateEntityLists(HXP.scene.count != ENTITY_LIST.length);
 					renderEntities();
 					updateFPSRead();
 					updateEntityCount();
@@ -708,7 +708,7 @@ class Console
 		{
 			HXP.clear(ENTITY_LIST);
 			HXP.clear(LAYER_LIST);
-			HXP.world.getAll(ENTITY_LIST);
+			HXP.scene.getAll(ENTITY_LIST);
 		}
 
 		// Update the list of Entities on screen.
@@ -898,7 +898,7 @@ class Console
 
 		// Update the Debug read text.
 		var s:String =
-			"Mouse: " + Std.string(HXP.world.mouseX) + ", " + Std.string(HXP.world.mouseY) +
+			"Mouse: " + Std.string(HXP.scene.mouseX) + ", " + Std.string(HXP.scene.mouseY) +
 			"\nCamera: " + Std.string(HXP.camera.x) + ", " + Std.string(HXP.camera.y);
 		if (SELECT_LIST.length != 0)
 		{
@@ -947,7 +947,7 @@ class Console
 	/** @private Updates the Entity count text. */
 	private function updateEntityCount()
 	{
-		_entReadText.text = Std.string(HXP.world.count) + " Entities";
+		_entReadText.text = Std.string(HXP.scene.count) + " Entities";
 	}
 
 	/** @private Updates the Button panel. */

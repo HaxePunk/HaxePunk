@@ -142,7 +142,7 @@ class HXP
 	public static var camera:Point = new Point();
 
 	/**
-	 * Global tweener for tweening between multiple worlds
+	 * Global tweener for tweening between multiple scenes
 	 */
 	public static var tweener:Tweener = new Tweener();
 
@@ -162,26 +162,41 @@ class HXP
 	public static var halfHeight(default, null):Float;
 
 	/**
-	 * Defines how to render the world
+	 * Defines how to render the scene
 	 */
 	public static var renderMode:EnumFlags<RenderMode>;
 
 	/**
-	 * The currently active World object. When you set this, the World is flagged
-	 * to switch, but won't actually do so until the end of the current frame.
+	 * The currently active World object (deprecated)
 	 */
-	public static var world(getWorld, setWorld):World;
-	private static inline function getWorld():World { return _world; }
-	private static function setWorld(value:World):World
+	public static var world(getWorld, setWorld):Scene;
+	private static inline function getWorld():Scene
 	{
-		if (_world == value) return value;
-		_goto = value;
-		return _world;
+		HXP.log('HXP.world is deprecated, please use HXP.scene instead');
+		return _scene;
+	}
+	private static inline function setWorld(value:Scene):Scene
+	{
+		HXP.log('HXP.world is deprecated, please use HXP.scene instead');
+		return setScene(value);
 	}
 
-	public static inline function swapWorld()
+	/**
+	 * The currently active Scene object. When you set this, the Scene is flagged
+	 * to switch, but won't actually do so until the end of the current frame.
+	 */
+	public static var scene(getScene, setScene):Scene;
+	private static inline function getScene():Scene { return _scene; }
+	private static function setScene(value:Scene):Scene
 	{
-		_world = _goto;
+		if (_scene == value) return value;
+		_goto = value;
+		return _scene;
+	}
+
+	public static inline function swapScene()
+	{
+		_scene = _goto;
 		_goto = null;
 	}
 
@@ -986,8 +1001,8 @@ class HXP
 	public static inline function gotoIsNull():Bool { return (_goto == null); }
 
 	// World information.
-	private static var _world:World = new World();
-	private static var _goto:World;
+	private static var _scene:Scene = new Scene();
+	private static var _goto:Scene;
 
 	// Console information.
 	private static var _console:Console;
