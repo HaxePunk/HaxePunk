@@ -1,5 +1,20 @@
 HaxePunk CHANGELOG
 
+v2.1.0
+------------------------------
+* Major performance improvements on native targets
+* Text is hardware accelerated
+* Hardware acceleration is turned on automatically for every graphic class
+* Renamed World to Scene (although World still exists as a wrapper)
+* Multitouch support
+* Added Atlas functions (destroy, destroyAll, count)
+* [scriptorum] Updated keycodes for NME 3.5.5
+* [YAYitsAndrew] Fixed image scaling factor
+* [YAYitsAndrew] added HXP.alarm and delay support to HXP.tween
+* Fixed console watch order
+* Added default HaxePunk icon for new projects
+* Image.createRect and Image.createCircle work on all targets
+
 v2.0.3
 ------------------------------
 * Added clipping to Atlas regions
