@@ -37,16 +37,18 @@ haxelib install chxdoc
 ant doc
 ```
 
-## Have questions or are looking to get involved?
+## Have questions or looking to get involved?
 
 There are a few ways you can get involved with HaxePunk.
 
 * Drop by the [HaxePunk forum](http://forum.haxepunk.com) to ask something or show off what you've created.
-* Contact Matt through email, heardtheword (at) gmail (dot) com, or twitter, @Matt_Tuttle.
+* Contact Matt directly
+** Email: heardtheword (at) gmail (dot) com
+** Twitter: @Matt_Tuttle
 
 ## Credits
 
-* NME makes native targets possible and simplifies asset management in Flash. Thanks guys!
+* [NME](http://www.nme.io) makes native targets possible and simplifies asset management in Flash. Thanks guys!
 * Github contributors: @Marwes, @MaskedPixel, @YAYitsAndrew, @andyli, @jgroeneveld, @noonat, @mkosler, @chrixko, @tangzero, @raistlin, @stevedecoded, @DelishusCake, @Lythom, @zlumer, @scriptorum
 * An small, but awesome, community that keeps this project going.
 
