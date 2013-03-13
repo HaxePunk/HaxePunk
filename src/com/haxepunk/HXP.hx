@@ -46,7 +46,8 @@ class HXP
 #if flash
 	public static inline var NUMBER_MAX_VALUE = untyped __global__["Number"].MAX_VALUE;
 #else
-	public static inline var NUMBER_MAX_VALUE = 179 * Math.pow(10, 306); // 1.79e+308
+	public static var NUMBER_MAX_VALUE(get_NUMBER_MAX_VALUE,never): Float;
+	public static inline function get_NUMBER_MAX_VALUE(): Float { return 179 * Math.pow(10, 306); } // 1.79e+308
 #end
 
 	/**
@@ -1026,8 +1027,10 @@ class HXP
 	private static var _soundTransform:SoundTransform = new SoundTransform();
 
 	// Used for rad-to-deg and deg-to-rad conversion.
-	public static inline var DEG:Float = -180 / Math.PI;
-	public static inline var RAD:Float = Math.PI / -180;
+	public static var DEG(get_DEG,never):Float;
+	public static inline function get_DEG(): Float { return -180 / Math.PI; }
+	public static var RAD(get_RAD,never):Float;
+	public static inline function get_RAD(): Float { return Math.PI / -180; }
 
 	// Global Flash objects.
 	public static var stage:Stage;
