@@ -675,8 +675,8 @@ class Entity extends Tweener
 	 */
 	public inline function centerOrigin()
 	{
-		originX = Std.int(width / 2);
-		originY = Std.int(height / 2);
+		originX = Std.int(halfWidth);
+		originY = Std.int(halfHeight);
 	}
 
 	/**
@@ -834,7 +834,7 @@ class Entity extends Tweener
 	 */
 	public inline function moveAtAngle(angle:Float, amount:Float, solidType:Dynamic = null, sweep:Bool = false):Void
 	{
-		angle *= RAD;
+		angle *= HXP.RAD;
 		moveBy(Math.cos(angle) * amount + x, Math.sin(angle) * amount + y, solidType, sweep);
 	}
 

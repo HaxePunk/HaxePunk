@@ -1,5 +1,11 @@
 HaxePunk CHANGELOG
 
+v2.1.1
+------------------------------
+* [stevedecoded] Added Entity.moveAtAngle
+* [nadako] Fixed Scene not working (World officially deprecated)
+* Improved Atlas memory management
+
 v2.1.0
 ------------------------------
 * Major performance improvements on native targets
