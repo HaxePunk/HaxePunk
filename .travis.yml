@@ -1,9 +1,17 @@
 language: java
 
 before_install:
-  - sudo add-apt-repository ppa:eyecreate/haxe -y
-  - sudo apt-get update -y
-  - sudo apt-get install haxe -y
+  # Install haxe 3.0 (trunk)
+  - svn clone http://haxe.googlecode.com/svn/trunk haxe_trunk
+  - cd haxe_trunk
+  - make
+  - sudo make install
+  - cd
+  # Install neko 2.0 (trunk)
+  - svn clone http://nekovm.googlecode.com/svn/trunk neko_trunk
+  - cd neko_trunk
+  - make
+  - sudo make install
   - mkdir -p ~/.haxe/lib
   - echo ~/.haxe/lib | haxelib setup
   - haxelib install nme || true
