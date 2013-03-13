@@ -1,8 +1,10 @@
 language: java
 
+env: LD_LIBRARY_PATH=/usr/lib/neko
+
 before_install:
   # Install haxe 3.0 dependencies
-  - sudo apt-get install ocaml camlp4 ocaml-findlib cvs zlib1g-dev make wget tar subversion
+  - sudo apt-get install ocaml camlp4 ocaml-findlib cvs zlib1g-dev make wget tar subversion libgc1
   # Install haxe 3.0 (trunk)
   - svn checkout http://haxe.googlecode.com/svn/trunk haxe_trunk
   - cd haxe_trunk
@@ -10,12 +12,17 @@ before_install:
   - sudo make install
   - cd
   # Install neko dependencies
-  - sudo apt-get install apache2 apache2-threaded-dev libmysqlclient15-dev libpcre3-dev libgc-dev libgtk2.0-dev
+  #- sudo apt-get install apache2 apache2-threaded-dev libmysqlclient15-dev libpcre3-dev libgc-dev libgtk2.0-dev
   # Install neko 2.0 (trunk)
-  - svn checkout http://nekovm.googlecode.com/svn/trunk neko_trunk
-  - cd neko_trunk
-  - make
-  - sudo make install
+  #- svn checkout http://nekovm.googlecode.com/svn/trunk neko_trunk
+  #- cd neko_trunk
+  #- make
+  #- sudo make install
+  - curl http://nekovm.org/_media/neko-2.0.0-linux64.tar.gz | tar xzf -
+  - sudo mv neko-2.0.0-linux64 /usr/lib/neko
+  - sudo cp /usr/lib/neko/neko /usr/bin/neko
+  - sudo cp /usr/lib/neko/nekoc /usr/bin/nekoc
+  - sudo cp /usr/lib/neko/nekotools /usr/bin/nekotools
   - mkdir -p ~/.haxe/lib
   - echo ~/.haxe/lib | haxelib setup
   - haxelib install nme || true
