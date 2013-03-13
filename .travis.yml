@@ -4,7 +4,7 @@ env: LD_LIBRARY_PATH=/usr/lib/neko
 
 before_install:
   # Install haxe 3.0 dependencies
-  - sudo apt-get install ocaml camlp4 ocaml-findlib cvs zlib1g-dev make wget tar subversion libgc1
+  - sudo apt-get install ocaml camlp4 ocaml-findlib cvs zlib1g-dev make wget tar subversion libgc1c2
   # Install haxe 3.0 (trunk)
   - svn checkout http://haxe.googlecode.com/svn/trunk haxe_trunk
   - cd haxe_trunk
