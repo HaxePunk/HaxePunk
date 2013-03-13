@@ -675,8 +675,8 @@ class Entity extends Tweener
 	 */
 	public inline function centerOrigin()
 	{
-		originX = Std.int(width / 2);
-		originY = Std.int(height / 2);
+		originX = Std.int(halfWidth);
+		originY = Std.int(halfHeight);
 	}
 
 	/**
@@ -823,6 +823,19 @@ class Entity extends Tweener
 			_point.normalize(amount);
 		}
 		moveBy(_point.x, _point.y, solidType, sweep);
+	}
+
+	/**
+	 * Moves at an angle by a certain amount, retaining integer values for its x and y.
+	 * @param	angle		Angle to move at in degrees.
+	 * @param	amount		Amount to move.
+	 * @param	solidType	An optional collision type to stop flush against upon collision.
+	 * @param	sweep		If sweeping should be used (prevents fast-moving objects from going through solidType).
+	 */
+	public inline function moveAtAngle(angle:Float, amount:Float, solidType:Dynamic = null, sweep:Bool = false):Void
+	{
+		angle *= HXP.RAD;
+		moveBy(Math.cos(angle) * amount + x, Math.sin(angle) * amount + y, solidType, sweep);
 	}
 
 	/**

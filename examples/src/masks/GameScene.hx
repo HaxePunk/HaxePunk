@@ -10,7 +10,7 @@ import com.haxepunk.masks.Hitbox;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 
-class GameWorld extends DemoWorld
+class GameScene extends DemoScene
 {
 
 	public function new()

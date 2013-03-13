@@ -8,7 +8,7 @@ import com.haxepunk.graphics.Emitter;
 import com.haxepunk.graphics.atlas.TextureAtlas;
 import com.haxepunk.utils.Input;
 
-class GameWorld extends DemoWorld
+class GameScene extends DemoScene
 {
 
 	public function new()
