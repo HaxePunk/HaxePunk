@@ -19,7 +19,7 @@ before_install:
   #- make
   #- sudo make install
   - curl http://nekovm.org/_media/neko-2.0.0-linux64.tar.gz | tar xzf -
-  - sudo mv neko-2.0.0-linux64 /usr/lib/neko
+  - sudo mv neko-2.0.0-linux /usr/lib/neko
   - sudo cp /usr/lib/neko/neko /usr/bin/neko
   - sudo cp /usr/lib/neko/nekoc /usr/bin/nekoc
   - sudo cp /usr/lib/neko/nekotools /usr/bin/nekotools
