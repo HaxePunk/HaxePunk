@@ -29,6 +29,7 @@ class Sfx
 		_volume = 1;
 		_pan = 0;
 		_position = 0;
+		_type = "";
 
 		if (source == null) throw "Invalid source Sound.";
 		if (Std.is(source, String))
@@ -231,8 +232,12 @@ class Sfx
 	 */
 	static public function getPan(type:String):Float
 	{
-		var transform:SoundTransform = _typeTransforms.get(type);
-		return transform != null ? transform.pan : 0;
+		if (_typeTransforms.exists(type))
+		{
+			var transform = _typeTransforms.get(type);
+			return transform != null ? transform.pan : 0;
+		}
+		return 0;
 	}
 
 	/**
@@ -240,8 +245,12 @@ class Sfx
 	 */
 	static public function getVolume(type:String):Float
 	{
-		var transform:SoundTransform = _typeTransforms.get(type);
-		return transform != null ? transform.volume : 1;
+		if (_typeTransforms.exists(type))
+		{
+			var transform = _typeTransforms.get(type);
+			return transform != null ? transform.volume : 1;
+		}
+		return 1;
 	}
 
 	/**
