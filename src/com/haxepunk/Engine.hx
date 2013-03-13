@@ -117,15 +117,15 @@ class Engine extends Sprite
 	 */
 	public function update()
 	{
+		HXP.scene.updateLists();
+		if (!HXP.gotoIsNull()) checkScene();
 		if (HXP.tweener.active && HXP.tweener.hasTween) HXP.tweener.updateTweens();
-
 		if (HXP.scene.active)
 		{
 			if (HXP.scene.hasTween) HXP.scene.updateTweens();
 			HXP.scene.update();
 		}
-		HXP.scene.updateLists();
-		if (!HXP.gotoIsNull()) checkScene();
+		HXP.scene.updateLists(false);
 	}
 
 	/**
