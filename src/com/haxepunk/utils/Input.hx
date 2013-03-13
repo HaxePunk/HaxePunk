@@ -372,15 +372,15 @@ class Input
 	private static inline var kKeyStringMax = 100;
 
 	private static var _enabled:Bool = false;
-	private static var _touches:IntHash<Touch> = new IntHash<Touch>();
+	private static var _touches:Map<Int,Touch> = new Map<Int,Touch>();
 	private static var _touchNum:Int = 0;
-	private static var _joysticks:IntHash<Joystick> = new IntHash<Joystick>();
+	private static var _joysticks:Map<Int,Joystick> = new Map<Int,Joystick>();
 	private static var _key:Array<Bool> = new Array<Bool>();
 	private static var _keyNum:Int = 0;
 	private static var _press:Array<Int> = new Array<Int>();
 	private static var _pressNum:Int = 0;
 	private static var _release:Array<Int> = new Array<Int>();
 	private static var _releaseNum:Int = 0;
-	private static var _control:Hash<Array<Int>> = new Hash<Array<Int>>();
+	private static var _control:Map<String,Array<Int>> = new Map<String,Array<Int>>();
 	private static var _mouseWheelDelta:Int = 0;
 }

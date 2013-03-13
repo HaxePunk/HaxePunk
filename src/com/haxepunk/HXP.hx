@@ -1015,7 +1015,7 @@ class HXP
 	public static var _systemTime:Float;
 
 	// Bitmap storage.
-	private static var _bitmap:Hash<BitmapData> = new Hash<BitmapData>();
+	private static var _bitmap:Map<String,BitmapData> = new Map<String,BitmapData>();
 
 	// Pseudo-random number generation (the seed is set in Engine's contructor).
 	private static var _seed:Int = 0;

@@ -34,17 +34,17 @@ class Scene extends Tweener
 		_layerList = new Array<Int>();
 		_layerCount = new Array<Int>();
 
-		_renderFirst = new IntHash<FriendEntity>();
-		_renderLast = new IntHash<FriendEntity>();
-		_typeFirst = new Hash<FriendEntity>();
+		_renderFirst = new Map<Int,FriendEntity>();
+		_renderLast = new Map<Int,FriendEntity>();
+		_typeFirst = new Map<String,FriendEntity>();
 
 		_add = new Array<Entity>();
 		_remove = new Array<Entity>();
 		_recycle = new Array<Entity>();
-		_classCount = new Hash<Int>();
-		_typeCount = new Hash<Int>();
-		_recycled = new Hash<Entity>();
-		_entityNames = new Hash<Entity>();
+		_classCount = new Map<String,Int>();
+		_typeCount = new Map<String,Int>();
+		_recycled = new Map<String,Entity>();
+		_entityNames = new Map<String,Entity>();
 	}
 
 	/**
@@ -1283,15 +1283,15 @@ class Scene extends Tweener
 	private var _count:Int;
 
 	// Render information.
-	private var _renderFirst:IntHash<FriendEntity>;
-	private var _renderLast:IntHash<FriendEntity>;
+	private var _renderFirst:Map<Int,FriendEntity>;
+	private var _renderLast:Map<Int,FriendEntity>;
 	private var _layerList:Array<Int>;
 	private var _layerCount:Array<Int>;
 	private var _layerSort:Bool;
 
-	private var _classCount:Hash<Int>;
-	public var _typeFirst:Hash<FriendEntity>;
-	private var _typeCount:Hash<Int>;
-	private var _recycled:Hash<Entity>;
-	private var _entityNames:Hash<Entity>;
+	private var _classCount:Map<String,Int>;
+	public var _typeFirst:Map<String,FriendEntity>;
+	private var _typeCount:Map<String,Int>;
+	private var _recycled:Map<String,Entity>;
+	private var _entityNames:Map<String,Entity>;
 }

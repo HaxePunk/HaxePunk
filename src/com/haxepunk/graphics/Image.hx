@@ -420,6 +420,6 @@ class Image extends Graphic
 	private var _class:String;
 	private var _flipped:Bool;
 	private var _flip:BitmapData;
-	private static var _flips:Hash<BitmapData> = new Hash<BitmapData>();
+	private static var _flips:Map<String,BitmapData> = new Map<String,BitmapData>();
 
 }

@@ -42,7 +42,7 @@ class Spritemap extends Image
 	{
 		complete = true;
 		rate = 1;
-		_anims = new Hash<Animation>();
+		_anims = new Map<String,Animation>();
 		_timer = _frame = 0;
 
 		_rect = new Rectangle(0, 0, frameWidth, frameHeight);
@@ -299,7 +299,7 @@ class Spritemap extends Image
 	private var _columns:Int;
 	private var _rows:Int;
 	private var _frameCount:Int;
-	private var _anims:Hash<Animation>;
+	private var _anims:Map<String,Animation>;
 	private var _anim:Animation;
 	private var _index:Int;
 	private var _frame:Int;

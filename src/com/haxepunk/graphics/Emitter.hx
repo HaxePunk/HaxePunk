@@ -31,7 +31,7 @@ class Emitter extends Graphic
 		super();
 		_p = new Point();
 		_tint = new ColorTransform();
-		_types = new Hash<ParticleType>();
+		_types = new Map<String,ParticleType>();
 
 		setSource(source, frameWidth, frameHeight);
 		active = true;
@@ -350,7 +350,7 @@ class Emitter extends Graphic
 	public var particleCount(default, null):Int;
 
 	// Particle information.
-	private var _types:Hash<ParticleType>;
+	private var _types:Map<String,ParticleType>;
 	private var _particle:Particle;
 	private var _cache:Particle;
 

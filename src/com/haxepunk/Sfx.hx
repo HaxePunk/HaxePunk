@@ -169,5 +169,5 @@ class Sfx
 	private var _looping:Bool;
 
 	// Stored Sound objects.
-	private static var _sounds:Hash<Sound> = new Hash<Sound>();
+	private static var _sounds:Map<String,Sound> = new Map<String,Sound>();
 }
