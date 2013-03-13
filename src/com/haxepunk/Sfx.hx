@@ -31,14 +31,12 @@ class Sfx
 		_position = 0;
 
 		if (source == null) throw "Invalid source Sound.";
-#if nme
 		if (Std.is(source, String))
 		{
 			_sound = nme.Assets.getSound(source);
 			_sounds.set(source, _sound);
 		}
 		else
-#end
 		{
 			var className:String = Type.getClassName(Type.getClass(source));
 			_sound = _sounds.get(className);
@@ -60,10 +58,18 @@ class Sfx
 	public function play(volume:Float = 1, pan:Float = 0)
 	{
 		if (playing) stop();
-		_volume = _transform.volume = volume < 0 ? 0 : volume;
-		_pan = _transform.pan = pan < -1 ? -1 : (pan > 1 ? 1 : pan);
+		_pan = HXP.clamp(pan, -1, 1);
+		_volume = volume < 0 ? 0 : volume;
+		_filteredPan = HXP.clamp(_pan + getPan(_type), -1, 1);
+		_filteredVol = Math.max(0, _volume * getVolume(_type));
+		_transform.pan = _filteredPan;
+		_transform.volume = _filteredVol;
 		_channel = _sound.play(0, 0, _transform);
-		if (playing) _channel.addEventListener(Event.SOUND_COMPLETE, onComplete);
+		if (playing)
+		{
+			addPlaying();
+			_channel.addEventListener(Event.SOUND_COMPLETE, onComplete);
+		}
 		_looping = false;
 		_position = 0;
 	}
@@ -86,6 +92,7 @@ class Sfx
 	public function stop():Bool
 	{
 		if (!playing) return false;
+		removePlaying();
 		_position = _channel.position;
 		_channel.removeEventListener(Event.SOUND_COMPLETE, onComplete);
 		_channel.stop();
@@ -99,7 +106,11 @@ class Sfx
 	public function resume()
 	{
 		_channel = _sound.play(_position, 0, _transform);
-		if (playing) _channel.addEventListener(Event.SOUND_COMPLETE, onComplete);
+		if (playing)
+		{
+			addPlaying();
+			_channel.addEventListener(Event.SOUND_COMPLETE, onComplete);
+		}
 		_position = 0;
 	}
 
@@ -112,16 +123,45 @@ class Sfx
 		if (complete != null) complete();
 	}
 
+	/** @private Add the sound to the global list. */
+	private function addPlaying()
+	{
+		var list:Array<Sfx>;
+		if (!_typePlaying.exists(_type))
+		{
+			list = new Array<Sfx>();
+			_typePlaying.set(_type, list);
+		}
+		else
+		{
+			list = _typePlaying.get(_type);
+		}
+		list.push(this);
+	}
+
+	/** @private Remove the sound from the global list. */
+	private function removePlaying()
+	{
+		if (_typePlaying.exists(_type))
+		{
+			_typePlaying.get(_type).remove(this);
+		}
+	}
+
 	/**
 	 * Alter the volume factor (a value from 0 to 1) of the sound during playback.
 	 */
-	public var volume(getVolume, setVolume):Float;
-	private function getVolume():Float { return _volume; }
-	private function setVolume(value:Float):Float
+	public var volume(get_volume, set_volume):Float;
+	private function get_volume():Float { return _volume; }
+	private function set_volume(value:Float):Float
 	{
 		if (value < 0) value = 0;
 		if (_channel == null || _volume == value) return value;
-		_volume = _transform.volume = value;
+		_volume = value;
+		var filteredVol:Float = value * getVolume(_type);
+		if (filteredVol < 0) filteredVol = 0;
+		if (_filteredVol == filteredVol) return value;
+		_filteredVol = _transform.volume = filteredVol;
 		_channel.soundTransform = _transform;
 		return _volume;
 	}
@@ -129,45 +169,133 @@ class Sfx
 	/**
 	 * Alter the panning factor (a value from -1 to 1) of the sound during playback.
 	 */
-	public var pan(getPan, setPan):Float;
-	private function getPan():Float { return _pan; }
-	private function setPan(value:Float):Float
+	public var pan(get_pan, set_pan):Float;
+	private function get_pan():Float { return _pan; }
+	private function set_pan(value:Float):Float
 	{
-		if (value < -1) value = -1;
-		if (value > 1) value = 1;
+		value = HXP.clamp(value, -1, 1);
 		if (_channel == null || _pan == value) return value;
-		_pan = _transform.pan = value;
+		var filteredPan:Float = HXP.clamp(value + getPan(_type), -1, 1);
+		if (_filteredPan == filteredPan) return value;
+		_pan = value;
+		_filteredPan = _transform.pan = filteredPan;
 		_channel.soundTransform = _transform;
 		return _pan;
 	}
 
 	/**
+	 * Change the sound type. This an arbitrary string you can use to group
+	 * sounds to mute or pan en masse.
+	 */
+	public var type(get_type, set_type):String;
+	private function get_type():String { return _type; }
+	private function set_type(value:String):String
+	{
+		if (_type == value) return value;
+		if (playing)
+		{
+			removePlaying();
+			_type = value;
+			addPlaying();
+			// reset, in case type has different global settings
+			pan = pan;
+			volume = volume;
+		}
+		else
+		{
+			_type = value;
+		}
+		return value;
+	}
+
+	/**
 	 * If the sound is currently playing.
 	 */
-	public inline var playing(getPlaying, null):Bool;
-	private inline function getPlaying():Bool { return _channel != null; }
+	public var playing(get_playing, null):Bool;
+	private inline function get_playing():Bool { return _channel != null; }
 
 	/**
 	 * Position of the currently playing sound, in seconds.
 	 */
-	public var position(getPosition, null):Float;
-	private function getPosition():Float { return (_channel != null ? _channel.position : _position) / 1000; }
+	public var position(get_position, null):Float;
+	private function get_position():Float { return (playing ? _channel.position : _position) / 1000; }
 
 	/**
 	 * Length of the sound, in seconds.
 	 */
-	public var length(getLength, null):Float;
-	private function getLength():Float { return _sound.length / 1000; }
+	public var length(get_length, null):Float;
+	private function get_length():Float { return _sound.length / 1000; }
+
+	/**
+	 * Return the global pan for a type.
+	 */
+	static public function getPan(type:String):Float
+	{
+		var transform:SoundTransform = _typeTransforms.get(type);
+		return transform != null ? transform.pan : 0;
+	}
+
+	/**
+	 * Return the global volume for a type.
+	 */
+	static public function getVolume(type:String):Float
+	{
+		var transform:SoundTransform = _typeTransforms.get(type);
+		return transform != null ? transform.volume : 1;
+	}
+
+	/**
+	 * Set the global pan for a type. Sfx instances of this type will add
+	 * this pan to their own.
+	 */
+	static public function setPan(type:String, pan:Float)
+	{
+		var transform:SoundTransform = _typeTransforms.get(type);
+		if (transform == null)
+		{
+			transform = new SoundTransform();
+			_typeTransforms.set(type, transform);
+		}
+		transform.pan = HXP.clamp(pan, -1, 1);
+		for (sfx in _typePlaying.get(type))
+		{
+			sfx.pan = sfx.pan;
+		}
+	}
+
+	/**
+	 * Set the global volume for a type. Sfx instances of this type will
+	 * multiply their volume by this value.
+	 */
+	static public function setVolume(type:String, volume:Float)
+	{
+		var transform:SoundTransform = _typeTransforms.get(type);
+		if (transform == null)
+		{
+			transform = new SoundTransform();
+			_typeTransforms.set(type, transform);
+		}
+		transform.volume = volume < 0 ? 0 : volume;
+		for (sfx in _typePlaying.get(type))
+		{
+			sfx.volume = sfx.volume;
+		}
+	}
 
 	// Sound infromation.
-	private var _volume:Float;
-	private var _pan:Float;
+	private var _type:String;
+	private var _volume:Float = 1;
+	private var _pan:Float = 0;
+	private var _filteredVol:Float;
+	private var _filteredPan:Float;
 	private var _sound:Sound;
 	private var _channel:SoundChannel;
 	private var _transform:SoundTransform;
-	private var _position:Float;
+	private var _position:Float = 0;
 	private var _looping:Bool;
 
 	// Stored Sound objects.
 	private static var _sounds:Hash<Sound> = new Hash<Sound>();
+	private static var _typePlaying:Hash<Array<Sfx>> = new Hash<Array<Sfx>>();
+	private static var _typeTransforms:Hash<SoundTransform> = new Hash<SoundTransform>();
 }
