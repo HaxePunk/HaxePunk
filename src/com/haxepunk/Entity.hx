@@ -826,6 +826,19 @@ class Entity extends Tweener
 	}
 
 	/**
+	 * Moves at an angle by a certain amount, retaining integer values for its x and y.
+	 * @param	angle		Angle to move at in degrees.
+	 * @param	amount		Amount to move.
+	 * @param	solidType	An optional collision type to stop flush against upon collision.
+	 * @param	sweep		If sweeping should be used (prevents fast-moving objects from going through solidType).
+	 */
+	public inline function moveAtAngle(angle:Float, amount:Float, solidType:Dynamic = null, sweep:Bool = false):Void
+	{
+		angle *= RAD;
+		moveBy(Math.cos(angle) * amount + x, Math.sin(angle) * amount + y, solidType, sweep);
+	}
+
+	/**
 	 * When you collide with an Entity on the x-axis with moveTo() or moveBy().
 	 * @param	e		The Entity you collided with.
 	 */
