@@ -9,9 +9,9 @@ import nme.geom.Point;
 class Rect extends Graphic
 {
 
-	public var color(default, setColor):Int = 0;
-	public var width(default, setWidth):Int = 0;
-	public var height(default, setHeight):Int = 0;
+	public var color(default, set_color):Int = 0;
+	public var width(default, set_width):Int = 0;
+	public var height(default, set_height):Int = 0;
 
 	public function new(width:Int, height:Int, color:Int=0xFFFFFF)
 	{
@@ -48,7 +48,7 @@ class Rect extends Graphic
 		}
 	}
 
-	private function setHeight(value:Int):Int
+	private function set_height(value:Int):Int
 	{
 		if (height == value) return value;
 		height = value;
@@ -56,7 +56,7 @@ class Rect extends Graphic
 		return value;
 	}
 
-	private function setWidth(value:Int):Int
+	private function set_width(value:Int):Int
 	{
 		if (width == value) return value;
 		width = value;
@@ -64,7 +64,7 @@ class Rect extends Graphic
 		return value;
 	}
 
-	private function setColor(value:Int):Int
+	private function set_color(value:Int):Int
 	{
 		if (color == value) return value;
 		color = value;

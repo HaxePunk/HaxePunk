@@ -341,9 +341,9 @@ class Console
 	/**
 	 * If the console should be visible.
 	 */
-	public var visible(getVisible, setVisible):Bool;
-	private function getVisible():Bool { return _sprite.visible; }
-	private function setVisible(value:Bool):Bool
+	public var visible(get_visible, set_visible):Bool;
+	private function get_visible():Bool { return _sprite.visible; }
+	private function set_visible(value:Bool):Bool
 	{
 		_sprite.visible = value;
 		if (_enabled && value) updateLog();
@@ -453,9 +453,9 @@ class Console
 	/**
 	 * If the Console is currently in paused mode.
 	 */
-	public var paused(getPaused, setPaused):Bool;
-	private function getPaused():Bool { return _paused; }
-	private function setPaused(value:Bool):Bool
+	public var paused(get_paused, set_paused):Bool;
+	private function get_paused():Bool { return _paused; }
+	private function set_paused(value:Bool):Bool
 	{
 		// Quit if the console isn't enabled.
 		if (!_enabled) return false;
@@ -495,9 +495,9 @@ class Console
 	/**
 	 * If the Console is currently in debug mode.
 	 */
-	public var debug(getDebug, setDebug):Bool;
-	private function getDebug():Bool { return _debug; }
-	private function setDebug(value:Bool):Bool
+	public var debug(get_debug, set_debug):Bool;
+	private function get_debug():Bool { return _debug; }
+	private function set_debug(value:Bool):Bool
 	{
 		// Quit if the console isn't enabled.
 		if (!_enabled) return false;
@@ -1012,11 +1012,11 @@ class Console
 	/**
 	 * Get the unscaled screen size for the Console.
 	 */
-	public var width(getWidth, null):Int;
-	private function getWidth():Int { return HXP.windowWidth; }
+	public var width(get_width, null):Int;
+	private function get_width():Int { return HXP.windowWidth; }
 
-	public var height(getHeight, null):Int;
-	private function getHeight():Int { return HXP.windowHeight; }
+	public var height(get_height, null):Int;
+	private function get_height():Int { return HXP.windowHeight; }
 
 	// Console state information.
 	private var _enabled:Bool;

@@ -258,9 +258,9 @@ class Image extends Graphic
 	/**
 	 * Change the opacity of the Image, a value from 0 to 1.
 	 */
-	public var alpha(getAlpha, setAlpha):Float;
-	private function getAlpha():Float { return _alpha; }
-	private function setAlpha(value:Float):Float
+	public var alpha(get_alpha, set_alpha):Float;
+	private function get_alpha():Float { return _alpha; }
+	private function set_alpha(value:Float):Float
 	{
 		value = value < 0 ? 0 : (value > 1 ? 1 : value);
 		if (_alpha == value) return value;
@@ -287,9 +287,9 @@ class Image extends Graphic
 	/**
 	 * The tinted color of the Image. Use 0xFFFFFF to draw the Image normally.
 	 */
-	public var color(getColor, setColor):Int;
-	private function getColor():Int { return _color; }
-	private function setColor(value:Int):Int
+	public var color(get_color, set_color):Int;
+	private function get_color():Int { return _color; }
+	private function set_color(value:Int):Int
 	{
 		value &= 0xFFFFFF;
 		if (_color == value) return value;
@@ -317,9 +317,9 @@ class Image extends Graphic
 	 * If you want to draw the Image horizontally flipped. This is
 	 * faster than setting scaleX to -1 if your image isn't transformed.
 	 */
-	public var flipped(getFlipped, setFlipped):Bool;
-	private function getFlipped():Bool { return _flipped; }
-	private function setFlipped(value:Bool):Bool
+	public var flipped(get_flipped, set_flipped):Bool;
+	private function get_flipped():Bool { return _flipped; }
+	private function set_flipped(value:Bool):Bool
 	{
 		if (_flipped == value || _class == "") return value;
 
@@ -374,32 +374,32 @@ class Image extends Graphic
 	/**
 	 * Width of the image.
 	 */
-	public var width(getWidth, never):Int;
-	private function getWidth():Int { return Std.int(_blit ? _bufferRect.width : _region.width); }
+	public var width(get_width, never):Int;
+	private function get_width():Int { return Std.int(_blit ? _bufferRect.width : _region.width); }
 
 	/**
 	 * Height of the image.
 	 */
-	public var height(getHeight, never):Int;
-	private function getHeight():Int { return Std.int(_blit ? _bufferRect.height : _region.height); }
+	public var height(get_height, never):Int;
+	private function get_height():Int { return Std.int(_blit ? _bufferRect.height : _region.height); }
 
 	/**
 	 * The scaled width of the image.
 	 */
-	public var scaledWidth(getScaledWidth, never):Int;
-	private function getScaledWidth():Int { return Std.int(width * scaleX * scale); }
+	public var scaledWidth(get_scaledWidth, never):Int;
+	private function get_scaledWidth():Int { return Std.int(width * scaleX * scale); }
 
 	/**
 	 * The scaled height of the image.
 	 */
-	public var scaledHeight(getScaledHeight, never):Int;
-	private function getScaledHeight():Int { return Std.int(height * scaleY * scale); }
+	public var scaledHeight(get_scaledHeight, never):Int;
+	private function get_scaledHeight():Int { return Std.int(height * scaleY * scale); }
 
 	/**
 	 * Clipping rectangle for the image.
 	 */
-	public var clipRect(getClipRect, null):Rectangle;
-	private function getClipRect():Rectangle { return _sourceRect; }
+	public var clipRect(get_clipRect, null):Rectangle;
+	private function get_clipRect():Rectangle { return _sourceRect; }
 
 	// Source and buffer information.
 	private var _source:BitmapData;

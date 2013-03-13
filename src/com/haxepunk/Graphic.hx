@@ -49,7 +49,7 @@ class Graphic
 	/**
 	 * The layer to use for rendering, should only be set by the Entity
 	 */
-	public var layer(default, setLayer):Int;
+	public var layer(default, set_layer):Int;
 
 	/**
 	 * Constructor.
@@ -81,7 +81,7 @@ class Graphic
 	 */
 	public function render(target:BitmapData, point:Point, camera:Point) { }
 
-	private function setLayer(value:Int):Int
+	private function set_layer(value:Int):Int
 	{
 		return layer = value;
 	}

@@ -8,8 +8,8 @@ class AtlasRegion
 
 	public var rotated:Bool;
 	public var tileIndex(default, null):Int;
-	public var width(getWidth, never):Float;
-	public var height(getHeight, never):Float;
+	public var width(get_width, never):Float;
+	public var height(get_height, never):Float;
 
 	public function new(parent:Atlas, tileIndex:Int, rect:Rectangle)
 	{
@@ -67,8 +67,8 @@ class AtlasRegion
 		return "[AtlasRegion " + width + ", " + height + " " + tileIndex + "]";
 	}
 
-	private inline function getWidth():Float { return rect.width; }
-	private inline function getHeight():Float { return rect.height; }
+	private inline function get_width():Float { return rect.width; }
+	private inline function get_height():Float { return rect.height; }
 
 	private var rect:Rectangle;
 	private var center:Point;

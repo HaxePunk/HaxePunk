@@ -403,9 +403,9 @@ class Polygon extends Hitbox
 	/**
 	 * Angle in degress that the polygon is rotated.
 	 */
-	public var angle(getAngle, setAngle):Float;
-	private inline function getAngle():Float { return _angle; }
-	private function setAngle(value:Float):Float
+	public var angle(get_angle, set_angle):Float;
+	private inline function get_angle():Float { return _angle; }
+	private function set_angle(value:Float):Float
 	{
 		if (value == _angle) return value;
 		rotate(_angle - value);
@@ -417,9 +417,9 @@ class Polygon extends Hitbox
 	 * The points representing the polygon.
 	 * If you need to set a point yourself instead of passing in a new Array<Point> you need to call update() to makes sure the axes update as well.
 	 */
-	public var points(getPoints, setPoints):Array<Point>;
-	private inline function getPoints():Array<Point> { return _points; }
-	private function setPoints(value:Array<Point>):Array<Point>
+	public var points(get_points, set_points):Array<Point>;
+	private inline function get_points():Array<Point> { return _points; }
+	private function set_points(value:Array<Point>):Array<Point>
 	{
 		if (_points == value) return value;
 		_points = value;

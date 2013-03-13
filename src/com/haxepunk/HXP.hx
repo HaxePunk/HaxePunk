@@ -169,25 +169,25 @@ class HXP
 	/**
 	 * The currently active World object (deprecated)
 	 */
-	public static var world(getWorld, setWorld):Scene;
-	private static inline function getWorld():Scene
+	public static var world(get_world, set_world):Scene;
+	private static inline function get_world():Scene
 	{
 		HXP.log('HXP.world is deprecated, please use HXP.scene instead');
 		return _scene;
 	}
-	private static inline function setWorld(value:Scene):Scene
+	private static inline function set_world(value:Scene):Scene
 	{
 		HXP.log('HXP.world is deprecated, please use HXP.scene instead');
-		return setScene(value);
+		return set_scene(value);
 	}
 
 	/**
 	 * The currently active Scene object. When you set this, the Scene is flagged
 	 * to switch, but won't actually do so until the end of the current frame.
 	 */
-	public static var scene(getScene, setScene):Scene;
-	private static inline function getScene():Scene { return _scene; }
-	private static function setScene(value:Scene):Scene
+	public static var scene(get_scene, set_scene):Scene;
+	private static inline function get_scene():Scene { return _scene; }
+	private static function set_scene(value:Scene):Scene
 	{
 		if (_scene == value) return value;
 		_goto = value;
@@ -256,9 +256,9 @@ class HXP
 	/**
 	 * Global volume factor for all sounds, a value from 0 to 1.
 	 */
-	public static var volume(getVolume, setVolume):Float;
-	private static inline function getVolume():Float { return _volume; }
-	private static function setVolume(value:Float):Float
+	public static var volume(get_volume, set_volume):Float;
+	private static inline function get_volume():Float { return _volume; }
+	private static function set_volume(value:Float):Float
 	{
 		if (value < 0) value = 0;
 		if (_volume == value) return value;
@@ -272,9 +272,9 @@ class HXP
 	/**
 	 * Global panning factor for all sounds, a value from -1 to 1.
 	 */
-	public static var pan(getPan, setPan):Float;
-	private static inline function getPan():Float { return _pan; }
-	private static function setPan(value:Float):Float
+	public static var pan(get_pan, set_pan):Float;
+	private static inline function get_pan():Float { return _pan; }
+	private static function set_pan(value:Float):Float
 	{
 		if (value < -1) value = -1;
 		if (value > 1) value = 1;
@@ -614,8 +614,8 @@ class HXP
 	/**
 	 * The random seed used by FP's random functions.
 	 */
-	public static var randomSeed(default, setRandomSeed):Int;
-	private static inline function setRandomSeed(value:Int):Int
+	public static var randomSeed(default, set_randomSeed):Int;
+	private static inline function set_randomSeed(value:Int):Int
 	{
 		_seed = Std.int(clamp(value, 1.0, INT_MAX_VALUE));
 		randomSeed = _seed;
@@ -633,8 +633,8 @@ class HXP
 	/**
 	 * A pseudo-random Float produced using FP's random seed, where 0 <= Float < 1.
 	 */
-	public static var random(getRandom, null):Float;
-	private static inline function getRandom():Float
+	public static var random(get_random, null):Float;
+	private static inline function get_random():Float
 	{
 		_seed = Std.int((_seed * 16807.0) % INT_MAX_VALUE);
 		return _seed / INT_MAX_VALUE;
@@ -844,8 +844,8 @@ class HXP
 	/**
 	 * The global Console object.
 	 */
-	public static var console(getConsole, never):Console;
-	private static inline function getConsole():Console
+	public static var console(get_console, never):Console;
+	private static inline function get_console():Console
 	{
 		if (_console == null) _console = new Console();
 		return _console;
@@ -992,8 +992,8 @@ class HXP
 		}
 	}
 
-	public static var time(null, setTime):Float;
-	private static inline function setTime(value:Float):Float {
+	public static var time(null, set_time):Float;
+	private static inline function set_time(value:Float):Float {
 		_time = value;
 		return _time;
 	}

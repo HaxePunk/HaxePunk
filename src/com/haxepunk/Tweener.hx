@@ -79,8 +79,8 @@ class Tweener
 		}
 	}
 
-	public var hasTween(getTween, never):Bool;
-	private function getTween():Bool { return (_tween != null); }
+	public var hasTween(get_hasTween, never):Bool;
+	private function get_hasTween():Bool { return (_tween != null); }
 
 	private var _tween:Tween;
 }

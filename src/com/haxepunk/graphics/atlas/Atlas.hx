@@ -117,8 +117,8 @@ class Atlas
 	/**
 	 * How many Atlases are active.
 	 */
-	public static var count(getCount, never):Int;
-	private static inline function getCount():Int { return _atlases.length; }
+	public static var count(get_count, never):Int;
+	private static inline function get_count():Int { return _atlases.length; }
 
 	/**
 	 * Renders the current TextureAtlas
