@@ -1,7 +1,7 @@
 language: java
 
 before_install:
-  # Install dependencies
+  # Install haxe 3.0 dependencies
   - sudo apt-get install ocaml camlp4 ocaml-findlib cvs zlib1g-dev make wget tar subversion
   # Install haxe 3.0 (trunk)
   - svn checkout http://haxe.googlecode.com/svn/trunk haxe_trunk
@@ -9,6 +9,8 @@ before_install:
   - make
   - sudo make install
   - cd
+  # Install neko dependencies
+  - sudo apt-get install apache2 apache2-threaded-dev libmysqlclient15-dev libpcre3-dev libgc-dev libgtk2.0-dev
   # Install neko 2.0 (trunk)
   - svn checkout http://nekovm.googlecode.com/svn/trunk neko_trunk
   - cd neko_trunk
