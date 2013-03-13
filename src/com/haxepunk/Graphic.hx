@@ -76,8 +76,9 @@ class Graphic
 
 	/**
 	 * Renders the graphic to the screen buffer.
-	 * @param	point		The position to draw the graphic.
-	 * @param	camera		The camera offset.
+	 * @param  target     The buffer to draw to.
+	 * @param  point      The position to draw the graphic.
+	 * @param  camera     The camera offset.
 	 */
 	public function render(target:BitmapData, point:Point, camera:Point) { }
 
