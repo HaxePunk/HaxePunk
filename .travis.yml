@@ -1,6 +1,8 @@
 language: java
 
 before_install:
+  # Install dependencies
+  - sudo apt-get install ocaml camlp4 ocaml-findlib cvs zlib1g-dev make wget tar subversion
   # Install haxe 3.0 (trunk)
   - svn checkout http://haxe.googlecode.com/svn/trunk haxe_trunk
   - cd haxe_trunk
