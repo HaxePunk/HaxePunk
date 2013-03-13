@@ -2,13 +2,13 @@ language: java
 
 before_install:
   # Install haxe 3.0 (trunk)
-  - svn clone http://haxe.googlecode.com/svn/trunk haxe_trunk
+  - svn checkout http://haxe.googlecode.com/svn/trunk haxe_trunk
   - cd haxe_trunk
   - make
   - sudo make install
   - cd
   # Install neko 2.0 (trunk)
-  - svn clone http://nekovm.googlecode.com/svn/trunk neko_trunk
+  - svn checkout http://nekovm.googlecode.com/svn/trunk neko_trunk
   - cd neko_trunk
   - make
   - sudo make install
