@@ -6,11 +6,11 @@ import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 
 // have to import worlds for compilation
-import platformer.GameWorld;
-import masks.GameWorld;
-import effects.GameWorld;
+import platformer.GameScene;
+import masks.GameScene;
+import effects.GameScene;
 
-class DemoWorld extends Scene
+class DemoScene extends Scene
 {
 
 	public function new()
@@ -25,11 +25,11 @@ class DemoWorld extends Scene
 		add(overlay);
 
 		var c = Type.getClassName(Type.getClass(this));
-		for (i in 0..._worlds.length)
+		for (i in 0..._scenes.length)
 		{
-			if (_worlds[i] == c)
+			if (_scenes[i] == c)
 			{
-				_currentWorld = i;
+				_currentScene = i;
 				break;
 			}
 		}
@@ -37,34 +37,34 @@ class DemoWorld extends Scene
 		tapTime = 0;
 	}
 
-	private function loadWorld():Bool
+	private function loadScene():Bool
 	{
-		var classDef = Type.resolveClass(_worlds[_currentWorld]);
+		var classDef = Type.resolveClass(_scenes[_currentScene]);
 		if (classDef == null) return false;
 
 		var world = Type.createInstance(classDef, []);
 		if (world == null) return false;
 
-		HXP.world = world;
+		HXP.scene = world;
 		return true;
 	}
 
-	private inline function nextWorld()
+	private inline function nextScene()
 	{
-		_currentWorld -= 1;
-		if (_currentWorld < 0)
-			_currentWorld = _worlds.length - 1;
+		_currentScene -= 1;
+		if (_currentScene < 0)
+			_currentScene = _scenes.length - 1;
 
-		loadWorld();
+		loadScene();
 	}
 
-	private inline function previousWorld()
+	private inline function previousScene()
 	{
-		_currentWorld += 1;
-		if (_currentWorld > _worlds.length - 1)
-			_currentWorld = 0;
+		_currentScene += 1;
+		if (_currentScene > _scenes.length - 1)
+			_currentScene = 0;
 
-		loadWorld();
+		loadScene();
 	}
 
 	public override function update()
@@ -74,7 +74,7 @@ class DemoWorld extends Scene
 		{
 			if (tapTime > 0)
 			{
-				nextWorld();
+				nextScene();
 			}
 			tapTime = 0.6;
 		}
@@ -82,11 +82,11 @@ class DemoWorld extends Scene
 		// cycle through worlds with '[' and ']'
 		if (Input.pressed(Key.LEFT_SQUARE_BRACKET))
 		{
-			nextWorld();
+			nextScene();
 		}
 		if (Input.pressed(Key.RIGHT_SQUARE_BRACKET))
 		{
-			previousWorld();
+			previousScene();
 		}
 		super.update();
 	}
@@ -94,11 +94,11 @@ class DemoWorld extends Scene
 	private var overlayText:Text;
 	private var tapTime:Float;
 
-	private static var _currentWorld:Int = 0;
-	private static var _worlds:Array<String> = [
-		'masks.GameWorld',
-		'effects.GameWorld',
-		'platformer.GameWorld'
+	private static var _currentScene:Int = 0;
+	private static var _scenes:Array<String> = [
+		'masks.GameScene',
+		'effects.GameScene',
+		'platformer.GameScene'
 	];
 
 }

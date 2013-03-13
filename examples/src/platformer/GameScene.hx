@@ -8,7 +8,7 @@ import com.haxepunk.graphics.Backdrop;
 import com.haxepunk.masks.Grid;
 import platformer.entities.Player;
 
-class GameWorld extends DemoWorld
+class GameScene extends DemoScene
 {
 
 	private static var map:Array<Array<Int>> = [
