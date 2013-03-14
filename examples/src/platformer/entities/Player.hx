@@ -1,6 +1,7 @@
 package platformer.entities;
 
 import com.haxepunk.HXP;
+import com.haxepunk.Sfx;
 import com.haxepunk.graphics.Spritemap;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
@@ -53,6 +54,8 @@ class Player extends Physics
 		switch (jumpStyle)
 		{
 			case Normal:
+				var sfx = new Sfx("sfx/jump.wav");
+				sfx.play(0.8);
 				acceleration.y = -HXP.sign(gravity.y) * kJumpForce;
 			case Gravity:
 				gravity.y = -gravity.y;

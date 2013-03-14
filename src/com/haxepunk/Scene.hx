@@ -1011,7 +1011,7 @@ class Scene extends Tweener
 	/**
 	 * Updates the add/remove lists at the end of the frame.
 	 */
-	public function updateLists()
+	public function updateLists(shouldAdd:Bool = true)
 	{
 		var e:Entity;
 		var fe:FriendEntity;
@@ -1042,7 +1042,7 @@ class Scene extends Tweener
 		}
 
 		// add entities
-		if (_add.length > 0)
+		if (shouldAdd && _add.length > 0)
 		{
 			for (e in _add)
 			{
