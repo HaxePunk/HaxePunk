@@ -21,6 +21,7 @@ before_install:
   - echo ~/.haxe/lib | haxelib setup
   - haxelib install hxcpp
   - haxelib install swf
+  - haxelib install xfl
   - haxelib git nmedev git://github.com/haxenme/nmedev.git
   - haxelib git nme git://github.com/haxenme/NME.git
 
