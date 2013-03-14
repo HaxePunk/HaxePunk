@@ -14,8 +14,8 @@ import nme.text.TextFormatAlign;
 
 class Label extends TextField
 {
-	public var layer(default, setLayer):Int;
-	private function setLayer(value:Int):Int
+	public var layer(default, set_layer):Int;
+	private function set_layer(value:Int):Int
 	{
 		if (layer != value)
 		{

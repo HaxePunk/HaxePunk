@@ -9,8 +9,8 @@ import nme.geom.Point;
 class Circle extends Graphic
 {
 
-	public var color(default, setColor):Int = 0;
-	public var radius(default, setRadius):Int = 0;
+	public var color(default, set_color):Int = 0;
+	public var radius(default, set_radius):Int = 0;
 
 	public function new(radius:Int, color:Int=0xFFFFFF)
 	{
@@ -50,7 +50,7 @@ class Circle extends Graphic
 		}
 	}
 
-	private function setRadius(value:Int):Int
+	private function set_radius(value:Int):Int
 	{
 		if (radius == value) return value;
 		radius = value;
@@ -58,7 +58,7 @@ class Circle extends Graphic
 		return value;
 	}
 
-	private function setColor(value:Int):Int
+	private function set_color(value:Int):Int
 	{
 		if (color == value) return value;
 		color = value;

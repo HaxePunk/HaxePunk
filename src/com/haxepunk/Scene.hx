@@ -34,17 +34,29 @@ class Scene extends Tweener
 		_layerList = new Array<Int>();
 		_layerCount = new Array<Int>();
 
+		_add = new Array<Entity>();
+		_remove = new Array<Entity>();
+		_recycle = new Array<Entity>();
+
+#if haxe3
+		_renderFirst = new Map<Int,FriendEntity>();
+		_renderLast = new Map<Int,FriendEntity>();
+		_typeFirst = new Map<String,FriendEntity>();
+
+		_classCount = new Map<String,Int>();
+		_typeCount = new Map<String,Int>();
+		_recycled = new Map<String,Entity>();
+		_entityNames = new Map<String,Entity>();
+#else
 		_renderFirst = new IntHash<FriendEntity>();
 		_renderLast = new IntHash<FriendEntity>();
 		_typeFirst = new Hash<FriendEntity>();
 
-		_add = new Array<Entity>();
-		_remove = new Array<Entity>();
-		_recycle = new Array<Entity>();
 		_classCount = new Hash<Int>();
 		_typeCount = new Hash<Int>();
 		_recycled = new Hash<Entity>();
 		_entityNames = new Hash<Entity>();
+#end
 	}
 
 	/**
@@ -116,8 +128,8 @@ class Scene extends Tweener
 	/**
 	 * X position of the mouse in the Scene.
 	 */
-	public var mouseX(getMouseX, null):Int;
-	private inline function getMouseX():Int
+	public var mouseX(get_mouseX, null):Int;
+	private inline function get_mouseX():Int
 	{
 		return Std.int(HXP.screen.mouseX + HXP.camera.x);
 	}
@@ -125,8 +137,8 @@ class Scene extends Tweener
 	/**
 	 * Y position of the mouse in the scene.
 	 */
-	public var mouseY(getMouseY, null):Int;
-	private inline function getMouseY():Int
+	public var mouseY(get_mouseY, null):Int;
+	private inline function get_mouseY():Int
 	{
 		return Std.int(HXP.screen.mouseY + HXP.camera.y);
 	}
@@ -780,8 +792,8 @@ class Scene extends Tweener
 	/**
 	 * How many Entities are in the Scene.
 	 */
-	public var count(getCount, never):Int;
-	private inline function getCount():Int { return _count; }
+	public var count(get_count, never):Int;
+	private inline function get_count():Int { return _count; }
 
 	/**
 	 * Returns the amount of Entities of the type are in the Scene.
@@ -816,14 +828,14 @@ class Scene extends Tweener
 	/**
 	 * The first Entity in the Scene.
 	 */
-	public var first(getFirst, null):Entity;
-	private inline function getFirst():Entity { return cast(_updateFirst, Entity); }
+	public var first(get_first, null):Entity;
+	private inline function get_first():Entity { return cast(_updateFirst, Entity); }
 
 	/**
 	 * How many Entity layers the Scene has.
 	 */
-	public var layers(getLayers, null):Int;
-	private inline function getLayers():Int { return _layerList.length; }
+	public var layers(get_layers, null):Int;
+	private inline function get_layers():Int { return _layerList.length; }
 
 	/**
 	 * The first Entity of the type.
@@ -878,8 +890,8 @@ class Scene extends Tweener
 	/**
 	 * The Entity that will be rendered first by the Scene.
 	 */
-	public var farthest(getFarthest, null):Entity;
-	private function getFarthest():Entity
+	public var farthest(get_farthest, null):Entity;
+	private function get_farthest():Entity
 	{
 		if (_updateFirst == null) return null;
 		return cast(_renderLast.get(_layerList[_layerList.length - 1]), Entity);
@@ -888,8 +900,8 @@ class Scene extends Tweener
 	/**
 	 * The Entity that will be rendered last by the scene.
 	 */
-	public var nearest(getNearest, null):Entity;
-	private function getNearest():Entity
+	public var nearest(get_nearest, null):Entity;
+	private function get_nearest():Entity
 	{
 		if (_updateFirst == null) return null;
 		return cast(_renderFirst.get(_layerList[0]), Entity);
@@ -898,8 +910,8 @@ class Scene extends Tweener
 	/**
 	 * The layer that will be rendered first by the Scene.
 	 */
-	public var layerFarthest(getLayerFarthest, null):Int;
-	private function getLayerFarthest():Int
+	public var layerFarthest(get_layerFarthest, null):Int;
+	private function get_layerFarthest():Int
 	{
 		if (_updateFirst == null) return 0;
 		return _layerList[_layerList.length - 1];
@@ -908,8 +920,8 @@ class Scene extends Tweener
 	/**
 	 * The layer that will be rendered last by the Scene.
 	 */
-	public var layerNearest(getLayerNearest, null):Int;
-	private function getLayerNearest():Int
+	public var layerNearest(get_layerNearest, null):Int;
+	private function get_layerNearest():Int
 	{
 		if (_updateFirst == null) return 0;
 		return _layerList[0];
@@ -918,8 +930,8 @@ class Scene extends Tweener
 	/**
 	 * How many different types have been added to the Scene.
 	 */
-	public var uniqueTypes(getUniqueTypes, null):Int;
-	private inline function getUniqueTypes():Int
+	public var uniqueTypes(get_uniqueTypes, null):Int;
+	private inline function get_uniqueTypes():Int
 	{
 		var i:Int = 0;
 		for (type in _typeCount) i++;
@@ -1283,15 +1295,26 @@ class Scene extends Tweener
 	private var _count:Int;
 
 	// Render information.
-	private var _renderFirst:IntHash<FriendEntity>;
-	private var _renderLast:IntHash<FriendEntity>;
+	private var _layerSort:Bool;
 	private var _layerList:Array<Int>;
 	private var _layerCount:Array<Int>;
-	private var _layerSort:Bool;
+#if haxe3
+	private var _renderFirst:Map<Int,FriendEntity>;
+	private var _renderLast:Map<Int,FriendEntity>;
+
+	private var _classCount:Map<String,Int>;
+	public var _typeFirst:Map<String,FriendEntity>;
+	private var _typeCount:Map<String,Int>;
+	private var _recycled:Map<String,Entity>;
+	private var _entityNames:Map<String,Entity>;
+#else
+	private var _renderFirst:IntHash<FriendEntity>;
+	private var _renderLast:IntHash<FriendEntity>;
 
 	private var _classCount:Hash<Int>;
 	public var _typeFirst:Hash<FriendEntity>;
 	private var _typeCount:Hash<Int>;
 	private var _recycled:Hash<Entity>;
 	private var _entityNames:Hash<Entity>;
+#end
 }

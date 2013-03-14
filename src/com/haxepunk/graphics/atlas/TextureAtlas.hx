@@ -9,7 +9,11 @@ class TextureAtlas extends Atlas
 {
 	private function new(bd:BitmapData)
 	{
+#if haxe3
+		_regions = new Map<String,AtlasRegion>();
+#else
 		_regions = new Hash<AtlasRegion>();
+#end
 
 		super(bd);
 	}
@@ -90,5 +94,9 @@ class TextureAtlas extends Atlas
 		return region;
 	}
 
+#if haxe3
+	private var _regions:Map<String,AtlasRegion>;
+#else
 	private var _regions:Hash<AtlasRegion>;
+#end
 }

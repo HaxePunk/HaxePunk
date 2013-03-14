@@ -31,7 +31,11 @@ class Emitter extends Graphic
 		super();
 		_p = new Point();
 		_tint = new ColorTransform();
+#if haxe3
+		_types = new Map<String,ParticleType>();
+#else
 		_types = new Hash<ParticleType>();
+#end
 
 		setSource(source, frameWidth, frameHeight);
 		active = true;
@@ -350,7 +354,11 @@ class Emitter extends Graphic
 	public var particleCount(default, null):Int;
 
 	// Particle information.
+#if haxe3
+	private var _types:Map<String,ParticleType>;
+#else
 	private var _types:Hash<ParticleType>;
+#end
 	private var _particle:Particle;
 	private var _cache:Particle;
 
@@ -366,5 +374,6 @@ class Emitter extends Graphic
 	// Drawing information.
 	private var _p:Point;
 	private var _tint:ColorTransform;
-	private static inline var SIN:Float = Math.PI / 2;
+	private static var SIN(get_SIN,never):Float;
+	private static inline function get_SIN():Float { return Math.PI / 2; }
 }

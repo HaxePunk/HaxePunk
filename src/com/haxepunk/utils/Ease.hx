@@ -192,15 +192,18 @@ class Ease
 	}
 	
 	// Easing constants.
-	private static inline var PI:Float = Math.PI;
-	private static inline var PI2:Float = Math.PI / 2;
-	private static inline var EL:Float = 2 * PI / .45;
+	private static var PI(get_PI,never):Float;
+	private static var PI2(get_PI2,never):Float;
+	private static var EL(get_EL,never):Float;
 	private static inline var B1:Float = 1 / 2.75;
 	private static inline var B2:Float = 2 / 2.75;
 	private static inline var B3:Float = 1.5 / 2.75;
 	private static inline var B4:Float = 2.5 / 2.75;
 	private static inline var B5:Float = 2.25 / 2.75;
 	private static inline var B6:Float = 2.625 / 2.75;
+	private static function get_PI(): Float  { return Math.PI; }
+	private static function get_PI2(): Float { return Math.PI / 2; }
+	private static function get_EL(): Float  { return 2 * PI / 0.45; }
 	
 	/**
 	 * Operation of in/out easers:

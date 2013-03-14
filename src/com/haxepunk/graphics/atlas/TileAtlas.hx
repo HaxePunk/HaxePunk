@@ -8,7 +8,11 @@ class TileAtlas extends Atlas
 	private function new(bd:BitmapData, tileWidth:Int, tileHeight:Int)
 	{
 		super(bd);
+#if haxe3
+		_regions = new Map<Int,AtlasRegion>();
+#else
 		_regions = new IntHash<AtlasRegion>();
+#end
 		prepareTiles(bd.width, bd.height, tileWidth, tileHeight);
 	}
 
@@ -68,5 +72,9 @@ class TileAtlas extends Atlas
 		}
 	}
 
+#if haxe3
+	private var _regions:Map<Int,AtlasRegion>;
+#else
 	private var _regions:IntHash<AtlasRegion>;
+#end
 }

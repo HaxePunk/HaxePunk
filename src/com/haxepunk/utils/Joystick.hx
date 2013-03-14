@@ -12,7 +12,11 @@ enum JoyButtonState
 
 class Joystick
 {
+#if haxe3
+	public var buttons:Map<Int,JoyButtonState>;
+#else
 	public var buttons:IntHash<JoyButtonState>;
+#end
 	public var axis(null, default):Array<Float>;
 	public var hat:Point;
 	public var ball:Point;
@@ -22,7 +26,11 @@ class Joystick
 
 	public function new()
 	{
+#if haxe3
+		buttons = new Map<Int,JoyButtonState>();
+#else
 		buttons = new IntHash<JoyButtonState>();
+#end
 		ball = new Point(0, 0);
 		axis = new Array<Float>();
 		hat = new Point(0, 0);

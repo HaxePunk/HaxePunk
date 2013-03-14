@@ -1,12 +1,31 @@
 language: java
 
+env: LD_LIBRARY_PATH=/usr/lib/neko
+
 before_install:
-  - sudo add-apt-repository ppa:eyecreate/haxe -y
-  - sudo apt-get update -y
-  - sudo apt-get install haxe -y
+  # Install haxe 3.0 dependencies
+  - sudo apt-get install ocaml camlp4 ocaml-findlib cvs zlib1g-dev make wget tar subversion libgc1c2
+  # Install haxe 3.0 (trunk)
+  - svn checkout http://haxe.googlecode.com/svn/trunk haxe_trunk > /dev/null
+  - cd haxe_trunk
+  - make
+  - sudo make install
+  - cd ..
+  # Install neko 2.0
+  - curl http://nekovm.org/_media/neko-2.0.0-linux64.tar.gz | tar xzf -
+  - sudo mv neko-2.0.0-linux /usr/lib/neko
+  - sudo cp /usr/lib/neko/neko /usr/bin/neko
+  - sudo cp /usr/lib/neko/nekoc /usr/bin/nekoc
+  - sudo cp /usr/lib/neko/nekotools /usr/bin/nekotools
   - mkdir -p ~/.haxe/lib
   - echo ~/.haxe/lib | haxelib setup
-  - haxelib install nme || true
+  - haxelib install hxcpp
+  - haxelib install swf
+  - haxelib install xfl
+  - haxelib install format
+  - haxelib install svg
+  - haxelib git nmedev git://github.com/haxenme/nmedev.git
+  - haxelib git nme git://github.com/haxenme/NME.git
 
 script:
   - ant clean build unit

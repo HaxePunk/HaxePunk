@@ -213,14 +213,14 @@ class Grid extends Hitbox
 	/**
 	 * The tile width.
 	 */
-	public var tileWidth(getTileWidth, never):Int;
-	private inline function getTileWidth():Int { return Std.int(_tile.width); }
+	public var tileWidth(get_tileWidth, never):Int;
+	private inline function get_tileWidth():Int { return Std.int(_tile.width); }
 
 	/**
 	 * The tile height.
 	 */
-	public var tileHeight(getTileHeight, never):Int;
-	private inline function getTileHeight():Int { return Std.int(_tile.height); }
+	public var tileHeight(get_tileHeight, never):Int;
+	private inline function get_tileHeight():Int { return Std.int(_tile.height); }
 
 	/**
 	 * How many columns the grid has

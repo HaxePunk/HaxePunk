@@ -124,16 +124,16 @@ class Graphiclist extends Graphic
 	/**
 	 * All Graphics in this list.
 	 */
-	public var children(getChildren, null):Array<Graphic>;
-	private function getChildren():Array<Graphic> { return _graphics; }
+	public var children(get_children, null):Array<Graphic>;
+	private function get_children():Array<Graphic> { return _graphics; }
 
 	/**
 	 * Amount of Graphics in this list.
 	 */
-	public var count(getCount, null):Int;
-	private function getCount():Int { return _count; }
+	public var count(get_count, null):Int;
+	private function get_count():Int { return _count; }
 
-	private override function setLayer(value:Int):Int
+	private override function set_layer(value:Int):Int
 	{
 		if (layer == value) return value;
 		layer = value;
