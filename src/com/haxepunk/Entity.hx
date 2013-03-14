@@ -879,91 +879,17 @@ class Entity extends Tweener
 		if (y - originY < top + padding) y = top + originY + padding;
 		if (y - originY + height > bottom - padding) y = bottom - height + originY - padding;
 	}
-	
-	/**
-	 * Center graphic around entity origin.
-	 */
-	public function centerGraphicOnOrigin():Void
-	{
-		cast(graphic, Image).originX = cast(graphic, Image).width / 2;
-		cast(graphic, Image).originY = cast(graphic, Image).height / 2;
-	}
-	
+
 	/**
 	 * Center graphic inside bounding rect.
 	 */
 	public function centerGraphicInRect():Void
 	{
-		graphic.x = halfWidth;
-		graphic.y = halfHeight;
-	}
-	
-	/**
-	 * Rotate graphic by angle.
-	 * @param	value	Angle to rotate by.
-	 */
-	public function rotateBy(value:Float):Void
-	{
-		cast(graphic, Image).angle += value;
-	}
-	
-	/**
-	 * Rotate graphic to angle.
-	 * @param	value	Angle to rotate to.
-	 */
-	public function rotateTo(value:Float):Void
-	{
-		cast(graphic, Image).angle = value;
-	}
-	
-	/**
-	 * Get angle from this object to point.
-	 * @param	x		X-position of point.
-	 * @param	y		Y-position of point.
-	 */
-	public function getAngleTo(x:Float, y:Float):Float
-	{
-		return HXP.getAngleTo(this.x, this.y, x, y);
-	}
-	
-	/**
-	 * Get difference between graphic angle and another angle.
-	 * @param	angle	The angle.
-	 */
-	public function getAngleDifference(angle:Float):Float
-	{
-		return HXP.getAngleDifference(cast(graphic, Image).angle, angle);
-	}
-	
-	/**
-	 * Rotate graphic to be angled towards x,y position.
-	 * @param	x		X-position of point.
-	 * @param	y		Y-position of point.
-	 */
-	public function rotateTowards(x:Float, y:Float):Void
-	{
-		var angle:Float = getAngleTo(x, y);
-		
-		rotateTo(angle);
-	}
-	
-	/**
-	 * Move entity at angle and speed.
-	 * @param	angle	Angle of movement.
-	 * @param	speed	Speed of movement.
-	 */
-	public function moveAtAngle(angle:Float, speed:Float):Void
-	{
-		moveBy(HXP.getAngledDistanceX(angle) * speed, HXP.getAngledDistanceY(angle) * speed);
-	}
-	
-	/**
-	 * Get graphic angle.
-	 * @return	The graphic angle.
-	 */
-	public function getAngle():Float
-	{
-		return cast(graphic, Image).angle;
+		if (graphic != null)
+		{
+			graphic.x = halfWidth;
+			graphic.y = halfHeight;
+		}
 	}
 
 	// Entity information.
