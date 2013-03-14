@@ -6,7 +6,7 @@ before_install:
   # Install haxe 3.0 dependencies
   - sudo apt-get install ocaml camlp4 ocaml-findlib cvs zlib1g-dev make wget tar subversion libgc1c2
   # Install haxe 3.0 (trunk)
-  - svn checkout http://haxe.googlecode.com/svn/trunk haxe_trunk
+  - svn checkout http://haxe.googlecode.com/svn/trunk haxe_trunk > /dev/null
   - cd haxe_trunk
   - make
   - sudo make install
