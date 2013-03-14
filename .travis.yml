@@ -10,7 +10,7 @@ before_install:
   - cd haxe_trunk
   - make
   - sudo make install
-  - cd
+  - cd ..
   # Install neko dependencies
   #- sudo apt-get install apache2 apache2-threaded-dev libmysqlclient15-dev libpcre3-dev libgc-dev libgtk2.0-dev
   # Install neko 2.0 (trunk)
