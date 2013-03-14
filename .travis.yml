@@ -11,13 +11,7 @@ before_install:
   - make
   - sudo make install
   - cd ..
-  # Install neko dependencies
-  #- sudo apt-get install apache2 apache2-threaded-dev libmysqlclient15-dev libpcre3-dev libgc-dev libgtk2.0-dev
-  # Install neko 2.0 (trunk)
-  #- svn checkout http://nekovm.googlecode.com/svn/trunk neko_trunk
-  #- cd neko_trunk
-  #- make
-  #- sudo make install
+  # Install neko 2.0
   - curl http://nekovm.org/_media/neko-2.0.0-linux64.tar.gz | tar xzf -
   - sudo mv neko-2.0.0-linux /usr/lib/neko
   - sudo cp /usr/lib/neko/neko /usr/bin/neko
@@ -25,9 +19,9 @@ before_install:
   - sudo cp /usr/lib/neko/nekotools /usr/bin/nekotools
   - mkdir -p ~/.haxe/lib
   - echo ~/.haxe/lib | haxelib setup
+  - haxelib install hxcpp
   - haxelib git nmedev git://github.com/haxenme/nmedev.git
   - haxelib git nme git://github.com/haxenme/NME.git
-  #- haxelib install nme || true
 
 script:
   - ant clean build unit
