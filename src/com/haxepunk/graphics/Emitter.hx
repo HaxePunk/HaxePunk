@@ -366,5 +366,6 @@ class Emitter extends Graphic
 	// Drawing information.
 	private var _p:Point;
 	private var _tint:ColorTransform;
-	private static inline var SIN:Float = Math.PI / 2;
+	private static var SIN(get_SIN,never):Float;
+	private static inline function get_SIN():Float { return Math.PI / 2; }
 }

@@ -239,9 +239,9 @@ class Canvas extends Graphic
 	/**
 	 * The tinted color of the Canvas. Use 0xFFFFFF to draw the it normally.
 	 */
-	public var color(getColor, setColor):Int;
-	private function getColor():Int { return _color; }
-	private function setColor(value:Int):Int
+	public var color(get_color, set_color):Int;
+	private function get_color():Int { return _color; }
+	private function set_color(value:Int):Int
 	{
 		value %= 0xFFFFFF;
 		if (_color == value) return _color;
@@ -262,9 +262,9 @@ class Canvas extends Graphic
 	/**
 	 * Change the opacity of the Canvas, a value from 0 to 1.
 	 */
-	public var alpha(getAlpha, setAlpha):Float;
-	private function getAlpha():Float { return _alpha; }
-	private function setAlpha(value:Float):Float
+	public var alpha(get_alpha, set_alpha):Float;
+	private function get_alpha():Float { return _alpha; }
+	private function set_alpha(value:Float):Float
 	{
 		if (value < 0) value = 0;
 		if (value > 1) value = 1;
@@ -296,14 +296,14 @@ class Canvas extends Graphic
 	/**
 	 * Width of the canvas.
 	 */
-	public var width(getWidth, null):Int;
-	private function getWidth():Int { return _width; }
+	public var width(get_width, null):Int;
+	private function get_width():Int { return _width; }
 
 	/**
 	 * Height of the canvas.
 	 */
-	public var height(getHeight, null):Int;
-	private function getHeight():Int { return _height; }
+	public var height(get_height, null):Int;
+	private function get_height():Int { return _height; }
 
 	// Buffer information.
 	private var _buffers:Array<BitmapData>;

@@ -28,8 +28,8 @@ class Physics extends Entity
 		gravity      = new Point();
 	}
 
-	public var onGround(getOnGround, null): Bool;
-	private function getOnGround():Bool { return _onGround; }
+	public var onGround(get_onGround, null): Bool;
+	private function get_onGround():Bool { return _onGround; }
 
 	override public function update()
 	{
