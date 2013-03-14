@@ -22,6 +22,7 @@ before_install:
   - haxelib install hxcpp
   - haxelib install swf
   - haxelib install xfl
+  - haxelib install format
   - haxelib git nmedev git://github.com/haxenme/nmedev.git
   - haxelib git nme git://github.com/haxenme/NME.git
 
