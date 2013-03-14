@@ -160,15 +160,15 @@ class Circle extends Hitbox
 		graphics.drawCircle((parent.x + _x - HXP.camera.x) * scaleX, (parent.y + _y - HXP.camera.y) * scaleY, radius * scaleX);
 	}
 
-	private override function getX():Int { return _x - _radius; }
-	private override function getY():Int { return _y - _radius; }
+	private override function get_x():Int { return _x - _radius; }
+	private override function get_y():Int { return _y - _radius; }
 
 	/**
 	 * Radius.
 	 */
-	public var radius(getRadius, setRadius):Int;
-	private inline function getRadius():Int { return _radius; }
-	private function setRadius(value:Int):Int
+	public var radius(get_radius, set_radius):Int;
+	private inline function get_radius():Int { return _radius; }
+	private function set_radius(value:Int):Int
 	{
 		if (_radius == value) return value;
 		_radius = value;

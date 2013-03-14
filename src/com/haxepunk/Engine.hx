@@ -56,7 +56,11 @@ class Engine extends Sprite
 		HXP.bounds = new Rectangle(0, 0, width, height);
 		HXP.assignedFrameRate = frameRate;
 		HXP.fixed = fixed;
+#if haxe3
+		HXP.renderMode = new haxe.EnumFlags<RenderMode>();
+#else
 		HXP.renderMode.init();
+#end
 #if flash
 		HXP.renderMode.set(RenderMode.BUFFER);
 #else

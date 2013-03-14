@@ -304,7 +304,7 @@ class Sfx
 	private var _looping:Bool;
 
 	// Stored Sound objects.
-	private static var _sounds:Hash<Sound> = new Hash<Sound>();
-	private static var _typePlaying:Hash<Array<Sfx>> = new Hash<Array<Sfx>>();
-	private static var _typeTransforms:Hash<SoundTransform> = new Hash<SoundTransform>();
+	private static var _sounds:Map<String,Sound> = new Map<String,Sound>();
+	private static var _typePlaying:Map<String,Array<Sfx>> = new Map<String,Array<Sfx>>();
+	private static var _typeTransforms:Map<String,SoundTransform> = new Map<String,SoundTransform>();
 }

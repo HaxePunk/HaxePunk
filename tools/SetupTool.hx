@@ -1,19 +1,33 @@
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
 import neko.Lib;
+#if haxe3
+import sys.FileSystem;
+import sys.io.File;
+import sys.io.FileInput;
+import sys.io.FileOutput;
+import haxe.io.Path;
+import haxe.zip.Reader;
+#else
 import neko.FileSystem;
 import neko.io.File;
 import neko.io.FileInput;
 import neko.io.FileOutput;
 import neko.io.Path;
 import neko.zip.Reader;
+#end
 
 class SetupTool
 {
 
 	public function new()
 	{
-		var args:Array<String> = neko.Sys.args();
+		var args:Array<String> = 
+#if haxe3 
+Sys.args();
+#else
+neko.Sys.args();
+#end
 		if (args.length < 2)
 		{
 			usage();

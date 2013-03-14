@@ -42,7 +42,7 @@ class Spritemap extends Image
 	{
 		complete = true;
 		rate = 1;
-		_anims = new Hash<Animation>();
+		_anims = new Map<String,Animation>();
 		_timer = _frame = 0;
 
 		_rect = new Rectangle(0, 0, frameWidth, frameHeight);
@@ -239,9 +239,9 @@ class Spritemap extends Image
 	 * Sets the current frame index. When you set this, any
 	 * animations playing will be stopped to force the frame.
 	 */
-	public var frame(getFrameIndex, setFrameIndex):Int;
-	private function getFrameIndex():Int { return _frame; }
-	private function setFrameIndex(value:Int):Int
+	public var frame(get_frame, set_frame):Int;
+	private function get_frame():Int { return _frame; }
+	private function set_frame(value:Int):Int
 	{
 		_anim = null;
 		value %= _frameCount;
@@ -255,9 +255,9 @@ class Spritemap extends Image
 	/**
 	 * Current index of the playing animation.
 	 */
-	public var index(getIndex, setIndex):Int;
-	private function getIndex():Int { return _anim != null ? _index : 0; }
-	private function setIndex(value:Int):Int
+	public var index(get_index, set_index):Int;
+	private function get_index():Int { return _anim != null ? _index : 0; }
+	private function set_index(value:Int):Int
 	{
 		if (_anim == null) return 0;
 		value %= _anim.frameCount;
@@ -271,26 +271,26 @@ class Spritemap extends Image
 	/**
 	 * The amount of frames in the Spritemap.
 	 */
-	public var frameCount(getFrameCount, null):Int;
-	private function getFrameCount():Int { return _frameCount; }
+	public var frameCount(get_frameCount, null):Int;
+	private function get_frameCount():Int { return _frameCount; }
 
 	/**
 	 * Columns in the Spritemap.
 	 */
-	public var columns(getColumns, null):Int;
-	private function getColumns():Int { return _columns; }
+	public var columns(get_columns, null):Int;
+	private function get_columns():Int { return _columns; }
 
 	/**
 	 * Rows in the Spritemap.
 	 */
-	public var rows(getRows, null):Int;
-	private function getRows():Int { return _rows; }
+	public var rows(get_rows, null):Int;
+	private function get_rows():Int { return _rows; }
 
 	/**
 	 * The currently playing animation.
 	 */
-	public var currentAnim(getCurrentAnim, null):String;
-	private function getCurrentAnim():String { return (_anim != null) ? _anim.name : ""; }
+	public var currentAnim(get_currentAnim, null):String;
+	private function get_currentAnim():String { return (_anim != null) ? _anim.name : ""; }
 
 	// Spritemap information.
 	private var _rect:Rectangle;
@@ -299,7 +299,7 @@ class Spritemap extends Image
 	private var _columns:Int;
 	private var _rows:Int;
 	private var _frameCount:Int;
-	private var _anims:Hash<Animation>;
+	private var _anims:Map<String,Animation>;
 	private var _anim:Animation;
 	private var _index:Int;
 	private var _frame:Int;

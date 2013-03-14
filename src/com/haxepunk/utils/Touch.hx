@@ -17,14 +17,14 @@ class Touch
 		this.time = 0;
 	}
 
-	public var sceneX(getSceneX, never):Float;
-	private inline function getSceneX():Float { return x + HXP.camera.x; }
+	public var sceneX(get_sceneX, never):Float;
+	private inline function get_sceneX():Float { return x + HXP.camera.x; }
 
-	public var sceneY(getSceneY, never):Float;
-	private inline function getSceneY():Float { return y + HXP.camera.y; }
+	public var sceneY(get_sceneY, never):Float;
+	private inline function get_sceneY():Float { return y + HXP.camera.y; }
 
-	public var pressed(getPressed, never):Bool;
-	private inline function getPressed():Bool { return time == 0; }
+	public var pressed(get_pressed, never):Bool;
+	private inline function get_pressed():Bool { return time == 0; }
 
 	public function update()
 	{

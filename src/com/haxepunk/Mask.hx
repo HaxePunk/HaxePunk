@@ -30,7 +30,7 @@ class Mask
 	public function new()
 	{
 		_class = Type.getClassName(Type.getClass(this));
-		_check = new Hash<MaskCallback>();
+		_check = new Map<String,MaskCallback>();
 		_check.set(Type.getClassName(Mask), collideMask);
 		_check.set(Type.getClassName(Masklist), collideMasklist);
 	}
@@ -127,5 +127,5 @@ class Mask
 
 	// Mask information.
 	private var _class:String;
-	private var _check:Hash<MaskCallback>;
+	private var _check:Map<String,MaskCallback>;
 }

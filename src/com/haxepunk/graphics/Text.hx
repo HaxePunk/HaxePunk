@@ -154,7 +154,7 @@ class Text extends Image
 	/**
 	 * Moves the TextField to the correct sprite layer
 	 */
-	private override function setLayer(value:Int):Int
+	private override function set_layer(value:Int):Int
 	{
 		if (value == layer) return value;
 		if (_blit == false)
@@ -166,14 +166,14 @@ class Text extends Image
 			_parent = Atlas.getSpriteByLayer(value);
 			_parent.addChild(_field);
 		}
-		return super.setLayer(value);
+		return super.set_layer(value);
 	}
 
 	/**
 	 * Text string.
 	 */
-	public var text(default, setText):String;
-	private function setText(value:String):String
+	public var text(default, set_text):String;
+	private function set_text(value:String):String
 	{
 		if (text == value) return value;
 		_field.text = text = value;
@@ -184,8 +184,8 @@ class Text extends Image
 	/**
 	 * Font family.
 	 */
-	public var font(default, setFont):String;
-	private function setFont(value:String):String
+	public var font(default, set_font):String;
+	private function set_font(value:String):String
 	{
 		if (font == value) return value;
 #if nme
@@ -199,8 +199,8 @@ class Text extends Image
 	/**
 	 * Font size.
 	 */
-	public var size(default, setSize):Int;
-	private function setSize(value:Int):Int
+	public var size(default, set_size):Int;
+	private function set_size(value:Int):Int
 	{
 		if (size == value) return value;
 		_format.size = size = value;

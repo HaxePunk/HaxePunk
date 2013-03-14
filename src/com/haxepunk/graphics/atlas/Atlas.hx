@@ -41,7 +41,7 @@ class Atlas
 
 	private function new(bd:BitmapData)
 	{
-		_layers = new IntHash<Layer>();
+		_layers = new Map<Int,Layer>();
 		_tilesheet = new Tilesheet(bd);
 
 		width = bd.width;
@@ -117,8 +117,8 @@ class Atlas
 	/**
 	 * How many Atlases are active.
 	 */
-	public static var count(getCount, never):Int;
-	private static inline function getCount():Int { return _atlases.length; }
+	public static var count(get_count, never):Int;
+	private static inline function get_count():Int { return _atlases.length; }
 
 	/**
 	 * Renders the current TextureAtlas
@@ -283,15 +283,15 @@ class Atlas
 	private var _tilesheet:Tilesheet;
 	private var _layerIndex:Int;
 	private var _layer:Layer; // current layer
-	private var _layers:IntHash<Layer>;
+	private var _layers:Map<Int,Layer>;
 	private var _renderFlags:Int;
 
 	// used for pooling
 	private var _name:String;
 	private var _refCount:Int;
 
-	private static var _atlasPool:Hash<Atlas> = new Hash<Atlas>();
+	private static var _atlasPool:Map<String,Atlas> = new Map<String,Atlas>();
 	private static var _atlases:Array<Atlas> = new Array<Atlas>();
-	private static var _sprites:IntHash<Sprite> = new IntHash<Sprite>();
+	private static var _sprites:Map<Int,Sprite> = new Map<Int,Sprite>();
 
 }
