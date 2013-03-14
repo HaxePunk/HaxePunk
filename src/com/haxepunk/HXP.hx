@@ -54,7 +54,7 @@ class HXP
 	/**
 	 * Flash equivalent: int.MAX_VALUE
 	 */
-#if neko
+#if (!haxe3 && neko)
 	public static inline var INT_MAX_VALUE = 1073741823;
 #else
 	public static inline var INT_MAX_VALUE = 2147483646;
@@ -63,7 +63,7 @@ class HXP
 	/**
 	 * The color black defined for neko (BitmapInt32) or flash (Int)
 	 */
-#if neko
+#if (!haxe3 && neko)
 	public static inline var blackColor = { rgb: 0x000000, a: 0 }; // BitmapInt32
 #else
 	public static inline var blackColor = 0x00000000;
@@ -824,7 +824,7 @@ class HXP
 	 */
 	public static inline function convertColor(color:Int):Dynamic
 	{
-#if neko
+#if (!haxe3 && neko)
 		return { rgb: color & 0x00FFFFFF, a: color >> 24 };
 #else
 		return color; // do nothing
