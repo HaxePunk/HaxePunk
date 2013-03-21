@@ -7,7 +7,7 @@ class Touch
 	public var id(default, null):Int;
 	public var x:Float;
 	public var y:Float;
-	private var time(default, null):Float;
+	public var time(default, null):Float;
 
 	public function new(x:Float, y:Float, id:Int)
 	{

@@ -109,6 +109,13 @@ class Scene extends Tweener
 	 */
 	public function render()
 	{
+		// sort the depth list
+		if (_layerSort)
+		{
+			if (_layerList.length > 1) _layerList.sort(layerSort);
+			_layerSort = false;
+		}
+
 		// render the entities in order of depth
 		var e:Entity,
 			fe:FriendEntity,
@@ -1083,13 +1090,6 @@ class Scene extends Tweener
 				_recycled.set(fe._class, e);
 			}
 			HXP.clear(_recycle);
-		}
-
-		// sort the depth list
-		if (_layerSort)
-		{
-			if (_layerList.length > 1) _layerList.sort(layerSort);
-			_layerSort = false;
 		}
 	}
 

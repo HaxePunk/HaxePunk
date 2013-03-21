@@ -95,6 +95,13 @@ class Input
 	{
 		if (Std.is(input, String))
 		{
+#if debug
+			if (!_control.exists(input))
+			{
+				HXP.log("Input '" + input + "' not defined");
+				return false;
+			}
+#end
 			var v:Array<Int> = _control.get(input),
 				i:Int = v.length;
 			while (i-- > 0)
@@ -153,9 +160,9 @@ class Input
 
 	public static function touchPoints(touchCallback:Touch->Void)
 	{
-		for (touchPointID in _touches.keys())
+		for (touch in _touches)
 		{
-			touchCallback(_touches.get(touchPointID));
+			touchCallback(touch);
 		}
 	}
 
