@@ -63,6 +63,12 @@ class Grid extends Hitbox
 		for (x in 0...rows)
 		{
 			data.push(new Array<Bool>());
+#if neko // initialize to false instead of null
+			for (y in 0...columns)
+			{
+				data[x][y] = false;
+			}
+#end
 		}
 	}
 
@@ -338,29 +344,18 @@ class Grid extends Hitbox
 	{
 		HXP.point.x = _x + parent.x - HXP.camera.x;
 		HXP.point.y = _y + parent.y - HXP.camera.y;
-		var color = HXP.convertColor(0xFF0000FF);
 
-		HXP.buffer.lock();
+		graphics.beginFill(0x0000FF, 0.3);
 		for (i in 1...columns)
 		{
-			HXP.rect.x = HXP.point.x + i * tileWidth;
-			HXP.rect.y = HXP.point.y;
-			HXP.rect.width = 1;
-			HXP.rect.height = _height;
-			HXP.buffer.fillRect(HXP.rect, color);
+			graphics.drawRect(HXP.point.x + i * tileWidth, HXP.point.y, 1, _height);
 		}
 
 		for (i in 1...rows)
 		{
-			HXP.rect.x = HXP.point.x;
-			HXP.rect.y = HXP.point.y + i * tileHeight;
-			HXP.rect.width = _width;
-			HXP.rect.height = 1;
-			HXP.buffer.fillRect(HXP.rect, color);
+			graphics.drawRect(HXP.point.x, HXP.point.y + i * tileHeight, _width, 1);
 		}
 
-		HXP.rect.width = tileWidth;
-		HXP.rect.height = tileHeight;
 		for (y in 0...rows)
 		{
 			HXP.rect.y = HXP.point.y + y * tileHeight;
@@ -369,11 +364,11 @@ class Grid extends Hitbox
 				HXP.rect.x = HXP.point.x + x * tileWidth;
 				if (data[y][x])
 				{
-					HXP.buffer.fillRect(HXP.rect, color);
+					graphics.drawRect(HXP.rect.x, HXP.rect.y, tileWidth, tileHeight);
 				}
 			}
 		}
-		HXP.buffer.unlock();
+		graphics.endFill();
 	}
 
 	public function squareProjection(axis:Point, point:Point):Void
