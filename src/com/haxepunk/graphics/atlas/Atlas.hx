@@ -56,6 +56,7 @@ class Atlas
 		_atlases.push(this);
 		_tileIndex = 0;
 		_refCount = 1;
+		_layerIndex = -1;
 	}
 
 	/**

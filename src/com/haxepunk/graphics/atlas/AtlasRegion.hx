@@ -16,6 +16,7 @@ class AtlasRegion
 		this.parent = parent;
 		this.tileIndex = tileIndex;
 		this.rect = rect.clone();
+		this.rotated = false;
 	}
 
 	/**
