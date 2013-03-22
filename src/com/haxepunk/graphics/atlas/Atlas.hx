@@ -259,9 +259,14 @@ class Atlas
 		{
 			var sprite = new Sprite();
 			var idx = 0;
-			for (l in _sprites.keys())
+			// create a reverse order of the layers
+			var layers = new Array<Int>();
+			for (l in _sprites.keys()) layers.push(l);
+			layers.sort(function(a:Int, b:Int):Int { return b - a; });
+			// find the index to insert the layer
+			for (l in layers)
 			{
-				if (l < layer) break;
+				if (layer > l) break;
 				idx += 1;
 			}
 			_sprites.set(layer, sprite);
