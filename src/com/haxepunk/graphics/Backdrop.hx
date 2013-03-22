@@ -96,7 +96,6 @@ class Backdrop extends Canvas
 		else
 		{
 			var sx = HXP.screen.fullScaleX, sy = HXP.screen.fullScaleY,
-				r = HXP.getRed(_color) / 255, g = HXP.getGreen(_color) / 255, b = HXP.getBlue(_color) / 255,
 				px = _point.x * sx, py = _point.y * sy;
 
 			var y:Float = 0;
@@ -105,7 +104,7 @@ class Backdrop extends Canvas
 				var x:Float = 0;
 				while (x <= _width * sx)
 				{
-					_region.draw(px + x, py + y, layer, sx, sy, 0, r, g, b, _alpha);
+					_region.draw(px + x, py + y, layer, sx, sy, 0, _red, _green, _blue, _alpha);
 					x += _textWidth * sx;
 				}
 				y += _textHeight * sy;

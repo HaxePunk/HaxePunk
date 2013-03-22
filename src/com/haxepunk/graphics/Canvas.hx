@@ -29,6 +29,7 @@ class Canvas extends Graphic
 	{
 		super();
 		_color = 0xFFFFFF;
+		_red = _green = _blue = 1;
 		_alpha = 1;
 		_graphics = HXP.sprite.graphics;
 		_matrix = new Matrix();
@@ -246,15 +247,19 @@ class Canvas extends Graphic
 		value %= 0xFFFFFF;
 		if (_color == value) return _color;
 		_color = value;
+		_red = HXP.getRed(color) / 255;
+		_green = HXP.getGreen(color) / 255;
+		_blue = HXP.getBlue(color) / 255;
+
 		if (_alpha == 1 && _color == 0xFFFFFF)
 		{
 			_tint = null;
 			return _color;
 		}
 		_tint = _colorTransform;
-		_tint.redMultiplier = (_color >> 16 & 0xFF) / 255;
-		_tint.greenMultiplier = (_color >> 8 & 0xFF) / 255;
-		_tint.blueMultiplier = (_color & 0xFF) / 255;
+		_tint.redMultiplier = _red;
+		_tint.greenMultiplier = _green;
+		_tint.blueMultiplier = _blue;
 		_tint.alphaMultiplier = _alpha;
 		return _color;
 	}
@@ -276,9 +281,9 @@ class Canvas extends Graphic
 			return _alpha;
 		}
 		_tint = _colorTransform;
-		_tint.redMultiplier = (_color >> 16 & 0xFF) / 255;
-		_tint.greenMultiplier = (_color >> 8 & 0xFF) / 255;
-		_tint.blueMultiplier = (_color & 0xFF) / 255;
+		_tint.redMultiplier = _red;
+		_tint.greenMultiplier = _green;
+		_tint.blueMultiplier = _blue;
 		_tint.alphaMultiplier = _alpha;
 		return _alpha;
 	}
@@ -318,6 +323,9 @@ class Canvas extends Graphic
 	private var _tint:ColorTransform;
 	private var _colorTransform:ColorTransform;
 	private var _matrix:Matrix;
+	private var _red:Float;
+	private var _green:Float;
+	private var _blue:Float;
 
 	// Canvas reference information.
 	private var _ref:BitmapData;

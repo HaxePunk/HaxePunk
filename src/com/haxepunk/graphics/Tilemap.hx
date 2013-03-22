@@ -446,8 +446,7 @@ class Tilemap extends Canvas
 			if (starty < 0) starty = 0;
 			if (desty > _rows) desty = _rows;
 
-			var r = HXP.getRed(color)/255, g = HXP.getGreen(color)/255, b = HXP.getBlue(color)/255,
-				wx = (_point.x + startx * tw) * scalex,
+			var wx = (_point.x + startx * tw) * scalex,
 				wy = (_point.y + starty * th) * scaley,
 				tile = 0;
 
@@ -458,7 +457,7 @@ class Tilemap extends Canvas
 					tile = getTile(x, y);
 					if (tile >= 0)
 					{
-						_atlas.prepareTile(tile, wx, wy, layer, scalex, scaley, 0, r, g, b, alpha);
+						_atlas.prepareTile(tile, wx, wy, layer, scalex, scaley, 0, _red, _green, _blue, alpha);
 					}
 
 					wx += tw * scalex;

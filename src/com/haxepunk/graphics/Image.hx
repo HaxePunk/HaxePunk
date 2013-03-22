@@ -153,6 +153,7 @@ class Image extends Graphic
 		_alpha = 1;
 		_flipped = false;
 		_color = 0x00FFFFFF;
+		_red = _green = _blue = 1;
 		_matrix = HXP.matrix;
 	}
 
@@ -202,13 +203,14 @@ class Image extends Graphic
 		else // _blit
 		{
 			if (_flipped) _point.x += _sourceRect.width;
-			var sx = HXP.screen.fullScaleX * scale * scaleX,
-				sy = HXP.screen.fullScaleY * scale * scaleY;
+			var fsx = HXP.screen.fullScaleX,
+				fsy = HXP.screen.fullScaleY,
+				sx = fsx * scale * scaleX,
+				sy = fsy * scale * scaleY;
 
-			_region.draw(_point.x * HXP.screen.fullScaleX,
-				_point.y * HXP.screen.fullScaleY,
+			_region.draw(_point.x * fsx, _point.y * fsy,
 				layer, sx * (_flipped ? -1 : 1), sy, angle,
-				HXP.getRed(_color)/255, HXP.getGreen(_color)/255, HXP.getBlue(_color)/255, _alpha);
+				_red, _green, _blue, _alpha);
 		}
 	}
 
@@ -274,9 +276,9 @@ class Image extends Graphic
 			else
 			{
 				_tint = _colorTransform;
-				_tint.redMultiplier = HXP.getRed(_color) / 255;
-				_tint.greenMultiplier = HXP.getGreen(_color) / 255;
-				_tint.blueMultiplier = HXP.getBlue(_color) / 255;
+				_tint.redMultiplier = _red;
+				_tint.greenMultiplier = _green;
+				_tint.blueMultiplier = _blue;
 				_tint.alphaMultiplier = _alpha;
 			}
 			updateBuffer();
@@ -294,6 +296,10 @@ class Image extends Graphic
 		value &= 0xFFFFFF;
 		if (_color == value) return value;
 		_color = value;
+		// save individual color channel values
+		_red = HXP.getRed(_color) / 255;
+		_green = HXP.getGreen(_color) / 255;
+		_blue = HXP.getBlue(_color) / 255;
 		if (_blit)
 		{
 			if (_alpha == 1 && _color == 0xFFFFFF)
@@ -303,9 +309,9 @@ class Image extends Graphic
 			else
 			{
 				_tint = _colorTransform;
-				_tint.redMultiplier = HXP.getRed(_color) / 255;
-				_tint.greenMultiplier = HXP.getGreen(_color) / 255;
-				_tint.blueMultiplier = HXP.getBlue(_color) / 255;
+				_tint.redMultiplier = _red;
+				_tint.greenMultiplier = _green;
+				_tint.blueMultiplier = _blue;
 				_tint.alphaMultiplier = _alpha;
 			}
 			updateBuffer();
@@ -415,6 +421,9 @@ class Image extends Graphic
 	private var _tint:ColorTransform;
 	private var _colorTransform:ColorTransform;
 	private var _matrix:Matrix;
+	private var _red:Float;
+	private var _green:Float;
+	private var _blue:Float;
 
 	// Flipped image information.
 	private var _class:String;
