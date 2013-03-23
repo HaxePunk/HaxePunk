@@ -101,12 +101,12 @@ class Entity extends Tweener
 		_point = HXP.point;
 		_camera = HXP.point2;
 
+		layer = HXP.BASELAYER;
+
 		if (graphic != null) this.graphic = graphic;
 		if (mask != null) this.mask = mask;
 		HITBOX.assignTo(this);
 		_class = Type.getClassName(Type.getClass(this));
-
-		layer = HXP.BASELAYER;
 	}
 
 	/**
