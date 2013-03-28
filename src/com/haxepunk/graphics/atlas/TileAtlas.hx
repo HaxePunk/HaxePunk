@@ -30,7 +30,17 @@ class TileAtlas extends Atlas
 		{
 			if (Atlas._atlasPool.exists(source))
 			{
-				atlas = cast(Atlas._atlasPool.get(source), TileAtlas);
+				var poolEntry:Atlas = Atlas._atlasPool.get(source);
+				if(Std.is(poolEntry, TileAtlas))
+				{
+					atlas = cast(poolEntry, TileAtlas);
+				}
+				else
+				{
+					atlas = new TileAtlas(HXP.getBitmap(source), tileWidth, tileHeight);
+					atlas._name = poolEntry._name;
+					Atlas._atlasPool.set(source, atlas);
+				} 
 				atlas._refCount += 1;
 			}
 			else
