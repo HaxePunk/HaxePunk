@@ -1,7 +1,7 @@
 package com.haxepunk.graphics.prototype;
 
 import com.haxepunk.RenderMode;
-import com.haxepunk.graphics.atlas.Atlas;
+import com.haxepunk.graphics.atlas.AtlasData;
 import nme.display.BitmapData;
 import nme.display.Graphics;
 import nme.geom.Point;
@@ -33,7 +33,7 @@ class Rect extends Graphic
 			_point.x = point.x + x - camera.x * scrollX;
 			_point.y = point.y + y - camera.y * scrollY;
 
-			var gfx = Atlas.getSpriteByLayer(layer).graphics;
+			var gfx = AtlasData.getSpriteByLayer(layer).graphics;
 			gfx.beginFill(color);
 			gfx.drawRect(_point.x, _point.y, width, height);
 		}

@@ -10,7 +10,7 @@ import nme.text.TextFormatAlign;
 
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
-import com.haxepunk.graphics.atlas.Atlas;
+import com.haxepunk.graphics.atlas.AtlasData;
 import com.haxepunk.graphics.atlas.AtlasRegion;
 
 typedef TextOptions = {
@@ -156,6 +156,9 @@ class Text extends Image
 	 */
 	private override function set_layer(value:Int):Int
 	{
+#if neko
+		if (value == null) value = HXP.BASELAYER;
+#end
 		if (value == layer) return value;
 		if (_blit == false)
 		{
@@ -163,7 +166,7 @@ class Text extends Image
 			{
 				_parent.removeChild(_field);
 			}
-			_parent = Atlas.getSpriteByLayer(value);
+			_parent = AtlasData.getSpriteByLayer(value);
 			_parent.addChild(_field);
 		}
 		return super.set_layer(value);

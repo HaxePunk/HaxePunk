@@ -1,62 +1,23 @@
 package com.haxepunk.graphics.atlas;
 
-import nme.display.BitmapData;
-import nme.display.Graphics;
 import nme.display.Sprite;
-import nme.display.Tilesheet;
 import nme.geom.Rectangle;
-import nme.geom.Point;
-
-class Layer
-{
-	public var data:Array<Float>;
-	public var index:Int;
-	public var dirty:Bool;
-
-	public function new()
-	{
-		data = new Array<Float>();
-		prepare();
-	}
-
-	public inline function prepare()
-	{
-		if (index < data.length)
-		{
-			data.splice(index, data.length - index);
-		}
-		index = 0; // reset index for next run
-		dirty = false;
-	}
-}
 
 class Atlas
 {
 
-	public var width(default, null):Int;
-	public var height(default, null):Int;
-
 	public static var drawCallThreshold:Int = 25000;
 	public static var smooth:Bool = false;
 
-	private function new(bd:BitmapData)
+	public var width(get_width, never):Int;
+	private function get_width():Int { return _data.width; }
+
+	public var height(get_height, never):Int;
+	private function get_height():Int { return _data.height; }
+
+	private function new(source:Dynamic)
 	{
-#if haxe3
-		_layers = new Map<Int,Layer>();
-#else
-		_layers = new IntHash<Layer>();
-#end
-		_tilesheet = new Tilesheet(bd);
-
-		width = bd.width;
-		height = bd.height;
-
-		_renderFlags = Tilesheet.TILE_TRANS_2x2 | Tilesheet.TILE_ALPHA | Tilesheet.TILE_BLEND_NORMAL | Tilesheet.TILE_RGB;
-
-		_atlases.push(this);
-		_tileIndex = 0;
-		_refCount = 1;
-		_layerIndex = -1;
+		_data = AtlasData.create(source);
 	}
 
 	/**
@@ -66,30 +27,8 @@ class Atlas
 	 */
 	public static function loadImageAsRegion(source:Dynamic):AtlasRegion
 	{
-		var atlas:Atlas;
-		if (Std.is(source, BitmapData))
-		{
-#if debug
-			HXP.log("Atlases using BitmapData will not be managed.");
-#end
-			atlas = new Atlas(source);
-		}
-		else
-		{
-			if (_atlasPool.exists(source))
-			{
-				atlas = _atlasPool.get(source);
-				atlas._refCount += 1;
-			}
-			else
-			{
-				atlas = new Atlas(HXP.getBitmap(source));
-				atlas._name = source;
-				_atlasPool.set(source, atlas);
-			}
-		}
-
-		return atlas.createRegion(new Rectangle(0, 0, atlas.width, atlas.height));
+		var data = AtlasData.create(source);
+		return data.createRegion(new Rectangle(0, 0, data.width, data.height));
 	}
 
 	/**
@@ -97,99 +36,7 @@ class Atlas
 	 */
 	public function destroy()
 	{
-		_refCount -= 1;
-		if (_refCount < 0)
-		{
-			if (_atlasPool.exists(_name))
-			{
-				_atlasPool.remove(_name);
-			}
-			_atlases.remove(this);
-		}
-	}
-
-	/**
-	 * Removes all atlases from the display list
-	 */
-	public static function destroyAll()
-	{
-		for (atlas in _atlases)
-		{
-			atlas.destroy();
-		}
-	}
-
-	/**
-	 * How many Atlases are active.
-	 */
-	public static var count(get_count, never):Int;
-	private static inline function get_count():Int { return _atlases.length; }
-
-	/**
-	 * Renders the current TextureAtlas
-	 * @param g the graphics context to draw in
-	 * @param smooth if rendering should use antialiasing
-	 */
-	public inline function render()
-	{
-		var l:Layer;
-
-		for (layer in _layers.keys())
-		{
-			l = _layers.get(layer);
-			// check that we have something to draw
-			if (l.dirty)
-			{
-				l.prepare();
-				getSpriteByLayer(layer).graphics.drawTiles(_tilesheet, l.data, smooth, _renderFlags);
-			}
-		}
-	}
-
-	public static inline function clear()
-	{
-		for (sprite in _sprites)
-		{
-			sprite.graphics.clear();
-		}
-	}
-
-	/**
-	 * Called by the current Scene to draw all TextureAtlas
-	 */
-	public static inline function renderAll()
-	{
-		if (_atlases.length > 0)
-		{
-			for (atlas in _atlases)
-			{
-				atlas.render();
-			}
-		}
-	}
-
-	public inline function setLayer(layer:Int)
-	{
-		if (_layers.exists(layer))
-		{
-			_layer = _layers.get(layer);
-		}
-		else
-		{
-			_layer = new Layer();
-			_layers.set(layer, _layer);
-		}
-		_layerIndex = layer;
-	}
-
-	public static function toggleLayerVisibility(layer:Int):Bool
-	{
-		var sprite = _sprites.get(layer);
-		if (sprite != null)
-		{
-			return sprite.visible = !sprite.visible;
-		}
-		return false;
+		_data.destroy();
 	}
 
 	/**
@@ -210,106 +57,24 @@ class Atlas
 		scaleX:Float, scaleY:Float, angle:Float,
 		red:Float, green:Float, blue:Float, alpha:Float)
 	{
-		if (_layerIndex != layer) setLayer(layer);
-		var d = _layer.data;
-		_layer.dirty = true;
-
-		d[_layer.index++] = x;
-		d[_layer.index++] = y;
-		d[_layer.index++] = tile;
-
-		// matrix transformation
-		if (angle == 0)
-		{
-			// fast defaults for non-rotated tiles (cos=1, sin=0)
-			d[_layer.index++] = scaleX; // m00
-			d[_layer.index++] = 0; // m01
-			d[_layer.index++] = 0; // m10
-			d[_layer.index++] = scaleY; // m11
-		}
-		else
-		{
-			var cos = Math.cos(angle * HXP.RAD);
-			var sin = Math.sin(angle * HXP.RAD);
-			d[_layer.index++] = cos * scaleX; // m00
-			d[_layer.index++] = sin * scaleX; // m01
-			d[_layer.index++] = -sin * scaleY; // m10
-			d[_layer.index++] = cos * scaleY; // m11
-		}
-
-		d[_layer.index++] = red;
-		d[_layer.index++] = green;
-		d[_layer.index++] = blue;
-		d[_layer.index++] = alpha;
-
-		if (_layer.index > drawCallThreshold)
-		{
-			_layer.prepare();
-			getSpriteByLayer(layer).graphics.drawTiles(_tilesheet, _layer.data, smooth, _renderFlags);
-		}
-	}
-
-	public static inline function getSpriteByLayer(layer:Int):Sprite
-	{
-		if (_sprites.exists(layer))
-		{
-			return _sprites.get(layer);
-		}
-		else
-		{
-			var sprite = new Sprite();
-			var idx = 0;
-			// create a reverse order of the layers
-			var layers = new Array<Int>();
-			for (l in _sprites.keys()) layers.push(l);
-			layers.sort(function(a:Int, b:Int):Int { return b - a; });
-			// find the index to insert the layer
-			for (l in layers)
-			{
-				if (layer > l) break;
-				idx += 1;
-			}
-			_sprites.set(layer, sprite);
-			HXP.stage.addChildAt(sprite, idx);
-			return sprite;
-		}
+		_data.prepareTile(tile, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha);
 	}
 
 	/**
-	 * Creates a new AtlasRegion and assigns it to a name
-	 * @param name the region name to create
-	 * @param rect defines the rectangle of the tile on the tilesheet
-	 * @param center positions the local center point to pivot on
+	 * How many Atlases are active.
 	 */
-	public inline function createRegion(rect:Rectangle, ?center:Point):AtlasRegion
+	// public static var count(get_count, never):Int;
+	// private static inline function get_count():Int { return _atlases.length; }
+
+	public static function toggleLayerVisibility(layer:Int):Bool
 	{
-		_tilesheet.addTileRect(rect, center);
-		var region = new AtlasRegion(this, _tileIndex, rect);
-		_tileIndex += 1;
-		return region;
+		// var sprite = _sprites.get(layer);
+		// if (sprite != null)
+		// {
+		// 	return sprite.visible = !sprite.visible;
+		// }
+		return false;
 	}
 
-	private var _tileIndex:Int;
-	private var _tilesheet:Tilesheet;
-	private var _layerIndex:Int;
-	private var _layer:Layer; // current layer
-#if haxe3
-	private var _layers:Map<Int,Layer>;
-#else
-	private var _layers:IntHash<Layer>;
-#end
-	private var _renderFlags:Int;
-
-	// used for pooling
-	private var _name:String;
-	private var _refCount:Int;
-
-#if haxe3
-	private static var _atlasPool:Map<String,Atlas> = new Map<String,Atlas>();
-	private static var _sprites:Map<Int,Sprite> = new Map<Int,Sprite>();
-#else
-	private static var _atlasPool:Hash<Atlas> = new Hash<Atlas>();
-	private static var _sprites:IntHash<Sprite> = new IntHash<Sprite>();
-#end
-	private static var _atlases:Array<Atlas> = new Array<Atlas>();
+	private var _data:AtlasData;
 }

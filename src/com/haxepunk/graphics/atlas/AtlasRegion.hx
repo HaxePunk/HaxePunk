@@ -11,7 +11,7 @@ class AtlasRegion
 	public var width(get_width, never):Float;
 	public var height(get_height, never):Float;
 
-	public function new(parent:Atlas, tileIndex:Int, rect:Rectangle)
+	public function new(parent:AtlasData, tileIndex:Int, rect:Rectangle)
 	{
 		this.parent = parent;
 		this.tileIndex = tileIndex;
@@ -73,5 +73,5 @@ class AtlasRegion
 
 	private var rect:Rectangle;
 	private var center:Point;
-	private var parent:Atlas;
+	private var parent:AtlasData;
 }
