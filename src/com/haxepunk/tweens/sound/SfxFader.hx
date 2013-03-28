@@ -81,8 +81,8 @@ class SfxFader extends Tween
 	/**
 	 * The current Sfx this object is effecting.
 	 */
-	public var sfx(getSfx, null):Sfx;
-	private function getSfx():Sfx { return _sfx; }
+	public var sfx(get_sfx, null):Sfx;
+	private function get_sfx():Sfx { return _sfx; }
 
 	// Fader information.
 	private var _sfx:Sfx;

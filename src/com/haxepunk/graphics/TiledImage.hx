@@ -61,9 +61,9 @@ class TiledImage extends Image
 	/**
 	 * The x-offset of the texture.
 	 */
-	public var offsetX(getOffsetX, setOffsetX):Float;
-	private function getOffsetX():Float { return _offsetX; }
-	private function setOffsetX(value:Float):Float
+	public var offsetX(get_offsetX, set_offsetX):Float;
+	private function get_offsetX():Float { return _offsetX; }
+	private function set_offsetX(value:Float):Float
 	{
 		if (_offsetX == value) return value;
 		_offsetX = value;
@@ -74,9 +74,9 @@ class TiledImage extends Image
 	/**
 	 * The y-offset of the texture.
 	 */
-	public var offsetY(getOffsetY, setOffsetY):Float;
-	private function getOffsetY():Float { return _offsetY; }
-	private function setOffsetY(value:Float):Float
+	public var offsetY(get_offsetY, set_offsetY):Float;
+	private function get_offsetY():Float { return _offsetY; }
+	private function set_offsetY(value:Float):Float
 	{
 		if (_offsetY == value) return value;
 		_offsetY = value;
