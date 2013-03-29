@@ -244,7 +244,7 @@ class Image extends Graphic
 	{
 		if (_source == null) return;
 		if (clearBefore) _buffer.fillRect(_bufferRect, HXP.blackColor);
-		_buffer.copyPixels(_source, _sourceRect, HXP.zero);
+		_buffer.copyPixels(_source, _sourceRect, HXP.zero, _drawMask, HXP.zero);
 		if (_tint != null) _buffer.colorTransform(_bufferRect, _tint);
 	}
 
@@ -394,6 +394,18 @@ class Image extends Graphic
 	 */
 	public var scaledWidth(get_scaledWidth, never):Int;
 	private function get_scaledWidth():Int { return Std.int(width * scaleX * scale); }
+
+	/**
+	 * Set the transparency mask of the Image.
+	 */
+	public var drawMask(get_drawMask, set_drawMask):BitmapData;
+	private var _drawMask:BitmapData;
+	public function get_drawMask():BitmapData { return _drawMask; }
+	public function set_drawMask(value:BitmapData):BitmapData{
+		_drawMask = value;
+		updateBuffer(true);
+		return _drawMask;
+	}
 
 	/**
 	 * The scaled height of the image.
