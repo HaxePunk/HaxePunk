@@ -77,10 +77,12 @@ class Tween extends EventDispatcher
 		{
 			active = false;
 			dispatchEvent(new TweenEvent(TweenEvent.FINISH));
-			return;
 		}
-		active = true;
-		dispatchEvent(new TweenEvent(TweenEvent.START));
+		else
+		{
+			active = true;
+			dispatchEvent(new TweenEvent(TweenEvent.START));
+		}
 	}
 
 	/** @private Called when the Tween completes. */
