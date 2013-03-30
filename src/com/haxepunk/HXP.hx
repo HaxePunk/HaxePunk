@@ -169,6 +169,11 @@ class HXP
 	public static var renderMode:EnumFlags<RenderMode>;
 
 	/**
+	 * Defines the allowed orientations
+	 */
+	public static var orientations:Array<Int> = [];
+
+	/**
 	 * The currently active World object (deprecated)
 	 */
 	public static var world(get_world, set_world):Scene;
