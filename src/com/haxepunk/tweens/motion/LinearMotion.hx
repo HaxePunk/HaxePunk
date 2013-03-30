@@ -18,7 +18,7 @@ class LinearMotion extends Motion
 	{
 		_fromX = _fromY = _moveX = _moveY = 0;
 		_distance = -1;
-		super(0,complete, type, null);
+		super(0, complete, type, null);
 	}
 
 	/**
@@ -69,13 +69,17 @@ class LinearMotion extends Motion
 		super.update();
 		x = _fromX + _moveX * _t;
 		y = _fromY + _moveY * _t;
-		if (x == _fromX + _moveX && y == _fromY + _moveY && active) finish();
+		if (x == _fromX + _moveX && y == _fromY + _moveY && active)
+		{
+			super.update();
+			finish();
+		}
 	}
 
 	/**
 	 * Length of the current line of movement.
 	 */
-	public var distance(get_distance, null):Float;
+	public var distance(get_distance, never):Float;
 	private function get_distance():Float
 	{
 		if (_distance >= 0) return _distance;

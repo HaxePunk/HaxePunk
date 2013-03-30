@@ -30,9 +30,4 @@ class Motion extends Tween
 		x = y = 0;
 		super(duration, type, complete, ease);
 	}
-
-	override public function update()
-	{
-		super.update();
-	}
 }
