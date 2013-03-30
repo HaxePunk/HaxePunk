@@ -264,10 +264,10 @@ class AtlasData
 
 #if haxe3
 	private static var _sprites:Map<Int,Sprite> = new Map<Int,Sprite>();
-	private static var _dataPool:Map<Int,AtlasData> = new Map<Int,AtlasData>();
+	private static var _dataPool:Map<String,AtlasData> = new Map<String,AtlasData>();
 #else
 	private static var _sprites:IntHash<Sprite> = new IntHash<Sprite>();
-	private static var _dataPool:IntHash<AtlasData> = new IntHash<AtlasData>();
+	private static var _dataPool:Hash<AtlasData> = new Hash<AtlasData>();
 #end
 	private static var _atlases:Array<AtlasData> = new Array<AtlasData>();
 }
