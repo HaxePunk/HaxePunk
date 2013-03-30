@@ -5,42 +5,15 @@ import nme.display.BitmapData;
 class TileAtlas extends Atlas
 {
 
-	private function new(bd:BitmapData, tileWidth:Int, tileHeight:Int)
+	public function new(source:Dynamic, tileWidth:Int, tileHeight:Int)
 	{
-		super(bd);
+		super(source);
 #if haxe3
 		_regions = new Map<Int,AtlasRegion>();
 #else
 		_regions = new IntHash<AtlasRegion>();
 #end
-		prepareTiles(bd.width, bd.height, tileWidth, tileHeight);
-	}
-
-	public static function create(source:Dynamic, tileWidth:Int, tileHeight:Int):TileAtlas
-	{
-		var atlas:TileAtlas;
-		if (Std.is(source, BitmapData))
-		{
-#if debug
-			HXP.log("Atlases using BitmapData will not be managed.");
-#end
-			atlas = new TileAtlas(source, tileWidth, tileHeight);
-		}
-		else
-		{
-			if (Atlas._atlasPool.exists(source))
-			{
-				atlas = cast(Atlas._atlasPool.get(source), TileAtlas);
-				atlas._refCount += 1;
-			}
-			else
-			{
-				atlas = new TileAtlas(HXP.getBitmap(source), tileWidth, tileHeight);
-				atlas._name = source;
-				Atlas._atlasPool.set(source, atlas);
-			}
-		}
-		return atlas;
+		prepareTiles(_data.width, _data.height, tileWidth, tileHeight);
 	}
 
 	public function getRegion(index:Int):AtlasRegion
@@ -66,7 +39,7 @@ class TileAtlas extends Atlas
 			{
 				HXP.rect.x = x * tileWidth;
 
-				var region = createRegion(HXP.rect, HXP.point);
+				var region = _data.createRegion(HXP.rect, HXP.point);
 				_regions.set(region.tileIndex, region);
 			}
 		}

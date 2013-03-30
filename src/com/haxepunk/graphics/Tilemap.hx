@@ -73,7 +73,7 @@ class Tilemap extends Canvas
 			if (HXP.renderMode.has(RenderMode.HARDWARE))
 			{
 				_blit = false;
-				_atlas = TileAtlas.create(tileset, tileWidth, tileHeight);
+				_atlas = new TileAtlas(tileset, tileWidth, tileHeight);
 			}
 			else
 			{

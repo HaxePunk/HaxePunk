@@ -1,7 +1,7 @@
 package com.haxepunk.graphics.prototype;
 
 import com.haxepunk.RenderMode;
-import com.haxepunk.graphics.atlas.Atlas;
+import com.haxepunk.graphics.atlas.AtlasData;
 import nme.display.BitmapData;
 import nme.display.Graphics;
 import nme.geom.Point;
@@ -31,7 +31,7 @@ class Circle extends Graphic
 			_point.x = point.x + x + radius - camera.x * scrollX;
 			_point.y = point.y + y + radius - camera.y * scrollY;
 
-			var gfx = Atlas.getSpriteByLayer(layer).graphics;
+			var gfx = AtlasData.getSpriteByLayer(layer).graphics;
 			gfx.beginFill(color);
 			gfx.drawCircle(_point.x, _point.y, radius);
 		}

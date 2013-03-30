@@ -11,7 +11,7 @@ import nme.events.Event;
 import nme.geom.Rectangle;
 import nme.Lib;
 import haxe.Timer;
-import com.haxepunk.graphics.atlas.Atlas;
+import com.haxepunk.graphics.atlas.AtlasData;
 import com.haxepunk.utils.Draw;
 import com.haxepunk.utils.Input;
 import com.haxepunk.Tweener;
@@ -150,7 +150,7 @@ class Engine extends Sprite
 		}
 		if (HXP.renderMode.has(RenderMode.HARDWARE))
 		{
-			Atlas.clear();
+			AtlasData.clear();
 		}
 
 		if (HXP.scene.visible) HXP.scene.render();
@@ -161,7 +161,7 @@ class Engine extends Sprite
 		}
 		if (HXP.renderMode.has(RenderMode.HARDWARE))
 		{
-			Atlas.renderAll();
+			AtlasData.render();
 		}
 
 		// more timing stuff

@@ -7,7 +7,7 @@ import nme.geom.Rectangle;
 
 class TextureAtlas extends Atlas
 {
-	private function new(bd:BitmapData)
+	private function new(source:Dynamic)
 	{
 #if haxe3
 		_regions = new Map<String,AtlasRegion>();
@@ -15,34 +15,7 @@ class TextureAtlas extends Atlas
 		_regions = new Hash<AtlasRegion>();
 #end
 
-		super(bd);
-	}
-
-	public static function create(source:Dynamic):TextureAtlas
-	{
-		var atlas:TextureAtlas;
-		if (Std.is(source, BitmapData))
-		{
-#if debug
-			HXP.log("Atlases using BitmapData will not be managed.");
-#end
-			atlas = new TextureAtlas(source);
-		}
-		else
-		{
-			if (Atlas._atlasPool.exists(source))
-			{
-				atlas = cast(Atlas._atlasPool.get(source), TextureAtlas);
-				atlas._refCount += 1;
-			}
-			else
-			{
-				atlas = new TextureAtlas(HXP.getBitmap(source));
-				atlas._name = source;
-				Atlas._atlasPool.set(source, atlas);
-			}
-		}
-		return atlas;
+		super(source);
 	}
 
 	/**
@@ -54,7 +27,7 @@ class TextureAtlas extends Atlas
 	{
 		var xml = Xml.parse(nme.Assets.getText(file));
 		var root = xml.firstElement();
-		var atlas = TextureAtlas.create(root.get("imagePath"));
+		var atlas = new TextureAtlas(root.get("imagePath"));
 		for (sprite in root.elements())
 		{
 			HXP.rect.x = Std.parseInt(sprite.get("x"));
@@ -89,7 +62,7 @@ class TextureAtlas extends Atlas
 	 */
 	public function defineRegion(name:String, rect:Rectangle, ?center:Point):AtlasRegion
 	{
-		var region = createRegion(rect, center);
+		var region = _data.createRegion(rect, center);
 		_regions.set(name, region);
 		return region;
 	}
