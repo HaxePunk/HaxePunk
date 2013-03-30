@@ -342,31 +342,39 @@ class Grid extends Hitbox
 
 	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
 	{
-		HXP.point.x = _x + parent.x - HXP.camera.x;
-		HXP.point.y = _y + parent.y - HXP.camera.y;
+		HXP.point.x = (_x + parent.x - HXP.camera.x) * HXP.screen.fullScaleX;
+		HXP.point.y = (_y + parent.y - HXP.camera.y) * HXP.screen.fullScaleY;
 
 		graphics.beginFill(0x0000FF, 0.3);
+		var pos = HXP.point.x,
+			stepX = tileWidth * HXP.screen.fullScaleX,
+			stepY = tileHeight * HXP.screen.fullScaleY;
 		for (i in 1...columns)
 		{
-			graphics.drawRect(HXP.point.x + i * tileWidth, HXP.point.y, 1, _height);
+			graphics.drawRect(pos, HXP.point.y, 1, _height * HXP.screen.fullScaleX);
+			pos += stepX;
 		}
 
+		pos = HXP.point.y;
 		for (i in 1...rows)
 		{
-			graphics.drawRect(HXP.point.x, HXP.point.y + i * tileHeight, _width, 1);
+			graphics.drawRect(HXP.point.x, pos, _width * HXP.screen.fullScaleY, 1);
+			pos += stepY;
 		}
 
+		HXP.rect.y = HXP.point.y;
 		for (y in 0...rows)
 		{
-			HXP.rect.y = HXP.point.y + y * tileHeight;
 			for (x in 0...columns)
 			{
-				HXP.rect.x = HXP.point.x + x * tileWidth;
 				if (data[y][x])
 				{
-					graphics.drawRect(HXP.rect.x, HXP.rect.y, tileWidth, tileHeight);
+					graphics.drawRect(HXP.rect.x, HXP.rect.y, stepX, stepY);
 				}
+				HXP.rect.x += stepX;
 			}
+			HXP.rect.x = HXP.point.x;
+			HXP.rect.y += stepY;
 		}
 		graphics.endFill();
 	}
