@@ -1,4 +1,2 @@
-HaxePunk
-========
 
-Moved to HaxePunk/HaxePunk
+Moved to the [HaxePunk organization](http::/github.com/HaxePunk/HaxePunk).
