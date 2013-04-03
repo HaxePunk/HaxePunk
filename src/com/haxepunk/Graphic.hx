@@ -75,6 +75,11 @@ class Graphic
 	}
 
 	/**
+	 * Removes the graphic from the scene
+	 */
+	public function destroy() { }
+
+	/**
 	 * Renders the graphic to the screen buffer.
 	 * @param  target     The buffer to draw to.
 	 * @param  point      The position to draw the graphic.

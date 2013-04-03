@@ -1050,6 +1050,7 @@ class Scene extends Tweener
 				if (fe._scene != this)
 					continue;
 				e.removed();
+				if (e.graphic != null) e.graphic.destroy();
 				fe._scene = null;
 				removeUpdate(e);
 				removeRender(e);

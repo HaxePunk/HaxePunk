@@ -65,6 +65,17 @@ class Graphiclist extends Graphic
 	}
 
 	/**
+	 * Destroys the list of graphics
+	 */
+	public override function destroy()
+	{
+		for (g in _graphics)
+		{
+			g.destroy();
+		}
+	}
+
+	/**
 	 * Adds the Graphic to the list.
 	 * @param	graphic		The Graphic to add.
 	 * @return	The added Graphic.

@@ -361,6 +361,7 @@ class Engine extends Sprite
 		if (HXP.scene != null)
 		{
 			HXP.scene.end();
+			HXP.scene.removeAll();
 			HXP.scene.updateLists();
 			if (HXP.scene.autoClear && HXP.scene.hasTween) HXP.scene.clearTweens();
 			HXP.swapScene();

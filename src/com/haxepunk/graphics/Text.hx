@@ -147,8 +147,16 @@ class Text extends Image
 		}
 		else
 		{
-			_field.x = point.x + x - originX - camera.x * scrollX;
-			_field.y = point.y + y - originY - camera.y * scrollY;
+			_field.x = (point.x + x - originX - camera.x * scrollX) * HXP.screen.fullScaleX;
+			_field.y = (point.y + y - originY - camera.y * scrollY) * HXP.screen.fullScaleY;
+		}
+	}
+
+	public override function destroy()
+	{
+		if (_parent != null)
+		{
+			_parent.removeChild(_field);
 		}
 	}
 
@@ -163,10 +171,7 @@ class Text extends Image
 		if (value == layer) return value;
 		if (_blit == false)
 		{
-			if (_parent != null)
-			{
-				_parent.removeChild(_field);
-			}
+			destroy();
 			_parent = AtlasData.getSpriteByLayer(value);
 			_parent.addChild(_field);
 		}
