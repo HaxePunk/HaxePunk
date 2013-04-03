@@ -425,7 +425,7 @@ class Tilemap extends Canvas
 			_point.y = point.y + y - camera.y * scrollY;
 
 			var scalex:Float = HXP.screen.fullScaleX, scaley:Float = HXP.screen.fullScaleY,
-				tw:Int = Std.int(tileWidth), th:Int = Std.int(tileHeight);
+				tw:Int = Math.ceil(tileWidth), th:Int = Math.ceil(tileHeight);
 
 			// determine start and end tiles to draw (optimization)
 			var startx = -Math.floor(_point.x / tw),
