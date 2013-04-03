@@ -83,6 +83,7 @@ class Text extends Image
 			HXP.rect.width = _field.width;
 			HXP.rect.height = _field.height;
 			source = new AtlasRegion(null, 0, HXP.rect);
+			_blit = false;
 		}
 		else
 		{
