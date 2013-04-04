@@ -1,5 +1,17 @@
 HaxePunk CHANGELOG
 
+v2.2.0
+------------------------------
+* [raistlin] Ready for Haxe 3 and Neko 2
+* PreRotation no longer throws null error on Flash
+* HXP.RAD and HXP.DEG cause angles to spin the same on all targets
+* Fixed tearing issues with scaled Tilemaps
+* Fixed Text not showing and scaled position
+* Added HXP.orientations to restrict orientation modes on mobile devices
+* Debug draw for Grid looks correct in scaled scenes
+* Atlases share rendering data for identical images
+* [FlashPunk] Added filtered volume/pan to Sfx
+
 v2.1.1
 ------------------------------
 * [stevedecoded] Added Entity.moveAtAngle
