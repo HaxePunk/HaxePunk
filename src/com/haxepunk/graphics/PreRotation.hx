@@ -82,10 +82,9 @@ class PreRotation extends Image
 					y = Std.int(y + _frame.height);
 				}
 			}
-			_source = r;
 			_width = r.width;
 			_frameCount = frameCount;
-			super(_source, _frame);
+			super(r, _frame);
 		}
 		else
 		{
