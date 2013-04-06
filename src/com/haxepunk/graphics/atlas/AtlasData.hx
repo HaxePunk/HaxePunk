@@ -202,8 +202,8 @@ class AtlasData
 		}
 		else
 		{
-			var cos = Math.cos(angle * HXP.RAD);
-			var sin = Math.sin(angle * HXP.RAD);
+			var cos = Math.cos(-angle * HXP.RAD);
+			var sin = Math.sin(-angle * HXP.RAD);
 			d[_layer.index++] = cos * scaleX; // m00
 			d[_layer.index++] = sin * scaleX; // m01
 			d[_layer.index++] = -sin * scaleY; // m10

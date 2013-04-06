@@ -39,16 +39,16 @@ class PreRotation extends Image
 				name = Type.getClassName(source);
 
 			var r:BitmapData = _rotated.get(name);
-			_size = _sizes.get(name);
-			_frame = new Rectangle(0, 0, _size, _size);
+			var size = _sizes.get(name);
+			_frame = new Rectangle(0, 0, size, size);
 
 			if (r == null)
 			{
 				// produce a rotated bitmap strip
 				var temp:BitmapData = HXP.getBitmap(source);
-				_size = Math.ceil(HXP.distance(0, 0, temp.width, temp.height));
-				_sizes.set(name, _size);
-				_frame.width = _frame.height = _size;
+				size = Math.ceil(HXP.distance(0, 0, temp.width, temp.height));
+				_sizes.set(name, size);
+				_frame.width = _frame.height = size;
 				var width:Int = Std.int(_frame.width * frameCount),
 					height:Int = Std.int(_frame.height);
 				if (width > _MAX_WIDTH)
@@ -89,7 +89,6 @@ class PreRotation extends Image
 		else
 		{
 			super(source);
-			_size = Math.ceil(HXP.distance(0, 0, _region.width, _region.height));
 		}
 	}
 
@@ -105,40 +104,15 @@ class PreRotation extends Image
 			{
 				_last = _current;
 				_frame.x = _frame.width * _last;
-				_frame.y = Std.int(_frame.x / _size) * _frame.height;
-				_frame.x %= _size;
+				_frame.y = Std.int(_frame.x / _width) * _frame.height;
+				_frame.x %= _width;
 				updateBuffer();
 			}
-			super.render(target, point, camera);
 		}
-		else
-		{
-			var sin = Math.sin(angle * HXP.RAD),
-				cos = Math.cos(angle * HXP.RAD),
-				ox = (_size - _region.width) / 2 - originX,
-				oy = (_size - _region.height) / 2 - originY,
-				offsetX = cos * ox + sin * ox,
-				offsetY = -sin * oy + cos * oy;
-			originX -= offsetX;
-			originY -= offsetY;
-			super.render(target, point, camera);
-			originX += offsetX;
-			originY += offsetY;
-		}
+		super.render(target, point, camera);
 	}
 
-	/**
-	 * Width of the image.
-	 */
-	private override function get_width():Int { return _size; }
-
-	/**
-	 * Height of the image.
-	 */
-	private override function get_height():Int { return _size; }
-
 	// Rotation information.
-	private var _size:Int;
 	private var _width:Int;
 	private var _frame:Rectangle;
 	private var _frameCount:Int;

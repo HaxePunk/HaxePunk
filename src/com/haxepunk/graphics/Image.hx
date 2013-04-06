@@ -208,9 +208,29 @@ class Image extends Graphic
 				sx = fsx * scale * scaleX,
 				sy = fsy * scale * scaleY;
 
-			_region.draw(_point.x * fsx, _point.y * fsy,
-				layer, sx * (_flipped ? -1 : 1), sy, angle,
-				_red, _green, _blue, _alpha);
+			if (angle == 0)
+			{
+				// render without rotation
+				_region.draw(_point.x * fsx, _point.y * fsy,
+					layer, sx * (_flipped ? -1 : 1), sy, angle,
+					_red, _green, _blue, _alpha);
+			}
+			else
+			{
+				// render with rotation
+				_matrix.b = _matrix.c = 0;
+				_matrix.a = scaleX * scale;
+				_matrix.d = scaleY * scale;
+				_matrix.tx = -originX * _matrix.a;
+				_matrix.ty = -originY * _matrix.d;
+				if (angle != 0) _matrix.rotate(angle * HXP.RAD);
+				_matrix.tx += originX + _point.x;
+				_matrix.ty += originY + _point.y;
+
+				_region.draw(_matrix.tx * fsx, _matrix.ty * fsy,
+					layer, sx * (_flipped ? -1 : 1), sy, angle,
+					_red, _green, _blue, _alpha);
+			}
 		}
 	}
 

@@ -1052,9 +1052,9 @@ class HXP
 
 	// Used for rad-to-deg and deg-to-rad conversion.
 	public static var DEG(get_DEG, never):Float;
-	public static inline function get_DEG(): Float { return #if flash -180 / Math.PI #else 180 / Math.PI #end; }
+	public static inline function get_DEG(): Float { return -180 / Math.PI; }
 	public static var RAD(get_RAD, never):Float;
-	public static inline function get_RAD(): Float { return #if flash Math.PI / -180 #else Math.PI / 180 #end; }
+	public static inline function get_RAD(): Float { return Math.PI / -180; }
 
 	// Global Flash objects.
 	public static var stage:Stage;
