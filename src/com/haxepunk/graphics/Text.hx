@@ -206,6 +206,23 @@ class Text extends Image
 	}
 
 	/**
+	 * Font color.
+	 */
+	private override function set_color(value:Int):Int
+	{
+		if (_blit)
+		{
+			return super.set_color(value);
+		}
+		else
+		{
+			_format.color = value;
+			updateBuffer();
+			return value;
+		}
+	}
+
+	/**
 	 * Font size.
 	 */
 	public var size(default, set_size):Int;
