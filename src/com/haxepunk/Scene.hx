@@ -138,7 +138,7 @@ class Scene extends Tweener
 	public var mouseX(get_mouseX, null):Int;
 	private inline function get_mouseX():Int
 	{
-		return Std.int(HXP.screen.mouseX + HXP.camera.x);
+		return Std.int(HXP.screen.mouseX + camera.x);
 	}
 
 	/**
@@ -147,7 +147,7 @@ class Scene extends Tweener
 	public var mouseY(get_mouseY, null):Int;
 	private inline function get_mouseY():Int
 	{
-		return Std.int(HXP.screen.mouseY + HXP.camera.y);
+		return Std.int(HXP.screen.mouseY + camera.y);
 	}
 
 	/**
