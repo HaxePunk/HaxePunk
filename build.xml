@@ -12,12 +12,11 @@
 		<zip destfile="template.zip" useLanguageEncodingFlag="UTF-8" basedir="template" />
 		<zip destfile="haxepunk.zip" useLanguageEncodingFlag="UTF-8">
 			<zipfileset dir="" prefix="haxepunk" includes="run.n,haxelib.xml,include.nmml,template.zip,CHANGELOG,LICENSE" />
-			<zipfileset dir="src" prefix="haxepunk" />
+			<zipfileset dir="com" prefix="haxepunk/com" />
 			<zipfileset dir="assets" prefix="haxepunk/assets" />
 		</zip>
 		<exec executable="haxelib" dir=".">
 			<arg line="local haxepunk.zip" />
-			<!-- <arg line="test haxepunk.zip" /> -->
 		</exec>
 	</target>
 
@@ -42,12 +41,10 @@
 			<arg line="run nme build project.nmml" />
 			<arg line="neko" />
 		</exec>
-		<!--
 		<exec executable="haxelib" dir="build-test">
 			<arg line="run nme build project.nmml" />
 			<arg line="html5" />
 		</exec>
-		-->
 	</target>
 
 	<target name="examples" depends="haxelib">
