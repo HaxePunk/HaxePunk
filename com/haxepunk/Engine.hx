@@ -175,7 +175,7 @@ class Engine extends Sprite
 	/**
 	 * Sets the game's stage properties. Override this to set them differently.
 	 */
-	public function setStageProperties()
+	private function setStageProperties()
 	{
 		HXP.stage.frameRate = HXP.assignedFrameRate;
 		HXP.stage.align = StageAlign.TOP_LEFT;
@@ -361,7 +361,6 @@ class Engine extends Sprite
 		if (HXP.scene != null)
 		{
 			HXP.scene.end();
-			HXP.scene.removeAll();
 			HXP.scene.updateLists();
 			if (HXP.scene.autoClear && HXP.scene.hasTween) HXP.scene.clearTweens();
 			HXP.swapScene();

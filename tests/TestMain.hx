@@ -6,6 +6,7 @@ class TestMain
 	{
 		var r = new TestRunner();
 		r.add(new TestMasks());
+		r.add(new TestScreen());
 		r.run();
 	}
 }

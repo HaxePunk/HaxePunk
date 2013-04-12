@@ -2,6 +2,7 @@ package com.haxepunk.graphics;
 
 import nme.display.BitmapData;
 import nme.display.Graphics;
+import nme.geom.Point;
 import nme.geom.Rectangle;
 import com.haxepunk.HXP;
 
@@ -38,24 +39,63 @@ class TiledImage extends Image
 	/** @private Updates the buffer. */
 	override public function updateBuffer(clearBefore:Bool = false)
 	{
-		if (_source == null) return;
-		if (_texture == null)
+		if (_blit)
 		{
-			_texture = HXP.createBitmap(Std.int(_sourceRect.width), Std.int(_sourceRect.height), true);
-			_texture.copyPixels(_source, _sourceRect, HXP.zero);
+			if (_source == null) return;
+			if (_texture == null)
+			{
+				_texture = HXP.createBitmap(Std.int(_sourceRect.width), Std.int(_sourceRect.height), true);
+				_texture.copyPixels(_source, _sourceRect, HXP.zero);
+			}
+			_buffer.fillRect(_bufferRect, HXP.blackColor);
+			_graphics.clear();
+			if (_offsetX != 0 || _offsetY != 0)
+			{
+				HXP.matrix.identity();
+				HXP.matrix.tx = Math.round(_offsetX);
+				HXP.matrix.ty = Math.round(_offsetY);
+				_graphics.beginBitmapFill(_texture, HXP.matrix);
+			}
+			else _graphics.beginBitmapFill(_texture);
+			_graphics.drawRect(0, 0, _width, _height);
+			_buffer.draw(HXP.sprite, null, _tint);
 		}
-		_buffer.fillRect(_bufferRect, HXP.blackColor);
-		_graphics.clear();
-		if (_offsetX != 0 || _offsetY != 0)
+	}
+
+		/** Renders the image. */
+	override public function render(target:BitmapData, point:Point, camera:Point)
+	{
+		if (_blit)
 		{
-			HXP.matrix.identity();
-			HXP.matrix.tx = Math.round(_offsetX);
-			HXP.matrix.ty = Math.round(_offsetY);
-			_graphics.beginBitmapFill(_texture, HXP.matrix);
+			super.render(target, point, camera);
 		}
-		else _graphics.beginBitmapFill(_texture);
-		_graphics.drawRect(0, 0, _width, _height);
-		_buffer.draw(HXP.sprite, null, _tint);
+		else // _blit
+		{
+			// determine drawing location
+			_point.x = point.x + x - originX - camera.x * scrollX;
+			_point.y = point.y + y - originY - camera.y * scrollY;
+
+			// TODO: properly handle flipped tiled spritemaps
+			if (_flipped) _point.x += _sourceRect.width;
+			var fsx = HXP.screen.fullScaleX,
+				fsy = HXP.screen.fullScaleY,
+				sx = fsx * scale * scaleX,
+				sy = fsy * scale * scaleY,
+				x = 0.0, y = 0.0;
+
+			while (y < _height)
+			{
+				while (x < _width)
+				{
+					_region.draw((_point.x + x) * fsx, (_point.y + y) * fsy,
+						layer, sx * (_flipped ? -1 : 1), sy, angle,
+						_red, _green, _blue, _alpha);
+					x += _sourceRect.width;
+				}
+				x = 0;
+				y += _sourceRect.height;
+			}
+		}
 	}
 
 	/**

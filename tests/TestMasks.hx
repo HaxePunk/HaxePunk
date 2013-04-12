@@ -1,6 +1,6 @@
 import com.haxepunk.Mask;
 import com.haxepunk.Entity;
-import com.haxepunk.World;
+import com.haxepunk.Scene;
 import com.haxepunk.Engine;
 import com.haxepunk.HXP;
 import com.haxepunk.masks.Circle;
@@ -12,10 +12,10 @@ class TestMasks extends haxe.unit.TestCase
 	public override function setup()
 	{
 		var engine = new Engine(640, 480);
-		HXP.world = world = new World();
+		HXP.scene = scene = new Scene();
 
-		hitbox = world.addMask(new Hitbox(20, 20, -10, -10), "box");
-		circle = world.addMask(new Circle(10), "circle");
+		hitbox = scene.addMask(new Hitbox(20, 20, -10, -10), "box");
+		circle = scene.addMask(new Circle(10), "circle");
 
 		// update entity lists
 		engine.update();
@@ -43,7 +43,7 @@ class TestMasks extends haxe.unit.TestCase
 		assertTrue(hitbox.x == 40 && hitbox.y == 30);
 	}
 
-	private var world:World;
+	private var scene:Scene;
 	private var hitbox:Entity;
 	private var circle:Entity;
 }

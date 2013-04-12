@@ -58,6 +58,7 @@ class Sfx
 	 */
 	public function play(volume:Float = 1, pan:Float = 0)
 	{
+		if (_sound == null) return;
 		if (playing) stop();
 		_pan = HXP.clamp(pan, -1, 1);
 		_volume = volume < 0 ? 0 : volume;
