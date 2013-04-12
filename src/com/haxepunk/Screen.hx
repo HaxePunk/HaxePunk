@@ -197,6 +197,7 @@ class Screen
 		scaleX = value;
 		fullScaleX = scaleX * scale;
 		update();
+		HXP.resize(HXP.windowWidth, HXP.windowHeight);
 		return scaleX;
 	}
 
@@ -210,6 +211,7 @@ class Screen
 		scaleY = value;
 		fullScaleY = scaleY * scale;
 		update();
+		HXP.resize(HXP.windowWidth, HXP.windowHeight);
 		return scaleY;
 	}
 
@@ -225,6 +227,7 @@ class Screen
 		fullScaleX = scaleX * scale;
 		fullScaleY = scaleY * scale;
 		update();
+		HXP.resize(HXP.windowWidth, HXP.windowHeight);
 		return scale;
 	}
 
