@@ -39,6 +39,8 @@ class Canvas extends Graphic
 
 		_width = width;
 		_height = height;
+		
+#if flash
 		_refWidth = Math.ceil(width / _maxWidth);
 		_refHeight = Math.ceil(height / _maxHeight);
 		_ref = HXP.createBitmap(_refWidth, _refHeight);
@@ -59,6 +61,7 @@ class Canvas extends Graphic
 			}
 			x = 0; y ++;
 		}
+#end
 	}
 
 	/** @private Renders the canvas. */
