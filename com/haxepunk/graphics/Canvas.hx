@@ -40,28 +40,29 @@ class Canvas extends Graphic
 		_width = width;
 		_height = height;
 		
-#if flash
-		_refWidth = Math.ceil(width / _maxWidth);
-		_refHeight = Math.ceil(height / _maxHeight);
-		_ref = HXP.createBitmap(_refWidth, _refHeight);
-		var x:Int = 0, y:Int = 0, w:Int, h:Int, i:Int = 0,
-			ww:Int = _width % _maxWidth,
-			hh:Int = _height % _maxHeight;
-		if (ww == 0) ww = _maxWidth;
-		if (hh == 0) hh = _maxHeight;
-		while (y < _refHeight)
+		if (HXP.renderMode.has(RenderMode.BUFFER))
 		{
-			h = y < _refHeight - 1 ? _maxHeight : hh;
-			while (x < _refWidth)
+			_refWidth = Math.ceil(width / _maxWidth);
+			_refHeight = Math.ceil(height / _maxHeight);
+			_ref = HXP.createBitmap(_refWidth, _refHeight);
+			var x:Int = 0, y:Int = 0, w:Int, h:Int, i:Int = 0,
+				ww:Int = _width % _maxWidth,
+				hh:Int = _height % _maxHeight;
+			if (ww == 0) ww = _maxWidth;
+			if (hh == 0) hh = _maxHeight;
+			while (y < _refHeight)
 			{
-				w = x < _refWidth - 1 ? _maxWidth : ww;
-				_ref.setPixel(x, y, i);
-				_buffers[i] = HXP.createBitmap(w, h, true);
-				i ++; x ++;
+				h = y < _refHeight - 1 ? _maxHeight : hh;
+				while (x < _refWidth)
+				{
+					w = x < _refWidth - 1 ? _maxWidth : ww;
+					_ref.setPixel(x, y, i);
+					_buffers[i] = HXP.createBitmap(w, h, true);
+					i ++; x ++;
+				}
+				x = 0; y ++;
 			}
-			x = 0; y ++;
 		}
-#end
 	}
 
 	/** @private Renders the canvas. */
