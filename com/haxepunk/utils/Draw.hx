@@ -70,7 +70,7 @@ class Draw
 	 */
 	public static function line(x1:Int, y1:Int, x2:Int, y2:Int, color:Int = 0xFFFFFF)
 	{
-		if (color < 0xFF000000) color = 0xFF000000 | color;
+		color = 0xFF000000 | (0xFFFFFF & color);
 
 		// get the drawing difference
 		var screen:BitmapData = _target,
@@ -190,7 +190,7 @@ class Draw
 	{
 		if (alpha >= 1 && blend == null)
 		{
-			if (color < 0xFF000000) color = 0xFF000000 | color;
+			color = 0xFF000000 | (0xFFFFFF & color);
 			_rect.x = x - _camera.x;
 			_rect.y = y - _camera.y;
 			_rect.width = width;
@@ -198,7 +198,7 @@ class Draw
 			_target.fillRect(_rect, HXP.convertColor(color));
 			return;
 		}
-		if (color >= 0xFF000000) color = 0xFFFFFF & color;
+		
 		_graphics.clear();
 		_graphics.beginFill(color, alpha);
 		_graphics.drawRect(x - _camera.x, y - _camera.y, width, height);
@@ -214,7 +214,7 @@ class Draw
 	 */
 	public static function circle(x:Int, y:Int, radius:Int, color:Int = 0xFFFFFF)
 	{
-		if (color < 0xFF000000) color = 0xFF000000 | color;
+		color = 0xFF000000 | (0xFFFFFF & color);
 		x -= Std.int(_camera.x);
 		y -= Std.int(_camera.y);
 		var f:Int = 1 - radius,
@@ -286,7 +286,7 @@ class Draw
 	{
 		if (outline)
 		{
-			if (color < 0xFF000000) color = 0xFF000000 | color;
+			color = 0xFF000000 | (0xFFFFFF & color);
 			var x:Int = Std.int(e.x - e.originX - _camera.x),
 				y:Int = Std.int(e.y - e.originY - _camera.y);
 			_rect.x = x;
@@ -306,7 +306,7 @@ class Draw
 		}
 		if (alpha >= 1 && blend == null)
 		{
-			if (color < 0xFF000000) color = 0xFF000000 | color;
+			color = 0xFF000000 | (0xFFFFFF & color);
 			_rect.x = e.x - e.originX - _camera.x;
 			_rect.y = e.y - e.originY - _camera.y;
 			_rect.width = e.width;
@@ -314,7 +314,7 @@ class Draw
 			_target.fillRect(_rect, HXP.convertColor(color));
 			return;
 		}
-		if (color >= 0xFF000000) color = 0xFFFFFF & color;
+		
 		_graphics.clear();
 		_graphics.beginFill(color, alpha);
 		_graphics.drawRect(e.x - e.originX - _camera.x, e.y - e.originY - _camera.y, e.width, e.height);
