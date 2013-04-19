@@ -89,6 +89,8 @@ class Console
 		WATCH_LIST.add("x");
 		WATCH_LIST.add("y");
 		WATCH_LIST.add("layer");
+		
+		captureTrace = true;
 	}
 
 	private function traceLog(v:Dynamic, ?infos:PosInfos)
@@ -316,7 +318,9 @@ class Console
 		// Set the state to unpaused.
 		paused = false;
 
-		Log.trace = traceLog;
+		if (captureTrace) {
+			Log.trace = traceLog;
+		}
 		LOG.push("-- HaxePunk v" + HXP.VERSION + " --");
 		if (_enabled && _sprite.visible) updateLog();
 	}
@@ -1017,6 +1021,15 @@ class Console
 
 	public var height(get_height, null):Int;
 	private function get_height():Int { return HXP.windowHeight; }
+
+	/**
+	 * Whether the HaxePunk's console should capture calls to `trace()` and display it in the in-game console or not (true by default).
+	 * Have to be set before calling `HXP.console.enable()`.
+	 */
+	public var captureTrace(default, set_captureTrace):Bool;
+	private function set_captureTrace(value:Bool):Bool {
+		return captureTrace = value;
+	}
 
 	// Console state information.
 	private var _enabled:Bool;
