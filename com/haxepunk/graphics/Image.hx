@@ -401,13 +401,13 @@ class Image extends Graphic
 	 * Width of the image.
 	 */
 	public var width(get_width, never):Int;
-	private function get_width():Int { return Std.int(_blit ? _bufferRect.width : _region.width); }
+	private function get_width():Int { return Std.int(_blit ? _bufferRect.width : (!_region.rotated ? _region.width : _region.height)); }
 
 	/**
 	 * Height of the image.
 	 */
 	public var height(get_height, never):Int;
-	private function get_height():Int { return Std.int(_blit ? _bufferRect.height : _region.height); }
+	private function get_height():Int { return Std.int(_blit ? _bufferRect.height : (!_region.rotated ? _region.height : _region.width)); }
 
 	/**
 	 * The scaled width of the image.
