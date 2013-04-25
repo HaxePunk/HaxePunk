@@ -59,7 +59,7 @@ class AtlasRegion
 		scaleX:Float=1, scaleY:Float=1, angle:Float=0,
 		red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1)
 	{
-		if (rotated) angle = angle - 90;
+		if (rotated) angle = angle + 90;
 		parent.prepareTile(tileIndex, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha);
 	}
 

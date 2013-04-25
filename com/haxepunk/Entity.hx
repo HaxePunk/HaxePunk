@@ -429,13 +429,13 @@ class Entity extends Tweener
 	public var onCamera(get_onCamera, null):Bool;
 	private inline function get_onCamera():Bool
 	{
-		if (_world == null) 
+		if (_scene == null) 
 		{
 			return false;
 		}
 		else
 		{
-			return collideRect(x, y, _world.camera.x, _world.camera.y, HXP.width, HXP.height);
+			return collideRect(x, y, _scene.camera.x, _scene.camera.y, HXP.width, HXP.height);
 		}
 	}
 

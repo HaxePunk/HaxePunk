@@ -157,6 +157,7 @@ class Text extends Image
 		if (_parent != null)
 		{
 			_parent.removeChild(_field);
+			_parent = null;
 		}
 	}
 
@@ -220,6 +221,22 @@ class Text extends Image
 			updateBuffer();
 			return value;
 		}
+	}
+	
+	/**
+	 * Width of the text.
+	 */
+	override private function get_width():Int 
+	{
+		return _blit ? super.get_width() : Std.int(_field.width);
+	}
+	
+	/**
+	 * Height of the text.
+	 */
+	override private function get_height():Int 
+	{
+		return _blit ? super.get_height() : Std.int(_field.height);
 	}
 
 	/**
