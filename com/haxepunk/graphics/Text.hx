@@ -157,6 +157,7 @@ class Text extends Image
 		if (_parent != null)
 		{
 			_parent.removeChild(_field);
+			_parent = null;
 		}
 	}
 
