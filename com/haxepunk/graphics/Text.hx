@@ -88,6 +88,7 @@ class Text extends Image
 		else
 		{
 			source = HXP.createBitmap(width, height, true);
+			_blit = true;
 		}
 		super(source);
 
