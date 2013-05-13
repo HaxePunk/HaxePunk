@@ -148,20 +148,12 @@ class Engine extends Sprite
 			Draw.resetTarget();
 			HXP.screen.refresh();
 		}
-		if (HXP.renderMode.has(RenderMode.HARDWARE))
-		{
-			AtlasData.clear();
-		}
 
 		if (HXP.scene.visible) HXP.scene.render();
 
 		if (HXP.renderMode.has(RenderMode.BUFFER))
 		{
 			HXP.screen.redraw();
-		}
-		if (HXP.renderMode.has(RenderMode.HARDWARE))
-		{
-			AtlasData.render();
 		}
 
 		// more timing stuff

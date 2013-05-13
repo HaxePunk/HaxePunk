@@ -1,5 +1,7 @@
 package com.haxepunk;
 
+import com.haxepunk.graphics.atlas.AtlasData;
+import nme.display.Sprite;
 import nme.geom.Point;
 import com.haxepunk.Entity;
 import com.haxepunk.Tweener;
@@ -29,6 +31,7 @@ class Scene extends Tweener
 		super();
 		visible = true;
 		camera = new Point();
+		_sprite = new Sprite();
 		_count = 0;
 
 		_layerList = new Array<Int>();
@@ -109,6 +112,7 @@ class Scene extends Tweener
 	 */
 	public function render()
 	{
+		if (HXP.renderMode.has(RenderMode.HARDWARE)) AtlasData.clear();
 		// sort the depth list
 		if (_layerSort)
 		{
@@ -130,6 +134,8 @@ class Scene extends Tweener
 				fe = fe._renderPrev;
 			}
 		}
+		
+		if (HXP.renderMode.has(RenderMode.HARDWARE)) AtlasData.render(AtlasData.getLayers());
 	}
 
 	/**
@@ -1296,6 +1302,7 @@ class Scene extends Tweener
 	private var _count:Int;
 
 	// Render information.
+	private var _sprite:Sprite;
 	private var _layerSort:Bool;
 	private var _layerList:Array<Int>;
 	private var _layerCount:Array<Int>;
