@@ -577,7 +577,12 @@ class Entity extends Tweener
 	private function set_graphic(value:Graphic):Graphic
 	{
 		if (_graphic == value) return value;
-		if (value != null) value.layer = _layer;
+		if (value != null)
+		{
+			value.layer = _layer;
+			value.setEntity(this);
+		}
+		if (_graphic != null) _graphic.setEntity(null);
 		_graphic = value;
 		return _graphic;
 	}

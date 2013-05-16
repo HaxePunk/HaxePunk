@@ -148,6 +148,7 @@ class Text extends Image
 		}
 		else
 		{
+			if (_parent == null) findParentSprite();
 			_field.x = (point.x + x - originX - camera.x * scrollX) * HXP.screen.fullScaleX;
 			_field.y = (point.y + y - originY - camera.y * scrollY) * HXP.screen.fullScaleY;
 		}
@@ -160,6 +161,15 @@ class Text extends Image
 			_parent.removeChild(_field);
 			_parent = null;
 		}
+	}
+	
+	private function findParentSprite()
+	{
+		trace(_entity);
+		if (_entity == null) return;
+		if (_parent != null) _parent.removeChild(_field);
+		_parent = _entity.scene.getSpriteByLayer(layer);
+		_parent.addChild(_field);
 	}
 
 	/**
@@ -174,8 +184,7 @@ class Text extends Image
 		if (_blit == false)
 		{
 			destroy();
-			_parent = AtlasData.getSpriteByLayer(value);
-			_parent.addChild(_field);
+			findParentSprite();
 		}
 		return super.set_layer(value);
 	}

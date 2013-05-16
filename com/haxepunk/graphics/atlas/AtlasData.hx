@@ -7,31 +7,6 @@ import nme.display.Tilesheet;
 import nme.geom.Rectangle;
 import nme.geom.Point;
 
-class Layer
-{
-	public var sprite:Sprite;
-	public var data:Array<Float>;
-	public var index:Int;
-	public var dirty:Bool;
-
-	public function new()
-	{
-		sprite = new Sprite();
-		data = new Array<Float>();
-		prepare();
-	}
-
-	public inline function prepare()
-	{
-		if (index < data.length)
-		{
-			data.splice(index, data.length - index);
-		}
-		index = 0; // reset index for next run
-		dirty = false;
-	}
-}
-
 class AtlasData
 {
 
@@ -67,12 +42,6 @@ class AtlasData
 
 	private function new(bd:BitmapData)
 	{
-//#if haxe3
-		//_layers = new Map<Int,Layer>();
-//#else
-		//_layers = new IntHash<Layer>();
-//#end
-
 		_tilesheet = new Tilesheet(bd);
 		_renderFlags = Tilesheet.TILE_TRANS_2x2 | Tilesheet.TILE_ALPHA | Tilesheet.TILE_BLEND_NORMAL | Tilesheet.TILE_RGB;
 
@@ -85,28 +54,16 @@ class AtlasData
 		_atlases.push(this);
 	}
 
-	public static inline function clear()
-	{
-		for (layer in _layers.keys()) 
-		{
-			_layers.get(layer).sprite.graphics.clear();
-		}
-	}
-
 	/**
 	 * Called by the current Scene to draw all TextureAtlas
 	 */
-	#if haxe3
-	public static inline function render(layers:Map<Int,Layer>)
-	#else
-	public static inline function render(layers:IntHash<Layer>)
-	#end
+	public static inline function render()
 	{
 		if (_atlases.length > 0)
 		{
 			for (atlas in _atlases)
 			{
-				atlas.renderData(layers);
+				atlas.renderData();
 			}
 		}
 	}
@@ -116,17 +73,13 @@ class AtlasData
 	 * @param g the graphics context to draw in
 	 * @param smooth if rendering should use antialiasing
 	 */
-	#if haxe3
-	private inline function renderData(layers:Map<Int,Layer>)
-	#else
-	private inline function renderData(layers:IntHash<Layer>)
-	#end
+	private inline function renderData()
 	{
-		var l:Layer;
+		var l:AtlasLayer;
 
-		for (layer in layers.keys())
+		for (layer in _layerList.layers.keys())
 		{
-			l = layers.get(layer);
+			l = _layerList.layers.get(layer);
 			// check that we have something to draw
 			if (l.dirty)
 			{
@@ -154,6 +107,11 @@ class AtlasData
 			atlas.destroy();
 		}
 	}
+	
+	public static function setLayerList(layerList:AtlasLayerList)
+	{
+		_layerList = layerList;
+	}
 
 	/**
 	 * Creates a new AtlasRegion and assigns it to a name
@@ -169,7 +127,7 @@ class AtlasData
 		return region;
 	}
 
-	private inline function renderLayer(layer:Layer)
+	private inline function renderLayer(layer:AtlasLayer)
 	{
 		layer.prepare();
 		layer.sprite.graphics.drawTiles(_tilesheet, layer.data, Atlas.smooth, _renderFlags);
@@ -177,14 +135,7 @@ class AtlasData
 
 	private inline function setLayer(layer:Int)
 	{
-		if (_layers.exists(layer))
-		{
-			_layer = _layers.get(layer);
-		}
-		else
-		{
-			_layer = createLayer(layer);
-		}
+		_layer = _layerList.getLayer(layer);
 		_layerIndex = layer;
 	}
 
@@ -230,67 +181,22 @@ class AtlasData
 		}
 	}
 
-	public static function getSpriteByLayer(layer:Int):Sprite
-	{
-		if (_layers.exists(layer))
-		{
-			return _layers.get(layer).sprite;
-		}
-		else
-		{
-			return createLayer(layer).sprite;
-		}
-	}
-	
-	private static function createLayer(layer:Int):Layer
-	{
-		var nLayer:Layer = new Layer();
-		var idx:Int = 0;
-		// create a revers order of the layers
-		var layers = new Array<Int>();
-		for (l in _layers.keys()) layers.push(l);
-		layers.sort(function(a:Int, b:Int):Int { return b - a; } );
-		// find the index to insert the layer
-		for (l in layers) 
-		{
-			if (layer > l) break;
-			idx += 1;
-		}
-		_layers.set(layer, nLayer);
-		HXP.engine.addChildAt(nLayer.sprite, idx);
-		return nLayer;
-	}
-	
-	#if haxe3
-	public static function getLayers():Map<Int,Layer>
-	#else
-	public static function getLayers():IntHash<Layer>
-	#end
-	{
-		return _layers;
-	}
-
 	// used for pooling
 	private var _name:String;
 	private var _refCount:Int; // memory management
 
 	private var _layerIndex:Int;
-	private var _layer:Layer; // current layer
+	private var _layer:AtlasLayer; // current layer
 	private var _renderFlags:Int;
 	private var _tileIndex:Int;
 	private var _tilesheet:Tilesheet;
-#if haxe3
-	private static var _layers:Map<Int,Layer> = new Map<Int,Layer>();
-#else
-	private static var _layers:IntHash<Layer> = new IntHash<Layer>();
-#end
+	
 
 #if haxe3
-	//private static var _sprites:Map<Int,Sprite> = new Map<Int,Sprite>();
 	private static var _dataPool:Map<String,AtlasData> = new Map<String,AtlasData>();
 #else
-	//private static var _sprites:IntHash<Sprite> = new IntHash<Sprite>();
 	private static var _dataPool:Hash<AtlasData> = new Hash<AtlasData>();
 #end
+	private static var _layerList:AtlasLayerList;
 	private static var _atlases:Array<AtlasData> = new Array<AtlasData>();
 }

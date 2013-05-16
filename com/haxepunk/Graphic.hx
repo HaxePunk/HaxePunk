@@ -91,6 +91,12 @@ class Graphic
 	{
 		return layer = value;
 	}
+	
+	public function setEntity(e:Entity):Void
+	{
+		_entity = e;
+	}
+	private var _entity:Entity;
 
 	// Graphic information.
 	private var _scroll:Bool;
