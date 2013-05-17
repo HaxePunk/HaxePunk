@@ -27,6 +27,9 @@ class AtlasLayerList
 #end
 	}
 	
+	/**
+	 * Clears the graphics for each layer.
+	 */
 	public function clear()
 	{
 		for (layer in _layers.keys()) 
@@ -35,6 +38,11 @@ class AtlasLayerList
 		}
 	}
 	
+	/**
+	 * Gets the AtlasLayer for the specified layer.
+	 * @param	layer	The layer to get the AtlasLayer for.
+	 * @return	The AtlasLayer.
+	 */
 	public function getLayer(layer:Int):AtlasLayer
 	{
 		if (_layers.exists(layer))
@@ -47,6 +55,11 @@ class AtlasLayerList
 		}
 	}
 	
+	/**
+	 * Gets the Sprite for the specified layer.
+	 * @param	layer	The layer to get the Sprite for.
+	 * @return	The Sprite.
+	 */
 	public function getSpriteByLayer(layer:Int):Sprite
 	{
 		if (_layers.exists(layer))

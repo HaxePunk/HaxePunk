@@ -88,6 +88,9 @@ class AtlasData
 		}
 	}
 
+	/**
+	 * Removes all AtlasData's.
+	 */
 	public function destroy()
 	{
 		_refCount -= 1;
@@ -108,6 +111,10 @@ class AtlasData
 		}
 	}
 	
+	/**
+	 * Sets the current AtlasLayerList.
+	 * @param	layerList  The AtlasLayerList to use.
+	 */
 	public static function setLayerList(layerList:AtlasLayerList)
 	{
 		_layerList = layerList;

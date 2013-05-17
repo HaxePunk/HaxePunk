@@ -16,6 +16,9 @@ class AtlasLayer
 		prepare();
 	}
 
+	/**
+	 * Prepares the layer for rendering.
+	 */
 	public inline function prepare()
 	{
 		if (index < data.length)

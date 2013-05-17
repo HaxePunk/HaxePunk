@@ -807,12 +807,6 @@ class Scene extends Tweener
 		}
 		return near;
 	}
-	
-	/**
-	 * @private Sprite used for layers when RenderMod.HARDWARE is set.
-	 */
-	public var sprite(get_sprite, never):Sprite;
-	private inline function get_sprite():Sprite { return _sprite; }
 
 	/**
 	 * How many Entities are in the Scene.
@@ -1111,6 +1105,17 @@ class Scene extends Tweener
 		}
 	}
 	
+	/**
+	 * @private Sprite used for layers when RenderMod.HARDWARE is set.
+	 */
+	public var sprite(get_sprite, never):Sprite;
+	private inline function get_sprite():Sprite { return _sprite; }
+	
+	/**
+	 * Gets the sprite associated with the specified layer.
+	 * @param	layer	The layer to get the sprite from.
+	 * @return	The sprite for the specified layer.
+	 */
 	public function getSpriteByLayer(layer:Int):Sprite
 	{
 		return _atlasLayers.getSpriteByLayer(layer);
