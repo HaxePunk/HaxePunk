@@ -165,8 +165,7 @@ class Text extends Image
 	
 	private function findParentSprite()
 	{
-		trace(_entity);
-		if (_entity == null) return;
+		if (_entity == null || _entity.scene == null) return;
 		if (_parent != null) _parent.removeChild(_field);
 		_parent = _entity.scene.getSpriteByLayer(layer);
 		_parent.addChild(_field);
