@@ -174,6 +174,8 @@ class Engine extends Sprite
 		HXP.stage.quality = StageQuality.HIGH;
 		HXP.stage.scaleMode = StageScaleMode.NO_SCALE;
 		HXP.stage.displayState = StageDisplayState.NORMAL;
+		HXP.windowWidth = HXP.stage.stageWidth;
+		HXP.windowHeight = HXP.stage.stageHeight;
 
 		resize(); // call resize once to initialize the screen
 

@@ -214,8 +214,6 @@ class HXP
 	 */
 	public static function resize(width:Int, height:Int)
 	{
-		HXP.windowWidth = width;
-		HXP.windowHeight = height;
 		// resize scene to scale
 		width = Std.int(width / HXP.screen.fullScaleX);
 		height = Std.int(height / HXP.screen.fullScaleY);
