@@ -70,6 +70,7 @@ class Screen
 		HXP.buffer = _bitmap[0].bitmapData;
 
 		_current = 0;
+		needsResize = false;
 	}
 
 	/**
@@ -197,7 +198,7 @@ class Screen
 		scaleX = value;
 		fullScaleX = scaleX * scale;
 		update();
-		HXP.resize(HXP.windowWidth, HXP.windowHeight);
+		needsResize = true;
 		return scaleX;
 	}
 
@@ -211,7 +212,7 @@ class Screen
 		scaleY = value;
 		fullScaleY = scaleY * scale;
 		update();
-		HXP.resize(HXP.windowWidth, HXP.windowHeight);
+		needsResize = true;
 		return scaleY;
 	}
 
@@ -227,7 +228,7 @@ class Screen
 		fullScaleX = scaleX * scale;
 		fullScaleY = scaleY * scale;
 		update();
-		HXP.resize(HXP.windowWidth, HXP.windowHeight);
+		needsResize = true;
 		return scale;
 	}
 
@@ -240,6 +241,11 @@ class Screen
 	 * Final Y scale value of the screen
 	 */
 	public var fullScaleY(default, null):Float = 1;
+	
+	/**
+	 * True if the scale of the screen has changed.
+	 */
+	public var needsResize(default, null):Bool = false;
 
 	/**
 	 * Rotation of the screen, in degrees.
