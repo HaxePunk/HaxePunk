@@ -129,7 +129,7 @@ class AtlasData
 	public inline function createRegion(rect:Rectangle, ?center:Point):AtlasRegion
 	{
 		_tilesheet.addTileRect(rect, center);
-		var region = new AtlasRegion(this, _tileIndex, rect);
+		var region = new AtlasRegion(this, _tileIndex, rect, center);
 		_tileIndex += 1;
 		return region;
 	}
