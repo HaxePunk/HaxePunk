@@ -166,7 +166,6 @@ class Text extends Image
 	private function findParentSprite()
 	{
 		if (_entity == null || _entity.scene == null) return;
-		if (_parent != null) _parent.removeChild(_field);
 		_parent = _entity.scene.getSpriteByLayer(layer);
 		_parent.addChild(_field);
 	}
@@ -182,7 +181,6 @@ class Text extends Image
 		if (value == layer) return value;
 		if (_blit == false)
 		{
-			destroy();
 			findParentSprite();
 		}
 		return super.set_layer(value);
@@ -237,7 +235,7 @@ class Text extends Image
 	 */
 	override private function get_width():Int 
 	{
-		return _blit ? super.get_width() : Std.int(_field.width);
+		return _blit ? super.get_width() : Std.int(_field.width / HXP.screen.fullScaleX);
 	}
 	
 	/**
@@ -245,7 +243,7 @@ class Text extends Image
 	 */
 	override private function get_height():Int 
 	{
-		return _blit ? super.get_height() : Std.int(_field.height);
+		return _blit ? super.get_height() : Std.int(_field.height / HXP.screen.fullScaleY);
 	}
 
 	/**
@@ -263,5 +261,5 @@ class Text extends Image
 	// Text information.
 	private var _field:TextField;
 	private var _format:TextFormat;
-	private var _parent:Sprite;
+	public var _parent:Sprite;
 }

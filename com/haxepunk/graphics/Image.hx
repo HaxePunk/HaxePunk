@@ -229,9 +229,6 @@ class Image extends Graphic
 				fsy:Float = HXP.screen.fullScaleY,
 				sx:Float = fsx * scale * scaleX,
 				sy:Float = fsy * scale * scaleY;
-			//trace("render");
-			//trace(fsy);
-			//trace(sy);
 			_region.draw(_point.x * fsx, _point.y * fsy,
 				layer, sx * (_flipped ? -1 : 1), sy, angle,
 				_red, _green, _blue, _alpha);

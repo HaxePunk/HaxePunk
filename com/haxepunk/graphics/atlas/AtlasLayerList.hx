@@ -74,10 +74,11 @@ class AtlasLayerList
 	
 	private function createLayer(layer:Int):AtlasLayer
 	{
+		if (_layers.exists(layer)) return _layers.get(layer);
 		var nLayer:AtlasLayer = new AtlasLayer();
 		var idx:Int = 0;
 		// create a revers order of the layers
-		var layers = new Array<Int>();
+		var layers:Array<Int> = new Array<Int>();
 		for (l in _layers.keys()) layers.push(l);
 		layers.sort(function(a:Int, b:Int):Int { return b - a; } );
 		// find the index to insert the layer
@@ -88,6 +89,7 @@ class AtlasLayerList
 		}
 		_layers.set(layer, nLayer);
 		_sprite.addChildAt(nLayer.sprite, idx);
+		nLayer.sprite.name = "Layer: " + Std.string(layer);
 		return nLayer;
 	}
 	

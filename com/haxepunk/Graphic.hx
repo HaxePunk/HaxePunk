@@ -95,6 +95,7 @@ class Graphic
 	public function setEntity(e:Entity):Void
 	{
 		_entity = e;
+		layer = e != null ? e.layer : HXP.BASELAYER;
 	}
 	private var _entity:Entity;
 
