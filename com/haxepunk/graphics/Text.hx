@@ -70,6 +70,7 @@ class Text extends Image
 		_field.wordWrap = options.wordWrap;
 		_field.defaultTextFormat = _format;
 		_field.text = text;
+		_field.selectable = false;
 
 		resizable = options.resizable;
 
