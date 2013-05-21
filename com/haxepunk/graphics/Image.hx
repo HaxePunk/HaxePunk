@@ -44,12 +44,28 @@ class Image extends Graphic
 	/**
 	 * X origin of the image, determines transformation point.
 	 */
-	public var originX:Float;
+	public var originX(get_originX, set_originX):Float;
+	private inline function get_originX():Float { return _originX; }
+	private function set_originX(value:Float):Float
+	{
+		if (_originX == value) return value;
+		_originX = value;
+		_regionDirty = _region != null;
+		return _originX;
+	}
 
 	/**
 	 * Y origin of the image, determines transformation point.
 	 */
-	public var originY:Float;
+	public var originY(get_originY, set_originY):Float;
+	private inline function get_originY():Float { return _originY; }
+	private function set_originY(value:Float):Float
+	{
+		if (_originY == value) return value;
+		_originY = value;
+		_regionDirty = _region != null;
+		return _originY;
+	}
 
 	/**
 	 * Optional blend mode to use when drawing this image.
@@ -168,12 +184,12 @@ class Image extends Graphic
 	/** Renders the image. */
 	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
-		// determine drawing location
-		_point.x = point.x + x - originX - camera.x * scrollX;
-		_point.y = point.y + y - originY - camera.y * scrollY;
-
 		if (_blit)
 		{
+			// determine drawing location
+			_point.x = point.x + x - originX - camera.x * scrollX;
+			_point.y = point.y + y - originY - camera.y * scrollY;
+			
 			// only draw if buffer exists
 			if (_buffer != null)
 			{
@@ -202,35 +218,20 @@ class Image extends Graphic
 		}
 		else // _blit
 		{
+			if (_regionDirty) updateRegion();
+			
+			// determine drawing location
+			_point.x = point.x + x - camera.x * scrollX;
+			_point.y = point.y + y - camera.y * scrollY;
+			
 			if (_flipped) _point.x += _sourceRect.width;
-			var fsx = HXP.screen.fullScaleX,
-				fsy = HXP.screen.fullScaleY,
-				sx = fsx * scale * scaleX,
-				sy = fsy * scale * scaleY;
-
-			if (angle == 0)
-			{
-				// render without rotation
-				_region.draw(_point.x * fsx, _point.y * fsy,
-					layer, sx * (_flipped ? -1 : 1), sy, angle,
-					_red, _green, _blue, _alpha);
-			}
-			else
-			{
-				// render with rotation
-				_matrix.b = _matrix.c = 0;
-				_matrix.a = scaleX * scale;
-				_matrix.d = scaleY * scale;
-				_matrix.tx = -originX * _matrix.a;
-				_matrix.ty = -originY * _matrix.d;
-				if (angle != 0) _matrix.rotate(angle * HXP.RAD);
-				_matrix.tx += originX + _point.x;
-				_matrix.ty += originY + _point.y;
-
-				_region.draw(_matrix.tx * fsx, _matrix.ty * fsy,
-					layer, sx * (_flipped ? -1 : 1), sy, angle,
-					_red, _green, _blue, _alpha);
-			}
+			var fsx:Float = HXP.screen.fullScaleX,
+				fsy:Float = HXP.screen.fullScaleY,
+				sx:Float = fsx * scale * scaleX,
+				sy:Float = fsy * scale * scaleY;
+			_region.draw(_point.x * fsx, _point.y * fsy,
+				layer, sx * (_flipped ? -1 : 1), sy, angle,
+				_red, _green, _blue, _alpha);
 		}
 	}
 
@@ -266,6 +267,15 @@ class Image extends Graphic
 		if (clearBefore) _buffer.fillRect(_bufferRect, HXP.blackColor);
 		_buffer.copyPixels(_source, _sourceRect, HXP.zero);
 		if (_tint != null) _buffer.colorTransform(_bufferRect, _tint);
+	}
+	
+	public function updateRegion()
+	{
+		if (_region == null) return;
+		_point.x = originX;
+		_point.y = originY;
+		_region = _region.clip(clipRect, _point);
+		_regionDirty = false;
 	}
 
 	/**
@@ -427,6 +437,10 @@ class Image extends Graphic
 	public var clipRect(get_clipRect, null):Rectangle;
 	private function get_clipRect():Rectangle { return _sourceRect; }
 
+	// origin
+	private var _originX:Float;
+	private var _originY:Float;
+	
 	// Source and buffer information.
 	private var _source:BitmapData;
 	private var _sourceRect:Rectangle;
@@ -434,6 +448,7 @@ class Image extends Graphic
 	private var _bufferRect:Rectangle;
 	private var _bitmap:Bitmap;
 	private var _region:AtlasRegion;
+	private var _regionDirty:Bool;
 
 	// Color and alpha information.
 	private var _alpha:Float;

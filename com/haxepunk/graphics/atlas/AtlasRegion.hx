@@ -11,12 +11,13 @@ class AtlasRegion
 	public var width(get_width, never):Float;
 	public var height(get_height, never):Float;
 
-	public function new(parent:AtlasData, tileIndex:Int, rect:Rectangle)
+	public function new(parent:AtlasData, tileIndex:Int, rect:Rectangle, ?center:Point)
 	{
-		this.parent = parent;
+		this._parent = parent;
 		this.tileIndex = tileIndex;
-		this.rect = rect.clone();
+		this._rect = rect.clone();
 		this.rotated = false;
+		this._center = center != null ? center : new Point();
 	}
 
 	/**
@@ -27,20 +28,21 @@ class AtlasRegion
 	 */
 	public function clip(clipRect:Rectangle, ?center:Point):AtlasRegion
 	{
+		if (_parent == null) return this;
 		// only clip within the current region
-		if (clipRect.x + clipRect.width > rect.width)
-			clipRect.width = rect.width - clipRect.x;
-		if (clipRect.y + clipRect.height > rect.height)
-			clipRect.height = rect.height - clipRect.y;
+		if (clipRect.x + clipRect.width > _rect.width)
+			clipRect.width = _rect.width - clipRect.x;
+		if (clipRect.y + clipRect.height > _rect.height)
+			clipRect.height = _rect.height - clipRect.y;
 
 		// do not allow negative width/height
 		if (clipRect.width < 0) clipRect.width = 0;
 		if (clipRect.height < 0) clipRect.height = 0;
 
 		// position clip rect where the last image was
-		clipRect.x += rect.x;
-		clipRect.y += rect.y;
-		return parent.createRegion(clipRect, center);
+		clipRect.x += _rect.x;
+		clipRect.y += _rect.y;
+		return _parent.createRegion(clipRect, center);
 	}
 
 	/**
@@ -59,8 +61,11 @@ class AtlasRegion
 		scaleX:Float=1, scaleY:Float=1, angle:Float=0,
 		red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1)
 	{
-		if (rotated) angle = angle + 90;
-		parent.prepareTile(tileIndex, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha);
+		if (_parent != null)
+		{
+			if (rotated) angle = angle + 90;
+			_parent.prepareTile(tileIndex, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha);
+		}
 	}
 
 	public function toString():String
@@ -68,10 +73,10 @@ class AtlasRegion
 		return "[AtlasRegion " + width + ", " + height + " " + tileIndex + "]";
 	}
 
-	private inline function get_width():Float { return rect.width; }
-	private inline function get_height():Float { return rect.height; }
+	private inline function get_width():Float { return _rect.width; }
+	private inline function get_height():Float { return _rect.height; }
 
-	private var rect:Rectangle;
-	private var center:Point;
-	private var parent:AtlasData;
+	private var _rect:Rectangle;
+	private var _center:Point;
+	private var _parent:AtlasData;
 }

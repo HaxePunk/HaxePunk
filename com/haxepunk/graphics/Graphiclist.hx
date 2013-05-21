@@ -1,5 +1,6 @@
 package com.haxepunk.graphics;
 
+import com.haxepunk.Entity;
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
 import nme.display.BitmapData;
@@ -83,6 +84,7 @@ class Graphiclist extends Graphic
 	public function add(graphic:Graphic):Graphic
 	{
 		_graphics[_count ++] = graphic;
+		graphic.setEntity(_entity);
 		if (!active) active = graphic.active;
 		return graphic;
 	}
@@ -143,6 +145,16 @@ class Graphiclist extends Graphic
 	 */
 	public var count(get_count, null):Int;
 	private function get_count():Int { return _count; }
+	
+	override public function setEntity(e:Entity):Void 
+	{
+		super.setEntity(e);
+		
+		for (g in _graphics) 
+		{
+			g.setEntity(e);
+		}
+	}
 
 	private override function set_layer(value:Int):Int
 	{

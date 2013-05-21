@@ -7,29 +7,6 @@ import nme.display.Tilesheet;
 import nme.geom.Rectangle;
 import nme.geom.Point;
 
-class Layer
-{
-	public var data:Array<Float>;
-	public var index:Int;
-	public var dirty:Bool;
-
-	public function new()
-	{
-		data = new Array<Float>();
-		prepare();
-	}
-
-	public inline function prepare()
-	{
-		if (index < data.length)
-		{
-			data.splice(index, data.length - index);
-		}
-		index = 0; // reset index for next run
-		dirty = false;
-	}
-}
-
 class AtlasData
 {
 
@@ -65,12 +42,6 @@ class AtlasData
 
 	private function new(bd:BitmapData)
 	{
-#if haxe3
-		_layers = new Map<Int,Layer>();
-#else
-		_layers = new IntHash<Layer>();
-#end
-
 		_tilesheet = new Tilesheet(bd);
 		_renderFlags = Tilesheet.TILE_TRANS_2x2 | Tilesheet.TILE_ALPHA | Tilesheet.TILE_BLEND_NORMAL | Tilesheet.TILE_RGB;
 
@@ -81,14 +52,6 @@ class AtlasData
 		_refCount = 1;
 		_layerIndex = -1;
 		_atlases.push(this);
-	}
-
-	public static inline function clear()
-	{
-		for (sprite in _sprites)
-		{
-			sprite.graphics.clear();
-		}
 	}
 
 	/**
@@ -112,19 +75,22 @@ class AtlasData
 	 */
 	private inline function renderData()
 	{
-		var l:Layer;
+		var l:AtlasLayer;
 
-		for (layer in _layers.keys())
+		for (layer in _layerList.layers.keys())
 		{
-			l = _layers.get(layer);
+			l = _layerList.layers.get(layer);
 			// check that we have something to draw
 			if (l.dirty)
 			{
-				renderLayer(l, layer);
+				renderLayer(l);
 			}
 		}
 	}
 
+	/**
+	 * Removes all AtlasData's.
+	 */
 	public function destroy()
 	{
 		_refCount -= 1;
@@ -144,6 +110,15 @@ class AtlasData
 			atlas.destroy();
 		}
 	}
+	
+	/**
+	 * Sets the current AtlasLayerList.
+	 * @param	layerList  The AtlasLayerList to use.
+	 */
+	public static function setLayerList(layerList:AtlasLayerList)
+	{
+		_layerList = layerList;
+	}
 
 	/**
 	 * Creates a new AtlasRegion and assigns it to a name
@@ -154,28 +129,20 @@ class AtlasData
 	public inline function createRegion(rect:Rectangle, ?center:Point):AtlasRegion
 	{
 		_tilesheet.addTileRect(rect, center);
-		var region = new AtlasRegion(this, _tileIndex, rect);
+		var region = new AtlasRegion(this, _tileIndex, rect, center);
 		_tileIndex += 1;
 		return region;
 	}
 
-	private inline function renderLayer(layer:Layer, layerIndex:Int)
+	private inline function renderLayer(layer:AtlasLayer)
 	{
 		layer.prepare();
-		getSpriteByLayer(layerIndex).graphics.drawTiles(_tilesheet, layer.data, Atlas.smooth, _renderFlags);
+		layer.sprite.graphics.drawTiles(_tilesheet, layer.data, Atlas.smooth, _renderFlags);
 	}
 
 	private inline function setLayer(layer:Int)
 	{
-		if (_layers.exists(layer))
-		{
-			_layer = _layers.get(layer);
-		}
-		else
-		{
-			_layer = new Layer();
-			_layers.set(layer, _layer);
-		}
+		_layer = _layerList.getLayer(layer);
 		_layerIndex = layer;
 	}
 
@@ -217,33 +184,7 @@ class AtlasData
 
 		if (_layer.index > Atlas.drawCallThreshold)
 		{
-			renderLayer(_layer, layer);
-		}
-	}
-
-	public static function getSpriteByLayer(layer:Int):Sprite
-	{
-		if (_sprites.exists(layer))
-		{
-			return _sprites.get(layer);
-		}
-		else
-		{
-			var sprite = new Sprite();
-			var idx = 0;
-			// create a reverse order of the layers
-			var layers = new Array<Int>();
-			for (l in _sprites.keys()) layers.push(l);
-			layers.sort(function(a:Int, b:Int):Int { return b - a; });
-			// find the index to insert the layer
-			for (l in layers)
-			{
-				if (layer > l) break;
-				idx += 1;
-			}
-			_sprites.set(layer, sprite);
-			HXP.stage.addChildAt(sprite, idx);
-			return sprite;
+			renderLayer(_layer);
 		}
 	}
 
@@ -252,22 +193,17 @@ class AtlasData
 	private var _refCount:Int; // memory management
 
 	private var _layerIndex:Int;
-	private var _layer:Layer; // current layer
+	private var _layer:AtlasLayer; // current layer
 	private var _renderFlags:Int;
 	private var _tileIndex:Int;
 	private var _tilesheet:Tilesheet;
-#if haxe3
-	private var _layers:Map<Int,Layer>;
-#else
-	private var _layers:IntHash<Layer>;
-#end
+	
 
 #if haxe3
-	private static var _sprites:Map<Int,Sprite> = new Map<Int,Sprite>();
 	private static var _dataPool:Map<String,AtlasData> = new Map<String,AtlasData>();
 #else
-	private static var _sprites:IntHash<Sprite> = new IntHash<Sprite>();
 	private static var _dataPool:Hash<AtlasData> = new Hash<AtlasData>();
 #end
+	private static var _layerList:AtlasLayerList;
 	private static var _atlases:Array<AtlasData> = new Array<AtlasData>();
 }

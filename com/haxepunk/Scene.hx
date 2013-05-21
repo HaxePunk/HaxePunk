@@ -1,5 +1,8 @@
 package com.haxepunk;
 
+import com.haxepunk.graphics.atlas.AtlasData;
+import com.haxepunk.graphics.atlas.AtlasLayerList;
+import nme.display.Sprite;
 import nme.geom.Point;
 import com.haxepunk.Entity;
 import com.haxepunk.Tweener;
@@ -31,6 +34,8 @@ class Scene extends Tweener
 		camera = new Point();
 		_count = 0;
 
+		_sprite = new Sprite();
+		_atlasLayers = new AtlasLayerList(_sprite);
 		_layerList = new Array<Int>();
 		_layerCount = new Array<Int>();
 
@@ -109,6 +114,11 @@ class Scene extends Tweener
 	 */
 	public function render()
 	{
+		if (HXP.renderMode.has(RenderMode.HARDWARE))
+		{
+			_atlasLayers.clear();
+			AtlasData.setLayerList(_atlasLayers);
+		}
 		// sort the depth list
 		if (_layerSort)
 		{
@@ -130,6 +140,8 @@ class Scene extends Tweener
 				fe = fe._renderPrev;
 			}
 		}
+		
+		if (HXP.renderMode.has(RenderMode.HARDWARE)) AtlasData.render();
 	}
 
 	/**
@@ -1092,6 +1104,22 @@ class Scene extends Tweener
 			HXP.clear(_recycle);
 		}
 	}
+	
+	/**
+	 * @private Sprite used for layers when RenderMod.HARDWARE is set.
+	 */
+	public var sprite(get_sprite, never):Sprite;
+	private inline function get_sprite():Sprite { return _sprite; }
+	
+	/**
+	 * Gets the sprite associated with the specified layer.
+	 * @param	layer	The layer to get the sprite from.
+	 * @return	The sprite for the specified layer.
+	 */
+	public function getSpriteByLayer(layer:Int):Sprite
+	{
+		return _atlasLayers.getSpriteByLayer(layer);
+	}
 
 	private function layerSort(a:Int, b:Int):Int
 	{
@@ -1296,6 +1324,8 @@ class Scene extends Tweener
 	private var _count:Int;
 
 	// Render information.
+	private var _sprite:Sprite;
+	private var _atlasLayers:AtlasLayerList;
 	private var _layerSort:Bool;
 	private var _layerList:Array<Int>;
 	private var _layerCount:Array<Int>;
