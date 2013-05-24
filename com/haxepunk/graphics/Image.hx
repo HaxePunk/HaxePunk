@@ -381,8 +381,8 @@ class Image extends Graphic
 	 */
 	public function centerOrigin()
 	{
-		originX = Std.int(width / 2);
-		originY = Std.int(height / 2);
+		originX = Std.int(scaledWidth / 2);
+		originY = Std.int(scaledHeight / 2);
 	}
 
 	/**
