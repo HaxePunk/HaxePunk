@@ -26,7 +26,8 @@ class Rect extends Graphic
 	{
 		if (HXP.renderMode.has(RenderMode.BUFFER))
 		{
-			image.render(target, point, camera);
+			var applyPoint  : Point = new Point( x + point.x, y + point.y);
+			image.render(target, applyPoint, camera);
 		}
 		else
 		{
