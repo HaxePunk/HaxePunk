@@ -2,6 +2,7 @@ package com.haxepunk.graphics.atlas;
 
 import nme.geom.Rectangle;
 import nme.geom.Point;
+import nme.geom.Matrix;
 
 class AtlasRegion
 {
@@ -61,6 +62,12 @@ class AtlasRegion
 	{
 		if (rotated) angle = angle + 90;
 		parent.prepareTile(tileIndex, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha);
+	}
+
+	public inline function drawMatrix(matrix:Matrix, layer:Int, red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1)
+	{
+		if (rotated) matrix.rotate(90 * HXP.RAD);
+		parent.prepareTileMatrix(tileIndex, matrix, layer, red, green, blue, alpha);
 	}
 
 	public function toString():String
