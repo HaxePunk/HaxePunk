@@ -145,9 +145,9 @@ class Engine extends Sprite
 		if (HXP.renderMode.has(RenderMode.BUFFER))
 		{
 			HXP.screen.swap();
-			Draw.resetTarget();
 			HXP.screen.refresh();
 		}
+		Draw.resetTarget();
 		if (HXP.renderMode.has(RenderMode.HARDWARE))
 		{
 			AtlasData.clear();
@@ -247,6 +247,7 @@ class Engine extends Sprite
 		if (!HXP.gotoIsNull()) checkScene();
 
 		// game start
+		Draw.init();
 		init();
 
 		// start game loop
