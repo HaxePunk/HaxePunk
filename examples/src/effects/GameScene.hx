@@ -2,7 +2,6 @@ package effects;
 
 import com.haxepunk.Entity;
 import com.haxepunk.HXP;
-import com.haxepunk.World;
 import com.haxepunk.graphics.Backdrop;
 import com.haxepunk.graphics.Emitter;
 import com.haxepunk.graphics.atlas.TextureAtlas;

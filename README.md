@@ -8,7 +8,7 @@ A Haxe port of the [FlashPunk](http://flashpunk.net) AS3 library. There are a fe
 * Joystick and multi-touch input
 * Texture atlases for native targets (supports TexturePacker xml)
 
-[![Build Status](https://travis-ci.org/MattTuttle/HaxePunk.png?branch=master)](https://travis-ci.org/MattTuttle/HaxePunk)
+[![Build Status](https://travis-ci.org/HaxePunk/HaxePunk.png?branch=master)](https://travis-ci.org/HaxePunk/HaxePunk)
 
 ## Release build
 
