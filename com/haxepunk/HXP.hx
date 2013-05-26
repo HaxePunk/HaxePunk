@@ -5,6 +5,7 @@ import nme.display.Bitmap;
 import nme.display.Graphics;
 import nme.display.Sprite;
 import nme.display.Stage;
+import nme.display.StageDisplayState;
 import nme.geom.Matrix;
 import nme.geom.Point;
 import nme.geom.Rectangle;
@@ -33,7 +34,7 @@ class HXP
 	/**
 	 * The HaxePunk major version.
 	 */
-	public static inline var VERSION:String = "2.2.0";
+	public static inline var VERSION:String = "2.2.1";
 
 	/**
 	 * The standard layer used since only flash can handle negative indicies in arrays, set your layers to some offset of this
@@ -258,6 +259,15 @@ class HXP
 	public static inline function resetCamera()
 	{
 		camera.x = camera.y = 0;
+	}
+
+	public static var fullscreen(get_fullscreen, set_fullscreen):Bool;
+	private static inline function get_fullscreen():Bool { return HXP.stage.displayState == StageDisplayState.FULL_SCREEN; }
+	private static inline function set_fullscreen(value:Bool):Bool
+	{
+		if (value) HXP.stage.displayState = StageDisplayState.FULL_SCREEN;
+		else HXP.stage.displayState = StageDisplayState.NORMAL;
+		return value;
 	}
 
 	/**

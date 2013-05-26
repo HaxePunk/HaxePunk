@@ -1,5 +1,22 @@
 HaxePunk CHANGELOG
 
+v2.2.1
+------------------------------
+* (Native) Draw working on hardware targets
+* (Native) PreRotation frameAngle renders correctly
+* (Native) Image scale and origin matches Flash
+* (Native) Added support for Emitter frames
+* [XXLTomate] Fixed upper/lower case input
+* [MaskedPixel] Fixed width/height for Image/Text
+* [MaskedPixel] Fixed ghost text in Flash
+* [thecodethinker] Added a cross method to Vector
+* [DjPale] Check that scene exists in onCamera
+* [julsam] Fix debug renderEntities when entity's scroll is != 1
+* [julsam] Allow Draw.line() to draw out of the screen boundaries
+* [XXLTomate] fixed memory leak for non flash targets
+* (Native) Fixed Text.color
+* [MaskedPixel] World.camera should be favored over HXP.camera
+
 v2.2.0
 ------------------------------
 * [raistlin] Ready for Haxe 3 and Neko 2

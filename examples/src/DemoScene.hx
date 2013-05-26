@@ -88,6 +88,10 @@ class DemoScene extends Scene
 		{
 			previousScene();
 		}
+		if (Input.pressed(Key.F))
+		{
+			HXP.fullscreen = !HXP.fullscreen;
+		}
 		super.update();
 	}
 
