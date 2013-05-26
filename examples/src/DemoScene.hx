@@ -5,7 +5,7 @@ import com.haxepunk.graphics.Text;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 
-// have to import worlds for compilation
+// have to import scenes for compilation
 import platformer.GameScene;
 import masks.GameScene;
 import effects.GameScene;
@@ -42,10 +42,10 @@ class DemoScene extends Scene
 		var classDef = Type.resolveClass(_scenes[_currentScene]);
 		if (classDef == null) return false;
 
-		var world = Type.createInstance(classDef, []);
-		if (world == null) return false;
+		var scene = Type.createInstance(classDef, []);
+		if (scene == null) return false;
 
-		HXP.scene = world;
+		HXP.scene = scene;
 		return true;
 	}
 
@@ -79,7 +79,7 @@ class DemoScene extends Scene
 			tapTime = 0.6;
 		}
 
-		// cycle through worlds with '[' and ']'
+		// cycle through scenes with '[' and ']'
 		if (Input.pressed(Key.LEFT_SQUARE_BRACKET))
 		{
 			nextScene();
@@ -87,6 +87,10 @@ class DemoScene extends Scene
 		if (Input.pressed(Key.RIGHT_SQUARE_BRACKET))
 		{
 			previousScene();
+		}
+		if (Input.pressed(Key.F))
+		{
+			HXP.fullscreen = !HXP.fullscreen;
 		}
 		super.update();
 	}

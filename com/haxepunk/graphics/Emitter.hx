@@ -50,24 +50,42 @@ class Emitter extends Graphic
 	 */
 	public function setSource(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0)
 	{
+		var region:AtlasRegion = null;
 		if (Std.is(source, BitmapData)) setBitmapSource(source);
-		else if(Std.is(source, AtlasRegion)) setAtlasRegion(source);
+		else if(Std.is(source, AtlasRegion)) region = setAtlasRegion(source);
 		else
 		{
 			if (HXP.renderMode.has(RenderMode.HARDWARE))
 			{
-				setAtlasRegion(Atlas.loadImageAsRegion(source));
+				region = setAtlasRegion(Atlas.loadImageAsRegion(source));
 			}
 			else
 			{
 				setBitmapSource(HXP.getBitmap(source));
 			}
 		}
-		if (_source == null && _region == null) throw "Invalid source image.";
+		if (_source == null && region == null) throw "Invalid source image.";
 
 		_frameWidth = (frameWidth != 0) ? frameWidth : _width;
 		_frameHeight = (frameHeight != 0) ? frameHeight : _height;
 		_frameCount = Std.int(_width / _frameWidth) * Std.int(_height / _frameHeight);
+
+		if (region != null)
+		{
+			var rect = new Rectangle(0, 0, _frameWidth, _frameHeight);
+			var center = new Point(_frameWidth / 2, _frameHeight / 2);
+			_frames = new Array<AtlasRegion>();
+			for (i in 0..._frameCount)
+			{
+				_frames.push(region.clip(rect, center));
+				rect.x += _frameWidth;
+				if (rect.x > _width)
+				{
+					rect.y += _frameHeight;
+					rect.x = 0;
+				}
+			}
+		}
 	}
 
 	private inline function setBitmapSource(bitmap:BitmapData)
@@ -78,12 +96,12 @@ class Emitter extends Graphic
 		_height = Std.int(bitmap.height);
 	}
 
-	private inline function setAtlasRegion(region:AtlasRegion)
+	private inline function setAtlasRegion(region:AtlasRegion):AtlasRegion
 	{
 		_blit = false;
-		_region = region;
-		_width = Std.int(_region.width);
-		_height = Std.int(_region.height);
+		_width = Std.int(region.width);
+		_height = Std.int(region.height);
+		return region;
 	}
 
 	override public function update()
@@ -193,7 +211,8 @@ class Emitter extends Graphic
 			}
 			else // _blit
 			{
-				_region.draw(_p.x * scaleX, _p.y * scaleY, layer,
+				var frameIndex:Int = type._frames[Std.int(td * type._frames.length)];
+				_frames[frameIndex].draw(_p.x * scaleX, _p.y * scaleY, layer,
 					scaleX, scaleY, type._angle,
 					type._red + type._redRange * td,
 					type._green + type._greenRange * td,
@@ -364,12 +383,12 @@ class Emitter extends Graphic
 
 	// Source information.
 	private var _source:BitmapData;
-	private var _region:AtlasRegion;
 	private var _width:Int;
 	private var _height:Int;
 	private var _frameWidth:Int;
 	private var _frameHeight:Int;
 	private var _frameCount:Int;
+	private var _frames:Array<AtlasRegion>;
 
 	// Drawing information.
 	private var _p:Point;

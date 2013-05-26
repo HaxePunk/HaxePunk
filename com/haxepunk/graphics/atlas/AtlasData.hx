@@ -6,6 +6,7 @@ import nme.display.Sprite;
 import nme.display.Tilesheet;
 import nme.geom.Rectangle;
 import nme.geom.Point;
+import nme.geom.Matrix;
 
 class Layer
 {
@@ -177,6 +178,34 @@ class AtlasData
 			_layers.set(layer, _layer);
 		}
 		_layerIndex = layer;
+	}
+
+	public inline function prepareTileMatrix(tile:Int, matrix:Matrix, layer:Int,
+		red:Float, green:Float, blue:Float, alpha:Float)
+	{
+		if (_layerIndex != layer) setLayer(layer);
+		var d = _layer.data;
+		_layer.dirty = true;
+
+		d[_layer.index++] = matrix.tx;
+		d[_layer.index++] = matrix.ty;
+		d[_layer.index++] = tile;
+
+		// matrix transformation
+		d[_layer.index++] = matrix.a; // m00
+		d[_layer.index++] = matrix.c; // m01
+		d[_layer.index++] = matrix.b; // m10
+		d[_layer.index++] = matrix.d; // m11
+
+		d[_layer.index++] = red;
+		d[_layer.index++] = green;
+		d[_layer.index++] = blue;
+		d[_layer.index++] = alpha;
+
+		if (_layer.index > Atlas.drawCallThreshold)
+		{
+			renderLayer(_layer, layer);
+		}
 	}
 
 	public inline function prepareTile(tile:Int, x:Float, y:Float, layer:Int,
