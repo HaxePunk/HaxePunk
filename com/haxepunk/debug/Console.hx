@@ -89,8 +89,6 @@ class Console
 		WATCH_LIST.add("x");
 		WATCH_LIST.add("y");
 		WATCH_LIST.add("layer");
-		
-		captureTrace = true;
 	}
 
 	private function traceLog(v:Dynamic, ?infos:PosInfos)
@@ -149,11 +147,13 @@ class Console
 
 	/**
 	 * Enables the console.
+	 * @param   value           Set the console enabled or disabled.
+	 * @param   captureTrace    Option to capture trace in HaxePunk.
 	 */
-	public function enable()
+	public function enable(value:Bool=true, captureTrace:Bool=true)
 	{
-		// Quit if the console is already enabled.
-		if (_enabled) return;
+		// Quit if the console is already in the same state as value (enabled or disabled).
+		if (_enabled == value) return;
 
 		// load assets based on embedding method
 		try
@@ -1024,15 +1024,6 @@ class Console
 
 	public var height(get_height, null):Int;
 	private function get_height():Int { return HXP.windowHeight; }
-
-	/**
-	 * Whether the HaxePunk's console should capture calls to `trace()` and display it in the in-game console or not (true by default).
-	 * Have to be set before calling `HXP.console.enable()`.
-	 */
-	public var captureTrace(default, set_captureTrace):Bool;
-	private function set_captureTrace(value:Bool):Bool {
-		return captureTrace = value;
-	}
 
 	// Console state information.
 	private var _enabled:Bool;
