@@ -1,0 +1,10 @@
+{
+	"name": "HaxePunk",
+	"url" : "http://haxepunk.com",
+	"license": "MIT",
+	"tags": ["flash", "game", "cpp", "nme"],
+	"description": "A Haxe port of the FlashPunk AS3 engine.",
+	"version": "2.2.1",
+	"releasenote": "See CHANGELOG",
+	"contributors": ["heardtheword"]
+}

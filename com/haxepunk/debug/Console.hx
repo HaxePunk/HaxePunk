@@ -744,6 +744,9 @@ class Console
 			g.clear();
 			for (e in SCREEN_LIST)
 			{
+				var graphicScrollX = e.graphic != null ? e.graphic.scrollX : 1;
+				var graphicScrollY = e.graphic != null ? e.graphic.scrollY : 1;
+				
 				// If the Entity is not selected.
 				if (Lambda.indexOf(SELECT_LIST, e) < 0)
 				{
@@ -751,7 +754,7 @@ class Console
 					if (e.width != 0 && e.height != 0)
 					{
 						g.lineStyle(1, 0xFF0000);
-						g.drawRect((e.x - e.originX - HXP.camera.x) * sx, (e.y - e.originY - HXP.camera.y) * sy, e.width * sx, e.height * sy);
+						g.drawRect((e.x - e.originX - HXP.camera.x * graphicScrollX) * sx, (e.y - e.originY - HXP.camera.y * graphicScrollY) * sy, e.width * sx, e.height * sy);
 
 						if (e.mask != null)
 						{
@@ -760,7 +763,7 @@ class Console
 						}
 					}
 					g.lineStyle(1, 0x00FF00);
-					g.drawRect((e.x - HXP.camera.x) * sx - 3, (e.y - HXP.camera.y) * sy - 3, 6, 6);
+					g.drawRect((e.x - HXP.camera.x * graphicScrollX) * sx - 3, (e.y - HXP.camera.y * graphicScrollY) * sy - 3, 6, 6);
 				}
 				else
 				{
@@ -768,7 +771,7 @@ class Console
 					if (e.width != 0 && e.height != 0)
 					{
 						g.lineStyle(1, 0xFFFFFF);
-						g.drawRect((e.x - e.originX - HXP.camera.x) * sx, (e.y - e.originY - HXP.camera.y) * sy, e.width * sx, e.height * sy);
+						g.drawRect((e.x - e.originX - HXP.camera.x * graphicScrollX) * sx, (e.y - e.originY - HXP.camera.y * graphicScrollY) * sy, e.width * sx, e.height * sy);
 
 						if (e.mask != null)
 						{
@@ -777,7 +780,7 @@ class Console
 						}
 					}
 					g.lineStyle(1, 0xFFFFFF);
-					g.drawRect((e.x - HXP.camera.x) * sx - 3, (e.y - HXP.camera.y) * sy - 3, 6, 6);
+					g.drawRect((e.x - HXP.camera.x * graphicScrollX) * sx - 3, (e.y - HXP.camera.y * graphicScrollY) * sy - 3, 6, 6);
 				}
 			}
 		}

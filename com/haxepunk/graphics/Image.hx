@@ -168,6 +168,9 @@ class Image extends Graphic
 	/** Renders the image. */
 	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
+		var sx = scale * scaleX,
+			sy = scale * scaleY;
+
 		// determine drawing location
 		_point.x = point.x + x - originX - camera.x * scrollX;
 		_point.y = point.y + y - originY - camera.y * scrollY;
@@ -177,10 +180,7 @@ class Image extends Graphic
 			// only draw if buffer exists
 			if (_buffer != null)
 			{
-				if (angle == 0 &&
-					scaleX * scale == 1 &&
-					scaleY * scale == 1 &&
-					blend == null)
+				if (angle == 0 && sx == 1 && sy == 1 && blend == null)
 				{
 					// render without transformation
 					target.copyPixels(_buffer, _bufferRect, _point, null, null, true);
@@ -189,10 +189,10 @@ class Image extends Graphic
 				{
 					// render with transformation
 					_matrix.b = _matrix.c = 0;
-					_matrix.a = scaleX * scale;
-					_matrix.d = scaleY * scale;
-					_matrix.tx = -originX * _matrix.a;
-					_matrix.ty = -originY * _matrix.d;
+					_matrix.a = sx;
+					_matrix.d = sy;
+					_matrix.tx = -originX * sx;
+					_matrix.ty = -originY * sy;
 					if (angle != 0) _matrix.rotate(angle * HXP.RAD);
 					_matrix.tx += originX + _point.x;
 					_matrix.ty += originY + _point.y;
@@ -204,32 +204,40 @@ class Image extends Graphic
 		{
 			if (_flipped) _point.x += _sourceRect.width;
 			var fsx = HXP.screen.fullScaleX,
-				fsy = HXP.screen.fullScaleY,
-				sx = fsx * scale * scaleX,
-				sy = fsy * scale * scaleY;
+				fsy = HXP.screen.fullScaleY;
 
 			if (angle == 0)
 			{
+				// UGH... recalculation of _point for scaled origins
+				if (!(sx == 1 && sy == 1))
+				{
+					_point.x = (point.x + x - originX * sx - camera.x * scrollX);
+					_point.y = (point.y + y - originY * sy - camera.y * scrollY);
+				}
+
 				// render without rotation
 				_region.draw(_point.x * fsx, _point.y * fsy,
-					layer, sx * (_flipped ? -1 : 1), sy, angle,
+					layer, sx * fsx * (_flipped ? -1 : 1), sy * fsy, angle,
 					_red, _green, _blue, _alpha);
 			}
 			else
 			{
 				// render with rotation
 				_matrix.b = _matrix.c = 0;
-				_matrix.a = scaleX * scale;
-				_matrix.d = scaleY * scale;
-				_matrix.tx = -originX * _matrix.a;
-				_matrix.ty = -originY * _matrix.d;
+				_matrix.a = sx;
+				_matrix.d = sy;
+				_matrix.tx = -originX * sx;
+				_matrix.ty = -originY * sy;
 				if (angle != 0) _matrix.rotate(angle * HXP.RAD);
 				_matrix.tx += originX + _point.x;
 				_matrix.ty += originY + _point.y;
 
-				_region.draw(_matrix.tx * fsx, _matrix.ty * fsy,
-					layer, sx * (_flipped ? -1 : 1), sy, angle,
-					_red, _green, _blue, _alpha);
+				// fullscreen scaling
+				_matrix.a  *= fsx; _matrix.b  *= fsy;
+				_matrix.c  *= fsx; _matrix.d  *= fsy;
+				_matrix.tx *= fsx; _matrix.ty *= fsy;
+
+				_region.drawMatrix(_matrix, layer, _red, _green, _blue, _alpha);
 			}
 		}
 	}
@@ -401,13 +409,13 @@ class Image extends Graphic
 	 * Width of the image.
 	 */
 	public var width(get_width, never):Int;
-	private function get_width():Int { return Std.int(_blit ? _bufferRect.width : _region.width); }
+	private function get_width():Int { return Std.int(_blit ? _bufferRect.width : (!_region.rotated ? _region.width : _region.height)); }
 
 	/**
 	 * Height of the image.
 	 */
 	public var height(get_height, never):Int;
-	private function get_height():Int { return Std.int(_blit ? _bufferRect.height : _region.height); }
+	private function get_height():Int { return Std.int(_blit ? _bufferRect.height : (!_region.rotated ? _region.height : _region.width)); }
 
 	/**
 	 * The scaled width of the image.

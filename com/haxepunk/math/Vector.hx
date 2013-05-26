@@ -18,4 +18,8 @@ class Vector extends Point
 		return x * p.x + y * p.y;
 	}
 
+	public inline function cross():Vector
+	{
+		return new Vector(y, -x);
+	}
 }

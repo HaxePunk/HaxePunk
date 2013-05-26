@@ -109,6 +109,10 @@ class PreRotation extends Image
 				updateBuffer();
 			}
 		}
+		else
+		{
+			angle = frameAngle;
+		}
 		super.render(target, point, camera);
 	}
 

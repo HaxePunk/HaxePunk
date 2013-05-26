@@ -261,10 +261,11 @@ class Input
 		{
 			if (keyString.length > kKeyStringMax) keyString = keyString.substr(1);
 			var char:String = String.fromCharCode(code);
-#if flash
-			if (e.shiftKey || Keyboard.capsLock) char = char.toUpperCase();
+
+			if (e.shiftKey != #if flash Keyboard.capsLock #else check(Key.CAPS_LOCK) #end) 
+				char = char.toUpperCase();
 			else char = char.toLowerCase();
-#end
+
 			keyString += char;
 		}
 
