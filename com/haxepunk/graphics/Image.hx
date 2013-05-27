@@ -215,9 +215,12 @@ class Image extends Graphic
 					_point.y = (point.y + y - originY * sy - camera.y * scrollY);
 				}
 
+				_point.x = Math.floor(_point.x * fsx);
+				_point.y = Math.floor(_point.y * fsy);
+
 				// render without rotation
-				_region.draw(_point.x * fsx, _point.y * fsy,
-					layer, sx * fsx * (_flipped ? -1 : 1), sy * fsy, angle,
+				_region.draw(_point.x, _point.y, layer,
+					sx * fsx * (_flipped ? -1 : 1), sy * fsy, angle,
 					_red, _green, _blue, _alpha);
 			}
 			else
@@ -236,6 +239,10 @@ class Image extends Graphic
 				_matrix.a  *= fsx; _matrix.b  *= fsy;
 				_matrix.c  *= fsx; _matrix.d  *= fsy;
 				_matrix.tx *= fsx; _matrix.ty *= fsy;
+
+				// all images need to be aligned to a pixel
+				_matrix.tx = Math.floor(_matrix.tx);
+				_matrix.ty = Math.floor(_matrix.ty);
 
 				_region.drawMatrix(_matrix, layer, _red, _green, _blue, _alpha);
 			}

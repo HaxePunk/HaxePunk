@@ -464,7 +464,7 @@ class Tilemap extends Canvas
 					tile = _map[y % _rows][x % _columns];
 					if (tile >= 0)
 					{
-						_atlas.prepareTile(tile, wx, wy, layer, scalex, scaley, 0, _red, _green, _blue, alpha);
+						_atlas.prepareTile(tile, Math.floor(wx), Math.floor(wy), layer, scalex, scaley, 0, _red, _green, _blue, alpha);
 					}
 
 					wx += tw * scalex;

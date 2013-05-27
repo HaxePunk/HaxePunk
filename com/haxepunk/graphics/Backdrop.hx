@@ -104,7 +104,7 @@ class Backdrop extends Canvas
 				var x:Float = 0;
 				while (x <= _width * sx)
 				{
-					_region.draw(px + x, py + y, layer, sx, sy, 0, _red, _green, _blue, _alpha);
+					_region.draw(Math.floor(px + x), Math.floor(py + y), layer, sx, sy, 0, _red, _green, _blue, _alpha);
 					x += _textWidth * sx;
 				}
 				y += _textHeight * sy;

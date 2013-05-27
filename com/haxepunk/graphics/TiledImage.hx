@@ -87,7 +87,7 @@ class TiledImage extends Image
 			{
 				while (x < _width)
 				{
-					_region.draw((_point.x + x) * fsx, (_point.y + y) * fsy,
+					_region.draw(Math.floor((_point.x + x) * fsx), Math.floor((_point.y + y) * fsy),
 						layer, sx * (_flipped ? -1 : 1), sy, angle,
 						_red, _green, _blue, _alpha);
 					x += _sourceRect.width;

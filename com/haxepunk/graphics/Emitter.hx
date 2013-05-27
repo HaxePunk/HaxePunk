@@ -212,7 +212,7 @@ class Emitter extends Graphic
 			else // _blit
 			{
 				var frameIndex:Int = type._frames[Std.int(td * type._frames.length)];
-				_frames[frameIndex].draw(_p.x * scaleX, _p.y * scaleY, layer,
+				_frames[frameIndex].draw(Math.floor(_p.x * scaleX), Math.floor(_p.y * scaleY), layer,
 					scaleX, scaleY, type._angle,
 					type._red + type._redRange * td,
 					type._green + type._greenRange * td,
