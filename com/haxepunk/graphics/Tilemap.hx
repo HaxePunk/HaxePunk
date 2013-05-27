@@ -121,10 +121,13 @@ class Tilemap extends Canvas
 		index %= _setCount;
 		column %= _columns;
 		row %= _rows;
-		_tile.x = (index % _setColumns) * _tile.width;
-		_tile.y = Std.int(index / _setColumns) * _tile.height;
 		_map[row][column] = index;
-		if (_blit) draw(Std.int(column * _tile.width), Std.int(row * _tile.height), _set, _tile);
+		if (_blit)
+		{
+			_tile.x = (index % _setColumns) * _tile.width;
+			_tile.y = Std.int(index / _setColumns) * _tile.height;
+			draw(Std.int(column * _tile.width), Std.int(row * _tile.height), _set, _tile);
+		}
 	}
 
 	/**
@@ -141,9 +144,13 @@ class Tilemap extends Canvas
 		}
 		column %= _columns;
 		row %= _rows;
-		_tile.x = column * _tile.width;
-		_tile.y = row * _tile.height;
-		if (_blit) fill(_tile, 0, 0);
+		_map[row][column] = -1;
+		if (_blit)
+		{
+			_tile.x = column * _tile.width;
+			_tile.y = row * _tile.height;
+			fill(_tile, 0, 0);
+		}
 	}
 
 	/**
@@ -454,7 +461,7 @@ class Tilemap extends Canvas
 			{
 				for (x in startx...destx)
 				{
-					tile = getTile(x, y);
+					tile = _map[y % _rows][x % _columns];
 					if (tile >= 0)
 					{
 						_atlas.prepareTile(tile, wx, wy, layer, scalex, scaley, 0, _red, _green, _blue, alpha);
