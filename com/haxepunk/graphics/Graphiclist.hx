@@ -83,7 +83,7 @@ class Graphiclist extends Graphic
 	 */
 	public function add(graphic:Graphic):Graphic
 	{
-		if (graphic == null) return;
+		if (graphic == null) return graphic;
 		graphic.setEntity(_entity);
 		_graphics[_count ++] = graphic;
 		if (!active) active = graphic.active;

@@ -229,7 +229,7 @@ class Text extends Image
 	 */
 	override private function get_width():Int 
 	{
-		return _blit ? super.get_width() : Std.int(_field.width);
+		return _blit ? super.get_width() : Std.int(_field.width / HXP.screen.fullScaleX);
 	}
 	
 	/**
@@ -237,7 +237,7 @@ class Text extends Image
 	 */
 	override private function get_height():Int 
 	{
-		return _blit ? super.get_height() : Std.int(_field.height);
+		return _blit ? super.get_height() : Std.int(_field.height / HXP.screen.fullScaleY);
 	}
 
 	/**
