@@ -115,7 +115,7 @@ class Spritemap extends Image
 	{
 		if (_anim != null && !complete)
 		{
-			_timer += (HXP.fixed ? _anim.frameRate : _anim.frameRate * HXP.elapsed) * rate;
+			_timer += (HXP.fixed ? _anim.frameRate / HXP.frameRate : _anim.frameRate * HXP.elapsed) * rate;
 			if (_timer >= 1)
 			{
 				while (_timer >= 1)
