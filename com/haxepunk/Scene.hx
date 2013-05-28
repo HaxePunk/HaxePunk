@@ -469,7 +469,7 @@ class Scene extends Tweener
 		{
 			e = cast(fe, Entity);
 			// only look for entities that collide
-			if (e.collidePoint(e.x, e.y, pX, pY)) {
+			if (e.collidable && e.collidePoint(e.x, e.y, pX, pY)) {
 				// the first one might be the front one
 				if (result == null) {
 					result = e;
