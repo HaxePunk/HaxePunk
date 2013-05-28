@@ -64,10 +64,21 @@ class AtlasRegion
 		parent.prepareTile(tileIndex, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha);
 	}
 
-	public inline function drawMatrix(matrix:Matrix, layer:Int, red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1)
+	public inline function drawMatrix(tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
+		layer:Int, red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1)
 	{
-		if (rotated) matrix.rotate(90 * HXP.RAD);
-		parent.prepareTileMatrix(tileIndex, matrix, layer, red, green, blue, alpha);
+		if (rotated)
+		{
+			var matrix = new Matrix(a, b, c, d, tx, ty);
+			matrix.rotate(90 * HXP.RAD);
+			parent.prepareTileMatrix(tileIndex, layer,
+				matrix.tx, matrix.ty, matrix.a, matrix.b, matrix.c, matrix.d,
+				red, green, blue, alpha);
+		}
+		else
+		{
+			parent.prepareTileMatrix(tileIndex, layer, tx, ty, a, b, c, d, red, green, blue, alpha);
+		}
 	}
 
 	public function toString():String

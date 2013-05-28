@@ -84,7 +84,7 @@ class AtlasData
 		_layerIndex = -1;
 		_atlases.push(this);
 	}
-	
+
 	public static inline function setScene(scene:Scene)
 	{
 		_scene = scene;
@@ -178,27 +178,28 @@ class AtlasData
 		_layerIndex = layer;
 	}
 
-	public inline function prepareTileMatrix(tile:Int, matrix:Matrix, layer:Int,
+	public inline function prepareTileMatrix(tile:Int, layer:Int,
+		tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
 		red:Float, green:Float, blue:Float, alpha:Float)
 	{
 		if (_layerIndex != layer) setLayer(layer);
-		var d = _layer.data;
+		var data = _layer.data;
 		_layer.dirty = true;
 
-		d[_layer.index++] = matrix.tx;
-		d[_layer.index++] = matrix.ty;
-		d[_layer.index++] = tile;
+		data[_layer.index++] = tx;
+		data[_layer.index++] = ty;
+		data[_layer.index++] = tile;
 
 		// matrix transformation
-		d[_layer.index++] = matrix.a; // m00
-		d[_layer.index++] = matrix.c; // m01
-		d[_layer.index++] = matrix.b; // m10
-		d[_layer.index++] = matrix.d; // m11
+		data[_layer.index++] = a; // m00
+		data[_layer.index++] = c; // m01
+		data[_layer.index++] = b; // m10
+		data[_layer.index++] = d; // m11
 
-		d[_layer.index++] = red;
-		d[_layer.index++] = green;
-		d[_layer.index++] = blue;
-		d[_layer.index++] = alpha;
+		data[_layer.index++] = red;
+		data[_layer.index++] = green;
+		data[_layer.index++] = blue;
+		data[_layer.index++] = alpha;
 
 		if (_layer.index > Atlas.drawCallThreshold)
 		{

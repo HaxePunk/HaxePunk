@@ -225,26 +225,24 @@ class Image extends Graphic
 			}
 			else
 			{
-				// render with rotation
-				_matrix.b = _matrix.c = 0;
-				_matrix.a = sx;
-				_matrix.d = sy;
-				_matrix.tx = -originX * sx;
-				_matrix.ty = -originY * sy;
-				if (angle != 0) _matrix.rotate(angle * HXP.RAD);
-				_matrix.tx += originX + _point.x;
-				_matrix.ty += originY + _point.y;
+				var theta = angle * HXP.RAD;
+				var cos = Math.cos(theta);
+				var sin = Math.sin(theta);
 
-				// fullscreen scaling
-				_matrix.a  *= fsx; _matrix.b  *= fsy;
-				_matrix.c  *= fsx; _matrix.d  *= fsy;
-				_matrix.tx *= fsx; _matrix.ty *= fsy;
+				// optimized matrix math
+				var b = sx * fsx * sin;
+				var a = sx * fsx * cos;
 
-				// all images need to be aligned to a pixel
-				_matrix.tx = Math.floor(_matrix.tx);
-				_matrix.ty = Math.floor(_matrix.ty);
+				var d = sy * fsy * cos;
+				var c = sy * fsy * -sin;
 
-				_region.drawMatrix(_matrix, layer, _red, _green, _blue, _alpha);
+				var tx = -originX * sx,
+					ty = -originY * sy;
+				var tx1 = tx * cos - ty * sin;
+				ty = ((tx * sin + ty * cos) + originY + _point.y) * fsy;
+				tx = (tx1 + originX + _point.x) * fsx;
+
+				_region.drawMatrix(Std.int(tx), Std.int(ty), a, b, c, d, layer, _red, _green, _blue, _alpha);
 			}
 		}
 	}
