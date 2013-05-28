@@ -1,5 +1,7 @@
 package com.haxepunk;
 
+import com.haxepunk.graphics.atlas.AtlasData;
+import nme.display.Sprite;
 import nme.geom.Point;
 import com.haxepunk.Entity;
 import com.haxepunk.Tweener;
@@ -33,12 +35,14 @@ class Scene extends Tweener
 
 		_layerList = new Array<Int>();
 		_layerCount = new Array<Int>();
+		_sprite = new Sprite();
 
 		_add = new Array<Entity>();
 		_remove = new Array<Entity>();
 		_recycle = new Array<Entity>();
 
 #if haxe3
+		_layerSprites = new Map<Int,Sprite>();
 		_renderFirst = new Map<Int,FriendEntity>();
 		_renderLast = new Map<Int,FriendEntity>();
 		_typeFirst = new Map<String,FriendEntity>();
@@ -48,6 +52,7 @@ class Scene extends Tweener
 		_recycled = new Map<String,Entity>();
 		_entityNames = new Map<String,Entity>();
 #else
+		_layerSprites = new IntHash<Sprite>();
 		_renderFirst = new IntHash<FriendEntity>();
 		_renderLast = new IntHash<FriendEntity>();
 		_typeFirst = new Hash<FriendEntity>();
@@ -115,6 +120,12 @@ class Scene extends Tweener
 			if (_layerList.length > 1) _layerList.sort(layerSort);
 			_layerSort = false;
 		}
+		
+		if (HXP.renderMode.has(RenderMode.HARDWARE))
+		{
+			clearSprites();
+			AtlasData.setScene(this);
+		}
 
 		// render the entities in order of depth
 		var e:Entity,
@@ -130,6 +141,8 @@ class Scene extends Tweener
 				fe = fe._renderPrev;
 			}
 		}
+		
+		if (HXP.renderMode.has(RenderMode.HARDWARE)) AtlasData.render();
 	}
 
 	/**
@@ -148,6 +161,15 @@ class Scene extends Tweener
 	private inline function get_mouseY():Int
 	{
 		return Std.int(HXP.screen.mouseY + camera.y);
+	}
+	
+	/**
+	 * Sprite used to store layer sprites when RenderMode.HARDWARE is set.
+	 */
+	public var sprite(get_sprite, null):Sprite;
+	private inline function get_sprite():Sprite
+	{
+		return _sprite;
 	}
 
 	/**
@@ -893,6 +915,37 @@ class Scene extends Tweener
 		if (_updateFirst == null) return null;
 		return cast(_renderLast.get(layer), Entity);
 	}
+	
+	/**
+	 * Gets the sprite for the associated layer.  Used for hardware rendering.
+	 * @param	layer		The layer to get the sprite for.
+	 * @return	The sprite for the specified layer.
+	 */
+	public function getSpriteByLayer(layer:Int):Sprite
+	{
+		if (_layerSprites.exists(layer))
+		{
+			return _layerSprites.get(layer);
+		}
+		else
+		{
+			var sprite = new Sprite();
+			var idx = 0;
+			// create a reverse order of the layers
+			var layers = new Array<Int>();
+			for (l in _layerSprites.keys()) layers.push(l);
+			layers.sort(function(a:Int, b:Int):Int { return b - a; });
+			// find the index to insert the layer
+			for (l in layers)
+			{
+				if (layer > l) break;
+				idx += 1;
+			}
+			_layerSprites.set(layer, sprite);
+			_sprite.addChildAt(sprite, idx);
+			return sprite;
+		}
+	}
 
 	/**
 	 * The Entity that will be rendered first by the Scene.
@@ -1102,6 +1155,14 @@ class Scene extends Tweener
 
 		return 0;
 	}
+	
+	private function clearSprites()
+	{
+		for (sprite in _layerSprites.keys()) 
+		{
+			_layerSprites.get(sprite).graphics.clear();
+		}
+	}
 
 	/** @private Adds Entity to the update list. */
 	private function addUpdate(e:Entity)
@@ -1296,10 +1357,12 @@ class Scene extends Tweener
 	private var _count:Int;
 
 	// Render information.
+	private var _sprite:Sprite;
 	private var _layerSort:Bool;
 	private var _layerList:Array<Int>;
 	private var _layerCount:Array<Int>;
 #if haxe3
+	private var _layerSprites:Map<Int,Sprite>;
 	private var _renderFirst:Map<Int,FriendEntity>;
 	private var _renderLast:Map<Int,FriendEntity>;
 
@@ -1309,6 +1372,7 @@ class Scene extends Tweener
 	private var _recycled:Map<String,Entity>;
 	private var _entityNames:Map<String,Entity>;
 #else
+	private var _layerSprites:IntHash<Sprite>;
 	private var _renderFirst:IntHash<FriendEntity>;
 	private var _renderLast:IntHash<FriendEntity>;
 

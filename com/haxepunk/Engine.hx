@@ -148,20 +148,12 @@ class Engine extends Sprite
 			HXP.screen.refresh();
 		}
 		Draw.resetTarget();
-		if (HXP.renderMode.has(RenderMode.HARDWARE))
-		{
-			AtlasData.clear();
-		}
 
 		if (HXP.scene.visible) HXP.scene.render();
 
 		if (HXP.renderMode.has(RenderMode.BUFFER))
 		{
 			HXP.screen.redraw();
-		}
-		if (HXP.renderMode.has(RenderMode.HARDWARE))
-		{
-			AtlasData.render();
 		}
 
 		// more timing stuff
@@ -364,7 +356,9 @@ class Engine extends Sprite
 			HXP.scene.end();
 			HXP.scene.updateLists();
 			if (HXP.scene.autoClear && HXP.scene.hasTween) HXP.scene.clearTweens();
+			if (contains(HXP.scene.sprite)) removeChild(HXP.scene.sprite);
 			HXP.swapScene();
+			addChild(HXP.scene.sprite);
 			HXP.camera = HXP.scene.camera;
 			HXP.scene.updateLists();
 			HXP.scene.begin();

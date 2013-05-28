@@ -1,5 +1,6 @@
 package com.haxepunk.graphics.atlas;
 
+import com.haxepunk.Scene;
 import nme.display.BitmapData;
 import nme.display.Graphics;
 import nme.display.Sprite;
@@ -83,13 +84,10 @@ class AtlasData
 		_layerIndex = -1;
 		_atlases.push(this);
 	}
-
-	public static inline function clear()
+	
+	public static inline function setScene(scene:Scene)
 	{
-		for (sprite in _sprites)
-		{
-			sprite.graphics.clear();
-		}
+		_scene = scene;
 	}
 
 	/**
@@ -163,7 +161,7 @@ class AtlasData
 	private inline function renderLayer(layer:Layer, layerIndex:Int)
 	{
 		layer.prepare();
-		getSpriteByLayer(layerIndex).graphics.drawTiles(_tilesheet, layer.data, Atlas.smooth, _renderFlags);
+		_scene.getSpriteByLayer(layerIndex).graphics.drawTiles(_tilesheet, layer.data, Atlas.smooth, _renderFlags);
 	}
 
 	private inline function setLayer(layer:Int)
@@ -250,32 +248,6 @@ class AtlasData
 		}
 	}
 
-	public static function getSpriteByLayer(layer:Int):Sprite
-	{
-		if (_sprites.exists(layer))
-		{
-			return _sprites.get(layer);
-		}
-		else
-		{
-			var sprite = new Sprite();
-			var idx = 0;
-			// create a reverse order of the layers
-			var layers = new Array<Int>();
-			for (l in _sprites.keys()) layers.push(l);
-			layers.sort(function(a:Int, b:Int):Int { return b - a; });
-			// find the index to insert the layer
-			for (l in layers)
-			{
-				if (layer > l) break;
-				idx += 1;
-			}
-			_sprites.set(layer, sprite);
-			HXP.stage.addChildAt(sprite, idx);
-			return sprite;
-		}
-	}
-
 	// used for pooling
 	private var _name:String;
 	private var _refCount:Int; // memory management
@@ -291,11 +263,10 @@ class AtlasData
 	private var _layers:IntHash<Layer>;
 #end
 
+	private static var _scene:Scene;
 #if haxe3
-	private static var _sprites:Map<Int,Sprite> = new Map<Int,Sprite>();
 	private static var _dataPool:Map<String,AtlasData> = new Map<String,AtlasData>();
 #else
-	private static var _sprites:IntHash<Sprite> = new IntHash<Sprite>();
 	private static var _dataPool:Hash<AtlasData> = new Hash<AtlasData>();
 #end
 	private static var _atlases:Array<AtlasData> = new Array<AtlasData>();
