@@ -86,6 +86,12 @@ class Graphic
 	 * @param  camera     The camera offset.
 	 */
 	public function render(target:BitmapData, point:Point, camera:Point) { }
+	
+	public function setEntity(entity:Entity)
+	{
+		_entity = entity;
+		layer = entity != null ? entity.layer : HXP.BASELAYER;
+	}
 
 	private function set_layer(value:Int):Int
 	{
@@ -95,6 +101,7 @@ class Graphic
 	// Graphic information.
 	private var _scroll:Bool;
 	private var _point:Point;
+	private var _entity:Entity;
 
 	/**
 	 * If we can blit the graphic or not (flash/html5)

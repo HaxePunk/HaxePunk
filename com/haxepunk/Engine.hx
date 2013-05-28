@@ -137,6 +137,8 @@ class Engine extends Sprite
 	 */
 	public function render()
 	{
+		if (HXP.screen.needsResize) HXP.resize(HXP.windowWidth, HXP.windowHeight);
+		
 		// timing stuff
 		var t:Float = Lib.getTimer();
 		if (_frameLast == 0) _frameLast = Std.int(t);
@@ -148,20 +150,12 @@ class Engine extends Sprite
 			HXP.screen.refresh();
 		}
 		Draw.resetTarget();
-		if (HXP.renderMode.has(RenderMode.HARDWARE))
-		{
-			AtlasData.clear();
-		}
 
 		if (HXP.scene.visible) HXP.scene.render();
 
 		if (HXP.renderMode.has(RenderMode.BUFFER))
 		{
 			HXP.screen.redraw();
-		}
-		if (HXP.renderMode.has(RenderMode.HARDWARE))
-		{
-			AtlasData.render();
 		}
 
 		// more timing stuff
@@ -182,6 +176,8 @@ class Engine extends Sprite
 		HXP.stage.quality = StageQuality.HIGH;
 		HXP.stage.scaleMode = StageScaleMode.NO_SCALE;
 		HXP.stage.displayState = StageDisplayState.NORMAL;
+		HXP.windowWidth = HXP.stage.stageWidth;
+		HXP.windowHeight = HXP.stage.stageHeight;
 
 		resize(); // call resize once to initialize the screen
 
@@ -220,6 +216,8 @@ class Engine extends Sprite
 		if (HXP.width == 0) HXP.width = HXP.stage.stageWidth;
 		if (HXP.height == 0) HXP.height = HXP.stage.stageHeight;
 		// calculate scale from width/height values
+		HXP.windowWidth = HXP.stage.stageWidth;
+		HXP.windowHeight = HXP.stage.stageHeight;
 		HXP.screen.scaleX = HXP.stage.stageWidth / HXP.width;
 		HXP.screen.scaleY = HXP.stage.stageHeight / HXP.height;
 		HXP.resize(HXP.stage.stageWidth, HXP.stage.stageHeight);
@@ -364,7 +362,9 @@ class Engine extends Sprite
 			HXP.scene.end();
 			HXP.scene.updateLists();
 			if (HXP.scene.autoClear && HXP.scene.hasTween) HXP.scene.clearTweens();
+			if (contains(HXP.scene.sprite)) removeChild(HXP.scene.sprite);
 			HXP.swapScene();
+			addChild(HXP.scene.sprite);
 			HXP.camera = HXP.scene.camera;
 			HXP.scene.updateLists();
 			HXP.scene.begin();
