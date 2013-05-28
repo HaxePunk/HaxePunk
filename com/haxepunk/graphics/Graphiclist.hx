@@ -147,14 +147,14 @@ class Graphiclist extends Graphic
 	 */
 	public var count(get_count, null):Int;
 	private function get_count():Int { return _count; }
-	
-	override public function setEntity(entity:Entity):Dynamic 
+
+	override public function setEntity(entity:Entity)
 	{
-		for (g in _graphics) 
+		for (g in _graphics)
 		{
 			g.setEntity(entity);
 		}
-		
+
 		super.setEntity(entity);
 	}
 
