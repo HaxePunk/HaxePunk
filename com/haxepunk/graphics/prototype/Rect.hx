@@ -28,12 +28,12 @@ class Rect extends Graphic
 		{
 			image.render(target, point, camera);
 		}
-		else
+		else if (_entity != null && _entity.scene != null)
 		{
 			_point.x = point.x + x - camera.x * scrollX;
 			_point.y = point.y + y - camera.y * scrollY;
 
-			var gfx = AtlasData.getSpriteByLayer(layer).graphics;
+			var gfx = _entity.scene.getSpriteByLayer(layer).graphics;
 			gfx.beginFill(color);
 			gfx.drawRect(_point.x, _point.y, width, height);
 		}
