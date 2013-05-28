@@ -774,6 +774,71 @@ class HXP
 	}
 
 	/**
+	 * Finds the hue factor of a color.
+	 * @param  color The color to evaluate.
+	 * @return The hue value (from 0 to 1).
+	 */
+	public static function getColorHue(color:Int):Float
+	{
+		var h:Int = (color >> 16) & 0xFF;
+		var s:Int = (color >> 8) & 0xFF;
+		var v:Int = color & 0xFF;
+
+		var max:Int = Std.int(Math.max(h, Math.max(s, v)));
+		var min:Int = Std.int(Math.min(h, Math.min(s, v)));
+
+		var hue:Float = 0;
+
+		if (max == min) {
+			hue = 0;
+		} else if (max == h) {
+			hue = (60 * (s - v) / (max - min) + 360) % 360;
+		} else if (max == s) {
+			hue = (60 * (v - h) / (max - min) + 120);
+		} else if (max == v) {
+			hue = (60 * (h - s) / (max - min) + 240);
+		}
+
+		return hue / 360;
+	}
+
+	/**
+	 * Finds the saturation factor of a color.
+	 * @param  color The color to evaluate.
+	 * @return The saturation value (from 0 to 1).
+	 */
+	public static function getColorSaturation(color:Int):Float
+	{
+		var h:Int = (color >> 16) & 0xFF;
+		var s:Int = (color >> 8) & 0xFF;
+		var v:Int = color & 0xFF;
+
+		var max:Int = Std.int(Math.max(h, Math.max(s, v)));
+
+		if (max == 0) {
+			return 0;
+		} else {
+			var min:Int = Std.int(Math.min(h, Math.min(s, v)));
+
+			return (max - min) / max;
+		}
+	}
+
+	/**
+	 * Finds the value factor of a color.
+	 * @param  color The color to evaluate.
+	 * @return The value value (from 0 to 1).
+	 */
+	public static function getColorValue(color:Int):Float
+	{
+		var h:Int = (color >> 16) & 0xFF;
+		var s:Int = (color >> 8) & 0xFF;
+		var v:Int = color & 0xFF;
+
+		return Std.int(Math.max(h, Math.max(s, v))) / 255;
+	}
+
+	/**
 	 * Finds the red factor of a color.
 	 * @param	color		The color to evaluate.
 	 * @return	A Int from 0 to 255.
