@@ -39,7 +39,7 @@ class Canvas extends Graphic
 
 		_width = width;
 		_height = height;
-		
+
 		if (HXP.renderMode.has(RenderMode.BUFFER))
 		{
 			_refWidth = Math.ceil(width / _maxWidth);
@@ -72,6 +72,10 @@ class Canvas extends Graphic
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;
 
+		_rect.x = _rect.y = 0;
+		_rect.width = _maxWidth;
+		_rect.height = _maxHeight;
+
 		// render the buffers
 		var xx:Int = 0, yy:Int = 0, buffer:BitmapData, px:Float = _point.x;
 		target.lock();
@@ -86,7 +90,7 @@ class Canvas extends Graphic
 					_matrix.ty = _point.y;
 					target.draw(buffer, _matrix, _tint, blend);
 				}
-				else target.copyPixels(buffer, buffer.rect, _point, null, null, true);
+				else target.copyPixels(buffer, _rect, _point, null, null, true);
 				_point.x += _maxWidth;
 				xx ++;
 			}
