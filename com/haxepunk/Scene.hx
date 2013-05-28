@@ -120,7 +120,7 @@ class Scene extends Tweener
 			if (_layerList.length > 1) _layerList.sort(layerSort);
 			_layerSort = false;
 		}
-		
+
 		if (HXP.renderMode.has(RenderMode.HARDWARE))
 		{
 			clearSprites();
@@ -141,7 +141,7 @@ class Scene extends Tweener
 				fe = fe._renderPrev;
 			}
 		}
-		
+
 		if (HXP.renderMode.has(RenderMode.HARDWARE)) AtlasData.render();
 	}
 
@@ -162,7 +162,7 @@ class Scene extends Tweener
 	{
 		return Std.int(HXP.screen.mouseY + camera.y);
 	}
-	
+
 	/**
 	 * Sprite used to store layer sprites when RenderMode.HARDWARE is set.
 	 */
@@ -490,8 +490,8 @@ class Scene extends Tweener
 	 * @param	fromY		Start y of the line.
 	 * @param	toX			End x of the line.
 	 * @param	toY			End y of the line.
-	 * @param	precision
-	 * @param	p
+	 * @param	precision   Distance between consecutive tests. Higher values are faster but increase the chance of missing collisions.
+	 * @param	p           If non-null, will have its x and y values set to the point of collision.
 	 * @return
 	 */
 	public function collideLine(type:String, fromX:Int, fromY:Int, toX:Int, toY:Int, precision:Int = 1, p:Point = null):Entity
@@ -915,7 +915,7 @@ class Scene extends Tweener
 		if (_updateFirst == null) return null;
 		return cast(_renderLast.get(layer), Entity);
 	}
-	
+
 	/**
 	 * Gets the sprite for the associated layer.  Used for hardware rendering.
 	 * @param	layer		The layer to get the sprite for.
@@ -1155,10 +1155,10 @@ class Scene extends Tweener
 
 		return 0;
 	}
-	
+
 	private function clearSprites()
 	{
-		for (sprite in _layerSprites.keys()) 
+		for (sprite in _layerSprites.keys())
 		{
 			_layerSprites.get(sprite).graphics.clear();
 		}
