@@ -216,6 +216,8 @@ class Engine extends Sprite
 		if (HXP.width == 0) HXP.width = HXP.stage.stageWidth;
 		if (HXP.height == 0) HXP.height = HXP.stage.stageHeight;
 		// calculate scale from width/height values
+		HXP.windowWidth = HXP.stage.stageWidth;
+		HXP.windowHeight = HXP.stage.stageHeight;
 		HXP.screen.scaleX = HXP.stage.stageWidth / HXP.width;
 		HXP.screen.scaleY = HXP.stage.stageHeight / HXP.height;
 		HXP.resize(HXP.stage.stageWidth, HXP.stage.stageHeight);
