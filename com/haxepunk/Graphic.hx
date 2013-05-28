@@ -90,7 +90,7 @@ class Graphic
 	public function setEntity(entity:Entity)
 	{
 		_entity = entity;
-		layer = entity.layer;
+		layer = entity != null ? entity.layer : HXP.BASELAYER;
 	}
 
 	private function set_layer(value:Int):Int

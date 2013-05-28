@@ -70,6 +70,7 @@ class Text extends Image
 		_field.wordWrap = options.wordWrap;
 		_field.defaultTextFormat = _format;
 		_field.text = text;
+		_field.selectable = false;
 
 		resizable = options.resizable;
 
@@ -256,7 +257,7 @@ class Text extends Image
 		if (_entity == null || _entity.scene == null) return;
 		if (_parent != null) _parent.removeChild(_field);
 		_parent = _entity.scene.getSpriteByLayer(layer);
-		if (_parent != null) _parent.addChild(_field);
+		_parent.addChild(_field);
 	}
 	
 	// Text information.

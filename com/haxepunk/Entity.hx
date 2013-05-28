@@ -624,6 +624,7 @@ class Entity extends Tweener
 			if (graphic != null) list.add(graphic);
 			list.add(g);
 			graphic = list;
+			list.setEntity(this);
 		}
 		return g;
 	}
