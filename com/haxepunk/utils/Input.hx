@@ -165,6 +165,8 @@ class Input
 			touchCallback(touch);
 		}
 	}
+	public static var touches(get_touches, never):Map<Int,Touch>;
+	private static inline function get_touches():Map<Int,Touch> { return _touches; }
 
 	/**
 	 * Copy of Lambda.indexOf for speed/memory reasons
@@ -262,7 +264,7 @@ class Input
 			if (keyString.length > kKeyStringMax) keyString = keyString.substr(1);
 			var char:String = String.fromCharCode(code);
 
-			if (e.shiftKey != #if flash Keyboard.capsLock #else check(Key.CAPS_LOCK) #end) 
+			if (e.shiftKey != #if flash Keyboard.capsLock #else check(Key.CAPS_LOCK) #end)
 				char = char.toUpperCase();
 			else char = char.toLowerCase();
 
@@ -313,7 +315,7 @@ class Input
 
 	private static function onTouchBegin(e:TouchEvent)
 	{
-		var touchPoint = new Touch(e.stageX, e.stageY, e.touchPointID);
+		var touchPoint = new Touch(e.stageX / HXP.screen.fullScaleX, e.stageY / HXP.screen.fullScaleY, e.touchPointID);
 		_touches.set(e.touchPointID, touchPoint);
 		_touchNum += 1;
 	}
@@ -321,8 +323,8 @@ class Input
 	private static function onTouchMove(e:TouchEvent)
 	{
 		var point = _touches.get(e.touchPointID);
-		point.x = e.stageX;
-		point.y = e.stageY;
+		point.x = e.stageX / HXP.screen.fullScaleX;
+		point.y = e.stageY / HXP.screen.fullScaleY;
 	}
 
 	private static function onTouchEnd(e:TouchEvent)
