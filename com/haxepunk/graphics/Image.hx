@@ -256,7 +256,7 @@ class Image extends Graphic
 	 */
 	public static function createRect(width:Int, height:Int, color:Int = 0xFFFFFF, alpha:Float = 1):Image
 	{
-		var source:BitmapData = new BitmapData(width, height, true, 0xFFFFFFFF);
+		var source:BitmapData = HXP.createBitmap(width, height, true, 0xFFFFFFFF);
 		var image:Image;
 		if (HXP.renderMode.has(RenderMode.HARDWARE))
 		{
@@ -284,7 +284,7 @@ class Image extends Graphic
 		HXP.sprite.graphics.clear();
 		HXP.sprite.graphics.beginFill(0xFFFFFF);
 		HXP.sprite.graphics.drawCircle(radius, radius, radius);
-		var data:BitmapData = new BitmapData(radius * 2, radius * 2, true, 0);
+		var data:BitmapData = HXP.createBitmap(radius * 2, radius * 2, true, 0);
 		data.draw(HXP.sprite);
 
 		var image:Image;
