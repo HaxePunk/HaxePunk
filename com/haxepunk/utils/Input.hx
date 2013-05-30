@@ -170,8 +170,14 @@ class Input
 			touchCallback(touch);
 		}
 	}
+
+#if haxe3
 	public static var touches(get_touches, never):Map<Int,Touch>;
 	private static inline function get_touches():Map<Int,Touch> { return _touches; }
+#else
+	public static var touches(get_touches, never):IntHash<Touch>;
+	private static inline function get_touches():IntHash<Touch> { return _touches; }
+#end
 
 	/**
 	 * Copy of Lambda.indexOf for speed/memory reasons

@@ -19,8 +19,10 @@ before_install:
   - sudo cp /usr/lib/neko/nekotools /usr/bin/nekotools
   - mkdir -p ~/.haxe/lib
   - echo ~/.haxe/lib | haxelib setup
-  - haxelib install hxcpp
-  - haxelib install nme
+  - haxelib install openfl
+  - haxelib install openfl-tools
+  - haxelib install openfl-native
+  - haxelib run openfl setup
 
 script:
   - ant clean build unit

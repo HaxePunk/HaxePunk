@@ -8,7 +8,19 @@
 		</exec>
 	</target>
 
-	<target name="haxelib" depends="tools">
+	<target name="haxelib_v2" depends="tools">
+		<zip destfile="template.zip" useLanguageEncodingFlag="UTF-8" basedir="template" />
+		<zip destfile="haxepunk.zip" useLanguageEncodingFlag="UTF-8">
+			<zipfileset dir="" prefix="haxepunk" includes="run.n,haxelib.xml,include.nmml,template.zip,CHANGELOG,LICENSE" />
+			<zipfileset dir="com" prefix="haxepunk/com" />
+			<zipfileset dir="assets" prefix="haxepunk/assets" />
+		</zip>
+		<exec executable="haxelib" dir=".">
+			<arg line="test haxepunk.zip" />
+		</exec>
+	</target>
+
+	<target name="haxelib_v3" depends="tools">
 		<zip destfile="template.zip" useLanguageEncodingFlag="UTF-8" basedir="template" />
 		<zip destfile="haxepunk.zip" useLanguageEncodingFlag="UTF-8">
 			<zipfileset dir="" prefix="haxepunk" includes="run.n,haxelib.json,include.nmml,template.zip,CHANGELOG,LICENSE" />
@@ -20,7 +32,7 @@
 		</exec>
 	</target>
 
-	<target name="unit" depends="haxelib">
+	<target name="unit" depends="haxelib_v3">
 		<exec executable="haxe" dir="tests">
 			<arg line="compile.hxml" />
 		</exec>
@@ -29,7 +41,7 @@
 		</exec>
 	</target>
 
-	<target name="build" depends="haxelib">
+	<target name="build" depends="haxelib_v3">
 		<exec executable="haxelib" dir=".">
 			<arg line="run HaxePunk new build-test" />
 		</exec>
@@ -47,7 +59,7 @@
 		</exec>
 	</target>
 
-	<target name="examples" depends="haxelib">
+	<target name="examples" depends="haxelib_v3">
 		<exec executable="openfl" dir="examples">
 			<arg line="test project.nmml" />
 			<arg line="neko -debug" />
@@ -74,5 +86,6 @@
 	</target>
 
 	<target name="all" depends="clean, build, examples, unit" />
+	<target name="haxe2" depends="clean, haxelib_v2" />
 
 </project>

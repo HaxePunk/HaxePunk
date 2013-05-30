@@ -1,5 +1,16 @@
 HaxePunk CHANGELOG
 
+v2.3.0
+------------------------------
+* Adding OpenFL support
+* [julsam] Xbox controller support
+* [MaskedPixel] Improved scaling, atlas layer management
+* [MALHCat] apply parent position to image render
+* [squiddingme] spritemaps animate the same in fixed timestep mode
+* Fixed Tilemap usePositions for native rendering
+* Added HXP.fullscreen to toggle between windowed and fullscreen modes
+* Various fixes from FlashPunk
+
 v2.2.1
 ------------------------------
 * (Native) Draw working on hardware targets
