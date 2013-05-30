@@ -1,15 +1,20 @@
 package com.haxepunk.utils;
 
-import nme.events.KeyboardEvent;
-#if (nme && (cpp || neko))
-import nme.events.JoystickEvent;
-#end
-import nme.events.MouseEvent;
-import nme.events.TouchEvent;
-import nme.ui.Keyboard;
-import nme.ui.Multitouch;
-import nme.ui.MultitouchInputMode;
+import flash.events.KeyboardEvent;
+import flash.events.MouseEvent;
+import flash.events.TouchEvent;
+import flash.ui.Keyboard;
+import flash.ui.Multitouch;
+import flash.ui.MultitouchInputMode;
 import com.haxepunk.HXP;
+
+#if (cpp || neko)
+	#if nme
+	import nme.events.JoystickEvent;
+	#else
+	import openfl.events.JoystickEvent;
+	#end
+#end
 
 class Input
 {

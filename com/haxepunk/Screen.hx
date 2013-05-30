@@ -2,12 +2,12 @@ package com.haxepunk;
 
 import com.haxepunk.graphics.Image;
 
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.display.PixelSnapping;
-import nme.display.Sprite;
-import nme.filters.BitmapFilter;
-import nme.geom.Matrix;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.PixelSnapping;
+import flash.display.Sprite;
+import flash.filters.BitmapFilter;
+import flash.geom.Matrix;
 
 /**
  * Container for the main screen buffer. Can be used to transform the screen.
@@ -241,7 +241,7 @@ class Screen
 	 * Final Y scale value of the screen
 	 */
 	public var fullScaleY(default, null):Float = 1;
-	
+
 	/**
 	 * True if the scale of the screen has changed.
 	 */

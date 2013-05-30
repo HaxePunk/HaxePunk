@@ -1,6 +1,6 @@
 package com.haxepunk.math;
 
-import nme.geom.Point;
+import flash.geom.Point;
 
 class Vector extends Point
 {

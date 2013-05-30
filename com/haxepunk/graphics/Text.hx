@@ -1,12 +1,17 @@
 package com.haxepunk.graphics;
 
-import nme.display.BitmapData;
-import nme.display.Sprite;
-import nme.geom.Point;
-import nme.geom.Rectangle;
-import nme.text.TextField;
-import nme.text.TextFormat;
-import nme.text.TextFormatAlign;
+import flash.display.BitmapData;
+import flash.display.Sprite;
+import flash.geom.Point;
+import flash.geom.Rectangle;
+import flash.text.TextField;
+import flash.text.TextFormat;
+import flash.text.TextFormatAlign;
+#if nme
+import nme.Assets;
+#else
+import openfl.Assets;
+#end
 
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
@@ -58,7 +63,7 @@ class Text extends Image
 		if (options.size == 0)     options.size = 16;
 		if (options.align == null) options.align = TextFormatAlign.LEFT;
 
-		var fontObj = nme.Assets.getFont(options.font);
+		var fontObj = Assets.getFont(options.font);
 		_format = new TextFormat(fontObj.fontName, options.size, options.color);
 		_format.align = options.align;
 		_format.leading = options.leading;
@@ -199,9 +204,7 @@ class Text extends Image
 	private function set_font(value:String):String
 	{
 		if (font == value) return value;
-#if nme
-		value = nme.Assets.getFont(value).fontName;
-#end
+		value = Assets.getFont(value).fontName;
 		_format.font = font = value;
 		updateBuffer();
 		return value;
@@ -223,19 +226,19 @@ class Text extends Image
 			return value;
 		}
 	}
-	
+
 	/**
 	 * Width of the text.
 	 */
-	override private function get_width():Int 
+	override private function get_width():Int
 	{
 		return _blit ? super.get_width() : Std.int(_field.width / HXP.screen.fullScaleX);
 	}
-	
+
 	/**
 	 * Height of the text.
 	 */
-	override private function get_height():Int 
+	override private function get_height():Int
 	{
 		return _blit ? super.get_height() : Std.int(_field.height / HXP.screen.fullScaleY);
 	}
@@ -251,7 +254,7 @@ class Text extends Image
 		updateBuffer();
 		return value;
 	}
-	
+
 	private function findParentSprite()
 	{
 		if (_entity == null || _entity.scene == null) return;
@@ -259,7 +262,7 @@ class Text extends Image
 		_parent = _entity.scene.getSpriteByLayer(layer);
 		_parent.addChild(_field);
 	}
-	
+
 	// Text information.
 	private var _field:TextField;
 	private var _format:TextFormat;

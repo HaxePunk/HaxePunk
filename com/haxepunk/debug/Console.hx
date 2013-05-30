@@ -5,19 +5,23 @@ import com.haxepunk.HXP;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 
+#if nme
 import nme.Assets;
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.display.BlendMode;
-import nme.display.Graphics;
-import nme.display.Sprite;
-import nme.events.Event;
-import nme.geom.ColorTransform;
-import nme.geom.Rectangle;
-import nme.system.System;
-import nme.text.TextField;
-import nme.text.TextFormat;
-import nme.text.TextFormatAlign;
+#else
+import openfl.Assets;
+#end
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.BlendMode;
+import flash.display.Graphics;
+import flash.display.Sprite;
+import flash.events.Event;
+import flash.geom.ColorTransform;
+import flash.geom.Rectangle;
+import flash.system.System;
+import flash.text.TextField;
+import flash.text.TextFormat;
+import flash.text.TextFormatAlign;
 
 import haxe.Log;
 import haxe.PosInfos;
@@ -742,7 +746,7 @@ class Console
 			{
 				var graphicScrollX = e.graphic != null ? e.graphic.scrollX : 1;
 				var graphicScrollY = e.graphic != null ? e.graphic.scrollY : 1;
-				
+
 				// If the Entity is not selected.
 				if (Lambda.indexOf(SELECT_LIST, e) < 0)
 				{

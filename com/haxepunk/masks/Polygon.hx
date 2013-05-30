@@ -4,8 +4,8 @@ import com.haxepunk.HXP;
 import com.haxepunk.Mask;
 import com.haxepunk.math.Projection;
 import com.haxepunk.math.Vector;
-import nme.display.Graphics;
-import nme.geom.Point;
+import flash.display.Graphics;
+import flash.geom.Point;
 
 class Polygon extends Hitbox
 {

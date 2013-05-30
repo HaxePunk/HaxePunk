@@ -9,14 +9,19 @@ class Preloader extends NMEPreloader { }
 
 #else
 
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.display.Graphics;
-import nme.display.Sprite;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.Graphics;
+import flash.display.Sprite;
+import flash.events.Event;
+import flash.geom.Point;
+import flash.geom.Rectangle;
+
+#if nme
 import nme.display.Tilesheet;
-import nme.events.Event;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+#else
+import openfl.display.Tilesheet;
+#end
 
 @:bitmap("assets/graphics/preloader/haxepunk.png")
 class HaxePunkLogo extends BitmapData {}

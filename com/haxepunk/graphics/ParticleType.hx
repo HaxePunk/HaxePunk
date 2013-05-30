@@ -3,8 +3,8 @@ package com.haxepunk.graphics;
 import com.haxepunk.HXP;
 import com.haxepunk.utils.Ease;
 
-import nme.display.BitmapData;
-import nme.geom.Rectangle;
+import flash.display.BitmapData;
+import flash.geom.Rectangle;
 
 /**
  * Template used to define a particle type used by the Emitter class. Instead

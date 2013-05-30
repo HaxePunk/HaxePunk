@@ -2,9 +2,9 @@ package com.haxepunk.graphics.prototype;
 
 import com.haxepunk.RenderMode;
 import com.haxepunk.graphics.atlas.AtlasData;
-import nme.display.BitmapData;
-import nme.display.Graphics;
-import nme.geom.Point;
+import flash.display.BitmapData;
+import flash.display.Graphics;
+import flash.geom.Point;
 
 class Rect extends Graphic
 {

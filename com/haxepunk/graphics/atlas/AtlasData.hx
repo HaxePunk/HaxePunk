@@ -1,13 +1,17 @@
 package com.haxepunk.graphics.atlas;
 
 import com.haxepunk.Scene;
-import nme.display.BitmapData;
-import nme.display.Graphics;
-import nme.display.Sprite;
+import flash.display.BitmapData;
+import flash.display.Graphics;
+import flash.display.Sprite;
+import flash.geom.Rectangle;
+import flash.geom.Point;
+import flash.geom.Matrix;
+#if nme
 import nme.display.Tilesheet;
-import nme.geom.Rectangle;
-import nme.geom.Point;
-import nme.geom.Matrix;
+#else
+import openfl.display.Tilesheet;
+#end
 
 class Layer
 {
@@ -161,7 +165,7 @@ class AtlasData
 	private inline function renderLayer(layer:Layer, layerIndex:Int)
 	{
 		layer.prepare();
-		_scene.getSpriteByLayer(layerIndex).graphics.drawTiles(_tilesheet, layer.data, Atlas.smooth, _renderFlags);
+		_tilesheet.drawTiles(_scene.getSpriteByLayer(layerIndex).graphics, layer.data, Atlas.smooth, _renderFlags);
 	}
 
 	private inline function setLayer(layer:Int)

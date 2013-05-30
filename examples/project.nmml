@@ -10,7 +10,7 @@
 
 	<source path="src" />
 
-	<haxelib name="nme" />
+	<haxelib name="openfl" />
 	<haxelib name="HaxePunk" />
 
 	<assets path="assets/graphics" rename="gfx" include="*.png|*.jpg" />

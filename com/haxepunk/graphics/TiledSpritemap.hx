@@ -1,8 +1,8 @@
 package com.haxepunk.graphics;
 
-import nme.display.BitmapData;
-import nme.display.Graphics;
-import nme.geom.Point;
+import flash.display.BitmapData;
+import flash.display.Graphics;
+import flash.geom.Point;
 import com.haxepunk.HXP;
 import com.haxepunk.graphics.Spritemap;
 

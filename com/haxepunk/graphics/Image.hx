@@ -7,13 +7,13 @@ import com.haxepunk.Graphic;
 import com.haxepunk.HXP;
 import com.haxepunk.RenderMode;
 
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.display.BlendMode;
-import nme.geom.ColorTransform;
-import nme.geom.Matrix;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.BlendMode;
+import flash.geom.ColorTransform;
+import flash.geom.Matrix;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 
 /**
  * Performance-optimized non-animated image. Can be drawn to the screen with transformations.
@@ -53,7 +53,7 @@ class Image extends Graphic
 
 	/**
 	 * Optional blend mode to use when drawing this image.
-	 * Use constants from the nme.display.BlendMode class.
+	 * Use constants from the flash.display.BlendMode class.
 	 */
 	public var blend:BlendMode;
 
@@ -254,9 +254,23 @@ class Image extends Graphic
 	 * @param	color		Color of the rectangle.
 	 * @return	A new Rect object.
 	 */
-	public static function createRect(width:Int, height:Int, color:Int = 0xFFFFFF):Graphic
+	public static function createRect(width:Int, height:Int, color:Int = 0xFFFFFF, alpha:Float = 1):Image
 	{
-		return new com.haxepunk.graphics.prototype.Rect(width, height, color);
+		var source:BitmapData = new BitmapData(width, height, true, 0xFFFFFFFF);
+		var image:Image;
+		if (HXP.renderMode.has(RenderMode.HARDWARE))
+		{
+			image = new Image(Atlas.loadImageAsRegion(source));
+		}
+		else
+		{
+			image = new Image(source);
+		}
+
+		image.color = color;
+		image.alpha = alpha;
+
+		return image;
 	}
 
 	/**
@@ -265,9 +279,28 @@ class Image extends Graphic
 	 * @param	color		Color of the circle.
 	 * @return	A new Circle object.
 	 */
-	public static function createCircle(radius:Int, color:Int = 0xFFFFFF):Graphic
+	public static function createCircle(radius:Int, color:Int = 0xFFFFFF, alpha:Float = 1):Image
 	{
-		return new com.haxepunk.graphics.prototype.Circle(radius, color);
+		HXP.sprite.graphics.clear();
+		HXP.sprite.graphics.beginFill(0xFFFFFF);
+		HXP.sprite.graphics.drawCircle(radius, radius, radius);
+		var data:BitmapData = new BitmapData(radius * 2, radius * 2, true, 0);
+		data.draw(HXP.sprite);
+
+		var image:Image;
+		if (HXP.renderMode.has(RenderMode.HARDWARE))
+		{
+			image = new Image(Atlas.loadImageAsRegion(data));
+		}
+		else
+		{
+			image = new Image(data);
+		}
+
+		image.color = color;
+		image.alpha = alpha;
+
+		return image;
 	}
 
 	/**

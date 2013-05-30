@@ -1,7 +1,7 @@
 package com.haxepunk.graphics.atlas;
 
-import nme.display.Sprite;
-import nme.geom.Rectangle;
+import flash.display.Sprite;
+import flash.geom.Rectangle;
 
 class Atlas
 {

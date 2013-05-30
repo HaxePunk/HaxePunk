@@ -7,10 +7,11 @@
 	<window fps="{{FRAMERATE}}" background="0x333333" />
 	<window width="{{WIDTH}}" height="{{HEIGHT}}" resizable="true" unless="mobile" />
 	<window fullscreen="true" if="mobile" />
+	<window orientation="landscape" vsync="true" antialiasing="0" if="cpp" />
 
 	<source path="src" />
 
-	<haxelib name="nme" />
+	<haxelib name="openfl" />
 	<haxelib name="HaxePunk" />
 
 	<assets path="assets/graphics" rename="gfx" include="*.png|*.jpg" />

@@ -1,9 +1,15 @@
 package com.haxepunk;
 
-import nme.events.Event;
-import nme.media.Sound;
-import nme.media.SoundChannel;
-import nme.media.SoundTransform;
+import flash.events.Event;
+import flash.media.Sound;
+import flash.media.SoundChannel;
+import flash.media.SoundTransform;
+
+#if nme
+import nme.Assets;
+#else
+import openfl.Assets;
+#end
 
 typedef AudioCompleteCallback = Void -> Void;
 
@@ -34,7 +40,7 @@ class Sfx
 		if (source == null) throw "Invalid source Sound.";
 		if (Std.is(source, String))
 		{
-			_sound = nme.Assets.getSound(source);
+			_sound = Assets.getSound(source);
 			_sounds.set(source, _sound);
 		}
 		else

@@ -3,11 +3,11 @@ package com.haxepunk.graphics;
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
 
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.geom.Matrix;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.geom.Matrix;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 
 /**
  * Creates a pre-rotated Image strip to increase runtime performance for rotating graphics.

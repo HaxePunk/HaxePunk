@@ -1,8 +1,8 @@
 package com.haxepunk;
 
-import nme.display.BitmapData;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+import flash.display.BitmapData;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 import com.haxepunk.graphics.Image;
 import com.haxepunk.graphics.Graphiclist;
 
@@ -429,7 +429,7 @@ class Entity extends Tweener
 	public var onCamera(get_onCamera, null):Bool;
 	private inline function get_onCamera():Bool
 	{
-		if (_scene == null) 
+		if (_scene == null)
 		{
 			return false;
 		}

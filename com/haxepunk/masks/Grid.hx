@@ -1,10 +1,10 @@
 package com.haxepunk.masks;
 
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.display.Graphics;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.Graphics;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 import com.haxepunk.HXP;
 import com.haxepunk.Mask;
 
@@ -335,7 +335,7 @@ class Grid extends Hitbox
 			_tile.y += _tile.height;
 		}
 #else
-		trace('Pixelmasks will not work in targets other than flash due to hittest not being implemented in NME.');
+		trace('Pixelmasks will not work in targets other than flash due to hittest not being implemented in OpenFL.');
 #end
 		return false;
 	}

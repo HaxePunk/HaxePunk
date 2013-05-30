@@ -33,23 +33,23 @@
 		<exec executable="haxelib" dir=".">
 			<arg line="run HaxePunk new build-test" />
 		</exec>
-		<exec executable="haxelib" dir="build-test">
-			<arg line="run nme build project.nmml" />
+		<exec executable="openfl" dir="build-test">
+			<arg line="build project.nmml" />
 			<arg line="flash" />
 		</exec>
-		<exec executable="haxelib" dir="build-test">
-			<arg line="run nme build project.nmml" />
+		<exec executable="openfl" dir="build-test">
+			<arg line="build project.nmml" />
 			<arg line="neko" />
 		</exec>
-		<exec executable="haxelib" dir="build-test">
-			<arg line="run nme build project.nmml" />
+		<exec executable="openfl" dir="build-test">
+			<arg line="build project.nmml" />
 			<arg line="html5" />
 		</exec>
 	</target>
 
 	<target name="examples" depends="haxelib">
-		<exec executable="haxelib" dir="examples">
-			<arg line="run nme test project.nmml" />
+		<exec executable="openfl" dir="examples">
+			<arg line="test project.nmml" />
 			<arg line="neko -debug" />
 		</exec>
 	</target>

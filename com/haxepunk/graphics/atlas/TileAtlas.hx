@@ -1,6 +1,6 @@
 package com.haxepunk.graphics.atlas;
 
-import nme.display.BitmapData;
+import flash.display.BitmapData;
 
 class TileAtlas extends Atlas
 {

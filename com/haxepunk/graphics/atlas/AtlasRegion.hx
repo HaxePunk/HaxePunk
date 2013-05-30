@@ -1,8 +1,8 @@
 package com.haxepunk.graphics.atlas;
 
-import nme.geom.Rectangle;
-import nme.geom.Point;
-import nme.geom.Matrix;
+import flash.geom.Rectangle;
+import flash.geom.Point;
+import flash.geom.Matrix;
 
 class AtlasRegion
 {

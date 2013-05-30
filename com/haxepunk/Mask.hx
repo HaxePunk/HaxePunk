@@ -4,8 +4,8 @@ import com.haxepunk.Entity;
 import com.haxepunk.math.Projection;
 import com.haxepunk.math.Vector;
 import com.haxepunk.masks.Masklist;
-import nme.display.Graphics;
-import nme.geom.Point;
+import flash.display.Graphics;
+import flash.geom.Point;
 
 typedef MaskCallback = Dynamic -> Bool;
 

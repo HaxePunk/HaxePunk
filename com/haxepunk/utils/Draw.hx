@@ -1,12 +1,13 @@
 package com.haxepunk.utils;
 
-import nme.display.BitmapData;
-import nme.display.BlendMode;
-import nme.display.Graphics;
-import nme.display.LineScaleMode;
-import nme.geom.Matrix;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+import flash.display.BitmapData;
+import flash.display.BlendMode;
+import flash.display.Graphics;
+import flash.display.LineScaleMode;
+import flash.display.Sprite;
+import flash.geom.Matrix;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 import com.haxepunk.Entity;
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
@@ -30,7 +31,7 @@ class Draw
 	{
 		if (HXP.renderMode.has(RenderMode.HARDWARE))
 		{
-			var sprite = new nme.display.Sprite();
+			var sprite = new Sprite();
 			HXP.stage.addChild(sprite);
 			_graphics = sprite.graphics;
 		}

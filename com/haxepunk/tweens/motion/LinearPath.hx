@@ -2,7 +2,7 @@ package com.haxepunk.tweens.motion;
 
 import com.haxepunk.Tween;
 import com.haxepunk.utils.Ease;
-import nme.geom.Point;
+import flash.geom.Point;
 
 /**
  * Determines linear motion along a set of points.

@@ -2,7 +2,7 @@ package com.haxepunk;
 
 import com.haxepunk.utils.Ease;
 import com.haxepunk.tweens.TweenEvent;
-import nme.events.EventDispatcher;
+import flash.events.EventDispatcher;
 
 enum TweenType
 {

@@ -1,15 +1,15 @@
 package com.haxepunk;
 
-import nme.display.Bitmap;
-import nme.display.BitmapData;
-import nme.display.Sprite;
-import nme.display.StageAlign;
-import nme.display.StageDisplayState;
-import nme.display.StageQuality;
-import nme.display.StageScaleMode;
-import nme.events.Event;
-import nme.geom.Rectangle;
-import nme.Lib;
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.display.Sprite;
+import flash.display.StageAlign;
+import flash.display.StageDisplayState;
+import flash.display.StageQuality;
+import flash.display.StageScaleMode;
+import flash.events.Event;
+import flash.geom.Rectangle;
+import flash.Lib;
 import haxe.Timer;
 import com.haxepunk.graphics.atlas.AtlasData;
 import com.haxepunk.utils.Draw;
@@ -138,7 +138,7 @@ class Engine extends Sprite
 	public function render()
 	{
 		if (HXP.screen.needsResize) HXP.resize(HXP.windowWidth, HXP.windowHeight);
-		
+
 		// timing stuff
 		var t:Float = Lib.getTimer();
 		if (_frameLast == 0) _frameLast = Std.int(t);
@@ -199,7 +199,7 @@ class Engine extends Sprite
 		});
 
 #if !(flash || html5)
-		nme.display.Stage.shouldRotateInterface = function(orientation:Int):Bool {
+		flash.display.Stage.shouldRotateInterface = function(orientation:Int):Bool {
 			if (Lambda.indexOf(HXP.orientations, orientation) == -1) return false;
 			var tmp = HXP.height;
 			HXP.height = HXP.width;

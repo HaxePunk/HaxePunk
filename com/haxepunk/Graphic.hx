@@ -1,7 +1,7 @@
 package com.haxepunk;
 
-import nme.display.BitmapData;
-import nme.geom.Point;
+import flash.display.BitmapData;
+import flash.geom.Point;
 
 typedef AssignCallback = Void -> Void;
 
@@ -86,7 +86,7 @@ class Graphic
 	 * @param  camera     The camera offset.
 	 */
 	public function render(target:BitmapData, point:Point, camera:Point) { }
-	
+
 	public function setEntity(entity:Entity)
 	{
 		_entity = entity;

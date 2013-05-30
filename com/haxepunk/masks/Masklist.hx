@@ -3,7 +3,7 @@ package com.haxepunk.masks;
 import com.haxepunk.Entity;
 import com.haxepunk.HXP;
 import com.haxepunk.Mask;
-import nme.display.Graphics;
+import flash.display.Graphics;
 
 /**
  * A Mask that can contain multiple Masks of one or various types.

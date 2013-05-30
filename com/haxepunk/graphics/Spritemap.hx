@@ -3,10 +3,10 @@ package com.haxepunk.graphics;
 import com.haxepunk.HXP;
 import com.haxepunk.graphics.atlas.TileAtlas;
 
-import nme.display.BitmapData;
-import nme.display.SpreadMethod;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+import flash.display.BitmapData;
+import flash.display.SpreadMethod;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 
 typedef CallbackFunction = Void -> Void;
 

@@ -1,20 +1,26 @@
 package com.haxepunk;
 
-import nme.display.BitmapData;
-import nme.display.Bitmap;
-import nme.display.Graphics;
-import nme.display.Sprite;
-import nme.display.Stage;
-import nme.display.StageDisplayState;
-import nme.geom.Matrix;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+import flash.display.BitmapData;
+import flash.display.Bitmap;
+import flash.display.Graphics;
+import flash.display.Sprite;
+import flash.display.Stage;
+import flash.display.StageDisplayState;
+import flash.geom.Matrix;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 #if flash
 import flash.media.SoundMixer;
 #end
-import nme.media.SoundTransform;
-import nme.system.System;
-import nme.utils.ByteArray;
+import flash.media.SoundTransform;
+import flash.system.System;
+import flash.utils.ByteArray;
+
+#if nme
+import nme.Assets;
+#else
+import openfl.Assets;
+#end
 
 import com.haxepunk.Graphic;
 import com.haxepunk.Tween;
@@ -133,7 +139,7 @@ class HXP
 	/**
 	 * The default font file to use
 	 */
-#if nme
+#if (openfl || nme)
 	public static var defaultFont:String = "font/04B_03__.ttf";
 #else
 	public static var defaultFont:String = "default";
@@ -879,8 +885,8 @@ class HXP
 		if (_bitmap.exists(name))
 			return _bitmap.get(name);
 
-#if nme
-		var data:BitmapData = nme.Assets.getBitmapData(source);
+#if (openfl || nme)
+		var data:BitmapData = Assets.getBitmapData(source);
 #else
 		var data:BitmapData = source.bitmapData;
 #end

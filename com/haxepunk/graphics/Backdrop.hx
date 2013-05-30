@@ -6,8 +6,8 @@ import com.haxepunk.graphics.atlas.AtlasRegion;
 import com.haxepunk.HXP;
 import com.haxepunk.RenderMode;
 
-import nme.display.BitmapData;
-import nme.geom.Point;
+import flash.display.BitmapData;
+import flash.geom.Point;
 
 /**
  * A background texture that can be repeated horizontally and vertically

@@ -1,9 +1,14 @@
 package com.haxepunk.graphics.atlas;
 
 import com.haxepunk.HXP;
-import nme.display.BitmapData;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+import flash.display.BitmapData;
+import flash.geom.Point;
+import flash.geom.Rectangle;
+#if nme
+import nme.Assets;
+#else
+import openfl.Assets;
+#end
 
 class TextureAtlas extends Atlas
 {
@@ -26,7 +31,7 @@ class TextureAtlas extends Atlas
 	 */
 	public static function loadTexturePacker(file:String):TextureAtlas
 	{
-		var xml = Xml.parse(nme.Assets.getText(file));
+		var xml = Xml.parse(Assets.getText(file));
 		var root = xml.firstElement();
 		var atlas = new TextureAtlas(root.get("imagePath"));
 		for (sprite in root.elements())

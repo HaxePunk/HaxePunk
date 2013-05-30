@@ -9,10 +9,10 @@ import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 import com.haxepunk.utils.Ease;
 
-import nme.display.BitmapData;
-import nme.geom.ColorTransform;
-import nme.geom.Point;
-import nme.geom.Rectangle;
+import flash.display.BitmapData;
+import flash.geom.ColorTransform;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 
 /**
  * Particle emitter used for emitting and rendering particle sprites.
