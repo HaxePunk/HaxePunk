@@ -6,12 +6,25 @@ import flash.geom.Rectangle;
 class Atlas
 {
 
+	/**
+	 * When a draw array hits this threshold it is rendered and flushed
+	 * It keeps memory to a minimum which improves rendering on mobile devices
+	 */
 	public static var drawCallThreshold:Int = 25000;
+	/**
+	 * Whether or not to use antialiasing (default: true)
+	 */
 	public static var smooth:Bool = false;
 
+	/**
+	 * The width of this atlas
+	 */
 	public var width(get_width, never):Int;
 	private function get_width():Int { return _data.width; }
 
+	/**
+	 * The height of this atlas
+	 */
 	public var height(get_height, never):Int;
 	private function get_height():Int { return _data.height; }
 

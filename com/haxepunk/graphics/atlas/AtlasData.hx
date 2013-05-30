@@ -42,7 +42,12 @@ class AtlasData
 	public var width(default, null):Int;
 	public var height(default, null):Int;
 
-	public static inline function create(source:Dynamic)
+	/**
+	 * Creates a new AtlasData object
+	 * @param  source The image to initialize AtlasData with
+	 * @return        An AtlasData object
+	 */
+	public static inline function create(source:Dynamic):AtlasData
 	{
 		var data:AtlasData;
 		if (Std.is(source, BitmapData))
@@ -89,6 +94,10 @@ class AtlasData
 		_atlases.push(this);
 	}
 
+	/**
+	 * Sets the scene object
+	 * @param scene The scene object to set
+	 */
 	public static inline function setScene(scene:Scene)
 	{
 		_scene = scene;
@@ -128,6 +137,9 @@ class AtlasData
 		}
 	}
 
+	/**
+	 * Removes the object from memory
+	 */
 	public function destroy()
 	{
 		_refCount -= 1;
@@ -182,6 +194,21 @@ class AtlasData
 		_layerIndex = layer;
 	}
 
+	/**
+	 * Prepares a tile to be drawn using a matrix
+	 * @param  tile  The tile index to draw
+	 * @param  layer The layer to draw on
+	 * @param  tx    X-Axis translation
+	 * @param  ty    Y-Axis translation
+	 * @param  a     Top-left
+	 * @param  b     Top-right
+	 * @param  c     Bottom-left
+	 * @param  d     Bottom-right
+	 * @param  red   Red color value
+	 * @param  green Green color value
+	 * @param  blue  Blue color value
+	 * @param  alpha Alpha value
+	 */
 	public inline function prepareTileMatrix(tile:Int, layer:Int,
 		tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
 		red:Float, green:Float, blue:Float, alpha:Float)
@@ -211,6 +238,20 @@ class AtlasData
 		}
 	}
 
+	/**
+	 * Prepares a tile to be drawn
+	 * @param  tile   The tile index to draw
+	 * @param  x      The x-axis value
+	 * @param  y      The y-axis value
+	 * @param  layer  The layer to draw on
+	 * @param  scaleX X-Axis scale
+	 * @param  scaleY Y-Axis scale
+	 * @param  angle  Angle (in degrees)
+	 * @param  red    Red color value
+	 * @param  green  Green color value
+	 * @param  blue   Blue color value
+	 * @param  alpha  Alpha value
+	 */
 	public inline function prepareTile(tile:Int, x:Float, y:Float, layer:Int,
 		scaleX:Float, scaleY:Float, angle:Float,
 		red:Float, green:Float, blue:Float, alpha:Float)

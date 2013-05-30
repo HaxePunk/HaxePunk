@@ -265,6 +265,9 @@ class HXP
 		camera.x = camera.y = 0;
 	}
 
+	/**
+	 * Toggles between windowed and fullscreen modes
+	 */
 	public static var fullscreen(get_fullscreen, set_fullscreen):Bool;
 	private static inline function get_fullscreen():Bool { return HXP.stage.displayState == StageDisplayState.FULL_SCREEN; }
 	private static inline function set_fullscreen(value:Bool):Bool

@@ -19,16 +19,40 @@ import com.haxepunk.HXP;
 class Input
 {
 
+	/**
+	 * Contains the string of the last keys pressed
+	 */
 	public static var keyString:String = "";
 
+	/**
+	 * Holds the last key pressed
+	 */
 	public static var lastKey:Int;
 
+	/**
+	 * If the mouse is held down
+	 */
 	public static var mouseDown:Bool;
+	/**
+	 * If the mouse is up
+	 */
 	public static var mouseUp:Bool;
+	/**
+	 * If the mouse was recently pressed
+	 */
 	public static var mousePressed:Bool;
+	/**
+	 * If the mouse was recently released
+	 */
 	public static var mouseReleased:Bool;
+	/**
+	 * If the mouse wheel has moved
+	 */
 	public static var mouseWheel:Bool;
 
+	/**
+	 * Returns true if the device supports multi touch
+	 */
 	public static var multiTouchSupported(default, null):Bool = false;
 
 	/**
@@ -196,6 +220,11 @@ class Input
 		return -1;
 	}
 
+	/**
+	 * Returns a joystick object (creates one if not connected)
+	 * @param  id The id of the joystick, starting with 0
+	 * @return    A Joystick object
+	 */
 	public static function joystick(id:Int):Joystick
 	{
 		var joy:Joystick = _joysticks.get(id);
@@ -207,6 +236,9 @@ class Input
 		return joy;
 	}
 
+	/**
+	 * Returns the number of connected joysticks
+	 */
 	public static var joysticks(get_joysticks, never):Int;
 	private static function get_joysticks():Int
 	{
@@ -221,6 +253,9 @@ class Input
 		return count;
 	}
 
+	/**
+	 * Enables input handling
+	 */
 	public static function enable()
 	{
 		if (!_enabled && HXP.stage != null)
@@ -241,7 +276,7 @@ class Input
 				HXP.stage.addEventListener(TouchEvent.TOUCH_END, onTouchEnd);
 			}
 
-#if (nme && (cpp || neko))
+#if ((nme || openfl) && (cpp || neko))
 			HXP.stage.addEventListener(JoystickEvent.AXIS_MOVE, onJoyAxisMove);
 			HXP.stage.addEventListener(JoystickEvent.BALL_MOVE, onJoyBallMove);
 			HXP.stage.addEventListener(JoystickEvent.BUTTON_DOWN, onJoyButtonDown);
@@ -251,6 +286,9 @@ class Input
 		}
 	}
 
+	/**
+	 * Updates the input states
+	 */
 	public static function update()
 	{
 		while (_pressNum-- > -1) _press[_pressNum] = -1;
@@ -259,7 +297,7 @@ class Input
 		_releaseNum = 0;
 		if (mousePressed) mousePressed = false;
 		if (mouseReleased) mouseReleased = false;
-#if (nme && (cpp || neko))
+#if ((nme || openfl) && (cpp || neko))
 		for (joystick in _joysticks) joystick.update();
 #end
 		for (touch in _touches) touch.update();
@@ -344,7 +382,7 @@ class Input
 		_touchNum -= 1;
 	}
 
-#if (nme && (cpp || neko))
+#if ((nme || openfl) && (cpp || neko))
 
 	private static function onJoyAxisMove(e:JoystickEvent)
 	{

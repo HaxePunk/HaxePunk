@@ -12,6 +12,10 @@ class TileAtlas extends Atlas
 		prepareTiles(_data.width, _data.height, tileWidth, tileHeight);
 	}
 
+	/**
+	 * Gets an atlas region based on an identifier
+	 * @param index The tile index of the region to retrieve
+	 */
 	public function getRegion(index:Int):AtlasRegion
 	{
 		return _regions[index];

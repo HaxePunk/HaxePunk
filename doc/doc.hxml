@@ -5,5 +5,5 @@
 -D doc
 -D desktop
 -xml all.xml
--cp ../src
+-cp ..
 --macro include('com.haxepunk')
