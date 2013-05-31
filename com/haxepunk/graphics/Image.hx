@@ -202,7 +202,6 @@ class Image extends Graphic
 		}
 		else // _blit
 		{
-			if (_flipped) _point.x += _sourceRect.width;
 			var fsx = HXP.screen.fullScaleX,
 				fsy = HXP.screen.fullScaleY;
 
@@ -214,6 +213,8 @@ class Image extends Graphic
 					_point.x = (point.x + x - originX * sx - camera.x * scrollX);
 					_point.y = (point.y + y - originY * sy - camera.y * scrollY);
 				}
+
+				if (_flipped) _point.x += _sourceRect.width;
 
 				_point.x = Math.floor(_point.x * fsx);
 				_point.y = Math.floor(_point.y * fsy);
@@ -228,6 +229,8 @@ class Image extends Graphic
 				var theta = angle * HXP.RAD;
 				var cos = Math.cos(theta);
 				var sin = Math.sin(theta);
+
+				if (flipped) sx *= -1;
 
 				// optimized matrix math
 				var b = sx * fsx * sin;
