@@ -144,7 +144,7 @@ class XBOX_GAMEPAD
 	* Keep in mind that if TRIGGER axis returns value > 0 then LT is being pressed, and if it's < 0 then RT is being pressed
 	*/
 	public static var TRIGGER:Int = 2;
-#elif mac
+#elseif mac
 	public static var A_BUTTON:Int = 11;
 	public static var B_BUTTON:Int = 12;
 	public static var X_BUTTON:Int = 13;
