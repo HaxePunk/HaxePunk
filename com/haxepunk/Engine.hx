@@ -10,6 +10,7 @@ import flash.display.StageScaleMode;
 import flash.events.Event;
 import flash.geom.Rectangle;
 import flash.Lib;
+import haxe.EnumFlags;
 import haxe.Timer;
 import com.haxepunk.graphics.atlas.AtlasData;
 import com.haxepunk.utils.Draw;
@@ -47,8 +48,9 @@ class Engine extends Sprite
 	 * @param	height			The height of your game.
 	 * @param	frameRate		The game framerate, in frames per second.
 	 * @param	fixed			If a fixed-framerate should be used.
+	 * @param   renderMode      Overrides the default render mode for this target
 	 */
-	public function new(width:Int = 0, height:Int = 0, frameRate:Float = 60, fixed:Bool = false)
+	public function new(width:Int = 0, height:Int = 0, frameRate:Float = 60, fixed:Bool = false, ?renderMode:RenderMode)
 	{
 		super();
 
@@ -57,15 +59,18 @@ class Engine extends Sprite
 		HXP.assignedFrameRate = frameRate;
 		HXP.fixed = fixed;
 #if haxe3
-		HXP.renderMode = new haxe.EnumFlags<RenderMode>();
+		HXP.renderMode = new EnumFlags<RenderMode>();
 #else
 		HXP.renderMode.init();
 #end
-#if flash
-		HXP.renderMode.set(RenderMode.BUFFER);
-#else
-		HXP.renderMode.set(RenderMode.HARDWARE);
-#end
+		if (renderMode != null)
+		{
+			HXP.renderMode.set(renderMode);
+		}
+		else
+		{
+			HXP.renderMode.set(#if flash RenderMode.BUFFER #else RenderMode.HARDWARE #end);
+		}
 
 		// global game objects
 		HXP.engine = this;
