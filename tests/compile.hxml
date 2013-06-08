@@ -1,4 +1,6 @@
 -neko unit.n
+--macro allowPackage("flash")
 -main TestMain
 -lib openfl
+-lib openfl-native
 -lib HaxePunk

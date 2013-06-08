@@ -22,6 +22,7 @@ class TestScreen extends haxe.unit.TestCase
 	public function testScale()
 	{
 		HXP.screen.scale = 2;
+		HXP.resize(HXP.windowWidth, HXP.windowHeight);
 		assertEquals(160, HXP.width);
 		assertEquals(240, HXP.height);
 		assertEquals(320, HXP.windowWidth);
@@ -32,6 +33,7 @@ class TestScreen extends haxe.unit.TestCase
 	{
 		HXP.screen.scaleX = 2;
 		HXP.screen.scaleY = 3;
+		HXP.resize(HXP.windowWidth, HXP.windowHeight);
 		assertEquals(160, HXP.width);
 		assertEquals(160, HXP.height);
 	}
