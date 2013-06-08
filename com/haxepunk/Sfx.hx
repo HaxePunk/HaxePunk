@@ -59,10 +59,11 @@ class Sfx
 
 	/**
 	 * Plays the sound once.
-	 * @param	vol		Volume factor, a value from 0 to 1.
-	 * @param	pan		Panning factor, a value from -1 to 1.
+	 * @param	vol	   Volume factor, a value from 0 to 1.
+	 * @param	pan	   Panning factor, a value from -1 to 1.
+	 * @param   loop   If the audio should loop infinitely
 	 */
-	public function play(volume:Float = 1, pan:Float = 0)
+	public function play(volume:Float = 1, pan:Float = 0, loop:Bool = false)
 	{
 		if (_sound == null) return;
 		if (playing) stop();
@@ -72,13 +73,17 @@ class Sfx
 		_filteredVol = Math.max(0, _volume * getVolume(_type));
 		_transform.pan = _filteredPan;
 		_transform.volume = _filteredVol;
+#if flash
 		_channel = _sound.play(0, 0, _transform);
+#else
+		_channel = _sound.play(0, loop ? -1 : 0, _transform);
+#end
 		if (playing)
 		{
 			addPlaying();
 			_channel.addEventListener(Event.SOUND_COMPLETE, onComplete);
 		}
-		_looping = false;
+		_looping = loop;
 		_position = 0;
 	}
 
@@ -89,8 +94,7 @@ class Sfx
 	 */
 	public function loop(vol:Float = 1, pan:Float = 0)
 	{
-		play(vol, pan);
-		_looping = true;
+		play(vol, pan, true);
 	}
 
 	/**
@@ -113,7 +117,11 @@ class Sfx
 	 */
 	public function resume()
 	{
+#if flash
 		_channel = _sound.play(_position, 0, _transform);
+#else
+		_channel = _sound.play(_position, _looping ? -1 : 0, _transform);
+#end
 		if (playing)
 		{
 			addPlaying();
@@ -125,8 +133,10 @@ class Sfx
 	/** @private Event handler for sound completion. */
 	private function onComplete(e:Event = null)
 	{
+#if flash
 		if (_looping) loop(_volume, _pan);
 		else stop();
+#end
 		_position = 0;
 		if (complete != null) complete();
 	}
