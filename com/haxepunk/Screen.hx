@@ -254,8 +254,8 @@ class Screen
 	private function get_angle():Float { return _angle * HXP.DEG; }
 	private function set_angle(value:Float):Float
 	{
-		if (_angle == value * HXP.RAD) return value;
-		_angle = value * HXP.RAD;
+		if (_angle == value) return value;
+		_angle = value;
 		update();
 		return _angle;
 	}
