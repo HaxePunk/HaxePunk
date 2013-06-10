@@ -1,4 +1,4 @@
-﻿package com.haxepunk.tweens.misc;
+package com.haxepunk.tweens.misc;
 
 import com.haxepunk.HXP;
 import com.haxepunk.Tween;
@@ -34,12 +34,18 @@ class AngleTween extends Tween
 	 */
 	public function tween(fromAngle:Float, toAngle:Float, duration:Float, ease:EaseFunction = null)
 	{
+		fromAngle *= HXP.DEG; // the way this was written seemed bizarre so I just 
+		toAngle *= HXP.DEG;   // converted these here to not screw anything up
+
 		_start = angle = fromAngle;
 		var d:Float = toAngle - angle,
 			a:Float = Math.abs(d);
 		if (a > 181) _range = (360 - a) * (d > 0 ? -1 : 1);
 		else if (a < 179) _range = d;
 		else _range = HXP.choose([180, -180]);
+
+		_range *= HXP.RAD;
+
 		_target = duration;
 		_ease = ease;
 		start();
