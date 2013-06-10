@@ -433,10 +433,15 @@ class HXP
 	 * @param	y2		The second y-position.
 	 * @return	The angle from (x1, y1) to (x2, y2).
 	 */
-	public static inline function angle(x1:Float, y1:Float, x2:Float, y2:Float):Float
+	public static inline function angle(x1:Float, y1:Float, x2:Float, y2:Float, degrees:Bool = false):Float
 	{
-		var a:Float = Math.atan2(y2 - y1, x2 - x1) * DEG;
-		return a < 0 ? a + 360 : a;
+		var a:Float = Math.atan2(y2 - y1, x2 - x1);
+		a = a < 0 ? a + Math.PI*2 : a;
+		if(degrees)
+		{
+			a *= DEG;
+		}
+		return a;
 	}
 
 	/**
@@ -447,9 +452,12 @@ class HXP
 	 * @param	x			X offset.
 	 * @param	y			Y offset.
 	 */
-	public static inline function angleXY(object:Dynamic, angle:Float, length:Float = 1, x:Float = 0, y:Float = 0)
+	public static inline function angleXY(object:Dynamic, angle:Float, length:Float = 1, x:Float = 0, y:Float = 0, degrees:Bool = false)
 	{
-		angle *= RAD;
+		if(degrees)
+		{
+			angle *= RAD;
+		}
 		object.x = Math.cos(angle) * length + x;
 		object.y = Math.sin(angle) * length + y;
 	}
@@ -460,11 +468,16 @@ class HXP
 	 * @param	angle2	Second angle, in degrees.
 	 * @return	The angle difference, in degrees.
 	 */
-	public static inline function angleDifference(angle1:Float, angle2:Float):Float
+	public static inline function angleDifference(angle1:Float, angle2:Float, degrees:Bool = false):Float
 	{
+		if(degrees)
+		{
+			angle1 *= RAD;
+			angle2 *= RAD;
+		}
 		var diff:Float = angle2 - angle1;
-		while (diff < -180) diff += 360;
-		while (diff > 180) diff -= 360;
+		while (diff < -Math.PI) diff += Math.PI*2;
+		while (diff > Math.PI) diff -= Math.PI*2;
 		return diff;
 	}
 
@@ -474,8 +487,12 @@ class HXP
 	 * @param	anchor		Anchor to rotate around.
 	 * @param	angle		The amount of degrees to rotate by.
 	 */
-	public static inline function rotateAround(object:Dynamic, anchor:Dynamic, angle:Float = 0, relative:Bool = true)
+	public static inline function rotateAround(object:Dynamic, anchor:Dynamic, angle:Float = 0, relative:Bool = true, degrees:Bool = false)
 	{
+		if(degrees)
+		{
+			angle *= RAD;
+		}
 		if (relative) angle += HXP.angle(anchor.x, anchor.y, object.x, object.y);
 		HXP.angleXY(object, angle, HXP.distance(anchor.x, anchor.y, object.x, object.y), anchor.x, anchor.y);
 	}
