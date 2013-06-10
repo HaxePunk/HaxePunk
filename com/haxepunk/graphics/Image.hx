@@ -193,7 +193,7 @@ class Image extends Graphic
 					_matrix.d = sy;
 					_matrix.tx = -originX * sx;
 					_matrix.ty = -originY * sy;
-					if (angle != 0) _matrix.rotate(angle * HXP.RAD);
+					if (angle != 0) _matrix.rotate(angle);
 					_matrix.tx += originX + _point.x;
 					_matrix.ty += originY + _point.y;
 					target.draw(_bitmap, _matrix, null, blend, null, smooth);
@@ -226,7 +226,7 @@ class Image extends Graphic
 			}
 			else
 			{
-				var theta = angle * HXP.RAD;
+				var theta = angle;
 				var cos = Math.cos(theta);
 				var sin = Math.sin(theta);
 
