@@ -244,13 +244,6 @@ class Tilemap extends Canvas
 
 	public function loadFrom2DArray(array:Array2D):Void
 	{
-		// for (x in 0...array.length)
-		// {
-		// 	for (y in 0...array[0].length)
-		// 	{
-		// 		setTile(x, y, array[x][y]);
-		// 	}
-		// }
 		_map = array;
 	}
 
@@ -421,58 +414,66 @@ class Tilemap extends Canvas
 
 	public override function render(target:BitmapData, point:Point, camera:Point)
 	{
+		// determine drawing location
+		_point.x = point.x + x - camera.x * scrollX;
+		_point.y = point.y + y - camera.y * scrollY;
+
+		var scalex:Float = HXP.screen.fullScaleX, scaley:Float = HXP.screen.fullScaleY,
+			tw:Int = Math.ceil(tileWidth), th:Int = Math.ceil(tileHeight);
+
+		// determine start and end tiles to draw (optimization)
+		var startx = -Math.floor(_point.x / tw),
+			starty = -Math.floor(_point.y / th),
+			destx = startx + Math.ceil(HXP.width / tw),
+			desty = starty + Math.ceil(HXP.height / th);
+
+		// BUG? the starting point seems to be off by 1...
+		startx = startx - 1; starty = starty - 1;
+
+		// nothing will render if we're completely off screen
+		if (startx > _columns || starty > _rows || destx < 0 || desty < 0)
+			return;
+
+		// clamp values to boundaries
+		if (startx < 0) startx = 0;
+		if (destx > _columns) destx = _columns;
+		if (starty < 0) starty = 0;
+		if (desty > _rows) desty = _rows;
+
+		var wx = (_point.x + startx * tw) * scalex,
+			wy = (_point.y + starty * th) * scaley,
+			tile = 0;
+
 		if (_blit)
+			target.lock();
+		for (y in starty...desty)
 		{
-			super.render(target, point, camera);
-		}
-		else
-		{
-			// determine drawing location
-			_point.x = point.x + x - camera.x * scrollX;
-			_point.y = point.y + y - camera.y * scrollY;
-
-			var scalex:Float = HXP.screen.fullScaleX, scaley:Float = HXP.screen.fullScaleY,
-				tw:Int = Math.ceil(tileWidth), th:Int = Math.ceil(tileHeight);
-
-			// determine start and end tiles to draw (optimization)
-			var startx = -Math.floor(_point.x / tw),
-				starty = -Math.floor(_point.y / th),
-				destx = startx + Math.ceil(HXP.width / tw),
-				desty = starty + Math.ceil(HXP.height / th);
-
-			// BUG? the starting point seems to be off by 1...
-			startx = startx - 1; starty = starty - 1;
-
-			// nothing will render if we're completely off screen
-			if (startx > _columns || starty > _rows || destx < 0 || desty < 0)
-				return;
-
-			// clamp values to boundaries
-			if (startx < 0) startx = 0;
-			if (destx > _columns) destx = _columns;
-			if (starty < 0) starty = 0;
-			if (desty > _rows) desty = _rows;
-
-			var wx = (_point.x + startx * tw) * scalex,
-				wy = (_point.y + starty * th) * scaley,
-				tile = 0;
-
-			for (y in starty...desty)
+			for (x in startx...destx)
 			{
-				for (x in startx...destx)
+				tile = _map[y % _rows][x % _columns];
+				if (tile >= 0)
 				{
-					tile = _map[y % _rows][x % _columns];
-					if (tile >= 0)
+					if (_blit)
+					{
+						_tile.x = _tile.width * (tile % _rows);
+						_tile.y = _tile.height * Std.int(tile / rows);						
+						target.copyPixels(_set, _tile, new Point(wx, wy), null, null, true);
+					}
+					else
 					{
 						_atlas.prepareTile(tile, Math.floor(wx), Math.floor(wy), layer, scalex, scaley, 0, _red, _green, _blue, alpha);
 					}
-
-					wx += tw * scalex;
+					
 				}
-				wx = (_point.x + startx * tw) * scalex;
-				wy += th * scaley;
+
+				wx += tw * scalex;
 			}
+			wx = (_point.x + startx * tw) * scalex;
+			wy += th * scaley;
 		}
+		
+		if (_blit)
+			target.unlock();
 	}
 
 	/** @private Used by shiftTiles to update a tile from the tilemap. */
