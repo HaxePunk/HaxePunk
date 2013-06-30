@@ -223,8 +223,8 @@ class AtlasData
 
 		// matrix transformation
 		data[_layer.index++] = a; // m00
-		data[_layer.index++] = c; // m01
 		data[_layer.index++] = b; // m10
+		data[_layer.index++] = c; // m01
 		data[_layer.index++] = d; // m11
 
 		data[_layer.index++] = red;
@@ -278,8 +278,8 @@ class AtlasData
 			var cos = Math.cos(-angle * HXP.RAD);
 			var sin = Math.sin(-angle * HXP.RAD);
 			d[_layer.index++] = cos * scaleX; // m00
-			d[_layer.index++] = sin * scaleX; // m01
 			d[_layer.index++] = -sin * scaleY; // m10
+			d[_layer.index++] = sin * scaleX; // m01
 			d[_layer.index++] = cos * scaleY; // m11
 		}
 
