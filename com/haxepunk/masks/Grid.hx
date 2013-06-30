@@ -196,6 +196,21 @@ class Grid extends Hitbox
 	}
 
 	/**
+	* Loads the grid data from an array.
+	* @param array The array data, which is a set of tile values (0 or 1)
+	*/
+	public function loadFrom2DArray(array:Array<Array<Int>>)
+	{
+		for (y in 0...array[0].length)
+		{
+			for (x in 0...array.length)
+			{
+				setTile(x, y, array[x][y] > 0);
+			}
+		}
+	}
+
+	/**
 	* Saves the grid data to a string.
 	* @param columnSep		The string that separates each tile value on a row, default is ",".
 	* @param rowSep			The string that separates each row of tiles, default is "\n".

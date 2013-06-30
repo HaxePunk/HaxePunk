@@ -244,13 +244,16 @@ class Tilemap extends Canvas
 
 	public function loadFrom2DArray(array:Array2D):Void
 	{
-		// for (x in 0...array.length)
-		// {
-		// 	for (y in 0...array[0].length)
-		// 	{
-		// 		setTile(x, y, array[x][y]);
-		// 	}
-		// }
+		if (_blit)
+		{
+			for (x in 0...array.length)
+			 {
+				for (y in 0...array[0].length)
+				{
+					setTile(x, y, array[x][y]);
+				}
+			 }
+		}
 		_map = array;
 	}
 
@@ -273,7 +276,10 @@ class Tilemap extends Canvas
 			for (x in 0...cols)
 			{
 				if (col[x] == '') continue;
-				setTile(x, y, Std.parseInt(col[x]));
+				
+				if (_blit)
+					setTile(x, y, Std.parseInt(col[x]));
+				_map[y][x] = Std.parseInt(col[x]);
 			}
 		}
 	}
