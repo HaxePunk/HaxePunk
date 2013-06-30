@@ -69,7 +69,7 @@ class Engine extends Sprite
 		}
 		else
 		{
-			HXP.renderMode.set(#if flash RenderMode.BUFFER #else RenderMode.HARDWARE #end);
+			HXP.renderMode.set(#if (flash || js) RenderMode.BUFFER #else RenderMode.HARDWARE #end);
 		}
 
 		// global game objects
