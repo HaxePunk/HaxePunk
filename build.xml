@@ -23,7 +23,7 @@
 	<target name="haxelib_v3" depends="tools">
 		<zip destfile="template.zip" useLanguageEncodingFlag="UTF-8" basedir="template" />
 		<zip destfile="haxepunk.zip" useLanguageEncodingFlag="UTF-8">
-			<zipfileset dir="" prefix="haxepunk" includes="run.n,haxelib.json,include.nmml,template.zip,CHANGELOG,LICENSE" />
+			<zipfileset dir="" prefix="haxepunk" includes="run.n,haxelib.json,include.xml,template.zip,CHANGELOG,LICENSE" />
 			<zipfileset dir="com" prefix="haxepunk/com" />
 			<zipfileset dir="assets" prefix="haxepunk/assets" />
 		</zip>
@@ -46,22 +46,22 @@
 			<arg line="run HaxePunk new build-test" />
 		</exec>
 		<exec executable="openfl" dir="build-test">
-			<arg line="build project.nmml" />
+			<arg line="build project.xml" />
 			<arg line="flash" />
 		</exec>
 		<exec executable="openfl" dir="build-test">
-			<arg line="build project.nmml" />
+			<arg line="build project.xml" />
 			<arg line="neko" />
 		</exec>
 		<exec executable="openfl" dir="build-test">
-			<arg line="build project.nmml" />
+			<arg line="build project.xml" />
 			<arg line="html5" />
 		</exec>
 	</target>
 
 	<target name="examples" depends="haxelib_v3">
 		<exec executable="openfl" dir="examples">
-			<arg line="test project.nmml" />
+			<arg line="test project.xml" />
 			<arg line="neko -debug" />
 		</exec>
 	</target>
