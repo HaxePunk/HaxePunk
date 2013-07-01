@@ -246,11 +246,11 @@ class Tilemap extends Canvas
 	{
 		if (_blit)
 		{
-			for (x in 0...array.length)
+			for (y in 0...array.length)
 			 {
-				for (y in 0...array[0].length)
+				for (x in 0...array[0].length)
 				{
-					setTile(x, y, array[x][y]);
+					setTile(x, y, array[y][x]);
 				}
 			 }
 		}

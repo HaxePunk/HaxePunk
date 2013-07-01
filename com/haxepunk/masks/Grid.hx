@@ -201,11 +201,11 @@ class Grid extends Hitbox
 	*/
 	public function loadFrom2DArray(array:Array<Array<Int>>)
 	{
-		for (y in 0...array[0].length)
+		for (y in 0...array.length)
 		{
-			for (x in 0...array.length)
+			for (x in 0...array[0].length)
 			{
-				setTile(x, y, array[x][y] > 0);
+				setTile(x, y, array[y][x] > 0);
 			}
 		}
 	}
