@@ -54,10 +54,10 @@ class ParticleType
 	 */
 	public function setMotion(angle:Float, distance:Float, duration:Float, angleRange:Float = 0, distanceRange:Float = 0, durationRange:Float = 0, ease:EaseFunction = null):ParticleType
 	{
-		_angle = angle * HXP.RAD;
+		_angle = angle;
 		_distance = distance;
 		_duration = duration;
-		_angleRange = angleRange * HXP.RAD;
+		_angleRange = angleRange;
 		_distanceRange = distanceRange;
 		_durationRange = durationRange;
 		_ease = ease;

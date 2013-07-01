@@ -843,7 +843,6 @@ class Entity extends Tweener
 	 */
 	public inline function moveAtAngle(angle:Float, amount:Float, solidType:Dynamic = null, sweep:Bool = false):Void
 	{
-		angle *= HXP.RAD;
 		moveBy(Math.cos(angle) * amount + x, Math.sin(angle) * amount + y, solidType, sweep);
 	}
 

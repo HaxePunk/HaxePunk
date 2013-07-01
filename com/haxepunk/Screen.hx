@@ -251,11 +251,11 @@ class Screen
 	 * Rotation of the screen, in degrees.
 	 */
 	public var angle(get_angle, set_angle):Float;
-	private function get_angle():Float { return _angle * HXP.DEG; }
+	private function get_angle():Float { return _angle; }
 	private function set_angle(value:Float):Float
 	{
-		if (_angle == value * HXP.RAD) return value;
-		_angle = value * HXP.RAD;
+		if (_angle == value) return value;
+		_angle = value;
 		update();
 		return _angle;
 	}

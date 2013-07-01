@@ -97,9 +97,9 @@ class PreRotation extends Image
 	{
 		if (_blit)
 		{
-			frameAngle %= 360;
-			if (frameAngle < 0) frameAngle += 360;
-			_current = Math.floor(_frameCount * frameAngle / 360);
+			frameAngle %= Math.PI*2;
+			if (frameAngle < 0) frameAngle += Math.PI*2;
+			_current = Math.floor(_frameCount * frameAngle / Math.PI*2);
 			if (_last != _current)
 			{
 				_last = _current;

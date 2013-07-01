@@ -78,7 +78,7 @@ class AtlasRegion
 		scaleX:Float=1, scaleY:Float=1, angle:Float=0,
 		red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1)
 	{
-		if (rotated) angle = angle + 90;
+		if (rotated) angle = angle + Math.PI/2;
 		parent.prepareTile(tileIndex, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha);
 	}
 
@@ -102,7 +102,7 @@ class AtlasRegion
 		if (rotated)
 		{
 			var matrix = new Matrix(a, b, c, d, tx, ty);
-			matrix.rotate(90 * HXP.RAD);
+			matrix.rotate(Math.PI/2);
 			parent.prepareTileMatrix(tileIndex, layer,
 				matrix.tx, matrix.ty, matrix.a, matrix.b, matrix.c, matrix.d,
 				red, green, blue, alpha);

@@ -359,7 +359,7 @@ class Polygon extends Hitbox
 
 	private function rotate(angle:Float):Void
 	{
-		angle *= HXP.RAD;
+		angle;
 
 		for (p in _points)
 		{
@@ -401,7 +401,7 @@ class Polygon extends Hitbox
 #end
 
 	/**
-	 * Angle in degress that the polygon is rotated.
+	 * Angle in radians that the polygon is rotated.
 	 */
 	public var angle(get_angle, set_angle):Float;
 	private inline function get_angle():Float { return _angle; }
