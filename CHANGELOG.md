@@ -1,5 +1,17 @@
 HaxePunk CHANGELOG
 
+v2.3.1
+------------------------------
+* [ibilon] Changed render mode to BUFFER for HTML5
+* Matching OpenFL 2x2 matrix ordering change in 1.0.2
+* [elnabo] Fixed/added load from array for Tilemap and Grid
+* [ibilon] Allow setHitboxTo for all targets
+* Allow renderMode to be set in Engine constructor
+* Fixed seamless Sfx looping on native targets
+* Added Xbox button configuration for Mac
+* Fixing flipped images when angle != 0
+* Changed joystick axis to start at 0 instead of 1
+
 v2.3.0
 ------------------------------
 * Adding OpenFL support
