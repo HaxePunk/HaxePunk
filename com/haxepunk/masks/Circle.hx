@@ -53,7 +53,7 @@ class Circle extends Hitbox
 
 		return distanceToCorner <= _squaredRadius;
 	}
-
+	
 	private function collideCircle(other:Circle):Bool
 	{
 		var dx:Float = (parent.x + _x) - (other.parent.x + other._x);
@@ -80,54 +80,41 @@ class Circle extends Hitbox
 		if (maxx > other.columns) maxx = other.columns;
 		if (maxy > other.rows)    maxy = other.rows;
 
-		var midx:Int = Math.floor((maxx + minx) / 2),
-			midy:Int = Math.floor((maxy + miny) / 2),
+		var hTileWidth = other.tileWidth * 0.5,
+			hTileHeight = other.tileHeight * 0.5,
 			dx:Float, dy:Float;
-
+		
 		for (xx in minx...maxx)
 		{
 			for (yy in miny...maxy)
 			{
 				if (other.getTile(xx, yy))
-				{
-					if (xx <= midx)
-					{
-						if (yy <= midy) //Lower right
-						{
-							dx = entityDistX - (xx + 1) * other.tileWidth;
-							dy = entityDistX - (yy + 1) * other.tileHeight;
-							if (dx * dx + dy * dy < _squaredRadius)
-								return true;
-						}
-						else //Upper right
-						{
-							dx = entityDistX - (xx + 1) * other.tileWidth;
-							dy = entityDistX - yy * other.tileHeight;
-							if (dx * dx + dy * dy < _squaredRadius)
-								return true;
-						}
-					}
-					else
-					{
-						if (yy <= midy) //Lower left
-						{
-							dx = entityDistX - xx * other.tileWidth;
-							dy = entityDistX - (yy + 1) * other.tileHeight;
-							if (dx * dx + dy * dy < _squaredRadius)
-								return true;
-						}
-						else //Upper left
-						{
-							dx = entityDistX - xx * other.tileWidth;
-							dy = entityDistX - yy * other.tileHeight;
-							if (dx * dx + dy * dy < _squaredRadius)
-								return true;
-						}
-					}
-					return true;
-				}
+				{					
+					var mx = otherX + xx*other.tileWidth + hTileWidth,
+						my = otherY + yy*other.tileHeight + hTileHeight;
+						
+					var dx = Math.abs(thisX - mx);
+					
+					if (dx > hTileWidth + radius)
+						continue;
+						
+					var dy = Math.abs(thisY - my);
+					
+					if (dy > hTileHeight + radius)
+						continue;
+						
+					if (dx <= hTileWidth || dy <= hTileHeight)
+						return true;
+						
+					var xCornerDist = dx - hTileWidth;
+					var yCornerDist = dy - hTileHeight;
+					
+					if (xCornerDist * xCornerDist + yCornerDist * yCornerDist <= _squaredRadius)
+						return true;
+				}				
 			}
 		}
+		
 		return false;
 	}
 
