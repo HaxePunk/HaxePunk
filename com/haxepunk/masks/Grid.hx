@@ -361,16 +361,17 @@ class Grid extends Hitbox
 		HXP.point.y = (_y + parent.y - HXP.camera.y) * HXP.screen.fullScaleY;
 
 		graphics.beginFill(0x0000FF, 0.3);
-		var pos = HXP.point.x,
-			stepX = tileWidth * HXP.screen.fullScaleX,
-			stepY = tileHeight * HXP.screen.fullScaleY;
+		var stepX = tileWidth * HXP.screen.fullScaleX,
+			stepY = tileHeight * HXP.screen.fullScaleY,
+			pos = HXP.point.x + stepX;
+			
 		for (i in 1...columns)
 		{
 			graphics.drawRect(pos, HXP.point.y, 1, _height * HXP.screen.fullScaleX);
 			pos += stepX;
 		}
 
-		pos = HXP.point.y;
+		pos = HXP.point.y + stepY; 
 		for (i in 1...rows)
 		{
 			graphics.drawRect(HXP.point.x, pos, _width * HXP.screen.fullScaleY, 1);
