@@ -116,7 +116,7 @@ neko.Sys.args();
 					// create the file
 					var bytes:Bytes = Reader.unzip(entry);
 
-					if (StringTools.endsWith(filename, ".hx") || StringTools.endsWith(filename, ".nmml"))
+					if (StringTools.endsWith(filename, ".hx") || StringTools.endsWith(filename, ".xml"))
 					{
 						var text:String = new BytesInput(bytes).readString(bytes.length);
 
