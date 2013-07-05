@@ -262,6 +262,21 @@ class Text extends Image
 		_parent = _entity.scene.getSpriteByLayer(layer);
 		_parent.addChild(_field);
 	}
+	
+	/**
+	 * Alpha of the text.
+	 */
+	override function set_alpha(value:Float):Float
+	{
+		if (_blit)
+		{
+			return super.set_alpha(value);
+		}
+		else
+		{
+			return _field.alpha = value;
+		}
+	}
 
 	// Text information.
 	private var _field:TextField;
