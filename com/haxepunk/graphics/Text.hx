@@ -266,6 +266,17 @@ class Text extends Image
 	/**
 	 * Alpha of the text.
 	 */
+	override function get_alpha():Float
+	{
+		if (_blit)
+		{
+			return super.get_alpha();
+		}
+		else
+		{
+			return _field.alpha;
+		}
+	}
 	override function set_alpha(value:Float):Float
 	{
 		if (_blit)
