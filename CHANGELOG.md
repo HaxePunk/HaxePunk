@@ -1,5 +1,12 @@
 HaxePunk CHANGELOG
 
+v2.3.2
+------------------------------
+* [ibilon] Fix circle/grid collision
+* [ibilon] Fix grid debug overlay
+* [ibilon] Fix moveAtAngle
+* [elnabo] Fix Tilemap/Grid load from array
+
 v2.3.1
 ------------------------------
 * [ibilon] Changed render mode to BUFFER for HTML5
