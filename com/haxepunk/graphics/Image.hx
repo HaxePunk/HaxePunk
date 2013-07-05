@@ -461,14 +461,22 @@ class Image extends Graphic
 	/**
 	 * The scaled width of the image.
 	 */
-	public var scaledWidth(get_scaledWidth, never):Float;
+	public var scaledWidth(get_scaledWidth, set_scaledWidth):Float;
 	private function get_scaledWidth():Float { return width * scaleX * scale; }
+	public function set_scaledWidth(w:Float):Float {
+		scaleX = w / scale / width;
+		return scaleX;
+	}
 
 	/**
 	 * The scaled height of the image.
 	 */
-	public var scaledHeight(get_scaledHeight, never):Float;
+	public var scaledHeight(get_scaledHeight, set_scaledHeight):Float;
 	private function get_scaledHeight():Float { return height * scaleY * scale; }
+	public function set_scaledHeight(h:Float):Float {
+		scaleY = h / scale / height;
+		return scaleY;
+	}
 
 	/**
 	 * Clipping rectangle for the image.
