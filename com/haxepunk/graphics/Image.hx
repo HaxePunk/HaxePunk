@@ -43,11 +43,13 @@ class Image extends Graphic
 
 	/**
 	 * X origin of the image, determines transformation point.
+	 * Defaults to top-left corner.
 	 */
 	public var originX:Float;
 
 	/**
 	 * Y origin of the image, determines transformation point.
+	 * Defaults to top-left corner.
 	 */
 	public var originY:Float;
 

@@ -50,8 +50,7 @@ There are a few ways you can get involved with HaxePunk.
 
 *	Chevy Ray Johnston for creating the original FlashPunk.
 *	[NME](http://www.nme.io) makes native targets possible and simplifies asset management in Flash. Thanks guys!
-*	Github contributors: @Marwes, @MaskedPixel, @YAYitsAndrew, @andyli, @jgroeneveld, @noonat, @mkosler, @chrixko, @tangzero, @raistlin, @stevedecoded, @DelishusCake, @Lythom, @zlumer, @scriptorum
-*	An small, but awesome, community that keeps this project going.
+*	All the awesome people who have [contributed](https://github.com/HaxePunk/HaxePunk/graphs/contributors) to HaxePunk and joined in the discussions on the [forum](http://forum.haxepunk.com).
 
 ## MIT License
 
