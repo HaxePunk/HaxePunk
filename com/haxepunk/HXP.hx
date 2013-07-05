@@ -203,7 +203,14 @@ class HXP
 	private static inline function get_scene():Scene { return _scene; }
 	private static function set_scene(value:Scene):Scene
 	{
-		if (_scene == value) return value;
+		if (_goto != null)
+		{
+			if (_goto == value) return value;
+		}
+		else
+		{
+			if (_scene == value) return value;
+		}
 		_goto = value;
 		return _scene;
 	}
