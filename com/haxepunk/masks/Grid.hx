@@ -364,14 +364,14 @@ class Grid extends Hitbox
 		var stepX = tileWidth * HXP.screen.fullScaleX,
 			stepY = tileHeight * HXP.screen.fullScaleY,
 			pos = HXP.point.x + stepX;
-			
+
 		for (i in 1...columns)
 		{
 			graphics.drawRect(pos, HXP.point.y, 1, _height * HXP.screen.fullScaleX);
 			pos += stepX;
 		}
 
-		pos = HXP.point.y + stepY; 
+		pos = HXP.point.y + stepY;
 		for (i in 1...rows)
 		{
 			graphics.drawRect(HXP.point.x, pos, _width * HXP.screen.fullScaleY, 1);
@@ -381,6 +381,7 @@ class Grid extends Hitbox
 		HXP.rect.y = HXP.point.y;
 		for (y in 0...rows)
 		{
+			HXP.rect.x = HXP.point.x;
 			for (x in 0...columns)
 			{
 				if (data[y][x])
@@ -389,7 +390,6 @@ class Grid extends Hitbox
 				}
 				HXP.rect.x += stepX;
 			}
-			HXP.rect.x = HXP.point.x;
 			HXP.rect.y += stepY;
 		}
 		graphics.endFill();
