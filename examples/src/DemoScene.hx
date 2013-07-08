@@ -8,6 +8,7 @@ import com.haxepunk.utils.Key;
 // have to import scenes for compilation
 import platformer.GameScene;
 import masks.GameScene;
+import masks.SlopedScene;
 import effects.GameScene;
 
 class DemoScene extends Scene
@@ -101,6 +102,7 @@ class DemoScene extends Scene
 	private static var _currentScene:Int = 0;
 	private static var _scenes:Array<String> = [
 		'masks.GameScene',
+		'masks.SlopedScene',
 		'effects.GameScene',
 		'platformer.GameScene'
 	];
