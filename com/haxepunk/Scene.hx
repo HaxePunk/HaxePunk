@@ -447,7 +447,7 @@ class Scene extends Tweener
 		while (fe != null)
 		{
 			e = cast(fe, Entity);
-			if (e.collideRect(e.x, e.y, rX, rY, rWidth, rHeight)) return e;
+			if (e.collidable && e.collideRect(e.x, e.y, rX, rY, rWidth, rHeight)) return e;
 			fe = fe._typeNext;
 		}
 		return null;
@@ -631,7 +631,7 @@ class Scene extends Tweener
 		while (fe != null)
 		{
 			e = cast fe;
-			if (e.collideRect(e.x, e.y, rX, rY, rWidth, rHeight)) into[n ++] = e;
+			if (e.collidable && e.collideRect(e.x, e.y, rX, rY, rWidth, rHeight)) into[n ++] = e;
 			fe = fe._typeNext;
 		}
 	}
@@ -677,7 +677,7 @@ class Scene extends Tweener
 		while (fe != null)
 		{
 			e = cast fe;
-			if (e.collidePoint(e.x, e.y, pX, pY)) into[n ++] = e;
+			if (e.collidable && e.collidePoint(e.x, e.y, pX, pY)) into[n ++] = e;
 			fe = fe._typeNext;
 		}
 	}
