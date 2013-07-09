@@ -276,7 +276,7 @@ class Tilemap extends Canvas
 			for (x in 0...cols)
 			{
 				if (col[x] == '') continue;
-				
+
 				if (_blit)
 					setTile(x, y, Std.parseInt(col[x]));
 				_map[y][x] = Std.parseInt(col[x]);
@@ -459,24 +459,26 @@ class Tilemap extends Canvas
 			if (starty < 0) starty = 0;
 			if (desty > _rows) desty = _rows;
 
-			var wx = (_point.x + startx * tw) * scalex,
-				wy = (_point.y + starty * th) * scaley,
-				tile = 0;
+			var wx:Int, sx:Int = Math.floor((_point.x + startx * tw) * scalex),
+				wy:Int = Math.floor((_point.y + starty * th) * scaley),
+				stepx:Int = Math.floor(tw * scalex),
+				stepy:Int = Math.floor(th * scaley),
+				tile:Int = 0;
 
 			for (y in starty...desty)
 			{
+				wx = sx;
 				for (x in startx...destx)
 				{
 					tile = _map[y % _rows][x % _columns];
 					if (tile >= 0)
 					{
-						_atlas.prepareTile(tile, Math.floor(wx), Math.floor(wy), layer, scalex, scaley, 0, _red, _green, _blue, alpha);
+						_atlas.prepareTile(tile, wx, wy, layer, scalex, scaley, 0, _red, _green, _blue, alpha);
 					}
 
-					wx += tw * scalex;
+					wx += stepx;
 				}
-				wx = (_point.x + startx * tw) * scalex;
-				wy += th * scaley;
+				wy += stepy;
 			}
 		}
 	}
