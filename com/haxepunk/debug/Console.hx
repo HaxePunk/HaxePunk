@@ -111,24 +111,27 @@ class Console
 	 */
 	public function log(data:Array<Dynamic>)
 	{
-		var s:String;
-		if (data.length > 1)
+		var s:String = "";
+
+		// Iterate through data to build a string.
+		for (i in 0...data.length)
 		{
-			s = "";
-			var i:Int = 0;
-			while (i < data.length)
-			{
-				if (i > 0) s += " ";
-				s += Std.string(data[i++]);
-			}
+			if (i > 0) s += " ";
+			s += (data[i] != null ? Std.string(data[i]) : "null");
 		}
-		else s = data[0].toString();
+
+		// Replace newlines with multiple log statements.
 		if (s.indexOf("\n") >= 0)
 		{
 			var a:Array<String> = s.split("\n");
 			for (s in a) LOG.push(s);
 		}
-		else LOG.push(s);
+		else
+		{
+			LOG.push(s);
+		}
+
+		// If the log is running, update it.
 		if (_enabled && _sprite.visible) updateLog();
 	}
 
