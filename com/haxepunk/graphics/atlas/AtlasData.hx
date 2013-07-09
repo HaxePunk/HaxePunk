@@ -42,6 +42,10 @@ class AtlasData
 	public var width(default, null):Int;
 	public var height(default, null):Int;
 
+	public static inline var BLEND_NONE:Int = -1;
+	public static inline var BLEND_ADD:Int = Tilesheet.TILE_BLEND_ADD;
+	public static inline var BLEND_NORMAL:Int = Tilesheet.TILE_BLEND_NORMAL;
+
 	/**
 	 * Creates a new AtlasData object
 	 * @param  source The image to initialize AtlasData with
@@ -59,19 +63,25 @@ class AtlasData
 		}
 		else
 		{
-			if (_dataPool.exists(source))
-			{
-				data = _dataPool.get(source);
-				data._refCount += 1;
-			}
-			else
-			{
-				data = new AtlasData(HXP.getBitmap(source));
-				data._name = source;
-				_dataPool.set(source, data);
-			}
+			data = getAtlasDataByName(source);
 		}
+		data._refCount += 1;
 		return data;
+	}
+
+	public static inline function getAtlasDataByName(name:String):AtlasData
+	{
+		if (_dataPool.exists(name))
+		{
+			return _dataPool.get(name);
+		}
+		else
+		{
+			var data = new AtlasData(HXP.getBitmap(name));
+			data._name = name;
+			_dataPool.set(name, data);
+			return data;
+		}
 	}
 
 	private function new(bd:BitmapData)
@@ -83,13 +93,16 @@ class AtlasData
 #end
 
 		_tilesheet = new Tilesheet(bd);
+
 		_renderFlags = Tilesheet.TILE_TRANS_2x2 | Tilesheet.TILE_ALPHA | Tilesheet.TILE_BLEND_NORMAL | Tilesheet.TILE_RGB;
+		_flagAlpha = true;
+		_flagRGB = true;
 
 		width = bd.width;
 		height = bd.height;
 
 		_tileIndex = 0;
-		_refCount = 1;
+		_refCount = 0;
 		_layerIndex = -1;
 		_atlases.push(this);
 	}
@@ -227,10 +240,17 @@ class AtlasData
 		data[_layer.index++] = c; // m01
 		data[_layer.index++] = d; // m11
 
-		data[_layer.index++] = red;
-		data[_layer.index++] = green;
-		data[_layer.index++] = blue;
-		data[_layer.index++] = alpha;
+		// color
+		if (_flagRGB)
+		{
+			data[_layer.index++] = red;
+			data[_layer.index++] = green;
+			data[_layer.index++] = blue;
+		}
+		if (_flagAlpha)
+		{
+			data[_layer.index++] = alpha;
+		}
 
 		if (_layer.index > Atlas.drawCallThreshold)
 		{
@@ -283,10 +303,16 @@ class AtlasData
 			d[_layer.index++] = cos * scaleY; // m11
 		}
 
-		d[_layer.index++] = red;
-		d[_layer.index++] = green;
-		d[_layer.index++] = blue;
-		d[_layer.index++] = alpha;
+		if (_flagRGB)
+		{
+			d[_layer.index++] = red;
+			d[_layer.index++] = green;
+			d[_layer.index++] = blue;
+		}
+		if (_flagAlpha)
+		{
+			d[_layer.index++] = alpha;
+		}
 
 		if (_layer.index > Atlas.drawCallThreshold)
 		{
@@ -294,13 +320,64 @@ class AtlasData
 		}
 	}
 
+	public var alpha(get_alpha, set_alpha):Bool;
+	private function get_alpha():Bool { return (_renderFlags & Tilesheet.TILE_ALPHA != 0); }
+	private function set_alpha(value:Bool):Bool
+	{
+		if (value) _renderFlags |= Tilesheet.TILE_ALPHA;
+		else _renderFlags &= ~Tilesheet.TILE_ALPHA;
+		_flagAlpha = value;
+		return value;
+	}
+
+	public var rgb(get_rgb, set_rgb):Bool;
+	private function get_rgb():Bool { return (_renderFlags & Tilesheet.TILE_RGB != 0); }
+	private function set_rgb(value:Bool)
+	{
+		if (value) _renderFlags |= Tilesheet.TILE_RGB;
+		else _renderFlags &= ~Tilesheet.TILE_RGB;
+		_flagRGB = value;
+		return value;
+	}
+
+	public var blend(get_blend, set_blend):Int;
+	private function get_blend():Int {
+		if (_renderFlags & Tilesheet.TILE_BLEND_NORMAL != 0)
+			return BLEND_NORMAL;
+		else if (_renderFlags & Tilesheet.TILE_BLEND_ADD != 0)
+			return BLEND_ADD;
+		else
+			return BLEND_NONE;
+	}
+	private function set_blend(value:Int):Int
+	{
+		switch (value)
+		{
+			case BLEND_NONE:
+				_renderFlags &= ~Tilesheet.TILE_BLEND_ADD;
+				_renderFlags &= ~Tilesheet.TILE_BLEND_NORMAL;
+			case BLEND_ADD:
+				_renderFlags |= Tilesheet.TILE_BLEND_ADD;
+				_renderFlags &= ~Tilesheet.TILE_BLEND_NORMAL;
+			case BLEND_NORMAL:
+				_renderFlags &= ~Tilesheet.TILE_BLEND_ADD;
+				_renderFlags |= Tilesheet.TILE_BLEND_NORMAL;
+		}
+		return value;
+	}
+
+
 	// used for pooling
 	private var _name:String;
 	private var _refCount:Int; // memory management
 
 	private var _layerIndex:Int;
 	private var _layer:Layer; // current layer
+
 	private var _renderFlags:Int;
+	private var _flagRGB:Bool;
+	private var _flagAlpha:Bool;
+
 	private var _tileIndex:Int;
 	private var _tilesheet:Tilesheet;
 #if haxe3
