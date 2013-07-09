@@ -4,6 +4,7 @@ import com.haxepunk.HXP;
 import com.haxepunk.Entity;
 import com.haxepunk.Scene;
 import com.haxepunk.graphics.Image;
+import com.haxepunk.masks.Circle;
 import com.haxepunk.masks.Hitbox;
 import com.haxepunk.masks.SlopedGrid;
 import com.haxepunk.utils.Input;
@@ -23,6 +24,9 @@ class SlopedScene extends DemoScene
 		grid.setRect(0, 9, 10, 1, Solid);
 		grid.setRect(0, 0, 1, 10, Solid);
 		grid.setRect(9, 0, 1, 10, Solid);
+		grid.setRect(1, 4, 1, 2, Solid);
+		grid.setRect(8, 4, 1, 2, Solid);
+
 		// quick 45 degree slopes
 		grid.setTile(1, 1, TopLeft);
 		grid.setTile(8, 1, TopRight);
@@ -46,9 +50,9 @@ class SlopedScene extends DemoScene
 		addMask(grid, "mask", 100, 100);
 
 		entity = new Entity(0, 0);
-		image = Image.createRect(16, 64, 0xFFFFFFFF);
+		image = Image.createCircle(8, 0xFFFFFFFF);
 		image.centerOrigin();
-		entity.setHitbox(16, 64, 8, 32);
+		entity.mask = new Circle(8, -8, -8);
 		entity.graphic = image;
 		add(entity);
 

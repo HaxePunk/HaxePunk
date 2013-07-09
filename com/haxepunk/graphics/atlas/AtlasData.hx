@@ -69,6 +69,11 @@ class AtlasData
 		return data;
 	}
 
+	/**
+	 * Get's the atlas data for a specific texture, useful for setting rendering flags
+	 * @param  name The name of the image file
+	 * @return      An AtlasData object (will create one if it doesn't already exist)
+	 */
 	public static inline function getAtlasDataByName(name:String):AtlasData
 	{
 		if (_dataPool.exists(name))
@@ -320,6 +325,10 @@ class AtlasData
 		}
 	}
 
+	/**
+	 * Sets the render flag to enable/disable alpha
+	 * Default: true
+	 */
 	public var alpha(get_alpha, set_alpha):Bool;
 	private function get_alpha():Bool { return (_renderFlags & Tilesheet.TILE_ALPHA != 0); }
 	private function set_alpha(value:Bool):Bool
@@ -330,6 +339,10 @@ class AtlasData
 		return value;
 	}
 
+	/**
+	 * Sets the render flag to enable/disable rgb tinting
+	 * Default: true
+	 */
 	public var rgb(get_rgb, set_rgb):Bool;
 	private function get_rgb():Bool { return (_renderFlags & Tilesheet.TILE_RGB != 0); }
 	private function set_rgb(value:Bool)
@@ -340,6 +353,10 @@ class AtlasData
 		return value;
 	}
 
+	/**
+	 * Sets the blend mode for rendering (BLEND_NONE, BLEND_NORMAL, BLEND_ADD)
+	 * Default: BLEND_NORMAL
+	 */
 	public var blend(get_blend, set_blend):Int;
 	private function get_blend():Int {
 		if (_renderFlags & Tilesheet.TILE_BLEND_NORMAL != 0)
