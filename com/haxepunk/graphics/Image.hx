@@ -132,18 +132,19 @@ class Image extends Graphic
 	}
 
 	/**
-	 * Calculates the bound box of the Image, taking account the Image transformation.
-	 * @return 	the bound box.
+	 * Calculates the bound box of the Image, taking account the Image
+	 * transformation.
+	 * @return 	the bound box in local coordinate of the image.
 	 */
 	public function getBounds():flash.geom.Rectangle {
+		var sx = scale * scaleX;
+		var sy = scale * scaleY;
 		_matrix.b = _matrix.c = 0;
-		_matrix.a = scale * scaleX;
-		_matrix.d = scale * scaleY;
-		_matrix.tx = -originX * _matrix.a;
-		_matrix.ty = -originY * _matrix.d;
+		_matrix.a = sx;
+		_matrix.d = sy;
+		_matrix.tx = -originX * sx;
+		_matrix.ty = -originY * sy;
 		_matrix.rotate(angle * HXP.RAD);
-		_matrix.tx += originX + _point.x;
-		_matrix.ty += originY + _point.y;
 
 		_point.x = 0;
 		_point.y = 0;
