@@ -131,6 +131,42 @@ class Image extends Graphic
 		}
 	}
 
+	/**
+	 * Calculates the bound box of the Image, taking account the Image transformation.
+	 * @return 	the bound box.
+	 */
+	public function getBounds():flash.geom.Rectangle {
+		_matrix.b = _matrix.c = 0;
+		_matrix.a = scale * scaleX;
+		_matrix.d = scale * scaleY;
+		_matrix.tx = -originX * _matrix.a;
+		_matrix.ty = -originY * _matrix.d;
+		_matrix.rotate(angle * HXP.RAD);
+		_matrix.tx += originX + _point.x;
+		_matrix.ty += originY + _point.y;
+
+		_point.x = 0;
+		_point.y = 0;
+		var p1 = _matrix.transformPoint(_point);
+		_point.x = width;
+		_point.y = height;
+		var p2 = _matrix.transformPoint(_point);
+		_point.x = 0;
+		_point.y = height;
+		var p3 = _matrix.transformPoint(_point);
+		_point.x = width;
+		_point.y = 0;
+		var p4 = _matrix.transformPoint(_point);
+
+		var r = new Rectangle(0, 0, 0, 0);
+		r.x = Math.min(Math.min(p1.x, p2.x), Math.min(p3.x, p4.x));
+		r.y = Math.min(Math.min(p1.y, p2.y), Math.min(p3.y, p4.y));
+		r.width  = Math.max(Math.max(p1.x - r.x, p2.x - r.x), Math.max(p3.x - r.x, p4.x - r.x));
+		r.height = Math.max(Math.max(p1.y - r.y, p2.y - r.y), Math.max(p3.y - r.y, p4.y - r.y));
+
+		return r;
+	}
+
 	private inline function setAtlasRegion(region:AtlasRegion)
 	{
 		_blit = false;
