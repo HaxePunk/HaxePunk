@@ -154,11 +154,13 @@ class Console
 
 	/**
 	 * Enables the console.
+	 * @param   value           Set the console enabled or disabled.
+	 * @param   captureTrace    Option to capture trace in HaxePunk.
 	 */
-	public function enable()
+	public function enable(value:Bool=true, captureTrace:Bool=true)
 	{
-		// Quit if the console is already enabled.
-		if (_enabled) return;
+		// Quit if the console is already in the same state as value (enabled or disabled).
+		if (_enabled == value) return;
 
 		// load assets based on embedding method
 		try
@@ -323,7 +325,9 @@ class Console
 		// Set the state to unpaused.
 		paused = false;
 
-		Log.trace = traceLog;
+		if (captureTrace) {
+			Log.trace = traceLog;
+		}
 		LOG.push("-- HaxePunk v" + HXP.VERSION + " --");
 		if (_enabled && _sprite.visible) updateLog();
 	}
