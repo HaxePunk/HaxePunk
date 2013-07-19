@@ -441,10 +441,10 @@ class Tilemap extends Canvas
 				tw:Int = Math.ceil(tileWidth), th:Int = Math.ceil(tileHeight);
 
 			// determine start and end tiles to draw (optimization)
-			var startx = -Math.ceil(_point.x / tw),
-				starty = -Math.ceil(_point.y / th),
-				destx = startx + Math.ceil(HXP.width / tw),
-				desty = starty + Math.ceil(HXP.height / th);
+			var startx = Math.floor( -_point.x / tw),
+				starty = Math.floor( -_point.y / th),
+				destx = startx + 1 + Math.ceil(HXP.width / tw),
+				desty = starty + 1 + Math.ceil(HXP.height / th);
 
 			// nothing will render if we're completely off screen
 			if (startx > _columns || starty > _rows || destx < 0 || desty < 0)
