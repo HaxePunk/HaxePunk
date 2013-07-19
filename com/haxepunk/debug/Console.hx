@@ -26,6 +26,12 @@ import flash.text.TextFormatAlign;
 import haxe.Log;
 import haxe.PosInfos;
 
+enum TraceCapture
+{
+	No;
+	Yes;
+}
+
 class Console
 {
 	/**
@@ -154,8 +160,10 @@ class Console
 
 	/**
 	 * Enables the console.
+	 * 
+	 * @param	trace_capture	Option to capture trace in HaxePunk.
 	 */
-	public function enable()
+	public function enable(?trace_capture:TraceCapture)
 	{
 		// Quit if the console is already enabled.
 		if (_enabled) return;
@@ -323,7 +331,9 @@ class Console
 		// Set the state to unpaused.
 		paused = false;
 
-		Log.trace = traceLog;
+		if (trace_capture != TraceCapture.No)
+			Log.trace = traceLog;		
+		
 		LOG.push("-- HaxePunk v" + HXP.VERSION + " --");
 		if (_enabled && _sprite.visible) updateLog();
 	}
