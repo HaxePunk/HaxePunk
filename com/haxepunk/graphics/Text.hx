@@ -64,7 +64,7 @@ class Text extends Image
 		if (options.align == null) options.align = TextFormatAlign.LEFT;
 
 		var fontObj = Assets.getFont(options.font);
-		_format = new TextFormat(fontObj.fontName, options.size, options.color);
+		_format = new TextFormat(fontObj.fontName, options.size, 0xFFFFFF);
 		_format.align = options.align;
 		_format.leading = options.leading;
 
@@ -99,6 +99,7 @@ class Text extends Image
 		super(source);
 
 		this.text = text;
+		this.color = options.color;
 		this.x = x;
 		this.y = y;
 	}
