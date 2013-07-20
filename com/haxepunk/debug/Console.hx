@@ -252,6 +252,7 @@ class Console
 		_fpsInfo.x = 75;
 		_fpsInfoText1.x = 60;
 
+#if !js
 		_fpsRead.addChild(_memReadText);
 		_memReadText.defaultTextFormat = format(16);
 		_memReadText.embedFonts = true;
@@ -259,6 +260,7 @@ class Console
 		_memReadText.height = 20;
 		_memReadText.x = 2;
 		_memReadText.y = _fpsInfo.height + 2;
+#end
 
 		// The output log text.
 		_sprite.addChild(_logRead);
