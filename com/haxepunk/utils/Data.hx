@@ -39,7 +39,12 @@ class Data
 		if (overwrite)
 			for (str in Reflect.fields(data)) Reflect.deleteField(data, str);
 		for (str in _data.keys()) Reflect.setField(data, str, _data.get(str));
+
+#if js
+		_shared.flush();
+#else
 		_shared.flush(SIZE);
+#end
 	}
 
 	/**
