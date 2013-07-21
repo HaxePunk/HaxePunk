@@ -354,12 +354,12 @@ class Entity extends Tweener
 	}
 
 	/**
-	 * Populates an array with all collided Entities of a type.
+	 * Populates an array with all collided Entities of a type. This
+	 * function does not empty the array, that responsibility is left to the user.
 	 * @param	type		The Entity type to check for.
 	 * @param	x			Virtual x position to place this Entity.
 	 * @param	y			Virtual y position to place this Entity.
 	 * @param	array		The Array or Vector object to populate.
-	 * @return	The array, populated with all collided Entities.
 	 */
 	public function collideInto<E:Entity>(type:String, x:Float, y:Float, array:Array<E>)
 	{
@@ -410,12 +410,12 @@ class Entity extends Tweener
 	}
 
 	/**
-	 * Populates an array with all collided Entities of multiple types.
+	 * Populates an array with all collided Entities of multiple types. This
+	 * function does not empty the array, that responsibility is left to the user.
 	 * @param	types		An array of Entity types to check for.
 	 * @param	x			Virtual x position to place this Entity.
 	 * @param	y			Virtual y position to place this Entity.
 	 * @param	array		The Array or Vector object to populate.
-	 * @return	The array, populated with all collided Entities.
 	 */
 	public function collideTypesInto<E:Entity>(types:Array<String>, x:Float, y:Float, array:Array<E>)
 	{
@@ -610,6 +610,8 @@ class Entity extends Tweener
 	/**
 	 * Adds the graphic to the Entity via a Graphiclist.
 	 * @param	g		Graphic to add.
+	 * 
+	 * @return	The added graphic.
 	 */
 	public function addGraphic(g:Graphic):Graphic
 	{
@@ -854,6 +856,8 @@ class Entity extends Tweener
 	/**
 	 * When you collide with an Entity on the x-axis with moveTo() or moveBy().
 	 * @param	e		The Entity you collided with.
+	 * 
+	 * @return	If there was a collision.
 	 */
 	public function moveCollideX(e:Entity):Bool
 	{
@@ -863,6 +867,8 @@ class Entity extends Tweener
 	/**
 	 * When you collide with an Entity on the y-axis with moveTo() or moveBy().
 	 * @param	e		The Entity you collided with.
+	 * 
+	 * @return	If there was a collision.
 	 */
 	public function moveCollideY(e:Entity):Bool
 	{

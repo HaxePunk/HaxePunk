@@ -88,8 +88,8 @@ class Polygon extends Hitbox
 	/**
 	 * May be very slow, mainly added for completeness sake
 	 * Checks for collisions along the edges of the polygon
-	 * @param	grid
-	 * @return
+	 * @param	grid	Grid to check collision against
+	 * @return	If collided
 	 */
 	public function collideGrid(grid:Grid):Bool
 	{
@@ -147,6 +147,11 @@ class Polygon extends Hitbox
 		return false;
 	}
 
+	/**
+	 * Checks for collision with a circle.
+	 * @param	circle	Circle to check collision against
+	 * @return	If collided
+	 */
 	public function collideCircle(circle:Circle):Bool
 	{
 		var offset:Float;
@@ -206,6 +211,11 @@ class Polygon extends Hitbox
 		return true;
 	}
 
+	/**
+	 * Checks for collisions with a hitbox
+	 * @param	hitbox	Hitbox to check collision against
+	 * @return	If collided
+	 */
 	public override function collideHitbox(hitbox:Hitbox):Bool
 	{
 		var offset:Float,
@@ -296,6 +306,11 @@ class Polygon extends Hitbox
 		return true;
 	}
 
+	/**
+	 * Checks for collision with a polygon.
+	 * @param	other	Polygon to check collision against
+	 * @return	If collided
+	 */
 	public function collidePolygon(other:Polygon):Bool
 	{
 		var offsetX = parent.x - other.parent.x;
@@ -493,7 +508,9 @@ class Polygon extends Hitbox
 
 	/**
 	 * Creates a polygon from an array were even numbers are x and odd are y
-	 * @param	points
+	 * @param	points	Array containing the polygon's points.
+	 * 
+	 * @return	The polygon
 	 */
 	public static function createFromArray(points:Array<Float>):Polygon
 	{

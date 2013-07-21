@@ -161,6 +161,7 @@ class Text extends Image
 		}
 	}
 
+	/** @private Remove the text from the screen. */
 	public override function destroy()
 	{
 		if (_parent != null)

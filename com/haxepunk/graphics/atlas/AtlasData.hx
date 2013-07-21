@@ -19,6 +19,9 @@ class Layer
 	public var index:Int;
 	public var dirty:Bool;
 
+	/**
+	 * Constructor.
+	 */
 	public function new()
 	{
 		data = new Array<Float>();
@@ -48,8 +51,8 @@ class AtlasData
 
 	/**
 	 * Creates a new AtlasData object
-	 * @param  source The image to initialize AtlasData with
-	 * @return        An AtlasData object
+	 * @param	source	The image to initialize AtlasData with
+	 * @return	An AtlasData object
 	 */
 	public static inline function create(source:Dynamic):AtlasData
 	{
@@ -71,8 +74,8 @@ class AtlasData
 
 	/**
 	 * Get's the atlas data for a specific texture, useful for setting rendering flags
-	 * @param  name The name of the image file
-	 * @return      An AtlasData object (will create one if it doesn't already exist)
+	 * @param	name	The name of the image file
+	 * @return	An AtlasData object (will create one if it doesn't already exist)
 	 */
 	public static inline function getAtlasDataByName(name:String):AtlasData
 	{
@@ -114,7 +117,7 @@ class AtlasData
 
 	/**
 	 * Sets the scene object
-	 * @param scene The scene object to set
+	 * @param	scene	The scene object to set
 	 */
 	public static inline function setScene(scene:Scene)
 	{
@@ -137,8 +140,6 @@ class AtlasData
 
 	/**
 	 * Renders the current TextureAtlas
-	 * @param g the graphics context to draw in
-	 * @param smooth if rendering should use antialiasing
 	 */
 	private inline function renderData()
 	{
@@ -179,10 +180,11 @@ class AtlasData
 	}
 
 	/**
-	 * Creates a new AtlasRegion and assigns it to a name
-	 * @param name the region name to create
-	 * @param rect defines the rectangle of the tile on the tilesheet
-	 * @param center positions the local center point to pivot on
+	 * Creates a new AtlasRegion
+	 * @param	rect	Defines the rectangle of the tile on the tilesheet
+	 * @param	center	Positions the local center point to pivot on
+	 * 
+	 * @return The new AtlasRegion object.
 	 */
 	public inline function createRegion(rect:Rectangle, ?center:Point):AtlasRegion
 	{

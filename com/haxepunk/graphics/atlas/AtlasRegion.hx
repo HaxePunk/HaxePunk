@@ -40,9 +40,9 @@ class AtlasRegion
 
 	/**
 	 * Clips an atlas region
-	 * @param clipRect a clip rectangle with coordinates local to the region
-	 * @param center the new center point
-	 * @return a new atlas region with the clipped coordinates
+	 * @param	clipRect	A clip rectangle with coordinates local to the region
+	 * @param	center		The new center point
+	 * @return	A new atlas region with the clipped coordinates
 	 */
 	public function clip(clipRect:Rectangle, ?center:Point):AtlasRegion
 	{
@@ -64,15 +64,16 @@ class AtlasRegion
 
 	/**
 	 * Prepares tile data for rendering
-	 * @param x the x-axis location to draw the tile
-	 * @param y the y-axis location to draw the tile
-	 * @param scaleX the scale value for the x-axis
-	 * @param scaleY the scale value for the y-axis
-	 * @param angle an angle to rotate the tile in degrees
-	 * @param red a red tint value
-	 * @param green a green tint value
-	 * @param blue a blue tint value
-	 * @param alpha the tile's opacity
+	 * @param	x		The x-axis location to draw the tile
+	 * @param	y		The y-axis location to draw the tile
+	 * @param	layer	The layer to draw on
+	 * @param	scaleX	The scale value for the x-axis
+	 * @param	scaleY	The scale value for the y-axis
+	 * @param	angle	An angle to rotate the tile in degrees
+	 * @param	red		A red tint value
+	 * @param	green	A green tint value
+	 * @param	blue	A blue tint value
+	 * @param	alpha	The tile's opacity
 	 */
 	public inline function draw(x:Float, y:Float, layer:Int,
 		scaleX:Float=1, scaleY:Float=1, angle:Float=0,
@@ -115,6 +116,8 @@ class AtlasRegion
 
 	/**
 	 * Prints the region as a string
+	 * 
+	 * @return	String version of the object.
 	 */
 	public function toString():String
 	{

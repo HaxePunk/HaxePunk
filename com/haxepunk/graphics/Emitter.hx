@@ -261,10 +261,10 @@ class Emitter extends Graphic
 
 	/**
 	 * Sets the gravity range for a particle type.
-	 * @param  name      The particle type.
-	 * @param  gravity      Gravity amount to affect to the particle y velocity.
-	 * @param  gravityRange  Random amount to add to the particle's gravity.
-	 * @return  This ParticleType object.
+	 * @param	name      		The particle type.
+	 * @param	gravity      	Gravity amount to affect to the particle y velocity.
+	 * @param	gravityRange	Random amount to add to the particle's gravity.
+	 * @return	This ParticleType object.
 	 */
 	public function setGravity(name:String, ?gravity:Float = 0, ?gravityRange:Float = 0):ParticleType
 	{
@@ -306,7 +306,7 @@ class Emitter extends Graphic
 	 * @param	name		Particle type to emit.
 	 * @param	x			X point to emit from.
 	 * @param	y			Y point to emit from.
-	 * @return
+	 * @return	The Particle emited.
 	 */
 	public function emit(name:String, ?x:Float = 0, ?y:Float = 0):Particle
 	{
@@ -345,7 +345,9 @@ class Emitter extends Graphic
 	 * @param	name		Particle type to emit.
 	 * @param	x			X point to emit from.
 	 * @param	y			Y point to emit from.
-	 * @param	radius
+	 * @param	radius		Radius to emit inside.
+	 * 
+	 * @return The Particle emited.
 	 */
 	public function emitInCircle(name:String, x:Float, y:Float, radius:Float):Particle
 	{
@@ -359,8 +361,10 @@ class Emitter extends Graphic
 	 * @param	name		Particle type to emit
 	 * @param	x			X point to emit from.
 	 * @param	y			Y point to emit from.
-	 * @param	width
-	 * @param	height
+	 * @param	width		Width of the area to emit from.
+	 * @param	height		height of the area to emit from.
+	 * 
+	 * @return The Particle emited.
 	 */
 	public function emitInRectangle(name:String, x:Float, y:Float, width:Float ,height:Float):Particle
 	{

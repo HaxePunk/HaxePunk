@@ -17,7 +17,7 @@ class Backdrop extends Canvas
 {
 	/**
 	 * Constructor.
-	 * @param	texture		Source texture.
+	 * @param	source		Source texture.
 	 * @param	repeatX		Repeat horizontally.
 	 * @param	repeatY		Repeat vertically.
 	 */

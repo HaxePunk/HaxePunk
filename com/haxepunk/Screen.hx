@@ -50,9 +50,7 @@ class Screen
 	}
 
 	/**
-	 * Resizes the screen by recreating the bitmap buffer
-	 * @param width the width of the screen
-	 * @param height the height of the screen
+	 * Resizes the screen by recreating the bitmap buffer.
 	 */
 	public function resize()
 	{
@@ -82,6 +80,11 @@ class Screen
 		HXP.buffer = _bitmap[_current].bitmapData;
 	}
 
+	/**
+	 * Add a filter.
+	 * 
+	 * @param	filter	The filter to add.
+	 */
 	public function addFilter(filter:Array<BitmapFilter>)
 	{
 		_sprite.filters = filter;

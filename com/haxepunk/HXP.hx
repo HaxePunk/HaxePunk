@@ -480,6 +480,7 @@ class HXP
 	 * @param	object		Object to rotate around the anchor.
 	 * @param	anchor		Anchor to rotate around.
 	 * @param	angle		The amount of degrees to rotate by.
+	 * @param	relative	If the angle is relative to the angle between the object and the anchor.
 	 */
 	public static inline function rotateAround(object:Dynamic, anchor:Dynamic, angle:Float = 0, relative:Bool = true)
 	{
@@ -512,6 +513,14 @@ class HXP
 		return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 	}
 
+	/**
+	 * Find the squared distance between two points.
+	 * @param	x1		The first x-position.
+	 * @param	y1		The first y-position.
+	 * @param	x2		The second x-position.
+	 * @param	y2		The second y-position.
+	 * @return	The squared distance.
+	 */
 	public static inline function distanceSquared(x1:Float, y1:Float, x2:Float = 0, y2:Float = 0):Float
 	{
 		return (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
@@ -614,6 +623,7 @@ class HXP
 	 * @param	y			Rectangle's y.
 	 * @param	width		Rectangle's width.
 	 * @param	height		Rectangle's height.
+	 * @param	padding		Rectangle's padding.
 	 */
 	public static inline function clampInRect(object:Dynamic, x:Float, y:Float, width:Float, height:Float, padding:Float = 0)
 	{
@@ -657,7 +667,7 @@ class HXP
 	}
 
 	/**
-	 * The random seed used by FP's random functions.
+	 * The random seed used by HXP's random functions.
 	 */
 	public static var randomSeed(default, set_randomSeed):Int;
 	private static inline function set_randomSeed(value:Int):Int
@@ -676,7 +686,7 @@ class HXP
 	}
 
 	/**
-	 * A pseudo-random Float produced using FP's random seed, where 0 <= Float < 1.
+	 * A pseudo-random Float produced using HXP's random seed, where 0 <= Float < 1.
 	 */
 	public static var random(get_random, null):Float;
 	private static inline function get_random():Float
@@ -696,6 +706,15 @@ class HXP
 		return Std.int((_seed / INT_MAX_VALUE) * amount);
 	}
 
+	/**
+	 * @private
+	 * Return the first index of an element in an array.
+	 * 
+	 * @param	a	The array.
+	 * @param	v	The element.
+	 * 
+	 * @return The index of the v in a, -1 if not inside.
+	 */
 	private static function indexOf<T>(a:Array<T>, v:T):Int
 	{
 		var i = 0;
@@ -908,6 +927,13 @@ class HXP
 
 	/**
 	 * Creates BitmapData based on platform specifics
+	 * 
+	 * @param	width			BitmapData's width.
+	 * @param	height			BitmapData's height.
+	 * @param	transparent		If the BitmapData can have transparency.
+	 * @param	color			BitmapData's color.
+	 * 
+	 * @return	The BitmapData.
 	 */
 	public static function createBitmap(width:Int, height:Int, ?transparent:Bool = false, ?color:Int = 0):BitmapData
 	{
@@ -929,6 +955,10 @@ class HXP
 
 	/**
 	 * Converts a color to platform specific type (BitmapInt32)
+	 * 
+	 * @param	color	The color to convert.
+	 * 
+	 * @return	The color in platform specific type.
 	 */
 	public static inline function convertColor(color:Int):Dynamic
 	{
@@ -1060,6 +1090,8 @@ class HXP
 	 * @param	from	Starting frame.
 	 * @param	to		Ending frame.
 	 * @param	skip	Skip amount every frame (eg. use 1 for every 2nd frame).
+	 * 
+	 * @return	The array.
 	 */
 	public static function frames(from:Int, to:Int, skip:Int = 0):Array<Int>
 	{
@@ -1110,7 +1142,7 @@ class HXP
 
 	public static inline function gotoIsNull():Bool { return (_goto == null); }
 
-	// World information.
+	// Scene information.
 	private static var _scene:Scene = new Scene();
 	private static var _goto:Scene;
 

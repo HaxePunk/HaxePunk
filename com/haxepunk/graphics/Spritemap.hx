@@ -36,7 +36,8 @@ class Spritemap extends Image
 	 * @param	source			Source image.
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
-	 * @param	callback		Optional callback function for animation end.
+	 * @param	cbFunc			Optional callback function for animation end.
+	 * @param	name			Optional name, necessary to identify the bitmapData if you are using flipped.
 	 */
 	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, cbFunc:CallbackFunction = null, name:String = "")
 	{

@@ -138,7 +138,7 @@ class Grid extends Hitbox
 	 * @param	row			First row.
 	 * @param	width		Columns to fill.
 	 * @param	height		Rows to fill.
-	 * @param	fill		Value to fill.
+	 * @param	solid		Value to fill.
 	 */
 	public function setRect(column:Int = 0, row:Int = 0, width:Int = 1, height:Int = 1, solid:Bool = true)
 	{
@@ -173,9 +173,9 @@ class Grid extends Hitbox
 
 	/**
 	* Loads the grid data from a string.
-	* @param str			The string data, which is a set of tile values (0 or 1) separated by the columnSep and rowSep strings.
-	* @param columnSep		The string that separates each tile value on a row, default is ",".
-	* @param rowSep			The string that separates each row of tiles, default is "\n".
+	* @param	str			The string data, which is a set of tile values (0 or 1) separated by the columnSep and rowSep strings.
+	* @param	columnSep	The string that separates each tile value on a row, default is ",".
+	* @param	rowSep		The string that separates each row of tiles, default is "\n".
 	*/
 	public function loadFromString(str:String, columnSep:String = ",", rowSep:String = "\n")
 	{
@@ -197,7 +197,7 @@ class Grid extends Hitbox
 
 	/**
 	* Loads the grid data from an array.
-	* @param array The array data, which is a set of tile values (0 or 1)
+	* @param	array	The array data, which is a set of tile values (0 or 1)
 	*/
 	public function loadFrom2DArray(array:Array<Array<Int>>)
 	{
@@ -212,8 +212,10 @@ class Grid extends Hitbox
 
 	/**
 	* Saves the grid data to a string.
-	* @param columnSep		The string that separates each tile value on a row, default is ",".
-	* @param rowSep			The string that separates each row of tiles, default is "\n".
+	* @param	columnSep	The string that separates each tile value on a row, default is ",".
+	* @param	rowSep		The string that separates each row of tiles, default is "\n".
+	* 
+	* @return The string version of the grid.
 	*/
 	public function saveToString(columnSep:String = ",", rowSep:String = "\n"): String
 	{

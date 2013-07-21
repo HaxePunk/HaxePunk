@@ -257,7 +257,8 @@ class Image extends Graphic
 	 * @param	width		Width of the rectangle.
 	 * @param	height		Height of the rectangle.
 	 * @param	color		Color of the rectangle.
-	 * @return	A new Rect object.
+	 * @param	alpha		Alpha of the rectangle.
+	 * @return	A new Image object of a rectangle.
 	 */
 	public static function createRect(width:Int, height:Int, color:Int = 0xFFFFFF, alpha:Float = 1):Image
 	{
@@ -282,7 +283,8 @@ class Image extends Graphic
 	 * Creates a new circle Image.
 	 * @param	radius		Radius of the circle.
 	 * @param	color		Color of the circle.
-	 * @return	A new Circle object.
+	 * @param	alpha		Alpha of the circle.
+	 * @return	A new Image object of a circle.
 	 */
 	public static function createCircle(radius:Int, color:Int = 0xFFFFFF, alpha:Float = 1):Image
 	{

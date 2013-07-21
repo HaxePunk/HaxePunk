@@ -18,7 +18,7 @@ class TiledSpritemap extends Spritemap
 	 * @param	frameHeight		Frame height.
 	 * @param	width			Width of the block to render.
 	 * @param	height			Height of the block to render.
-	 * @param	callback		Optional callback function for animation end.
+	 * @param	callbackFunc	Optional callback function for animation end.
 	 */
 	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, width:Int = 0, height:Int = 0, callbackFunc:CallbackFunction = null)
 	{

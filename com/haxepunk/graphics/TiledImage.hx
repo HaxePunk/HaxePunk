@@ -62,7 +62,7 @@ class TiledImage extends Image
 		}
 	}
 
-		/** Renders the image. */
+	/** Renders the image. */
 	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
 		if (_blit)

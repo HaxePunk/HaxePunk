@@ -13,6 +13,13 @@ class Rect extends Graphic
 	public var width(default, set_width):Int = 0;
 	public var height(default, set_height):Int = 0;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param	width	The Rect's width
+	 * @param	height	The Rect's height
+	 * @param	color	The Rect's color
+	 */
 	public function new(width:Int, height:Int, color:Int=0xFFFFFF)
 	{
 		super();

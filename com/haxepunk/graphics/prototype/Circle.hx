@@ -12,6 +12,12 @@ class Circle extends Graphic
 	public var color(default, set_color):Int = 0;
 	public var radius(default, set_radius):Int = 0;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param	radius	The Circle's radius
+	 * @param	color	The Circle's color
+	 */
 	public function new(radius:Int, color:Int=0xFFFFFF)
 	{
 		super();

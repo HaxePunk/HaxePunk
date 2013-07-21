@@ -406,6 +406,7 @@ class Draw
 	 * @param	y2		Y control point, used to determine the curve.
 	 * @param	x3		X finish.
 	 * @param	y3		Y finish.
+	 * @param	thick	The thickness of the curve.
 	 * @param	color	Color of the curve
 	 * @param	alpha	Alpha transparency.
 	 */

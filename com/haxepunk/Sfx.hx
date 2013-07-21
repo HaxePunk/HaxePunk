@@ -99,7 +99,8 @@ class Sfx
 
 	/**
 	 * Stops the sound if it is currently playing.
-	 * @return
+	 * 
+	 * @return If the sound was stopped.
 	 */
 	public function stop():Bool
 	{
@@ -246,6 +247,10 @@ class Sfx
 
 	/**
 	 * Return the global pan for a type.
+	 * 
+	 * @param	type	The type to get the pan from.
+	 * 
+	 * @return	The global pan for the type.
 	 */
 	static public function getPan(type:String):Float
 	{
@@ -259,6 +264,10 @@ class Sfx
 
 	/**
 	 * Return the global volume for a type.
+	 * 
+	 * @param	type	The type to get the volume from.
+	 * 
+	 * @return	The global volume for the type.
 	 */
 	static public function getVolume(type:String):Float
 	{
@@ -273,6 +282,9 @@ class Sfx
 	/**
 	 * Set the global pan for a type. Sfx instances of this type will add
 	 * this pan to their own.
+	 * 
+	 * @param	type	The type to set.
+	 * @param	pan		The pan value.
 	 */
 	static public function setPan(type:String, pan:Float)
 	{
@@ -287,11 +299,15 @@ class Sfx
 		{
 			sfx.pan = sfx.pan;
 		}
+		return transform.pan;
 	}
 
 	/**
 	 * Set the global volume for a type. Sfx instances of this type will
 	 * multiply their volume by this value.
+	 * 
+	 * @param	type	The type to set.
+	 * @param	volume	The volume value.
 	 */
 	static public function setVolume(type:String, volume:Float)
 	{

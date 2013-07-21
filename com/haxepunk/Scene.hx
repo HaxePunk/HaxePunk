@@ -492,7 +492,7 @@ class Scene extends Tweener
 	 * @param	toY			End y of the line.
 	 * @param	precision   Distance between consecutive tests. Higher values are faster but increase the chance of missing collisions.
 	 * @param	p           If non-null, will have its x and y values set to the point of collision.
-	 * @return
+	 * @return	The first Entity to collide, or null if none collide.
 	 */
 	public function collideLine(type:String, fromX:Int, fromY:Int, toX:Int, toY:Int, precision:Int = 1, p:Point = null):Entity
 	{
@@ -667,7 +667,6 @@ class Scene extends Tweener
 	 * @param	pX			X position.
 	 * @param	pY			Y position.
 	 * @param	into		The Array or Vector to populate with collided Entities.
-	 * @return	The provided Array.
 	 */
 	public function collidePointInto<E:Entity>(type:String, pX:Float, pY:Float, into:Array<E>)
 	{
@@ -747,10 +746,11 @@ class Scene extends Tweener
 	 * Finds the Entity nearest to another.
 	 * @param	type		The Entity type to check for.
 	 * @param	e			The Entity to find the nearest to.
+	 * @param	classType	The Entity class to check for.
 	 * @param	useHitboxes	If the Entities' hitboxes should be used to determine the distance. If false, their x/y coordinates are used.
 	 * @return	The nearest Entity to e.
 	 */
-	public function nearestToClass(type:String, e:Entity, classType:Dynamic ,useHitboxes:Bool = false):Entity
+	public function nearestToClass(type:String, e:Entity, classType:Dynamic, useHitboxes:Bool = false):Entity
 	{
 		if (useHitboxes) return nearestToRect(type, e.x - e.originX, e.y - e.originY, e.width, e.height);
 		var n:Entity,
@@ -999,10 +999,10 @@ class Scene extends Tweener
 	}
 
 	/**
-	 * Pushes all Entities in the Scene of the type into the Array or Vector.
+	 * Pushes all Entities in the Scene of the type into the Array or Vector. This
+	 * function does not empty the array, that responsibility is left to the user.
 	 * @param	type		The type to check.
 	 * @param	into		The Array or Vector to populate.
-	 * @return	The same array, populated.
 	 */
 	public function getType<E:Entity>(type:String, into:Array<E>)
 	{
@@ -1016,10 +1016,10 @@ class Scene extends Tweener
 	}
 
 	/**
-	 * Pushes all Entities in the Scene of the Class into the Array or Vector.
+	 * Pushes all Entities in the Scene of the Class into the Array or Vector. This
+	 * function does not empty the array, that responsibility is left to the user.
 	 * @param	c			The Class type to check.
 	 * @param	into		The Array or Vector to populate.
-	 * @return	The same array, populated.
 	 */
 	public function getClass<E:Entity>(c:Class<Dynamic>, into:Array<E>)
 	{
@@ -1034,10 +1034,10 @@ class Scene extends Tweener
 	}
 
 	/**
-	 * Pushes all Entities in the Scene on the layer into the Array or Vector.
+	 * Pushes all Entities in the Scene on the layer into the Array or Vector. This
+	 * function does not empty the array, that responsibility is left to the user.
 	 * @param	layer		The layer to check.
 	 * @param	into		The Array or Vector to populate.
-	 * @return	The same array, populated.
 	 */
 	public function getLayer<E:Entity>(layer:Int, into:Array<E>)
 	{
@@ -1053,9 +1053,9 @@ class Scene extends Tweener
 	}
 
 	/**
-	 * Pushes all Entities in the Scene into the array.
+	 * Pushes all Entities in the Scene into the array. This
+	 * function does not empty the array, that responsibility is left to the user.
 	 * @param	into		The Array or Vector to populate.
-	 * @return	The same array, populated.
 	 */
 	public function getAll<E:Entity>(into:Array<E>)
 	{
@@ -1073,7 +1073,7 @@ class Scene extends Tweener
 	/**
 	 * Returns the Entity with the instance name, or null if none exists
 	 * @param	name
-	 * @return
+	 * @return	The Entity.
 	 */
 	public function getInstance(name:String):Entity
 	{
@@ -1082,6 +1082,7 @@ class Scene extends Tweener
 
 	/**
 	 * Updates the add/remove lists at the end of the frame.
+	 * @param	shouldAdd	If new Entities should be added to the scene.
 	 */
 	public function updateLists(shouldAdd:Bool = true)
 	{

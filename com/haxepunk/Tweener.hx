@@ -18,6 +18,14 @@ class Tweener
 
 	}
 
+	/**
+	 * Add the tween to the tween list.
+	 * 
+	 * @param	t		The tween to add.
+	 * @param	start	If the tween should start immediately.
+	 * 
+	 * @return	The added tween.
+	 */
 	public function addTween(t:Tween, start:Bool = false):Tween
 	{
 		var ft:FriendTween = t;
@@ -31,6 +39,13 @@ class Tweener
 		return t;
 	}
 
+	/**
+	 * Remove the tween from the tween list.
+	 * 
+	 * @param	t		The tween to remove.
+	 * 
+	 * @return	The removed tween.
+	 */
 	public function removeTween(t:Tween):Tween
 	{
 		var ft:FriendTween = t;
@@ -50,6 +65,9 @@ class Tweener
 		return t;
 	}
 
+	/**
+	 * Remove all tweens from the tween list.
+	 */
 	public function clearTweens()
 	{
 		var t:Tween,
@@ -63,6 +81,9 @@ class Tweener
 		}
 	}
 
+	/**
+	 * Update all contained tweens.
+	 */
 	public function updateTweens()
 	{
 		var t:Tween,

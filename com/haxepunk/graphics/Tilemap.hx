@@ -242,6 +242,12 @@ class Tilemap extends Canvas
 		usePositions = u;
 	}
 
+	/**
+	 * Set the tiles from an array.
+	 * The array must be of the same size as the Tilemap.
+	 * 
+	 * @param	array	The array to load from.
+	 */
 	public function loadFrom2DArray(array:Array2D):Void
 	{
 		if (_blit)
@@ -259,6 +265,7 @@ class Tilemap extends Canvas
 
 	/**
 	* Loads the Tilemap tile index data from a string.
+	* The implicit array should not be bigger than the Tilemap.
 	* @param str			The string data, which is a set of tile values separated by the columnSep and rowSep strings.
 	* @param columnSep		The string that separates each tile value on a row, default is ",".
 	* @param rowSep			The string that separates each row of tiles, default is "\n".
@@ -288,6 +295,8 @@ class Tilemap extends Canvas
 	* Saves the Tilemap tile index data to a string.
 	* @param columnSep		The string that separates each tile value on a row, default is ",".
 	* @param rowSep			The string that separates each row of tiles, default is "\n".
+	* 
+	* @return	The string version of the array. 
 	*/
 	public function saveToString(columnSep:String = ",", rowSep:String = "\n"): String
 	{

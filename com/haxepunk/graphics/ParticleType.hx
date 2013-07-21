@@ -16,10 +16,9 @@ class ParticleType
 	 * Constructor.
 	 * @param	name			Name of the particle type.
 	 * @param	frames			Array of frame indices to animate through.
-	 * @param	source			Source image.
+	 * @param	width			Unused parameter.
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
-	 * @param	frameCount		Frame count.
 	 */
 	public function new(name:String, frames:Array<Int>, width:Int, frameWidth:Int, frameHeight:Int)
 	{
@@ -85,9 +84,9 @@ class ParticleType
 
 	/**
 	* Sets the gravity range of this particle type.
-	* @param gravity Gravity amount to affect to the particle y velocity.
-	* @param gravityRange Random amount to add to the particle's gravity.
-	* @return This ParticleType object.
+	* @param	gravity			Gravity amount to affect to the particle y velocity.
+	* @param	gravityRange	Random amount to add to the particle's gravity.
+	* @return	This ParticleType object.
 	*/
 	public function setGravity(gravity:Float = 0, gravityRange:Float = 0):ParticleType
 	{

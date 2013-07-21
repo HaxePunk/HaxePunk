@@ -26,8 +26,8 @@ class TextureAtlas extends Atlas
 	/**
 	 * Loads a TexturePacker xml file and generates all tile regions.
 	 * Uses the Generic XML exporter format from Texture Packer.
-	 * @param file the TexturePacker file to load
-	 * @return a TextureAtlas with all packed images defined as regions
+	 * @param	file	The TexturePacker file to load
+	 * @return	A TextureAtlas with all packed images defined as regions
 	 */
 	public static function loadTexturePacker(file:String):TextureAtlas
 	{
@@ -51,7 +51,9 @@ class TextureAtlas extends Atlas
 
 	/**
 	 * Gets an atlas region based on an identifier
-	 * @param name the name identifier of the region to retrieve
+	 * @param	name	The name identifier of the region to retrieve.
+	 * 
+	 * @return	The retrieved region.
 	 */
 	public function getRegion(name:String):AtlasRegion
 	{
@@ -62,9 +64,11 @@ class TextureAtlas extends Atlas
 
 	/**
 	 * Creates a new AtlasRegion and assigns it to a name
-	 * @param name the region name to create
-	 * @param rect defines the rectangle of the tile on the tilesheet
-	 * @param center positions the local center point to pivot on
+	 * @param	name	The region name to create
+	 * @param	rect	Defines the rectangle of the tile on the tilesheet
+	 * @param	center	Positions the local center point to pivot on
+	 * 
+	 * @return	The new AtlasRegion object.
 	 */
 	public function defineRegion(name:String, rect:Rectangle, ?center:Point):AtlasRegion
 	{

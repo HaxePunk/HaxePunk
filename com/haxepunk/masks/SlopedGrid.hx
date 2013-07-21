@@ -95,6 +95,8 @@ class SlopedGrid extends Hitbox
 	 * @param	column		Tile column.
 	 * @param	row			Tile row.
 	 * @param	type		The type of the tile
+	 * @param	slope		The slope of the tile
+	 * @param	yOffset		The y offset of the tile
 	 */
 	public function setTile(column:Int = 0, row:Int = 0, ?type:TileType, slope:Float = 0, yOffset:Float=0)
 	{
@@ -190,7 +192,9 @@ class SlopedGrid extends Hitbox
 	 * @param	row			First row.
 	 * @param	width		Columns to fill.
 	 * @param	height		Rows to fill.
-	 * @param	fill		Value to fill.
+	 * @param	type		The type of the tiles
+	 * @param	slope		The slope of the tiles
+	 * @param	yOffset		The y offset of the tiles
 	 */
 	public function setRect(column:Int = 0, row:Int = 0, width:Int = 1, height:Int = 1, ?type:TileType, slope:Float = 0, yOffset:Float = 0)
 	{

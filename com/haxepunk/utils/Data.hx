@@ -30,6 +30,7 @@ class Data
 	/**
 	 * Overwrites the file with the current data. The current data will not be saved until this function is called.
 	 * @param	file		The filename to save.
+	 * @param	overwrite	Clear the file before saving.
 	 */
 	public static function save(file:String = "", overwrite:Bool = true)
 	{
