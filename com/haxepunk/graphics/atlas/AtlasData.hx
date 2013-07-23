@@ -109,7 +109,6 @@ class AtlasData
 		width = bd.width;
 		height = bd.height;
 
-		_tileIndex = 0;
 		_refCount = 0;
 		_layerIndex = -1;
 		_atlases.push(this);
@@ -183,15 +182,13 @@ class AtlasData
 	 * Creates a new AtlasRegion
 	 * @param	rect	Defines the rectangle of the tile on the tilesheet
 	 * @param	center	Positions the local center point to pivot on
-	 * 
+	 *
 	 * @return The new AtlasRegion object.
 	 */
 	public inline function createRegion(rect:Rectangle, ?center:Point):AtlasRegion
 	{
-		_tilesheet.addTileRect(rect, center);
-		var region = new AtlasRegion(this, _tileIndex, rect);
-		_tileIndex += 1;
-		return region;
+		var tileIndex = _tilesheet.addTileRect(rect, center);
+		return new AtlasRegion(this, tileIndex, rect);
 	}
 
 	private inline function renderLayer(layer:Layer, layerIndex:Int)
@@ -397,7 +394,6 @@ class AtlasData
 	private var _flagRGB:Bool;
 	private var _flagAlpha:Bool;
 
-	private var _tileIndex:Int;
 	private var _tilesheet:Tilesheet;
 #if haxe3
 	private var _layers:Map<Int,Layer>;
