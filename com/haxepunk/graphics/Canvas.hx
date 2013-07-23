@@ -90,7 +90,12 @@ class Canvas extends Graphic
 					_matrix.ty = _point.y;
 					target.draw(buffer, _matrix, _tint, blend);
 				}
-				else target.copyPixels(buffer, _rect, _point, null, null, true);
+				else
+				{
+					_rect.width = buffer.width;
+					_rect.height = buffer.height;
+					target.copyPixels(buffer, _rect, _point, null, null, true);
+				}
 				_point.x += _maxWidth;
 				xx ++;
 			}
