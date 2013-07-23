@@ -25,6 +25,10 @@ import com.haxepunk.graphics.Image;
  *
  * Remember to call "mask.update()" when you update the image.
  *
+ * If you are using HARDWARE mode, Imagemask will still work, but only if your
+ * Image source is created with a BitmapData. AtlasData is not currently
+ * supported.
+ *
  */
 class Imagemask extends Pixelmask
 {
