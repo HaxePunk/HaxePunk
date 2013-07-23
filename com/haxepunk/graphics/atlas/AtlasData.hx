@@ -54,7 +54,7 @@ class AtlasData
 	 * @param	source	The image to initialize AtlasData with
 	 * @return	An AtlasData object
 	 */
-	public static inline function create(source:Dynamic):AtlasData
+	public static function create(source:Dynamic):AtlasData
 	{
 		var data:AtlasData;
 		if (Std.is(source, BitmapData))
@@ -187,7 +187,10 @@ class AtlasData
 	 */
 	public inline function createRegion(rect:Rectangle, ?center:Point):AtlasRegion
 	{
-		var tileIndex = _tilesheet.addTileRect(rect, center);
+		var r = new Rectangle();
+		var p = center != null ? new Point(center.x, center.y) : null;
+		r.copyFrom(rect);
+		var tileIndex = _tilesheet.addTileRect(r, p);
 		return new AtlasRegion(this, tileIndex, rect);
 	}
 
