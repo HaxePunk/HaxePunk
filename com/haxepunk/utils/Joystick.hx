@@ -122,48 +122,74 @@ class Joystick
 
 }
 
+class OUYA_GAMEPAD
+{
+	public static inline var O_BUTTON:Int = 0; // 96
+	public static inline var U_BUTTON:Int = 1; // 99
+	public static inline var Y_BUTTON:Int = 2; // 100
+	public static inline var A_BUTTON:Int = 3; // 97
+	public static inline var LB_BUTTON:Int = 6; // 102
+	public static inline var RB_BUTTON:Int = 7; // 103
+	public static inline var BACK_BUTTON:Int = 5;
+	public static inline var START_BUTTON:Int = 4;
+	public static inline var LEFT_ANALOGUE_BUTTON:Int = 8; // 106
+	public static inline var RIGHT_ANALOGUE_BUTTON:Int = 9; // 107
+	public static inline var HOME_BUTTON:Int = 10; // 82
+	public static inline var DPAD_UP:Int = 19;
+	public static inline var DPAD_DOWN:Int = 20;
+	public static inline var DPAD_LEFT:Int = 21;
+	public static inline var DPAD_RIGHT:Int = 22;
+
+	public static inline var LEFT_ANALOGUE_X:Int = 0;
+	public static inline var LEFT_ANALOGUE_Y:Int = 1;
+	public static inline var RIGHT_ANALOGUE_X:Int = 11;
+	public static inline var RIGHT_ANALOGUE_Y:Int = 14;
+	public static inline var LEFT_TRIGGER:Int = 17;
+	public static inline var RIGHT_TRIGGER:Int = 18;
+}
+
 class XBOX_GAMEPAD
 {
 #if mac
-	public static var A_BUTTON:Int = 11;
-	public static var B_BUTTON:Int = 12;
-	public static var X_BUTTON:Int = 13;
-	public static var Y_BUTTON:Int = 14;
-	public static var LB_BUTTON:Int = 8;
-	public static var RB_BUTTON:Int = 9;
-	public static var BACK_BUTTON:Int = 5;
-	public static var START_BUTTON:Int = 4;
-	public static var LEFT_ANALOGUE_BUTTON:Int = 6;
-	public static var RIGHT_ANALOGUE_BUTTON:Int = 7;
-	public static var LEFT_ANALOGUE_X:Int = 0;
-	public static var LEFT_ANALOGUE_Y:Int = 1;
-	public static var RIGHT_ANALOGUE_X:Int = 2;
-	public static var RIGHT_ANALOGUE_Y:Int = 3;
-	public static var DPAD_UP:Int = 0;
-	public static var DPAD_DOWN:Int = 1;
-	public static var DPAD_LEFT:Int = 2;
-	public static var DPAD_RIGHT:Int = 3;
+	public static inline var A_BUTTON:Int = 11;
+	public static inline var B_BUTTON:Int = 12;
+	public static inline var X_BUTTON:Int = 13;
+	public static inline var Y_BUTTON:Int = 14;
+	public static inline var LB_BUTTON:Int = 8;
+	public static inline var RB_BUTTON:Int = 9;
+	public static inline var BACK_BUTTON:Int = 5;
+	public static inline var START_BUTTON:Int = 4;
+	public static inline var LEFT_ANALOGUE_BUTTON:Int = 6;
+	public static inline var RIGHT_ANALOGUE_BUTTON:Int = 7;
+	public static inline var LEFT_ANALOGUE_X:Int = 0;
+	public static inline var LEFT_ANALOGUE_Y:Int = 1;
+	public static inline var RIGHT_ANALOGUE_X:Int = 2;
+	public static inline var RIGHT_ANALOGUE_Y:Int = 3;
+	public static inline var DPAD_UP:Int = 0;
+	public static inline var DPAD_DOWN:Int = 1;
+	public static inline var DPAD_LEFT:Int = 2;
+	public static inline var DPAD_RIGHT:Int = 3;
 
-	//public static var TRIGGER:Int = 3;
+	//public static inline var TRIGGER:Int = 3;
 #else // default windows mapping
-	public static var A_BUTTON:Int = 0;
-	public static var B_BUTTON:Int = 1;
-	public static var X_BUTTON:Int = 2;
-	public static var Y_BUTTON:Int = 3;
-	public static var LB_BUTTON:Int = 4;
-	public static var RB_BUTTON:Int = 5;
-	public static var BACK_BUTTON:Int = 6;
-	public static var START_BUTTON:Int = 7;
-	public static var LEFT_ANALOGUE_BUTTON:Int = 8;
-	public static var RIGHT_ANALOGUE_BUTTON:Int = 9;
-	public static var LEFT_ANALOGUE_X:Int = 0;
-	public static var LEFT_ANALOGUE_Y:Int = 1;
-	public static var RIGHT_ANALOGUE_X:Int = 4;
-	public static var RIGHT_ANALOGUE_Y:Int = 3;
+	public static inline var A_BUTTON:Int = 0;
+	public static inline var B_BUTTON:Int = 1;
+	public static inline var X_BUTTON:Int = 2;
+	public static inline var Y_BUTTON:Int = 3;
+	public static inline var LB_BUTTON:Int = 4;
+	public static inline var RB_BUTTON:Int = 5;
+	public static inline var BACK_BUTTON:Int = 6;
+	public static inline var START_BUTTON:Int = 7;
+	public static inline var LEFT_ANALOGUE_BUTTON:Int = 8;
+	public static inline var RIGHT_ANALOGUE_BUTTON:Int = 9;
+	public static inline var LEFT_ANALOGUE_X:Int = 0;
+	public static inline var LEFT_ANALOGUE_Y:Int = 1;
+	public static inline var RIGHT_ANALOGUE_X:Int = 4;
+	public static inline var RIGHT_ANALOGUE_Y:Int = 3;
 
 	/**
 	* Keep in mind that if TRIGGER axis returns value > 0 then LT is being pressed, and if it's < 0 then RT is being pressed
 	*/
-	public static var TRIGGER:Int = 2;
+	public static inline var TRIGGER:Int = 2;
 #end
 }
