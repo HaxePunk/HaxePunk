@@ -134,10 +134,9 @@ class Sfx
 	/** @private Event handler for sound completion. */
 	private function onComplete(e:Event = null)
 	{
-#if flash
 		if (_looping) loop(_volume, _pan);
 		else stop();
-#end
+
 		_position = 0;
 		if (complete != null) complete();
 	}
