@@ -154,7 +154,7 @@ class Input
 	 */
 	public static function pressed(input:Dynamic):Bool
 	{
-		if (Std.is(input, String))
+		if (Std.is(input, String) && _control.exists(input))
 		{
 			var v:Array<Int> = _control.get(input),
 				i:Int = v.length;
