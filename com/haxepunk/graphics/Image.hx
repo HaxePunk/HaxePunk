@@ -88,24 +88,22 @@ class Image extends Graphic
 			{
 				setAtlasRegion(source);
 			}
+			else if (HXP.renderMode.has(RenderMode.HARDWARE))
+			{
+				setAtlasRegion(Atlas.loadImageAsRegion(source));
+			}
 			else if (Std.is(source, BitmapData))
 			{
 				setBitmapSource(source);
 			}
 			else
 			{
-				if (HXP.renderMode.has(RenderMode.HARDWARE))
-				{
-					setAtlasRegion(Atlas.loadImageAsRegion(source));
-				}
-				else
-				{
-					if (Std.is(source, String))
-						_class = source;
-					else if (name == "")
-						_class = Type.getClassName(Type.getClass(source));
-					setBitmapSource(HXP.getBitmap(source));
-				}
+				if (Std.is(source, String))
+					_class = source;
+				else if (name == "")
+					_class = Type.getClassName(Type.getClass(source));
+					
+				setBitmapSource(HXP.getBitmap(source));
 			}
 			if (_source == null && _region == null) throw "Invalid source image.";
 		}
