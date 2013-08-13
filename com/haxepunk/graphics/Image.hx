@@ -90,6 +90,11 @@ class Image extends Graphic
 			}
 			else if (HXP.renderMode.has(RenderMode.HARDWARE))
 			{
+				if (Std.is(source, String))
+					_class = source;
+				else if (name == "")
+					_class = Type.getClassName(Type.getClass(source));
+				
 				setAtlasRegion(Atlas.loadImageAsRegion(source));
 			}
 			else if (Std.is(source, BitmapData))
