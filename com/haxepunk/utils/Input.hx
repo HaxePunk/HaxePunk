@@ -300,7 +300,10 @@ class Input
 #if ((nme || openfl) && (cpp || neko))
 		for (joystick in _joysticks) joystick.update();
 #end
-		for (touch in _touches) touch.update();
+		if (multiTouchSupported)
+		{
+			for (touch in _touches) touch.update();
+		}
 	}
 
 	private static function onKeyDown(e:KeyboardEvent = null)
