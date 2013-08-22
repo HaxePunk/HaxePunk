@@ -448,12 +448,15 @@ class Tilemap extends Canvas
 
 			var scalex:Float = HXP.screen.fullScaleX, scaley:Float = HXP.screen.fullScaleY,
 				tw:Int = Math.ceil(tileWidth), th:Int = Math.ceil(tileHeight);
+				
+			var scx = scale * scaleX,
+				scy = scale * scaleY;
 
 			// determine start and end tiles to draw (optimization)
-			var startx = Math.floor( -_point.x / tw),
-				starty = Math.floor( -_point.y / th),
-				destx = startx + 1 + Math.ceil(HXP.width / tw),
-				desty = starty + 1 + Math.ceil(HXP.height / th);
+			var startx = Math.floor( -_point.x / (tw * scx)),
+				starty = Math.floor( -_point.y / (th * scy)),
+				destx = startx + 1 + Math.ceil(HXP.width / (tw * scx)),
+				desty = starty + 1 + Math.ceil(HXP.height / (th * scy));
 
 			// nothing will render if we're completely off screen
 			if (startx > _columns || starty > _rows || destx < 0 || desty < 0)
@@ -465,12 +468,12 @@ class Tilemap extends Canvas
 			if (starty < 0) starty = 0;
 			if (desty > _rows) desty = _rows;
 
-			var wx:Int, sx:Int = Math.floor((_point.x + startx * tw) * scalex),
-				wy:Int = Math.floor((_point.y + starty * th) * scaley),
-				stepx:Int = Math.floor(tw * scalex),
-				stepy:Int = Math.floor(th * scaley),
+			var wx:Int, sx:Int = Math.floor((_point.x + startx * tw * scx) * scalex),
+				wy:Int = Math.floor((_point.y + starty * th * scy) * scaley),
+				stepx:Int = Math.floor(tw * scx * scalex),
+				stepy:Int = Math.floor(th * scy * scaley),
 				tile:Int = 0;
-
+				
 			for (y in starty...desty)
 			{
 				wx = sx;
@@ -479,9 +482,8 @@ class Tilemap extends Canvas
 					tile = _map[y % _rows][x % _columns];
 					if (tile >= 0)
 					{
-						_atlas.prepareTile(tile, wx, wy, layer, scalex, scaley, 0, _red, _green, _blue, alpha);
+						_atlas.prepareTile(tile, wx, wy, layer, scx * scalex, scy * scaley, 0, _red, _green, _blue, alpha);
 					}
-
 					wx += stepx;
 				}
 				wy += stepy;

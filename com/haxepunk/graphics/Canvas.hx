@@ -19,6 +19,26 @@ class Canvas extends Graphic
 	 * Optional blend mode to use (see flash.display.BlendMode for blending modes).
 	 */
 	public var blend:BlendMode;
+	
+	/**
+	 * Rotation of the canvas, in degrees.
+	 */
+	public var angle:Float;
+
+	/**
+	 * Scale of the canvas, effects both x and y scale.
+	 */
+	public var scale:Float;
+
+	/**
+	 * X scale of the canvas.
+	 */
+	public var scaleX:Float;
+
+	/**
+	 * Y scale of the canvas.
+	 */
+	public var scaleY:Float;
 
 	/**
 	 * Constructor.
@@ -36,6 +56,8 @@ class Canvas extends Graphic
 		_rect = new Rectangle();
 		_colorTransform = new ColorTransform();
 		_buffers = new Array<BitmapData>();
+		angle = 0;
+		scale = scaleX = scaleY = 1;
 
 		_width = width;
 		_height = height;
@@ -68,6 +90,9 @@ class Canvas extends Graphic
 	/** @private Renders the canvas. */
 	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
+		var sx = scale * scaleX,
+			sy = scale * scaleY;
+		
 		// determine drawing location
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;
@@ -84,18 +109,27 @@ class Canvas extends Graphic
 			while (xx < _refWidth)
 			{
 				buffer = _buffers[_ref.getPixel(xx, yy)];
-				if (_tint != null || blend != null)
-				{
-					_matrix.tx = _point.x;
-					_matrix.ty = _point.y;
-					target.draw(buffer, _matrix, _tint, blend);
-				}
-				else
+				
+				if (angle == 0 && sx == 1 && sy == 1 && blend == null && _tint == null)
 				{
 					_rect.width = buffer.width;
 					_rect.height = buffer.height;
 					target.copyPixels(buffer, _rect, _point, null, null, true);
 				}
+				else
+				{
+					// render with transformation
+					_matrix.b = _matrix.c = 0;
+					_matrix.a = sx;
+					_matrix.d = sy;
+					_matrix.tx = _matrix.ty = 0;
+					if (angle != 0) _matrix.rotate(angle * HXP.RAD);					
+					_matrix.tx += _point.x;
+					_matrix.ty += _point.y;
+					
+					target.draw(buffer, _matrix, _tint, blend);
+				}
+				
 				_point.x += _maxWidth;
 				xx ++;
 			}
