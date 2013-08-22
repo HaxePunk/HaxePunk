@@ -577,7 +577,7 @@ class Entity extends Tweener
 	private function set_graphic(value:Graphic):Graphic
 	{
 		if (_graphic == value) return value;
-		if (_graphic != null) 
+		if (_graphic != null)
 		{
 			_graphic.setEntity(null);
 			_graphic.destroy();
@@ -610,7 +610,7 @@ class Entity extends Tweener
 	/**
 	 * Adds the graphic to the Entity via a Graphiclist.
 	 * @param	g		Graphic to add.
-	 * 
+	 *
 	 * @return	The added graphic.
 	 */
 	public function addGraphic(g:Graphic):Graphic
@@ -659,18 +659,18 @@ class Entity extends Tweener
 		width = Reflect.getProperty(o, "width");
 		height = Reflect.getProperty(o, "height");
 
-		if (Std.is(o, Graphic) || Std.is(o, Rectangle))
+		if (Reflect.hasField(o, "originX") && Reflect.hasField(o, "originY"))
+		{
+			originX = Reflect.getProperty(o, "originX");
+			originY = Reflect.getProperty(o, "originY");
+		}
+		else
 		{
 			originX = Reflect.getProperty(o, "x");
 			originY = Reflect.getProperty(o, "y");
 
 			originX = -originX;
 			originY = -originY;
-		}
-		else
-		{
-			originX = Reflect.getProperty(o, "originX");
-			originY = Reflect.getProperty(o, "originY");
 		}
 	}
 
@@ -856,7 +856,7 @@ class Entity extends Tweener
 	/**
 	 * When you collide with an Entity on the x-axis with moveTo() or moveBy().
 	 * @param	e		The Entity you collided with.
-	 * 
+	 *
 	 * @return	If there was a collision.
 	 */
 	public function moveCollideX(e:Entity):Bool
@@ -867,7 +867,7 @@ class Entity extends Tweener
 	/**
 	 * When you collide with an Entity on the y-axis with moveTo() or moveBy().
 	 * @param	e		The Entity you collided with.
-	 * 
+	 *
 	 * @return	If there was a collision.
 	 */
 	public function moveCollideY(e:Entity):Bool
