@@ -326,7 +326,8 @@ class Input
 			_nativeCorrection.set("43_270", 107); // NUMPAD_ADD
 			//_nativeCorrection.set("", 108); // NUMPAD_ENTER
 			_nativeCorrection.set("45_269", 109); // NUMPAD_SUBTRACT
-			_nativeCorrection.set("46_266", 110); // NUMPAD_DECIMAL
+			_nativeCorrection.set("46_266", 110); // NUMPAD_DECIMAL - point
+			_nativeCorrection.set("44_266", 110); // NUMPAD_DECIMAL - comma
 			_nativeCorrection.set("47_267", 111); // NUMPAD_DIVIDE
 		#end
 		}
