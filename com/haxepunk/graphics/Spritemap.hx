@@ -20,7 +20,7 @@ class Spritemap extends Image
 	 * If the animation has stopped.
 	 */
 	public var complete:Bool;
-
+	
 	/**
 	 * Optional callback function for animation end.
 	 */
@@ -114,7 +114,7 @@ class Spritemap extends Image
 	/** @private Updates the animation. */
 	override public function update()
 	{
-		if (_anim != null && !complete)
+		if (_anim != null && !complete && !_paused)
 		{
 			_timer += (HXP.fixed ? _anim.frameRate / HXP.frameRate : _anim.frameRate * HXP.elapsed) * rate;
 			if (_timer >= 1)
@@ -193,6 +193,30 @@ class Spritemap extends Image
 		return _anim;
 	}
 
+	/**
+	 * Pauses the animation.
+	 */
+	public function pause()
+	{
+		_paused = true;
+	}
+	
+	/**
+	 * If the animation is paused.
+	 */
+	public function isPaused()
+	{
+		return _paused;
+	}
+	
+	/**
+	 * Resume the animation.
+	 */
+	public function resume()
+	{
+		_paused = false;
+	}
+	
 	/**
 	 * Gets the frame index based on the column and row of the source image.
 	 * @param	column		Frame column.
@@ -314,4 +338,5 @@ class Spritemap extends Image
 	private var _frame:Int;
 	private var _timer:Float;
 	private var _atlas:TileAtlas;
+	private var _paused:Bool;
 }
