@@ -26,6 +26,7 @@ class Key
 	public inline static var PAGE_UP = 33;
 	public inline static var LEFT_SQUARE_BRACKET = 219;
 	public inline static var RIGHT_SQUARE_BRACKET = 221;
+	public inline static var TILDE = 192;
 
 	public inline static var A = 65;
 	public inline static var B = 66;
@@ -114,6 +115,10 @@ class Key
 			case UP:    return "UP";
 			case RIGHT: return "RIGHT";
 			case DOWN:  return "DOWN";
+			
+			case LEFT_SQUARE_BRACKET: return "{";
+			case RIGHT_SQUARE_BRACKET: return "}";
+			case TILDE: return "~";
 
 			case ENTER:     return "ENTER";
 			case CONTROL:   return "CONTROL";

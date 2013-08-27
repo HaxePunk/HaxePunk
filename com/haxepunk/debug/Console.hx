@@ -49,7 +49,7 @@ class Console
 	// Initialize variables
 	private function init()
 	{
-		toggleKey = 192; // Tilde (~) by default
+		toggleKey = Key.TILDE; // Tilde (~) by default
 
 		_sprite = new Sprite();
 		var font = Assets.getFont("font/04B_03__.ttf");
