@@ -39,12 +39,18 @@ class Rect extends Graphic
 		}
 		else if (_entity != null && _entity.scene != null)
 		{
+			var fsx = HXP.screen.fullScaleX,
+				fsy = HXP.screen.fullScaleY;
+			
 			_point.x = point.x + x - camera.x * scrollX;
 			_point.y = point.y + y - camera.y * scrollY;
+			
+			_point.x = Math.floor(_point.x * fsx);
+			_point.y = Math.floor(_point.y * fsy);
 
 			var gfx = _entity.scene.getSpriteByLayer(layer).graphics;
 			gfx.beginFill(color);
-			gfx.drawRect(_point.x, _point.y, width, height);
+			gfx.drawRect(_point.x, _point.y, width*fsx, height*fsy);
 		}
 	}
 
