@@ -92,6 +92,22 @@ class Graphic
 		_entity = entity;
 		layer = entity != null ? entity.layer : HXP.BASELAYER;
 	}
+	
+	/**
+	 * Pause updating this graphic.
+	 */
+	public function pause()
+	{
+		active = false;
+	}
+	
+	/**
+	 * Resume updating this graphic.
+	 */
+	public function resume()
+	{
+		active = true;
+	}
 
 	private function set_layer(value:Int):Int
 	{
