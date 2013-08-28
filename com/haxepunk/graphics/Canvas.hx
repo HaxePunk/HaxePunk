@@ -103,7 +103,7 @@ class Canvas extends Graphic
 
 		// render the buffers
 		var xx:Int = 0, yy:Int = 0, buffer:BitmapData, px:Float = _point.x;
-		target.lock();
+		#if !bitfive target.lock(); #end
 		while (yy < _refHeight)
 		{
 			while (xx < _refWidth)
@@ -138,7 +138,7 @@ class Canvas extends Graphic
 			xx = 0;
 			yy ++;
 		}
-		target.unlock();
+		#if !bitfive target.unlock(); #end
 	}
 
 	/**

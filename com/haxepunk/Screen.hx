@@ -76,7 +76,7 @@ class Screen
 	 */
 	public function swap()
 	{
-		_current = 1 - _current;
+		#if !bitfive _current = 1 - _current; #end
 		HXP.buffer = _bitmap[_current].bitmapData;
 	}
 
@@ -135,10 +135,10 @@ class Screen
 	private function get_color():Int { return _color; }
 	private function set_color(value:Int):Int
 	{
-#if flash
+#if flash || html5
 		_color = 0xFF000000 | value;
 #elseif debug
-		HXP.log("screen.color shouldn't be set other than in flash");
+		HXP.log("screen.color should only be set in flash and html5");
 #end
 		return value;
 	}
