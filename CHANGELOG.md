@@ -1,5 +1,28 @@
 HaxePunk CHANGELOG
 
+v2.4.0
+------------------------------
+* Speed improvements for openfl-bitfive
+* Template improved to match asset folder names
+* [fserb] Added ImageMask
+* [XXLTomate] Added pause/resume function to Graphic
+* [ibilon] Fix key mapping on native
+* [ibilon] Tilemap and Canvas can be scaled
+* Fix Flash memory leak (multitouch)
+* [ibilon] Nameless images can be flipped
+* [kpaekn] scaled images were not flipped correctly on native
+* [ibilon] Image can take BitmapData on native
+* [ibilon] Sound wouldn't stop at end on native
+* [ibilon] Backdrop rendered one too many rows/columns
+* Added Ouya controller mapping
+* [ibilon] Trace capture is now optional for console
+* [fserb] Fix canvas rendering on native
+* [fserb] Tilemap rendering fixes
+* [ibilon] destroy old graphic when changed
+* [ibilon] Text alpha rendering fix
+* Several additions from FlashPunk
+* Improved documentation
+
 v2.3.2
 ------------------------------
 * [ibilon] Fix circle/grid collision
