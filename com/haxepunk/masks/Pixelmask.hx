@@ -84,14 +84,39 @@ class Pixelmask extends Hitbox
 	/** @private Collide against a Pixelmask. */
 	private function collidePixelmask(other:Pixelmask):Bool
 	{
-		_point.x = parent.x + _x;
-		_point.y = parent.y + _y;
-		_point2.x = other.parent.x + other._x;
-		_point2.y = other.parent.y + other._y;
 		#if flash
-		return _data.hitTest(_point, threshold, other._data, _point2, other.threshold);
+			_point.x = parent.x + _x;
+			_point.y = parent.y + _y;
+			_point2.x = other.parent.x + other._x;
+			_point2.y = other.parent.y + other._y;
+			return _data.hitTest(_point, threshold, other._data, _point2, other.threshold);
 		#else
-		return false;
+
+			_point.x = other.parent.x + other._x - (parent.x + _x);
+			_point.y = other.parent.y + other._y - (parent.y + _y);
+
+			var r1 = new Rectangle(0, 0, _data.width, _data.height);
+			var r2 = new Rectangle(_point.x, _point.y, other._data.width, other._data.height);
+
+			var intersect = r1.intersection(r2);
+
+			if (intersect.isEmpty()) {
+				return false;
+			}
+
+			for(dx in Math.floor(intersect.x)...Math.floor(intersect.x + intersect.width + 1)) {
+				for(dy in Math.floor(intersect.y)...Math.floor(intersect.y + intersect.height + 1)) {
+					var p1 = (_data.getPixel32(dx, dy) >> 24) & 0xFF;
+					var p2 = (other._data.getPixel32(Math.floor(dx - _point.x),
+																					 Math.floor(dy - _point.y)) >> 24) & 0xFF;
+
+					if (p1 > 0 && p2 > 0) {
+						return true;
+					}
+				}
+			}
+
+			return false;
 		#end
 	}
 
