@@ -6,5 +6,8 @@
 	"description": "A Haxe port of the FlashPunk AS3 engine.",
 	"version": "2.3.2",
 	"releasenote": "See CHANGELOG",
-	"contributors": ["heardtheword"]
+	"contributors": ["heardtheword"],
+	"dependencies": {
+		"openfl": "1.0.5"
+	}
 }

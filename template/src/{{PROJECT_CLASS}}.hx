@@ -9,7 +9,7 @@ class {{PROJECT_CLASS}} extends Engine
 #if debug
 		HXP.console.enable();
 #end
-		// HXP.scene = new YourScene();
+		HXP.scene = new MainScene();
 	}
 
 	public static function main() { new {{PROJECT_CLASS}}(); }
