@@ -135,7 +135,7 @@ class Screen
 	private function get_color():Int { return _color; }
 	private function set_color(value:Int):Int
 	{
-#if flash || html5
+#if (flash || html5)
 		_color = 0xFF000000 | value;
 #elseif debug
 		HXP.log("screen.color should only be set in flash and html5");
