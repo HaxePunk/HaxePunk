@@ -48,10 +48,11 @@ class ParticleType
 	 * @param	angleRange		Random amount to add to the particle's direction.
 	 * @param	distanceRange	Random amount to add to the particle's distance.
 	 * @param	durationRange	Random amount to add to the particle's duration.
-	 * @param	ease			Optional easer function.
+	 * @param	ease			Optional ease function.
+	 * @param	backwards		If the motion should be played backwards.
 	 * @return	This ParticleType object.
 	 */
-	public function setMotion(angle:Float, distance:Float, duration:Float, angleRange:Float = 0, distanceRange:Float = 0, durationRange:Float = 0, ease:EaseFunction = null):ParticleType
+	public function setMotion(angle:Float, distance:Float, duration:Float, angleRange:Float = 0, distanceRange:Float = 0, durationRange:Float = 0, ease:EaseFunction = null, backwards:Bool = false):ParticleType
 	{
 		_angle = angle * HXP.RAD;
 		_distance = distance;
@@ -60,6 +61,7 @@ class ParticleType
 		_distanceRange = distanceRange;
 		_durationRange = durationRange;
 		_ease = ease;
+		_backwards = backwards;
 		return this;
 	}
 
@@ -156,6 +158,7 @@ class ParticleType
 	public var _duration:Float;
 	public var _durationRange:Float;
 	public var _ease:EaseFunction;
+	public var _backwards:Bool;
 
 	// Gravity information.
 	public var _gravity:Float;

@@ -170,8 +170,8 @@ class Emitter extends Graphic
 
 			// get position
 			td = (type._ease == null) ? t : type._ease(t);
-			_p.x = _point.x + p._x + p._moveX * td;
-			_p.y = _point.y + p._y + p._moveY * td;
+			_p.x = _point.x + p._x + p._moveX * (type._backwards ? 1 - td : td);
+			_p.y = _point.y + p._y + p._moveY * (type._backwards ? 1 - td : td);
 			p._moveY += p._gravity * td;
 
 			if (_blit)
@@ -249,14 +249,15 @@ class Emitter extends Graphic
 	 * @param	angleRange		Random amount to add to the particle's direction.
 	 * @param	distanceRange	Random amount to add to the particle's distance.
 	 * @param	durationRange	Random amount to add to the particle's duration.
-	 * @param	ease			Optional easer function.
+	 * @param	ease			Optional ease function.
+	 * @param	backwards		If the motion should be played backwards.
 	 * @return	This ParticleType object.
 	 */
-	public function setMotion(name:String, angle:Float, distance:Float, duration:Float, ?angleRange:Float = 0, ?distanceRange:Float = 0, ?durationRange:Float = 0, ?ease:EaseFunction = null):ParticleType
+	public function setMotion(name:String, angle:Float, distance:Float, duration:Float, ?angleRange:Float = 0, ?distanceRange:Float = 0, ?durationRange:Float = 0, ?ease:EaseFunction = null, ?backwards:Bool = false):ParticleType
 	{
 		var pt:ParticleType = _types.get(name);
 		if (pt == null) return null;
-		return pt.setMotion(angle, distance, duration, angleRange, distanceRange, durationRange, ease);
+		return pt.setMotion(angle, distance, duration, angleRange, distanceRange, durationRange, ease, backwards);
 	}
 
 	/**
