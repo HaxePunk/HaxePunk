@@ -77,7 +77,8 @@ class Engine extends Sprite
 		HXP.screen = new Screen();
 		HXP.width = width;
 		HXP.height = height;
-
+		HXP.screenscaleMode = ScreenScaleMode.SCREENSCALE_ASPECTRATIO;
+		
 		// miscellaneous startup stuff
 #if neko
 		if (HXP.randomSeed == null) HXP.randomizeSeed();
@@ -142,7 +143,7 @@ class Engine extends Sprite
 	 */
 	public function render()
 	{
-		if (HXP.screen.needsResize) HXP.resize(HXP.windowWidth, HXP.windowHeight);
+		if (HXP.screen.needsResize) resize();
 
 		// timing stuff
 		var t:Float = Lib.getTimer();
@@ -218,14 +219,7 @@ class Engine extends Sprite
 	/** @private Event handler for stage resize */
 	private function resize()
 	{
-		if (HXP.width == 0) HXP.width = HXP.stage.stageWidth;
-		if (HXP.height == 0) HXP.height = HXP.stage.stageHeight;
-		// calculate scale from width/height values
-		HXP.windowWidth = HXP.stage.stageWidth;
-		HXP.windowHeight = HXP.stage.stageHeight;
-		HXP.screen.scaleX = HXP.stage.stageWidth / HXP.width;
-		HXP.screen.scaleY = HXP.stage.stageHeight / HXP.height;
-		HXP.resize(HXP.stage.stageWidth, HXP.stage.stageHeight);
+		HXP.resizescreen();
 	}
 
 	/** @private Event handler for stage entry. */
