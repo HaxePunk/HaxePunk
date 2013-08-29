@@ -170,8 +170,8 @@ class Emitter extends Graphic
 
 			// get position
 			td = (type._ease == null) ? t : type._ease(t);
-			_p.x = _point.x + p._x + p._moveX * (type._backwards ? 1 - t : t);
-			_p.y = _point.y + p._y + p._moveY * (type._backwards ? 1 - t : t);
+			_p.x = _point.x + p._x + p._moveX * (type._backwards ? 1 - td : td);
+			_p.y = _point.y + p._y + p._moveY * (type._backwards ? 1 - td : td);
 			p._moveY += p._gravity * td;
 
 			if (_blit)
