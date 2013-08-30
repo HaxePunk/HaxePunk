@@ -86,8 +86,8 @@ class Text extends Image
 		if (HXP.renderMode.has(RenderMode.HARDWARE))
 		{
 			HXP.rect.x = HXP.rect.y = 0;
-			HXP.rect.width = _field.width;
-			HXP.rect.height = _field.height;
+			_field.width = HXP.rect.width = width;
+			_field.height = HXP.rect.height = height;
 			source = new AtlasRegion(null, 0, HXP.rect);
 			_blit = false;
 		}
