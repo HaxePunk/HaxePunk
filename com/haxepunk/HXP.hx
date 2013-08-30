@@ -261,6 +261,16 @@ class HXP
 	public static var screenscaleMultiples:Float = 1;
 	
 	/**
+	 * Minimum width for game for SCREENSCALE_DYNAMICSIZE_ scale options. Not set by resize().
+	 */
+	public static var screendynamicBaseWidth:Float = 0;
+	
+	/**
+	 * Minimum height for game for SCREENSCALE_DYNAMICSIZE_. Not set by resize().
+	 */
+	public static var screendynamicBaseHeight:Float = 0;
+	
+	/**
 	 * Resizes the screen.
 	 * Used after the window size changes or the game size changes.
 	 */
@@ -331,8 +341,9 @@ class HXP
 	 * Resize the game.
 	 * @param width		New width.
 	 * @param height	New height.
+	 * @param _resizescreen	Perform a screen resize.
 	 */
-	public static function resize(width:Int, height:Int)
+	public static function resize(width:Int, height:Int, _resizescreen:Bool = true)
 	{
 		HXP.width = width; HXP.height = height;
 		HXP.halfWidth = HXP.width / 2;
@@ -340,7 +351,7 @@ class HXP
 		HXP.bounds.width = HXP.width;
 		HXP.bounds.height = HXP.height;
 		
-		resizescreen();
+		if (_resizescreen) {resizescreen();}
 	}
 
 	/**
