@@ -229,7 +229,16 @@ class HXP
 	 * Custom - Use screenscale variables and set the scale yourself.
 	 * Setsize - The window sets the game width and height and scale is applied from screenscale.
 	 */
-	public static var screenscaleMode:ScreenScaleMode;
+	public static var screenscaleMode(get_screenscaleMode, set_screenscaleMode):ScreenScaleMode;
+	private static inline function get_screenscaleMode():ScreenScaleMode { return _screenscaleMode; }
+	private static function set_screenscaleMode(value:ScreenScaleMode):ScreenScaleMode
+	{
+		if (_screenscaleMode == null) { _screenscaleMode = value; return _screenscaleMode; } //On init don't call resize
+		_screenscaleMode = value;
+		resizescreen();
+		return _screenscaleMode;
+	}
+	private static var _screenscaleMode:ScreenScaleMode;
 	
 	/**
 	 * Custom scale attribute for screenscale mode custom. Effects both X and Y screen scale.
@@ -267,42 +276,52 @@ class HXP
 		switch(screenscaleMode)
 		{
 			case SCREENSCALE_FORCE: //Scales disregarding aspect ratio.
-				HXP.screen.scaleX = HXP.stage.stageWidth / HXP.width; HXP.screen.scaleY = HXP.stage.stageHeight / HXP.height;
+				HXP.screen.scaleX = HXP.stage.stageWidth / HXP.width; HXP.screen.scaleY = HXP.stage.stageHeight / HXP.height; HXP.screen.scale = 1;
 				
 			case SCREENSCALE_ASPECTRATIO: //Scales with aspect ratio.
+				HXP.screen.scaleX = 1; HXP.screen.scaleY = 1;
 				if (HXP.stage.stageHeight / HXP.height <= HXP.stage.stageWidth / HXP.width) //Finds the direction that has the least scale space.
-				{HXP.screen.scaleY = HXP.stage.stageHeight / HXP.height; HXP.screen.scaleX = HXP.screen.scaleY; }
+				{HXP.screen.scale = HXP.stage.stageHeight / HXP.height; }
 				else
-				{HXP.screen.scaleX = HXP.stage.stageWidth / HXP.width; HXP.screen.scaleY = HXP.screen.scaleX; }
+				{HXP.screen.scale = HXP.stage.stageWidth / HXP.width; }
 			
 			case SCREENSCALE_MULTIPLES: //Scales by multiples of screenscaleMultiples. For example use to keep pixels scaled evenly.
+				HXP.screen.scaleX = 1; HXP.screen.scaleY = 1;
 				if (HXP.stage.stageWidth / HXP.width >= 1 && HXP.stage.stageHeight / HXP.height >= 1)
 				{
 					//Scale with multiples when the screen is larger than the gamesize
 					if (HXP.stage.stageHeight / HXP.height <= HXP.stage.stageWidth / HXP.width) //Finds the direction that has the least scale space.
-					{HXP.screen.scaleY = Math.floor(HXP.stage.stageHeight / HXP.height / screenscaleMultiples) * screenscaleMultiples; HXP.screen.scaleX = HXP.screen.scaleY; }
+					{HXP.screen.scale = Math.floor(HXP.stage.stageHeight / HXP.height / screenscaleMultiples) * screenscaleMultiples; }
 					else
-					{HXP.screen.scaleX = Math.floor(HXP.stage.stageWidth / HXP.width / screenscaleMultiples) * screenscaleMultiples; HXP.screen.scaleY = HXP.screen.scaleX; }
+					{HXP.screen.scale = Math.floor(HXP.stage.stageWidth / HXP.width / screenscaleMultiples) * screenscaleMultiples; }
 				}
 				else
 				{
 					//Scale with aspect ratio when the screen is smaller than the gamesize. Needed so the scalesize won't be set to 0.
 					if (HXP.stage.stageHeight / HXP.height <= HXP.stage.stageWidth / HXP.width) //Finds the direction that has the least scale space.
-					{HXP.screen.scaleY = HXP.stage.stageHeight / HXP.height; HXP.screen.scaleX = HXP.screen.scaleY; }
+					{HXP.screen.scale = HXP.stage.stageHeight / HXP.height; }
 					else
-					{HXP.screen.scaleX = HXP.stage.stageWidth / HXP.width; HXP.screen.scaleY = HXP.screen.scaleX; }
+					{HXP.screen.scale = HXP.stage.stageWidth / HXP.width; }
 				}
 			
 			case SCREENSCALE_CUSTOM: //Use screenscale variables and set the scale yourself.
-				HXP.screen.scaleX = screenscale * screenscaleX; HXP.screen.scaleY = screenscale * screenscaleY;
+				HXP.screen.scaleX = screenscaleX; HXP.screen.scaleY = screenscaleY; HXP.screen.scale = screenscale;
 				
-			case SCREENSCALE_SETSIZE: //The window sets the game width and height and scale is applied from screenscale.
-				HXP.resize(Math.floor(HXP.stage.stageWidth / screenscaleX / screenscale), Math.floor(HXP.stage.stageHeight / screenscaleY / screenscale));
+			case SCREENSCALE_DYNAMICSIZE: //The window sets the game width and height and scale is applied from screenscale.
+				HXP.screen.scaleX = screenscaleX; HXP.screen.scaleY = screenscaleY; HXP.screen.scale = screenscale;
+				//Calculate new game size
+				var newwidth:Int = Math.floor(HXP.stage.stageWidth / HXP.screen.scaleX / HXP.screen.scale),
+				newheight:Int = Math.floor(HXP.stage.stageHeight / HXP.screen.scaleY / HXP.screen.scale);
+				//Check if new size is below minimum allowed size.
+				if (newwidth < screendynamicBaseWidth) { newwidth = Std.int(screendynamicBaseWidth); HXP.screen.scaleX = HXP.stage.stageWidth / screendynamicBaseWidth / screenscale; }
+				if (newheight < screendynamicBaseHeight) { newheight = Std.int(screendynamicBaseHeight); HXP.screen.scaleY = HXP.stage.stageHeight / screendynamicBaseHeight / screenscale; }
+				
+				HXP.resize(newwidth, newheight, false);
 		}
 		
 		//Positions the game in the center of the window.
-        engine.x = Math.floor(0.5 * (HXP.stage.stageWidth - HXP.width * HXP.screen.scaleX));
-        engine.y = Math.floor(0.5 * (HXP.stage.stageHeight - HXP.height * HXP.screen.scaleY));
+		engine.x = Math.floor(0.5 * (HXP.stage.stageWidth - HXP.width * HXP.screen.scaleX * HXP.screen.scale));
+		engine.y = Math.floor(0.5 * (HXP.stage.stageHeight - HXP.height * HXP.screen.scaleY * HXP.screen.scale));
 		
 		//Perform screen resize.
 		HXP.screen.resize();
