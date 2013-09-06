@@ -60,12 +60,6 @@ class Image extends Graphic
 	public var blend:BlendMode;
 
 	/**
-	 * If the image should be drawn transformed with pixel smoothing.
-	 * This will affect drawing performance, but look less pixelly.
-	 */
-	public var smooth:Bool;
-
-	/**
 	 * Constructor.
 	 * @param	source		Source image.
 	 * @param	clipRect	Optional rectangle defining area of the source image to draw.
@@ -201,7 +195,7 @@ class Image extends Graphic
 					if (angle != 0) _matrix.rotate(angle * HXP.RAD);
 					_matrix.tx += originX + _point.x;
 					_matrix.ty += originY + _point.y;
-					target.draw(_bitmap, _matrix, null, blend, null, smooth);
+					target.draw(_bitmap, _matrix, null, blend, null, _bitmap.smoothing);
 				}
 			}
 		}
@@ -453,6 +447,18 @@ class Image extends Graphic
 		y -= originY;
 	}
 
+
+	/**
+	 * If the image should be drawn transformed with pixel smoothing.
+	 * This will affect drawing performance, but look less pixelly.
+	 */
+	public var smooth(get_smooth, set_smooth):Bool;
+	private function get_smooth():Bool { return _bitmap.smoothing; }
+	private function set_smooth(s:Bool):Bool {
+		_bitmap.smoothing = s;
+		return _bitmap.smoothing;
+	}
+	
 	/**
 	 * Width of the image.
 	 */
