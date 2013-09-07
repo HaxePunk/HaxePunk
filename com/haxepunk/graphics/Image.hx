@@ -452,12 +452,16 @@ class Image extends Graphic
 	 * If the image should be drawn transformed with pixel smoothing.
 	 * This will affect drawing performance, but look less pixelly.
 	 */
+	#if flash
 	public var smooth(get_smooth, set_smooth):Bool;
 	private function get_smooth():Bool { return _bitmap.smoothing; }
 	private function set_smooth(s:Bool):Bool {
 		_bitmap.smoothing = s;
 		return _bitmap.smoothing;
 	}
+	#else
+	public var smooth : Bool = false;
+	#end
 	
 	/**
 	 * Width of the image.
