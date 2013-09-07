@@ -34,10 +34,6 @@ class ParticleType
         _gravity  = _gravityRange  = 0;
         _duration = _durationRange = 0;
         _distance = _distanceRange = 0;
-        _alpha    = _alphaRange    = 0;
-
-        _red = _green = _blue = 1;
-        _redRange = _greenRange = _blueRange = 0;
 	}
 
 	/**
