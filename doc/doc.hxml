@@ -1,6 +1,6 @@
--neko all.n
--lib nme
---remap flash:nme
+-swf all.swf
+-swf-version 11
+-lib openfl
 --no-output
 -D doc
 -D desktop
