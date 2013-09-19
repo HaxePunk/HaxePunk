@@ -1,5 +1,14 @@
 HaxePunk CHANGELOG
 
+v2.4.1
+------------------------------
+* [XXLTomate] Option to play an emitter animation backwards 
+* [XXLTomate] Fix invisible particles
+* [kpaekn] Added Image.smooth getter and setter
+* [ibilon] Smooth for non-flash target
+* [ibilon] Fix doc generation script
+* Update for new version of openfl
+
 v2.4.0
 ------------------------------
 * Speed improvements for openfl-bitfive
