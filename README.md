@@ -24,7 +24,7 @@ haxelib run HaxePunk new MyProject # creates a new project
 You need to have ant installed to build a development version of HaxePunk. Make sure you set a default program for swf files to view the debug output. You will also need a C++ compiler for native builds (Xcode, Visual Studio, g++).
 
 ```bash
-git clone git@github.com:MattTuttle/HaxePunk
+git clone git@github.com:HaxePunk/HaxePunk.git
 ant
 ```
 
