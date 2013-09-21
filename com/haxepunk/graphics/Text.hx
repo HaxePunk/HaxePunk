@@ -41,6 +41,8 @@ class Text extends Image
 	public var resizable:Bool;
 	public var textWidth(default, null):Int;
 	public var textHeight(default, null):Int;
+	public var autoWidth:Bool = false;
+	public var autoHeight:Bool = false;
 
 	/**
 	 * Constructor.
@@ -79,15 +81,23 @@ class Text extends Image
 
 		resizable = options.resizable;
 
-		if (width == 0) width = Std.int(_field.textWidth + 4);
-		if (height == 0) height = Std.int(_field.textHeight + 4);
+		if (width == 0)
+		{
+			width = Std.int(_field.textWidth + 4);
+			autoWidth = true;
+		}
+		if (height == 0)
+		{
+			height = Std.int(_field.textHeight + 4);
+			autoHeight = true;
+		}
 
 		var source:Dynamic;
 		if (HXP.renderMode.has(RenderMode.HARDWARE))
 		{
 			HXP.rect.x = HXP.rect.y = 0;
-			HXP.rect.width = _field.width;
-			HXP.rect.height = _field.height;
+			_field.width = HXP.rect.width = textWidth = width;
+			_field.height = HXP.rect.height = textHeight = height;
 			source = new AtlasRegion(null, 0, HXP.rect);
 			_blit = false;
 		}
@@ -110,8 +120,11 @@ class Text extends Image
 		_field.setTextFormat(_format);
 
 		if (_blit) _field.width = _bufferRect.width;
-		_field.width = textWidth = Math.ceil(_field.textWidth + 4);
-		_field.height = textHeight = Math.ceil(_field.textHeight + 4);
+
+		if(autoWidth)
+			_field.width = textWidth = Math.ceil(_field.textWidth + 4);
+		if(autoHeight)
+			_field.height = textHeight = Math.ceil(_field.textHeight + 4);
 
 		if (_blit)
 		{
