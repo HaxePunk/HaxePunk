@@ -11,8 +11,9 @@ class Atlas
 	 * It keeps memory to a minimum which improves rendering on mobile devices
 	 */
 	public static var drawCallThreshold:Int = 25000;
+	
 	/**
-	 * Whether or not to use antialiasing (default: true)
+	 * Whether or not to use antialiasing (default: false)
 	 */
 	public static var smooth:Bool = false;
 

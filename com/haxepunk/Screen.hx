@@ -1,5 +1,6 @@
 package com.haxepunk;
 
+import com.haxepunk.graphics.atlas.Atlas;
 import com.haxepunk.graphics.Image;
 
 import flash.display.Bitmap;
@@ -267,8 +268,15 @@ class Screen
 	 * Whether screen smoothing should be used or not.
 	 */
 	public var smoothing(get_smoothing, set_smoothing):Bool;
-	private function get_smoothing():Bool { return _bitmap[0].smoothing; }
-	private function set_smoothing(value:Bool):Bool { _bitmap[0].smoothing = _bitmap[1].smoothing = value; return value; }
+	private function get_smoothing():Bool 
+	{ 
+		return _bitmap[0].smoothing; 
+	}
+	private function set_smoothing(value:Bool):Bool 
+	{ 
+		Atlas.smooth = _bitmap[0].smoothing = _bitmap[1].smoothing = value; 
+		return value; 
+	}
 
 	/**
 	 * Width of the screen.
