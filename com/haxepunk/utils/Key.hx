@@ -106,6 +106,8 @@ class Key
 	 */
 	public static function nameOfKey(char:Int):String
 	{
+		if (char == -1) return "";
+		
 		if (char >= A && char <= Z) return String.fromCharCode(char);
 		if (char >= F1 && char <= F15) return "F" + Std.string(char - 111);
 		if (char >= 96 && char <= 105) return "NUMPAD " + Std.string(char - 96);
