@@ -3,22 +3,27 @@ language: java
 env: LD_LIBRARY_PATH=/usr/lib/neko
 
 before_install:
-  # Install haxe 3.0 dependencies
+  # Install haxe 3.1 & openfl dependencies
   - sudo apt-get install ocaml camlp4 ocaml-findlib cvs zlib1g-dev make wget tar subversion libgc1c2
-  # Install haxe 3.0 (trunk)
-  - svn checkout http://haxe.googlecode.com/svn/trunk haxe_trunk > /dev/null
-  - cd haxe_trunk
-  - make
-  - sudo make install
-  - cd ..
+  - sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch
   # Install neko 2.0
   - curl http://nekovm.org/_media/neko-2.0.0-linux64.tar.gz | tar xzf -
   - sudo mv neko-2.0.0-linux /usr/lib/neko
   - sudo cp /usr/lib/neko/neko /usr/bin/neko
   - sudo cp /usr/lib/neko/nekoc /usr/bin/nekoc
   - sudo cp /usr/lib/neko/nekotools /usr/bin/nekotools
-  - mkdir -p ~/.haxe/lib
-  - echo ~/.haxe/lib | haxelib setup
+  # Install haxe 3.1 (thanks to openfl install script)
+  - wget -c http://haxe.org/file/haxe-3.0.1-linux64.tar.gz
+  - sudo mkdir -p /usr/lib/haxe
+	- sudo tar xvzf haxe-3.0.1-linux64.tar.gz -C /usr/lib/haxe
+	- sudo cp -r /usr/lib/haxe/build/* /usr/lib/haxe/
+	- sudo ln -s /usr/lib/haxe/haxe /usr/bin/haxe
+	- sudo ln -s /usr/lib/haxe/haxelib /usr/bin/haxelib
+	- sudo ln -s /usr/lib/haxe/haxedoc /usr/bin/haxedoc
+  # Setup haxelib
+  - mkdir -p ~/haxelib
+  - haxelib setup ~/haxelib
+  # Download dependencies
   - haxelib install hxcpp
   - haxelib install openfl
   - haxelib install openfl-tools
