@@ -6,7 +6,7 @@ before_install:
   # Install haxe 3.1 & openfl dependencies
   - sudo apt-get update
   - sudo apt-get install zlib1g-dev make wget tar subversion libgc1c2
-  - sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch
+  #- sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch
   # Install neko 2.0
   - curl http://nekovm.org/_media/neko-2.0.0-linux64.tar.gz | tar xzf -
   - sudo mv neko-2.0.0-linux /usr/lib/neko
@@ -30,7 +30,7 @@ before_install:
   - haxelib install openfl-tools
   - haxelib install openfl-native
   - haxelib install openfl-html5
-  - haxelib run openfl setup linux
+  - echo "y" | haxelib run openfl setup
 
 script:
   - ant clean build unit
