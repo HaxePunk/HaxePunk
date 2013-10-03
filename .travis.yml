@@ -29,6 +29,8 @@ before_install:
   - haxelib install openfl-native
   - haxelib install openfl-html5
   - echo "y" | haxelib run openfl setup
+  - wget -c https://github.com/YellowAfterlife/openfl-bitfive/archive/master.zip
+  - haxelib local master.zip
 
 script:
   - ant clean build unit
