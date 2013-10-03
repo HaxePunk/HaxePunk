@@ -69,15 +69,10 @@ class MultiVarTween extends Tween
 	{
 		super.update();
 		var i:Int = _vars.length;
-		var setter:Dynamic->String->Dynamic->Void;
-#if (cpp || neko)
-		setter = Reflect.setField;
-#else
-		setter = Reflect.setProperty;
-#end
+
 		while (i-- > 0)
 		{
-			setter(_object, _vars[i], _start[i] + _range[i] * _t);
+			Reflect.setProperty(_object, _vars[i], _start[i] + _range[i] * _t);
 		}
 	}
 
