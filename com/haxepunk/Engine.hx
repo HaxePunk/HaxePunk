@@ -269,6 +269,25 @@ class Engine extends Sprite
 			_last = Lib.getTimer();
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
+		
+		// Warnings when forcing RenderMode
+		if (HXP.renderMode.has(RenderMode.BUFFER))
+		{				
+			#if (!(flash || js) && debug)
+			HXP.console.log(["Warning: Using RenderMode.BUFFER on native target may result in bad performance"]);
+			#end
+		}
+		else
+		{				
+			#if ((flash || js) && debug)
+			HXP.console.log(["Warning: Using RenderMode.HARDWARE on flash/html5 target may result in corrupt graphics"]);
+			#end
+		}
+		
+		// HTML 5 warning
+		#if (js && debug)
+		HXP.console.log(["Warning: the HTML 5 target is currently experimental"]);
+		#end
 	}
 
 	/** @private Framerate independent game loop. */
