@@ -259,6 +259,9 @@ class Image extends Graphic
 	 */
 	public static function createRect(width:Int, height:Int, color:Int = 0xFFFFFF, alpha:Float = 1):Image
 	{
+		if (width == 0 || height == 0)
+			throw "Illegal rect, sizes cannot be 0.";
+		
 		var source:BitmapData = HXP.createBitmap(width, height, true, 0xFFFFFFFF);
 		var image:Image;
 		if (HXP.renderMode.has(RenderMode.HARDWARE))
@@ -285,6 +288,9 @@ class Image extends Graphic
 	 */
 	public static function createCircle(radius:Int, color:Int = 0xFFFFFF, alpha:Float = 1):Image
 	{
+		if (radius == 0)
+			throw "Illegal circle, radius cannot be 0.";
+		
 		HXP.sprite.graphics.clear();
 		HXP.sprite.graphics.beginFill(0xFFFFFF);
 		HXP.sprite.graphics.drawCircle(radius, radius, radius);
