@@ -185,6 +185,10 @@ class Emitter extends Graphic
 					rect.x = rect.width * type._frames[Std.int(td * type._frames.length)];
 				rect.y = Std.int(rect.x / _width) * rect.height;
 				rect.x %= _width;
+				
+				// particles should be emited from the emiter's center
+				_p.x -= rect.width / 2;
+				_p.y -= rect.height / 2;
 
 				// draw particle
 				if (type._buffer != null)
