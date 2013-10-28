@@ -1,5 +1,16 @@
 HaxePunk CHANGELOG
 
+v2.4.2
+------------------------------
+* [ibilon] Native screen smoothing
+* [scriptorum] Fixed faulty Text dimensions
+* [ibilon] Numpad keys with numlock off on native
+* [ibilon] Change setField to setProperty in MultiVarTween to use properties setter
+* [ibilon] Added warnings
+* [ibilon] Image.createX check sizes
+* [ibilon] Emit centered particles on flash
+* Update for new version of openfl
+
 v2.4.1
 ------------------------------
 * [XXLTomate] Option to play an emitter animation backwards 
