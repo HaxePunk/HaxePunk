@@ -15,7 +15,9 @@ class Graphic
 	/**
 	 * If the graphic should render.
 	 */
-	public var visible:Bool;
+	public var visible(get_visible, set_visible):Bool;
+	public function get_visible():Bool { return _visible; }
+	public function set_visible(value:Bool):Bool { return _visible = value; }
 
 	/**
 	 * X offset.
@@ -123,4 +125,5 @@ class Graphic
 	 * If we can blit the graphic or not (flash/html5)
 	 */
 	private var _blit:Bool;
+	private var _visible:Bool;
 }

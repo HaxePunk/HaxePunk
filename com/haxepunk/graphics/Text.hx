@@ -168,9 +168,11 @@ class Text extends Image
 		}
 		else
 		{
-			if (_parent == null) findParentSprite();
+			if (_parent == null)
+				findParentSprite();
+			
 			_field.x = (point.x + x - originX - camera.x * scrollX) * HXP.screen.fullScaleX;
-			_field.y = (point.y + y - originY - camera.y * scrollY) * HXP.screen.fullScaleY;
+			_field.y = (point.y + y - originY - camera.y * scrollY) * HXP.screen.fullScaleY;		
 		}
 	}
 
@@ -284,24 +286,52 @@ class Text extends Image
 	override function get_alpha():Float
 	{
 		if (_blit)
-		{
 			return super.get_alpha();
-		}
 		else
-		{
 			return _field.alpha;
-		}
 	}
 	override function set_alpha(value:Float):Float
 	{
 		if (_blit)
-		{
 			return super.set_alpha(value);
-		}
 		else
-		{
 			return _field.alpha = value;
-		}
+	}
+
+	/**
+	 * Visibility of the text.
+	 */
+	override function get_visible():Bool
+	{
+		if (_blit)
+			return super.get_visible();
+		else
+			return _field.visible;
+	}
+	override function set_visible(value:Bool):Bool
+	{
+		if (_blit)
+			return super.set_visible(value);
+		else
+			return _field.visible = value;
+	}
+
+	/**
+	 * Scale of the text.
+	 */
+	override function get_scale():Float
+	{
+		if (_blit)
+			return super.get_scale();
+		else
+			return _field.scaleX;
+	}
+	override function set_scale(value:Float):Float
+	{
+		if (_blit)
+			return super.set_scale(value);
+		else
+			return _field.scaleY = _field.scaleX = value;
 	}
 
 	// Text information.

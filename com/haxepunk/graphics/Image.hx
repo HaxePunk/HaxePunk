@@ -29,7 +29,9 @@ class Image extends Graphic
 	/**
 	 * Scale of the image, effects both x and y scale.
 	 */
-	public var scale:Float;
+	public var scale(get_scale, set_scale):Float;
+	public function get_scale():Float { return _scale; }
+	public function set_scale(value:Float):Float { return _scale = value; }
 
 	/**
 	 * X scale of the image.
@@ -535,4 +537,5 @@ class Image extends Graphic
 	private static var _flips:Hash<BitmapData> = new Hash<BitmapData>();
 #end
 
+	private var _scale:Float;
 }
