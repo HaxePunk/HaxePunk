@@ -179,6 +179,11 @@ class HXP
 	 * Defines the allowed orientations
 	 */
 	public static var orientations:Array<Int> = [];
+	
+	/**
+	 * The choose function randomly chooses and returns one of the provided values.
+	 */
+	public static var choose(get, null):Dynamic;
 
 	/**
 	 * The currently active World object (deprecated)
@@ -317,13 +322,19 @@ class HXP
 		return _pan;
 	}
 
-	/**
-	 * Randomly chooses and returns one of the provided values.
-	 * @param	objs		The Objects you want to randomly choose from. Can be ints, Floats, Points, etc.
-	 * @return	A randomly chosen one of the provided parameters.
-	 */
-	public static inline function choose(objs:Array<Dynamic>):Dynamic
+	public static function get_choose():Dynamic 
+    {
+        return Reflect.makeVarArgs(_choose);
+    }
+	
+	private static inline function _choose(objs:Array<Dynamic>):Dynamic
 	{
+		if (objs == null || objs.length == 0 || (objs.length == 1 && Reflect.hasField(objs[0], "length") && objs[0].length == 0))
+			throw "Can't choose a random element on an empty array";
+			
+		if (objs.length == 1 && Reflect.hasField(objs[0], "length"))
+			return objs[0][rand(objs[0].length)];
+			
 		return objs[rand(objs.length)];
 	}
 
