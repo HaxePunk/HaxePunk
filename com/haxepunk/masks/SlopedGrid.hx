@@ -367,9 +367,8 @@ class SlopedGrid extends Hitbox
 				var tile = data[y][x];
 				if (tile == null || tile.type == null)
 				{
-					continue;
 				}
-				if (tile.type == Solid)
+				else if (tile.type == Solid)
 				{
 					graphics.drawRect(rx, ry, stepX, stepY);
 				}
