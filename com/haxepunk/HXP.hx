@@ -1144,6 +1144,22 @@ class HXP
 			}
 		}
 	}
+	
+	/**
+	 * Resize the stage.
+	 *
+	 * @param	width	New width.
+	 * @param	height	New height.
+	 */
+	public static function resizeStage (width:Int, height:Int)
+	{
+		#if (cpp || neko)
+		HXP.stage.resize(width, height);
+		resize(width, height);
+		#elseif debug
+		trace("Can only resize the stage in cpp or neko targets.");
+		#end
+	}
 
 	public static var time(null, set_time):Float;
 	private static inline function set_time(value:Float):Float {
