@@ -179,7 +179,7 @@ class HXP
 	 * Defines the allowed orientations
 	 */
 	public static var orientations:Array<Int> = [];
-	
+
 	/**
 	 * The choose function randomly chooses and returns one of the provided values.
 	 */
@@ -322,19 +322,19 @@ class HXP
 		return _pan;
 	}
 
-	public static function get_choose():Dynamic 
+	public static function get_choose():Dynamic
     {
         return Reflect.makeVarArgs(_choose);
     }
-	
+
 	private static inline function _choose(objs:Array<Dynamic>):Dynamic
 	{
 		if (objs == null || objs.length == 0 || (objs.length == 1 && Reflect.hasField(objs[0], "length") && objs[0].length == 0))
 			throw "Can't choose a random element on an empty array";
-			
+
 		if (objs.length == 1 && Reflect.hasField(objs[0], "length"))
 			return objs[0][rand(objs[0].length)];
-			
+
 		return objs[rand(objs.length)];
 	}
 
@@ -720,10 +720,10 @@ class HXP
 	/**
 	 * @private
 	 * Return the first index of an element in an array.
-	 * 
+	 *
 	 * @param	a	The array.
 	 * @param	v	The element.
-	 * 
+	 *
 	 * @return The index of the v in a, -1 if not inside.
 	 */
 	private static function indexOf<T>(a:Array<T>, v:T):Int
@@ -926,24 +926,38 @@ class HXP
 			return _bitmap.get(name);
 
 #if (openfl || nme)
-		var data:BitmapData = Assets.getBitmapData(source);
+		var data:BitmapData = Assets.getBitmapData(source, false);
 #else
 		var data:BitmapData = source.bitmapData;
 #end
+
 		if (data != null)
 			_bitmap.set(name, data);
 
 		return data;
 	}
 
+	public static function removeBitmap(source:Dynamic):Bool
+	{
+		var name:String = Std.string(source);
+		if (_bitmap.exists(name))
+		{
+			var bitmap = _bitmap.get(name);
+			bitmap.dispose();
+			bitmap = null;
+			return _bitmap.remove(name);
+		}
+		return false;
+	}
+
 	/**
 	 * Creates BitmapData based on platform specifics
-	 * 
+	 *
 	 * @param	width			BitmapData's width.
 	 * @param	height			BitmapData's height.
 	 * @param	transparent		If the BitmapData can have transparency.
 	 * @param	color			BitmapData's color.
-	 * 
+	 *
 	 * @return	The BitmapData.
 	 */
 	public static function createBitmap(width:Int, height:Int, ?transparent:Bool = false, ?color:Int = 0):BitmapData
@@ -966,9 +980,9 @@ class HXP
 
 	/**
 	 * Converts a color to platform specific type (BitmapInt32)
-	 * 
+	 *
 	 * @param	color	The color to convert.
-	 * 
+	 *
 	 * @return	The color in platform specific type.
 	 */
 	public static inline function convertColor(color:Int):Dynamic
@@ -1101,7 +1115,7 @@ class HXP
 	 * @param	from	Starting frame.
 	 * @param	to		Ending frame.
 	 * @param	skip	Skip amount every frame (eg. use 1 for every 2nd frame).
-	 * 
+	 *
 	 * @return	The array.
 	 */
 	public static function frames(from:Int, to:Int, skip:Int = 0):Array<Int>
@@ -1144,7 +1158,7 @@ class HXP
 			}
 		}
 	}
-	
+
 	/**
 	 * Resize the stage.
 	 *

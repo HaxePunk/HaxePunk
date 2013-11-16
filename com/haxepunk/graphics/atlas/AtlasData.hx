@@ -66,9 +66,14 @@ class AtlasData
 		}
 		else
 		{
-			data = getAtlasDataByName(source);
+			data = getAtlasDataByName(source, true);
 		}
-		data._refCount += 1;
+
+		if (data != null)
+		{
+			data._refCount += 1;
+		}
+
 		return data;
 	}
 
@@ -77,19 +82,24 @@ class AtlasData
 	 * @param	name	The name of the image file
 	 * @return	An AtlasData object (will create one if it doesn't already exist)
 	 */
-	public static inline function getAtlasDataByName(name:String):AtlasData
+	public static inline function getAtlasDataByName(name:String, create:Bool=false):AtlasData
 	{
+		var data:AtlasData = null;
 		if (_dataPool.exists(name))
 		{
-			return _dataPool.get(name);
+			data = _dataPool.get(name);
 		}
-		else
+		else if(create)
 		{
-			var data = new AtlasData(HXP.getBitmap(name));
-			data._name = name;
-			_dataPool.set(name, data);
-			return data;
+			var bitmap:BitmapData = HXP.getBitmap(name);
+			if (bitmap != null)
+			{
+				data = new AtlasData(bitmap);
+				data._name = name;
+				_dataPool.set(name, data);
+			}
 		}
+		return data;
 	}
 
 	private function new(bd:BitmapData)
@@ -161,8 +171,10 @@ class AtlasData
 	public function destroy()
 	{
 		_refCount -= 1;
-		if (_refCount < 0)
+		if (_refCount <= 0)
 		{
+			HXP.removeBitmap(this._name);
+			_dataPool.remove(this._name);
 			_atlases.remove(this);
 		}
 	}
@@ -388,7 +400,7 @@ class AtlasData
 
 	// used for pooling
 	private var _name:String;
-	private var _refCount:Int; // memory management
+	private var _refCount:Int = 0; // memory management
 
 	private var _layerIndex:Int;
 	private var _layer:Layer; // current layer
