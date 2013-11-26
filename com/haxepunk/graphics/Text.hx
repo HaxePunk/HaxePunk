@@ -121,9 +121,9 @@ class Text extends Image
 
 		if (_blit) _field.width = _bufferRect.width;
 
-		if(autoWidth)
+		if (autoWidth)
 			_field.width = textWidth = Math.ceil(_field.textWidth + 4);
-		if(autoHeight)
+		if (autoHeight)
 			_field.height = textHeight = Math.ceil(_field.textHeight + 4);
 
 		if (_blit)
@@ -170,9 +170,9 @@ class Text extends Image
 		{
 			if (_parent == null)
 				findParentSprite();
-			
+
 			_field.x = (point.x + x - originX - camera.x * scrollX) * HXP.screen.fullScaleX;
-			_field.y = (point.y + y - originY - camera.y * scrollY) * HXP.screen.fullScaleY;		
+			_field.y = (point.y + y - originY - camera.y * scrollY) * HXP.screen.fullScaleY;
 		}
 	}
 
@@ -238,8 +238,11 @@ class Text extends Image
 		}
 		else
 		{
-			_format.color = value;
-			updateBuffer();
+			if (_format.color != value)
+			{
+				_format.color = value;
+				updateBuffer();
+			}
 			return value;
 		}
 	}
@@ -279,7 +282,7 @@ class Text extends Image
 		_parent = _entity.scene.getSpriteByLayer(layer);
 		_parent.addChild(_field);
 	}
-	
+
 	/**
 	 * Alpha of the text.
 	 */
