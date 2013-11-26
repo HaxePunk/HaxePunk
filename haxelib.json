@@ -8,6 +8,6 @@
 	"releasenote": "See CHANGELOG",
 	"contributors": ["heardtheword"],
 	"dependencies": {
-		"openfl": "1.1.0"
+		"openfl": "1.1.1"
 	}
 }
