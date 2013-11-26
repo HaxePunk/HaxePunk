@@ -1,5 +1,14 @@
 HaxePunk CHANGELOG
 
+v2.4.3
+------------------------------
+* [ibilon] Can now resize stage in native
+* [ibilon] Wrong debug draw for SlopedGrid
+* [MattTuttle] Atlas.destroy cleans up cache propery
+* [ibilon] Fix Text scale and visibility on native
+* [ibilon] HXP.choose Fix
+* Update for new version of openfl
+
 v2.4.2
 ------------------------------
 * [ibilon] Native screen smoothing
@@ -13,7 +22,7 @@ v2.4.2
 
 v2.4.1
 ------------------------------
-* [XXLTomate] Option to play an emitter animation backwards 
+* [XXLTomate] Option to play an emitter animation backwards
 * [XXLTomate] Fix invisible particles
 * [kpaekn] Added Image.smooth getter and setter
 * [ibilon] Smooth for non-flash target
