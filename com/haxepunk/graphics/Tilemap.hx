@@ -27,10 +27,10 @@ class Tilemap extends Canvas
 	 * @param	height				Height of the tilemap, in pixels.
 	 * @param	tileWidth			Tile width.
 	 * @param	tileHeight			Tile height.
-	 * @param	tileMarginWidth		Tile horizontal margin.
-	 * @param	tileMarginHeight	Tile vertical margin.
+	 * @param	tileSpacingWidth	Tile horizontal spacing.
+	 * @param	tileSpacingHeight	Tile vertical spacing.
 	 */
-	public function new(tileset:Dynamic, width:Int, height:Int, tileWidth:Int, tileHeight:Int,?tileMarginWidth:Int=0,?tileMarginHeight:Int=0)
+	public function new(tileset:Dynamic, width:Int, height:Int, tileWidth:Int, tileHeight:Int,?tileSpacingWidth:Int=0,?tileSpacingHeight:Int=0)
 	{
 		_rect = HXP.rect;
 
@@ -39,8 +39,8 @@ class Tilemap extends Canvas
 		_height = height - (height % tileHeight);
 		_columns = Std.int(_width / tileWidth);
 		_rows = Std.int(_height / tileHeight);
-		_tileMarginWidth = tileMarginWidth;
-		_tileMarginHeight = tileMarginHeight;
+		_tileSpacingWidth = tileSpacingWidth;
+		_tileSpacingHeight = tileSpacingHeight;
 		if (_columns == 0 || _rows == 0) throw "Cannot create a bitmapdata of width/height = 0";
 
 		// create the canvas
@@ -77,7 +77,7 @@ class Tilemap extends Canvas
 			if (HXP.renderMode.has(RenderMode.HARDWARE))
 			{
 				_blit = false;
-				_atlas = new TileAtlas(tileset, tileWidth, tileHeight,tileMarginWidth,tileMarginHeight);
+				_atlas = new TileAtlas(tileset, tileWidth, tileHeight,tileSpacingWidth,tileSpacingHeight);
 			}
 			else
 			{
@@ -128,8 +128,8 @@ class Tilemap extends Canvas
 		_map[row][column] = index;
 		if (_blit)
 		{
-			_tile.x = (index % _setColumns) * _tile.width;
-			_tile.y = Std.int(index / _setColumns) * _tile.height;
+			_tile.x = (index % _setColumns) * (_tile.width + _tileSpacingWidth);
+			_tile.y = Std.int(index / _setColumns) * (_tile.height + _tileSpacingHeight);
 			draw(Std.int(column * _tile.width), Std.int(row * _tile.height), _set, _tile);
 		}
 	}
@@ -514,14 +514,14 @@ class Tilemap extends Canvas
 	private inline function get_tileHeight():Int { return Std.int(_tile.height); }	
 	
 	/**
-	 * The tile horizontal margin.
+	 * The tile horizontal spacing of tile.
 	 */
-	public var _tileMarginWidth(default, null):Int;
+	public var _tileSpacingWidth(default, null):Int;
 
 	/**
-	 * The tile vertical margin.
+	 * The tile vertical spacing of tile.
 	 */
-	public var _tileMarginHeight(default, null):Int;
+	public var _tileSpacingHeight(default, null):Int;
 
 	/**
 	 * How many tiles the tilemap has.
