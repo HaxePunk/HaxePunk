@@ -22,13 +22,15 @@ class Tilemap extends Canvas
 
 	/**
 	 * Constructor.
-	 * @param	tileset			The source tileset image.
-	 * @param	width			Width of the tilemap, in pixels.
-	 * @param	height			Height of the tilemap, in pixels.
-	 * @param	tileWidth		Tile width.
-	 * @param	tileHeight		Tile height.
+	 * @param	tileset				The source tileset image.
+	 * @param	width				Width of the tilemap, in pixels.
+	 * @param	height				Height of the tilemap, in pixels.
+	 * @param	tileWidth			Tile width.
+	 * @param	tileHeight			Tile height.
+	 * @param	tileMarginWidth		Tile horizontal margin.
+	 * @param	tileMarginHeight	Tile vertical margin.
 	 */
-	public function new(tileset:Dynamic, width:Int, height:Int, tileWidth:Int, tileHeight:Int)
+	public function new(tileset:Dynamic, width:Int, height:Int, tileWidth:Int, tileHeight:Int,?tileMarginWidth:Int=0,?tileMarginHeight:Int=0)
 	{
 		_rect = HXP.rect;
 
@@ -37,6 +39,8 @@ class Tilemap extends Canvas
 		_height = height - (height % tileHeight);
 		_columns = Std.int(_width / tileWidth);
 		_rows = Std.int(_height / tileHeight);
+		_tileMarginWidth = tileMarginWidth;
+		_tileMarginHeight = tileMarginHeight;
 		if (_columns == 0 || _rows == 0) throw "Cannot create a bitmapdata of width/height = 0";
 
 		// create the canvas
@@ -73,7 +77,7 @@ class Tilemap extends Canvas
 			if (HXP.renderMode.has(RenderMode.HARDWARE))
 			{
 				_blit = false;
-				_atlas = new TileAtlas(tileset, tileWidth, tileHeight);
+				_atlas = new TileAtlas(tileset, tileWidth, tileHeight,tileMarginWidth,tileMarginHeight);
 			}
 			else
 			{
@@ -507,7 +511,17 @@ class Tilemap extends Canvas
 	 * The tile height.
 	 */
 	public var tileHeight(get_tileHeight, never):Int;
-	private inline function get_tileHeight():Int { return Std.int(_tile.height); }
+	private inline function get_tileHeight():Int { return Std.int(_tile.height); }	
+	
+	/**
+	 * The tile horizontal margin.
+	 */
+	public var _tileMarginWidth(default, null):Int;
+
+	/**
+	 * The tile vertical margin.
+	 */
+	public var _tileMarginHeight(default, null):Int;
 
 	/**
 	 * How many tiles the tilemap has.
