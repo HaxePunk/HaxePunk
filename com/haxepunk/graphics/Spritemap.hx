@@ -78,6 +78,9 @@ class Spritemap extends Image
 		}
 		if (frameWidth == 0) _rect.width = _width;
 		if (frameHeight == 0) _rect.height = _height;
+		
+		if (_width % _rect.width != 0 || _height % _rect.height != 0)
+			throw "Source image width and height should be multiples of the frame width and height.";
 
 		_columns = Math.ceil(_width / _rect.width);
 		_rows = Math.ceil(_height / _rect.height);
