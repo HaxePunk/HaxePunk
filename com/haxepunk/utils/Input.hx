@@ -30,21 +30,56 @@ class Input
 	public static var lastKey:Int;
 
 	/**
-	 * If the mouse is held down
+	 * If the left button mouse is held down
 	 */
 	public static var mouseDown:Bool;
 	/**
-	 * If the mouse is up
+	 * If the left button mouse is up
 	 */
 	public static var mouseUp:Bool;
 	/**
-	 * If the mouse was recently pressed
+	 * If the left button mouse was recently pressed
 	 */
 	public static var mousePressed:Bool;
 	/**
-	 * If the mouse was recently released
+	 * If the left button mouse was recently released
 	 */
 	public static var mouseReleased:Bool;
+	
+	/**
+	 * If the right button mouse is held down
+	 */
+	public static var rightMouseDown:Bool;
+	/**
+	 * If the right button mouse is up
+	 */
+	public static var rightMouseUp:Bool;
+	/**
+	 * If the right button mouse was recently pressed
+	 */
+	public static var rightMousePressed:Bool;
+	/**
+	 * If the right button mouse was recently released
+	 */
+	public static var rightMouseReleased:Bool;
+	
+	/**
+	 * If the middle button mouse is held down
+	 */
+	public static var middleMouseDown:Bool;
+	/**
+	 * If the middle button mouse is up
+	 */
+	public static var middleMouseUp:Bool;
+	/**
+	 * If the middle button mouse was recently pressed
+	 */
+	public static var middleMousePressed:Bool;
+	/**
+	 * If the middle button mouse was recently released
+	 */
+	public static var middleMouseReleased:Bool;
+	
 	/**
 	 * If the mouse wheel has moved
 	 */
@@ -265,6 +300,11 @@ class Input
 			HXP.stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown, false,  2);
 			HXP.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false,  2);
 			HXP.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel, false,  2);
+			
+			HXP.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, onMiddleMouseDown, 2);
+			HXP.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, onMiddleMouseUp, 2);
+			HXP.stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN, onRightMouseDown, 2);
+			HXP.stage.addEventListener(MouseEvent.RIGHT_MOUSE_UP, onRightMouseUp, 2);
 
 			multiTouchSupported = Multitouch.supportsTouchEvents;
 			if (multiTouchSupported)
@@ -355,6 +395,10 @@ class Input
 		_releaseNum = 0;
 		if (mousePressed) mousePressed = false;
 		if (mouseReleased) mouseReleased = false;
+		if (middleMousePressed) middleMousePressed = false;
+		if (middleMouseReleased) middleMouseReleased = false;
+		if (rightMousePressed) rightMousePressed = false;
+		if (rightMouseReleased) rightMouseReleased = false;
 #if ((nme || openfl) && (cpp || neko))
 		for (joystick in _joysticks) joystick.update();
 #end
@@ -442,6 +486,40 @@ class Input
 	{
 		mouseWheel = true;
 		_mouseWheelDelta = e.delta;
+	}
+	
+	private static function onMiddleMouseDown(e:MouseEvent)
+	{
+		if (!middleMouseDown)
+		{
+			middleMouseDown = true;
+			middleMouseUp = false;
+			middleMousePressed = true;
+		}
+	}
+	
+	private static function onMiddleMouseUp(e:MouseEvent)
+	{
+		middleMouseDown = false;
+		middleMouseUp = true;
+		middleMouseReleased = true;
+	}
+	
+	private static function onRightMouseDown(e:MouseEvent)
+	{
+		if (!rightMouseDown)
+		{
+			rightMouseDown = true;
+			rightMouseUp = false;
+			rightMousePressed = true;
+		}
+	}
+	
+	private static function onRightMouseUp(e:MouseEvent)
+	{
+		rightMouseDown = false;
+		rightMouseUp = true;
+		rightMouseReleased = true;
 	}
 
 	private static function onTouchBegin(e:TouchEvent)
