@@ -263,7 +263,7 @@ class Scene extends Tweener
 	 * @param	addToScene		Add it to the Scene immediately.
 	 * @return	The new Entity object.
 	 */
-	public function create<E:Entity>(classType:Class<E>, addToScene:Bool = true):E
+	public function create<E:Entity>(classType:Class<E>, addToScene:Bool = true, ?constructorsArgs:Array<Dynamic>):E
 	{
 		var className:String = Type.getClassName(classType);
 		var fe:FriendEntity = _recycled.get(className);
@@ -272,9 +272,18 @@ class Scene extends Tweener
 			_recycled.set(className, fe._recycleNext);
 			fe._recycleNext = null;
 		}
-		else fe = Type.createInstance(classType, []);
+		else
+		{
+			if (constructorsArgs != null)
+				fe = Type.createInstance(classType, constructorsArgs);
+			else
+				fe = Type.createInstance(classType, []);
+		}
 		var e:E = cast fe;
-		if (addToScene) return add(e);
+		
+		if (addToScene)
+			return add(e);
+			
 		return e;
 	}
 
