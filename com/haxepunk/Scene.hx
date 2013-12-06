@@ -259,8 +259,9 @@ class Scene extends Tweener
 
 	/**
 	 * Returns a new Entity, or a stored recycled Entity if one exists.
-	 * @param	classType		The Class of the Entity you want to add.
-	 * @param	addToScene		Add it to the Scene immediately.
+	 * @param	classType			The Class of the Entity you want to add.
+	 * @param	addToScene			Add it to the Scene immediately.
+	 * @param	constructorsArgs	List of the entity constructor arguments (optional).
 	 * @return	The new Entity object.
 	 */
 	public function create<E:Entity>(classType:Class<E>, addToScene:Bool = true, ?constructorsArgs:Array<Dynamic>):E
