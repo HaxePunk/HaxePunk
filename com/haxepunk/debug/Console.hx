@@ -49,8 +49,6 @@ class Console
 	// Initialize variables
 	private function init()
 	{
-		toggleKey = Key.TILDE; // Tilde (~) by default
-
 		_sprite = new Sprite();
 		var font = Assets.getFont("font/04B_03__.ttf");
 		if (font == null)
@@ -157,14 +155,41 @@ class Console
 			WATCH_LIST.add(properties[0]);
 		}
 	}
+	
+	/**
+	 * Show the console.
+	 */
+	public function show()
+	{
+		if (!_visible)
+		{
+			HXP.stage.addChild(_sprite);
+			_visible = true;
+		}
+	}
+	
+	/**
+	 * Hide the console.
+	 */
+	public function hide()
+	{
+		if (_visible)
+		{
+			HXP.stage.removeChild(_sprite);
+			_visible = false;
+		}
+	}
 
 	/**
 	 * Enables the console.
 	 * 
 	 * @param	trace_capture	Option to capture trace in HaxePunk.
+	 * @param	toggleKey		Key used to toggle the console, tilde (~) by default.
 	 */
-	public function enable(?trace_capture:TraceCapture)
+	public function enable(?trace_capture:TraceCapture, toggleKey=Key.TILDE)
 	{
+		this.toggleKey = toggleKey;
+		
 		// Quit if the console is already enabled.
 		if (_enabled) return;
 
@@ -183,6 +208,7 @@ class Console
 
 		// Enable it and add the Sprite to the stage.
 		_enabled = true;
+		_visible = true;
 		HXP.stage.addChild(_sprite);
 
 		// Used to determine some text sizing.
@@ -374,8 +400,9 @@ class Console
 	 */
 	public function update()
 	{
-		// Quit if the console isn't enabled.
-		if (!_enabled) return;
+		// Quit if the console isn't enabled or visible.
+		if (!_enabled || !_visible)
+			return;
 
 		// move on resize
 		_entRead.x = width - _entReadText.width;
@@ -384,7 +411,8 @@ class Console
 
 
 		// Update buttons.
-		if (_butRead.visible) updateButtons();
+		if (_butRead.visible)
+			updateButtons();
 
 		// If the console is paused.
 		if (_paused)
@@ -1042,6 +1070,7 @@ class Console
 
 	// Console state information.
 	private var _enabled:Bool;
+	private var _visible:Bool;
 	private var _paused:Bool;
 	private var _debug:Bool;
 	private var _scrolling:Bool;
