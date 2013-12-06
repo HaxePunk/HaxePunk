@@ -29,13 +29,22 @@ class Tweener
 	public function addTween(t:Tween, start:Bool = false):Tween
 	{
 		var ft:FriendTween = t;
-		if (ft._parent != null) throw "Cannot add a Tween object more than once.";
+		
+		if (ft._parent != null)
+			HXP.throwError("Cannot add a Tween object more than once.");
+		
 		ft._parent = this;
 		ft._next = _tween;
 		var friendTween:FriendTween = _tween;
-		if (_tween != null) friendTween._prev = t;
+		
+		if (_tween != null)
+			friendTween._prev = t;
+		
 		_tween = t;
-		if (start) _tween.start();
+		
+		if (start)
+			_tween.start();
+		
 		return t;
 	}
 
@@ -49,8 +58,12 @@ class Tweener
 	public function removeTween(t:Tween):Tween
 	{
 		var ft:FriendTween = t;
-		if (ft._parent != this) throw "Core object does not contain Tween.";
-		if (ft._next != null) ft._next._prev = ft._prev;
+		if (ft._parent != this)
+			HXP.throwError("Core object does not contain Tween.");
+		
+		if (ft._next != null) 
+			ft._next._prev = ft._prev;
+		
 		if (ft._prev != null)
 		{
 			ft._prev._next = ft._next;

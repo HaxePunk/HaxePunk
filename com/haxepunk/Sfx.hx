@@ -37,7 +37,9 @@ class Sfx
 		_position = 0;
 		_type = "";
 
-		if (source == null) throw "Invalid source Sound.";
+		if (source == null)
+			HXP.throwError("Invalid source Sound.");
+		
 		if (Std.is(source, String))
 		{
 			_sound = Assets.getSound(source);

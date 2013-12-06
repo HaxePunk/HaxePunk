@@ -33,7 +33,7 @@ class VarTween extends Tween
 
 		// Check to make sure we have valid parameters
 		if (!Reflect.isObject(object))
-			throw "A valid object was not passed.";
+			HXP.throwError("A valid object was not passed.");
 
 		_property = property;
 		var a:Float = Reflect.getProperty(_object, property);
@@ -41,7 +41,7 @@ class VarTween extends Tween
 		// Check if the variable is a number
 		if (Math.isNaN(a))
 		{
-			throw "The property \"" + property + "\" is not numeric.";
+			HXP.throwError("The property \"" + property + "\" is not numeric.");
 		}
 
 		_start = a;

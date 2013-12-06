@@ -77,7 +77,9 @@ class LinearPath extends Motion
 	 */
 	public function getPoint(index:Int = 0):Point
 	{
-		if (_points.length == 0) throw "No points have been added to the path yet.";
+		if (_points.length == 0) 
+			HXP.throwError("No points have been added to the path yet.");
+		
 		return _points[index % _points.length];
 	}
 
@@ -108,11 +110,16 @@ class LinearPath extends Motion
 	/** @private Updates the path, preparing it for motion. */
 	private function updatePath()
 	{
-		if (_points.length < 2)	throw "A LinearPath must have at least 2 points to operate.";
-		if (_pointD.length == _pointT.length) return;
+		if (_points.length < 2)	
+			HXP.throwError("A LinearPath must have at least 2 points to operate.");
+			
+		if (_pointD.length == _pointT.length)
+			return;
+			
 		// evaluate t for each point
 		var i:Int = 0;
-		while (i < _points.length) _pointT[i] = _pointD[i ++] / distance;
+		while (i < _points.length)
+			_pointT[i] = _pointD[i ++] / distance;
 	}
 
 	/**
