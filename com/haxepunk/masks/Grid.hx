@@ -58,6 +58,7 @@ class Grid extends Hitbox
 		_check.set(Type.getClassName(Mask), collideMask);
 		_check.set(Type.getClassName(Hitbox), collideHitbox);
 		_check.set(Type.getClassName(Pixelmask), collidePixelmask);
+		_check.set(Type.getClassName(Grid), collideGrid);
 
 		data = new Array<Array<Bool>>();
 		for (x in 0...rows)
@@ -354,6 +355,96 @@ class Grid extends Hitbox
 #else
 		trace('Pixelmasks will not work in targets other than flash due to hittest not being implemented in OpenFL.');
 #end
+		return false;
+	}
+
+	/** @private Collides against a Grid. */
+	private function collideGrid(other:Grid):Bool
+	{
+		// Find the X edges
+		var ax1:Float = parent.x + _x;
+		var ax2:Float = ax1 + _width;
+		var bx1:Float = other.parent.x + other._x;
+		var bx2:Float = bx1 + other._width;
+		if (ax2 < bx1 || ax1 > bx2) return false;
+		
+		// Find the Y edges
+		var ay1:Float = parent.y + _y;
+		var ay2:Float = ay1 + _height;
+		var by1:Float = other.parent.y + other._y;
+		var by2:Float = by1 + other._height;
+		if (ay2 < by1 || ay1 > by2) return false;
+		
+		// Find the overlapping area
+		var ox1:Float = ax1 > bx1 ? ax1 : bx1;
+		var oy1:Float = ay1 > by1 ? ay1 : by1;
+		var ox2:Float = ax2 < bx2 ? ax2 : bx2;
+		var oy2:Float = ay2 < by2 ? ay2 : by2;
+		
+		// Find the smallest tile size, and snap the top and left overlapping
+		// edges to that tile size. This ensures that corner checking works
+		// properly.
+		var tw:Float, th:Float;
+		if (_tile.width < other._tile.width)
+		{
+			tw = _tile.width;
+			ox1 -= parent.x + _x;
+			ox1 = Std.int(ox1 / tw) * tw;
+			ox1 += parent.x + _x;
+		}
+		else
+		{
+			tw = other._tile.width;
+			ox1 -= other.parent.x + other._x;
+			ox1 = Std.int(ox1 / tw) * tw;
+			ox1 += other.parent.x + other._x;
+		}
+		if (_tile.height < other._tile.height)
+		{
+			th = _tile.height;
+			oy1 -= parent.y + _y;
+			oy1 = Std.int(oy1 / th) * th;
+			oy1 += parent.y + _y;
+		}
+		else
+		{
+			th = other._tile.height;
+			oy1 -= other.parent.y + other._y;
+			oy1 = Std.int(oy1 / th) * th;
+			oy1 += other.parent.y + other._y;
+		}
+		
+		// Step through the overlapping rectangle
+		var y:Float = oy1;
+		var x:Float = 0;
+		while (y < oy2) {
+			// Get the row indices for the top and bottom edges of the tile
+			var ar1:Int = Std.int((y - parent.y - _y) / _tile.height);
+			var br1:Int = Std.int((y - other.parent.y - other._y) / other._tile.height);
+			var ar2:Int = Std.int(((y - parent.y - _y) + (th - 1)) / _tile.height);
+			var br2:Int = Std.int(((y - other.parent.y - other._y) + (th - 1)) / other._tile.height);
+			
+			x = ox1;
+			while (x < ox2) {
+				// Get the column indices for the left and right edges of the tile
+				var ac1:Int = Std.int((x - parent.x - _x) / _tile.width);
+				var bc1:Int = Std.int((x - other.parent.x - other._x) / other._tile.width);
+				var ac2:Int = Std.int(((x - parent.x - _x) + (tw - 1)) / _tile.width);
+				var bc2:Int = Std.int(((x - other.parent.x - other._x) + (tw - 1)) / other._tile.width);
+				
+				// Check all the corners for collisions
+				if ((getTile(ac1, ar1) && other.getTile(bc1, br1))
+				 || (getTile(ac2, ar1) && other.getTile(bc2, br1))
+				 || (getTile(ac1, ar2) && other.getTile(bc1, br2))
+				 || (getTile(ac2, ar2) && other.getTile(bc2, br2)))
+				{
+					return true;
+				}
+				x += tw;
+			}
+			y += th;
+		}
+		
 		return false;
 	}
 
