@@ -10,12 +10,14 @@ class TileAtlas extends Atlas
 	 * @param	source		Source texture.
 	 * @param	tileWidth	With of the tiles.
 	 * @param	tileHeight	Height of the tiles.
+	 * @param	tileMarginWidth		Tile horizontal margin.
+	 * @param	tileMarginHeight	Tile vertical margin.
 	 */
-	public function new(source:Dynamic, tileWidth:Int, tileHeight:Int)
+	public function new(source:Dynamic, tileWidth:Int, tileHeight:Int,?tileMarginWidth:Int=0,?tileMarginHeight:Int=0)
 	{
 		super(source);
 		_regions = new Array<AtlasRegion>();
-		prepareTiles(_data.width, _data.height, tileWidth, tileHeight);
+		prepareTiles(_data.width, _data.height, tileWidth, tileHeight,tileMarginWidth,tileMarginHeight);
 	}
 
 	/**
@@ -29,7 +31,7 @@ class TileAtlas extends Atlas
 		return _regions[index];
 	}
 
-	private function prepareTiles(width:Int, height:Int, tileWidth:Int, tileHeight:Int)
+	private function prepareTiles(width:Int, height:Int, tileWidth:Int, tileHeight:Int, tileMarginWidth:Int,tileMarginHeight:Int)
 	{
 		var cols:Int = Math.floor(width / tileWidth);
 		var rows:Int = Math.floor(height / tileHeight);
@@ -41,11 +43,11 @@ class TileAtlas extends Atlas
 
 		for (y in 0...rows)
 		{
-			HXP.rect.y = y * tileHeight;
+			HXP.rect.y = y * (tileHeight+tileMarginHeight);
 
 			for (x in 0...cols)
 			{
-				HXP.rect.x = x * tileWidth;
+				HXP.rect.x = x * (tileWidth+tileMarginWidth);
 
 				_regions.push(_data.createRegion(HXP.rect, HXP.point));
 			}
