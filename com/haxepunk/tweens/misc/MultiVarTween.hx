@@ -46,7 +46,7 @@ class MultiVarTween extends Tween
 		}
 		else
 		{
-			HXP.throwError("Unsupported MultiVar properties container - use Object containing key/value pairs.");
+			throw "Unsupported MultiVar properties container - use Object containing key/value pairs.";
 		}
 
 		for (p in fields)
@@ -55,7 +55,7 @@ class MultiVarTween extends Tween
 
 			if (Math.isNaN(a))
 			{
-				HXP.throwError("The property \"" + p + "\" is not numeric.");
+				throw "The property \"" + p + "\" is not numeric.";
 			}
 			_vars.push(p);
 			_start.push(a);

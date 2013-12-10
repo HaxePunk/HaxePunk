@@ -60,7 +60,7 @@ class Stamp extends Graphic
 		_region = region;
 		
 		if (_region == null)
-			HXP.throwError("Invalid source image.");
+			throw "Invalid source image.";
 		
 		_sourceRect = new Rectangle(0, 0, _region.width, _region.height);
 	}
@@ -68,7 +68,7 @@ class Stamp extends Graphic
 	private inline function setBitmapSource(bitmap:BitmapData)
 	{
 		if (bitmap == null) 
-			HXP.throwError("Invalid source image.");
+			throw "Invalid source image.";
 		
 		_blit = true;
 		_sourceRect = bitmap.rect;

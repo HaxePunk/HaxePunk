@@ -60,8 +60,7 @@ class TextureAtlas extends Atlas
 		if (_regions.exists(name))
 			return _regions.get(name);
 			
-		HXP.throwError("Region has not be defined yet: " + name);
-		return null;
+		throw "Region has not be defined yet: " + name;
 	}
 
 	/**

@@ -485,7 +485,7 @@ class Polygon extends Hitbox
 	public static function createPolygon(sides:Int = 3, radius:Float = 100, angle:Float = 0):Polygon
 	{
 		if (sides < 3) 
-			HXP.throwError("The polygon needs at least 3 sides");
+			throw "The polygon needs at least 3 sides";
 		
 		// create a return polygon
 		// figure out the angles required

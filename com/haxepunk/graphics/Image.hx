@@ -108,7 +108,7 @@ class Image extends Graphic
 			}
 			
 			if (_source == null && _region == null) 
-				HXP.throwError("Invalid source image.");
+				throw "Invalid source image.";
 		}
 
 		if (clipRect != null)
@@ -264,7 +264,7 @@ class Image extends Graphic
 	public static function createRect(width:Int, height:Int, color:Int = 0xFFFFFF, alpha:Float = 1):Image
 	{
 		if (width == 0 || height == 0)
-			HXP.throwError("Illegal rect, sizes cannot be 0.");
+			throw "Illegal rect, sizes cannot be 0.";
 		
 		var source:BitmapData = HXP.createBitmap(width, height, true, 0xFFFFFFFF);
 		var image:Image;
@@ -293,7 +293,7 @@ class Image extends Graphic
 	public static function createCircle(radius:Int, color:Int = 0xFFFFFF, alpha:Float = 1):Image
 	{
 		if (radius == 0)
-			HXP.throwError("Illegal circle, radius cannot be 0.");
+			throw "Illegal circle, radius cannot be 0.";
 		
 		HXP.sprite.graphics.clear();
 		HXP.sprite.graphics.beginFill(0xFFFFFF);
