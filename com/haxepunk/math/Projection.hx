@@ -23,7 +23,7 @@ class Projection
 	 */
 	public inline function overlaps(other:Projection):Bool
 	{
-		return min > other.max || max < other.min;
+		return !(min > other.max || max < other.min);
 	}
 
 	/**

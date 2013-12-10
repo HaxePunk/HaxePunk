@@ -191,21 +191,26 @@ class Circle extends Hitbox
 	}
 
 	/** @private Collides against a Hitbox. */
-	private override function collideHitbox(other:Hitbox):Bool
+	override private function collideHitbox(other:Hitbox):Bool
 	{
-		var dx = Math.abs(parent.x + _x - other.parent.x + other.x),
-			dy = Math.abs(parent.y + _y - other.parent.y + other.y);
+		var _otherHalfWidth:Float = other._width * 0.5;
+		var _otherHalfHeight:Float = other._height * 0.5;
+		
+		var distanceX:Float = Math.abs(parent.x + _x - other.parent.x - other._x - _otherHalfWidth),
+			distanceY:Float = Math.abs(parent.y + _y - other.parent.y - other._y - _otherHalfHeight);
 
-		if (dx <= other.width || dy <= other.height)
+		if (distanceX > _otherHalfWidth + radius || distanceY > _otherHalfHeight + radius)
+		{
+			return false;	// the hitbox is too far away so return false
+		}
+		if (distanceX <= _otherHalfWidth || distanceY <= _otherHalfHeight)
 		{
 			return true;
 		}
-		if (dx > other.width + radius || dy > other.height + radius)
-		{
-			return false; //The hitbox is to far away so return false
-		}
+		var distanceToCorner:Float = (distanceX - _otherHalfWidth) * (distanceX - _otherHalfWidth)
+			+ (distanceY - _otherHalfHeight) * (distanceY - _otherHalfHeight);
 
-		return (dx * dx + dy * dy) <= _squaredRadius;
+		return distanceToCorner <= _squaredRadius;
 	}
 
 	public override function project(axis:Vector, projection:Projection):Void
