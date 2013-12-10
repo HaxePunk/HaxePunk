@@ -2,5 +2,6 @@
 --macro allowPackage("flash")
 -main TestMain
 -lib openfl
+-lib lime
 -lib openfl-native
 -lib HaxePunk

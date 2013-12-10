@@ -1,5 +1,16 @@
 HaxePunk CHANGELOG
 
+v2.4.4
+------------------------------
+* [elnabo] Allow to have spacing on tileset
+* [elnabo] Added support for middle and right mouse button
+* [bendmorris] Fixing Spritemap initialization bug on Linux64 target
+* [ibilon] Allow Scene.create to take constructor arguments
+* [ibilon] Entities can now follow the camera
+* [ibilon] Fixed error throwing in non-flash targets + new unit test
+* [azrafe7] Grid vs Grid collision ported from FlashPunk
+* Update for version 1.2.0 of openfl
+
 v2.4.3
 ------------------------------
 * [ibilon] Can now resize stage in native

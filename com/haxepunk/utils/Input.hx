@@ -45,7 +45,8 @@ class Input
 	 * If the left button mouse was recently released
 	 */
 	public static var mouseReleased:Bool;
-	
+
+#if !js	
 	/**
 	 * If the right button mouse is held down
 	 */
@@ -79,6 +80,7 @@ class Input
 	 * If the middle button mouse was recently released
 	 */
 	public static var middleMouseReleased:Bool;
+#end
 	
 	/**
 	 * If the mouse wheel has moved
@@ -301,11 +303,13 @@ class Input
 			HXP.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false,  2);
 			HXP.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel, false,  2);
 			
+		#if !js
 			HXP.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, onMiddleMouseDown, 2);
 			HXP.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, onMiddleMouseUp, 2);
 			HXP.stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN, onRightMouseDown, 2);
 			HXP.stage.addEventListener(MouseEvent.RIGHT_MOUSE_UP, onRightMouseUp, 2);
-
+		#end
+		
 			multiTouchSupported = Multitouch.supportsTouchEvents;
 			if (multiTouchSupported)
 			{
@@ -395,10 +399,14 @@ class Input
 		_releaseNum = 0;
 		if (mousePressed) mousePressed = false;
 		if (mouseReleased) mouseReleased = false;
+		
+	#if !js
 		if (middleMousePressed) middleMousePressed = false;
 		if (middleMouseReleased) middleMouseReleased = false;
 		if (rightMousePressed) rightMousePressed = false;
 		if (rightMouseReleased) rightMouseReleased = false;
+	#end
+		
 #if ((nme || openfl) && (cpp || neko))
 		for (joystick in _joysticks) joystick.update();
 #end
@@ -487,7 +495,8 @@ class Input
 		mouseWheel = true;
 		_mouseWheelDelta = e.delta;
 	}
-	
+
+#if !js
 	private static function onMiddleMouseDown(e:MouseEvent)
 	{
 		if (!middleMouseDown)
@@ -521,6 +530,7 @@ class Input
 		rightMouseUp = true;
 		rightMouseReleased = true;
 	}
+#end
 
 	private static function onTouchBegin(e:TouchEvent)
 	{
