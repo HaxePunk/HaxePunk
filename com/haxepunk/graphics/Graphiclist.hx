@@ -97,7 +97,7 @@ class Graphiclist extends Graphic
 	 */
 	public function remove(graphic:Graphic):Graphic
 	{
-		if (Lambda.indexOf(_graphics, graphic) < 0) return graphic;
+		if (HXP.indexOf(_graphics, graphic) < 0) return graphic;
 		graphic.setEntity(null);
 		HXP.clear(_temp);
 

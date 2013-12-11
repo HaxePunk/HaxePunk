@@ -718,23 +718,22 @@ class HXP
 	}
 
 	/**
-	 * @private
-	 * Return the first index of an element in an array.
+	 * Return the first index of an element in an array. 
+	 * Replacement for Lambda.indexOf() for speed/memory reasons.
 	 * 
-	 * @param	a	The array.
-	 * @param	v	The element.
+	 * @param	arr		The array.
+	 * @param	v		The element.
 	 * 
 	 * @return The index of the v in a, -1 if not inside.
 	 */
-	private static function indexOf<T>(a:Array<T>, v:T):Int
-	{
+	public static inline function indexOf<T>(arr:Array<T>, v:T) : Int {
 		var i = 0;
-		for( v2 in a ) {
-			if( v == v2 )
-				return i;
-			i++;
-		}
-		return -1;
+	#if (flash || js)
+		i = untyped arr.indexOf(v);
+	#else
+		i = Lambda.indexOf(arr, v);
+	#end
+		return i;
 	}
 
 	/**
