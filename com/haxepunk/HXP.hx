@@ -717,23 +717,18 @@ class HXP
 		return Std.int((_seed / INT_MAX_VALUE) * amount);
 	}
 
-	/**
-	 * Return the first index of an element in an array. 
-	 * Replacement for Lambda.indexOf() for speed/memory reasons.
+	/** Optimized version of Lambda.indexOf for Array on dynamic platforms (Lambda.indexOf is less performant on those targets).
 	 * 
-	 * @param	arr		The array.
-	 * @param	v		The element.
-	 * 
-	 * @return The index of the v in a, -1 if not inside.
-	 */
+		Returns the index of the first element [v] within Array [arr].
+		This function uses operator [==] to check for equality.
+		If [v] does not exist in [arr], the result is -1.
+	**/
 	public static inline function indexOf<T>(arr:Array<T>, v:T) : Int {
-		var i = 0;
 	#if (flash || js)
-		i = untyped arr.indexOf(v);
+		return untyped arr.indexOf(v);
 	#else
-		i = Lambda.indexOf(arr, v);
+		return Lambda.indexOf(arr, t);
 	#end
-		return i;
 	}
 
 	/**
