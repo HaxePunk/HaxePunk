@@ -15,13 +15,16 @@ import com.haxepunk.Mask;
 class Grid extends Hitbox
 {
 	/**
-	 * If x/y positions should be used instead of columns/rows.
+	 * If x/y positions should be used instead of columns/rows (the default). Columns/rows means 
+	 * screen coordinates relative to the width/height specified in the constructor. X/y means 
+	 * grid coordinates, relative to the grid size.
 	 */
 	public var usePositions:Bool;
 
 
 	/**
-	 * Constructor.
+	 * Constructor. The actual size of the grid is determined by dividing the width/height by
+	 * tileWidth/tileHeight, and stored in the properties columns/rows.
 	 * @param	width			Width of the grid, in pixels.
 	 * @param	height			Height of the grid, in pixels.
 	 * @param	tileWidth		Width of a grid tile, in pixels.
@@ -81,14 +84,26 @@ class Grid extends Hitbox
 	 */
 	public function setTile(column:Int = 0, row:Int = 0, solid:Bool = true)
 	{
-		if ( ! checkTile(column, row) ) return;
-
 		if (usePositions)
 		{
 			column = Std.int(column / _tile.width);
 			row = Std.int(row / _tile.height);
+			trace(" --- Converted pos to setTile " + column + "," + row + " to " + (solid ? "SOLID" : "CLEAR"));
 		}
-		data[row][column] = solid;
+		setTileXY(column, row, solid);
+	}
+
+	/**
+	 * Sets the value of the tile. Ignores the setting of usePositions, and assumes coordinates are
+	 * XY tile coordinates (the usePositions default).
+	 * @param	x			Tile column.
+	 * @param	y			Tile row.
+	 * @param	solid		If the tile should be solid.
+	 */
+	private function setTileXY(x:Int = 0, y:Int = 0, solid:Bool = true)
+	{
+		if (!checkTile(x, y)) return;
+		data[y][x] = solid;
 	}
 
 	/**
@@ -106,7 +121,9 @@ class Grid extends Hitbox
 		// check that tile is valid
 		if (column < 0 || column > columns - 1 || row < 0 || row > rows - 1)
 		{
-			//trace('Tile out of bounds: ' + column + ', ' + row);
+			#if debug
+				trace('Grid: Tile out of bounds: ' + column + ', ' + row);
+			#end
 			return false;
 		}
 		else
@@ -123,14 +140,25 @@ class Grid extends Hitbox
 	 */
 	public function getTile(column:Int = 0, row:Int = 0):Bool
 	{
-		if ( ! checkTile(column, row) ) return false;
-
 		if (usePositions)
 		{
 			column = Std.int(column / _tile.width);
 			row = Std.int(row / _tile.height);
 		}
-		return data[row][column];
+		return getTileXY(column, row);
+	}
+
+	/**
+	 * Gets the value of a tile. Ignores the setting of usePositions, and assumes coordinates are
+	 * XY tile coordinates (the usePositions default).
+	 * @param	column		Tile column.
+	 * @param	row			Tile row.
+	 * @return	tile value.
+	*/
+	private function getTileXY(x:Int = 0, y:Int = 0):Bool
+	{
+		if (!checkTile(x, y)) return false;
+		return data[y][x];
 	}
 
 	/**
@@ -155,7 +183,7 @@ class Grid extends Hitbox
 		{
 			for (xx in column...(column + width))
 			{
-				setTile(xx, yy, solid);
+				setTileXY(xx, yy, solid);
 			}
 		}
 	}
@@ -218,7 +246,8 @@ class Grid extends Hitbox
 	* 
 	* @return The string version of the grid.
 	*/
-	public function saveToString(columnSep:String = ",", rowSep:String = "\n"): String
+	public function saveToString(columnSep:String = ",", rowSep:String = "\n", 
+		solid:String = "true", empty:String = "false"): String
 	{
 		var s:String = '',
 			x:Int, y:Int;
@@ -226,7 +255,7 @@ class Grid extends Hitbox
 		{
 			for (x in 0...columns)
 			{
-				s += Std.string(getTile(x, y));
+				s += Std.string(getTileXY(x, y) ? solid : empty);
 				if (x != columns - 1) s += columnSep;
 			}
 			if (y != rows - 1) s += rowSep;
