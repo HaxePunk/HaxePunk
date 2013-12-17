@@ -88,7 +88,6 @@ class Grid extends Hitbox
 		{
 			column = Std.int(column / _tile.width);
 			row = Std.int(row / _tile.height);
-			trace(" --- Converted pos to setTile " + column + "," + row + " to " + (solid ? "SOLID" : "CLEAR"));
 		}
 		setTileXY(column, row, solid);
 	}
