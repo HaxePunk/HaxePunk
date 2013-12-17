@@ -80,7 +80,7 @@ class Spritemap extends Image
 		if (frameHeight == 0) _rect.height = _height;
 		
 		if (_width % _rect.width != 0 || _height % _rect.height != 0)
-			HXP.throwError("Source image width and height should be multiples of the frame width and height.");
+			throw "Source image width and height should be multiples of the frame width and height.";
 
 		_columns = Math.ceil(_width / _rect.width);
 		_rows = Math.ceil(_height / _rect.height);
@@ -160,7 +160,7 @@ class Spritemap extends Image
 	public function add(name:String, frames:Array<Int>, frameRate:Float = 0, loop:Bool = true):Animation
 	{
 		if (_anims.get(name) != null)
-			HXP.throwError("Cannot have multiple animations with the same name");
+			throw "Cannot have multiple animations with the same name";
 			
 		if(frameRate == 0)
 			frameRate = HXP.assignedFrameRate;
