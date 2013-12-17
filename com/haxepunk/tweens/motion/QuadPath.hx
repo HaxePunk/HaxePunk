@@ -76,7 +76,7 @@ class QuadPath extends Motion
 	public function getPoint(index:Int = 0):Point
 	{
 		if (_points.length == 0) 
-			HXP.throwError("No points have been added to the path yet.");
+			throw "No points have been added to the path yet.";
 		
 		return _points[index % _points.length];
 	}
@@ -110,7 +110,7 @@ class QuadPath extends Motion
 	private function updatePath()
 	{
 		if (_points.length < 3)
-			HXP.throwError("A QuadPath must have at least 3 points to operate.");
+			throw "A QuadPath must have at least 3 points to operate.";
 		
 		if (!_updateCurve) return;
 		_updateCurve = false;

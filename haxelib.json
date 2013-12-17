@@ -2,11 +2,11 @@
 	"name": "HaxePunk",
 	"url" : "http://haxepunk.com",
 	"license": "MIT",
-	"tags": ["flash", "game", "cpp", "nme"],
+	"tags": ["flash", "game", "cpp", "openfl"],
 	"description": "A Haxe port of the FlashPunk AS3 engine.",
-	"version": "2.4.3",
+	"version": "2.4.4",
 	"releasenote": "See CHANGELOG",
-	"contributors": ["heardtheword"],
+	"contributors": ["heardtheword", "ibilon"],
 	"dependencies": {
 		"openfl": "1.2.0"
 	}

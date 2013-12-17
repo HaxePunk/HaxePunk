@@ -38,7 +38,7 @@ class Sfx
 		_type = "";
 
 		if (source == null)
-			HXP.throwError("Invalid source Sound.");
+			throw "Invalid source Sound.";
 		
 		if (Std.is(source, String))
 		{

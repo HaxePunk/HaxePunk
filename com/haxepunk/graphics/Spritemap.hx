@@ -161,7 +161,7 @@ class Spritemap extends Image
 	{
 		if (_anims.get(name) != null)
 			HXP.throwError("Cannot have multiple animations with the same name");
-		
+			
 		if(frameRate == 0)
 			frameRate = HXP.assignedFrameRate;
 			

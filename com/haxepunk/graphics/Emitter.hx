@@ -66,7 +66,7 @@ class Emitter extends Graphic
 		}
 		
 		if (_source == null && region == null) 
-			HXP.throwError("Invalid source image.");
+			throw "Invalid source image.";
 
 		_frameWidth = (frameWidth != 0) ? frameWidth : _width;
 		_frameHeight = (frameHeight != 0) ? frameHeight : _height;
@@ -236,10 +236,13 @@ class Emitter extends Graphic
 	public function newType(name:String, frames:Array<Int> = null):ParticleType
 	{
 		var pt:ParticleType = _types.get(name);
+		
 		if (pt != null)
-			HXP.throwError("Cannot add multiple particle types of the same name");
+			throw "Cannot add multiple particle types of the same name";
+		
 		pt = new ParticleType(name, frames, _width, _frameWidth, _frameHeight);
 		_types.set(name, pt);
+		
 		return pt;
 	}
 
@@ -315,8 +318,9 @@ class Emitter extends Graphic
 	public function emit(name:String, ?x:Float = 0, ?y:Float = 0):Particle
 	{
 		var p:Particle, type:ParticleType = _types.get(name);
+		
 		if (type == null) 
-			HXP.throwError("Particle type \"" + name + "\" does not exist.");
+			throw "Particle type \"" + name + "\" does not exist.";
 
 		if (_cache != null)
 		{

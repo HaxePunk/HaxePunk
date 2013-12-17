@@ -48,7 +48,7 @@ class Mask
 	{
 		if (parent == null)
 		{
-			HXP.throwError("Mask must be attached to a parent Entity");
+			throw "Mask must be attached to a parent Entity";
 		}
 
 		var cbFunc:MaskCallback = _check.get(mask._class);

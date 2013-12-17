@@ -41,7 +41,7 @@ class HXP
 	/**
 	 * The HaxePunk major version.
 	 */
-	public static inline var VERSION:String = "2.4.3";
+	public static inline var VERSION:String = "2.4.4";
 
 	/**
 	 * The standard layer used since only flash can handle negative indicies in arrays, set your layers to some offset of this
@@ -331,7 +331,7 @@ class HXP
 	private static inline function _choose(objs:Array<Dynamic>):Dynamic
 	{
 		if (objs == null || objs.length == 0 || (objs.length == 1 && Reflect.hasField(objs[0], "length") && objs[0].length == 0))
-			HXP.throwError("Can't choose a random element on an empty array");
+			throw "Can't choose a random element on an empty array";
 
 		if (objs.length == 1 && Reflect.hasField(objs[0], "length"))
 			return objs[0][rand(objs[0].length)];
@@ -1180,17 +1180,6 @@ class HXP
 	private static inline function set_time(value:Float):Float {
 		_time = value;
 		return _time;
-	}
-	
-	public static inline function throwError(msg:String)
-	{
-		#if (flash || html5)
-			throw msg;
-		#else
-			// THROW isn't working properly since OpenFL 1.1.1
-			trace("ERROR: " + msg + CallStack.toString(CallStack.callStack()));
-			flash.Lib.exit();
-		#end
 	}
 
 	public static inline function gotoIsNull():Bool { return (_goto == null); }

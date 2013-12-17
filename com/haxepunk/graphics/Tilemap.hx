@@ -43,7 +43,7 @@ class Tilemap extends Canvas
 		_tileSpacingHeight = tileSpacingHeight;
 		
 		if (_columns == 0 || _rows == 0) 
-			HXP.throwError("Cannot create a bitmapdata of width/height = 0");
+			throw "Cannot create a bitmapdata of width/height = 0";
 
 		// create the canvas
 #if neko
@@ -97,7 +97,7 @@ class Tilemap extends Canvas
 		}
 
 		if (_set == null && _atlas == null)
-			HXP.throwError("Invalid tileset graphic provided.");
+			throw "Invalid tileset graphic provided.";
 
 		if (_blit)
 		{

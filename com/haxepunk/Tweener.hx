@@ -31,7 +31,7 @@ class Tweener
 		var ft:FriendTween = t;
 		
 		if (ft._parent != null)
-			HXP.throwError("Cannot add a Tween object more than once.");
+			throw "Cannot add a Tween object more than once.";
 		
 		ft._parent = this;
 		ft._next = _tween;
@@ -59,7 +59,7 @@ class Tweener
 	{
 		var ft:FriendTween = t;
 		if (ft._parent != this)
-			HXP.throwError("Core object does not contain Tween.");
+			throw "Core object does not contain Tween.";
 		
 		if (ft._next != null) 
 			ft._next._prev = ft._prev;

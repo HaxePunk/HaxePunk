@@ -27,10 +27,13 @@ class Pixelmask extends Hitbox
 		super();
 
 		// fetch mask data
-		if (Std.is(source, BitmapData)) _data = source;
-		else _data = HXP.getBitmap(source);
+		if (Std.is(source, BitmapData)) 
+			_data = source;
+		else 
+			_data = HXP.getBitmap(source);
+		
 		if (_data == null)
-			HXP.throwError("Invalid Pixelmask source image.");
+			throw "Invalid Pixelmask source image.";
 
 		threshold = 1;
 
