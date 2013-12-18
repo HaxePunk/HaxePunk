@@ -1,5 +1,10 @@
 HaxePunk CHANGELOG
 
+v2.4.5
+------------------------------
+* [ibilon] Revert to normal error throwing (fixed in openfl)
+* Update for version 1.2.1 of openfl
+
 v2.4.4
 ------------------------------
 * [elnabo] Allow to have spacing on tileset

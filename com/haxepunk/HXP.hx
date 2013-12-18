@@ -39,9 +39,25 @@ import haxe.Timer;
 class HXP
 {
 	/**
+	 * The HaxePunk version.
+	 * Format: Major.Minor.Patch
+	 */
+	public static inline var VERSION:String = "2.4.5";
+	
+	/**
 	 * The HaxePunk major version.
 	 */
-	public static inline var VERSION:String = "2.4.4";
+	public static inline var VERSION_MAJOR:Int = 2;
+	
+	/**
+	 * The HaxePunk minor version.
+	 */
+	public static inline var VERSION_MINOR:Int = 4;
+	
+	/**
+	 * The HaxePunk patch version.
+	 */
+	public static inline var VERSION_PATCH:Int = 5;
 
 	/**
 	 * The standard layer used since only flash can handle negative indicies in arrays, set your layers to some offset of this
