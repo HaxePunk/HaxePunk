@@ -1,0 +1,1 @@
+Music files, MP3 format, should be placed in this folder. They can be organized in sub-folders if necessary.
