@@ -30,7 +30,7 @@ before_install:
   - haxelib install openfl-html5
   - haxelib install lime
   - haxelib install lime-tools
-  - haxelib run openfl setup
+  - echo "y" | haxelib run openfl setup
   # openfl command
   - echo '#!/bin/sh' | sudo tee -a /usr/lib/haxe/openfl
   - echo 'haxelib run openfl "$@"' | sudo tee -a /usr/lib/haxe/openfl
