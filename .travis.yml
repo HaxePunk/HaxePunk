@@ -41,4 +41,4 @@ before_install:
   - haxelib local master.zip
 
 script:
-  - ant clean build unit
+  - ant clean build unit-travis
