@@ -32,8 +32,8 @@ before_install:
   - haxelib install lime-tools
   - haxelib run openfl setup
   # openfl command
-  - echo '#!/bin/sh
-haxelib run openfl "$@"' > /usr/lib/haxe/openfl
+  - echo '#!/bin/sh' | sudo tee -a /usr/lib/haxe/openfl
+  - echo 'haxelib run openfl "$@"' | sudo tee -a /usr/lib/haxe/openfl
   - sudo ln -s /usr/lib/haxe/openfl /usr/bin/openfl
   - sudo chmod +x /usr/lib/haxe/openfl
   # openfl-bitfive
