@@ -233,6 +233,24 @@ class Grid extends Hitbox
 		}
 		return s;
 	}
+	
+	/**
+	 *  Make a copy of the grid.
+	 * 
+	 * @return Return a copy of the grid.
+	 */
+	public function clone():Grid
+	{
+		var cloneGrid = new Grid(_width, _height, Std.int(_tile.width), Std.int(_tile.height), _x, _y);
+		for ( y in 0...rows)
+		{
+			for (x in 0...columns)
+			{
+				cloneGrid.setTile(x,y,getTile(x,y));
+			}
+		}
+		return cloneGrid;
+	}
 
 	/**
 	 * The tile width.
