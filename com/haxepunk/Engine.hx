@@ -205,7 +205,7 @@ class Engine extends Sprite
 
 #if !(flash || html5)
 		flash.display.Stage.shouldRotateInterface = function(orientation:Int):Bool {
-			if (Lambda.indexOf(HXP.orientations, orientation) == -1) return false;
+			if (HXP.indexOf(HXP.orientations, orientation) == -1) return false;
 			var tmp = HXP.height;
 			HXP.height = HXP.width;
 			HXP.width = tmp;

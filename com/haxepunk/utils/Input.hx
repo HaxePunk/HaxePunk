@@ -197,11 +197,11 @@ class Input
 				i:Int = v.length;
 			while (i-- > 0)
 			{
-				if ((v[i] < 0) ? _pressNum != 0 : indexOf(_press, v[i]) >= 0) return true;
+				if ((v[i] < 0) ? _pressNum != 0 : HXP.indexOf(_press, v[i]) >= 0) return true;
 			}
 			return false;
 		}
-		return (input < 0) ? _pressNum != 0 : indexOf(_press, input) >= 0;
+		return (input < 0) ? _pressNum != 0 : HXP.indexOf(_press, input) >= 0;
 	}
 
 	/**
@@ -217,11 +217,11 @@ class Input
 				i:Int = v.length;
 			while (i-- > 0)
 			{
-				if ((v[i] < 0) ? _releaseNum != 0 : indexOf(_release, v[i]) >= 0) return true;
+				if ((v[i] < 0) ? _releaseNum != 0 : HXP.indexOf(_release, v[i]) >= 0) return true;
 			}
 			return false;
 		}
-		return (input < 0) ? _releaseNum != 0 : indexOf(_release, input) >= 0;
+		return (input < 0) ? _releaseNum != 0 : HXP.indexOf(_release, input) >= 0;
 	}
 
 	public static function touchPoints(touchCallback:Touch->Void)
@@ -239,23 +239,6 @@ class Input
 	public static var touches(get_touches, never):IntHash<Touch>;
 	private static inline function get_touches():IntHash<Touch> { return _touches; }
 #end
-
-	/**
-	 * Copy of Lambda.indexOf for speed/memory reasons
-	 * @param	a array to use
-	 * @param	v value to find index of
-	 * @return	index of value in the array
-	 */
-	private static function indexOf(a:Array<Int>, v:Int):Int
-	{
-		var i = 0;
-		for( v2 in a ) {
-			if( v == v2 )
-				return i;
-			i++;
-		}
-		return -1;
-	}
 
 	/**
 	 * Returns a joystick object (creates one if not connected)
