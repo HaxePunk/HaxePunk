@@ -39,9 +39,25 @@ import haxe.Timer;
 class HXP
 {
 	/**
+	 * The HaxePunk version.
+	 * Format: Major.Minor.Patch
+	 */
+	public static inline var VERSION:String = "2.4.5";
+	
+	/**
 	 * The HaxePunk major version.
 	 */
-	public static inline var VERSION:String = "2.4.4";
+	public static inline var VERSION_MAJOR:Int = 2;
+	
+	/**
+	 * The HaxePunk minor version.
+	 */
+	public static inline var VERSION_MINOR:Int = 4;
+	
+	/**
+	 * The HaxePunk patch version.
+	 */
+	public static inline var VERSION_PATCH:Int = 5;
 
 	/**
 	 * The standard layer used since only flash can handle negative indicies in arrays, set your layers to some offset of this
@@ -718,24 +734,22 @@ class HXP
 		return Std.int((_seed / INT_MAX_VALUE) * amount);
 	}
 
-	/**
-	 * @private
-	 * Return the first index of an element in an array.
+	/** 
+	 * Optimized version of Lambda.indexOf for Array on dynamic platforms (Lambda.indexOf is less performant on those targets).
 	 *
-	 * @param	a	The array.
-	 * @param	v	The element.
-	 *
-	 * @return The index of the v in a, -1 if not inside.
-	 */
-	private static function indexOf<T>(a:Array<T>, v:T):Int
+	 * @param	arr		The array to look into.
+	 * @param	param	The value to look for.
+	 * @return	Returns the index of the first element [v] within Array [arr].
+	 * This function uses operator [==] to check for equality.
+	 * If [v] does not exist in [arr], the result is -1.
+	 **/
+	public static inline function indexOf<T>(arr:Array<T>, v:T) : Int
 	{
-		var i = 0;
-		for( v2 in a ) {
-			if( v == v2 )
-				return i;
-			i++;
-		}
-		return -1;
+	#if (flash || js)
+		return untyped arr.indexOf(v);
+	#else
+		return std.Lambda.indexOf(arr, v);
+	#end
 	}
 
 	/**

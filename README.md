@@ -1,6 +1,6 @@
 # HaxePunk
 
-A Haxe port of the [FlashPunk](http://flashpunk.net) AS3 library. There are a few additions/differences from the original.
+A Haxe port of the [FlashPunk](http://useflashpunk.net) AS3 library. There are a few additions/differences from the original.
 
 * Builds for Flash, Windows, Mac, Linux, iOS, Android, and Ouya
 * Circle/Polygon masks
@@ -51,7 +51,7 @@ There are a few ways you can get involved with HaxePunk.
 ## Credits
 
 *	Chevy Ray Johnston for creating the original FlashPunk.
-*	[NME](http://www.nme.io) makes native targets possible and simplifies asset management in Flash. Thanks guys!
+*	[OpenFL](http://www.openfl.org/) makes native targets possible and simplifies asset management in Flash. Thanks guys!
 *	All the awesome people who have [contributed](https://github.com/HaxePunk/HaxePunk/graphs/contributors) to HaxePunk and joined in the discussions on the [forum](http://forum.haxepunk.com).
 
 ## MIT License

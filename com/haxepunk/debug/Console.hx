@@ -90,13 +90,13 @@ class Console
 
 		LAYER_LIST  = new Array<Int>();
 		ENTITY_LIST = new Array<Entity>();
-		SCREEN_LIST = new List<Entity>();
-		SELECT_LIST = new List<Entity>();
+		SCREEN_LIST = new Array<Entity>();
+		SELECT_LIST = new Array<Entity>();
 
-		WATCH_LIST = new List<String>();
-		WATCH_LIST.add("x");
-		WATCH_LIST.add("y");
-		WATCH_LIST.add("layer");
+		WATCH_LIST = new Array<String>();
+		WATCH_LIST.push("x");
+		WATCH_LIST.push("y");
+		WATCH_LIST.push("layer");
 	}
 
 	private function traceLog(v:Dynamic, ?infos:PosInfos)
@@ -148,11 +148,11 @@ class Console
 		var i:String;
 		if (properties.length > 1)
 		{
-			for (i in properties) WATCH_LIST.add(i);
+			for (i in properties) WATCH_LIST.push(i);
 		}
 		else
 		{
-			WATCH_LIST.add(properties[0]);
+			WATCH_LIST.push(properties[0]);
 		}
 	}
 	
@@ -533,8 +533,8 @@ class Console
 			_logRead.visible = true;
 			updateLog();
 			HXP.clear(ENTITY_LIST);
-			SCREEN_LIST.clear();
-			SELECT_LIST.clear();
+			HXP.clear(SCREEN_LIST);
+			HXP.clear(SELECT_LIST);
 		}
 		return _paused;
 	}
@@ -687,7 +687,7 @@ class Console
 			// Append selected Entitites with new selections.
 			for (e in SCREEN_LIST)
 			{
-				if (Lambda.indexOf(SELECT_LIST, e) < 0)
+				if (HXP.indexOf(SELECT_LIST, e) < 0)
 				{
 					HXP.rect.x = (e.x - HXP.camera.x) * sx - 3;
 					HXP.rect.y = (e.y - HXP.camera.y) * sy - 3;
@@ -698,7 +698,7 @@ class Console
 		else
 		{
 			// Replace selections with new selections.
-			SELECT_LIST.clear();
+			HXP.clear(SELECT_LIST);
 			for (e in SCREEN_LIST)
 			{
 				HXP.rect.x = (e.x - HXP.camera.x) * sx - 3;
@@ -712,7 +712,7 @@ class Console
 	private function selectAll()
 	{
 		var e:Entity;
-		SELECT_LIST.clear();
+		HXP.clear(SELECT_LIST);
 		for (e in SCREEN_LIST) SELECT_LIST.push(e);
 		renderEntities();
 	}
@@ -759,13 +759,13 @@ class Console
 		}
 
 		// Update the list of Entities on screen.
-		SCREEN_LIST.clear();
+		HXP.clear(SCREEN_LIST);
 		for (e in ENTITY_LIST)
 		{
 			if (e.onCamera)
 				SCREEN_LIST.push(e);
 
-			if (Lambda.indexOf(LAYER_LIST, e.layer) < 0)
+			if (HXP.indexOf(LAYER_LIST, e.layer) < 0)
 				LAYER_LIST.push(e.layer);
 		}
 		// sort the layers
@@ -791,7 +791,7 @@ class Console
 				var graphicScrollY = e.graphic != null ? e.graphic.scrollY : 1;
 
 				// If the Entity is not selected.
-				if (Lambda.indexOf(SELECT_LIST, e) < 0)
+				if (HXP.indexOf(SELECT_LIST, e) < 0)
 				{
 					// Draw the normal hitbox and position.
 					if (e.width != 0 && e.height != 0)
@@ -958,7 +958,7 @@ class Console
 			}
 			else
 			{
-				var e:Entity = SELECT_LIST.first();
+				var e:Entity = SELECT_LIST[0];
 				s += "\n\n- " + Type.getClassName(Type.getClass(e)) + " -\n";
 				for (str in WATCH_LIST)
 				{
@@ -1134,9 +1134,9 @@ class Console
 	// Entity lists.
 	private var LAYER_LIST:Array<Int>;
 	private var ENTITY_LIST:Array<Entity>;
-	private var SCREEN_LIST:List<Entity>;
-	private var SELECT_LIST:List<Entity>;
+	private var SCREEN_LIST:Array<Entity>;
+	private var SELECT_LIST:Array<Entity>;
 
 	// Watch information.
-	private var WATCH_LIST:List<String>;
+	private var WATCH_LIST:Array<String>;
 }

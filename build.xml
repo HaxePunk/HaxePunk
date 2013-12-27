@@ -40,6 +40,12 @@
 			<arg line="unit.n" />
 		</exec>
 	</target>
+	
+	<target name="unit-travis" depends="haxelib_v3">
+		<exec executable="sh" dir="tests">
+			<arg line="travis.sh" />
+		</exec>
+	</target>
 
 	<target name="build" depends="haxelib_v3">
 		<exec executable="haxelib" dir=".">
