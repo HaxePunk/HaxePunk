@@ -120,7 +120,7 @@ class Spritemap extends Image
 	{
 		if (_anim != null && !complete)
 		{
-			_timer += (HXP.fixed ? _anim.frameRate / HXP.frameRate : _anim.frameRate * HXP.elapsed) * rate;
+			_timer += (HXP.fixed ? _anim.frameRate / HXP.assignedFrameRate : _anim.frameRate * HXP.elapsed) * rate;
 			if (_timer >= 1)
 			{
 				while (_timer >= 1)
@@ -153,14 +153,17 @@ class Spritemap extends Image
 	 * Add an Animation.
 	 * @param	name		Name of the animation.
 	 * @param	frames		Array of frame indices to animate through.
-	 * @param	frameRate	Animation speed (with variable framerate: in frames per second, with fixed framerate: in frames per frame).
-	 * @param	loop		If the animation should loop.
+	 * @param	frameRate	Animation speed (in frames per second, 0 defaults to assigned frame rate)
+	 * @param	loop		If the animation should loop
 	 * @return	A new Anim object for the animation.
 	 */
 	public function add(name:String, frames:Array<Int>, frameRate:Float = 0, loop:Bool = true):Animation
 	{
 		if (_anims.get(name) != null)
 			throw "Cannot have multiple animations with the same name";
+			
+		if(frameRate == 0)
+			frameRate = HXP.assignedFrameRate;
 			
 		for (i in 0...frames.length)
 		{
