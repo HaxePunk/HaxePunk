@@ -42,7 +42,11 @@ class HXP
 	 * The HaxePunk version.
 	 * Format: Major.Minor.Patch
 	 */
-	public static inline var VERSION:String = "2.4.5";
+	public static var VERSION(get_VERSION, never):String;
+	private static inline function get_VERSION() : String
+	{
+		return VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_PATCH;
+	}
 	
 	/**
 	 * The HaxePunk major version.
@@ -57,7 +61,7 @@ class HXP
 	/**
 	 * The HaxePunk patch version.
 	 */
-	public static inline var VERSION_PATCH:Int = 5;
+	public static inline var VERSION_PATCH:Int = 6;
 
 	/**
 	 * The standard layer used since only flash can handle negative indicies in arrays, set your layers to some offset of this

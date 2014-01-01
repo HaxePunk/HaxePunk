@@ -1,5 +1,11 @@
 HaxePunk CHANGELOG
 
+v2.4.6
+------------------------------
+* [azrafe7] Fixed Lambda.indexOf() memory leaks in flash
+* [elnabo] Added possibility to make a copy of a grid
+* Update for version 1.2.2 of openfl
+
 v2.4.5
 ------------------------------
 * [ibilon] Revert to normal error throwing (fixed in openfl)
