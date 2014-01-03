@@ -57,7 +57,7 @@ class Spritemap extends Image
 			_atlas = cast(source, TileAtlas);
 			_region = _atlas.getRegion(_frame);
 		}
-		else if (HXP.renderMode.has(RenderMode.HARDWARE))
+		else if (HXP.renderMode == RenderMode.HARDWARE)
 		{
 			_blit = false;
 			_atlas = new TileAtlas(source, frameWidth, frameHeight);
@@ -78,7 +78,7 @@ class Spritemap extends Image
 		}
 		if (frameWidth == 0) _rect.width = _width;
 		if (frameHeight == 0) _rect.height = _height;
-		
+
 		if (_width % _rect.width != 0 || _height % _rect.height != 0)
 			throw "Source image width and height should be multiples of the frame width and height.";
 
@@ -161,7 +161,7 @@ class Spritemap extends Image
 	{
 		if (_anims.get(name) != null)
 			throw "Cannot have multiple animations with the same name";
-			
+
 		for (i in 0...frames.length)
 		{
 			frames[i] %= _frameCount;

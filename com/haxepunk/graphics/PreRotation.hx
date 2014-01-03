@@ -30,7 +30,7 @@ class PreRotation extends Image
 		frameAngle = 0;
 		_last = _current = -1;
 
-		if (HXP.renderMode.has(RenderMode.BUFFER))
+		if (HXP.renderMode == RenderMode.BUFFER)
 		{
 			var name:String = '';
 			if (Std.is(source, String))

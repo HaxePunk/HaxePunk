@@ -93,7 +93,7 @@ class Text extends Image
 		}
 
 		var source:Dynamic;
-		if (HXP.renderMode.has(RenderMode.HARDWARE))
+		if (HXP.renderMode == RenderMode.HARDWARE)
 		{
 			HXP.rect.x = HXP.rect.y = 0;
 			_field.width = HXP.rect.width = textWidth = width;

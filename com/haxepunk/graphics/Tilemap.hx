@@ -41,8 +41,8 @@ class Tilemap extends Canvas
 		_rows = Std.int(_height / tileHeight);
 		_tileSpacingWidth = tileSpacingWidth;
 		_tileSpacingHeight = tileSpacingHeight;
-		
-		if (_columns == 0 || _rows == 0) 
+
+		if (_columns == 0 || _rows == 0)
 			throw "Cannot create a bitmapdata of width/height = 0";
 
 		// create the canvas
@@ -76,7 +76,7 @@ class Tilemap extends Canvas
 		}
 		else
 		{
-			if (HXP.renderMode.has(RenderMode.HARDWARE))
+			if (HXP.renderMode == RenderMode.HARDWARE)
 			{
 				_blit = false;
 				_atlas = new TileAtlas(tileset, tileWidth, tileHeight,tileSpacingWidth,tileSpacingHeight);
@@ -252,7 +252,7 @@ class Tilemap extends Canvas
 	/**
 	 * Set the tiles from an array.
 	 * The array must be of the same size as the Tilemap.
-	 * 
+	 *
 	 * @param	array	The array to load from.
 	 */
 	public function loadFrom2DArray(array:Array2D):Void
@@ -302,8 +302,8 @@ class Tilemap extends Canvas
 	* Saves the Tilemap tile index data to a string.
 	* @param columnSep		The string that separates each tile value on a row, default is ",".
 	* @param rowSep			The string that separates each row of tiles, default is "\n".
-	* 
-	* @return	The string version of the array. 
+	*
+	* @return	The string version of the array.
 	*/
 	public function saveToString(columnSep:String = ",", rowSep:String = "\n"): String
 	{
@@ -455,7 +455,7 @@ class Tilemap extends Canvas
 
 			var scalex:Float = HXP.screen.fullScaleX, scaley:Float = HXP.screen.fullScaleY,
 				tw:Int = Math.ceil(tileWidth), th:Int = Math.ceil(tileHeight);
-				
+
 			var scx = scale * scaleX,
 				scy = scale * scaleY;
 
@@ -480,7 +480,7 @@ class Tilemap extends Canvas
 				stepx:Int = Math.floor(tw * scx * scalex),
 				stepy:Int = Math.floor(th * scy * scaley),
 				tile:Int = 0;
-				
+
 			for (y in starty...desty)
 			{
 				wx = sx;
@@ -514,8 +514,8 @@ class Tilemap extends Canvas
 	 * The tile height.
 	 */
 	public var tileHeight(get_tileHeight, never):Int;
-	private inline function get_tileHeight():Int { return Std.int(_tile.height); }	
-	
+	private inline function get_tileHeight():Int { return Std.int(_tile.height); }
+
 	/**
 	 * The tile horizontal spacing of tile.
 	 */

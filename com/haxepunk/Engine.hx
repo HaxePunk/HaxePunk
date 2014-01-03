@@ -58,25 +58,20 @@ class Engine extends Sprite
 		HXP.bounds = new Rectangle(0, 0, width, height);
 		HXP.assignedFrameRate = frameRate;
 		HXP.fixed = fixed;
-#if haxe3
-		HXP.renderMode = new EnumFlags<RenderMode>();
-#else
-		HXP.renderMode.init();
-#end
-		if (renderMode != null)
-		{
-			HXP.renderMode.set(renderMode);
-		}
-		else
-		{
-			HXP.renderMode.set(#if (flash || js) RenderMode.BUFFER #else RenderMode.HARDWARE #end);
-		}
 
 		// global game objects
 		HXP.engine = this;
-		HXP.screen = new Screen();
 		HXP.width = width;
 		HXP.height = height;
+
+		if (renderMode != null)
+		{
+			HXP.renderMode = renderMode;
+		}
+		else
+		{
+			HXP.renderMode = #if (flash || js) RenderMode.BUFFER #else RenderMode.HARDWARE #end;
+		}
 
 		// miscellaneous startup stuff
 #if neko
@@ -149,7 +144,7 @@ class Engine extends Sprite
 		if (_frameLast == 0) _frameLast = Std.int(t);
 
 		// render loop
-		if (HXP.renderMode.has(RenderMode.BUFFER))
+		if (HXP.renderMode == RenderMode.BUFFER)
 		{
 			HXP.screen.swap();
 			HXP.screen.refresh();
@@ -158,7 +153,7 @@ class Engine extends Sprite
 
 		if (HXP.scene.visible) HXP.scene.render();
 
-		if (HXP.renderMode.has(RenderMode.BUFFER))
+		if (HXP.renderMode == RenderMode.BUFFER)
 		{
 			HXP.screen.redraw();
 		}
@@ -269,21 +264,21 @@ class Engine extends Sprite
 			_last = Lib.getTimer();
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
-		
+
 		// Warnings when forcing RenderMode
-		if (HXP.renderMode.has(RenderMode.BUFFER))
-		{				
+		if (HXP.renderMode == RenderMode.BUFFER)
+		{
 			#if (!(flash || js) && debug)
 			HXP.console.log(["Warning: Using RenderMode.BUFFER on native target may result in bad performance"]);
 			#end
 		}
 		else
-		{				
+		{
 			#if ((flash || js) && debug)
 			HXP.console.log(["Warning: Using RenderMode.HARDWARE on flash/html5 target may result in corrupt graphics"]);
 			#end
 		}
-		
+
 		// HTML 5 warning
 		#if (js && debug)
 		HXP.console.log(["Warning: the HTML 5 target is currently experimental"]);

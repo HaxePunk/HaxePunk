@@ -15,7 +15,7 @@ class Rect extends Graphic
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param	width	The Rect's width
 	 * @param	height	The Rect's height
 	 * @param	color	The Rect's color
@@ -31,7 +31,7 @@ class Rect extends Graphic
 
 	public override function render(target:BitmapData, point:Point, camera:Point)
 	{
-		if (HXP.renderMode.has(RenderMode.BUFFER))
+		if (HXP.renderMode == RenderMode.BUFFER)
 		{
 			_point.x = point.x + x;
 			_point.y = point.y + y;
@@ -41,10 +41,10 @@ class Rect extends Graphic
 		{
 			var fsx = HXP.screen.fullScaleX,
 				fsy = HXP.screen.fullScaleY;
-			
+
 			_point.x = point.x + x - camera.x * scrollX;
 			_point.y = point.y + y - camera.y * scrollY;
-			
+
 			_point.x = Math.floor(_point.x * fsx);
 			_point.y = Math.floor(_point.y * fsy);
 
@@ -56,7 +56,7 @@ class Rect extends Graphic
 
 	private function createImage()
 	{
-		if (HXP.renderMode.has(RenderMode.BUFFER) && width > 0 && height > 0)
+		if (HXP.renderMode == RenderMode.BUFFER && width > 0 && height > 0)
 		{
 			var source:BitmapData = HXP.createBitmap(width, height, true, 0xFF000000 | color);
 			image = new Image(source);

@@ -84,13 +84,13 @@ class Image extends Graphic
 			{
 				setAtlasRegion(source);
 			}
-			else if (HXP.renderMode.has(RenderMode.HARDWARE))
+			else if (HXP.renderMode == RenderMode.HARDWARE)
 			{
 				if (Std.is(source, String))
 					_class = source;
 				else if (name == "")
 					_class = Type.getClassName(Type.getClass(source));
-				
+
 				setAtlasRegion(Atlas.loadImageAsRegion(source));
 			}
 			else if (Std.is(source, BitmapData))
@@ -103,11 +103,11 @@ class Image extends Graphic
 					_class = source;
 				else if (name == "")
 					_class = Type.getClassName(Type.getClass(source));
-					
+
 				setBitmapSource(HXP.getBitmap(source));
 			}
-			
-			if (_source == null && _region == null) 
+
+			if (_source == null && _region == null)
 				throw "Invalid source image.";
 		}
 
@@ -265,10 +265,10 @@ class Image extends Graphic
 	{
 		if (width == 0 || height == 0)
 			throw "Illegal rect, sizes cannot be 0.";
-		
+
 		var source:BitmapData = HXP.createBitmap(width, height, true, 0xFFFFFFFF);
 		var image:Image;
-		if (HXP.renderMode.has(RenderMode.HARDWARE))
+		if (HXP.renderMode == RenderMode.HARDWARE)
 		{
 			image = new Image(Atlas.loadImageAsRegion(source));
 		}
@@ -294,7 +294,7 @@ class Image extends Graphic
 	{
 		if (radius == 0)
 			throw "Illegal circle, radius cannot be 0.";
-		
+
 		HXP.sprite.graphics.clear();
 		HXP.sprite.graphics.beginFill(0xFFFFFF);
 		HXP.sprite.graphics.drawCircle(radius, radius, radius);
@@ -302,7 +302,7 @@ class Image extends Graphic
 		data.draw(HXP.sprite);
 
 		var image:Image;
-		if (HXP.renderMode.has(RenderMode.HARDWARE))
+		if (HXP.renderMode == RenderMode.HARDWARE)
 		{
 			image = new Image(Atlas.loadImageAsRegion(data));
 		}
@@ -472,7 +472,7 @@ class Image extends Graphic
 	#else
 	public var smooth : Bool = false;
 	#end
-	
+
 	/**
 	 * Width of the image.
 	 */

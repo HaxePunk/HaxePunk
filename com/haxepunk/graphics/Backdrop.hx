@@ -26,7 +26,7 @@ class Backdrop extends Canvas
 		if (Std.is(source, AtlasRegion)) setAtlasRegion(source);
 		else
 		{
-			if (HXP.renderMode.has(RenderMode.HARDWARE))
+			if (HXP.renderMode == RenderMode.HARDWARE)
 			{
 				setAtlasRegion(Atlas.loadImageAsRegion(source));
 			}

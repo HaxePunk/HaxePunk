@@ -36,7 +36,7 @@ class Stamp extends Graphic
 		}
 		else
 		{
-			if (HXP.renderMode.has(RenderMode.HARDWARE))
+			if (HXP.renderMode == RenderMode.HARDWARE)
 			{
 				setAtlasRegion(Atlas.loadImageAsRegion(source));
 			}
@@ -58,18 +58,18 @@ class Stamp extends Graphic
 	{
 		_blit = false;
 		_region = region;
-		
+
 		if (_region == null)
 			throw "Invalid source image.";
-		
+
 		_sourceRect = new Rectangle(0, 0, _region.width, _region.height);
 	}
 
 	private inline function setBitmapSource(bitmap:BitmapData)
 	{
-		if (bitmap == null) 
+		if (bitmap == null)
 			throw "Invalid source image.";
-		
+
 		_blit = true;
 		_sourceRect = bitmap.rect;
 		_source = bitmap;

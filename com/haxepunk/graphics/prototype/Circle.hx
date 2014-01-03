@@ -14,7 +14,7 @@ class Circle extends Graphic
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param	radius	The Circle's radius
 	 * @param	color	The Circle's color
 	 */
@@ -28,7 +28,7 @@ class Circle extends Graphic
 
 	public override function render(target:BitmapData, point:Point, camera:Point)
 	{
-		if (HXP.renderMode.has(RenderMode.BUFFER))
+		if (HXP.renderMode == RenderMode.BUFFER)
 		{
 			image.render(target, point, camera);
 		}
@@ -45,7 +45,7 @@ class Circle extends Graphic
 
 	private function createImage()
 	{
-		if (HXP.renderMode.has(RenderMode.BUFFER) && radius > 0)
+		if (HXP.renderMode == RenderMode.BUFFER && radius > 0)
 		{
 			HXP.sprite.graphics.clear();
 			HXP.sprite.graphics.beginFill(color);

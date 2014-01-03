@@ -121,7 +121,7 @@ class Scene extends Tweener
 			_layerSort = false;
 		}
 
-		if (HXP.renderMode.has(RenderMode.HARDWARE))
+		if (HXP.renderMode == RenderMode.HARDWARE)
 		{
 			clearSprites();
 			AtlasData.setScene(this);
@@ -142,7 +142,7 @@ class Scene extends Tweener
 			}
 		}
 
-		if (HXP.renderMode.has(RenderMode.HARDWARE)) AtlasData.render();
+		if (HXP.renderMode == RenderMode.HARDWARE) AtlasData.render();
 	}
 
 	/**
@@ -281,10 +281,10 @@ class Scene extends Tweener
 				fe = Type.createInstance(classType, []);
 		}
 		var e:E = cast fe;
-		
+
 		if (addToScene)
 			return add(e);
-			
+
 		return e;
 	}
 

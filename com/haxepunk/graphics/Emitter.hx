@@ -55,7 +55,7 @@ class Emitter extends Graphic
 		else if(Std.is(source, AtlasRegion)) region = setAtlasRegion(source);
 		else
 		{
-			if (HXP.renderMode.has(RenderMode.HARDWARE))
+			if (HXP.renderMode == RenderMode.HARDWARE)
 			{
 				region = setAtlasRegion(Atlas.loadImageAsRegion(source));
 			}
@@ -64,8 +64,8 @@ class Emitter extends Graphic
 				setBitmapSource(HXP.getBitmap(source));
 			}
 		}
-		
-		if (_source == null && region == null) 
+
+		if (_source == null && region == null)
 			throw "Invalid source image.";
 
 		_frameWidth = (frameWidth != 0) ? frameWidth : _width;
@@ -187,7 +187,7 @@ class Emitter extends Graphic
 					rect.x = rect.width * type._frames[Std.int(td * type._frames.length)];
 				rect.y = Std.int(rect.x / _width) * rect.height;
 				rect.x %= _width;
-				
+
 				// particles should be emited from the emiter's center
 				_p.x -= rect.width / 2;
 				_p.y -= rect.height / 2;
@@ -240,13 +240,13 @@ class Emitter extends Graphic
 	public function newType(name:String, frames:Array<Int> = null):ParticleType
 	{
 		var pt:ParticleType = _types.get(name);
-		
+
 		if (pt != null)
 			throw "Cannot add multiple particle types of the same name";
-		
+
 		pt = new ParticleType(name, frames, _width, _frameWidth, _frameHeight);
 		_types.set(name, pt);
-		
+
 		return pt;
 	}
 
@@ -322,8 +322,8 @@ class Emitter extends Graphic
 	public function emit(name:String, ?x:Float = 0, ?y:Float = 0):Particle
 	{
 		var p:Particle, type:ParticleType = _types.get(name);
-		
-		if (type == null) 
+
+		if (type == null)
 			throw "Particle type \"" + name + "\" does not exist.";
 
 		if (_cache != null)
@@ -359,7 +359,7 @@ class Emitter extends Graphic
 	 * @param	x			X point to emit from.
 	 * @param	y			Y point to emit from.
 	 * @param	radius		Radius to emit inside.
-	 * 
+	 *
 	 * @return The Particle emited.
 	 */
 	public function emitInCircle(name:String, x:Float, y:Float, radius:Float):Particle
@@ -376,7 +376,7 @@ class Emitter extends Graphic
 	 * @param	y			Y point to emit from.
 	 * @param	width		Width of the area to emit from.
 	 * @param	height		height of the area to emit from.
-	 * 
+	 *
 	 * @return The Particle emited.
 	 */
 	public function emitInRectangle(name:String, x:Float, y:Float, width:Float ,height:Float):Particle

@@ -29,7 +29,7 @@ class Draw
 
 	public static function init()
 	{
-		if (HXP.renderMode.has(RenderMode.HARDWARE))
+		if (HXP.renderMode == RenderMode.HARDWARE)
 		{
 			var sprite = new Sprite();
 			HXP.stage.addChild(sprite);
@@ -88,7 +88,7 @@ class Draw
 	 */
 	public static function line(x1:Int, y1:Int, x2:Int, y2:Int, color:Int = 0xFFFFFF)
 	{
-		if (HXP.renderMode.has(RenderMode.BUFFER))
+		if (HXP.renderMode == RenderMode.BUFFER)
 		{
 			color = 0xFF000000 | (0xFFFFFF & color);
 
@@ -195,7 +195,7 @@ class Draw
 	 */
 	public static function linePlus(x1:Int, y1:Int, x2:Int, y2:Int, color:Int = 0xFF000000, alpha:Float = 1, thick:Float = 1)
 	{
-		if (HXP.renderMode.has(RenderMode.BUFFER))
+		if (HXP.renderMode == RenderMode.BUFFER)
 		{
 			_graphics.clear();
 			_graphics.lineStyle(thick, color, alpha, false, LineScaleMode.NONE);
@@ -223,7 +223,7 @@ class Draw
 	 */
 	public static function rect(x:Int, y:Int, width:Int, height:Int, color:Int = 0xFFFFFF, alpha:Float = 1)
 	{
-		if (HXP.renderMode.has(RenderMode.BUFFER))
+		if (HXP.renderMode == RenderMode.BUFFER)
 		{
 			if (alpha >= 1 && blend == null)
 			{
@@ -257,7 +257,7 @@ class Draw
 	 */
 	public static function circle(x:Int, y:Int, radius:Int, color:Int = 0xFFFFFF)
 	{
-		if (HXP.renderMode.has(RenderMode.BUFFER))
+		if (HXP.renderMode == RenderMode.BUFFER)
 		{
 			color = 0xFF000000 | (0xFFFFFF & color);
 			x -= Std.int(_camera.x);
@@ -310,7 +310,7 @@ class Draw
 	 */
 	public static function circlePlus(x:Int, y:Int, radius:Float, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Int = 1)
 	{
-		if (HXP.renderMode.has(RenderMode.BUFFER))
+		if (HXP.renderMode == RenderMode.BUFFER)
 		{
 			_graphics.clear();
 			if (fill)
@@ -352,7 +352,7 @@ class Draw
 	 */
 	public static function hitbox(e:Entity, outline:Bool = true, color:Int = 0xFFFFFF, alpha:Float = 1)
 	{
-		if (HXP.renderMode.has(RenderMode.BUFFER))
+		if (HXP.renderMode == RenderMode.BUFFER)
 		{
 			if (outline)
 			{
@@ -412,7 +412,7 @@ class Draw
 	 */
 	public static function curve(x1:Int, y1:Int, x2:Int, y2:Int, x3:Int, y3:Int, thick:Float = 1, color:Int = 0, alpha:Float = 1)
 	{
-		if (HXP.renderMode.has(RenderMode.BUFFER))
+		if (HXP.renderMode == RenderMode.BUFFER)
 		{
 			_graphics.clear();
 			_graphics.lineStyle(thick, color, alpha);

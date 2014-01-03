@@ -47,17 +47,17 @@ class HXP
 	{
 		return VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_PATCH;
 	}
-	
+
 	/**
 	 * The HaxePunk major version.
 	 */
 	public static inline var VERSION_MAJOR:Int = 2;
-	
+
 	/**
 	 * The HaxePunk minor version.
 	 */
 	public static inline var VERSION_MINOR:Int = 4;
-	
+
 	/**
 	 * The HaxePunk patch version.
 	 */
@@ -194,7 +194,19 @@ class HXP
 	/**
 	 * Defines how to render the scene
 	 */
-	public static var renderMode:EnumFlags<RenderMode>;
+	public static var renderMode(default, set):RenderMode;
+	private static inline function set_renderMode(value:RenderMode):RenderMode
+	{
+		renderMode = value;
+
+		// recreate screen for buffer rendering
+		if (HXP.screen == null)
+			HXP.screen = new Screen();
+		else
+			HXP.screen.init();
+
+		return value;
+	}
 
 	/**
 	 * Defines the allowed orientations
@@ -738,7 +750,7 @@ class HXP
 		return Std.int((_seed / INT_MAX_VALUE) * amount);
 	}
 
-	/** 
+	/**
 	 * Optimized version of Lambda.indexOf for Array on dynamic platforms (Lambda.indexOf is less performant on those targets).
 	 *
 	 * @param	arr		The array to look into.

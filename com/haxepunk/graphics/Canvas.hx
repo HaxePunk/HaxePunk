@@ -19,7 +19,7 @@ class Canvas extends Graphic
 	 * Optional blend mode to use (see flash.display.BlendMode for blending modes).
 	 */
 	public var blend:BlendMode;
-	
+
 	/**
 	 * Rotation of the canvas, in degrees.
 	 */
@@ -62,7 +62,7 @@ class Canvas extends Graphic
 		_width = width;
 		_height = height;
 
-		if (HXP.renderMode.has(RenderMode.BUFFER))
+		if (HXP.renderMode == RenderMode.BUFFER)
 		{
 			_refWidth = Math.ceil(width / _maxWidth);
 			_refHeight = Math.ceil(height / _maxHeight);
@@ -92,7 +92,7 @@ class Canvas extends Graphic
 	{
 		var sx = scale * scaleX,
 			sy = scale * scaleY;
-		
+
 		// determine drawing location
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;
@@ -109,7 +109,7 @@ class Canvas extends Graphic
 			while (xx < _refWidth)
 			{
 				buffer = _buffers[_ref.getPixel(xx, yy)];
-				
+
 				if (angle == 0 && sx == 1 && sy == 1 && blend == null && _tint == null)
 				{
 					_rect.width = buffer.width;
@@ -123,13 +123,13 @@ class Canvas extends Graphic
 					_matrix.a = sx;
 					_matrix.d = sy;
 					_matrix.tx = _matrix.ty = 0;
-					if (angle != 0) _matrix.rotate(angle * HXP.RAD);					
+					if (angle != 0) _matrix.rotate(angle * HXP.RAD);
 					_matrix.tx += _point.x;
 					_matrix.ty += _point.y;
-					
+
 					target.draw(buffer, _matrix, _tint, blend);
 				}
-				
+
 				_point.x += _maxWidth;
 				xx ++;
 			}
