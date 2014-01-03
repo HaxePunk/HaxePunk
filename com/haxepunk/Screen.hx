@@ -20,25 +20,28 @@ class Screen
 	 */
 	public function new()
 	{
+		_sprite = new Sprite();
+		_bitmap = new Array<Bitmap>();
 		init();
-
-		// create screen buffers
-		if (HXP.renderMode.has(RenderMode.BUFFER))
-		{
-			HXP.engine.addChild(_sprite);
-		}
 	}
 
 	public function init()
 	{
-		_sprite = new Sprite();
-		_bitmap = new Array<Bitmap>();
 		x = y = originX = originY = 0;
 		_angle = _current = 0;
 		scale = scaleX = scaleY = 1;
 		_color = 0;
-		_matrix = new Matrix();
 		update();
+
+		// create screen buffers
+		if (HXP.engine.contains(_sprite))
+		{
+			HXP.engine.removeChild(_sprite);
+		}
+		if (HXP.renderMode == RenderMode.BUFFER)
+		{
+			HXP.engine.addChild(_sprite);
+		}
 	}
 
 	private inline function disposeBitmap(bd:Bitmap)
@@ -55,18 +58,21 @@ class Screen
 	 */
 	public function resize()
 	{
-		disposeBitmap(_bitmap[0]);
-		disposeBitmap(_bitmap[1]);
-
 		width = HXP.width;
 		height = HXP.height;
 
-		_bitmap[0] = new Bitmap(HXP.createBitmap(width, height, true), PixelSnapping.NEVER);
-		_bitmap[1] = new Bitmap(HXP.createBitmap(width, height, true), PixelSnapping.NEVER);
+		if (HXP.renderMode == RenderMode.BUFFER)
+		{
+			disposeBitmap(_bitmap[0]);
+			disposeBitmap(_bitmap[1]);
 
-		_sprite.addChild(_bitmap[0]).visible = true;
-		_sprite.addChild(_bitmap[1]).visible = false;
-		HXP.buffer = _bitmap[0].bitmapData;
+			_bitmap[0] = new Bitmap(HXP.createBitmap(width, height, true), PixelSnapping.NEVER);
+			_bitmap[1] = new Bitmap(HXP.createBitmap(width, height, true), PixelSnapping.NEVER);
+
+			_sprite.addChild(_bitmap[0]).visible = true;
+			_sprite.addChild(_bitmap[1]).visible = false;
+			HXP.buffer = _bitmap[0].bitmapData;
+		}
 
 		_current = 0;
 		needsResize = false;
@@ -77,13 +83,16 @@ class Screen
 	 */
 	public function swap()
 	{
-		#if !bitfive _current = 1 - _current; #end
-		HXP.buffer = _bitmap[_current].bitmapData;
+		if (HXP.renderMode == RenderMode.BUFFER)
+		{
+			#if !bitfive _current = 1 - _current; #end
+			HXP.buffer = _bitmap[_current].bitmapData;
+		}
 	}
 
 	/**
 	 * Add a filter.
-	 * 
+	 *
 	 * @param	filter	The filter to add.
 	 */
 	public function addFilter(filter:Array<BitmapFilter>)
@@ -110,14 +119,20 @@ class Screen
 	public function redraw()
 	{
 		// refresh the buffers
-		_bitmap[_current].visible = true;
-		_bitmap[1 - _current].visible = false;
+		if (HXP.renderMode == RenderMode.BUFFER)
+		{
+			_bitmap[_current].visible = true;
+			_bitmap[1 - _current].visible = false;
+		}
 	}
 
 	/** @private Re-applies transformation matrix. */
 	public function update()
 	{
-		if (_matrix == null) return; // prevent update on init
+		if (_matrix == null)
+		{
+			_matrix = new Matrix();
+		}
 		_matrix.b = _matrix.c = 0;
 		_matrix.a = fullScaleX;
 		_matrix.d = fullScaleY;
@@ -268,14 +283,28 @@ class Screen
 	 * Whether screen smoothing should be used or not.
 	 */
 	public var smoothing(get_smoothing, set_smoothing):Bool;
-	private function get_smoothing():Bool 
-	{ 
-		return _bitmap[0].smoothing; 
+	private function get_smoothing():Bool
+	{
+		if (HXP.renderMode == RenderMode.BUFFER)
+		{
+			return _bitmap[0].smoothing;
+		}
+		else
+		{
+			return Atlas.smooth;
+		}
 	}
-	private function set_smoothing(value:Bool):Bool 
-	{ 
-		Atlas.smooth = _bitmap[0].smoothing = _bitmap[1].smoothing = value; 
-		return value; 
+	private function set_smoothing(value:Bool):Bool
+	{
+		if (HXP.renderMode == RenderMode.BUFFER)
+		{
+			_bitmap[0].smoothing = _bitmap[1].smoothing = value;
+		}
+		else
+		{
+			Atlas.smooth = value;
+		}
+		return value;
 	}
 
 	/**
@@ -306,7 +335,14 @@ class Screen
 	 */
 	public function capture():Image
 	{
-		return new Image(_bitmap[_current].bitmapData.clone());
+		if (HXP.renderMode == RenderMode.BUFFER)
+		{
+			return new Image(_bitmap[_current].bitmapData.clone());
+		}
+		else
+		{
+			throw "Screen.capture only supported with buffer rendering";
+		}
 	}
 
 	// Screen infromation.
