@@ -162,7 +162,7 @@ class Screen
 	/**
 	 * X offset of the screen.
 	 */
-	public var x(default, set_x):Int;
+	public var x(default, set_x):Int = 0;
 	private function set_x(value:Int):Int
 	{
 		if (x == value) return value;
@@ -174,7 +174,7 @@ class Screen
 	/**
 	 * Y offset of the screen.
 	 */
-	public var y(default, set_y):Int;
+	public var y(default, set_y):Int = 0;
 	private function set_y(value:Int):Int
 	{
 		if (y == value) return value;
@@ -186,7 +186,7 @@ class Screen
 	/**
 	 * X origin of transformations.
 	 */
-	public var originX(default, set_originX):Int;
+	public var originX(default, set_originX):Int = 0;
 	private function set_originX(value:Int):Int
 	{
 		if (originX == value) return value;
@@ -198,7 +198,7 @@ class Screen
 	/**
 	 * Y origin of transformations.
 	 */
-	public var originY(default, set_originY):Int;
+	public var originY(default, set_originY):Int = 0;
 	private function set_originY(value:Int):Int
 	{
 		if (originY == value) return value;
