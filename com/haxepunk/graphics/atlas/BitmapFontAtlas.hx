@@ -38,6 +38,7 @@ class BitmapFontAtlas extends TextureAtlas {
 		var fast = new Fast(xml.firstElement());
 		
 		atlas.lineHeight = Std.parseInt(fast.node.common.att.lineHeight);
+		atlas.fontSize = Std.parseInt(fast.node.info.att.size);
 		var chars = fast.node.chars;
 		
 		for (char in chars.nodes.char) {
@@ -68,6 +69,7 @@ class BitmapFontAtlas extends TextureAtlas {
 	}
 	
 	public var lineHeight:Int = 0;
+	public var fontSize:Int = 0;
 	public var glyphMetadata:Map<String, GlyphMetadata>;
 	
 	public function getChar(name:String):AtlasRegion {

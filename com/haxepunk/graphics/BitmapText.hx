@@ -19,6 +19,7 @@ class BitmapText extends Graphic {
 	public var height:Float=0;
 	public var textWidth:Int=0;
 	public var textHeight:Int=0;
+	public var size:Int=0;
 	
 	public var scale:Float=1;
 	public var scaleX:Float=1;
@@ -32,6 +33,14 @@ class BitmapText extends Graphic {
 	
 	public function new(text:String, x:Float=0, y:Float=0, width:Float=0, height:Float=0, ?options:TextOptions) {
 		super();
+		
+		if (options == null) {
+			options = {};
+			options.color = 0xFFFFFF;
+		}
+
+		if (options.font == null)  options.font = HXP.defaultFont;
+		if (options.size == 0)     options.size = 16;
 		
 		var font = BitmapFontAtlas.getFont(options.font);
 		
@@ -47,9 +56,9 @@ class BitmapText extends Graphic {
 		this.y = y;
 		this.width = width;
 		this.height = height;
+		this.size = options.size;
 		
-		var color = options.color;
-		this.color = color;
+		this.color = options.color;
 		
 		this.text = text;
 	}
@@ -78,20 +87,22 @@ class BitmapText extends Graphic {
 	}
 	
 	override public function render(target:BitmapData, point:Point, camera:Point) {
-		var sx = scale * scaleX,
-			sy = scale * scaleY;
-		
 		// determine drawing location
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;
 		
+		var fontScale = size/_font.fontSize;
+		
 		var fsx = HXP.screen.fullScaleX,
-			fsy = HXP.screen.fullScaleY;
+		    fsy = HXP.screen.fullScaleY;
+		
+		var sx = scale * scaleX * fontScale * fsx,
+		    sy = scale * scaleY * fontScale * fsy;
 		
 		_point.x = Math.floor(_point.x * fsx);
 		_point.y = Math.floor(_point.y * fsy);
 		
-		var lineHeight:Int = Std.int((_font.lineHeight + lineSpacing) * sy*fsy);
+		var lineHeight:Int = Std.int((_font.lineHeight + lineSpacing) * sy);
 		
 		var y:Int = 0;
 		var x:Int = 0;
@@ -107,18 +118,18 @@ class BitmapText extends Graphic {
 				
 				if (letter==' ') {
 					// it's a space, just move the cursor
-					rx += Std.int(md.xAdvance * sx*fsx);
+					rx += Std.int(md.xAdvance * sx);
 				} else {
 					// draw the character
-					region.draw(_point.x+rx+md.xOffset*sx*fsx, 
-					            _point.y+ry+md.yOffset*sy*fsy, 
+					region.draw(_point.x+rx+md.xOffset*sx, 
+					            _point.y+ry+md.yOffset*sy, 
 					            layer,
-					            sx * fsx, sy * fsy, 0,
+					            sx, sy, 0,
 					            _red, _green, _blue, alpha);
 					
 					// advance cursor position
-					rx += Std.int((md.xAdvance + charSpacing) * sx*fsx);
-					if (width != 0 && rx > width*sx*fsx) {
+					rx += Std.int((md.xAdvance + charSpacing) * sx);
+					if (width != 0 && rx > width*sx) {
 						textWidth = Std.int(width);
 						rx = 0;
 						ry += lineHeight;
