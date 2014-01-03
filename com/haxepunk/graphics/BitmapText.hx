@@ -17,6 +17,8 @@ class BitmapText extends Graphic {
 	
 	public var width:Float=0;
 	public var height:Float=0;
+	public var textWidth:Int=0;
+	public var textHeight:Int=0;
 	
 	public var scale:Float=1;
 	public var scaleX:Float=1;
@@ -34,10 +36,8 @@ class BitmapText extends Graphic {
 		var font = BitmapFontAtlas.getFont(options.font);
 		
 		// load the font
-		if(Std.is(font, BitmapFontAtlas)) {
-			_blit = false;
-			_font = cast(font, BitmapFontAtlas);
-		}
+		_blit = !HXP.renderMode.has(RenderMode.HARDWARE);
+		_font = cast(font, BitmapFontAtlas);
 		
 		// failure to load
 		if (_set == null && _font == null)
@@ -119,14 +119,18 @@ class BitmapText extends Graphic {
 					// advance cursor position
 					rx += Std.int((md.xAdvance + charSpacing) * sx*fsx);
 					if (width != 0 && rx > width*sx*fsx) {
+						textWidth = Std.int(width);
 						rx = 0;
 						ry += lineHeight;
 					}
 				}
+				
+				if (rx > textWidth) textWidth = rx;
 			}
 			
 			rx = 0;
 			ry += lineHeight;
+			if (ry > textHeight) textHeight = ry;
 		}
 	}
 }
