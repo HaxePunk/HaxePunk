@@ -3,6 +3,7 @@ package com.haxepunk.graphics;
 import com.haxepunk.Entity;
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
+import com.haxepunk.graphics.atlas.Atlas;
 import flash.display.BitmapData;
 import flash.geom.Point;
 
@@ -48,6 +49,9 @@ class Graphiclist extends Graphic
 		camera.x *= scrollX;
 		camera.y *= scrollY;
 
+		// HACK! force rendering in order of graphics
+		var threshold = Atlas.drawCallThreshold;
+		Atlas.drawCallThreshold = 0;
 		for (g in _graphics)
 		{
 			if (g.visible)
@@ -63,6 +67,7 @@ class Graphiclist extends Graphic
 				g.render(target, _point, _camera);
 			}
 		}
+		Atlas.drawCallThreshold = threshold;
 	}
 
 	/**

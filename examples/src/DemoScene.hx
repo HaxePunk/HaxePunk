@@ -10,6 +10,7 @@ import platformer.GameScene;
 import masks.GameScene;
 import masks.SlopedScene;
 import effects.GameScene;
+import layers.LayerScene;
 
 class DemoScene extends Scene
 {
@@ -104,7 +105,8 @@ class DemoScene extends Scene
 		'masks.GameScene',
 		'masks.SlopedScene',
 		'effects.GameScene',
-		'platformer.GameScene'
+		'platformer.GameScene',
+		'layers.LayerScene'
 	];
 
 }

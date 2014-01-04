@@ -10,8 +10,8 @@ class Atlas
 	 * When a draw array hits this threshold it is rendered and flushed
 	 * It keeps memory to a minimum which improves rendering on mobile devices
 	 */
-	public static var drawCallThreshold:Int = 25000;
-	
+	public static var drawCallThreshold:Int = 2000;
+
 	/**
 	 * Whether or not to use antialiasing (default: false)
 	 */
@@ -82,9 +82,9 @@ class Atlas
 
 	/**
 	 * Toggle the visibility of a layer.
-	 * 
+	 *
 	 * @param	layer	The layer to toggle.
-	 * 
+	 *
 	 * @return	The new visibility of the layer.
 	 */
 	public static function toggleLayerVisibility(layer:Int):Bool

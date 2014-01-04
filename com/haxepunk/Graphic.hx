@@ -51,7 +51,7 @@ class Graphic
 	/**
 	 * The layer to use for rendering, should only be set by the Entity
 	 */
-	public var layer(default, set_layer):Int;
+	private var layer(default, set_layer):Int;
 
 	/**
 	 * Constructor.
@@ -94,7 +94,7 @@ class Graphic
 		_entity = entity;
 		layer = entity != null ? entity.layer : HXP.BASELAYER;
 	}
-	
+
 	/**
 	 * Pause updating this graphic.
 	 */
@@ -102,7 +102,7 @@ class Graphic
 	{
 		active = false;
 	}
-	
+
 	/**
 	 * Resume updating this graphic.
 	 */

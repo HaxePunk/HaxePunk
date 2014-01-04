@@ -72,7 +72,7 @@ class Entity extends Tweener
 	{
 		return y = v;
 	}
-	
+
 	/**
 	 * If the entity should follow the camera.
 	 */
@@ -550,7 +550,7 @@ class Entity extends Tweener
 		#end
 		if (_graphic != null)
 		{
-			_graphic.layer = value;
+			_graphic.setEntity(this); // reset layer
 		}
 		if (_scene == null)
 		{
@@ -612,7 +612,6 @@ class Entity extends Tweener
 		}
 		if (value != null)
 		{
-			value.layer = _layer;
 			value.setEntity(this);
 		}
 		_graphic = value;
@@ -643,7 +642,6 @@ class Entity extends Tweener
 	 */
 	public function addGraphic(g:Graphic):Graphic
 	{
-		g.layer = _layer;
 		if (graphic == null)
 		{
 			graphic = g;
@@ -655,10 +653,9 @@ class Entity extends Tweener
 		else
 		{
 			var list:Graphiclist = new Graphiclist();
-			if (graphic != null) list.add(graphic);
+			list.add(graphic);
 			list.add(g);
 			graphic = list;
-			list.setEntity(this);
 		}
 		return g;
 	}
