@@ -296,11 +296,12 @@ class Sfx
 			_typeTransforms.set(type, transform);
 		}
 		transform.pan = HXP.clamp(pan, -1, 1);
-		for (sfx in _typePlaying.get(type))
-		{
-			sfx.pan = sfx.pan;
-		}
-		return transform.pan;
+		
+		if (_typePlaying.exists(type))
+			for (sfx in _typePlaying.get(type))
+			{
+				sfx.pan = sfx.pan;
+			}
 	}
 
 	/**
@@ -319,10 +320,12 @@ class Sfx
 			_typeTransforms.set(type, transform);
 		}
 		transform.volume = volume < 0 ? 0 : volume;
-		for (sfx in _typePlaying.get(type))
-		{
-			sfx.volume = sfx.volume;
-		}
+		
+		if (_typePlaying.exists(type))
+			for (sfx in _typePlaying.get(type))
+			{
+				sfx.volume = sfx.volume;
+			}
 	}
 
 	// Sound infromation.
