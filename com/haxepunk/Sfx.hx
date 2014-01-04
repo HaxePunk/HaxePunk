@@ -39,7 +39,7 @@ class Sfx
 
 		if (source == null)
 			throw "Invalid source Sound.";
-		
+
 		if (Std.is(source, String))
 		{
 			_sound = Assets.getSound(source);
@@ -101,7 +101,7 @@ class Sfx
 
 	/**
 	 * Stops the sound if it is currently playing.
-	 * 
+	 *
 	 * @return If the sound was stopped.
 	 */
 	public function stop():Bool
@@ -248,9 +248,9 @@ class Sfx
 
 	/**
 	 * Return the global pan for a type.
-	 * 
+	 *
 	 * @param	type	The type to get the pan from.
-	 * 
+	 *
 	 * @return	The global pan for the type.
 	 */
 	static public function getPan(type:String):Float
@@ -265,9 +265,9 @@ class Sfx
 
 	/**
 	 * Return the global volume for a type.
-	 * 
+	 *
 	 * @param	type	The type to get the volume from.
-	 * 
+	 *
 	 * @return	The global volume for the type.
 	 */
 	static public function getVolume(type:String):Float
@@ -283,7 +283,7 @@ class Sfx
 	/**
 	 * Set the global pan for a type. Sfx instances of this type will add
 	 * this pan to their own.
-	 * 
+	 *
 	 * @param	type	The type to set.
 	 * @param	pan		The pan value.
 	 */
@@ -296,18 +296,20 @@ class Sfx
 			_typeTransforms.set(type, transform);
 		}
 		transform.pan = HXP.clamp(pan, -1, 1);
-		
+
 		if (_typePlaying.exists(type))
+		{
 			for (sfx in _typePlaying.get(type))
 			{
 				sfx.pan = sfx.pan;
 			}
+		}
 	}
 
 	/**
 	 * Set the global volume for a type. Sfx instances of this type will
 	 * multiply their volume by this value.
-	 * 
+	 *
 	 * @param	type	The type to set.
 	 * @param	volume	The volume value.
 	 */
@@ -320,12 +322,14 @@ class Sfx
 			_typeTransforms.set(type, transform);
 		}
 		transform.volume = volume < 0 ? 0 : volume;
-		
+
 		if (_typePlaying.exists(type))
+		{
 			for (sfx in _typePlaying.get(type))
 			{
 				sfx.volume = sfx.volume;
 			}
+		}
 	}
 
 	// Sound infromation.
