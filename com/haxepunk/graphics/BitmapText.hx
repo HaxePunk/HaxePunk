@@ -19,6 +19,8 @@ class BitmapText extends Graphic {
 	public var height:Float=0;
 	public var textWidth:Int=0;
 	public var textHeight:Int=0;
+	public var autoWidth:Bool = false;
+	public var autoHeight:Bool = false;
 	public var size:Int=0;
 	
 	public var scale:Float=1;
@@ -57,6 +59,9 @@ class BitmapText extends Graphic {
 		this.width = width;
 		this.height = height;
 		this.size = options.size;
+		
+		autoWidth = width==0;
+		autoHeight = height==0;
 		
 		this.color = options.color;
 		
@@ -104,8 +109,6 @@ class BitmapText extends Graphic {
 		
 		var lineHeight:Int = Std.int((_font.lineHeight + lineSpacing) * sy);
 		
-		var y:Int = 0;
-		var x:Int = 0;
 		var rx:Int = 0;
 		var ry:Int = 0;
 		for (y in 0 ... _lines.length) {
@@ -130,18 +133,18 @@ class BitmapText extends Graphic {
 					// advance cursor position
 					rx += Std.int((md.xAdvance + charSpacing) * sx);
 					if (width != 0 && rx > width*sx) {
-						textWidth = Std.int(width);
+						if (autoWidth) textWidth = Std.int(width);
 						rx = 0;
 						ry += lineHeight;
 					}
 				}
 				
-				if (rx > textWidth) textWidth = rx;
+				if (autoWidth && rx > textWidth) textWidth = rx;
 			}
 			
 			rx = 0;
 			ry += lineHeight;
-			if (ry > textHeight) textHeight = ry;
+			if (autoHeight && ry > textHeight) textHeight = ry;
 		}
 	}
 }
