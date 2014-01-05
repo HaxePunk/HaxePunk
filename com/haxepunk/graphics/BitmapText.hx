@@ -47,7 +47,7 @@ class BitmapText extends Graphic {
 		var font = BitmapFontAtlas.getFont(options.font);
 		
 		// load the font
-		_blit = !HXP.renderMode.has(RenderMode.HARDWARE);
+		_blit = HXP.renderMode != RenderMode.HARDWARE;
 		_font = cast(font, BitmapFontAtlas);
 		
 		// failure to load
