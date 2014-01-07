@@ -84,7 +84,7 @@ class BitmapText extends Graphic {
 	private var _red:Float;
 	private var _green:Float;
 	private var _blue:Float;
-	public var color(default, set_color):Int;
+	public var color(default, set_color):Int=-1;
 	private function set_color(value:Int):Int {
 		value &= 0xFFFFFF;
 		if (color == value) return value;
