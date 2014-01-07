@@ -209,7 +209,6 @@ class PS3_GAMEPAD
 	public static inline var PS_BUTTON:Int = 16;
 	public static inline var LEFT_ANALOGUE_BUTTON:Int = 1;
 	public static inline var RIGHT_ANALOGUE_BUTTON:Int = 2;
-	public static inline var HOME_BUTTON:Int = 10;
 	public static inline var DPAD_UP:Int = 4;
 	public static inline var DPAD_DOWN:Int = 6;
 	public static inline var DPAD_LEFT:Int = 7;
