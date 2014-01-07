@@ -92,59 +92,63 @@ class BitmapText extends Graphic {
 	}
 	
 	override public function render(target:BitmapData, point:Point, camera:Point) {
-		// determine drawing location
-		_point.x = point.x + x - camera.x * scrollX;
-		_point.y = point.y + y - camera.y * scrollY;
-		
-		var fontScale = size/_font.fontSize;
-		
-		var fsx = HXP.screen.fullScaleX,
-		    fsy = HXP.screen.fullScaleY;
-		
-		var sx = scale * scaleX * fontScale * fsx,
-		    sy = scale * scaleY * fontScale * fsy;
-		
-		_point.x = Math.floor(_point.x * fsx);
-		_point.y = Math.floor(_point.y * fsy);
-		
-		var lineHeight:Int = Std.int((_font.lineHeight + lineSpacing) * sy);
-		
-		var rx:Int = 0;
-		var ry:Int = 0;
-		for (y in 0 ... _lines.length) {
-			var line = _lines[y];
+		if (_blit) {
 			
-			for (x in 0 ... line.length) {
-				var letter = line.charAt(x);
-				var region = _font.getChar(letter);
-				var md = _font.glyphMetadata[letter];
+		} else {
+			// determine drawing location
+			_point.x = point.x + x - camera.x * scrollX;
+			_point.y = point.y + y - camera.y * scrollY;
+			
+			var fontScale = size/_font.fontSize;
+			
+			var fsx = HXP.screen.fullScaleX,
+				fsy = HXP.screen.fullScaleY;
+			
+			var sx = scale * scaleX * fontScale * fsx,
+				sy = scale * scaleY * fontScale * fsy;
+			
+			_point.x = Math.floor(_point.x * fsx);
+			_point.y = Math.floor(_point.y * fsy);
+			
+			var lineHeight:Int = Std.int((_font.lineHeight + lineSpacing) * sy);
+			
+			var rx:Int = 0;
+			var ry:Int = 0;
+			for (y in 0 ... _lines.length) {
+				var line = _lines[y];
 				
-				if (letter==' ') {
-					// it's a space, just move the cursor
-					rx += Std.int(md.xAdvance * sx);
-				} else {
-					// draw the character
-					region.draw(_point.x+rx+md.xOffset*sx, 
-					            _point.y+ry+md.yOffset*sy, 
-					            layer,
-					            sx, sy, 0,
-					            _red, _green, _blue, alpha);
+				for (x in 0 ... line.length) {
+					var letter = line.charAt(x);
+					var region = _font.getChar(letter);
+					var md = _font.glyphMetadata[letter];
 					
-					// advance cursor position
-					rx += Std.int((md.xAdvance + charSpacing) * sx);
-					if (width != 0 && rx > width*sx) {
-						if (autoWidth) textWidth = Std.int(width);
-						rx = 0;
-						ry += lineHeight;
+					if (letter==' ') {
+						// it's a space, just move the cursor
+						rx += Std.int(md.xAdvance * sx);
+					} else {
+						// draw the character
+						region.draw(_point.x+rx+md.xOffset*sx, 
+						            _point.y+ry+md.yOffset*sy, 
+						            layer,
+						            sx, sy, 0,
+						            _red, _green, _blue, alpha);
+						
+						// advance cursor position
+						rx += Std.int((md.xAdvance + charSpacing) * sx);
+						if (width != 0 && rx > width*sx) {
+							if (autoWidth) textWidth = Std.int(width);
+							rx = 0;
+							ry += lineHeight;
+						}
 					}
+					
+					if (autoWidth && rx > textWidth) textWidth = rx;
 				}
 				
-				if (autoWidth && rx > textWidth) textWidth = rx;
+				rx = 0;
+				ry += lineHeight;
+				if (autoHeight && ry > textHeight) textHeight = ry;
 			}
-			
-			rx = 0;
-			ry += lineHeight;
-			if (autoHeight && ry > textHeight) textHeight = ry;
 		}
 	}
 }
