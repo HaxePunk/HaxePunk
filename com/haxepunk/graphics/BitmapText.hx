@@ -78,13 +78,14 @@ class BitmapText extends Graphic {
 		}
 		
 		this.color = options.color;
+		updateColor();
 		this.text = text;
 	}
 	
 	private var _red:Float;
 	private var _green:Float;
 	private var _blue:Float;
-	public var color(default, set_color):Int=-1;
+	public var color(default, set_color):Int;
 	private function set_color(value:Int):Int {
 		value &= 0xFFFFFF;
 		if (color == value) return value;
@@ -146,11 +147,17 @@ class BitmapText extends Graphic {
 		
 		var sx = scale * scaleX * fontScale * fsx,
 			sy = scale * scaleY * fontScale * fsy;
-			
-		computeTextSize();
 		
-		var w = Std.int(textWidth*sx);
-		var h = Std.int(textHeight*sy);
+		var w:Int;
+		var h:Int;
+		if (autoWidth || autoHeight) {
+			computeTextSize();
+			w = Std.int(textWidth*sx);
+			h = Std.int(textHeight*sy);
+		} else {
+			w = Std.int(width);
+			h = Std.int(height);
+		}
 		
 		if (_buffer == null || _buffer.width != w || _buffer.height != h) {
 			_buffer = new BitmapData(w*2, h*2, true, 0);
