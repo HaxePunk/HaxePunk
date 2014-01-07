@@ -90,8 +90,7 @@ class BitmapText extends Graphic {
 		if (color == value) return value;
 		
 		color = value;
-		
-		if (_blit) updateColor();
+		updateColor();
 		
 		return value;
 	}
@@ -99,8 +98,7 @@ class BitmapText extends Graphic {
 	public var alpha(default,set):Float=1;
 	function set_alpha(value:Float) {
 		alpha = value;
-		
-		if (_blit) updateColor();
+		updateColor();
 		
 		return value;
 	}
@@ -111,11 +109,13 @@ class BitmapText extends Graphic {
 		_green = HXP.getGreen(color) / 255;
 		_blue = HXP.getBlue(color) / 255;
 		
-		_colorTransform.redMultiplier = _red;
-		_colorTransform.greenMultiplier = _green;
-		_colorTransform.blueMultiplier = _blue;
-		_colorTransform.alphaMultiplier = alpha;
-		updateBuffer();
+		if (_blit) {
+			_colorTransform.redMultiplier = _red;
+			_colorTransform.greenMultiplier = _green;
+			_colorTransform.blueMultiplier = _blue;
+			_colorTransform.alphaMultiplier = alpha;
+			updateBuffer();
+		}
 	}
 	
 	public function set_text(text:String) {
