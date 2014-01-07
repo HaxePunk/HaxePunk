@@ -1,5 +1,6 @@
 package com.haxepunk.graphics.atlas;
 
+import flash.geom.Rectangle;
 import openfl.Assets;
 import haxe.xml.Fast;
 
@@ -8,7 +9,8 @@ enum BitmapFontFormat {
 	XML;
 }
 
-typedef GlyphMetadata = {
+typedef GlyphData = {
+	var rect:Rectangle;
 	var xOffset:Int;
 	var yOffset:Int;
 	var xAdvance:Int;
@@ -50,27 +52,28 @@ class BitmapFontAtlas extends TextureAtlas {
 			var glyph = char.att.letter;
 			glyph = glyph=="space" ? ' ' : glyph;
 			
-			var md:GlyphMetadata = {
-			                        xOffset:char.has.xoffset ? Std.parseInt(char.att.xoffset) : 0,
-			                        yOffset:char.has.yoffset ? Std.parseInt(char.att.yoffset) : 0,
-			                        xAdvance:char.has.xadvance ? Std.parseInt(char.att.xadvance) : 0
-			                        };
+			var md:GlyphData = {
+			                    rect:HXP.rect.clone(),
+			                    xOffset:char.has.xoffset ? Std.parseInt(char.att.xoffset) : 0,
+			                    yOffset:char.has.yoffset ? Std.parseInt(char.att.yoffset) : 0,
+			                    xAdvance:char.has.xadvance ? Std.parseInt(char.att.xadvance) : 0
+			                    };
 			
 			// set the defined region
 			var region = atlas.defineRegion(glyph, HXP.rect);
-			atlas.glyphMetadata[glyph] = md;
+			atlas.glyphData[glyph] = md;
 		}
 		return atlas;
 	}
 	
 	private function new(source:Dynamic) {
 		super(source);
-		glyphMetadata = new Map();
+		glyphData = new Map();
 	}
 	
 	public var lineHeight:Int = 0;
 	public var fontSize:Int = 0;
-	public var glyphMetadata:Map<String, GlyphMetadata>;
+	public var glyphData:Map<String, GlyphData>;
 	
 	public function getChar(name:String):AtlasRegion {
 		try {
