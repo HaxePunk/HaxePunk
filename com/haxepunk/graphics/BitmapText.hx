@@ -152,8 +152,8 @@ class BitmapText extends Graphic {
 		var h:Int;
 		if (autoWidth || autoHeight) {
 			computeTextSize();
-			w = Std.int(textWidth*sx);
-			h = Std.int(textHeight*sy);
+			w = Std.int(autoWidth ? (textWidth*sx) : width);
+			h = Std.int(autoHeight ? (textHeight*sy) : height);
 		} else {
 			w = Std.int(width);
 			h = Std.int(height);
