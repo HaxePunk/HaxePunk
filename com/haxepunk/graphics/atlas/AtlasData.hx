@@ -18,14 +18,18 @@ class Layer
 	public var data:Array<Float>;
 	public var index:Int;
 	public var dirty:Bool;
+	public var layer(default, null):Int;
 
 	/**
 	 * Constructor.
 	 */
-	public function new()
+	public function new(layer:Int, parent:AtlasData)
 	{
 		data = new Array<Float>();
 		prepare();
+
+		this.layer = layer;
+		this.parent = parent;
 	}
 
 	public inline function prepare()
@@ -37,6 +41,22 @@ class Layer
 		index = 0; // reset index for next run
 		dirty = false;
 	}
+
+	public inline function render()
+	{
+		if (dirty)
+		{
+			prepare();
+			parent.renderLayer(this);
+		}
+	}
+
+	public function toString():String
+	{
+		return "Layer " + layer;
+	}
+
+	private var parent:AtlasData;
 }
 
 class AtlasData
@@ -128,9 +148,10 @@ class AtlasData
 	 * Sets the scene object
 	 * @param	scene	The scene object to set
 	 */
-	public static inline function setScene(scene:Scene)
+	public static inline function clearScene(scene:Scene)
 	{
 		_scene = scene;
+		_scene.sprite.graphics.clear();
 	}
 
 	/**
@@ -138,29 +159,11 @@ class AtlasData
 	 */
 	public static inline function render()
 	{
-		if (_atlases.length > 0)
+		if (_atlasLayers.length > 0)
 		{
-			for (atlas in _atlases)
+			for (layer in _atlasLayers)
 			{
-				atlas.renderData();
-			}
-		}
-	}
-
-	/**
-	 * Renders the current TextureAtlas
-	 */
-	private inline function renderData()
-	{
-		var l:Layer;
-
-		for (layer in _layers.keys())
-		{
-			l = _layers.get(layer);
-			// check that we have something to draw
-			if (l.dirty)
-			{
-				renderLayer(l, layer);
+				layer.render();
 			}
 		}
 	}
@@ -206,10 +209,9 @@ class AtlasData
 		return new AtlasRegion(this, tileIndex, rect);
 	}
 
-	private inline function renderLayer(layer:Layer, layerIndex:Int)
+	public inline function renderLayer(layer:Layer)
 	{
-		layer.prepare();
-		_tilesheet.drawTiles(_scene.getSpriteByLayer(layerIndex).graphics, layer.data, Atlas.smooth, _renderFlags);
+		_tilesheet.drawTiles(_scene.sprite.graphics, layer.data, Atlas.smooth, _renderFlags);
 	}
 
 	private inline function setLayer(layer:Int)
@@ -220,10 +222,17 @@ class AtlasData
 		}
 		else
 		{
-			_layer = new Layer();
+			_layer = new Layer(layer, this);
+			// TODO: calculate insert instead of pushing and sorting?
+			_atlasLayers.push(_layer);
+			_atlasLayers.sort(layerSort);
 			_layers.set(layer, _layer);
 		}
 		_layerIndex = layer;
+	}
+	private static function layerSort(a:Layer, b:Layer)
+	{
+		return b.layer - a.layer;
 	}
 
 	/**
@@ -269,11 +278,6 @@ class AtlasData
 		if (_flagAlpha)
 		{
 			data[_layer.index++] = alpha;
-		}
-
-		if (_layer.index > Atlas.drawCallThreshold)
-		{
-			renderLayer(_layer, layer);
 		}
 	}
 
@@ -331,11 +335,6 @@ class AtlasData
 		if (_flagAlpha)
 		{
 			d[_layer.index++] = alpha;
-		}
-
-		if (_layer.index > Atlas.drawCallThreshold)
-		{
-			renderLayer(_layer, layer);
 		}
 	}
 
@@ -423,4 +422,5 @@ class AtlasData
 	private static var _dataPool:Hash<AtlasData> = new Hash<AtlasData>();
 #end
 	private static var _atlases:Array<AtlasData> = new Array<AtlasData>();
+	private static var _atlasLayers:Array<Layer> = new Array<Layer>();
 }
