@@ -124,7 +124,7 @@ class Scene extends Tweener
 		if (HXP.renderMode == RenderMode.HARDWARE)
 		{
 			clearSprites();
-			AtlasData.clearScene(this);
+			AtlasData.startScene(this);
 		}
 
 		// render the entities in order of depth
@@ -142,7 +142,7 @@ class Scene extends Tweener
 			}
 		}
 
-		if (HXP.renderMode == RenderMode.HARDWARE) AtlasData.render();
+		if (HXP.renderMode == RenderMode.HARDWARE) AtlasData.endScene();
 	}
 
 	/**
