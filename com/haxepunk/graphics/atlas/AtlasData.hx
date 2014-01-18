@@ -165,6 +165,7 @@ class AtlasData
 
 	/**
 	 * Performs several checks to see if data needs to be flushed to drawTiles
+	 * @param layer The layer to check
 	 */
 	private inline function checkForFlush(layer:Int)
 	{

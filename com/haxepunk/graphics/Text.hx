@@ -279,7 +279,7 @@ class Text extends Image
 	{
 		if (_entity == null || _entity.scene == null) return;
 		if (_parent != null) _parent.removeChild(_field);
-		_parent = _entity.scene.getSpriteByLayer(layer);
+		_parent = _entity.scene.sprite;
 		_parent.addChild(_field);
 	}
 
