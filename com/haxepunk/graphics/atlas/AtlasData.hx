@@ -154,13 +154,15 @@ class AtlasData
 
 	public inline function flush()
 	{
-		if (_dataIndex == 0) return;
-		if (_dataIndex < _data.length)
+		if (_dataIndex != 0)
 		{
-			_data.splice(_dataIndex, _data.length - _dataIndex);
+			if (_dataIndex < _data.length)
+			{
+				_data.splice(_dataIndex, _data.length - _dataIndex);
+			}
+			_dataIndex = 0;
+			_tilesheet.drawTiles(_scene.sprite.graphics, _data, Atlas.smooth, _renderFlags);
 		}
-		_dataIndex = 0;
-		_tilesheet.drawTiles(_scene.sprite.graphics, _data, Atlas.smooth, _renderFlags);
 	}
 
 	/**

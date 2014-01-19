@@ -37,7 +37,7 @@ class Circle extends Graphic
 			_point.x = point.x + x + radius - camera.x * scrollX;
 			_point.y = point.y + y + radius - camera.y * scrollY;
 
-			var gfx = _entity.scene.getSpriteByLayer(layer).graphics;
+			var gfx = _entity.scene.sprite.graphics;
 			gfx.beginFill(color);
 			gfx.drawCircle(_point.x, _point.y, radius);
 		}

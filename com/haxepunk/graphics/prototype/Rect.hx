@@ -47,8 +47,8 @@ class Rect extends Graphic
 
 			_point.x = Math.floor(_point.x * fsx);
 			_point.y = Math.floor(_point.y * fsy);
-
-			var gfx = _entity.scene.getSpriteByLayer(layer).graphics;
+			
+			var gfx = _entity.scene.sprite.graphics;
 			gfx.beginFill(color);
 			gfx.drawRect(_point.x, _point.y, width*fsx, height*fsy);
 		}
