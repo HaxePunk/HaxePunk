@@ -14,6 +14,7 @@ import com.haxepunk.debug.Console;
 import com.haxepunk.debug.LayerList;
 import com.haxepunk.graphics.Animation;
 import com.haxepunk.graphics.Backdrop;
+import com.haxepunk.graphics.BitmapText;
 import com.haxepunk.graphics.Canvas;
 import com.haxepunk.graphics.Emitter;
 import com.haxepunk.graphics.Graphiclist;
@@ -32,8 +33,6 @@ import com.haxepunk.graphics.atlas.Atlas;
 import com.haxepunk.graphics.atlas.AtlasRegion;
 import com.haxepunk.graphics.atlas.TextureAtlas;
 import com.haxepunk.graphics.atlas.TileAtlas;
-import com.haxepunk.graphics.prototype.Circle;
-import com.haxepunk.graphics.prototype.Rect;
 import com.haxepunk.masks.Circle;
 import com.haxepunk.masks.Grid;
 import com.haxepunk.masks.Hitbox;
@@ -78,7 +77,7 @@ class TestImport extends haxe.unit.TestCase
 	public override function setup()
 	{
 	}
-	
+
 	public override function tearDown()
 	{
 	}
