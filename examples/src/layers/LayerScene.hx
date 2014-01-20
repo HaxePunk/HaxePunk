@@ -4,6 +4,7 @@ import com.haxepunk.Entity;
 import com.haxepunk.HXP;
 import com.haxepunk.Scene;
 import com.haxepunk.graphics.Image;
+import com.haxepunk.graphics.Text;
 import com.haxepunk.graphics.atlas.Atlas;
 
 class LayerScene extends DemoScene
@@ -12,8 +13,6 @@ class LayerScene extends DemoScene
 	public function new()
 	{
 		super();
-
-		// Atlas.drawCallThreshold = 0;
 	}
 
 	public override function begin()
@@ -21,24 +20,26 @@ class LayerScene extends DemoScene
 
 		var e = new Entity();
 		e.layer = 50;
-		var img1 = Image.createCircle(100, 0xff0000);
 
 		var img2 = Image.createCircle(100, 0x00ff00);
 		img2.x = 100;
 		img2.y = 100;
 
-		var img3 = Image.createCircle(100, 0x0000ff);
-		img3.x = 200;
-		img3.y = 200;
+		var img1 = Image.createCircle(100, 0xff0000);
 
-		var background = Image.createRect(HXP.width, HXP.height, 0xffffff);
-
-		e.addGraphic(background);
+		// add to graphic list
 		e.addGraphic(img1);
 		e.addGraphic(img2);
-		e.addGraphic(img3);
-
-		// add entity to scene list
 		add(e);
+
+		var text = new Text("Hello World!");
+		text.size = 24;
+		addGraphic(text, 30, 150, 250);
+
+		var img3 = Image.createCircle(100, 0x0000ff);
+		addGraphic(img3, HXP.BASELAYER, 200, 200); // add graphic at base layer 10
+
+		var background = Image.createRect(HXP.width, HXP.height, 0xffffff);
+		addGraphic(background, 100); // add graphic at back
 	}
 }
