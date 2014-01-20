@@ -13,32 +13,6 @@ import nme.display.Tilesheet;
 import openfl.display.Tilesheet;
 #end
 
-class Layer
-{
-	public var data:Array<Float>;
-	public var index:Int;
-	public var dirty:Bool;
-
-	/**
-	 * Constructor.
-	 */
-	public function new()
-	{
-		data = new Array<Float>();
-		prepare();
-	}
-
-	public inline function prepare()
-	{
-		if (index < data.length)
-		{
-			data.splice(index, data.length - index);
-		}
-		index = 0; // reset index for next run
-		dirty = false;
-	}
-}
-
 class AtlasData
 {
 
@@ -104,11 +78,7 @@ class AtlasData
 
 	private function new(bd:BitmapData)
 	{
-#if haxe3
-		_layers = new Map<Int,Layer>();
-#else
-		_layers = new IntHash<Layer>();
-#end
+		_data = new Array<Float>();
 
 		_tilesheet = new Tilesheet(bd);
 
@@ -128,41 +98,17 @@ class AtlasData
 	 * Sets the scene object
 	 * @param	scene	The scene object to set
 	 */
-	public static inline function setScene(scene:Scene)
+	public static inline function startScene(scene:Scene)
 	{
 		_scene = scene;
+		_scene.sprite.graphics.clear();
 	}
 
-	/**
-	 * Called by the current Scene to draw all TextureAtlas
-	 */
-	public static inline function render()
+	public static inline function endScene()
 	{
-		if (_atlases.length > 0)
-		{
-			for (atlas in _atlases)
-			{
-				atlas.renderData();
-			}
-		}
-	}
-
-	/**
-	 * Renders the current TextureAtlas
-	 */
-	private inline function renderData()
-	{
-		var l:Layer;
-
-		for (layer in _layers.keys())
-		{
-			l = _layers.get(layer);
-			// check that we have something to draw
-			if (l.dirty)
-			{
-				renderLayer(l, layer);
-			}
-		}
+		if (_lastAtlas != null)
+			_lastAtlas.flush();
+		_lastAtlas = null;
 	}
 
 	/**
@@ -205,24 +151,36 @@ class AtlasData
 		return new AtlasRegion(this, tileIndex, rect);
 	}
 
-	private inline function renderLayer(layer:Layer, layerIndex:Int)
+	public inline function flush()
 	{
-		layer.prepare();
-		_tilesheet.drawTiles(_scene.getSpriteByLayer(layerIndex).graphics, layer.data, Atlas.smooth, _renderFlags);
+		if (_dataIndex != 0)
+		{
+			if (_dataIndex < _data.length)
+			{
+				_data.splice(_dataIndex, _data.length - _dataIndex);
+			}
+			_dataIndex = 0;
+			_tilesheet.drawTiles(_scene.sprite.graphics, _data, Atlas.smooth, _renderFlags);
+		}
 	}
 
-	private inline function setLayer(layer:Int)
+	/**
+	 * Performs several checks to see if data needs to be flushed to drawTiles
+	 * @param layer The layer to check
+	 */
+	private inline function checkForFlush(layer:Int)
 	{
-		if (_layers.exists(layer))
+		if (_lastAtlas != this)
 		{
-			_layer = _layers.get(layer);
+			if (_lastAtlas != null)
+				_lastAtlas.flush();
+			_lastAtlas = this;
 		}
-		else
+		else if (_layerIndex != layer)
 		{
-			_layer = new Layer();
-			_layers.set(layer, _layer);
+			flush();
+			_layerIndex = layer;
 		}
-		_layerIndex = layer;
 	}
 
 	/**
@@ -244,35 +202,28 @@ class AtlasData
 		tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
 		red:Float, green:Float, blue:Float, alpha:Float)
 	{
-		if (_layerIndex != layer) setLayer(layer);
-		var data = _layer.data;
-		_layer.dirty = true;
+		checkForFlush(layer);
 
-		data[_layer.index++] = tx;
-		data[_layer.index++] = ty;
-		data[_layer.index++] = tile;
+		_data[_dataIndex++] = tx;
+		_data[_dataIndex++] = ty;
+		_data[_dataIndex++] = tile;
 
 		// matrix transformation
-		data[_layer.index++] = a; // m00
-		data[_layer.index++] = b; // m10
-		data[_layer.index++] = c; // m01
-		data[_layer.index++] = d; // m11
+		_data[_dataIndex++] = a; // m00
+		_data[_dataIndex++] = b; // m10
+		_data[_dataIndex++] = c; // m01
+		_data[_dataIndex++] = d; // m11
 
 		// color
 		if (_flagRGB)
 		{
-			data[_layer.index++] = red;
-			data[_layer.index++] = green;
-			data[_layer.index++] = blue;
+			_data[_dataIndex++] = red;
+			_data[_dataIndex++] = green;
+			_data[_dataIndex++] = blue;
 		}
 		if (_flagAlpha)
 		{
-			data[_layer.index++] = alpha;
-		}
-
-		if (_layer.index > Atlas.drawCallThreshold)
-		{
-			renderLayer(_layer, layer);
+			_data[_dataIndex++] = alpha;
 		}
 	}
 
@@ -294,47 +245,40 @@ class AtlasData
 		scaleX:Float, scaleY:Float, angle:Float,
 		red:Float, green:Float, blue:Float, alpha:Float)
 	{
-		if (_layerIndex != layer) setLayer(layer);
-		var d = _layer.data;
-		_layer.dirty = true;
+		checkForFlush(layer);
 
-		d[_layer.index++] = x;
-		d[_layer.index++] = y;
-		d[_layer.index++] = tile;
+		_data[_dataIndex++] = x;
+		_data[_dataIndex++] = y;
+		_data[_dataIndex++] = tile;
 
 		// matrix transformation
 		if (angle == 0)
 		{
 			// fast defaults for non-rotated tiles (cos=1, sin=0)
-			d[_layer.index++] = scaleX; // m00
-			d[_layer.index++] = 0; // m01
-			d[_layer.index++] = 0; // m10
-			d[_layer.index++] = scaleY; // m11
+			_data[_dataIndex++] = scaleX; // m00
+			_data[_dataIndex++] = 0; // m01
+			_data[_dataIndex++] = 0; // m10
+			_data[_dataIndex++] = scaleY; // m11
 		}
 		else
 		{
 			var cos = Math.cos(-angle * HXP.RAD);
 			var sin = Math.sin(-angle * HXP.RAD);
-			d[_layer.index++] = cos * scaleX; // m00
-			d[_layer.index++] = -sin * scaleY; // m10
-			d[_layer.index++] = sin * scaleX; // m01
-			d[_layer.index++] = cos * scaleY; // m11
+			_data[_dataIndex++] = cos * scaleX; // m00
+			_data[_dataIndex++] = -sin * scaleY; // m10
+			_data[_dataIndex++] = sin * scaleX; // m01
+			_data[_dataIndex++] = cos * scaleY; // m11
 		}
 
 		if (_flagRGB)
 		{
-			d[_layer.index++] = red;
-			d[_layer.index++] = green;
-			d[_layer.index++] = blue;
+			_data[_dataIndex++] = red;
+			_data[_dataIndex++] = green;
+			_data[_dataIndex++] = blue;
 		}
 		if (_flagAlpha)
 		{
-			d[_layer.index++] = alpha;
-		}
-
-		if (_layer.index > Atlas.drawCallThreshold)
-		{
-			renderLayer(_layer, layer);
+			_data[_dataIndex++] = alpha;
 		}
 	}
 
@@ -401,21 +345,18 @@ class AtlasData
 	private var _name:String;
 	private var _refCount:Int = 0; // memory management
 
-	private var _layerIndex:Int;
-	private var _layer:Layer; // current layer
+	private var _layerIndex:Int = 0;
 
 	private var _renderFlags:Int;
 	private var _flagRGB:Bool;
 	private var _flagAlpha:Bool;
 
 	private var _tilesheet:Tilesheet;
-#if haxe3
-	private var _layers:Map<Int,Layer>;
-#else
-	private var _layers:IntHash<Layer>;
-#end
+	private var _data:Array<Float>;
+	private var _dataIndex:Int = 0;
 
 	private static var _scene:Scene;
+	private static var _lastAtlas:AtlasData;
 #if haxe3
 	private static var _dataPool:Map<String,AtlasData> = new Map<String,AtlasData>();
 #else
