@@ -8,6 +8,7 @@
 	"releasenote": "See CHANGELOG",
 	"contributors": ["heardtheword", "ibilon"],
 	"dependencies": {
-		"openfl": "1.2.2"
+		"openfl": "1.2.2",
+		"openfl-bitfive": "1.0.5"
 	}
 }
