@@ -3,6 +3,7 @@ language: java
 env: LD_LIBRARY_PATH=/usr/lib/neko
 
 before_install:
+  - sudo apt-get install libgc1c2
   # Install neko 2.0
   - curl http://nekovm.org/_media/neko-2.0.0-linux64.tar.gz | tar xzf -
   - sudo mv neko-2.0.0-linux /usr/lib/neko
