@@ -3,8 +3,6 @@ language: java
 env: LD_LIBRARY_PATH=/usr/lib/neko
 
 before_install:
-  - sudo apt-get update
-  - sudo apt-get install wget libgc1c2
   # Install neko 2.0
   - curl http://nekovm.org/_media/neko-2.0.0-linux64.tar.gz | tar xzf -
   - sudo mv neko-2.0.0-linux /usr/lib/neko
@@ -12,9 +10,8 @@ before_install:
   - sudo cp /usr/lib/neko/nekoc /usr/bin/nekoc
   - sudo cp /usr/lib/neko/nekotools /usr/bin/nekotools
   # Install haxe 3.1 (thanks to openfl install script)
-  - wget -c http://haxe.org/file/haxe-3.0.1-linux64.tar.gz
-  - sudo mkdir -p /usr/lib/haxe
-  - sudo tar xvzf haxe-3.0.1-linux64.tar.gz -C /usr/lib/haxe
+  - curl http://haxe.org/file/haxe-3.0.1-linux64.tar.gz | tar xzf -
+  - sudo mv haxe-3.0.1-linux64 /usr/lib/haxe
   - sudo cp -r /usr/lib/haxe/build/* /usr/lib/haxe/
   - sudo ln -s /usr/lib/haxe/haxe /usr/bin/haxe
   - sudo ln -s /usr/lib/haxe/haxelib /usr/bin/haxelib
@@ -22,19 +19,14 @@ before_install:
   - mkdir -p ~/haxelib
   - haxelib setup ~/haxelib
   # Download dependencies
-  - haxelib install hxcpp
   - haxelib install openfl
-  - haxelib install openfl-tools
   - haxelib install openfl-native
   - haxelib install openfl-html5-dom
   - haxelib install lime
-  - haxelib install lime-tools
   - haxelib install openfl-bitfive
   - echo "y" | haxelib run openfl setup
   # openfl command
-  - echo '#!/bin/sh' | sudo tee -a /usr/bin/openfl
-  - echo 'haxelib run openfl "$@"' | sudo tee -a /usr/bin/openfl
-  - sudo chmod +x /usr/bin/openfl
+  - sudo ln -s /usr/bin/lime /usr/bin/openfl
 
 script:
   - ant clean build unit-travis
