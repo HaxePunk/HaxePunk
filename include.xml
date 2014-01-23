@@ -4,4 +4,15 @@
 
 	<assets path="assets/graphics" rename="gfx" include="*.png" />
 	<assets path="assets/font" rename="font" include="*.ttf" />
+
+	<haxelib name="openfl" version="1.2.2" />
+	<haxelib name="openfl-ouya" if="ouya" />
+	<section if="neko|cpp">
+		<haxelib name="lime" version="0.9.3" />
+		<haxelib name="openfl-native" version="1.2.2" />
+	</section>
+	<section if="js">
+		<haxelib name="openfl-html5-dom" version="1.2.0" />
+		<haxelib name="openfl-bitfive" version="1.0.5" />
+	</section>
 </project>

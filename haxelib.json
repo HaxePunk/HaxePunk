@@ -8,9 +8,14 @@
 	"releasenote": "See CHANGELOG",
 	"contributors": ["heardtheword", "ibilon"],
 	"dependencies": {
+		"lime": ""
+	},
+	"install": {
+		"lime": "1.2.1",
+		"lime-tools": "1.2.7",
 		"openfl": "1.2.2",
+		"openfl-native": "1.2.2",
 		"openfl-bitfive": "1.0.5",
-		"lime": "0.9.3",
 		"openfl-html5-dom": "1.2.0"
 	}
 }
