@@ -17,6 +17,7 @@ If you are using Haxe 2 the last version supporting it was [v2.3.0](https://gith
 
 ```bash
 haxelib install HaxePunk
+haxelib run HaxePunk setup
 haxelib run HaxePunk new MyProject # creates a new project
 ```
 
@@ -25,7 +26,7 @@ haxelib run HaxePunk new MyProject # creates a new project
 You need to have ant installed to build a development version of HaxePunk. Make sure you set a default program for swf files to view the debug output. You will also need a C++ compiler for native builds (Xcode, Visual Studio, g++).
 
 ```bash
-git clone git@github.com:HaxePunk/HaxePunk.git
+git clone https://github.com/HaxePunk/HaxePunk.git
 ant
 ```
 
@@ -35,7 +36,7 @@ Generating documentation is just as simple. Run the commands below to create a n
 The documentation will be located in doc/docs/, simply open doc/docs/index.html with your web browser to see the doc.
 
 ```bash
-haxelib git chxdoc git@github.com:ibilon/chxdoc.git
+haxelib git chxdoc https://github.com/ibilon/chxdoc.git
 haxelib run chxdoc install pathToYourHaxeFolder
 ant doc
 ```

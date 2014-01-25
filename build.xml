@@ -3,8 +3,7 @@
 
 	<target name="tools">
 		<exec executable="haxe" dir="tools">
-			<arg line="-main SetupTool" />
-			<arg line="-neko ../run.n" />
+			<arg line="build.hxml" />
 		</exec>
 	</target>
 
@@ -28,7 +27,7 @@
 			<arg line="unit.n" />
 		</exec>
 	</target>
-	
+
 	<target name="unit-travis" depends="haxelib">
 		<exec executable="sh" dir="tests">
 			<arg line="travis.sh" />

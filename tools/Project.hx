@@ -1,67 +1,36 @@
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
-import neko.Lib;
-#if haxe3
 import sys.FileSystem;
 import sys.io.File;
 import sys.io.FileInput;
 import sys.io.FileOutput;
 import haxe.io.Path;
 import haxe.zip.Reader;
-#else
-import neko.FileSystem;
-import neko.io.File;
-import neko.io.FileInput;
-import neko.io.FileOutput;
-import neko.io.Path;
-import neko.zip.Reader;
-#end
 
-class SetupTool
+class Project
 {
+	public var projectName:String;
+	public var projectClass:String;
+	public var width:String;
+	public var height:String;
+	public var frameRate:String;
 
-	public function new()
+	private function new()
 	{
-		var args:Array<String> = 
-#if haxe3 
-Sys.args();
-#else
-neko.Sys.args();
-#end
-		if (args.length < 2)
-		{
-			usage();
-			return;
-		}
-
 		// defaults
 		projectName  = "";
         projectClass = "Main";
         width        = "640";
         height       = "480";
-        rate         = "30";
-
-		var command:String = args.shift();
-
-		switch (command)
-		{
-			case "new":
-				newProject(args);
-			case "help":
-				usage();
-		}
+        frameRate    = "60";
 	}
 
-	public function usage()
+	public static function create(args:Array<String>)
 	{
-		Lib.println("USAGE: haxelib run HaxePunk new [-s WIDTHxHEIGHT] [-r FRAMERATE] [-c CLASS_NAME] [PROJECT_NAME]");
-	}
-
-	public function newProject(args:Array<String>)
-	{
-		var slash:String = "";
+        var slash:String = "";
 
 		var path = args.pop();
+		var project = new Project();
 
 		// parse command line arguments
 		var length = args.length;
@@ -73,23 +42,29 @@ neko.Sys.args();
 				case '-s':
 					i += 1;
 					var size = args[i].split('x');
-					width = size[0];
-					height = size[1];
+					project.width = size[0];
+					project.height = size[1];
 
 				case '-r':
 					i += 1;
-					rate = args[i];
+					project.frameRate = args[i];
 
 				case '-c':
-					projectClass = args[i].charAt(0).toUpperCase() + args[i].substr(1).toLowerCase();
+					project.projectClass = args[i].charAt(0).toUpperCase() + args[i].substr(1).toLowerCase();
 
 				default:
-					projectName = args[i];
-					path += projectName + '/';
+					var name = args[i];
+					project.projectName = name;
+					path += name + '/';
 			}
 			i += 1;
 		}
 
+		project.make(path);
+	}
+
+	private function make(path:String)
+	{
 		path = createDirectory(path);
 
 		if (FileSystem.isDirectory(path))
@@ -107,7 +82,7 @@ neko.Sys.args();
 				// check if it's a folder
 				if (StringTools.endsWith(filename, "/") || StringTools.endsWith(filename, "\\"))
 				{
-					Lib.println(filename);
+					CLI.print(filename);
 
 					createDirectory(path + "/" + filename);
 				}
@@ -120,14 +95,14 @@ neko.Sys.args();
 					{
 						var text:String = new BytesInput(bytes).readString(bytes.length);
 
-						text = runTemplate(text);
+						text = replaceTemplateVars(text);
 
 						bytes = Bytes.ofString(text);
 
-						filename = runTemplate(filename);
+						filename = replaceTemplateVars(filename);
 					}
 
-					Lib.println(filename);
+					CLI.print(filename);
 
 					var fout:FileOutput = File.write(path + "/" + filename, true);
 					fout.writeBytes(bytes, 0, bytes.length);
@@ -137,8 +112,7 @@ neko.Sys.args();
 		}
 		else
 		{
-			Lib.println("You must provide a directory");
-			usage();
+			throw "You must provide a directory";
 		}
 	}
 
@@ -157,26 +131,15 @@ neko.Sys.args();
 		return path;
 	}
 
-	private function runTemplate(text:String):String
+	private function replaceTemplateVars(text:String):String
 	{
 		text = StringTools.replace(text, "{{PROJECT_NAME}}", projectName);
 		text = StringTools.replace(text, "{{PROJECT_CLASS}}", projectClass);
 		text = StringTools.replace(text, "{{WIDTH}}", width);
 		text = StringTools.replace(text, "{{HEIGHT}}", height);
-		text = StringTools.replace(text, "{{FRAMERATE}}", rate);
+		text = StringTools.replace(text, "{{FRAMERATE}}", frameRate);
 
 		return text;
 	}
-
-	public static function main()
-	{
-		new SetupTool();
-	}
-
-	private var projectName:String;
-	private var projectClass:String;
-	private var width:String;
-	private var height:String;
-	private var rate:String;
 
 }
