@@ -188,7 +188,7 @@ class Text extends Image
 	private override function set_layer(value:Int):Int
 	{
 #if neko
-		if (value == null) value = HXP.BASELAYER;
+		if (value == null) value = 0;
 #end
 		if (value == layer) return value;
 		if (_blit == false)

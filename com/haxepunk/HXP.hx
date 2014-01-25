@@ -59,11 +59,6 @@ class HXP
 	public static inline var VERSION_PATCH:Int = 6;
 
 	/**
-	 * The standard layer used since only flash can handle negative indicies in arrays, set your layers to some offset of this
-	 */
-	public static inline var BASELAYER:Int = 10;
-
-	/**
 	 * Flash equivalent: Number.MAX_VALUE
 	 */
 #if flash

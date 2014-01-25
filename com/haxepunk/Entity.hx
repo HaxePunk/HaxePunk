@@ -129,7 +129,7 @@ class Entity extends Tweener
 		_point = HXP.point;
 		_camera = HXP.point2;
 
-		layer = HXP.BASELAYER;
+		layer = 0;
 
 		if (graphic != null) this.graphic = graphic;
 		if (mask != null) this.mask = mask;
@@ -542,12 +542,6 @@ class Entity extends Tweener
 	private function set_layer(value:Int):Int
 	{
 		if (_layer == value) return _layer;
-		#if debug
-		if (value < 0)
-		{
-			trace("Negative layers may not work properly if you aren't using flash");
-		}
-		#end
 		if (_graphic != null)
 		{
 			_graphic.setEntity(this); // reset layer
