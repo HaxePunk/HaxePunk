@@ -65,7 +65,7 @@ class Graphic
 		relative = true;
 		_scroll = true;
 		_point = new Point();
-		layer = HXP.BASELAYER;
+		layer = 0;
 	}
 
 	/**
@@ -92,7 +92,7 @@ class Graphic
 	public function setEntity(entity:Entity)
 	{
 		_entity = entity;
-		layer = entity != null ? entity.layer : HXP.BASELAYER;
+		layer = entity != null ? entity.layer : 0;
 	}
 
 	/**

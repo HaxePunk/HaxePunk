@@ -6,6 +6,7 @@ import flash.geom.Point;
 import com.haxepunk.Entity;
 import com.haxepunk.Tweener;
 import flash.geom.Rectangle;
+import haxe.ds.IntMap;
 
 /**
  * Updated by Engine, main game container that holds all currently active Entities.
@@ -34,7 +35,7 @@ class Scene extends Tweener
 		_count = 0;
 
 		_layerList = new Array<Int>();
-		_layerCount = new Array<Int>();
+		_layerCount = new Map<Int, Int>();
 		_sprite = new Sprite();
 
 		_add = new Array<Entity>();
@@ -218,10 +219,10 @@ class Scene extends Tweener
 	 * @param	layer		Layer of the Entity.
 	 * @return	The Entity that was added.
 	 */
-	public function addGraphic(graphic:Graphic, layer:Int = HXP.BASELAYER, x:Float = 0, y:Float = 0):Entity
+	public function addGraphic(graphic:Graphic, layer:Int = 0, x:Float = 0, y:Float = 0):Entity
 	{
 		var e:Entity = new Entity(x, y, graphic);
-		if (layer != HXP.BASELAYER) e.layer = layer;
+		e.layer = layer;
 		e.active = false;
 		return add(e);
 	}
@@ -1164,7 +1165,7 @@ class Scene extends Tweener
 			// Append entity to existing layer.
 			fe._renderNext = f;
 			f._renderPrev = e;
-			_layerCount[fe._layer] ++;
+			_layerCount[fe._layer] = _layerCount[fe._layer] + 1;
 		}
 		else
 		{
@@ -1202,7 +1203,15 @@ class Scene extends Tweener
 			}
 		}
 		if (e.graphic != null) e.graphic.destroy();
-		_layerCount[fe._layer] --;
+		var newLayerCount:Int = _layerCount[fe._layer] - 1;
+		if (newLayerCount > 0) {
+			_layerCount[fe._layer] = newLayerCount;
+		} else {
+			// Remove layer from maps if it contains 0 entities.
+			_layerCount.remove(fe._layer);
+			_renderFirst.remove(fe._layer);
+			_renderLast.remove(fe._layer);
+		}
 		fe._renderNext = fe._renderPrev = null;
 	}
 
@@ -1317,7 +1326,7 @@ class Scene extends Tweener
 	private var _sprite:Sprite;
 	private var _layerSort:Bool;
 	private var _layerList:Array<Int>;
-	private var _layerCount:Array<Int>;
+	private var _layerCount:Map<Int, Int>;
 	private var _renderFirst:Map<Int,FriendEntity>;
 	private var _renderLast:Map<Int,FriendEntity>;
 
