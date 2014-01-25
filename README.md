@@ -13,6 +13,7 @@ A Haxe port of the [FlashPunk](http://useflashpunk.net) AS3 library. There are a
 ## Release build
 
 First, make sure you have [Haxe](http://haxe.org) 3.0 or higher. Then execute the following commands below to get started with your first HaxePunk project.
+If you are using Haxe 2 the last version supporting it was [v2.3.0](https://github.com/HaxePunk/HaxePunk/releases/tag/v2.3.0) `haxelib install HaxePunk 2.3.0`.
 
 ```bash
 haxelib install HaxePunk
