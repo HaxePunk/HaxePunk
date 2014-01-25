@@ -25,6 +25,7 @@ import flash.text.TextFormatAlign;
 
 import haxe.Log;
 import haxe.PosInfos;
+import haxe.ds.IntMap;
 
 enum TraceCapture
 {
@@ -88,7 +89,7 @@ class Console
 
 		LOG = new Array<String>();
 
-		LAYER_LIST  = new Array<Int>();
+		LAYER_LIST  = new IntMap<Int>();
 		ENTITY_LIST = new Array<Entity>();
 		SCREEN_LIST = new Array<Entity>();
 		SELECT_LIST = new Array<Entity>();
@@ -155,7 +156,7 @@ class Console
 			WATCH_LIST.push(properties[0]);
 		}
 	}
-	
+
 	/**
 	 * Show the console.
 	 */
@@ -167,7 +168,7 @@ class Console
 			_visible = true;
 		}
 	}
-	
+
 	/**
 	 * Hide the console.
 	 */
@@ -182,14 +183,14 @@ class Console
 
 	/**
 	 * Enables the console.
-	 * 
+	 *
 	 * @param	trace_capture	Option to capture trace in HaxePunk.
 	 * @param	toggleKey		Key used to toggle the console, tilde (~) by default.
 	 */
 	public function enable(?trace_capture:TraceCapture, toggleKey=Key.TILDE)
 	{
 		this.toggleKey = toggleKey;
-		
+
 		// Quit if the console is already enabled.
 		if (_enabled) return;
 
@@ -261,7 +262,7 @@ class Console
 		_fpsRead.graphics.drawRoundRect(-20, -20, (big ? 220 : 120), 40, 20, 20);
 #end
 
-		//_sprite.addChild(_layerList);
+		_sprite.addChild(_layerList);
 
 		// The frame timing text.
 		if (big) _sprite.addChild(_fpsInfo);
@@ -360,8 +361,8 @@ class Console
 		paused = false;
 
 		if (trace_capture != TraceCapture.No)
-			Log.trace = traceLog;		
-		
+			Log.trace = traceLog;
+
 		LOG.push("-- HaxePunk v" + HXP.VERSION + " --");
 		if (_enabled && _sprite.visible) updateLog();
 	}
@@ -421,6 +422,8 @@ class Console
 			// While in debug mode.
 			if (_debug)
 			{
+				updateEntityLists(HXP.scene.count != ENTITY_LIST.length);
+
 				// While the game is paused.
 				if (HXP.engine.paused)
 				{
@@ -464,13 +467,10 @@ class Console
 							if (Input.check("_ARROWS")) updateKeyPanning();
 						}
 					}
-
-					_layerList.update();
 				}
 				else
 				{
 					// Update info while the game runs.
-					updateEntityLists(HXP.scene.count != ENTITY_LIST.length);
 					renderEntities();
 					updateFPSRead();
 					updateEntityCount();
@@ -682,28 +682,26 @@ class Console
 			sy:Float = HXP.screen.fullScaleY,
 			e:Entity;
 
-		if (Input.check(Key.CONTROL))
-		{
-			// Append selected Entitites with new selections.
-			for (e in SCREEN_LIST)
-			{
-				if (HXP.indexOf(SELECT_LIST, e) < 0)
-				{
-					HXP.rect.x = (e.x - HXP.camera.x) * sx - 3;
-					HXP.rect.y = (e.y - HXP.camera.y) * sy - 3;
-					if (rect.intersects(HXP.rect)) SELECT_LIST.push(e);
-				}
-			}
-		}
-		else
+		if (!Input.check(Key.CONTROL))
 		{
 			// Replace selections with new selections.
 			HXP.clear(SELECT_LIST);
-			for (e in SCREEN_LIST)
+		}
+		// Append/Remove selected Entitites.
+		for (e in SCREEN_LIST)
+		{
+			HXP.rect.x = (e.x - HXP.camera.x) * sx - 3;
+			HXP.rect.y = (e.y - HXP.camera.y) * sy - 3;
+			if (rect.intersects(HXP.rect))
 			{
-				HXP.rect.x = (e.x - HXP.camera.x) * sx - 3;
-				HXP.rect.y = (e.y - HXP.camera.y) * sy - 3;
-				if (rect.intersects(HXP.rect)) SELECT_LIST.push(e);
+				if (HXP.indexOf(SELECT_LIST, e) < 0)
+				{
+					SELECT_LIST.push(e);
+				}
+				else
+				{
+					SELECT_LIST.remove(e);
+				}
 			}
 		}
 	}
@@ -711,9 +709,15 @@ class Console
 	/** @private Selects all entities on screen. */
 	private function selectAll()
 	{
-		var e:Entity;
+		// capture number selected before clearing selection list
+		var numSelected = SELECT_LIST.length;
 		HXP.clear(SELECT_LIST);
-		for (e in SCREEN_LIST) SELECT_LIST.push(e);
+
+		// if the number of entities on screen is the same as selected, leave the list cleared
+		if (numSelected != SCREEN_LIST.length)
+		{
+			for (e in SCREEN_LIST) SELECT_LIST.push(e);
+		}
 		renderEntities();
 	}
 
@@ -754,23 +758,30 @@ class Console
 		if (fetchList)
 		{
 			HXP.clear(ENTITY_LIST);
-			HXP.clear(LAYER_LIST);
 			HXP.scene.getAll(ENTITY_LIST);
+
+			for (key in LAYER_LIST.keys())
+			{
+				LAYER_LIST.set(key, 0);
+			}
 		}
 
 		// Update the list of Entities on screen.
 		HXP.clear(SCREEN_LIST);
 		for (e in ENTITY_LIST)
 		{
-			if (e.onCamera)
+			var layer = e.layer;
+			if (e.onCamera && HXP.scene.layerVisible(layer))
 				SCREEN_LIST.push(e);
 
-			if (HXP.indexOf(LAYER_LIST, e.layer) < 0)
-				LAYER_LIST.push(e.layer);
+			if (fetchList)
+				LAYER_LIST.set(layer, LAYER_LIST.exists(layer) ? LAYER_LIST.get(layer) + 1 : 1);
 		}
-		// sort the layers
-		LAYER_LIST.sort(function (a:Int, b:Int):Int { return a - b; });
-		_layerList.set(LAYER_LIST);
+
+		if (fetchList)
+		{
+			_layerList.set(LAYER_LIST);
+		}
 	}
 
 	/** @private Renders the Entities positions and hitboxes. */
@@ -1132,7 +1143,7 @@ class Console
 	private var LOG:Array<String>;
 
 	// Entity lists.
-	private var LAYER_LIST:Array<Int>;
+	private var LAYER_LIST:IntMap<Int>;
 	private var ENTITY_LIST:Array<Entity>;
 	private var SCREEN_LIST:Array<Entity>;
 	private var SELECT_LIST:Array<Entity>;

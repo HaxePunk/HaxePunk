@@ -1,15 +1,15 @@
 package com.haxepunk.debug;
 
 import com.haxepunk.utils.Input;
-import com.haxepunk.graphics.atlas.Atlas;
 
-import flash.display.DisplayObject;
+import flash.display.Bitmap;
 import flash.display.Sprite;
 import flash.events.MouseEvent;
 import flash.geom.Rectangle;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
+import haxe.ds.IntMap;
 
 #if nme
 import nme.Assets;
@@ -17,18 +17,70 @@ import nme.Assets;
 import openfl.Assets;
 #end
 
-class Label extends TextField
+class LayerLabel extends Sprite
 {
-	public var layer(default, set_layer):Int;
-	private function set_layer(value:Int):Int
+
+	public var layer(default, null):Int;
+
+	public function new(layer:Int, textFormat:TextFormat)
 	{
-		if (layer != value)
-		{
-			layer = value;
-			text = "Layer: " + value;
-		}
+		super();
+
+		active = new Bitmap(Assets.getBitmapData("gfx/debug/console_visible.png"));
+		inactive = new Bitmap(Assets.getBitmapData("gfx/debug/console_hidden.png"));
+
+		label = new TextField();
+		label.defaultTextFormat = textFormat;
+		label.selectable = false;
+		label.width = 150;
+		label.height = 14;
+
+		label.x = 24;
+		label.y = 2;
+#if flash
+		label.embedFonts = true;
+#end
+
+		this.x = 6;
+		this.layer = layer;
+		this.count = 0;
+		this.display = true;
+
+		addChild(active);
+		addChild(label);
+
+		addEventListener("click", onClickLayer, true);
+	}
+
+	public var count(never, set):Int;
+	private function set_count(value:Int):Int
+	{
+		label.text = 'Layer $layer [$value]';
 		return value;
 	}
+
+	private function onClickLayer(e:MouseEvent)
+	{
+		display = !display;
+		if (display)
+		{
+			removeChild(inactive);
+			addChild(active);
+		}
+		else
+		{
+			removeChild(active);
+			addChild(inactive);
+		}
+		// HXP.console.updateEntityLists(false);
+		HXP.scene.showLayer(layer, display);
+		HXP.engine.render();
+	}
+
+	private var display:Bool;
+	private var active:Bitmap;
+	private var inactive:Bitmap;
+	private var label:TextField;
 }
 
 class LayerList extends Sprite
@@ -36,7 +88,6 @@ class LayerList extends Sprite
 	public function new(width:Int=250, height:Int=400)
 	{
 		super();
-		_velocity = 0;
 
 		var mask = new Sprite();
 		mask.graphics.beginFill(0);
@@ -44,8 +95,6 @@ class LayerList extends Sprite
 		mask.graphics.endFill();
 		addChild(mask);
 		this.mask = mask;
-
-		addEventListener('click', onClick, true);
 
 		graphics.beginFill(0, .15);
 		graphics.drawRect(0, 0, width, height);
@@ -58,97 +107,45 @@ class LayerList extends Sprite
 		}
 		_textFormat = new TextFormat(font.fontName, 16, 0xFFFFFF);
 
-		_removeList = new Array<DisplayObject>();
+		_labels = new IntMap<LayerLabel>();
 	}
 
-	public function set(list:Array<Int>)
+	public function set(list:IntMap<Int>)
 	{
-		var i = 0, child:DisplayObject;
-
-		// try to reuse previous children
-		if (numChildren > 0)
+		// remove added children
+		for (label in _labels)
 		{
-			for (ci in 0...numChildren)
-			{
-				child = getChildAt(ci);
-				if (Std.is(child, Label))
-				{
-					var label = cast(child, Label);
-					if (i < list.length)
-					{
-						label.layer = list[i];
-						i += 1;
-					}
-					else
-					{
-						_removeList.push(child);
-					}
-				}
-			}
-
-			for (child in _removeList)
-			{
-				removeChild(child);
-				_removeList.remove(child);
-			}
+			removeChild(label);
 		}
 
-		for (i in i...list.length)
+		// filter and sort layers
+		var keys = new Array<Int>();
+		for (key in list.keys())
 		{
-			var tf = new Label();
-			addChild(tf);
-			tf.defaultTextFormat = _textFormat;
-			tf.selectable = false;
-			tf.width = width;
-			tf.height = 20;
-			tf.x = 6;
-			tf.y = i * 25 + 5;
-#if flash
-			tf.embedFonts = true;
-#end
-			tf.layer = list[i];
+			if (list.get(key) > 0)
+				keys.push(key);
+		}
+		keys.sort(function(a:Int, b:Int):Int { return a - b; });
+
+		var i = 0;
+		for (layer in keys)
+		{
+			var label:LayerLabel;
+			if (_labels.exists(layer))
+			{
+				label = _labels.get(layer);
+			}
+			else
+			{
+				label = new LayerLabel(layer, _textFormat);
+				_labels.set(layer, label);
+			}
+			label.count = list.get(layer);
+			label.y = i++ * 20 + 5;
+			addChild(label);
 		}
 	}
 
-	private function onClick(e:MouseEvent)
-	{
-		var label = cast(e.target, Label);
-		var visible = Atlas.toggleLayerVisibility(label.layer);
-		if (visible) {
-			label.alpha = 1;
-		} else {
-			label.alpha = 0.4;
-		}
-	}
-
-	public function update()
-	{
-		_velocity += Input.mouseWheelDelta;
-
-		// there is probably a better way to do this
-		// this.y += _velocity;
-		// mask.y -= _velocity;
-
-		if (_velocity < 0)
-		{
-			_velocity += DRAG;
-			if (_velocity > 0)
-			{
-				_velocity = 0;
-			}
-		}
-		else if (_velocity > 0)
-		{
-			_velocity -= DRAG;
-			if (_velocity < 0)
-			{
-				_velocity = 0;
-			}
-		}
-	}
-
-	private var _removeList:Array<DisplayObject>;
-	private var _velocity:Float;
+	private var _labels:IntMap<LayerLabel>;
 	private var _textFormat:TextFormat;
-	private static inline var DRAG:Float = 0.8;
 }

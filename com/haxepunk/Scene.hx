@@ -42,6 +42,7 @@ class Scene extends Tweener
 		_recycle = new Array<Entity>();
 
 #if haxe3
+		_layerDisplay = new Map<Int,Bool>();
 		_renderFirst = new Map<Int,FriendEntity>();
 		_renderLast = new Map<Int,FriendEntity>();
 		_typeFirst = new Map<String,FriendEntity>();
@@ -51,6 +52,7 @@ class Scene extends Tweener
 		_recycled = new Map<String,Entity>();
 		_entityNames = new Map<String,Entity>();
 #else
+		_layerDisplay = new IntHash<Bool>();
 		_renderFirst = new IntHash<FriendEntity>();
 		_renderLast = new IntHash<FriendEntity>();
 		_typeFirst = new Hash<FriendEntity>();
@@ -106,6 +108,32 @@ class Scene extends Tweener
 	}
 
 	/**
+	 * Toggles the visibility of a layer
+	 * @param layer the layer to show/hide
+	 * @param show whether to show the layer (default: true)
+	 */
+	public inline function showLayer(layer:Int, show:Bool=true):Void
+	{
+		_layerDisplay.set(layer, show);
+	}
+
+	/**
+	 * Checks if a layer is visible or not
+	 */
+	public inline function layerVisible(layer:Int):Bool
+	{
+		return !_layerDisplay.exists(layer) || _layerDisplay.get(layer);
+	}
+
+	/**
+	 * Sorts layer from highest value to lowest
+	 */
+	private function layerSort(a:Int, b:Int):Int
+	{
+		return b - a;
+	}
+
+	/**
 	 * Performed by the game loop, renders all contained Entities.
 	 * If you override this to give your Scene render code, remember
 	 * to call super.render() or your Entities will not be rendered.
@@ -124,11 +152,11 @@ class Scene extends Tweener
 
 		// render the entities in order of depth
 		var e:Entity,
-			fe:FriendEntity,
-			i:Int = _layerList.length;
-		while (i-- > 0)
+			fe:FriendEntity;
+		for (layer in _layerList)
 		{
-			fe = _renderLast.get(_layerList[i]);
+			if (!layerVisible(layer)) continue;
+			fe = _renderLast.get(layer);
 			while (fe != null)
 			{
 				e = cast(fe, Entity);
@@ -1122,16 +1150,6 @@ class Scene extends Tweener
 		}
 	}
 
-	private function layerSort(a:Int, b:Int):Int
-	{
-		if (a > b)
-			return 1;
-		else if (a < b)
-			return -1;
-
-		return 0;
-	}
-
 	/** @private Adds Entity to the update list. */
 	private function addUpdate(e:Entity)
 	{
@@ -1330,6 +1348,7 @@ class Scene extends Tweener
 	private var _layerList:Array<Int>;
 	private var _layerCount:Array<Int>;
 #if haxe3
+	private var _layerDisplay:Map<Int,Bool>;
 	private var _renderFirst:Map<Int,FriendEntity>;
 	private var _renderLast:Map<Int,FriendEntity>;
 
@@ -1339,6 +1358,7 @@ class Scene extends Tweener
 	private var _recycled:Map<String,Entity>;
 	private var _entityNames:Map<String,Entity>;
 #else
+	private var _layerDisplay:IntHash<Bool>;
 	private var _renderFirst:IntHash<FriendEntity>;
 	private var _renderLast:IntHash<FriendEntity>;
 

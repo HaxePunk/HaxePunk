@@ -8,9 +8,5 @@
 	"releasenote": "See CHANGELOG",
 	"contributors": ["heardtheword", "ibilon"],
 	"dependencies": {
-		"openfl": "1.2.2",
-		"openfl-bitfive": "1.0.5",
-		"lime": "0.9.3",
-		"openfl-html5-dom": "1.2.0"
 	}
 }

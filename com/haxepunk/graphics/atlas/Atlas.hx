@@ -74,22 +74,5 @@ class Atlas
 	// public static var count(get_count, never):Int;
 	// private static inline function get_count():Int { return _atlases.length; }
 
-	/**
-	 * Toggle the visibility of a layer.
-	 *
-	 * @param	layer	The layer to toggle.
-	 *
-	 * @return	The new visibility of the layer.
-	 */
-	public static function toggleLayerVisibility(layer:Int):Bool
-	{
-		// var sprite = _sprites.get(layer);
-		// if (sprite != null)
-		// {
-		// 	return sprite.visible = !sprite.visible;
-		// }
-		return false;
-	}
-
 	private var _data:AtlasData;
 }
