@@ -45,6 +45,7 @@ class Console
 	// Initialize variables
 	private function init()
 	{
+		// Console display objects.
 		_sprite = new Sprite();
 		var font = Assets.getFont("font/04B_03__.ttf");
 		if (font == null)
@@ -54,6 +55,7 @@ class Console
 		_format = new TextFormat(font.fontName, 8, 0xFFFFFF);
 		_back = new Bitmap();
 
+		// FPS panel information.
 		_fpsRead = new Sprite();
 		_fpsReadText = new TextField();
 		_fpsInfo = new Sprite();
@@ -63,36 +65,41 @@ class Console
 
 		_layerList = new LayerList();
 
+		// Output panel information.
 		_logRead = new Sprite();
 		_logReadText0 = new TextField();
 		_logReadText1 = new TextField();
 		_logScroll = 0;
 		_logLines = 33;
 
+		// Entity count panel information.
 		_entRead = new Sprite();
 		_entReadText = new TextField();
 
+		// Debug panel information.
 		_debRead = new Sprite();
 		_debReadText0 = new TextField();
 		_debReadText1 = new TextField();
 
+		// Button panel information.
 		_butRead = new Sprite();
 
+		// Entity selection information.
 		_entScreen = new Sprite();
 		_entSelect = new Sprite();
 		_entRect = new Rectangle();
 
+		// Log information.
 		LOG = new Array<String>();
 
+		// Entity lists.
 		LAYER_LIST  = new Array<Int>();
 		ENTITY_LIST = new Array<Entity>();
 		SCREEN_LIST = new Array<Entity>();
 		SELECT_LIST = new Array<Entity>();
 
-		WATCH_LIST = new Array<String>();
-		WATCH_LIST.push("x");
-		WATCH_LIST.push("y");
-		WATCH_LIST.push("layer");
+		// Watch information.
+		WATCH_LIST = ["x", "y"];
 	}
 
 	private function traceLog(v:Dynamic, ?infos:PosInfos)
@@ -208,7 +215,7 @@ class Console
 		HXP.stage.addChild(_sprite);
 
 		// Used to determine some text sizing.
-		var big:Bool = width >= 480;
+		var big:Bool = width >= BIG_WIDTH_THRESHOLD;
 
 		// The transparent FlashPunk logo overlay bitmap.
 		_sprite.addChild(_back);
@@ -226,14 +233,15 @@ class Console
 #end
 		_entReadText.width = 100;
 		_entReadText.height = 20;
-
+		_entRead.x = width - _entReadText.width;
+		
 		// The entity count panel.
 		_entRead.graphics.clear();
 		_entRead.graphics.beginFill(0, .5);
 #if flash
 		_entRead.graphics.drawRoundRectComplex(0, 0, _entReadText.width, 20, 0, 0, 20, 0);
 #else
-		_entRead.graphics.drawRoundRect(0, -20, _entReadText.width + 40, 40, 20, 20);
+		_entRead.graphics.drawRoundRect(0, -20, _entReadText.width + 20, 40, 40, 40);
 #end
 
 		// The FPS text.
@@ -252,9 +260,9 @@ class Console
 		_fpsRead.graphics.clear();
 		_fpsRead.graphics.beginFill(0, .75);
 #if flash
-		_fpsRead.graphics.drawRoundRectComplex(0, 0, big ? 200 : 100, 20, 0, 0, 0, 20);
+		_fpsRead.graphics.drawRoundRectComplex(0, 0, big ? 320 : 160, 20, 0, 0, 0, 20);
 #else
-		_fpsRead.graphics.drawRoundRect(-20, -20, (big ? 220 : 120), 40, 20, 20);
+		_fpsRead.graphics.drawRoundRect(-20, -20, big ? 320 + 20 : 160 + 20, 40, 40, 40);
 #end
 
 		//_sprite.addChild(_layerList);
@@ -273,15 +281,17 @@ class Console
 		_fpsInfoText0.height = _fpsInfoText1.height = 20;
 		_fpsInfo.x = 75;
 		_fpsInfoText1.x = 60;
-
+		_fpsInfo.width = _fpsInfoText0.width + _fpsInfoText1.width;
+		
+		// The memory usage
 #if !js
 		_fpsRead.addChild(_memReadText);
 		_memReadText.defaultTextFormat = format(16);
 		_memReadText.embedFonts = true;
 		_memReadText.width = 110;
 		_memReadText.height = 20;
-		_memReadText.x = 2;
-		_memReadText.y = _fpsInfo.height + 2;
+		_memReadText.x = (big) ? _fpsInfo.x + _fpsInfoText0.width + _fpsInfoText1.width + 5 : _fpsInfo.x + 9;
+		_memReadText.y = 1;
 #end
 
 		// The output log text.
@@ -305,8 +315,9 @@ class Console
 		_logBar = new Rectangle(8, 24, 16, _logHeight - 8);
 		_logBarGlobal = _logBar.clone();
 		_logBarGlobal.y += 40;
-		_logLines = Std.int(_logHeight / (big ? 16.5 : 8.5));
-
+		if (big) _logLines = Std.int(_logHeight / 16.5);
+		else _logLines = Std.int(_logHeight / 8.5);
+	
 		// The debug text.
 		_sprite.addChild(_debRead);
 		_debRead.addChild(_debReadText0);
@@ -342,9 +353,9 @@ class Console
 		_butRead.graphics.clear();
 		_butRead.graphics.beginFill(0, .75);
 #if flash
-		_butRead.graphics.drawRoundRectComplex( -20, 0, 100, 20, 0, 0, 20, 20);
+		_butRead.graphics.drawRoundRectComplex(-20, 0, 100, 20, 0, 0, 20, 20);
 #else
-		_butRead.graphics.drawRoundRect(-20, -20, 100, 40, 20, 20);
+		_butRead.graphics.drawRoundRect(-20, -20, 100, 40, 40, 40);
 #end
 		debug = true;
 
@@ -841,7 +852,11 @@ class Console
 #if flash
 			_logRead.graphics.drawRoundRectComplex(0, 0, _logReadText0.width, 20, 0, 20, 0, 0);
 #else
-			_logRead.graphics.drawRect(0, 0, _logReadText0.width, 20);
+			_logRead.graphics.drawRect(0, 0, _logReadText0.width - 20, 20);
+			_logRead.graphics.moveTo(_logReadText0.width, 20);
+			_logRead.graphics.lineTo(_logReadText0.width - 20, 20);
+			_logRead.graphics.lineTo(_logReadText0.width - 20, 0);
+			_logRead.graphics.curveTo(_logReadText0.width, 0, _logReadText0.width, 20);
 #end
 			_logRead.graphics.drawRect(0, 20, width, _logHeight);
 
@@ -850,7 +865,7 @@ class Console
 #if flash
 			_logRead.graphics.drawRoundRectComplex(_logBar.x, _logBar.y, _logBar.width, _logBar.height, 8, 8, 8, 8);
 #else
-			_logRead.graphics.drawRoundRect(_logBar.x, _logBar.y, _logBar.width, _logBar.height, 8, 8);
+			_logRead.graphics.drawRoundRect(_logBar.x, _logBar.y, _logBar.width, _logBar.height, 16, 16);
 #end
 
 			// If the log has more lines than the display limit.
@@ -862,7 +877,7 @@ class Console
 #if flash
 				_logRead.graphics.drawRoundRectComplex(_logBar.x + 2, y, 12, 12, 6, 6, 6, 6);
 #else
-				_logRead.graphics.drawRoundRect(_logBar.x + 2, y, 12, 12, 6, 6);
+				_logRead.graphics.drawRoundRect(_logBar.x + 2, y, 12, 12, 12, 12);
 #end
 			}
 
@@ -900,7 +915,11 @@ class Console
 #if flash
 			_logRead.graphics.drawRoundRectComplex(0, 0, _logReadText0.width, 20, 0, 20, 0, 0);
 #else
-			_logRead.graphics.drawRect(0, 0, _logReadText0.width, 20);
+			_logRead.graphics.drawRect(0, 0, _logReadText0.width - 20, 20);
+			_logRead.graphics.moveTo(_logReadText0.width, 20);
+			_logRead.graphics.lineTo(_logReadText0.width - 20, 20);
+			_logRead.graphics.lineTo(_logReadText0.width - 20, 0);
+			_logRead.graphics.curveTo(_logReadText0.width, 0, _logReadText0.width, 20);
 #end
 			_logRead.graphics.drawRect(0, 20, width, 20);
 
@@ -932,7 +951,7 @@ class Console
 			"System: " + Std.string(HXP._systemTime) + "ms\n" +
 			"Game: " + Std.string(HXP._gameTime) + "ms";
 		_memReadText.text =
-			"Mem: " + HXP.round(System.totalMemory / 1024 / 1024, 2) + "MB";
+			(width >= BIG_WIDTH_THRESHOLD ? "Mem: " : "") + HXP.round(System.totalMemory / 1024 / 1024, 2) + "MB";
 	}
 
 	/** @private Update the debug panel text. */
@@ -940,7 +959,7 @@ class Console
 	{
 		var str:String;
 		// Find out the screen size and set the text.
-		var big:Bool = width >= 480;
+		var big:Bool = width >= BIG_WIDTH_THRESHOLD;
 
 		// Update the Debug read text.
 		var s:String =
@@ -985,8 +1004,12 @@ class Console
 		_debRead.graphics.drawRoundRectComplex(0, 0, _debReadText0.width, 20, 0, 20, 0, 0);
 		_debRead.graphics.drawRoundRectComplex(0, 20, _debReadText1.width + 20, height - _debRead.y - 20, 0, 20, 0, 0);
 #else
-		_debRead.graphics.drawRect(0, 0, _debReadText0.width, 20);
-		_debRead.graphics.drawRect(0, 20, _debReadText1.width + 20, height - _debRead.y - 20);
+		_debRead.graphics.drawRect(0, 0, _debReadText0.width - 20, 20);
+		_debRead.graphics.moveTo(_debReadText0.width, 20);
+		_debRead.graphics.lineTo(_debReadText0.width - 20, 20);
+		_debRead.graphics.lineTo(_debReadText0.width - 20, 0);
+		_debRead.graphics.curveTo(_debReadText0.width, 0, _debReadText0.width, 20);
+		_debRead.graphics.drawRoundRect(-20, 20, _debReadText1.width + 40, height - _debRead.y, 40, 40);
 #end
 	}
 
@@ -1000,7 +1023,7 @@ class Console
 	private function updateButtons()
 	{
 		// Button visibility.
-		_butRead.x = _fpsInfo.x + _fpsInfo.width + Std.int((_entRead.x - (_fpsInfo.x + _fpsInfo.width)) / 2) - 30;
+		_butRead.x = (width >= BIG_WIDTH_THRESHOLD ? _fpsInfo.x + _fpsInfoText0.width + _fpsInfoText1.width + Std.int((_entRead.x - (_fpsInfo.x + _fpsInfoText0.width + _fpsInfoText1.width)) / 2) - 30 : 160 + 20);
 		_butDebug.visible = _paused && !_debug;
 		_butOutput.visible = _paused && _debug;
 		_butPlay.visible = HXP.engine.paused;
@@ -1135,4 +1158,8 @@ class Console
 
 	// Watch information.
 	private var WATCH_LIST:Array<String>;
+	
+	// Switch to small text in debug if console width > this threshold.
+	private static inline var BIG_WIDTH_THRESHOLD:Int = 420;
+	
 }
