@@ -1,25 +1,14 @@
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
-#if haxe3
 import sys.FileSystem;
 import sys.io.File;
 import sys.io.FileInput;
 import sys.io.FileOutput;
 import haxe.io.Path;
 import haxe.zip.Reader;
-#else
-import neko.FileSystem;
-import neko.io.File;
-import neko.io.FileInput;
-import neko.io.FileOutput;
-import neko.io.Path;
-import neko.zip.Reader;
-import neko.Sys;
-#end
 
 class Project
 {
-
 	public var projectName:String;
 	public var projectClass:String;
 	public var width:String;
