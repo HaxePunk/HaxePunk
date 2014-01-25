@@ -11,11 +11,7 @@ import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
 
-#if nme
-import nme.Assets;
-#else
 import openfl.Assets;
-#end
 
 class Label extends TextField
 {

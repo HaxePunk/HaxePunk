@@ -9,11 +9,7 @@ import flash.ui.MultitouchInputMode;
 import com.haxepunk.HXP;
 
 #if (cpp || neko)
-	#if nme
-	import nme.events.JoystickEvent;
-	#else
 	import openfl.events.JoystickEvent;
-	#end
 #end
 
 class Input
@@ -232,13 +228,8 @@ class Input
 		}
 	}
 
-#if haxe3
 	public static var touches(get_touches, never):Map<Int,Touch>;
 	private static inline function get_touches():Map<Int,Touch> { return _touches; }
-#else
-	public static var touches(get_touches, never):IntHash<Touch>;
-	private static inline function get_touches():IntHash<Touch> { return _touches; }
-#end
 
 	/**
 	 * Returns a joystick object (creates one if not connected)
@@ -303,7 +294,7 @@ class Input
 				HXP.stage.addEventListener(TouchEvent.TOUCH_END, onTouchEnd);
 			}
 
-#if ((nme || openfl) && (cpp || neko))
+#if (openfl && (cpp || neko))
 			HXP.stage.addEventListener(JoystickEvent.AXIS_MOVE, onJoyAxisMove);
 			HXP.stage.addEventListener(JoystickEvent.BALL_MOVE, onJoyBallMove);
 			HXP.stage.addEventListener(JoystickEvent.BUTTON_DOWN, onJoyButtonDown);
@@ -390,7 +381,7 @@ class Input
 		if (rightMouseReleased) rightMouseReleased = false;
 	#end
 		
-#if ((nme || openfl) && (cpp || neko))
+#if (openfl && (cpp || neko))
 		for (joystick in _joysticks) joystick.update();
 #end
 		if (multiTouchSupported)
@@ -535,7 +526,7 @@ class Input
 		_touchNum -= 1;
 	}
 
-#if ((nme || openfl) && (cpp || neko))
+#if (openfl && (cpp || neko))
 
 	private static function onJoyAxisMove(e:JoystickEvent)
 	{
@@ -592,15 +583,8 @@ class Input
 	private static var _release:Array<Int> = new Array<Int>();
 	private static var _releaseNum:Int = 0;
 	private static var _mouseWheelDelta:Int = 0;
-#if haxe3
 	private static var _touches:Map<Int,Touch> = new Map<Int,Touch>();
 	private static var _joysticks:Map<Int,Joystick> = new Map<Int,Joystick>();
 	private static var _control:Map<String,Array<Int>> = new Map<String,Array<Int>>();
 	private static var _nativeCorrection:Map<String, Int> = new Map<String, Int>();
-#else
-	private static var _touches:IntHash<Touch> = new IntHash<Touch>();
-	private static var _joysticks:IntHash<Joystick> = new IntHash<Joystick>();
-	private static var _control:Hash<Array<Int>> = new Hash<Array<Int>>();
-	private static var _nativeCorrection:Hash<Int> = new Hash<Int>();
-#end
 }

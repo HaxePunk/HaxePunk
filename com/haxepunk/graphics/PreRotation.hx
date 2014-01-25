@@ -124,13 +124,8 @@ class PreRotation extends Image
 	private var _current:Int;
 
 	// Global information.
-#if haxe3
 	private static var _rotated:Map<String,BitmapData> = new Map<String,BitmapData>();
 	private static var _sizes:Map<String,Int> = new Map<String,Int>();
-#else
-	private static var _rotated:Hash<BitmapData> = new Hash<BitmapData>();
-	private static var _sizes:Hash<Int> = new Hash<Int>();
-#end
 
 	private static inline var _MAX_WIDTH:Int = 3000;
 	private static inline var _MAX_HEIGHT:Int = 4000;

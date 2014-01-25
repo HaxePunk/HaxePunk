@@ -19,11 +19,7 @@ class Data
 	public static function load(file:String = "")
 	{
 		var data:Dynamic = loadData(file);
-#if haxe3
 		_data = new Map<String,Dynamic>();
-#else
-		_data = new Hash<Dynamic>();
-#end
 		for (str in Reflect.fields(data)) _data.set(str, Reflect.field(data, str));
 	}
 
@@ -115,11 +111,7 @@ class Data
 	// Data information.
 	private static var _shared:SharedObject;
 	private static var _dir:String;
-#if haxe3
 	private static var _data:Map<String,Dynamic> = new Map<String,Dynamic>();
-#else
-	private static var _data:Hash<Dynamic> = new Hash<Dynamic>();
-#end
 	private static inline var PREFIX:String = "HaxePunk";
 	private static inline var DEFAULT_FILE:String = "_file";
 	private static inline var SIZE:Int = 10000;

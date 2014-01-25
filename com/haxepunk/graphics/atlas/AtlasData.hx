@@ -7,11 +7,7 @@ import flash.display.Sprite;
 import flash.geom.Rectangle;
 import flash.geom.Point;
 import flash.geom.Matrix;
-#if nme
-import nme.display.Tilesheet;
-#else
 import openfl.display.Tilesheet;
-#end
 
 class AtlasData
 {
@@ -357,10 +353,6 @@ class AtlasData
 
 	private static var _scene:Scene;
 	private static var _lastAtlas:AtlasData;
-#if haxe3
 	private static var _dataPool:Map<String,AtlasData> = new Map<String,AtlasData>();
-#else
-	private static var _dataPool:Hash<AtlasData> = new Hash<AtlasData>();
-#end
 	private static var _atlases:Array<AtlasData> = new Array<AtlasData>();
 }

@@ -4,12 +4,7 @@ import flash.events.Event;
 import flash.media.Sound;
 import flash.media.SoundChannel;
 import flash.media.SoundTransform;
-
-#if nme
-import nme.Assets;
-#else
 import openfl.Assets;
-#end
 
 typedef AudioCompleteCallback = Void -> Void;
 
@@ -345,13 +340,7 @@ class Sfx
 	private var _looping:Bool;
 
 	// Stored Sound objects.
-#if haxe3
 	private static var _sounds:Map<String,Sound> = new Map<String,Sound>();
 	private static var _typePlaying:Map<String,Array<Sfx>> = new Map<String,Array<Sfx>>();
 	private static var _typeTransforms:Map<String,SoundTransform> = new Map<String,SoundTransform>();
-#else
-	private static var _sounds:Hash<Sound> = new Hash<Sound>();
-	private static var _typePlaying:Hash<Array<Sfx>> = new Hash<Array<Sfx>>();
-	private static var _typeTransforms:Hash<SoundTransform> = new Hash<SoundTransform>();
-#end
 }

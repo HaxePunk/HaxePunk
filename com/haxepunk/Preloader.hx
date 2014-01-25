@@ -17,11 +17,7 @@ import flash.events.Event;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
-#if nme
-import nme.display.Tilesheet;
-#else
 import openfl.display.Tilesheet;
-#end
 
 @:bitmap("assets/graphics/preloader/haxepunk.png")
 class HaxePunkLogo extends BitmapData {}
