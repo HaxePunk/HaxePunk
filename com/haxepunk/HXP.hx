@@ -28,6 +28,7 @@ import com.haxepunk.debug.Console;
 import com.haxepunk.tweens.misc.Alarm;
 import com.haxepunk.tweens.misc.MultiVarTween;
 import com.haxepunk.utils.Ease;
+import com.haxepunk.utils.HaxelibInfo;
 
 import haxe.CallStack;
 import haxe.EnumFlags;
@@ -42,26 +43,7 @@ class HXP
 	 * The HaxePunk version.
 	 * Format: Major.Minor.Patch
 	 */
-	public static var VERSION(get_VERSION, never):String;
-	private static inline function get_VERSION() : String
-	{
-		return VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_PATCH;
-	}
-
-	/**
-	 * The HaxePunk major version.
-	 */
-	public static inline var VERSION_MAJOR:Int = 2;
-
-	/**
-	 * The HaxePunk minor version.
-	 */
-	public static inline var VERSION_MINOR:Int = 4;
-
-	/**
-	 * The HaxePunk patch version.
-	 */
-	public static inline var VERSION_PATCH:Int = 6;
+	public static inline var VERSION : String = HaxelibInfo.version;
 
 	/**
 	 * The standard layer used since only flash can handle negative indicies in arrays, set your layers to some offset of this

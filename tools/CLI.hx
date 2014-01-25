@@ -2,6 +2,8 @@ import neko.Lib;
 import Terminal;
 import sys.io.Process;
 
+import com.haxepunk.utils.HaxelibInfo;
+
 class CLI
 {
 
@@ -35,14 +37,7 @@ class CLI
 				case "new":
 					Project.create(args);
 				case "setup":
-					// TODO: replace with haxelib.json dependencies
-					Sys.command("haxelib install lime");
-					Sys.command("haxelib install openfl");
-					Sys.command("haxelib install openfl-native");
-					Sys.command("haxelib install openfl-samples");
-					Sys.command("haxelib install openfl-html5-dom");
-					Sys.command("haxelib install openfl-bitfive");
-					Sys.command("haxelib run lime setup");
+					Setup.installDependencies();
 				case "help":
 					usage();
 				default:
@@ -59,7 +54,7 @@ class CLI
 	public function usage()
 	{
 		var tool = "haxelib run HaxePunk";
-		var version = "v2.5.0"; // TODO: set to HXP.VERSION
+		var version = HaxelibInfo.version;
 
 		print('/green/bold-- HaxePunk $version --/reset\n');
 		print('/blueUSAGE: /green$tool/reset setup');

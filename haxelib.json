@@ -4,14 +4,12 @@
 	"license": "MIT",
 	"tags": ["flash", "game", "cpp", "openfl"],
 	"description": "A Haxe port of the FlashPunk AS3 engine.",
-	"version": "2.4.6",
+	"version": "2.5.0",
 	"releasenote": "See CHANGELOG",
 	"contributors": ["heardtheword", "ibilon"],
-	"dependencies": {
-		"lime": ""
-	},
+	"dependencies": { },
 	"install": {
-		"lime": "1.2.1",
+		"lime": "0.9.3",
 		"lime-tools": "1.2.7",
 		"openfl": "1.2.2",
 		"openfl-native": "1.2.2",
