@@ -15,12 +15,7 @@ import flash.media.SoundMixer;
 import flash.media.SoundTransform;
 import flash.system.System;
 import flash.utils.ByteArray;
-
-#if nme
-import nme.Assets;
-#else
 import openfl.Assets;
-#end
 
 import com.haxepunk.Graphic;
 import com.haxepunk.Tween;
@@ -28,6 +23,7 @@ import com.haxepunk.debug.Console;
 import com.haxepunk.tweens.misc.Alarm;
 import com.haxepunk.tweens.misc.MultiVarTween;
 import com.haxepunk.utils.Ease;
+import com.haxepunk.utils.HaxelibInfo;
 
 import haxe.CallStack;
 import haxe.EnumFlags;
@@ -42,26 +38,7 @@ class HXP
 	 * The HaxePunk version.
 	 * Format: Major.Minor.Patch
 	 */
-	public static var VERSION(get_VERSION, never):String;
-	private static inline function get_VERSION() : String
-	{
-		return VERSION_MAJOR + "." + VERSION_MINOR + "." + VERSION_PATCH;
-	}
-
-	/**
-	 * The HaxePunk major version.
-	 */
-	public static inline var VERSION_MAJOR:Int = 2;
-
-	/**
-	 * The HaxePunk minor version.
-	 */
-	public static inline var VERSION_MINOR:Int = 4;
-
-	/**
-	 * The HaxePunk patch version.
-	 */
-	public static inline var VERSION_PATCH:Int = 6;
+	public static inline var VERSION : String = HaxelibInfo.version;
 
 	/**
 	 * The standard layer used since only flash can handle negative indicies in arrays, set your layers to some offset of this
@@ -82,20 +59,12 @@ class HXP
 	/**
 	 * Flash equivalent: int.MAX_VALUE
 	 */
-#if (!haxe3 && neko)
-	public static inline var INT_MAX_VALUE = 1073741823;
-#else
 	public static inline var INT_MAX_VALUE = 2147483646;
-#end
 
 	/**
 	 * The color black defined for neko (BitmapInt32) or flash (Int)
 	 */
-#if (!haxe3 && neko)
-	public static inline var blackColor = { rgb: 0x000000, a: 0 }; // BitmapInt32
-#else
 	public static inline var blackColor = 0x00000000;
-#end
 
 	/**
 	 * Width of the game.
@@ -160,7 +129,7 @@ class HXP
 	/**
 	 * The default font file to use
 	 */
-#if (openfl || nme)
+#if openfl
 	public static var defaultFont:String = "font/04B_03__.ttf";
 #else
 	public static var defaultFont:String = "default";
@@ -956,7 +925,7 @@ class HXP
 		if (_bitmap.exists(name))
 			return _bitmap.get(name);
 
-#if (openfl || nme)
+#if openfl
 		var data:BitmapData = Assets.getBitmapData(source, false);
 #else
 		var data:BitmapData = source.bitmapData;
@@ -1018,11 +987,7 @@ class HXP
 	 */
 	public static inline function convertColor(color:Int):Dynamic
 	{
-#if (!haxe3 && neko)
-		return { rgb: color & 0x00FFFFFF, a: color >> 24 };
-#else
 		return color; // do nothing
-#end
 	}
 
 	/**
@@ -1229,11 +1194,7 @@ class HXP
 	public static var _systemTime:Float;
 
 	// Bitmap storage.
-#if haxe3
 	private static var _bitmap:Map<String,BitmapData> = new Map<String,BitmapData>();
-#else
-	private static var _bitmap:Hash<BitmapData> = new Hash<BitmapData>();
-#end
 
 	// Pseudo-random number generation (the seed is set in Engine's contructor).
 	private static var _seed:Int = 0;

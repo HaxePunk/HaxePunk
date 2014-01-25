@@ -19,12 +19,9 @@ before_install:
   - mkdir -p ~/haxelib
   - haxelib setup ~/haxelib
   # Download dependencies
-  - haxelib install openfl
-  - haxelib install openfl-native
-  - haxelib install openfl-html5-dom
-  - haxelib install lime
-  - haxelib install openfl-bitfive
-  - echo "y" | haxelib run openfl setup
+  - haxelib dev HaxePunk /home/travis/build/HaxePunk/HaxePunk/
+  - ant tools
+  - echo "y" | haxelib run HaxePunk setup
   # openfl command
   - sudo ln -s /usr/bin/lime /usr/bin/openfl
 

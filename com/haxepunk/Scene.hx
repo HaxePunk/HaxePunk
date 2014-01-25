@@ -41,7 +41,6 @@ class Scene extends Tweener
 		_remove = new Array<Entity>();
 		_recycle = new Array<Entity>();
 
-#if haxe3
 		_layerDisplay = new Map<Int,Bool>();
 		_renderFirst = new Map<Int,FriendEntity>();
 		_renderLast = new Map<Int,FriendEntity>();
@@ -51,17 +50,6 @@ class Scene extends Tweener
 		_typeCount = new Map<String,Int>();
 		_recycled = new Map<String,Entity>();
 		_entityNames = new Map<String,Entity>();
-#else
-		_layerDisplay = new IntHash<Bool>();
-		_renderFirst = new IntHash<FriendEntity>();
-		_renderLast = new IntHash<FriendEntity>();
-		_typeFirst = new Hash<FriendEntity>();
-
-		_classCount = new Hash<Int>();
-		_typeCount = new Hash<Int>();
-		_recycled = new Hash<Entity>();
-		_entityNames = new Hash<Entity>();
-#end
 	}
 
 	/**
@@ -1347,7 +1335,6 @@ class Scene extends Tweener
 	private var _layerSort:Bool;
 	private var _layerList:Array<Int>;
 	private var _layerCount:Array<Int>;
-#if haxe3
 	private var _layerDisplay:Map<Int,Bool>;
 	private var _renderFirst:Map<Int,FriendEntity>;
 	private var _renderLast:Map<Int,FriendEntity>;
@@ -1357,15 +1344,4 @@ class Scene extends Tweener
 	private var _typeCount:Map<String,Int>;
 	private var _recycled:Map<String,Entity>;
 	private var _entityNames:Map<String,Entity>;
-#else
-	private var _layerDisplay:IntHash<Bool>;
-	private var _renderFirst:IntHash<FriendEntity>;
-	private var _renderLast:IntHash<FriendEntity>;
-
-	private var _classCount:Hash<Int>;
-	public var _typeFirst:Hash<FriendEntity>;
-	private var _typeCount:Hash<Int>;
-	private var _recycled:Hash<Entity>;
-	private var _entityNames:Hash<Entity>;
-#end
 }

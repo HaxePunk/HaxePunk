@@ -11,11 +11,7 @@ import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
 import haxe.ds.IntMap;
 
-#if nme
-import nme.Assets;
-#else
 import openfl.Assets;
-#end
 
 class LayerLabel extends Sprite
 {

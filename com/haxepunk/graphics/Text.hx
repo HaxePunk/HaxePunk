@@ -7,11 +7,7 @@ import flash.geom.Rectangle;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
-#if nme
-import nme.Assets;
-#else
 import openfl.Assets;
-#end
 
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;

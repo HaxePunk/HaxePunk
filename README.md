@@ -12,10 +12,12 @@ A Haxe port of the [FlashPunk](http://useflashpunk.net) AS3 library. There are a
 
 ## Release build
 
-First, make sure you have [Haxe](http://haxe.org) 2.10 or higher. Then execute the following commands below to get started with your first HaxePunk project.
+First, make sure you have [Haxe](http://haxe.org) 3.0 or higher. Then execute the following commands below to get started with your first HaxePunk project.
+If you are using Haxe 2 the last version supporting it was [v2.3.0](https://github.com/HaxePunk/HaxePunk/releases/tag/v2.3.0) `haxelib install HaxePunk 2.3.0`.
 
 ```bash
 haxelib install HaxePunk
+haxelib run HaxePunk setup
 haxelib run HaxePunk new MyProject # creates a new project
 ```
 
@@ -24,7 +26,7 @@ haxelib run HaxePunk new MyProject # creates a new project
 You need to have ant installed to build a development version of HaxePunk. Make sure you set a default program for swf files to view the debug output. You will also need a C++ compiler for native builds (Xcode, Visual Studio, g++).
 
 ```bash
-git clone git@github.com:HaxePunk/HaxePunk.git
+git clone https://github.com/HaxePunk/HaxePunk.git
 ant
 ```
 
@@ -34,7 +36,7 @@ Generating documentation is just as simple. Run the commands below to create a n
 The documentation will be located in doc/docs/, simply open doc/docs/index.html with your web browser to see the doc.
 
 ```bash
-haxelib git chxdoc git@github.com:ibilon/chxdoc.git
+haxelib git chxdoc https://github.com/ibilon/chxdoc.git
 haxelib run chxdoc install pathToYourHaxeFolder
 ant doc
 ```
@@ -56,7 +58,7 @@ There are a few ways you can get involved with HaxePunk.
 
 ## MIT License
 
-Copyright (C) 2012-2013 Matt Tuttle
+Copyright (C) 2012-2014 Matt Tuttle
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

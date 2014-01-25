@@ -4,21 +4,13 @@ import com.haxepunk.HXP;
 import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-#if nme
-import nme.Assets;
-#else
 import openfl.Assets;
-#end
 
 class TextureAtlas extends Atlas
 {
 	private function new(source:Dynamic)
 	{
-#if haxe3
 		_regions = new Map<String,AtlasRegion>();
-#else
-		_regions = new Hash<AtlasRegion>();
-#end
 
 		super(source);
 	}
@@ -78,9 +70,5 @@ class TextureAtlas extends Atlas
 		return region;
 	}
 
-#if haxe3
 	private var _regions:Map<String,AtlasRegion>;
-#else
-	private var _regions:Hash<AtlasRegion>;
-#end
 }

@@ -31,11 +31,7 @@ class Emitter extends Graphic
 		super();
 		_p = new Point();
 		_tint = new ColorTransform();
-#if haxe3
 		_types = new Map<String,ParticleType>();
-#else
-		_types = new Hash<ParticleType>();
-#end
 
 		setSource(source, frameWidth, frameHeight);
 		active = true;
@@ -386,11 +382,7 @@ class Emitter extends Graphic
 	public var particleCount(default, null):Int;
 
 	// Particle information.
-#if haxe3
 	private var _types:Map<String,ParticleType>;
-#else
-	private var _types:Hash<ParticleType>;
-#end
 	private var _particle:Particle;
 	private var _cache:Particle;
 

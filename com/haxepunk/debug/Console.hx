@@ -5,11 +5,7 @@ import com.haxepunk.HXP;
 import com.haxepunk.utils.Input;
 import com.haxepunk.utils.Key;
 
-#if nme
-import nme.Assets;
-#else
 import openfl.Assets;
-#end
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.BlendMode;

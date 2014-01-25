@@ -533,11 +533,7 @@ class Image extends Graphic
 	private var _class:String;
 	private var _flipped:Bool;
 	private var _flip:BitmapData;
-#if haxe3
 	private static var _flips:Map<String,BitmapData> = new Map<String,BitmapData>();
-#else
-	private static var _flips:Hash<BitmapData> = new Hash<BitmapData>();
-#end
 
 	private var _scale:Float;
 }
