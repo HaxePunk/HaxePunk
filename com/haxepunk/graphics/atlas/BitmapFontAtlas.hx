@@ -55,8 +55,8 @@ class BitmapFontAtlas extends TextureAtlas {
 				case "space": ' ';
 				case "&quot;": '"';
 				case "&amp;": '&';
-				case "&gt;": '<';
-				case "&lt;": '>';
+				case "&gt;": '>';
+				case "&lt;": '<';
 				default: glyph;
 			}
 			
