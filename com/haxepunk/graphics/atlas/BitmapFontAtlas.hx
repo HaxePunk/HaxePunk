@@ -10,6 +10,7 @@ enum BitmapFontFormat {
 }
 
 typedef GlyphData = {
+	var glyph:String;
 	var rect:Rectangle;
 	var xOffset:Int;
 	var yOffset:Int;
@@ -53,6 +54,7 @@ class BitmapFontAtlas extends TextureAtlas {
 			glyph = glyph=="space" ? ' ' : glyph;
 			
 			var md:GlyphData = {
+			                    glyph:glyph,
 			                    rect:HXP.rect.clone(),
 			                    xOffset:char.has.xoffset ? Std.parseInt(char.att.xoffset) : 0,
 			                    yOffset:char.has.yoffset ? Std.parseInt(char.att.yoffset) : 0,

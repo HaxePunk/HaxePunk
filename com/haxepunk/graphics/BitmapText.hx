@@ -30,6 +30,7 @@ class BitmapText extends Graphic {
 	public var autoWidth:Bool = false;
 	public var autoHeight:Bool = false;
 	public var size:Int=0;
+	public var wrap:Bool=false;
 	
 	public var scale:Float=1;
 	public var scaleX:Float=1;
@@ -48,6 +49,7 @@ class BitmapText extends Graphic {
 			options = {};
 			options.color = 0xFFFFFF;
 		}
+		wrap = options.wordWrap;
 		
 		if (options.font == null)  options.font = HXP.defaultFont;
 		if (options.size == 0)     options.size = 16;
@@ -111,19 +113,59 @@ class BitmapText extends Graphic {
 		_blue = HXP.getBlue(color) / 255;
 		
 		if (_blit) {
-			_colorTransform.redMultiplier = _red;
-			_colorTransform.greenMultiplier = _green;
-			_colorTransform.blueMultiplier = _blue;
+			_colorTransform.color = color;
 			_colorTransform.alphaMultiplier = alpha;
-			updateBuffer();
 		}
 	}
 	
 	public function set_text(text:String) {
 		this.text = text;
+		var _oldLines:Array<String> = null;
+		if (_lines != null)
+			_oldLines = _lines;
 		_lines = text.split("\n");
 		
-		if (_blit) updateBuffer();
+		if (wrap) {
+			// subdivide lines
+			var newLines:Array<String> = [];
+			var spaceWidth = _font.glyphData.get(' ').xAdvance;
+			for (line in _lines) {
+				var subLines:Array<String> = [];
+				var words = line.split(' ');
+				if (words.length > 1) {
+					var w = 0;
+					var lineWidth = 0;
+					var lastBreak = 0;
+					while (w < words.length) {
+						var wordWidth= 0;
+						if (w > lastBreak) lineWidth += spaceWidth;
+						for (letter in words[w].split('')) {
+							var letterWidth = _font.glyphData.exists(letter) ? 
+							                  _font.glyphData.get(letter).xAdvance : 0;
+							wordWidth += letterWidth + charSpacing;
+						}
+						lineWidth += wordWidth;
+						if (lineWidth > width) {
+							subLines.push(words.slice(lastBreak, w).join(' '));
+							lineWidth = wordWidth;
+							lastBreak = w;
+						}
+						w += 1;
+					}
+					subLines.push(words.slice(lastBreak).join(' '));
+				} else {
+					subLines.push(line);
+				}
+				
+				for (subline in subLines) {
+					newLines.push(subline);
+				}
+			}
+			
+			_lines = newLines;
+		}
+		
+		if (_blit) updateBuffer(_oldLines);
 		
 		return text;
 	}
@@ -131,11 +173,10 @@ class BitmapText extends Graphic {
 	public function computeTextSize() {
 		// make a pass through the text without actually rendering to compute
 		// textWidth/textHeight
-		renderFont(function(region:AtlasRegion,gd:GlyphData,x:Float,y:Float) {
-		});
+		renderFont();
 	}
 	
-	public function updateBuffer() {
+	public function updateBuffer(oldLines:Array<String>=null) {
 		// render the string of text to _buffer
 		
 		if (text == null) return;
@@ -145,41 +186,56 @@ class BitmapText extends Graphic {
 		var fsx = HXP.screen.fullScaleX,
 			fsy = HXP.screen.fullScaleY;
 		
-		var sx = scale * scaleX * fontScale * fsx,
-			sy = scale * scaleY * fontScale * fsy;
+		var sx = scale * scaleX * fontScale,
+			sy = scale * scaleY * fontScale;
 		
 		var w:Int;
 		var h:Int;
 		if (autoWidth || autoHeight) {
 			computeTextSize();
-			w = Std.int(autoWidth ? (textWidth*sx) : width);
-			h = Std.int(autoHeight ? (textHeight*sy) : height);
+			w = Std.int(autoWidth ? (textWidth) : width);
+			h = Std.int(autoHeight ? (textHeight) : height);
 		} else {
 			w = Std.int(width);
 			h = Std.int(height);
 		}
+		w = Std.int(w); 
+		h = Std.int(h+_font.lineHeight+lineSpacing);
 		
-		if (_buffer == null || _buffer.width != w || _buffer.height != h) {
-			_buffer = new BitmapData(w*2, h*2, true, 0);
+		// if any of the previous lines of text are the same as the new lines,
+		// don't re-render those lines
+		var startLine = 0;
+		if (oldLines != null) {
+			for (n in 0 ... Std.int(Math.min(oldLines.length, _lines.length))) {
+				if (_lines[n] == oldLines[n]) {
+					startLine += 1;
+				} else {
+					break;
+				}
+			}
 		}
 		
+		// create or clear the buffer if necessary
+		if (_buffer == null || _buffer.width != w || _buffer.height != h) {
+			_buffer = new BitmapData(w, h, true, 0);
+			startLine = 0;
+		} else {
+			var r = _buffer.rect;
+			r.top = startLine * (_font.lineHeight + lineSpacing);
+			_buffer.fillRect(r, 0);
+			if (startLine > 0) startLine -= 1;
+		}
+		
+		// make a pass through each character, copying it onto the buffer
 		renderFont(function(region:AtlasRegion,gd:GlyphData,x:Float,y:Float) {
-			_matrix.b = _matrix.c = 0;
-			_matrix.a = sx;
-			_matrix.d = sy;
-			_matrix.tx = x;
-			_matrix.ty = y;
 			_point.x = x;
 			_point.y = y;
 			
-			var thisGlyph = new BitmapData(cast gd.rect.width, cast gd.rect.height);
-			thisGlyph.copyPixels(_set, gd.rect, new Point());
-			_buffer.draw(thisGlyph, _matrix, null, null, null, false);
-			_buffer.colorTransform(_buffer.rect, _colorTransform);
-		});
+			_buffer.copyPixels(_set, gd.rect, _point, null, null, true);
+		}, startLine);
 	}
 	
-	public function renderFont(renderFunction:RenderFunction) {
+	public function renderFont(renderFunction:RenderFunction=null, startLine=0) {
 		// loop through the text one character at a time, calling the supplied
 		// rendering function for each character
 		var fontScale = size/_font.fontSize;
@@ -200,17 +256,19 @@ class BitmapText extends Graphic {
 			for (x in 0 ... line.length) {
 				var letter = line.charAt(x);
 				var region = _font.getChar(letter);
-				var gd = _font.glyphData[letter];
+				var gd = _font.glyphData.get(letter);
 				
 				if (letter==' ') {
 					// it's a space, just move the cursor
 					rx += Std.int(gd.xAdvance);
 				} else {
 					// draw the character
-					renderFunction(region, gd,
-					               (rx+gd.xOffset)*sx, 
-					               (ry+gd.yOffset)*sy);
-					
+					if (renderFunction != null && 
+					    y >= startLine) {
+						renderFunction(region, gd,
+						               (rx+gd.xOffset), 
+						               (ry+gd.yOffset));
+					}
 					// advance cursor position
 					rx += Std.int((gd.xAdvance + charSpacing));
 					if (width != 0 && rx > width) {
@@ -220,6 +278,7 @@ class BitmapText extends Graphic {
 					}
 				}
 				
+				// longest line so far
 				if (rx > textWidth) textWidth = rx;
 			}
 			
@@ -240,17 +299,23 @@ class BitmapText extends Graphic {
 		var sx = scale * scaleX * fontScale * fsx,
 			sy = scale * scaleY * fontScale * fsy;
 		
-		_point.x = Math.floor((point.x + x - camera.x * scrollX) * fsx);
-		_point.y = Math.floor((point.y + y - camera.y * scrollY) * fsy);
+		_point.x = Math.floor(point.x + x - camera.x * scrollX);
+		_point.y = Math.floor(point.y + y - camera.y * scrollY);
 		
 		if (_blit) {
 			// blit the buffer to the screen
-			target.copyPixels(_buffer, _buffer.rect, _point, null, null, true);
+			_matrix.b = _matrix.c = 0;
+			_matrix.a = sx/fsx;
+			_matrix.d = sy/fsy;
+			_matrix.tx = _point.x;
+			_matrix.ty = _point.y;
+			target.draw(_buffer, _matrix, _colorTransform);
+			//target.copyPixels(_buffer, _buffer.rect, _point, null, null, true);
 			
 		} else {
 			// use hardware accelerated rendering
 			renderFont(function(region:AtlasRegion,gd:GlyphData, x:Float,y:Float) {
-				region.draw(_point.x+x,_point.y+y,layer,sx,sy,0,_red,_green,_blue,alpha);
+				region.draw(_point.x*fsx+x*sx,_point.y*fsy+y*sy,layer,sx,sy,0,_red,_green,_blue,alpha);
 			});
 		}
 	}
