@@ -258,8 +258,8 @@ class BitmapText extends Graphic {
 				var letter = line.charAt(x);
 				var region = _font.getChar(letter);
 				var gd = _font.glyphData.get(letter);
-                // if a character isn't in this font, display a space
-                if (gd == null) letter = ' ';
+				// if a character isn't in this font, display a space
+				if (gd == null) letter = ' ';
 				
 				if (letter==' ') {
 					// it's a space, just move the cursor
