@@ -51,7 +51,14 @@ class BitmapFontAtlas extends TextureAtlas {
 			HXP.rect.height = Std.parseInt(char.att.height);
 			
 			var glyph = char.att.letter;
-			glyph = glyph=="space" ? ' ' : glyph;
+			glyph = switch(glyph) {
+				case "space": ' ';
+				case "&quot;": '"';
+				case "&amp;": '&';
+				case "&gt;": '<';
+				case "&lt;": '>';
+				default: glyph;
+			}
 			
 			var md:GlyphData = {
 			                    glyph:glyph,
