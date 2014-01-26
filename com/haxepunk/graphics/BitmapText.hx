@@ -166,6 +166,7 @@ class BitmapText extends Graphic {
 		}
 		
 		if (_blit) updateBuffer(_oldLines);
+        else computeTextSize();
 		
 		return text;
 	}
