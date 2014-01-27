@@ -126,49 +126,72 @@ class BitmapText extends Graphic {
 		_lines = text.split("\n");
 		
 		if (wrap) {
-			// subdivide lines
-			var newLines:Array<String> = [];
-			var spaceWidth = _font.glyphData.get(' ').xAdvance;
-			for (line in _lines) {
-				var subLines:Array<String> = [];
-				var words = line.split(' ');
-				if (words.length > 1) {
-					var w = 0;
-					var lineWidth = 0;
-					var lastBreak = 0;
-					while (w < words.length) {
-						var wordWidth= 0;
-						if (w > lastBreak) lineWidth += spaceWidth;
-						for (letter in words[w].split('')) {
-							var letterWidth = _font.glyphData.exists(letter) ? 
-							                  _font.glyphData.get(letter).xAdvance : 0;
-							wordWidth += letterWidth + charSpacing;
-						}
-						lineWidth += wordWidth;
-						if (lineWidth > width) {
-							subLines.push(words.slice(lastBreak, w).join(' '));
-							lineWidth = wordWidth;
-							lastBreak = w;
-						}
-						w += 1;
-					}
-					subLines.push(words.slice(lastBreak).join(' '));
-				} else {
-					subLines.push(line);
-				}
-				
-				for (subline in subLines) {
-					newLines.push(subline);
-				}
-			}
-			
-			_lines = newLines;
+			wordWrap();
 		}
 		
 		if (_blit) updateBuffer(_oldLines);
-        else computeTextSize();
+		else computeTextSize();
 		
 		return text;
+	}
+	
+	public function wordWrap() {
+		// subdivide lines
+		var newLines:Array<String> = [];
+		var spaceWidth = _font.glyphData.get(' ').xAdvance;
+		for (line in _lines) {
+			var subLines:Array<String> = [];
+			var words:Array<String> = [];
+			// split this line into words
+			var thisWord = "";
+			for (n in 0 ... line.length) {
+				var char:String = line.charAt(n);
+				switch(char) {
+					case ' ', '-': {
+						words.push(thisWord + char);
+						thisWord = "";
+					}
+					default: {
+						thisWord += char;
+					}
+				}
+			}
+			if (thisWord != "") words.push(thisWord);
+			if (words.length > 1) {
+				var w = 0;
+				var lineWidth = 0;
+				var lastBreak = 0;
+				while (w < words.length) {
+					var wordWidth= 0;
+					var word = words[w];
+					for (letter in word.split('')) {
+						var letterWidth = _font.glyphData.exists(letter) ? 
+						                  _font.glyphData.get(letter).xAdvance : 0;
+						wordWidth += letterWidth + charSpacing;
+					}
+					lineWidth += wordWidth;
+					// if the word ends in a space, don't count that last space 
+					// toward the line length for determining overflow
+					var endsInSpace = word.charAt(word.length-1) == ' ';
+					if (lineWidth - (endsInSpace ? spaceWidth : 0) > width) {
+						// line is too long; split it before this word
+						subLines.push(words.slice(lastBreak, w).join(''));
+						lineWidth = wordWidth;
+						lastBreak = w;
+					}
+					w += 1;
+				}
+				subLines.push(words.slice(lastBreak).join(''));
+			} else {
+				subLines.push(line);
+			}
+			
+			for (subline in subLines) {
+				newLines.push(subline);
+			}
+		}
+		
+		_lines = newLines;
 	}
 	
 	public function computeTextSize() {
