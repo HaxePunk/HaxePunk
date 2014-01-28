@@ -63,11 +63,8 @@
 		<exec executable="haxe" dir="doc">
 			<arg line="doc.hxml" />
 		</exec>
-		<exec executable="chxdoc" dir="doc">
-			<arg line="-o docs" />
-			<arg line="--title=HaxePunk" />
-			<arg line="--subtitle=http://haxepunk.com" />
-			<arg line="--file=all.xml" />
+		<exec executable="haxedoc" dir="doc">
+			<arg line="haxedoc.xml" />
 		</exec>
 	</target>
 
