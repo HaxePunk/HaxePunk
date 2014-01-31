@@ -37,7 +37,7 @@ class LayerScene extends DemoScene
 		addGraphic(text, 30, 150, 250);
 
 		var img3 = Image.createCircle(100, 0x0000ff);
-		addGraphic(img3, HXP.BASELAYER, 200, 200); // add graphic at base layer 10
+		addGraphic(img3, 0, 200, 200); // add graphic at base layer 10
 
 		var background = Image.createRect(HXP.width, HXP.height, 0xffffff);
 		addGraphic(background, 100); // add graphic at back
