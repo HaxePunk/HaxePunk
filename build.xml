@@ -38,22 +38,22 @@
 		<exec executable="haxelib" dir=".">
 			<arg line="run HaxePunk new build-test" />
 		</exec>
-		<exec executable="openfl" dir="build-test">
+		<exec executable="lime" dir="build-test">
 			<arg line="build project.xml" />
 			<arg line="flash" />
 		</exec>
-		<exec executable="openfl" dir="build-test">
+		<exec executable="lime" dir="build-test">
 			<arg line="build project.xml" />
 			<arg line="neko" />
 		</exec>
-		<exec executable="openfl" dir="build-test">
+		<exec executable="lime" dir="build-test">
 			<arg line="build project.xml" />
 			<arg line="html5" />
 		</exec>
 	</target>
 
 	<target name="examples" depends="haxelib">
-		<exec executable="openfl" dir="examples">
+		<exec executable="lime" dir="examples">
 			<arg line="test project.xml" />
 			<arg line="neko -debug" />
 		</exec>
