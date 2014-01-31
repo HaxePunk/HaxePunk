@@ -23,7 +23,7 @@ class DemoScene extends Scene
 		overlayText.resizable = true;
 		overlayText.scrollX = overlayText.scrollY = 0;
 		var overlay:Entity = new Entity(0, HXP.screen.height - 20, overlayText);
-		overlay.layer = 0;
+		overlay.layer = -10;
 		add(overlay);
 
 		var c = Type.getClassName(Type.getClass(this));
