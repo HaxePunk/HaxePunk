@@ -8,6 +8,7 @@ enum JoyButtonState
 	BUTTON_ON;
 	BUTTON_OFF;
 	BUTTON_PRESSED;
+	BUTTON_RELEASED;
 }
 
 class Joystick
@@ -55,9 +56,10 @@ class Joystick
 		_timeout -= HXP.elapsed;
 		for (button in buttons.keys())
 		{
-			if (buttons.get(button) == BUTTON_PRESSED)
-			{
-				buttons.set(button, BUTTON_ON);
+			switch (buttons.get(button)) {
+				case BUTTON_PRESSED: { buttons.set(button, BUTTON_ON); }
+				case BUTTON_RELEASED: { buttons.set(button, BUTTON_OFF); }
+                default: {}
 			}
 		}
 	}
@@ -76,6 +78,19 @@ class Joystick
 	}
 
 	/**
+	 * If the joystick button was released this frame.
+	 * @param  button The button index to check.
+	 */
+	public function released(button:Int):Bool
+	{
+		if (buttons.exists(button))
+		{
+			return buttons.get(button) == BUTTON_RELEASED;
+		}
+		return false;
+	}
+
+	/**
 	 * If the joystick button is held down.
 	 * @param  button The button index to check.
 	 */
@@ -83,7 +98,8 @@ class Joystick
 	{
 		if (buttons.exists(button))
 		{
-			return buttons.get(button) != BUTTON_OFF;
+			var b = buttons.get(button);
+			return b != BUTTON_OFF && b != BUTTON_RELEASED;
 		}
 		return false;
 	}
