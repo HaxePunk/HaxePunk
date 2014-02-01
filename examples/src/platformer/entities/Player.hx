@@ -54,8 +54,10 @@ class Player extends Physics
 		switch (jumpStyle)
 		{
 			case Normal:
+				#if !flash
 				var sfx = new Sfx("sfx/jump.wav");
 				sfx.play(0.8);
+				#end
 				acceleration.y = -HXP.sign(gravity.y) * kJumpForce;
 			case Gravity:
 				gravity.y = -gravity.y;

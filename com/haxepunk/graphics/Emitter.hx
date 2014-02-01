@@ -77,7 +77,7 @@ class Emitter extends Graphic
 			{
 				_frames.push(region.clip(rect, center));
 				rect.x += _frameWidth;
-				if (rect.x > _width)
+				if (rect.x >= _width)
 				{
 					rect.y += _frameHeight;
 					rect.x = 0;
