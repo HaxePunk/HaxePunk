@@ -32,12 +32,10 @@ ant
 
 This will install a dev version of HaxePunk through haxelib, run unit tests, and build an example project for flash/neko/native. If you fix an issue, feel free to create a pull request.
 
-Generating documentation is just as simple. Run the commands below to create a new set of docs with chxdoc. The first two commands are optional if you already have chxdoc installed.
+Generating documentation is just as simple. Run the commands below to create a new set of docs with haxedoc
 The documentation will be located in doc/docs/, simply open doc/docs/index.html with your web browser to see the doc.
 
 ```bash
-haxelib git chxdoc https://github.com/ibilon/chxdoc.git
-haxelib run chxdoc install pathToYourHaxeFolder
 ant doc
 ```
 
