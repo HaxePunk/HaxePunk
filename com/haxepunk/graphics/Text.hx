@@ -1,7 +1,9 @@
 package com.haxepunk.graphics;
 
+import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Sprite;
+import flash.geom.ColorTransform;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.text.TextField;
@@ -11,6 +13,7 @@ import openfl.Assets;
 
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
+import com.haxepunk.graphics.atlas.Atlas;
 import com.haxepunk.graphics.atlas.AtlasData;
 import com.haxepunk.graphics.atlas.AtlasRegion;
 
@@ -88,19 +91,16 @@ class Text extends Image
 			autoHeight = true;
 		}
 
-		var source:Dynamic;
+		var source = HXP.createBitmap(width, height, true);
 		if (HXP.renderMode == RenderMode.HARDWARE)
 		{
-			HXP.rect.x = HXP.rect.y = 0;
-			_field.width = HXP.rect.width = textWidth = width;
-			_field.height = HXP.rect.height = textHeight = height;
-			source = new AtlasRegion(null, 0, HXP.rect);
-			_blit = false;
-		}
-		else
-		{
-			source = HXP.createBitmap(width, height, true);
-			_blit = true;
+			_sourceRect = source.rect;
+			_source = source;
+			_bitmap = new Bitmap();
+			_colorTransform = new ColorTransform();
+			createBuffer();
+			updateBuffer();
+			_textHardware = true;
 		}
 		super(source);
 
@@ -114,88 +114,51 @@ class Text extends Image
 	public override function updateBuffer(clearBefore:Bool = false)
 	{
 		_field.setTextFormat(_format);
-
-		if (_blit) _field.width = _bufferRect.width;
+		_field.width = _bufferRect.width;
 
 		if (autoWidth)
 			_field.width = textWidth = Math.ceil(_field.textWidth + 4);
 		if (autoHeight)
 			_field.height = textHeight = Math.ceil(_field.textHeight + 4);
 
-		if (_blit)
+		if (resizable)
 		{
-			if (resizable)
-			{
-				_bufferRect.width = textWidth;
-				_bufferRect.height = textHeight;
-			}
-
-			if (textWidth > _source.width || textHeight > _source.height)
-			{
-				_source = HXP.createBitmap(
-					Std.int(Math.max(textWidth, _source.width)),
-					Std.int(Math.max(textHeight, _source.height)),
-					true);
-
-				_sourceRect = _source.rect;
-				createBuffer();
-			}
-			else
-			{
-				_source.fillRect(_sourceRect, HXP.blackColor);
-			}
-
-			if (resizable)
-			{
-				_field.width = textWidth;
-				_field.height = textHeight;
-			}
-
-			_source.draw(_field);
-			super.updateBuffer(clearBefore);
+			_bufferRect.width = textWidth;
+			_bufferRect.height = textHeight;
 		}
-	}
 
-	public override function render(target:BitmapData, point:Point, camera:Point)
-	{
-		if (_blit)
+		if (textWidth > _source.width || textHeight > _source.height)
 		{
-			super.render(target, point, camera);
+			_source = HXP.createBitmap(
+				Std.int(Math.max(textWidth, _source.width)),
+				Std.int(Math.max(textHeight, _source.height)),
+				true);
+
+			_sourceRect = _source.rect;
+			createBuffer();
 		}
 		else
 		{
-			if (_parent == null)
-				findParentSprite();
-
-			_field.x = (point.x + x - originX - camera.x * scrollX) * HXP.screen.fullScaleX;
-			_field.y = (point.y + y - originY - camera.y * scrollY) * HXP.screen.fullScaleY;
+			_source.fillRect(_sourceRect, HXP.blackColor);
 		}
-	}
 
-	/** @private Remove the text from the screen. */
-	public override function destroy()
-	{
-		if (_parent != null)
+		if (resizable)
 		{
-			_parent.removeChild(_field);
-			_parent = null;
+			_field.width = textWidth;
+			_field.height = textHeight;
 		}
-	}
 
-	/**
-	 * Moves the TextField to the correct sprite layer
-	 */
-	private override function set_layer(value:Int):Int
-	{
-#if neko
-		if (value == null) value = 0;
-#end
-		if (value == layer) return value;
-		if (_blit == false)
+		_source.draw(_field);
+		super.updateBuffer(clearBefore);
+
+		if (_textHardware)
 		{
-			findParentSprite();
+			if (_region != null)
+			{
+				_region.destroy();
+			}
+			_region = Atlas.loadImageAsRegion(_source);
 		}
-		return super.set_layer(value);
 	}
 
 	/**
@@ -224,42 +187,6 @@ class Text extends Image
 	}
 
 	/**
-	 * Font color.
-	 */
-	private override function set_color(value:Int):Int
-	{
-		if (_blit)
-		{
-			return super.set_color(value);
-		}
-		else
-		{
-			if (_format.color != value)
-			{
-				_format.color = value;
-				updateBuffer();
-			}
-			return value;
-		}
-	}
-
-	/**
-	 * Width of the text.
-	 */
-	override private function get_width():Int
-	{
-		return _blit ? super.get_width() : Std.int(_field.width / HXP.screen.fullScaleX);
-	}
-
-	/**
-	 * Height of the text.
-	 */
-	override private function get_height():Int
-	{
-		return _blit ? super.get_height() : Std.int(_field.height / HXP.screen.fullScaleY);
-	}
-
-	/**
 	 * Font size.
 	 */
 	public var size(default, set_size):Int;
@@ -271,70 +198,8 @@ class Text extends Image
 		return value;
 	}
 
-	private function findParentSprite()
-	{
-		if (_entity == null || _entity.scene == null) return;
-		if (_parent != null) _parent.removeChild(_field);
-		_parent = _entity.scene.sprite;
-		_parent.addChild(_field);
-	}
-
-	/**
-	 * Alpha of the text.
-	 */
-	override function get_alpha():Float
-	{
-		if (_blit)
-			return super.get_alpha();
-		else
-			return _field.alpha;
-	}
-	override function set_alpha(value:Float):Float
-	{
-		if (_blit)
-			return super.set_alpha(value);
-		else
-			return _field.alpha = value;
-	}
-
-	/**
-	 * Visibility of the text.
-	 */
-	override function get_visible():Bool
-	{
-		if (_blit)
-			return super.get_visible();
-		else
-			return _field.visible;
-	}
-	override function set_visible(value:Bool):Bool
-	{
-		if (_blit)
-			return super.set_visible(value);
-		else
-			return _field.visible = value;
-	}
-
-	/**
-	 * Scale of the text.
-	 */
-	override function get_scale():Float
-	{
-		if (_blit)
-			return super.get_scale();
-		else
-			return _field.scaleX;
-	}
-	override function set_scale(value:Float):Float
-	{
-		if (_blit)
-			return super.set_scale(value);
-		else
-			return _field.scaleY = _field.scaleX = value;
-	}
-
 	// Text information.
 	private var _field:TextField;
 	private var _format:TextFormat;
-	private var _parent:Sprite;
+	private var _textHardware:Bool = false;
 }
