@@ -115,8 +115,11 @@ class AtlasData
 		_refCount -= 1;
 		if (_refCount <= 0)
 		{
-			HXP.removeBitmap(this._name);
-			_dataPool.remove(this._name);
+			if (this._name != null)
+			{
+				HXP.removeBitmap(this._name);
+				_dataPool.remove(this._name);
+			}
 			_atlases.remove(this);
 		}
 	}

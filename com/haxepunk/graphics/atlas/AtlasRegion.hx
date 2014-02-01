@@ -114,9 +114,18 @@ class AtlasRegion
 		}
 	}
 
+	public function destroy():Void
+	{
+		if (parent != null)
+		{
+			parent.destroy();
+			parent = null;
+		}
+	}
+
 	/**
 	 * Prints the region as a string
-	 * 
+	 *
 	 * @return	String version of the object.
 	 */
 	public function toString():String

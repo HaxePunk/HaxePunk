@@ -150,9 +150,15 @@ class Text extends Image
 
 		_source.draw(_field);
 		super.updateBuffer(clearBefore);
-		
+
 		if (_textHardware)
+		{
+			if (_region != null)
+			{
+				_region.destroy();
+			}
 			_region = Atlas.loadImageAsRegion(_source);
+		}
 	}
 
 	/**
