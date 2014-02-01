@@ -970,19 +970,7 @@ class HXP
 		}
 #end // flash
 
-		return new BitmapData(width, height, transparent, HXP.convertColor(color));
-	}
-
-	/**
-	 * Converts a color to platform specific type (BitmapInt32)
-	 *
-	 * @param	color	The color to convert.
-	 *
-	 * @return	The color in platform specific type.
-	 */
-	public static inline function convertColor(color:Int):Dynamic
-	{
-		return color; // do nothing
+		return new BitmapData(width, height, transparent, color);
 	}
 
 	/**

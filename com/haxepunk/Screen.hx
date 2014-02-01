@@ -106,11 +106,7 @@ class Screen
 	public function refresh()
 	{
 		// refreshes the screen
-#if neko
-		HXP.buffer.fillRect(HXP.bounds, HXP.convertColor(_color));
-#else
 		HXP.buffer.fillRect(HXP.bounds, _color);
-#end
 	}
 
 	/**
