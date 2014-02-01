@@ -558,7 +558,7 @@ class Input
 		var joy:Joystick = joystick(e.device);
 
 		joy.connected = true;
-		joy.buttons.set(e.id, BUTTON_OFF);
+		joy.buttons.set(e.id, BUTTON_RELEASED);
 	}
 
 	private static function onJoyHatMove(e:JoystickEvent)
