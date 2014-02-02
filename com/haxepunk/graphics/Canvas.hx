@@ -56,7 +56,7 @@ class Canvas extends Graphic
 		_rect = new Rectangle();
 		_colorTransform = new ColorTransform();
 		_buffers = new Array<BitmapData>();
-		_scaledBuffers = new Array<BitmapData>();
+		_midBuffers = new Array<BitmapData>();
 		angle = 0;
 		scale = scaleX = scaleY = 1;
 
@@ -123,21 +123,25 @@ class Canvas extends Graphic
 						var i = Std.int(_ref.getPixel(xx, yy));
 						var w = Std.int(buffer.width * sx);
 						var h = Std.int(buffer.height * sy);
-						if (i >= _scaledBuffers.length ||
-							_scaledBuffers[i].width != w ||
-							_scaledBuffers[i].height != h) {
-							
-							_scaledBuffers[i] = HXP.createBitmap(w, h, true);
+						var wrongSize = i >= _midBuffers.length ||
+							_midBuffers[i].width != w ||
+							_midBuffers[i].height != h;
+						if (_redrawBuffers || wrongSize) {
+							if (wrongSize) {
+								_midBuffers[i] = HXP.createBitmap(w, h, true);
+							} else {
+								_midBuffers[i].fillRect(_midBuffers[i].rect, 0);
+							}
 							_matrix.b = _matrix.c = 0;
 							_matrix.a = sx;
 							_matrix.d = sy;
 							_matrix.tx = _matrix.ty = 0;
 							if (angle != 0) _matrix.rotate(angle * HXP.RAD);
 							
-							_scaledBuffers[i].draw(buffer, _matrix, _tint, blend);
+							_midBuffers[i].draw(buffer, _matrix, _tint, blend);
 						}
 						
-						target.copyPixels(_scaledBuffers[i], _rect, _point, null, null, true);
+						target.copyPixels(_midBuffers[i], _rect, _point, null, null, true);
 					}
 				}
 				else
@@ -163,6 +167,8 @@ class Canvas extends Graphic
 			yy ++;
 		}
 		#if !bitfive target.unlock(); #end
+		
+		_redrawBuffers = false;
 	}
 
 	/**
@@ -188,7 +194,7 @@ class Canvas extends Graphic
 				yy += _maxHeight;
 			}
 		}
-		while (_scaledBuffers.length > 0) _scaledBuffers.pop();
+		_redrawBuffers = true;
 	}
 
 	/**
@@ -334,6 +340,7 @@ class Canvas extends Graphic
 		_tint.greenMultiplier = _green;
 		_tint.blueMultiplier = _blue;
 		_tint.alphaMultiplier = _alpha;
+		_redrawBuffers = true;
 		return _color;
 	}
 
@@ -358,6 +365,7 @@ class Canvas extends Graphic
 		_tint.greenMultiplier = _green;
 		_tint.blueMultiplier = _blue;
 		_tint.alphaMultiplier = _alpha;
+		_redrawBuffers = true;
 		return _alpha;
 	}
 
@@ -385,7 +393,8 @@ class Canvas extends Graphic
 
 	// Buffer information.
 	private var _buffers:Array<BitmapData>;
-	private var _scaledBuffers:Array<BitmapData>;
+	private var _midBuffers:Array<BitmapData>;
+	private var _redrawBuffers:Bool=false;
 	private var _width:Int;
 	private var _height:Int;
 	private var _maxWidth:Int = 4000;
