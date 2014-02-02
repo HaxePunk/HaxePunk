@@ -128,6 +128,9 @@ class Canvas extends Graphic
 							_midBuffers[i].height != h;
 						if (_redrawBuffers || wrongSize) {
 							if (wrongSize) {
+								if (i < _midBuffers.length) {
+									_midBuffers[i].dispose();
+								}
 								_midBuffers[i] = HXP.createBitmap(w, h, true);
 							} else {
 								_midBuffers[i].fillRect(_midBuffers[i].rect, 0);
