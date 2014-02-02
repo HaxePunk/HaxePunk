@@ -66,6 +66,31 @@ class Graphiclist extends Graphic
 		}
 	}
 
+	/** @private Renders the Graphics in the list. */
+	override public function renderAtlas(layer:Int, point:Point, camera:Point)
+	{
+		point.x += x;
+		point.y += y;
+		camera.x *= scrollX;
+		camera.y *= scrollY;
+
+		for (g in _graphics)
+		{
+			if (g.visible)
+			{
+				if (g.relative)
+				{
+					_point.x = point.x;
+					_point.y = point.y;
+				}
+				else _point.x = _point.y = 0;
+				_camera.x = camera.x;
+				_camera.y = camera.y;
+				g.renderAtlas(layer, _point, _camera);
+			}
+		}
+	}
+
 	/**
 	 * Destroys the list of graphics
 	 */
