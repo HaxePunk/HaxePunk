@@ -12,6 +12,11 @@ import com.haxepunk.HXP;
 	import openfl.events.JoystickEvent;
 #end
 
+#if ouya
+import tv.ouya.console.api.OuyaController;
+import openfl.utils.JNI;
+#end
+
 class Input
 {
 
@@ -300,6 +305,12 @@ class Input
 			HXP.stage.addEventListener(JoystickEvent.BUTTON_DOWN, onJoyButtonDown);
 			HXP.stage.addEventListener(JoystickEvent.BUTTON_UP, onJoyButtonUp);
 			HXP.stage.addEventListener(JoystickEvent.HAT_MOVE, onJoyHatMove);
+			
+		#if ouya
+			// Initializing OuyaController
+			var getContext = JNI.createStaticMethod("org.haxe.lime.GameActivity", "getContext", "()Landroid/content/Context;",true);
+			OuyaController.init(getContext());
+		#end
 #end
 
 		#if !(flash || js)
@@ -530,7 +541,11 @@ class Input
 
 	private static function onJoyAxisMove(e:JoystickEvent)
 	{
+	#if ouya
+		var joy:Joystick = joystick(OuyaController.getPlayerNumByDeviceId(e.device));
+	#else
 		var joy:Joystick = joystick(e.device);
+	#end
 
 		joy.connected = true;
 		joy.axis = e.axis;
@@ -538,7 +553,11 @@ class Input
 
 	private static function onJoyBallMove(e:JoystickEvent)
 	{
+	#if ouya
+		var joy:Joystick = joystick(OuyaController.getPlayerNumByDeviceId(e.device));
+	#else
 		var joy:Joystick = joystick(e.device);
+	#end
 
 		joy.connected = true;
 		joy.ball.x = (Math.abs(e.x) < Joystick.deadZone) ? 0 : e.x;
@@ -547,24 +566,33 @@ class Input
 
 	private static function onJoyButtonDown(e:JoystickEvent)
 	{
+	#if ouya
+		var joy:Joystick = joystick(OuyaController.getPlayerNumByDeviceId(e.device));
+	#else
 		var joy:Joystick = joystick(e.device);
-
+	#end
 		joy.connected = true;
 		joy.buttons.set(e.id, BUTTON_PRESSED);
 	}
 
 	private static function onJoyButtonUp(e:JoystickEvent)
 	{
+	#if ouya
+		var joy:Joystick = joystick(OuyaController.getPlayerNumByDeviceId(e.device));
+	#else
 		var joy:Joystick = joystick(e.device);
-
+	#end
 		joy.connected = true;
 		joy.buttons.set(e.id, BUTTON_OFF);
 	}
 
 	private static function onJoyHatMove(e:JoystickEvent)
 	{
+	#if ouya
+		var joy:Joystick = joystick(OuyaController.getPlayerNumByDeviceId(e.device));
+	#else
 		var joy:Joystick = joystick(e.device);
-
+	#end
 		joy.connected = true;
 		joy.hat.x = (Math.abs(e.x) < Joystick.deadZone) ? 0 : e.x;
 		joy.hat.y = (Math.abs(e.y) < Joystick.deadZone) ? 0 : e.y;
