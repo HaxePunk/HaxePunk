@@ -56,6 +56,7 @@ class Canvas extends Graphic
 		_rect = new Rectangle();
 		_colorTransform = new ColorTransform();
 		_buffers = new Array<BitmapData>();
+		_midBuffers = new Array<BitmapData>();
 		angle = 0;
 		scale = scaleX = scaleY = 1;
 
@@ -98,23 +99,54 @@ class Canvas extends Graphic
 		_point.y = point.y + y - camera.y * scrollY;
 
 		_rect.x = _rect.y = 0;
-		_rect.width = _maxWidth;
-		_rect.height = _maxHeight;
+		_rect.width = _maxWidth*sx;
+		_rect.height = _maxHeight*sy;
 
 		// render the buffers
-		var xx:Int = 0, yy:Int = 0, buffer:BitmapData, px:Float = _point.x;
+		var xx:Int = 0, yy:Int = 0, buffer:BitmapData, 
+			px:Float = _point.x, py:Float=_point.y;
 		#if !bitfive target.lock(); #end
 		while (yy < _refHeight)
 		{
 			while (xx < _refWidth)
 			{
 				buffer = _buffers[_ref.getPixel(xx, yy)];
-
-				if (angle == 0 && sx == 1 && sy == 1 && blend == null && _tint == null)
+				
+				if (angle == 0 && blend == null)
 				{
-					_rect.width = buffer.width;
-					_rect.height = buffer.height;
-					target.copyPixels(buffer, _rect, _point, null, null, true);
+					if (sx == 1 && sy == 1 && _tint == null) {
+						// copy the pixels directly onto the buffer
+						_rect.width = buffer.width;
+						_rect.height = buffer.height;
+						target.copyPixels(buffer, _rect, _point, null, null, true);
+					} else {
+						// rescale first onto an intermediate buffer, then copy
+						var i = Std.int(_ref.getPixel(xx, yy));
+						var w = Std.int(buffer.width * sx);
+						var h = Std.int(buffer.height * sy);
+						var wrongSize = i >= _midBuffers.length ||
+							_midBuffers[i].width != w ||
+							_midBuffers[i].height != h;
+						if (_redrawBuffers || wrongSize) {
+							if (wrongSize) {
+								if (i < _midBuffers.length) {
+									_midBuffers[i].dispose();
+								}
+								_midBuffers[i] = HXP.createBitmap(w, h, true);
+							} else {
+								_midBuffers[i].fillRect(_midBuffers[i].rect, 0);
+							}
+							_matrix.b = _matrix.c = 0;
+							_matrix.a = sx;
+							_matrix.d = sy;
+							_matrix.tx = _matrix.ty = 0;
+							if (angle != 0) _matrix.rotate(angle * HXP.RAD);
+							
+							_midBuffers[i].draw(buffer, _matrix, _tint, blend);
+						}
+						
+						target.copyPixels(_midBuffers[i], _rect, _point, null, null, true);
+					}
 				}
 				else
 				{
@@ -130,15 +162,17 @@ class Canvas extends Graphic
 					target.draw(buffer, _matrix, _tint, blend);
 				}
 
-				_point.x += _maxWidth;
 				xx ++;
+				_point.x = px + (xx * _maxWidth * sx);
 			}
-			_point.x = px;
-			_point.y += _maxHeight;
 			xx = 0;
 			yy ++;
+			_point.x = px;
+			_point.y = py + (yy * _maxHeight * sy);
 		}
 		#if !bitfive target.unlock(); #end
+		
+		_redrawBuffers = false;
 	}
 
 	/**
@@ -151,6 +185,7 @@ class Canvas extends Graphic
 	public function draw(x:Int, y:Int, source:BitmapData, rect:Rectangle = null)
 	{
 		var xx:Int = 0, yy:Int = 0;
+		var i = 0;
 		for (buffer in _buffers)
 		{
 			_point.x = x - xx;
@@ -163,6 +198,7 @@ class Canvas extends Graphic
 				yy += _maxHeight;
 			}
 		}
+		_redrawBuffers = true;
 	}
 
 	/**
@@ -308,6 +344,7 @@ class Canvas extends Graphic
 		_tint.greenMultiplier = _green;
 		_tint.blueMultiplier = _blue;
 		_tint.alphaMultiplier = _alpha;
+		_redrawBuffers = true;
 		return _color;
 	}
 
@@ -332,6 +369,7 @@ class Canvas extends Graphic
 		_tint.greenMultiplier = _green;
 		_tint.blueMultiplier = _blue;
 		_tint.alphaMultiplier = _alpha;
+		_redrawBuffers = true;
 		return _alpha;
 	}
 
@@ -359,6 +397,8 @@ class Canvas extends Graphic
 
 	// Buffer information.
 	private var _buffers:Array<BitmapData>;
+	private var _midBuffers:Array<BitmapData>;
+	private var _redrawBuffers:Bool=false;
 	private var _width:Int;
 	private var _height:Int;
 	private var _maxWidth:Int = 4000;
