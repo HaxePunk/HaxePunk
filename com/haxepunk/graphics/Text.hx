@@ -160,6 +160,14 @@ class Text extends Image
 			_region = Atlas.loadImageAsRegion(_source);
 		}
 	}
+	
+	override public function destroy()
+	{
+		if (_textHardware && _region != null)
+		{
+			_region.destroy();
+		}
+	}
 
 	/**
 	 * Text string.
