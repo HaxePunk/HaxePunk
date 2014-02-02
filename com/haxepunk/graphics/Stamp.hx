@@ -56,7 +56,7 @@ class Stamp extends Graphic
 
 	private inline function setAtlasRegion(region:AtlasRegion)
 	{
-		_blit = false;
+		blit = false;
 		_region = region;
 
 		if (_region == null)
@@ -70,7 +70,7 @@ class Stamp extends Graphic
 		if (bitmap == null)
 			throw "Invalid source image.";
 
-		_blit = true;
+		blit = true;
 		_sourceRect = bitmap.rect;
 		_source = bitmap;
 	}
@@ -81,28 +81,29 @@ class Stamp extends Graphic
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;
 
-		if (_blit)
-		{
-			target.copyPixels(_source, _sourceRect, _point, null, null, true);
-		}
-		else
-		{
-			var sx = HXP.screen.fullScaleX, sy = HXP.screen.fullScaleY;
-			_region.draw(Math.floor(_point.x * sx), Math.floor(_point.y * sy), layer, sx, sy);
-		}
+		target.copyPixels(_source, _sourceRect, _point, null, null, true);
+	}
+
+	public override function renderAtlas(layer:Int, point:Point, camera:Point)
+	{
+		_point.x = point.x + x - camera.x * scrollX;
+		_point.y = point.y + y - camera.y * scrollY;
+
+		var sx = HXP.screen.fullScaleX, sy = HXP.screen.fullScaleY;
+		_region.draw(Math.floor(_point.x * sx), Math.floor(_point.y * sy), layer, sx, sy);
 	}
 
 	/**
 	 * Width of the image.
 	 */
 	public var width(get_width, never):Int;
-	private function get_width():Int { return Std.int(_blit ? _source.width : _region.width); }
+	private function get_width():Int { return Std.int(blit ? _source.width : _region.width); }
 
 	/**
 	 * Height of the image.
 	 */
 	public var height(get_height, never):Int;
-	private function get_height():Int { return Std.int(_blit ? _source.height : _region.height); }
+	private function get_height():Int { return Std.int(blit ? _source.height : _region.height); }
 
 	// Stamp information.
 	private var _source:BitmapData;

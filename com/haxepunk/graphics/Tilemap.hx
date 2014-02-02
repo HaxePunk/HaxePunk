@@ -71,26 +71,26 @@ class Tilemap extends Canvas
 		// load the tileset graphic
 		if (Std.is(tileset, TileAtlas))
 		{
-			_blit = false;
+			blit = false;
 			_atlas = cast(tileset, TileAtlas);
 		}
 		else
 		{
 			if (HXP.renderMode == RenderMode.HARDWARE)
 			{
-				_blit = false;
+				blit = false;
 				_atlas = new TileAtlas(tileset, tileWidth, tileHeight,tileSpacingWidth,tileSpacingHeight);
 			}
 			else
 			{
 				if (Std.is(tileset, BitmapData))
 				{
-					_blit = true;
+					blit = true;
 					_set = tileset;
 				}
 				else
 				{
-					_blit = true;
+					blit = true;
 					_set = HXP.getBitmap(tileset);
 				}
 			}
@@ -99,7 +99,7 @@ class Tilemap extends Canvas
 		if (_set == null && _atlas == null)
 			throw "Invalid tileset graphic provided.";
 
-		if (_blit)
+		if (blit)
 		{
 			_setColumns = Std.int(_set.width / tileWidth);
 			_setRows = Std.int(_set.height / tileHeight);
@@ -129,7 +129,7 @@ class Tilemap extends Canvas
 		column %= _columns;
 		row %= _rows;
 		_map[row][column] = index;
-		if (_blit)
+		if (blit)
 		{
 			_tile.x = (index % _setColumns) * (_tile.width + _tileSpacingWidth);
 			_tile.y = Std.int(index / _setColumns) * (_tile.height + _tileSpacingHeight);
@@ -152,7 +152,7 @@ class Tilemap extends Canvas
 		column %= _columns;
 		row %= _rows;
 		_map[row][column] = -1;
-		if (_blit)
+		if (blit)
 		{
 			_tile.x = column * _tile.width;
 			_tile.y = row * _tile.height;
@@ -257,7 +257,7 @@ class Tilemap extends Canvas
 	 */
 	public function loadFrom2DArray(array:Array2D):Void
 	{
-		if (_blit)
+		if (blit)
 		{
 			for (y in 0...array.length)
 			 {
@@ -291,7 +291,7 @@ class Tilemap extends Canvas
 			{
 				if (col[x] == '') continue;
 
-				if (_blit)
+				if (blit)
 					setTile(x, y, Std.parseInt(col[x]));
 				_map[y][x] = Std.parseInt(col[x]);
 			}
@@ -441,60 +441,53 @@ class Tilemap extends Canvas
 		usePositions = u;
 	}
 
-	public override function render(target:BitmapData, point:Point, camera:Point)
+	public override function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
-		if (_blit)
+		// determine drawing location
+		_point.x = point.x + x - camera.x * scrollX;
+		_point.y = point.y + y - camera.y * scrollY;
+
+		var scalex:Float = HXP.screen.fullScaleX, scaley:Float = HXP.screen.fullScaleY,
+			tw:Int = Math.ceil(tileWidth), th:Int = Math.ceil(tileHeight);
+
+		var scx = scale * scaleX,
+			scy = scale * scaleY;
+
+		// determine start and end tiles to draw (optimization)
+		var startx = Math.floor( -_point.x / (tw * scx)),
+			starty = Math.floor( -_point.y / (th * scy)),
+			destx = startx + 1 + Math.ceil(HXP.width / (tw * scx)),
+			desty = starty + 1 + Math.ceil(HXP.height / (th * scy));
+
+		// nothing will render if we're completely off screen
+		if (startx > _columns || starty > _rows || destx < 0 || desty < 0)
+			return;
+
+		// clamp values to boundaries
+		if (startx < 0) startx = 0;
+		if (destx > _columns) destx = _columns;
+		if (starty < 0) starty = 0;
+		if (desty > _rows) desty = _rows;
+
+		var wx:Int, sx:Int = Math.floor((_point.x + startx * tw * scx) * scalex),
+			wy:Int = Math.floor((_point.y + starty * th * scy) * scaley),
+			stepx:Int = Math.floor(tw * scx * scalex),
+			stepy:Int = Math.floor(th * scy * scaley),
+			tile:Int = 0;
+
+		for (y in starty...desty)
 		{
-			super.render(target, point, camera);
-		}
-		else
-		{
-			// determine drawing location
-			_point.x = point.x + x - camera.x * scrollX;
-			_point.y = point.y + y - camera.y * scrollY;
-
-			var scalex:Float = HXP.screen.fullScaleX, scaley:Float = HXP.screen.fullScaleY,
-				tw:Int = Math.ceil(tileWidth), th:Int = Math.ceil(tileHeight);
-
-			var scx = scale * scaleX,
-				scy = scale * scaleY;
-
-			// determine start and end tiles to draw (optimization)
-			var startx = Math.floor( -_point.x / (tw * scx)),
-				starty = Math.floor( -_point.y / (th * scy)),
-				destx = startx + 1 + Math.ceil(HXP.width / (tw * scx)),
-				desty = starty + 1 + Math.ceil(HXP.height / (th * scy));
-
-			// nothing will render if we're completely off screen
-			if (startx > _columns || starty > _rows || destx < 0 || desty < 0)
-				return;
-
-			// clamp values to boundaries
-			if (startx < 0) startx = 0;
-			if (destx > _columns) destx = _columns;
-			if (starty < 0) starty = 0;
-			if (desty > _rows) desty = _rows;
-
-			var wx:Int, sx:Int = Math.floor((_point.x + startx * tw * scx) * scalex),
-				wy:Int = Math.floor((_point.y + starty * th * scy) * scaley),
-				stepx:Int = Math.floor(tw * scx * scalex),
-				stepy:Int = Math.floor(th * scy * scaley),
-				tile:Int = 0;
-
-			for (y in starty...desty)
+			wx = sx;
+			for (x in startx...destx)
 			{
-				wx = sx;
-				for (x in startx...destx)
+				tile = _map[y % _rows][x % _columns];
+				if (tile >= 0)
 				{
-					tile = _map[y % _rows][x % _columns];
-					if (tile >= 0)
-					{
-						_atlas.prepareTile(tile, wx, wy, layer, scx * scalex, scy * scaley, 0, _red, _green, _blue, alpha);
-					}
-					wx += stepx;
+					_atlas.prepareTile(tile, wx, wy, layer, scx * scalex, scy * scaley, 0, _red, _green, _blue, alpha);
 				}
-				wy += stepy;
+				wx += stepx;
 			}
+			wy += stepy;
 		}
 	}
 

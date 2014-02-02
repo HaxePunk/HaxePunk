@@ -115,14 +115,14 @@ class Image extends Graphic
 		{
 			if (clipRect.width == 0) clipRect.width = _sourceRect.width;
 			if (clipRect.height == 0) clipRect.height = _sourceRect.height;
-			if (!_blit)
+			if (!blit)
 			{
 				_region = _region.clip(clipRect); // create a new clipped region
 			}
 			_sourceRect = clipRect;
 		}
 
-		if (_blit)
+		if (blit)
 		{
 			_bitmap = new Bitmap();
 			_colorTransform = new ColorTransform();
@@ -134,14 +134,14 @@ class Image extends Graphic
 
 	private inline function setAtlasRegion(region:AtlasRegion)
 	{
-		_blit = false;
+		blit = false;
 		_region = region;
 		_sourceRect = new Rectangle(0, 0, _region.width, _region.height);
 	}
 
 	private inline function setBitmapSource(bitmap:BitmapData)
 	{
-		_blit = true;
+		blit = true;
 		_sourceRect = bitmap.rect;
 		_source = bitmap;
 	}
@@ -178,78 +178,82 @@ class Image extends Graphic
 		_point.x = point.x + x - originX - camera.x * scrollX;
 		_point.y = point.y + y - originY - camera.y * scrollY;
 
-		if (_blit)
+		// only draw if buffer exists
+		if (_buffer != null)
 		{
-			// only draw if buffer exists
-			if (_buffer != null)
+			if (angle == 0 && sx == 1 && sy == 1 && blend == null)
 			{
-				if (angle == 0 && sx == 1 && sy == 1 && blend == null)
-				{
-					// render without transformation
-					target.copyPixels(_buffer, _bufferRect, _point, null, null, true);
-				}
-				else
-				{
-					// render with transformation
-					_matrix.b = _matrix.c = 0;
-					_matrix.a = sx;
-					_matrix.d = sy;
-					_matrix.tx = -originX * sx;
-					_matrix.ty = -originY * sy;
-					if (angle != 0) _matrix.rotate(angle * HXP.RAD);
-					_matrix.tx += originX + _point.x;
-					_matrix.ty += originY + _point.y;
-					target.draw(_bitmap, _matrix, null, blend, null, _bitmap.smoothing);
-				}
-			}
-		}
-		else // _blit
-		{
-			var fsx = HXP.screen.fullScaleX,
-				fsy = HXP.screen.fullScaleY;
-
-			if (angle == 0)
-			{
-				// UGH... recalculation of _point for scaled origins
-				if (!(sx == 1 && sy == 1))
-				{
-					_point.x = (point.x + x - originX * sx - camera.x * scrollX);
-					_point.y = (point.y + y - originY * sy - camera.y * scrollY);
-				}
-
-				if (_flipped) _point.x += _sourceRect.width * sx;
-
-				_point.x = Math.floor(_point.x * fsx);
-				_point.y = Math.floor(_point.y * fsy);
-
-				// render without rotation
-				_region.draw(_point.x, _point.y, layer,
-					sx * fsx * (_flipped ? -1 : 1), sy * fsy, angle,
-					_red, _green, _blue, _alpha);
+				// render without transformation
+				target.copyPixels(_buffer, _bufferRect, _point, null, null, true);
 			}
 			else
 			{
-				var theta = angle * HXP.RAD;
-				var cos = Math.cos(theta);
-				var sin = Math.sin(theta);
-
-				if (flipped) sx *= -1;
-
-				// optimized matrix math
-				var b = sx * fsx * sin;
-				var a = sx * fsx * cos;
-
-				var d = sy * fsy * cos;
-				var c = sy * fsy * -sin;
-
-				var tx = -originX * sx,
-					ty = -originY * sy;
-				var tx1 = tx * cos - ty * sin;
-				ty = ((tx * sin + ty * cos) + originY + _point.y) * fsy;
-				tx = (tx1 + originX + _point.x) * fsx;
-
-				_region.drawMatrix(Std.int(tx), Std.int(ty), a, b, c, d, layer, _red, _green, _blue, _alpha);
+				// render with transformation
+				_matrix.b = _matrix.c = 0;
+				_matrix.a = sx;
+				_matrix.d = sy;
+				_matrix.tx = -originX * sx;
+				_matrix.ty = -originY * sy;
+				if (angle != 0) _matrix.rotate(angle * HXP.RAD);
+				_matrix.tx += originX + _point.x;
+				_matrix.ty += originY + _point.y;
+				target.draw(_bitmap, _matrix, null, blend, null, _bitmap.smoothing);
 			}
+		}
+	}
+
+	public override function renderAtlas(layer:Int, point:Point, camera:Point)
+	{
+		var sx = scale * scaleX,
+			sy = scale * scaleY,
+			fsx = HXP.screen.fullScaleX,
+			fsy = HXP.screen.fullScaleY;
+
+		// determine drawing location
+		_point.x = point.x + x - originX - camera.x * scrollX;
+		_point.y = point.y + y - originY - camera.y * scrollY;
+
+		if (angle == 0)
+		{
+			// UGH... recalculation of _point for scaled origins
+			if (!(sx == 1 && sy == 1))
+			{
+				_point.x = (point.x + x - originX * sx - camera.x * scrollX);
+				_point.y = (point.y + y - originY * sy - camera.y * scrollY);
+			}
+
+			if (_flipped) _point.x += _sourceRect.width * sx;
+
+			_point.x = Math.floor(_point.x * fsx);
+			_point.y = Math.floor(_point.y * fsy);
+
+			// render without rotation
+			_region.draw(_point.x, _point.y, layer,
+				sx * fsx * (_flipped ? -1 : 1), sy * fsy, angle,
+				_red, _green, _blue, _alpha);
+		}
+		else
+		{
+			var theta = angle * HXP.RAD;
+			var cos = Math.cos(theta);
+			var sin = Math.sin(theta);
+
+			if (flipped) sx *= -1;
+
+			// optimized matrix math
+			var b = sx * fsx * sin;
+			var a = sx * fsx * cos;
+
+			var d = sy * fsy * cos;
+			var c = sy * fsy * -sin;
+
+			var tx = -originX * sx,
+				ty = -originY * sy;
+			var tx1 = tx * cos - ty * sin;
+			ty = ((tx * sin + ty * cos) + originY + _point.y) * fsy;
+			tx = (tx1 + originX + _point.x) * fsx;
+
+			_region.drawMatrix(Std.int(tx), Std.int(ty), a, b, c, d, layer, _red, _green, _blue, _alpha);
 		}
 	}
 
@@ -347,7 +351,7 @@ class Image extends Graphic
 		value = value < 0 ? 0 : (value > 1 ? 1 : value);
 		if (_alpha == value) return value;
 		_alpha = value;
-		if (_blit)
+		if (blit)
 		{
 			if (_alpha == 1 && _color == 0xFFFFFF)
 			{
@@ -380,7 +384,7 @@ class Image extends Graphic
 		_red = HXP.getRed(_color) / 255;
 		_green = HXP.getGreen(_color) / 255;
 		_blue = HXP.getBlue(_color) / 255;
-		if (_blit)
+		if (blit)
 		{
 			if (_alpha == 1 && _color == 0xFFFFFF)
 			{
@@ -410,7 +414,7 @@ class Image extends Graphic
 		if (_flipped == value || _class == "") return value;
 
 		_flipped = value;
-		if (_blit)
+		if (blit)
 		{
 			var temp:BitmapData = _source;
 			if (!value || _flip != null)
@@ -477,13 +481,13 @@ class Image extends Graphic
 	 * Width of the image.
 	 */
 	public var width(get_width, never):Int;
-	private function get_width():Int { return Std.int(_blit ? _bufferRect.width : (!_region.rotated ? _region.width : _region.height)); }
+	private function get_width():Int { return Std.int(blit ? _bufferRect.width : (!_region.rotated ? _region.width : _region.height)); }
 
 	/**
 	 * Height of the image.
 	 */
 	public var height(get_height, never):Int;
-	private function get_height():Int { return Std.int(_blit ? _bufferRect.height : (!_region.rotated ? _region.height : _region.width)); }
+	private function get_height():Int { return Std.int(blit ? _bufferRect.height : (!_region.rotated ? _region.height : _region.width)); }
 
 	/**
 	 * The scaled width of the image.

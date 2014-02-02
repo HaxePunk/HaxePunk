@@ -177,7 +177,14 @@ class Entity extends Tweener
 			else _point.x = _point.y = 0;
 			_camera.x = _scene == null ? HXP.camera.x : _scene.camera.x;
 			_camera.y = _scene == null ? HXP.camera.y : _scene.camera.y;
-			_graphic.render((renderTarget != null) ? renderTarget : HXP.buffer, _point, _camera);
+			if (_graphic.blit)
+			{
+				_graphic.render((renderTarget != null) ? renderTarget : HXP.buffer, _point, _camera);
+			}
+			else
+			{
+				_graphic.renderAtlas(layer, _point, _camera);
+			}
 		}
 	}
 
@@ -542,10 +549,6 @@ class Entity extends Tweener
 	private function set_layer(value:Int):Int
 	{
 		if (_layer == value) return _layer;
-		if (_graphic != null)
-		{
-			_graphic.setEntity(this); // reset layer
-		}
 		if (_scene == null)
 		{
 			_layer = value;
@@ -601,12 +604,7 @@ class Entity extends Tweener
 		if (_graphic == value) return value;
 		if (_graphic != null)
 		{
-			_graphic.setEntity(null);
 			_graphic.destroy();
-		}
-		if (value != null)
-		{
-			value.setEntity(this);
 		}
 		_graphic = value;
 		return _graphic;

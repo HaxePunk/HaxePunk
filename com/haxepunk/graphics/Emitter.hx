@@ -88,7 +88,7 @@ class Emitter extends Graphic
 
 	private inline function setBitmapSource(bitmap:BitmapData)
 	{
-		_blit = true;
+		blit = true;
 		_source = bitmap;
 		_width = Std.int(bitmap.width);
 		_height = Std.int(bitmap.height);
@@ -96,7 +96,7 @@ class Emitter extends Graphic
 
 	private inline function setAtlasRegion(region:AtlasRegion):AtlasRegion
 	{
-		_blit = false;
+		blit = false;
 		_width = Std.int(region.width);
 		_height = Std.int(region.height);
 		return region;
@@ -114,7 +114,7 @@ class Emitter extends Graphic
 
 		// loop through the particles
 		while (p != null)
-		{			
+		{
 			p._time += e; // Update particle time elapsed
 			if (p._time >= p._duration) // remove on time-out
 			{
@@ -168,55 +168,87 @@ class Emitter extends Graphic
 			_p.y = _point.y + p._y + p._moveY * (type._backwards ? 1 - td : td);
 			p._moveY += p._gravity * td;
 
-			if (_blit)
+			rect = type._frame;
+
+			// get frame
+			if (type._frames.length == 0)
+				rect.x = 0;
+			else
+				rect.x = rect.width * type._frames[Std.int(td * type._frames.length)];
+			rect.y = Std.int(rect.x / _width) * rect.height;
+			rect.x %= _width;
+
+			// particles should be emited from the emiter's center
+			_p.x -= rect.width / 2;
+			_p.y -= rect.height / 2;
+
+			// draw particle
+			if (type._buffer != null)
 			{
-				rect = type._frame;
+				// get alpha
+				_tint.alphaMultiplier = type._alpha + type._alphaRange * ((type._alphaEase == null) ? t : type._alphaEase(t));
 
-				// get frame
-				if (type._frames.length == 0)
-					rect.x = 0;
-				else
-					rect.x = rect.width * type._frames[Std.int(td * type._frames.length)];
-				rect.y = Std.int(rect.x / _width) * rect.height;
-				rect.x %= _width;
-
-				// particles should be emited from the emiter's center
-				_p.x -= rect.width / 2;
-				_p.y -= rect.height / 2;
+				// get color
+				td = (type._colorEase == null) ? t : type._colorEase(t);
+				_tint.redMultiplier = type._red + type._redRange * td;
+				_tint.greenMultiplier = type._green + type._greenRange * td;
+				_tint.blueMultiplier  = type._blue + type._blueRange * td;
+				type._buffer.fillRect(type._bufferRect, HXP.blackColor);
+				type._buffer.copyPixels(_source, rect, HXP.zero);
+				type._buffer.colorTransform(type._bufferRect, _tint);
 
 				// draw particle
-				if (type._buffer != null)
-				{
-					// get alpha
-					_tint.alphaMultiplier = type._alpha + type._alphaRange * ((type._alphaEase == null) ? t : type._alphaEase(t));
-
-					// get color
-					td = (type._colorEase == null) ? t : type._colorEase(t);
-					_tint.redMultiplier = type._red + type._redRange * td;
-					_tint.greenMultiplier = type._green + type._greenRange * td;
-					_tint.blueMultiplier  = type._blue + type._blueRange * td;
-					type._buffer.fillRect(type._bufferRect, HXP.blackColor);
-					type._buffer.copyPixels(_source, rect, HXP.zero);
-					type._buffer.colorTransform(type._bufferRect, _tint);
-
-					// draw particle
-					target.copyPixels(type._buffer, type._bufferRect, _p, null, null, true);
-				}
-				else
-				{
-					target.copyPixels(_source, rect, _p, null, null, true);
-				}
+				target.copyPixels(type._buffer, type._bufferRect, _p, null, null, true);
 			}
-			else // _blit
+			else
 			{
-				var frameIndex:Int = type._frames[Std.int(td * type._frames.length)];
-				_frames[frameIndex].draw(Math.floor(_p.x * scaleX), Math.floor(_p.y * scaleY), layer,
-					scaleX, scaleY, type._angle,
-					type._red + type._redRange * td,
-					type._green + type._greenRange * td,
-					type._blue + type._blueRange * td,
-					type._alpha + type._alphaRange * ((type._alphaEase == null) ? t : type._alphaEase(t)));
+				target.copyPixels(_source, rect, _p, null, null, true);
 			}
+
+			// get next particle
+			p = p._next;
+		}
+	}
+
+	public override function renderAtlas(layer:Int, point:Point, camera:Point)
+	{
+		// quit if there are no particles
+		if (_particle == null) return;
+
+		// get rendering position
+		_point.x = point.x + x - camera.x * scrollX;
+		_point.y = point.y + y - camera.y * scrollY;
+
+		// particle info
+		var t:Float, td:Float,
+			p:Particle = _particle,
+			scaleX:Float = HXP.screen.fullScaleX,
+			scaleY:Float = HXP.screen.fullScaleY,
+			type:ParticleType,
+			rect:Rectangle;
+
+		// loop through the particles
+		while (p != null)
+		{
+			// get time scale
+			t = p._time / p._duration;
+
+			// get particle type
+			type = p._type;
+
+			// get position
+			td = (type._ease == null) ? t : type._ease(t);
+			_p.x = _point.x + p._x + p._moveX * (type._backwards ? 1 - td : td);
+			_p.y = _point.y + p._y + p._moveY * (type._backwards ? 1 - td : td);
+			p._moveY += p._gravity * td;
+
+			var frameIndex:Int = type._frames[Std.int(td * type._frames.length)];
+			_frames[frameIndex].draw(Math.floor(_p.x * scaleX), Math.floor(_p.y * scaleY), layer,
+				scaleX, scaleY, type._angle,
+				type._red + type._redRange * td,
+				type._green + type._greenRange * td,
+				type._blue + type._blueRange * td,
+				type._alpha + type._alphaRange * ((type._alphaEase == null) ? t : type._alphaEase(t)));
 
 			// get next particle
 			p = p._next;

@@ -49,20 +49,20 @@ class Spritemap extends Image
 		_rect = new Rectangle(0, 0, frameWidth, frameHeight);
 		if (Std.is(source, TileAtlas))
 		{
-			_blit = false;
+			blit = false;
 			_atlas = cast(source, TileAtlas);
 			_region = _atlas.getRegion(_frame);
 		}
 		else if (HXP.renderMode == RenderMode.HARDWARE)
 		{
-			_blit = false;
+			blit = false;
 			_atlas = new TileAtlas(source, frameWidth, frameHeight);
 			_region = _atlas.getRegion(_frame);
 		}
 
 		super(source, _rect, name);
 
-		if (_blit)
+		if (blit)
 		{
 			_width = _source.width;
 			_height = _source.height;
@@ -92,7 +92,7 @@ class Spritemap extends Image
 	 */
 	override public function updateBuffer(clearBefore:Bool = false)
 	{
-		if (_blit)
+		if (blit)
 		{
 			// get position of the current frame
 			if (_width > 0 && _height > 0) {

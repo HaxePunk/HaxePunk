@@ -49,9 +49,9 @@ class Graphic
 	public var relative:Bool;
 
 	/**
-	 * The layer to use for rendering, should only be set by the Entity
+	 * If we can blit the graphic or not (flash/html5)
 	 */
-	private var layer(default, set_layer):Int;
+	public var blit(default, null):Bool;
 
 	/**
 	 * Constructor.
@@ -65,7 +65,6 @@ class Graphic
 		relative = true;
 		_scroll = true;
 		_point = new Point();
-		layer = 0;
 	}
 
 	/**
@@ -89,11 +88,13 @@ class Graphic
 	 */
 	public function render(target:BitmapData, point:Point, camera:Point) { }
 
-	public function setEntity(entity:Entity)
-	{
-		_entity = entity;
-		layer = entity != null ? entity.layer : 0;
-	}
+	/**
+	 * Renders the graphic as an atlas.
+	 * @param  layer      The layer to draw to.
+	 * @param  point      The position to draw the graphic.
+	 * @param  camera     The camera offset.
+	 */
+	public function renderAtlas(layer:Int, point:Point, camera:Point) { }
 
 	/**
 	 * Pause updating this graphic.
@@ -111,19 +112,10 @@ class Graphic
 		active = true;
 	}
 
-	private function set_layer(value:Int):Int
-	{
-		return layer = value;
-	}
-
 	// Graphic information.
 	private var _scroll:Bool;
 	private var _point:Point;
 	private var _entity:Entity;
 
-	/**
-	 * If we can blit the graphic or not (flash/html5)
-	 */
-	private var _blit:Bool;
 	private var _visible:Bool;
 }

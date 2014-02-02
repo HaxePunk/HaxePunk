@@ -95,25 +95,24 @@ class PreRotation extends Image
 	/** Renders the PreRotated graphic. */
 	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
-		if (_blit)
+		frameAngle %= 360;
+		if (frameAngle < 0) frameAngle += 360;
+		_current = Math.floor(_frameCount * frameAngle / 360);
+		if (_last != _current)
 		{
-			frameAngle %= 360;
-			if (frameAngle < 0) frameAngle += 360;
-			_current = Math.floor(_frameCount * frameAngle / 360);
-			if (_last != _current)
-			{
-				_last = _current;
-				_frame.x = _frame.width * _last;
-				_frame.y = Std.int(_frame.x / _width) * _frame.height;
-				_frame.x %= _width;
-				updateBuffer();
-			}
-		}
-		else
-		{
-			angle = frameAngle;
+			_last = _current;
+			_frame.x = _frame.width * _last;
+			_frame.y = Std.int(_frame.x / _width) * _frame.height;
+			_frame.x %= _width;
+			updateBuffer();
 		}
 		super.render(target, point, camera);
+	}
+
+	public override function renderAtlas(layer:Int, point:Point, camera:Point)
+	{
+		angle = frameAngle;
+		super.renderAtlas(layer, point, camera);
 	}
 
 	// Rotation information.

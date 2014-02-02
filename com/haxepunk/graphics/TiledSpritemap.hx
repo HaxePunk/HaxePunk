@@ -41,7 +41,7 @@ class TiledSpritemap extends Spritemap
 	/** @private Updates the buffer. */
 	override public function updateBuffer(clearBefore:Bool = false)
 	{
-		if (_blit)
+		if (blit)
 		{
 			// get position of the current frame
 			_rect.x = _rect.width * _frame;
@@ -77,38 +77,31 @@ class TiledSpritemap extends Spritemap
 	}
 
 	/** Renders the image. */
-	override public function render(target:BitmapData, point:Point, camera:Point)
+	public override function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
-		if (_blit)
-		{
-			super.render(target, point, camera);
-		}
-		else // _blit
-		{
-			// determine drawing location
-			_point.x = point.x + x - originX - camera.x * scrollX;
-			_point.y = point.y + y - originY - camera.y * scrollY;
+		// determine drawing location
+		_point.x = point.x + x - originX - camera.x * scrollX;
+		_point.y = point.y + y - originY - camera.y * scrollY;
 
-			// TODO: properly handle flipped tiled spritemaps
-			if (_flipped) _point.x += _sourceRect.width;
-			var fsx = HXP.screen.fullScaleX,
-				fsy = HXP.screen.fullScaleY,
-				sx = fsx * scale * scaleX,
-				sy = fsy * scale * scaleY,
-				x = 0.0, y = 0.0;
+		// TODO: properly handle flipped tiled spritemaps
+		if (_flipped) _point.x += _sourceRect.width;
+		var fsx = HXP.screen.fullScaleX,
+			fsy = HXP.screen.fullScaleY,
+			sx = fsx * scale * scaleX,
+			sy = fsy * scale * scaleY,
+			x = 0.0, y = 0.0;
 
-			while (y < _imageHeight)
+		while (y < _imageHeight)
+		{
+			while (x < _imageWidth)
 			{
-				while (x < _imageWidth)
-				{
-					_region.draw(Math.floor((_point.x + x) * fsx), Math.floor((_point.y + y) * fsy),
-						layer, sx * (_flipped ? -1 : 1), sy, angle,
-						_red, _green, _blue, _alpha);
-					x += _sourceRect.width;
-				}
-				x = 0;
-				y += _sourceRect.height;
+				_region.draw(Math.floor((_point.x + x) * fsx), Math.floor((_point.y + y) * fsy),
+					layer, sx * (_flipped ? -1 : 1), sy, angle,
+					_red, _green, _blue, _alpha);
+				x += _sourceRect.width;
 			}
+			x = 0;
+			y += _sourceRect.height;
 		}
 	}
 

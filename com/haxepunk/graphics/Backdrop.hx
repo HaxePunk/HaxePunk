@@ -43,7 +43,7 @@ class Backdrop extends Canvas
 
 		super(HXP.width * (repeatX ? 1 : 0) + _textWidth, HXP.height * (repeatY ? 1 : 0) + _textHeight);
 
-		if (_blit)
+		if (blit)
 		{
 			HXP.rect.x = HXP.rect.y = 0;
 			HXP.rect.width = _width;
@@ -54,7 +54,7 @@ class Backdrop extends Canvas
 
 	private inline function setAtlasRegion(region:AtlasRegion)
 	{
-		_blit = false;
+		blit = false;
 		_region = region;
 		_textWidth = Std.int(region.width);
 		_textHeight = Std.int(region.height);
@@ -62,7 +62,7 @@ class Backdrop extends Canvas
 
 	private inline function setBitmapSource(bitmap:BitmapData)
 	{
-		_blit = true;
+		blit = true;
 		_source = bitmap;
 		_textWidth = _source.width;
 		_textHeight = _source.height;
@@ -86,29 +86,42 @@ class Backdrop extends Canvas
 			if (_point.y > 0) _point.y -= _textHeight;
 		}
 
-		if (_blit)
-		{
-			_x = x; _y = y;
-			x = y = 0;
-			super.render(target, _point, HXP.zero);
-			x = _x; y = _y;
-		}
-		else
-		{
-			var sx = HXP.screen.fullScaleX, sy = HXP.screen.fullScaleY,
-				px = _point.x * sx, py = _point.y * sy;
+		_x = x; _y = y;
+		x = y = 0;
+		super.render(target, _point, HXP.zero);
+		x = _x; y = _y;
+	}
 
-			var y:Float = 0;
-			while (y < _height * sy)
+	public override function renderAtlas(layer:Int, point:Point, camera:Point)
+	{
+		_point.x = point.x + x - camera.x * scrollX;
+		_point.y = point.y + y - camera.y * scrollY;
+
+		if (_repeatX)
+		{
+			_point.x %= _textWidth;
+			if (_point.x > 0) _point.x -= _textWidth;
+		}
+
+		if (_repeatY)
+		{
+			_point.y %= _textHeight;
+			if (_point.y > 0) _point.y -= _textHeight;
+		}
+
+		var sx = HXP.screen.fullScaleX, sy = HXP.screen.fullScaleY,
+			px = _point.x * sx, py = _point.y * sy;
+
+		var y:Float = 0;
+		while (y < _height * sy)
+		{
+			var x:Float = 0;
+			while (x < _width * sx)
 			{
-				var x:Float = 0;
-				while (x < _width * sx)
-				{
-					_region.draw(Math.floor(px + x), Math.floor(py + y), layer, sx, sy, 0, _red, _green, _blue, _alpha);
-					x += _textWidth * sx;
-				}
-				y += _textHeight * sy;
+				_region.draw(Math.floor(px + x), Math.floor(py + y), layer, sx, sy, 0, _red, _green, _blue, _alpha);
+				x += _textWidth * sx;
 			}
+			y += _textHeight * sy;
 		}
 	}
 
