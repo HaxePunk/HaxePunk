@@ -231,15 +231,12 @@ class Input
 	public static var touches(get_touches, never):Map<Int,Touch>;
 	private static inline function get_touches():Map<Int,Touch> { return _touches; }
 
-	// preventing null-pointer crashes
-	private static var _virtualJoystick : Joystick = new Joystick();
-	
 	/**
 	 * Returns a joystick object (creates one if not connected)
-	 * @param  id The id of the gamepad, starting with 0 (does not necassarily start from 0 for Ouya controllers)
+	 * @param  id The id of the joystick, starting with 0
 	 * @return    A Joystick object
 	 */
-	private static function _joystick(id:Int):Joystick
+	public static function joystick(id:Int):Joystick
 	{
 		var joy:Joystick = _joysticks.get(id);
 		if (joy == null)
@@ -249,34 +246,7 @@ class Input
 		}
 		return joy;
 	}
-	
-	/**
-	 * Returns the Joystick object of the gamepad of player number #
-	 * @param	playerNumber The number of the player, from 1 up to 4 (in that order). 
-	 * @return 	A Joystick object
-	 */
-	public static function joystick(playerNumber:Int):Joystick
-	{
-		if (playerNumber < 1 || playerNumber > 4)
-		{
-			trace("The player number should be between 1, 2, 3 or 4!");
-			return virtualJoystick;
-		}
-		
-		var id:Int = 1;
-		for (i in _joysticks.keys())
-		{
-			if (playerNumber==id)
-			{
-				return _joysticks.get(i);
-			}
-			
-			id ++;
-		}
-		
-		return virtualJoystick;
-	}
-	
+
 	/**
 	 * Returns the number of connected joysticks
 	 */
@@ -560,7 +530,7 @@ class Input
 
 	private static function onJoyAxisMove(e:JoystickEvent)
 	{
-		var joy:Joystick = _joystick(e.device);
+		var joy:Joystick = joystick(e.device);
 
 		joy.connected = true;
 		joy.axis = e.axis;
@@ -568,7 +538,7 @@ class Input
 
 	private static function onJoyBallMove(e:JoystickEvent)
 	{
-		var joy:Joystick = _joystick(e.device);
+		var joy:Joystick = joystick(e.device);
 
 		joy.connected = true;
 		joy.ball.x = (Math.abs(e.x) < Joystick.deadZone) ? 0 : e.x;
@@ -577,7 +547,7 @@ class Input
 
 	private static function onJoyButtonDown(e:JoystickEvent)
 	{
-		var joy:Joystick = _joystick(e.device);
+		var joy:Joystick = joystick(e.device);
 
 		joy.connected = true;
 		joy.buttons.set(e.id, BUTTON_PRESSED);
@@ -585,7 +555,7 @@ class Input
 
 	private static function onJoyButtonUp(e:JoystickEvent)
 	{
-		var joy:Joystick = _joystick(e.device);
+		var joy:Joystick = joystick(e.device);
 
 		joy.connected = true;
 		joy.buttons.set(e.id, BUTTON_OFF);
@@ -593,7 +563,7 @@ class Input
 
 	private static function onJoyHatMove(e:JoystickEvent)
 	{
-		var joy:Joystick = _joystick(e.device);
+		var joy:Joystick = joystick(e.device);
 
 		joy.connected = true;
 		joy.hat.x = (Math.abs(e.x) < Joystick.deadZone) ? 0 : e.x;
