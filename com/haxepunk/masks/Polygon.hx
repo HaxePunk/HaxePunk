@@ -166,8 +166,8 @@ class Polygon extends Hitbox
 	 */
 	private function collideGrid(grid:Grid):Bool
 	{
-		var tileW:Int = grid.tileWidth;
-		var tileH:Int = grid.tileHeight;
+		var tileW:Int = Std.int(grid.tileWidth);
+		var tileH:Int = Std.int(grid.tileHeight);
 		var solidTile:Bool;
 
 		_fakeEntity.width = tileW;

@@ -32,7 +32,7 @@ class Grid extends Hitbox
 	 * @param	x				X offset of the grid.
 	 * @param	y				Y offset of the grid.
 	 */
-	public function new(width:Int, height:Int, tileWidth:Int, tileHeight:Int, x:Int = 0, y:Int = 0)
+	public function new(width:Int, height:Int, tileWidth:Float, tileHeight:Float, x:Int = 0, y:Int = 0)
 	{
 		super();
 
@@ -47,8 +47,8 @@ class Grid extends Hitbox
 		_point2 = HXP.point2;
 
 		// set grid properties
-		columns = Std.int(width / tileWidth);
-		rows = Std.int(height / tileHeight);
+		columns = Math.ceil(width / tileWidth);
+		rows = Math.ceil(height / tileHeight);
 
 		_tile = new Rectangle(0, 0, tileWidth, tileHeight);
 		_x = x;
@@ -283,14 +283,14 @@ class Grid extends Hitbox
 	/**
 	 * The tile width.
 	 */
-	public var tileWidth(get_tileWidth, never):Int;
-	private inline function get_tileWidth():Int { return Std.int(_tile.width); }
+	public var tileWidth(get_tileWidth, never):Float;
+	private inline function get_tileWidth():Float { return (_tile.width); }
 
 	/**
 	 * The tile height.
 	 */
-	public var tileHeight(get_tileHeight, never):Int;
-	private inline function get_tileHeight():Int { return Std.int(_tile.height); }
+	public var tileHeight(get_tileHeight, never):Float;
+	private inline function get_tileHeight():Float { return (_tile.height); }
 
 	/**
 	 * How many columns the grid has

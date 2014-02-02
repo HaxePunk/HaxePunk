@@ -103,7 +103,8 @@ class Canvas extends Graphic
 		_rect.height = _maxHeight*sy;
 
 		// render the buffers
-		var xx:Int = 0, yy:Int = 0, buffer:BitmapData, px:Float = _point.x;
+		var xx:Int = 0, yy:Int = 0, buffer:BitmapData, 
+			px:Float = _point.x, py:Float=_point.y;
 		#if !bitfive target.lock(); #end
 		while (yy < _refHeight)
 		{
@@ -161,13 +162,13 @@ class Canvas extends Graphic
 					target.draw(buffer, _matrix, _tint, blend);
 				}
 
-				_point.x += _maxWidth * sx;
 				xx ++;
+				_point.x = px + (xx * _maxWidth * sx);
 			}
-			_point.x = px;
-			_point.y += _maxHeight * sy;
 			xx = 0;
 			yy ++;
+			_point.x = px;
+			_point.y = py + (yy * _maxHeight * sy);
 		}
 		#if !bitfive target.unlock(); #end
 		
