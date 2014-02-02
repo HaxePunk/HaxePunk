@@ -4,8 +4,11 @@
 
 	<assets path="assets/graphics" rename="gfx" include="*.png" />
 	<assets path="assets/font" rename="font" include="*.ttf" />
-
+	
+	<!-- set name="ouya" /> <!-- uncomment this when compiling to ouya -->
 	<haxelib name="openfl-ouya" if="ouya" />
+	<haxedef name="ouya" if="ouya" />
+	
 	<section if="js">
 		<haxelib name="openfl-html5-dom" version="1.2.0" />
 		<haxelib name="openfl-bitfive" version="1.0.5" />
