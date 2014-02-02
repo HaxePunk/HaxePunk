@@ -117,9 +117,9 @@ class Joystick
 class OUYA_GAMEPAD
 {
 	public static inline var O_BUTTON:Int = 0; // 96
-	public static inline var U_BUTTON:Int = 1; // 99
-	public static inline var Y_BUTTON:Int = 2; // 100
-	public static inline var A_BUTTON:Int = 3; // 97
+	public static inline var U_BUTTON:Int = 3; // 99
+	public static inline var Y_BUTTON:Int = 4; // 100
+	public static inline var A_BUTTON:Int = 1; // 97
 	public static inline var LB_BUTTON:Int = 6; // 102
 	public static inline var RB_BUTTON:Int = 7; // 103
 	public static inline var BACK_BUTTON:Int = 5;
