@@ -109,9 +109,10 @@ class LayerList extends Sprite
 	public function set(list:IntMap<Int>)
 	{
 		// remove added children
-		for (label in _labels)
+		for (key in _labels.keys())
 		{
-			removeChild(label);
+			removeChild(_labels.get(key));
+			_labels.remove(key);
 		}
 
 		// filter and sort layers
