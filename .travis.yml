@@ -19,7 +19,7 @@ before_install:
   - mkdir -p ~/haxelib
   - haxelib setup ~/haxelib
   # Download dependencies
-  - haxelib dev HaxePunk /home/travis/build/HaxePunk/HaxePunk/
+  - haxelib dev HaxePunk $TRAVIS_BUILD_DIR
   - ant tools
   - echo "y" | haxelib run HaxePunk setup
   # openfl command
