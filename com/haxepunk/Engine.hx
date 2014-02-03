@@ -311,7 +311,8 @@ class Engine extends Sprite
 		HXP._updateTime = _time - _updateTime;
 
 		// render loop
-		if (!paused) render();
+		if (paused) _frameLast = _time; // continue updating frame timer
+		else render();
 
 		// update timer
 		_time = _systemTime = Lib.getTimer();
