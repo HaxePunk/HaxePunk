@@ -5,6 +5,7 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import com.haxepunk.graphics.Image;
 import com.haxepunk.graphics.Graphiclist;
+import com.haxepunk.ds.Either;
 
 /**
  * Friend class used by Scene
@@ -25,6 +26,16 @@ typedef FriendEntity = {
 	private var _typeNext:FriendEntity;
 	private var _recycleNext:Entity;
 }
+
+abstract AcceptEither<L, R> (Either<L, R>)
+{
+	public inline function new( e:Either<L, R> ) this = e;
+	public var type(get,never):Either<L, R>;
+	@:to inline function get_type() return this;
+	@:from static function fromLeft(v:L) return new AcceptEither(Left(v));
+	@:from static function fromRight(v:R) return new AcceptEither(Right(v));
+}
+typedef SolidType = AcceptEither<String, Array<String>>;
 
 /**
  * Main game Entity class updated by Scene.
@@ -257,26 +268,21 @@ class Entity extends Tweener
 	 * @param	y			Virtual y position to place this Entity.
 	 * @return	The first Entity collided with, or null if none were collided.
 	 */
-	public function collideTypes(types:Dynamic, x:Float, y:Float):Entity
+	public function collideTypes(types:SolidType, x:Float, y:Float):Entity
 	{
 		if (_scene == null) return null;
 
-		if (Std.is(types, String))
+		switch (types.type)
 		{
-			return collide(types, x, y);
-		}
-		else
-		{
-			var a:Array<String> = cast types;
-			if (a != null)
-			{
+			case Left(s):
+				return collide(s, x, y);
+			case Right(a):
 				var e:Entity;
 				for (type in a)
 				{
 					e = collide(type, x, y);
 					if (e != null) return e;
 				}
-			}
 		}
 
 		return null;
@@ -765,7 +771,7 @@ class Entity extends Tweener
 	 * @param	solidType	An optional collision type to stop flush against upon collision.
 	 * @param	sweep		If sweeping should be used (prevents fast-moving objects from going through solidType).
 	 */
-	public function moveBy(x:Float, y:Float, solidType:Dynamic = null, sweep:Bool = false)
+	public function moveBy(x:Float, y:Float, ?solidType:SolidType, sweep:Bool = false):Void
 	{
 		_moveX += x;
 		_moveY += y;
@@ -833,7 +839,7 @@ class Entity extends Tweener
 	 * @param	solidType	An optional collision type to stop flush against upon collision.
 	 * @param	sweep		If sweeping should be used (prevents fast-moving objects from going through solidType).
 	 */
-	public inline function moveTo(x:Float, y:Float, solidType:Dynamic = null, sweep:Bool = false)
+	public inline function moveTo(x:Float, y:Float, solidType:SolidType = null, sweep:Bool = false)
 	{
 		moveBy(x - this.x, y - this.y, solidType, sweep);
 	}
@@ -846,7 +852,7 @@ class Entity extends Tweener
 	 * @param	solidType	An optional collision type to stop flush against upon collision.
 	 * @param	sweep		If sweeping should be used (prevents fast-moving objects from going through solidType).
 	 */
-	public inline function moveTowards(x:Float, y:Float, amount:Float, solidType:Dynamic = null, sweep:Bool = false)
+	public inline function moveTowards(x:Float, y:Float, amount:Float, solidType:SolidType = null, sweep:Bool = false)
 	{
 		_point.x = x - this.x;
 		_point.y = y - this.y;
@@ -864,7 +870,7 @@ class Entity extends Tweener
 	 * @param	solidType	An optional collision type to stop flush against upon collision.
 	 * @param	sweep		If sweeping should be used (prevents fast-moving objects from going through solidType).
 	 */
-	public inline function moveAtAngle(angle:Float, amount:Float, solidType:Dynamic = null, sweep:Bool = false):Void
+	public inline function moveAtAngle(angle:Float, amount:Float, solidType:SolidType = null, sweep:Bool = false):Void
 	{
 		angle *= HXP.RAD;
 		moveBy(Math.cos(angle) * amount, Math.sin(angle) * amount, solidType, sweep);

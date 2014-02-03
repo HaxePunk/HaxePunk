@@ -1,5 +1,6 @@
 package com.haxepunk.graphics.atlas;
 
+import com.haxepunk.graphics.atlas.AtlasData;
 import flash.display.Sprite;
 import flash.geom.Rectangle;
 
@@ -23,7 +24,7 @@ class Atlas
 	public var height(get_height, never):Int;
 	private function get_height():Int { return _data.height; }
 
-	private function new(source:Dynamic)
+	private function new(source:AtlasDataType)
 	{
 		_data = AtlasData.create(source);
 	}
@@ -33,7 +34,7 @@ class Atlas
 	 * @param	source	The image to use
 	 * @return	An AtlasRegion containing the whole image
 	 */
-	public static function loadImageAsRegion(source:Dynamic):AtlasRegion
+	public static function loadImageAsRegion(source:AtlasDataType):AtlasRegion
 	{
 		var data = AtlasData.create(source);
 		return data.createRegion(new Rectangle(0, 0, data.width, data.height));

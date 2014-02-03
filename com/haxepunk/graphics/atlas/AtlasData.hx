@@ -1,6 +1,7 @@
 package com.haxepunk.graphics.atlas;
 
 import com.haxepunk.Scene;
+import com.haxepunk.ds.Either;
 import flash.display.BitmapData;
 import flash.display.Graphics;
 import flash.display.Sprite;
@@ -8,6 +9,16 @@ import flash.geom.Rectangle;
 import flash.geom.Point;
 import flash.geom.Matrix;
 import openfl.display.Tilesheet;
+
+abstract AcceptEither<L, R> (Either<L, R>)
+{
+	public inline function new( e:Either<L, R> ) this = e;
+	public var type(get,never):Either<L, R>;
+	@:to inline function get_type() return this;
+	@:from static function fromLeft(v:L) return new AcceptEither(Left(v));
+	@:from static function fromRight(v:R) return new AcceptEither(Right(v));
+}
+typedef AtlasDataType = AcceptEither<String, BitmapData>;
 
 class AtlasData
 {
@@ -24,19 +35,18 @@ class AtlasData
 	 * @param	source	The image to initialize AtlasData with
 	 * @return	An AtlasData object
 	 */
-	public static function create(source:Dynamic):AtlasData
+	public static function create(source:AtlasDataType):AtlasData
 	{
 		var data:AtlasData;
-		if (Std.is(source, BitmapData))
+		switch (source.type)
 		{
+			case Left(s):
+				data = getAtlasDataByName(s, true);
+			case Right(b):
 #if debug
-			HXP.log("Atlases using BitmapData will not be managed.");
+				HXP.log("Atlases using BitmapData will not be managed.");
 #end
-			data = new AtlasData(source);
-		}
-		else
-		{
-			data = getAtlasDataByName(source, true);
+				data = new AtlasData(b);
 		}
 
 		if (data != null)

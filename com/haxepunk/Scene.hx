@@ -773,7 +773,7 @@ class Scene extends Tweener
 	 * @param	useHitboxes	If the Entities' hitboxes should be used to determine the distance. If false, their x/y coordinates are used.
 	 * @return	The nearest Entity to e.
 	 */
-	public function nearestToClass(type:String, e:Entity, classType:Dynamic, useHitboxes:Bool = false):Entity
+	public function nearestToClass<T>(type:String, e:Entity, classType:Class<T>, useHitboxes:Bool = false):Entity
 	{
 		if (useHitboxes) return nearestToRect(type, e.x - e.originX, e.y - e.originY, e.width, e.height);
 		var n:Entity,
@@ -1013,7 +1013,7 @@ class Scene extends Tweener
 	 * @param	c			The Class type to check.
 	 * @param	into		The Array or Vector to populate.
 	 */
-	public function getClass<E:Entity>(c:Class<Dynamic>, into:Array<E>)
+	public function getClass<T, E:Entity>(c:Class<T>, into:Array<E>)
 	{
 		var fe:FriendEntity = _updateFirst,
 			n:Int = into.length;

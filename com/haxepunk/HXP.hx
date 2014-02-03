@@ -29,6 +29,8 @@ import haxe.CallStack;
 import haxe.EnumFlags;
 import haxe.Timer;
 
+typedef Position = {x:Float, y:Float};
+
 /**
  * Static catch-all class used to access global properties and functions.
  */
@@ -180,7 +182,15 @@ class HXP
 	/**
 	 * The choose function randomly chooses and returns one of the provided values.
 	 */
-	public static var choose(get, null):Dynamic;
+	public static var choose = Reflect.makeVarArgs(function(objs:Array<Dynamic>) {
+		if (objs == null || objs.length == 0 || (objs.length == 1 && Reflect.hasField(objs[0], "length") && objs[0].length == 0))
+			throw "Can't choose a random element on an empty array";
+
+		if (objs.length == 1 && Reflect.hasField(objs[0], "length"))
+			return objs[0][rand(objs[0].length)];
+
+		return objs[rand(objs.length)];
+	});
 
 	/**
 	 * The currently active World object (deprecated)
@@ -319,22 +329,6 @@ class HXP
 		return _pan;
 	}
 
-	public static function get_choose():Dynamic
-    {
-        return Reflect.makeVarArgs(_choose);
-    }
-
-	private static inline function _choose(objs:Array<Dynamic>):Dynamic
-	{
-		if (objs == null || objs.length == 0 || (objs.length == 1 && Reflect.hasField(objs[0], "length") && objs[0].length == 0))
-			throw "Can't choose a random element on an empty array";
-
-		if (objs.length == 1 && Reflect.hasField(objs[0], "length"))
-			return objs[0][rand(objs[0].length)];
-
-		return objs[rand(objs.length)];
-	}
-
 	/**
 	 * Finds the sign of the provided value.
 	 * @param	value		The Float to evaluate.
@@ -410,7 +404,7 @@ class HXP
 	 * @param	y			Y position to step towards.
 	 * @param	distance	The distance to step (will not overshoot target).
 	 */
-	public static function stepTowards(object:Dynamic, x:Float, y:Float, distance:Float = 1)
+	public static function stepTowards(object:Position, x:Float, y:Float, distance:Float = 1)
 	{
 		point.x = x - object.x;
 		point.y = y - object.y;
@@ -431,7 +425,7 @@ class HXP
 	 * @param	anchor		The anchor object.
 	 * @param	distance	The max distance object can be anchored to the anchor.
 	 */
-	public static inline function anchorTo(object:Dynamic, anchor:Dynamic, distance:Float = 0)
+	public static inline function anchorTo(object:Position, anchor:Position, distance:Float = 0)
 	{
 		point.x = object.x - anchor.x;
 		point.y = object.y - anchor.y;
@@ -462,7 +456,7 @@ class HXP
 	 * @param	x			X offset.
 	 * @param	y			Y offset.
 	 */
-	public static inline function angleXY(object:Dynamic, angle:Float, length:Float = 1, x:Float = 0, y:Float = 0)
+	public static inline function angleXY(object:Position, angle:Float, length:Float = 1, x:Float = 0, y:Float = 0)
 	{
 		angle *= RAD;
 		object.x = Math.cos(angle) * length + x;
@@ -490,7 +484,7 @@ class HXP
 	 * @param	angle		The amount of degrees to rotate by.
 	 * @param	relative	If the angle is relative to the angle between the object and the anchor.
 	 */
-	public static inline function rotateAround(object:Dynamic, anchor:Dynamic, angle:Float = 0, relative:Bool = true)
+	public static inline function rotateAround(object:Position, anchor:Position, angle:Float = 0, relative:Bool = true)
 	{
 		if (relative) angle += HXP.angle(anchor.x, anchor.y, object.x, object.y);
 		HXP.angleXY(object, angle, HXP.distance(anchor.x, anchor.y, object.x, object.y), anchor.x, anchor.y);
@@ -633,7 +627,7 @@ class HXP
 	 * @param	height		Rectangle's height.
 	 * @param	padding		Rectangle's padding.
 	 */
-	public static inline function clampInRect(object:Dynamic, x:Float, y:Float, width:Float, height:Float, padding:Float = 0)
+	public static inline function clampInRect(object:Position, x:Float, y:Float, width:Float, height:Float, padding:Float = 0)
 	{
 		object.x = clamp(object.x, x + padding, x + width - padding);
 		object.y = clamp(object.y, y + padding, y + height - padding);
@@ -739,7 +733,7 @@ class HXP
 	 * @param	loop		If true, will jump to the first item after the last item is reached.
 	 * @return	The next item in the list.
 	 */
-	public static inline function next<T>(current:T, options:Array<T>, loop:Bool = true):Dynamic
+	public static inline function next<T>(current:T, options:Array<T>, loop:Bool = true):T
 	{
 		if (loop)
 			return options[(indexOf(options, current) + 1) % options.length];
@@ -754,7 +748,7 @@ class HXP
 	 * @param	loop		If true, will jump to the last item after the first is reached.
 	 * @return	The previous item in the list.
 	 */
-	public static inline function prev<T>(current:T, options:Array<T>, loop:Bool = true):Dynamic
+	public static inline function prev<T>(current:T, options:Array<T>, loop:Bool = true):T
 	{
 		if (loop)
 			return options[((indexOf(options, current) - 1) + options.length) % options.length];
@@ -769,7 +763,7 @@ class HXP
 	 * @param	b			Item b.
 	 * @return	Returns a if current is b, and b if current is a.
 	 */
-	public static inline function swap(current:Dynamic, a:Dynamic, b:Dynamic):Dynamic
+	public static inline function swap<T>(current:T, a:T, b:T):T
 	{
 		return current == a ? b : a;
 	}
@@ -1007,8 +1001,7 @@ class HXP
 	 * Logs data to the console.
 	 * @param	...data		The data parameters to log, can be variables, objects, etc. Parameters will be separated by a space (" ").
 	 */
-	public static var log:Dynamic = Reflect.makeVarArgs(function(data:Array<Dynamic>)
-	{
+	public static var log = Reflect.makeVarArgs(function(data:Array<Dynamic>) {
 		if (_console != null)
 		{
 			_console.log(data);
@@ -1019,8 +1012,7 @@ class HXP
 	 * Adds properties to watch in the console's debug panel.
 	 * @param	...properties		The properties (strings) to watch.
 	 */
-	public static var watch:Dynamic = Reflect.makeVarArgs(function(properties:Array<Dynamic>)
-	{
+	public static var watch = Reflect.makeVarArgs(function(properties:Array<Dynamic>) {
 		if (_console != null)
 		{
 			_console.watch(properties);
@@ -1124,17 +1116,14 @@ class HXP
 	 * Shuffles the elements in the array.
 	 * @param	a		The Object to shuffle (an Array or Vector).
 	 */
-	public static function shuffle(a:Dynamic)
+	public static function shuffle<T>(a:Array<T>)
 	{
-		if (Std.is(a, Array))
+		var i:Int = a.length, j:Int, t:T;
+		while (--i > 0)
 		{
-			var i:Int = a.length, j:Int, t:Dynamic;
-			while (--i > 0)
-			{
-				t = a[i];
-				a[i] = a[j = HXP.rand(i + 1)];
-				a[j] = t;
-			}
+			t = a[i];
+			a[i] = a[j = HXP.rand(i + 1)];
+			a[j] = t;
 		}
 	}
 
