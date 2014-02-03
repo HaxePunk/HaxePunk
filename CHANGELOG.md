@@ -1,5 +1,18 @@
 HaxePunk CHANGELOG
 
+v2.5.0
+------------------------------
+* [ibilon] Added setup command to run tool
+* [bendmorris] Added BitmapText graphic class
+* [azrafe7] Layers can be negative on all targets (removes HXP.BASELAYER)
+* [bendmorris] Added Joystick.released to match Input
+* [ibilon] Text now uses BitmapData for consistent rendering on all targets
+* [MattTuttle] Fixed layer rendering for native targets
+* [Nananas] Joystick on Ouya handles player id properly
+* [MattTuttle] Added layer list for Console to toggle layer visibility
+* [azrafe7] Fixed Circle and Polygon collisions with other masks
+* Many more bug fixes and compatibility improvements
+
 v2.4.6
 ------------------------------
 * [azrafe7] Fixed Lambda.indexOf() memory leaks in flash
