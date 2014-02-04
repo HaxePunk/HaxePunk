@@ -10,15 +10,21 @@ import flash.geom.Point;
 import flash.geom.Matrix;
 import openfl.display.Tilesheet;
 
-abstract AcceptEither<L, R> (Either<L, R>)
+abstract AtlasDataType(AtlasData)
 {
-	public inline function new( e:Either<L, R> ) this = e;
-	public var type(get,never):Either<L, R>;
-	@:to inline function get_type() return this;
-	@:from static function fromLeft(v:L) return new AcceptEither(Left(v));
-	@:from static function fromRight(v:R) return new AcceptEither(Right(v));
+	private inline function new(data:AtlasData) this = data;
+	@:to public inline function toAtlasData():AtlasData return this;
+
+	@:from public static inline function fromString(s:String) {
+		return new AtlasDataType(AtlasData.getAtlasDataByName(s, true));
+	}
+	@:from public static inline function fromBitmapData(bd:BitmapData) {
+#if debug
+		HXP.log("Atlases using BitmapData will not be managed.");
+#end
+		return new AtlasDataType(new AtlasData(bd));
+	}
 }
-typedef AtlasDataType = AcceptEither<String, BitmapData>;
 
 class AtlasData
 {
@@ -37,17 +43,7 @@ class AtlasData
 	 */
 	public static function create(source:AtlasDataType):AtlasData
 	{
-		var data:AtlasData;
-		switch (source.type)
-		{
-			case Left(s):
-				data = getAtlasDataByName(s, true);
-			case Right(b):
-#if debug
-				HXP.log("Atlases using BitmapData will not be managed.");
-#end
-				data = new AtlasData(b);
-		}
+		var data:AtlasData = source;
 
 		if (data != null)
 		{
@@ -82,7 +78,7 @@ class AtlasData
 		return data;
 	}
 
-	private function new(bd:BitmapData)
+	public function new(bd:BitmapData)
 	{
 		_data = new Array<Float>();
 

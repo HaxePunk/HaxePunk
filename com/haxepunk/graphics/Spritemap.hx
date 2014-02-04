@@ -1,6 +1,7 @@
 package com.haxepunk.graphics;
 
 import com.haxepunk.HXP;
+import com.haxepunk.Graphic;
 import com.haxepunk.graphics.atlas.TileAtlas;
 
 import flash.display.BitmapData;
@@ -37,9 +38,8 @@ class Spritemap extends Image
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
 	 * @param	cbFunc			Optional callback function for animation end.
-	 * @param	name			Optional name, necessary to identify the bitmapData if you are using flipped.
 	 */
-	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, cbFunc:CallbackFunction = null, name:String = "")
+	public function new(source:TileType, frameWidth:Int = 0, frameHeight:Int = 0, ?cbFunc:CallbackFunction)
 	{
 		complete = true;
 		rate = 1;
@@ -47,20 +47,15 @@ class Spritemap extends Image
 		_timer = _frame = 0;
 
 		_rect = new Rectangle(0, 0, frameWidth, frameHeight);
-		if (Std.is(source, TileAtlas))
+		switch (source.type)
 		{
-			blit = false;
-			_atlas = cast(source, TileAtlas);
-			_region = _atlas.getRegion(_frame);
+			case Left(bd):
+				super(bd, _rect);
+			case Right(atlas):
+				_atlas = atlas;
+				_atlas.prepare(frameWidth, frameHeight);
+				super(atlas.getRegion(_frame), _rect);
 		}
-		else if (HXP.renderMode == RenderMode.HARDWARE)
-		{
-			blit = false;
-			_atlas = new TileAtlas(source, frameWidth, frameHeight);
-			_region = _atlas.getRegion(_frame);
-		}
-
-		super(source, _rect, name);
 
 		if (blit)
 		{

@@ -65,50 +65,23 @@ class Image extends Graphic
 	 * Constructor.
 	 * @param	source		Source image.
 	 * @param	clipRect	Optional rectangle defining area of the source image to draw.
-	 * @param	name		Optional name, necessary to identify the bitmapData if you are using flipped
 	 */
-	public function new(source:Dynamic, clipRect:Rectangle = null, name:String = "")
+	public function new(source:ImageType, ?clipRect:Rectangle)
 	{
 		super();
 		init();
 
 		// check if the _source or _region were set in a higher class
-		if (_source == null && _region == null)
+		switch (source.type)
 		{
-			_class = name;
-			if (Std.is(source, TextureAtlas))
-			{
-				setAtlasRegion(cast(source, TextureAtlas).getRegion(name));
-			}
-			else if (Std.is(source, AtlasRegion))
-			{
-				setAtlasRegion(source);
-			}
-			else if (HXP.renderMode == RenderMode.HARDWARE)
-			{
-				if (Std.is(source, String))
-					_class = source;
-				else if (name == "")
-					_class = Type.getClassName(Type.getClass(source));
-
-				setAtlasRegion(Atlas.loadImageAsRegion(source));
-			}
-			else if (Std.is(source, BitmapData))
-			{
-				setBitmapSource(source);
-			}
-			else
-			{
-				if (Std.is(source, String))
-					_class = source;
-				else if (name == "")
-					_class = Type.getClassName(Type.getClass(source));
-
-				setBitmapSource(HXP.getBitmap(source));
-			}
-
-			if (_source == null && _region == null)
-				throw "Invalid source image.";
+			case Left(bitmap):
+				blit = true;
+				_source = bitmap;
+				_sourceRect = bitmap.rect;
+			case Right(region):
+				blit = false;
+				_region = region;
+				_sourceRect = new Rectangle(0, 0, _region.width, _region.height);
 		}
 
 		if (clipRect != null)
@@ -130,20 +103,6 @@ class Image extends Graphic
 			createBuffer();
 			updateBuffer();
 		}
-	}
-
-	private inline function setAtlasRegion(region:AtlasRegion)
-	{
-		blit = false;
-		_region = region;
-		_sourceRect = new Rectangle(0, 0, _region.width, _region.height);
-	}
-
-	private inline function setBitmapSource(bitmap:BitmapData)
-	{
-		blit = true;
-		_sourceRect = bitmap.rect;
-		_source = bitmap;
 	}
 
 	/** @private Initialize variables */
@@ -411,9 +370,8 @@ class Image extends Graphic
 	private function get_flipped():Bool { return _flipped; }
 	private function set_flipped(value:Bool):Bool
 	{
-		if (_flipped == value || _class == "") return value;
+		if (_flipped == value) return value;
 
-		_flipped = value;
 		if (blit)
 		{
 			var temp:BitmapData = _source;
@@ -421,14 +379,14 @@ class Image extends Graphic
 			{
 				_source = _flip;
 			}
-			else if (_flips.exists(_class))
+			else if (_flips.exists(temp))
 			{
-				_source = _flips.get(_class);
+				_source = _flips.get(temp);
 			}
 			else
 			{
 				_source = HXP.createBitmap(_source.width, _source.height, true);
-				_flips.set(_class, _source);
+				_flips.set(temp, _source);
 				HXP.matrix.identity();
 				HXP.matrix.a = -1;
 				HXP.matrix.tx = _source.width;
@@ -437,6 +395,7 @@ class Image extends Graphic
 			_flip = temp;
 			updateBuffer();
 		}
+		_flipped = value;
 		return _flipped;
 	}
 
@@ -534,10 +493,9 @@ class Image extends Graphic
 	private var _blue:Float;
 
 	// Flipped image information.
-	private var _class:String;
 	private var _flipped:Bool;
 	private var _flip:BitmapData;
-	private static var _flips:Map<String,BitmapData> = new Map<String,BitmapData>();
+	private static var _flips:Map<BitmapData, BitmapData> = new Map<BitmapData, BitmapData>();
 
 	private var _scale:Float;
 }

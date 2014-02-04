@@ -21,21 +21,20 @@ class Backdrop extends Canvas
 	 * @param	repeatX		Repeat horizontally.
 	 * @param	repeatY		Repeat vertically.
 	 */
-	public function new(source:Dynamic, repeatX:Bool = true, repeatY:Bool = true)
+	public function new(source:ImageType, repeatX:Bool = true, repeatY:Bool = true)
 	{
-		if (Std.is(source, AtlasRegion)) setAtlasRegion(source);
-		else
+		switch (source.type)
 		{
-			if (HXP.renderMode == RenderMode.HARDWARE)
-			{
-				setAtlasRegion(Atlas.loadImageAsRegion(source));
-			}
-			else
-			{
-				if (Std.is(source, BitmapData)) setBitmapSource(source);
-				else if (Std.is(source, Dynamic)) setBitmapSource(HXP.getBitmap(source));
-				if (_source == null && _region == null) setBitmapSource(HXP.createBitmap(HXP.width, HXP.height, true));
-			}
+			case Left(bitmap):
+				blit = true;
+				_source = bitmap;
+				_textWidth = _source.width;
+				_textHeight = _source.height;
+			case Right(region):
+				blit = false;
+				_region = region;
+				_textWidth = Std.int(region.width);
+				_textHeight = Std.int(region.height);
 		}
 
 		_repeatX = repeatX;
@@ -50,22 +49,6 @@ class Backdrop extends Canvas
 			HXP.rect.height = _height;
 			fillTexture(HXP.rect, _source);
 		}
-	}
-
-	private inline function setAtlasRegion(region:AtlasRegion)
-	{
-		blit = false;
-		_region = region;
-		_textWidth = Std.int(region.width);
-		_textHeight = Std.int(region.height);
-	}
-
-	private inline function setBitmapSource(bitmap:BitmapData)
-	{
-		blit = true;
-		_source = bitmap;
-		_textWidth = _source.width;
-		_textHeight = _source.height;
 	}
 
 	/** Renders the Backdrop. */

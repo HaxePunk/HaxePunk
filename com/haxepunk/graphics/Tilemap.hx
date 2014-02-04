@@ -8,7 +8,6 @@ import com.haxepunk.HXP;
 import com.haxepunk.graphics.atlas.TileAtlas;
 import com.haxepunk.masks.Grid;
 
-
 typedef Array2D = Array<Array<Int>>
 /**
  * A canvas to which Tiles can be drawn for fast multiple tile rendering.
@@ -30,7 +29,7 @@ class Tilemap extends Canvas
 	 * @param	tileSpacingWidth	Tile horizontal spacing.
 	 * @param	tileSpacingHeight	Tile vertical spacing.
 	 */
-	public function new(tileset:Dynamic, width:Int, height:Int, tileWidth:Int, tileHeight:Int,?tileSpacingWidth:Int=0,?tileSpacingHeight:Int=0)
+	public function new(tileset:TileType, width:Int, height:Int, tileWidth:Int, tileHeight:Int,?tileSpacingWidth:Int=0,?tileSpacingHeight:Int=0)
 	{
 		_rect = HXP.rect;
 
@@ -69,31 +68,15 @@ class Tilemap extends Canvas
 		}
 
 		// load the tileset graphic
-		if (Std.is(tileset, TileAtlas))
+		switch (tileset.type)
 		{
-			blit = false;
-			_atlas = cast(tileset, TileAtlas);
-		}
-		else
-		{
-			if (HXP.renderMode == RenderMode.HARDWARE)
-			{
+			case Left(bd):
+				blit = true;
+				_set = bd;
+			case Right(atlas):
 				blit = false;
-				_atlas = new TileAtlas(tileset, tileWidth, tileHeight,tileSpacingWidth,tileSpacingHeight);
-			}
-			else
-			{
-				if (Std.is(tileset, BitmapData))
-				{
-					blit = true;
-					_set = tileset;
-				}
-				else
-				{
-					blit = true;
-					_set = HXP.getBitmap(tileset);
-				}
-			}
+				_atlas = atlas;
+				atlas.prepare(tileWidth, tileHeight, tileSpacingWidth, tileSpacingHeight);
 		}
 
 		if (_set == null && _atlas == null)

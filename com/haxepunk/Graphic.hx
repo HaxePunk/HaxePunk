@@ -1,9 +1,60 @@
 package com.haxepunk;
 
+import com.haxepunk.HXP;
+import com.haxepunk.ds.Either;
+import com.haxepunk.graphics.atlas.Atlas;
+import com.haxepunk.graphics.atlas.TileAtlas;
+import com.haxepunk.graphics.atlas.AtlasRegion;
 import flash.display.BitmapData;
 import flash.geom.Point;
 
 typedef AssignCallback = Void -> Void;
+
+abstract TileType(Either<BitmapData, TileAtlas>)
+{
+	private inline function new(e:Either<BitmapData, TileAtlas>) this = e;
+	public var type(get,never):Either<BitmapData, TileAtlas>;
+	@:to inline function get_type() return this;
+
+	@:from public static inline function fromString(tileset:String) {
+		if (HXP.renderMode == RenderMode.HARDWARE)
+			return new TileType(Right(new TileAtlas(tileset)));
+		else
+			return new TileType(Left(HXP.getBitmap(tileset)));
+	}
+	@:from public static inline function fromTileAtlas(atlas:TileAtlas) {
+		return new TileType(Right(atlas));
+	}
+	@:from public static inline function fromBitmapData(bd:BitmapData) {
+		if (HXP.renderMode == RenderMode.HARDWARE)
+			return new TileType(Right(new TileAtlas(bd)));
+		else
+			return new TileType(Left(bd));
+	}
+}
+
+abstract ImageType(Either<BitmapData, AtlasRegion>)
+{
+	private inline function new(e:Either<BitmapData, AtlasRegion>) this = e;
+	public var type(get,never):Either<BitmapData, AtlasRegion>;
+	@:to inline function get_type() return this;
+
+	@:from public static inline function fromString(s:String) {
+		if (HXP.renderMode == RenderMode.HARDWARE)
+			return new ImageType(Right(Atlas.loadImageAsRegion(s)));
+		else
+			return new ImageType(Left(HXP.getBitmap(s)));
+	}
+	@:from public static inline function fromAtlasRegion(region:AtlasRegion) {
+		return new ImageType(Right(region));
+	}
+	@:from public static inline function fromBitmapData(bd:BitmapData) {
+		if (HXP.renderMode == RenderMode.HARDWARE)
+			return new ImageType(Right(Atlas.loadImageAsRegion(bd)));
+		else
+			return new ImageType(Left(bd));
+	}
+}
 
 class Graphic
 {

@@ -26,7 +26,7 @@ class Emitter extends Graphic
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
 	 */
-	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0)
+	public function new(source:ImageType, frameWidth:Int = 0, frameHeight:Int = 0)
 	{
 		super();
 		_p = new Point();
@@ -44,62 +44,43 @@ class Emitter extends Graphic
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
 	 */
-	public function setSource(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0)
+	public function setSource(source:ImageType, frameWidth:Int = 0, frameHeight:Int = 0)
 	{
-		var region:AtlasRegion = null;
-		if (Std.is(source, BitmapData)) setBitmapSource(source);
-		else if(Std.is(source, AtlasRegion)) region = setAtlasRegion(source);
-		else
+		switch (source.type)
 		{
-			if (HXP.renderMode == RenderMode.HARDWARE)
-			{
-				region = setAtlasRegion(Atlas.loadImageAsRegion(source));
-			}
-			else
-			{
-				setBitmapSource(HXP.getBitmap(source));
-			}
+			case Left(bitmap):
+				_width = Std.int(bitmap.width);
+				_height = Std.int(bitmap.height);
+			case Right(region):
+				_width = Std.int(region.width);
+				_height = Std.int(region.height);
 		}
-
-		if (_source == null && region == null)
-			throw "Invalid source image.";
 
 		_frameWidth = (frameWidth != 0) ? frameWidth : _width;
 		_frameHeight = (frameHeight != 0) ? frameHeight : _height;
 		_frameCount = Std.int(_width / _frameWidth) * Std.int(_height / _frameHeight);
 
-		if (region != null)
+		switch (source.type)
 		{
-			var rect = new Rectangle(0, 0, _frameWidth, _frameHeight);
-			var center = new Point(_frameWidth / 2, _frameHeight / 2);
-			_frames = new Array<AtlasRegion>();
-			for (i in 0..._frameCount)
-			{
-				_frames.push(region.clip(rect, center));
-				rect.x += _frameWidth;
-				if (rect.x >= _width)
+			case Left(bitmap):
+				blit = true;
+				_source = bitmap;
+			case Right(region):
+				blit = false;
+				var rect = new Rectangle(0, 0, _frameWidth, _frameHeight);
+				var center = new Point(_frameWidth / 2, _frameHeight / 2);
+				_frames = new Array<AtlasRegion>();
+				for (i in 0..._frameCount)
 				{
-					rect.y += _frameHeight;
-					rect.x = 0;
+					_frames.push(region.clip(rect, center));
+					rect.x += _frameWidth;
+					if (rect.x >= _width)
+					{
+						rect.y += _frameHeight;
+						rect.x = 0;
+					}
 				}
-			}
 		}
-	}
-
-	private inline function setBitmapSource(bitmap:BitmapData)
-	{
-		blit = true;
-		_source = bitmap;
-		_width = Std.int(bitmap.width);
-		_height = Std.int(bitmap.height);
-	}
-
-	private inline function setAtlasRegion(region:AtlasRegion):AtlasRegion
-	{
-		blit = false;
-		_width = Std.int(region.width);
-		_height = Std.int(region.height);
-		return region;
 	}
 
 	override public function update()

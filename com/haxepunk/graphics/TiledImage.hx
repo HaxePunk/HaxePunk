@@ -5,6 +5,7 @@ import flash.display.Graphics;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import com.haxepunk.HXP;
+import com.haxepunk.Graphic;
 
 /**
  * Special Image object that can display blocks of tiles.
@@ -18,7 +19,7 @@ class TiledImage extends Image
 	 * @param	height		The height of the image (the texture will be drawn to fill this area).
 	 * @param	clipRect	An optional area of the source texture to use (eg. a tile from a tileset).
 	 */
-	public function new(texture:Dynamic, width:Int = 0, height:Int = 0, clipRect:Rectangle = null)
+	public function new(texture:ImageType, width:Int = 0, height:Int = 0, clipRect:Rectangle = null)
 	{
 		_graphics = HXP.sprite.graphics;
 		_offsetX = _offsetY = 0;
