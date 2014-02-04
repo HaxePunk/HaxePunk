@@ -1219,7 +1219,6 @@ class Scene extends Tweener
 				_layerList.pop();
 			}
 		}
-		if (e.graphic != null) e.graphic.destroy();
 		var newLayerCount:Int = _layerCount[fe._layer] - 1;
 		if (newLayerCount > 0) {
 			_layerCount[fe._layer] = newLayerCount;
