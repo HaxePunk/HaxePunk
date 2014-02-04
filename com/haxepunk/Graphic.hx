@@ -2,6 +2,7 @@ package com.haxepunk;
 
 import com.haxepunk.HXP;
 import com.haxepunk.ds.Either;
+import com.haxepunk.ds.Position;
 import com.haxepunk.graphics.atlas.Atlas;
 import com.haxepunk.graphics.atlas.TileAtlas;
 import com.haxepunk.graphics.atlas.AtlasRegion;
@@ -56,7 +57,7 @@ abstract ImageType(Either<BitmapData, AtlasRegion>)
 	}
 }
 
-class Graphic
+class Graphic implements Position
 {
 	/**
 	 * If the graphic should update.
@@ -73,12 +74,16 @@ class Graphic
 	/**
 	 * X offset.
 	 */
-	public var x:Float;
+	@:isVar public var x(get, set):Float;
+	private inline function get_x():Float { return x; }
+	private inline function set_x(value:Float):Float { return x = value; }
 
 	/**
 	 * Y offset.
 	 */
-	public var y:Float;
+	@:isVar public var y(get, set):Float;
+	private inline function get_y():Float { return y; }
+	private inline function set_y(value:Float):Float { return y = value; }
 
 	/**
 	 * X scrollfactor, effects how much the camera offsets the drawn graphic.

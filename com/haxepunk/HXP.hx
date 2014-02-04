@@ -20,6 +20,7 @@ import openfl.Assets;
 import com.haxepunk.Graphic;
 import com.haxepunk.Tween;
 import com.haxepunk.debug.Console;
+import com.haxepunk.ds.Position;
 import com.haxepunk.tweens.misc.Alarm;
 import com.haxepunk.tweens.misc.MultiVarTween;
 import com.haxepunk.utils.Ease;
@@ -28,8 +29,6 @@ import com.haxepunk.utils.HaxelibInfo;
 import haxe.CallStack;
 import haxe.EnumFlags;
 import haxe.Timer;
-
-typedef Position = {x:Float, y:Float};
 
 /**
  * Static catch-all class used to access global properties and functions.
