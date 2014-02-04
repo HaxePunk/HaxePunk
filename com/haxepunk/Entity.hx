@@ -28,15 +28,14 @@ typedef FriendEntity = {
 	private var _recycleNext:Entity;
 }
 
-abstract AcceptEither<L, R> (Either<L, R>)
+abstract SolidType(Either<String, Array<String>>)
 {
-	public inline function new( e:Either<L, R> ) this = e;
-	public var type(get,never):Either<L, R>;
+	public inline function new( e:Either<String, Array<String>> ) this = e;
+	public var type(get,never):Either<String, Array<String>>;
 	@:to inline function get_type() return this;
-	@:from static function fromLeft(v:L) return new AcceptEither(Left(v));
-	@:from static function fromRight(v:R) return new AcceptEither(Right(v));
+	@:from static function fromLeft(v:String) return new SolidType(Left(v));
+	@:from static function fromRight(v:Array<String>) return new SolidType(Right(v));
 }
-typedef SolidType = AcceptEither<String, Array<String>>;
 
 /**
  * Main game Entity class updated by Scene.

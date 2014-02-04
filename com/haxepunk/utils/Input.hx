@@ -18,15 +18,14 @@ import tv.ouya.console.api.OuyaController;
 import openfl.utils.JNI;
 #end
 
-abstract AcceptEither<L, R> (Either<L, R>)
+abstract InputType(Either<String, Int>)
 {
-	public inline function new( e:Either<L, R> ) this = e;
-	public var type(get,never):Either<L, R>;
+	public inline function new( e:Either<String, Int> ) this = e;
+	public var type(get,never):Either<String, Int>;
 	@:to inline function get_type() return this;
-	@:from static function fromLeft(v:L) return new AcceptEither(Left(v));
-	@:from static function fromRight(v:R) return new AcceptEither(Right(v));
+	@:from static function fromLeft(v:String) return new InputType(Left(v));
+	@:from static function fromRight(v:Int) return new InputType(Right(v));
 }
-typedef InputType = AcceptEither<String, Int>;
 
 class Input
 {
