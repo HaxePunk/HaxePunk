@@ -13,12 +13,10 @@ import haxe.ds.IntMap;
 
 import openfl.Assets;
 
-class LayerLabel extends Sprite
+class VisibleLabel extends Sprite
 {
 
-	public var layer(default, null):Int;
-
-	public function new(layer:Int, textFormat:TextFormat)
+	public function new(textFormat:TextFormat)
 	{
 		super();
 
@@ -38,24 +36,15 @@ class LayerLabel extends Sprite
 #end
 
 		this.x = 6;
-		this.layer = layer;
-		this.count = 0;
 		this.display = true;
 
 		addChild(active);
 		addChild(label);
 
-		addEventListener("click", onClickLayer, true);
+		addEventListener("click", onClick, true);
 	}
 
-	public var count(never, set):Int;
-	private function set_count(value:Int):Int
-	{
-		label.text = 'Layer $layer [$value]';
-		return value;
-	}
-
-	private function onClickLayer(e:MouseEvent)
+	private function onClick(e:MouseEvent)
 	{
 		display = !display;
 		if (display)
@@ -68,15 +57,59 @@ class LayerLabel extends Sprite
 			removeChild(active);
 			addChild(inactive);
 		}
-		// HXP.console.updateEntityLists(false);
-		HXP.scene.showLayer(layer, display);
-		HXP.engine.render();
 	}
 
 	private var display:Bool;
 	private var active:Bitmap;
 	private var inactive:Bitmap;
 	private var label:TextField;
+
+}
+
+class MaskLabel extends VisibleLabel
+{
+	public function new(textFormat:TextFormat)
+	{
+		super(textFormat);
+		label.text = "Masks";
+	}
+
+	private override function onClick(e:MouseEvent)
+	{
+		super.onClick(e);
+		HXP.console.debugDraw = display;
+		HXP.console.update();
+	}
+}
+
+class LayerLabel extends VisibleLabel
+{
+
+	public var layer(default, null):Int;
+
+	public function new(layer:Int, textFormat:TextFormat)
+	{
+		super(textFormat);
+
+		this.layer = layer;
+		this.count = 0;
+	}
+
+	public var count(never, set):Int;
+	private function set_count(value:Int):Int
+	{
+		label.text = 'Layer $layer [$value]';
+		return value;
+	}
+
+	private override function onClick(e:MouseEvent)
+	{
+		super.onClick(e);
+		HXP.scene.showLayer(layer, display);
+		HXP.engine.render();
+		HXP.console.debugDraw = HXP.console.debugDraw; // redraw masks
+	}
+
 }
 
 class LayerList extends Sprite
@@ -141,8 +174,17 @@ class LayerList extends Sprite
 			label.y = i++ * 20 + 5;
 			addChild(label);
 		}
+
+		// add and move mask label
+		if (_maskLabel == null)
+		{
+			_maskLabel = new MaskLabel(_textFormat);
+			addChild(_maskLabel);
+		}
+		_maskLabel.y = i++ * 20 + 5;
 	}
 
 	private var _labels:IntMap<LayerLabel>;
+	private var _maskLabel:MaskLabel;
 	private var _textFormat:TextFormat;
 }
