@@ -103,6 +103,11 @@ class Text extends Image
 			createBuffer();
 			updateBuffer();
 			_textHardware = true;
+			blit = false;
+		}
+		else
+		{
+			blit = true;
 		}
 		super(source);
 
