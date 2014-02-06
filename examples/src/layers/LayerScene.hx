@@ -17,7 +17,6 @@ class LayerScene extends DemoScene
 
 	public override function begin()
 	{
-
 		var e = new Entity();
 		e.layer = 50;
 
@@ -32,7 +31,7 @@ class LayerScene extends DemoScene
 		e.addGraphic(img2);
 		add(e);
 
-		var text = new Text("Hello World!", {resizable: true});
+		var text = new Text("Hello World!", 0, 0, 0, 0, {resizable: true});
 		text.size = 24;
 		addGraphic(text, 30, 150, 250);
 
@@ -41,5 +40,13 @@ class LayerScene extends DemoScene
 
 		var background = Image.createRect(HXP.width, HXP.height, 0xffffff);
 		addGraphic(background, 100); // add graphic at back
+
+		var text = new com.haxepunk.graphics.Text();
+		text.addStyle("welcome", {color: 0xFF0000, bold: true});
+		text.addStyle("orange", {color: 0xF2990D});
+		text.richText = "<welcome>Welcome</welcome> to <orange>HaxePunk</orange>!";
+		text.centerOrigin();
+		addGraphic(text, -5, HXP.halfWidth, HXP.halfHeight);
 	}
+
 }
