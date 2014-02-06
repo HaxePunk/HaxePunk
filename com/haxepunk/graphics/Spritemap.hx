@@ -46,6 +46,7 @@ class Spritemap extends Image
 		rate = 1;
 		_anims = new Map<String,Animation>();
 		_timer = _frame = 0;
+		_usingRegions = false;
 
 		_rect = new Rectangle(0, 0, frameWidth, frameHeight);
 		if (Std.is(source, TileAtlas))
@@ -54,15 +55,20 @@ class Spritemap extends Image
 			_atlas = cast(source, TileAtlas);
 			_region = _atlas.getRegion(_frame);
 		}
+		else if (Std.is(source, Array) && Std.is(source[0], AtlasRegion))
+		{
+			blit = false;
+			_regions = source;
+			_region = _regions[0];
+			_usingRegions = true;
+		}
 		else if (HXP.renderMode == RenderMode.HARDWARE)
 		{
 			blit = false;
 			_atlas = new TileAtlas(source, frameWidth, frameHeight);
 			_region = _atlas.getRegion(_frame);
 		}
-
-		super(source, _rect, name);
-
+		
 		if (blit)
 		{
 			_width = _source.width;
@@ -70,17 +76,27 @@ class Spritemap extends Image
 		}
 		else
 		{
-			_width = Std.int(_atlas.width);
-			_height = Std.int(_atlas.height);
+			_width = Std.int(_usingRegions ? _region.width : _atlas.width);
+			_height = Std.int(_usingRegions ? _region.height  :_atlas.height);
 		}
 		if (frameWidth == 0) _rect.width = _width;
 		if (frameHeight == 0) _rect.height = _height;
+		
+		super(_usingRegions ? _region : source, _rect, name);
 
 		if (_width % _rect.width != 0 || _height % _rect.height != 0)
 			throw "Source image width and height should be multiples of the frame width and height.";
 
-		_columns = Math.ceil(_width / _rect.width);
-		_rows = Math.ceil(_height / _rect.height);
+		if (_usingRegions)
+		{
+			_columns = _regions.length;
+			_rows = 1;
+		}
+		else
+		{
+			_columns = Math.ceil(_width / _rect.width);
+			_rows = Math.ceil(_height / _rect.height);
+		}
 		_frameCount = _columns * _rows;
 		callbackFunc = cbFunc;
 
@@ -108,7 +124,7 @@ class Spritemap extends Image
 		}
 		else
 		{
-			_region = _atlas.getRegion(_frame);
+			_region = _usingRegions ? _regions[_frame] : _atlas.getRegion(_frame);
 		}
 	}
 
@@ -317,4 +333,5 @@ class Spritemap extends Image
 	private var _timer:Float;
 	private var _atlas:TileAtlas;
 	private var _regions:Array<AtlasRegion>;
+	private var _usingRegions:Bool;
 }
