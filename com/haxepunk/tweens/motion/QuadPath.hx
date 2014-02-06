@@ -75,9 +75,9 @@ class QuadPath extends Motion
 	 */
 	public function getPoint(index:Int = 0):Point
 	{
-		if (_points.length == 0) 
+		if (_points.length == 0)
 			throw "No points have been added to the path yet.";
-		
+
 		return _points[index % _points.length];
 	}
 
@@ -111,7 +111,7 @@ class QuadPath extends Motion
 	{
 		if (_points.length < 3)
 			throw "A QuadPath must have at least 3 points to operate.";
-		
+
 		if (!_updateCurve) return;
 		_updateCurve = false;
 
@@ -162,7 +162,7 @@ class QuadPath extends Motion
 	/**
 	 * Amount of points on the path.
 	 */
-	public var pointCount(get_pointCount, null):Float;
+	public var pointCount(get, null):Float;
 	private function get_pointCount():Float { return _points.length; }
 
 	/** @private Calculates the lenght of the curve. */

@@ -116,8 +116,7 @@ class Emitter extends Graphic
 		}
 	}
 
-	/** @private Renders the particles. */
-	override public function render(target:BitmapData, point:Point, camera:Point)
+	private inline function renderParticle(renderFunc:ParticleType->Float->Float->Void, point:Point, camera:Point)
 	{
 		// quit if there are no particles
 		if (_particle == null) return;
@@ -129,10 +128,7 @@ class Emitter extends Graphic
 		// particle info
 		var t:Float, td:Float,
 			p:Particle = _particle,
-			scaleX:Float = HXP.screen.fullScaleX,
-			scaleY:Float = HXP.screen.fullScaleY,
-			type:ParticleType,
-			rect:Rectangle;
+			type:ParticleType;
 
 		// loop through the particles
 		while (p != null)
@@ -149,6 +145,18 @@ class Emitter extends Graphic
 			_p.y = _point.y + p._y + p._moveY * (type._backwards ? 1 - td : td);
 			p._moveY += p._gravity * td;
 
+			renderFunc(type, t, td);
+
+			// get next particle
+			p = p._next;
+		}
+	}
+
+	/** @private Renders the particles. */
+	override public function render(target:BitmapData, point:Point, camera:Point)
+	{
+		var rect:Rectangle;
+		renderParticle(function(type:ParticleType, t:Float, td:Float) {
 			rect = type._frame;
 
 			// get frame
@@ -185,55 +193,23 @@ class Emitter extends Graphic
 			{
 				target.copyPixels(_source, rect, _p, null, null, true);
 			}
-
-			// get next particle
-			p = p._next;
-		}
+		}, point, camera);
 	}
 
 	public override function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
-		// quit if there are no particles
-		if (_particle == null) return;
+		var fsx:Float = HXP.screen.fullScaleX,
+			fsy:Float = HXP.screen.fullScaleY;
 
-		// get rendering position
-		_point.x = point.x + x - camera.x * scrollX;
-		_point.y = point.y + y - camera.y * scrollY;
-
-		// particle info
-		var t:Float, td:Float,
-			p:Particle = _particle,
-			scaleX:Float = HXP.screen.fullScaleX,
-			scaleY:Float = HXP.screen.fullScaleY,
-			type:ParticleType,
-			rect:Rectangle;
-
-		// loop through the particles
-		while (p != null)
-		{
-			// get time scale
-			t = p._time / p._duration;
-
-			// get particle type
-			type = p._type;
-
-			// get position
-			td = (type._ease == null) ? t : type._ease(t);
-			_p.x = _point.x + p._x + p._moveX * (type._backwards ? 1 - td : td);
-			_p.y = _point.y + p._y + p._moveY * (type._backwards ? 1 - td : td);
-			p._moveY += p._gravity * td;
-
+		renderParticle(function(type:ParticleType, t:Float, td:Float) {
 			var frameIndex:Int = type._frames[Std.int(td * type._frames.length)];
-			_frames[frameIndex].draw(Math.floor(_p.x * scaleX), Math.floor(_p.y * scaleY), layer,
-				scaleX, scaleY, type._angle,
+			_frames[frameIndex].draw(Math.floor(_p.x * fsx), Math.floor(_p.y * fsy), layer,
+				fsx, fsy, type._angle,
 				type._red + type._redRange * td,
 				type._green + type._greenRange * td,
 				type._blue + type._blueRange * td,
 				type._alpha + type._alphaRange * ((type._alphaEase == null) ? t : type._alphaEase(t)));
-
-			// get next particle
-			p = p._next;
-		}
+		}, point, camera);
 	}
 
 	/**
@@ -411,6 +387,6 @@ class Emitter extends Graphic
 	// Drawing information.
 	private var _p:Point;
 	private var _tint:ColorTransform;
-	private static var SIN(get_SIN,never):Float;
+	private static var SIN(get,never):Float;
 	private static inline function get_SIN():Float { return Math.PI / 2; }
 }

@@ -87,7 +87,7 @@ class BitmapText extends Graphic {
 	private var _red:Float;
 	private var _green:Float;
 	private var _blue:Float;
-	public var color(default, set_color):Int;
+	public var color(default, set):Int;
 	private function set_color(value:Int):Int {
 		value &= 0xFFFFFF;
 		if (color == value) return value;
@@ -241,7 +241,7 @@ class BitmapText extends Graphic {
 
 		// create or clear the buffer if necessary
 		if (_buffer == null || _buffer.width != w || _buffer.height != h) {
-			_buffer = new BitmapData(w, h, true, 0);
+			_buffer = HXP.createBitmap(w, h, true, 0);
 			startLine = 0;
 		} else {
 			var r = _buffer.rect;
@@ -259,16 +259,10 @@ class BitmapText extends Graphic {
 		}, startLine);
 	}
 
-	public function renderFont(renderFunction:RenderFunction=null, startLine=0) {
+	private inline function renderFont(renderFunction:RenderFunction=null, startLine=0) {
 		// loop through the text one character at a time, calling the supplied
 		// rendering function for each character
 		var fontScale = size/_font.fontSize;
-
-		var fsx = HXP.screen.fullScaleX,
-			fsy = HXP.screen.fullScaleY;
-
-		var sx = scale * scaleX * fontScale * fsx,
-			sy = scale * scaleY * fontScale * fsy;
 
 		var lineHeight:Int = Std.int(_font.lineHeight + lineSpacing);
 
@@ -319,19 +313,16 @@ class BitmapText extends Graphic {
 		// determine drawing location
 		var fontScale = size/_font.fontSize;
 
-		var fsx = HXP.screen.fullScaleX,
-			fsy = HXP.screen.fullScaleY;
-
-		var sx = scale * scaleX * fontScale * fsx,
-			sy = scale * scaleY * fontScale * fsy;
+		var sx = scale * scaleX * fontScale,
+			sy = scale * scaleY * fontScale;
 
 		_point.x = Math.floor(point.x + x - camera.x * scrollX);
 		_point.y = Math.floor(point.y + y - camera.y * scrollY);
 
 		// blit the buffer to the screen
 		_matrix.b = _matrix.c = 0;
-		_matrix.a = sx/fsx;
-		_matrix.d = sy/fsy;
+		_matrix.a = sx;
+		_matrix.d = sy;
 		_matrix.tx = _point.x;
 		_matrix.ty = _point.y;
 		target.draw(_buffer, _matrix, _colorTransform);
@@ -354,7 +345,7 @@ class BitmapText extends Graphic {
 
 		// use hardware accelerated rendering
 		renderFont(function(region:AtlasRegion,gd:GlyphData, x:Float,y:Float) {
-			region.draw(_point.x*fsx+x*sx,_point.y*fsy+y*sy,layer,sx,sy,0,_red,_green,_blue,alpha);
+			region.draw(_point.x * fsx + x * sx, _point.y * fsy + y * sy, layer, sx, sy, 0, _red, _green, _blue, alpha);
 		});
 	}
 }

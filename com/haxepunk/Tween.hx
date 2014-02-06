@@ -119,11 +119,11 @@ class Tween extends EventDispatcher
 		}
 	}
 
-	public var percent(get_percent, set_percent):Float;
+	public var percent(get, set):Float;
 	private function get_percent():Float { return _time / _target; }
 	private function set_percent(value:Float):Float { _time = _target * value; return _time; }
 
-	public var scale(get_scale, null):Float;
+	public var scale(get, null):Float;
 	private function get_scale():Float { return _t; }
 
 	private var _type:TweenType;

@@ -194,7 +194,7 @@ class HXP
 	/**
 	 * The currently active World object (deprecated)
 	 */
-	public static var world(get_world, set_world):Scene;
+	public static var world(get, set):Scene;
 	private static inline function get_world():Scene
 	{
 		HXP.log('HXP.world is deprecated, please use HXP.scene instead');
@@ -210,7 +210,7 @@ class HXP
 	 * The currently active Scene object. When you set this, the Scene is flagged
 	 * to switch, but won't actually do so until the end of the current frame.
 	 */
-	public static var scene(get_scene, set_scene):Scene;
+	public static var scene(get, set):Scene;
 	private static inline function get_scene():Scene { return _scene; }
 	private static function set_scene(value:Scene):Scene
 	{
@@ -286,7 +286,7 @@ class HXP
 	/**
 	 * Toggles between windowed and fullscreen modes
 	 */
-	public static var fullscreen(get_fullscreen, set_fullscreen):Bool;
+	public static var fullscreen(get, set):Bool;
 	private static inline function get_fullscreen():Bool { return HXP.stage.displayState == StageDisplayState.FULL_SCREEN; }
 	private static inline function set_fullscreen(value:Bool):Bool
 	{
@@ -298,7 +298,7 @@ class HXP
 	/**
 	 * Global volume factor for all sounds, a value from 0 to 1.
 	 */
-	public static var volume(get_volume, set_volume):Float;
+	public static var volume(get, set):Float;
 	private static inline function get_volume():Float { return _volume; }
 	private static function set_volume(value:Float):Float
 	{
@@ -314,7 +314,7 @@ class HXP
 	/**
 	 * Global panning factor for all sounds, a value from -1 to 1.
 	 */
-	public static var pan(get_pan, set_pan):Float;
+	public static var pan(get, set):Float;
 	private static inline function get_pan():Float { return _pan; }
 	private static function set_pan(value:Float):Float
 	{
@@ -670,7 +670,7 @@ class HXP
 	/**
 	 * The random seed used by HXP's random functions.
 	 */
-	public static var randomSeed(default, set_randomSeed):Int;
+	public static var randomSeed(default, set):Int;
 	private static inline function set_randomSeed(value:Int):Int
 	{
 		_seed = Std.int(clamp(value, 1.0, INT_MAX_VALUE));
@@ -689,7 +689,7 @@ class HXP
 	/**
 	 * A pseudo-random Float produced using HXP's random seed, where 0 <= Float < 1.
 	 */
-	public static var random(get_random, null):Float;
+	public static var random(get, null):Float;
 	private static inline function get_random():Float
 	{
 		_seed = Std.int((_seed * 16807.0) % INT_MAX_VALUE);
@@ -981,7 +981,7 @@ class HXP
 	/**
 	 * The global Console object.
 	 */
-	public static var console(get_console, never):Console;
+	public static var console(get, never):Console;
 	private static inline function get_console():Console
 	{
 		if (_console == null) _console = new Console();
@@ -1142,7 +1142,7 @@ class HXP
 		#end
 	}
 
-	public static var time(null, set_time):Float;
+	public static var time(null, set):Float;
 	private static inline function set_time(value:Float):Float {
 		_time = value;
 		return _time;
@@ -1176,9 +1176,9 @@ class HXP
 	private static var _soundTransform:SoundTransform = new SoundTransform();
 
 	// Used for rad-to-deg and deg-to-rad conversion.
-	public static var DEG(get_DEG, never):Float;
+	public static var DEG(get, never):Float;
 	public static inline function get_DEG(): Float { return -180 / Math.PI; }
-	public static var RAD(get_RAD, never):Float;
+	public static var RAD(get, never):Float;
 	public static inline function get_RAD(): Float { return Math.PI / -180; }
 
 	// Global Flash objects.

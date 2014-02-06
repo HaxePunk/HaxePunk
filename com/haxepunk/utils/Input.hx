@@ -106,7 +106,7 @@ class Input
 	/**
 	 * If the mouse wheel was moved this frame, this was the delta.
 	 */
-	public static var mouseWheelDelta(get_mouseWheelDelta, never):Int;
+	public static var mouseWheelDelta(get, never):Int;
 	public static function get_mouseWheelDelta():Int
 	{
 		if (mouseWheel)
@@ -120,7 +120,7 @@ class Input
 	/**
 	 * X position of the mouse on the screen.
 	 */
-	public static var mouseX(get_mouseX, never):Int;
+	public static var mouseX(get, never):Int;
 	private static function get_mouseX():Int
 	{
 		return HXP.screen.mouseX;
@@ -129,7 +129,7 @@ class Input
 	/**
 	 * Y position of the mouse on the screen.
 	 */
-	public static var mouseY(get_mouseY, never):Int;
+	public static var mouseY(get, never):Int;
 	private static function get_mouseY():Int
 	{
 		return HXP.screen.mouseY;
@@ -138,7 +138,7 @@ class Input
 	/**
 	 * The absolute mouse x position on the screen (unscaled).
 	 */
-	public static var mouseFlashX(get_mouseFlashX, never):Int;
+	public static var mouseFlashX(get, never):Int;
 	private static function get_mouseFlashX():Int
 	{
 		return Std.int(HXP.stage.mouseX);
@@ -147,7 +147,7 @@ class Input
 	/**
 	 * The absolute mouse y position on the screen (unscaled).
 	 */
-	public static var mouseFlashY(get_mouseFlashY, never):Int;
+	public static var mouseFlashY(get, never):Int;
 	private static function get_mouseFlashY():Int
 	{
 		return Std.int(HXP.stage.mouseY);
@@ -246,7 +246,7 @@ class Input
 		}
 	}
 
-	public static var touches(get_touches, never):Map<Int,Touch>;
+	public static var touches(get, never):Map<Int,Touch>;
 	private static inline function get_touches():Map<Int,Touch> { return _touches; }
 
 	/**
@@ -268,7 +268,7 @@ class Input
 	/**
 	 * Returns the number of connected joysticks
 	 */
-	public static var joysticks(get_joysticks, never):Int;
+	public static var joysticks(get, never):Int;
 	private static function get_joysticks():Int
 	{
 		var count:Int = 0;

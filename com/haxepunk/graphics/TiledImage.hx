@@ -95,7 +95,7 @@ class TiledImage extends Image
 	/**
 	 * The x-offset of the texture.
 	 */
-	public var offsetX(get_offsetX, set_offsetX):Float;
+	public var offsetX(get, set):Float;
 	private function get_offsetX():Float { return _offsetX; }
 	private function set_offsetX(value:Float):Float
 	{
@@ -108,7 +108,7 @@ class TiledImage extends Image
 	/**
 	 * The y-offset of the texture.
 	 */
-	public var offsetY(get_offsetY, set_offsetY):Float;
+	public var offsetY(get, set):Float;
 	private function get_offsetY():Float { return _offsetY; }
 	private function set_offsetY(value:Float):Float
 	{

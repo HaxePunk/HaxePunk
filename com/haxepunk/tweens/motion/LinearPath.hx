@@ -77,9 +77,9 @@ class LinearPath extends Motion
 	 */
 	public function getPoint(index:Int = 0):Point
 	{
-		if (_points.length == 0) 
+		if (_points.length == 0)
 			throw "No points have been added to the path yet.";
-		
+
 		return _points[index % _points.length];
 	}
 
@@ -110,12 +110,12 @@ class LinearPath extends Motion
 	/** @private Updates the path, preparing it for motion. */
 	private function updatePath()
 	{
-		if (_points.length < 2)	
+		if (_points.length < 2)
 			throw "A LinearPath must have at least 2 points to operate.";
-			
+
 		if (_pointD.length == _pointT.length)
 			return;
-			
+
 		// evaluate t for each point
 		var i:Int = 0;
 		while (i < _points.length)
@@ -130,7 +130,7 @@ class LinearPath extends Motion
 	/**
 	 * How many points are on the path.
 	 */
-	public var pointCount(get_pointCount, never):Float;
+	public var pointCount(get, never):Float;
 	private function get_pointCount():Float { return _points.length; }
 
 	// Path information.

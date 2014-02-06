@@ -171,7 +171,7 @@ class Masklist extends Hitbox
 	/**
 	 * Amount of Masks in the list.
 	 */
-	public var count(get_count, null):Int;
+	public var count(get, null):Int;
 	private function get_count():Int { return _count; }
 
 	// List information.

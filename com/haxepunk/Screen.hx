@@ -143,7 +143,7 @@ class Screen
 	/**
 	 * Refresh color of the screen.
 	 */
-	public var color(get_color, set_color):Int;
+	public var color(get, set):Int;
 	private function get_color():Int { return _color; }
 	private function set_color(value:Int):Int
 	{
@@ -158,7 +158,7 @@ class Screen
 	/**
 	 * X offset of the screen.
 	 */
-	public var x(default, set_x):Int = 0;
+	public var x(default, set):Int = 0;
 	private function set_x(value:Int):Int
 	{
 		if (x == value) return value;
@@ -170,7 +170,7 @@ class Screen
 	/**
 	 * Y offset of the screen.
 	 */
-	public var y(default, set_y):Int = 0;
+	public var y(default, set):Int = 0;
 	private function set_y(value:Int):Int
 	{
 		if (y == value) return value;
@@ -182,7 +182,7 @@ class Screen
 	/**
 	 * X origin of transformations.
 	 */
-	public var originX(default, set_originX):Int = 0;
+	public var originX(default, set):Int = 0;
 	private function set_originX(value:Int):Int
 	{
 		if (originX == value) return value;
@@ -194,7 +194,7 @@ class Screen
 	/**
 	 * Y origin of transformations.
 	 */
-	public var originY(default, set_originY):Int = 0;
+	public var originY(default, set):Int = 0;
 	private function set_originY(value:Int):Int
 	{
 		if (originY == value) return value;
@@ -206,7 +206,7 @@ class Screen
 	/**
 	 * X scale of the screen.
 	 */
-	public var scaleX(default, set_scaleX):Float = 1;
+	public var scaleX(default, set):Float = 1;
 	private function set_scaleX(value:Float):Float
 	{
 		if (scaleX == value) return value;
@@ -220,7 +220,7 @@ class Screen
 	/**
 	 * Y scale of the screen.
 	 */
-	public var scaleY(default, set_scaleY):Float = 1;
+	public var scaleY(default, set):Float = 1;
 	private function set_scaleY(value:Float):Float
 	{
 		if (scaleY == value) return value;
@@ -235,7 +235,7 @@ class Screen
 	 * Scale factor of the screen. Final scale is scaleX * scale by scaleY * scale, so
 	 * you can use this factor to scale the screen both horizontally and vertically.
 	 */
-	public var scale(default, set_scale):Float = 1;
+	public var scale(default, set):Float = 1;
 	private function set_scale(value:Float):Float
 	{
 		if (scale == value) return value;
@@ -265,7 +265,7 @@ class Screen
 	/**
 	 * Rotation of the screen, in degrees.
 	 */
-	public var angle(get_angle, set_angle):Float;
+	public var angle(get, set):Float;
 	private function get_angle():Float { return _angle * HXP.DEG; }
 	private function set_angle(value:Float):Float
 	{
@@ -278,7 +278,7 @@ class Screen
 	/**
 	 * Whether screen smoothing should be used or not.
 	 */
-	public var smoothing(get_smoothing, set_smoothing):Bool;
+	public var smoothing(get, set):Bool;
 	private function get_smoothing():Bool
 	{
 		if (HXP.renderMode == RenderMode.BUFFER)
@@ -316,13 +316,13 @@ class Screen
 	/**
 	 * X position of the mouse on the screen.
 	 */
-	public var mouseX(get_mouseX, null):Int;
+	public var mouseX(get, null):Int;
 	private function get_mouseX():Int { return Std.int(_sprite.mouseX); }
 
 	/**
 	 * Y position of the mouse on the screen.
 	 */
-	public var mouseY(get_mouseY, null):Int;
+	public var mouseY(get, null):Int;
 	private function get_mouseY():Int { return Std.int(_sprite.mouseY); }
 
 	/**

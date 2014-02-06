@@ -291,7 +291,7 @@ class AtlasData
 	 * Sets the render flag to enable/disable alpha
 	 * Default: true
 	 */
-	public var alpha(get_alpha, set_alpha):Bool;
+	public var alpha(get, set):Bool;
 	private function get_alpha():Bool { return (_renderFlags & Tilesheet.TILE_ALPHA != 0); }
 	private function set_alpha(value:Bool):Bool
 	{
@@ -305,7 +305,7 @@ class AtlasData
 	 * Sets the render flag to enable/disable rgb tinting
 	 * Default: true
 	 */
-	public var rgb(get_rgb, set_rgb):Bool;
+	public var rgb(get, set):Bool;
 	private function get_rgb():Bool { return (_renderFlags & Tilesheet.TILE_RGB != 0); }
 	private function set_rgb(value:Bool)
 	{
@@ -319,7 +319,7 @@ class AtlasData
 	 * Sets the blend mode for rendering (BLEND_NONE, BLEND_NORMAL, BLEND_ADD)
 	 * Default: BLEND_NORMAL
 	 */
-	public var blend(get_blend, set_blend):Int;
+	public var blend(get, set):Int;
 	private function get_blend():Int {
 		if (_renderFlags & Tilesheet.TILE_BLEND_NORMAL != 0)
 			return BLEND_NORMAL;

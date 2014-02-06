@@ -67,7 +67,7 @@ class Graphic implements Position
 	/**
 	 * If the graphic should render.
 	 */
-	public var visible(get_visible, set_visible):Bool;
+	public var visible(get, set):Bool;
 	public function get_visible():Bool { return _visible; }
 	public function set_visible(value:Bool):Bool { return _visible = value; }
 

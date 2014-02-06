@@ -43,10 +43,9 @@ ant doc
 
 There are a few ways you can get involved with HaxePunk.
 
-*	Drop by the [HaxePunk forum](http://forum.haxepunk.com) to ask something or show off what you've created.
-*	Contact Matt directly
-	*	Email: heardtheword (at) gmail (dot) com
-	*	Twitter: @Matt_Tuttle
+*	Drop by the [HaxePunk forum](http://forum.haxepunk.com) to ask a question or show off what you've created.
+*	Create an issue or pull request or take part in the discussion.
+*	Follow us on Twitter: [@HaxePunk](https://twitter.com/intent/user?screen_name=HaxePunk)
 
 ## Credits
 
