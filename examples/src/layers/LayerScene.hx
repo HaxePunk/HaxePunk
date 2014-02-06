@@ -42,6 +42,7 @@ class LayerScene extends DemoScene
 		addGraphic(background, 100); // add graphic at back
 
 		var text = new com.haxepunk.graphics.Text();
+		text.color = 0x000000;
 		text.addStyle("welcome", {color: 0xFF0000, bold: true});
 		text.addStyle("orange", {color: 0xF2990D});
 		text.richText = "<welcome>Welcome</welcome> to <orange>HaxePunk</orange>!";
