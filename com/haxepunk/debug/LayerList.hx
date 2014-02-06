@@ -139,6 +139,11 @@ class LayerList extends Sprite
 		_labels = new IntMap<LayerLabel>();
 	}
 
+	private function layerSort(a:Int, b:Int):Int
+	{
+		return a - b;
+	}
+
 	public function set(list:IntMap<Int>)
 	{
 		// remove added children
@@ -155,7 +160,7 @@ class LayerList extends Sprite
 			if (list.get(key) > 0)
 				keys.push(key);
 		}
-		keys.sort(function(a:Int, b:Int):Int { return a - b; });
+		keys.sort(layerSort);
 
 		var i = 0;
 		for (layer in keys)
