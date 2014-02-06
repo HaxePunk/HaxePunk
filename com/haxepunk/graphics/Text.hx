@@ -96,12 +96,9 @@ class Text extends Image
 		var source = HXP.createBitmap(_width, _height, true);
 		if (HXP.renderMode == RenderMode.HARDWARE)
 		{
-			_sourceRect = source.rect;
 			_source = source;
-			_bitmap = new Bitmap();
-			_colorTransform = new ColorTransform();
-			createBuffer();
-			updateBuffer();
+			_sourceRect = source.rect;
+			blit = true;
 		}
 		super(source);
 
@@ -212,5 +209,4 @@ class Text extends Image
 	private var _height:Int;
 	private var _field:TextField;
 	private var _format:TextFormat;
-	private var _textHardware:Bool = false;
 }
