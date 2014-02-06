@@ -1,5 +1,6 @@
 package com.haxepunk.graphics;
 
+import com.haxepunk.graphics.atlas.AtlasRegion;
 import com.haxepunk.HXP;
 import com.haxepunk.graphics.atlas.TileAtlas;
 
@@ -315,4 +316,5 @@ class Spritemap extends Image
 	private var _frame:Int;
 	private var _timer:Float;
 	private var _atlas:TileAtlas;
+	private var _regions:Array<AtlasRegion>;
 }
