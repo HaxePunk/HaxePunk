@@ -15,8 +15,8 @@ import com.haxepunk.Mask;
 class Grid extends Hitbox
 {
 	/**
-	 * If x/y positions should be used instead of columns/rows (the default). Columns/rows means 
-	 * screen coordinates relative to the width/height specified in the constructor. X/y means 
+	 * If x/y positions should be used instead of columns/rows (the default). Columns/rows means
+	 * screen coordinates relative to the width/height specified in the constructor. X/y means
 	 * grid coordinates, relative to the grid size.
 	 */
 	public var usePositions:Bool;
@@ -242,10 +242,10 @@ class Grid extends Hitbox
 	* Saves the grid data to a string.
 	* @param	columnSep	The string that separates each tile value on a row, default is ",".
 	* @param	rowSep		The string that separates each row of tiles, default is "\n".
-	* 
+	*
 	* @return The string version of the grid.
 	*/
-	public function saveToString(columnSep:String = ",", rowSep:String = "\n", 
+	public function saveToString(columnSep:String = ",", rowSep:String = "\n",
 		solid:String = "true", empty:String = "false"): String
 	{
 		var s:String = '',
@@ -261,10 +261,10 @@ class Grid extends Hitbox
 		}
 		return s;
 	}
-	
+
 	/**
 	 *  Make a copy of the grid.
-	 * 
+	 *
 	 * @return Return a copy of the grid.
 	 */
 	public function clone():Grid
@@ -283,13 +283,13 @@ class Grid extends Hitbox
 	/**
 	 * The tile width.
 	 */
-	public var tileWidth(get_tileWidth, never):Int;
+	public var tileWidth(get, never):Int;
 	private inline function get_tileWidth():Int { return Std.int(_tile.width); }
 
 	/**
 	 * The tile height.
 	 */
-	public var tileHeight(get_tileHeight, never):Int;
+	public var tileHeight(get, never):Int;
 	private inline function get_tileHeight():Int { return Std.int(_tile.height); }
 
 	/**
@@ -413,20 +413,20 @@ class Grid extends Hitbox
 		var bx1:Float = other.parent.x + other._x;
 		var bx2:Float = bx1 + other._width;
 		if (ax2 < bx1 || ax1 > bx2) return false;
-		
+
 		// Find the Y edges
 		var ay1:Float = parent.y + _y;
 		var ay2:Float = ay1 + _height;
 		var by1:Float = other.parent.y + other._y;
 		var by2:Float = by1 + other._height;
 		if (ay2 < by1 || ay1 > by2) return false;
-		
+
 		// Find the overlapping area
 		var ox1:Float = ax1 > bx1 ? ax1 : bx1;
 		var oy1:Float = ay1 > by1 ? ay1 : by1;
 		var ox2:Float = ax2 < bx2 ? ax2 : bx2;
 		var oy2:Float = ay2 < by2 ? ay2 : by2;
-		
+
 		// Find the smallest tile size, and snap the top and left overlapping
 		// edges to that tile size. This ensures that corner checking works
 		// properly.
@@ -459,7 +459,7 @@ class Grid extends Hitbox
 			oy1 = Std.int(oy1 / th) * th;
 			oy1 += other.parent.y + other._y;
 		}
-		
+
 		// Step through the overlapping rectangle
 		var y:Float = oy1;
 		var x:Float = 0;
@@ -469,7 +469,7 @@ class Grid extends Hitbox
 			var br1:Int = Std.int((y - other.parent.y - other._y) / other._tile.height);
 			var ar2:Int = Std.int(((y - parent.y - _y) + (th - 1)) / _tile.height);
 			var br2:Int = Std.int(((y - other.parent.y - other._y) + (th - 1)) / other._tile.height);
-			
+
 			x = ox1;
 			while (x < ox2) {
 				// Get the column indices for the left and right edges of the tile
@@ -477,7 +477,7 @@ class Grid extends Hitbox
 				var bc1:Int = Std.int((x - other.parent.x - other._x) / other._tile.width);
 				var ac2:Int = Std.int(((x - parent.x - _x) + (tw - 1)) / _tile.width);
 				var bc2:Int = Std.int(((x - other.parent.x - other._x) + (tw - 1)) / other._tile.width);
-				
+
 				// Check all the corners for collisions
 				if ((getTile(ac1, ar1) && other.getTile(bc1, br1))
 				 || (getTile(ac2, ar1) && other.getTile(bc2, br1))
@@ -490,7 +490,7 @@ class Grid extends Hitbox
 			}
 			y += th;
 		}
-		
+
 		return false;
 	}
 

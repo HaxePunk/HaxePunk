@@ -18,11 +18,11 @@ class AtlasRegion
 	/**
 	 * Width of this region
 	 */
-	public var width(get_width, never):Float;
+	public var width(get, never):Float;
 	/**
 	 * Height of this region
 	 */
-	public var height(get_height, never):Float;
+	public var height(get, never):Float;
 
 	/**
 	 * Creates a new AtlasRegion
@@ -46,20 +46,23 @@ class AtlasRegion
 	 */
 	public function clip(clipRect:Rectangle, ?center:Point):AtlasRegion
 	{
+		// make a copy of clipRect, to avoid modifying the original
+		var clipRectCopy = new Rectangle( clipRect.x, clipRect.y, clipRect.width, clipRect.height );
+
 		// only clip within the current region
-		if (clipRect.x + clipRect.width > rect.width)
-			clipRect.width = rect.width - clipRect.x;
-		if (clipRect.y + clipRect.height > rect.height)
-			clipRect.height = rect.height - clipRect.y;
+		if (clipRectCopy.x + clipRectCopy.width > rect.width)
+			clipRectCopy.width = rect.width - clipRectCopy.x;
+		if (clipRectCopy.y + clipRectCopy.height > rect.height)
+			clipRectCopy.height = rect.height - clipRectCopy.y;
 
 		// do not allow negative width/height
-		if (clipRect.width < 0) clipRect.width = 0;
-		if (clipRect.height < 0) clipRect.height = 0;
+		if (clipRectCopy.width < 0) clipRectCopy.width = 0;
+		if (clipRectCopy.height < 0) clipRectCopy.height = 0;
 
 		// position clip rect where the last image was
-		clipRect.x += rect.x;
-		clipRect.y += rect.y;
-		return parent.createRegion(clipRect, center);
+		clipRectCopy.x += rect.x;
+		clipRectCopy.y += rect.y;
+		return parent.createRegion(clipRectCopy, center);
 	}
 
 	/**

@@ -20,6 +20,7 @@ import openfl.Assets;
 import com.haxepunk.Graphic;
 import com.haxepunk.Tween;
 import com.haxepunk.debug.Console;
+import com.haxepunk.ds.Position;
 import com.haxepunk.tweens.misc.Alarm;
 import com.haxepunk.tweens.misc.MultiVarTween;
 import com.haxepunk.utils.Ease;
@@ -180,12 +181,20 @@ class HXP
 	/**
 	 * The choose function randomly chooses and returns one of the provided values.
 	 */
-	public static var choose(get, null):Dynamic;
+	public static var choose = Reflect.makeVarArgs(function(objs:Array<Dynamic>) {
+		if (objs == null || objs.length == 0 || (objs.length == 1 && Reflect.hasField(objs[0], "length") && objs[0].length == 0))
+			throw "Can't choose a random element on an empty array";
+
+		if (objs.length == 1 && Reflect.hasField(objs[0], "length"))
+			return objs[0][rand(objs[0].length)];
+
+		return objs[rand(objs.length)];
+	});
 
 	/**
 	 * The currently active World object (deprecated)
 	 */
-	public static var world(get_world, set_world):Scene;
+	public static var world(get, set):Scene;
 	private static inline function get_world():Scene
 	{
 		HXP.log('HXP.world is deprecated, please use HXP.scene instead');
@@ -201,7 +210,7 @@ class HXP
 	 * The currently active Scene object. When you set this, the Scene is flagged
 	 * to switch, but won't actually do so until the end of the current frame.
 	 */
-	public static var scene(get_scene, set_scene):Scene;
+	public static var scene(get, set):Scene;
 	private static inline function get_scene():Scene { return _scene; }
 	private static function set_scene(value:Scene):Scene
 	{
@@ -277,7 +286,7 @@ class HXP
 	/**
 	 * Toggles between windowed and fullscreen modes
 	 */
-	public static var fullscreen(get_fullscreen, set_fullscreen):Bool;
+	public static var fullscreen(get, set):Bool;
 	private static inline function get_fullscreen():Bool { return HXP.stage.displayState == StageDisplayState.FULL_SCREEN; }
 	private static inline function set_fullscreen(value:Bool):Bool
 	{
@@ -289,7 +298,7 @@ class HXP
 	/**
 	 * Global volume factor for all sounds, a value from 0 to 1.
 	 */
-	public static var volume(get_volume, set_volume):Float;
+	public static var volume(get, set):Float;
 	private static inline function get_volume():Float { return _volume; }
 	private static function set_volume(value:Float):Float
 	{
@@ -305,7 +314,7 @@ class HXP
 	/**
 	 * Global panning factor for all sounds, a value from -1 to 1.
 	 */
-	public static var pan(get_pan, set_pan):Float;
+	public static var pan(get, set):Float;
 	private static inline function get_pan():Float { return _pan; }
 	private static function set_pan(value:Float):Float
 	{
@@ -317,22 +326,6 @@ class HXP
 		SoundMixer.soundTransform = _soundTransform;
 		#end
 		return _pan;
-	}
-
-	public static function get_choose():Dynamic
-    {
-        return Reflect.makeVarArgs(_choose);
-    }
-
-	private static inline function _choose(objs:Array<Dynamic>):Dynamic
-	{
-		if (objs == null || objs.length == 0 || (objs.length == 1 && Reflect.hasField(objs[0], "length") && objs[0].length == 0))
-			throw "Can't choose a random element on an empty array";
-
-		if (objs.length == 1 && Reflect.hasField(objs[0], "length"))
-			return objs[0][rand(objs[0].length)];
-
-		return objs[rand(objs.length)];
 	}
 
 	/**
@@ -410,7 +403,7 @@ class HXP
 	 * @param	y			Y position to step towards.
 	 * @param	distance	The distance to step (will not overshoot target).
 	 */
-	public static function stepTowards(object:Dynamic, x:Float, y:Float, distance:Float = 1)
+	public static function stepTowards(object:Position, x:Float, y:Float, distance:Float = 1)
 	{
 		point.x = x - object.x;
 		point.y = y - object.y;
@@ -431,7 +424,7 @@ class HXP
 	 * @param	anchor		The anchor object.
 	 * @param	distance	The max distance object can be anchored to the anchor.
 	 */
-	public static inline function anchorTo(object:Dynamic, anchor:Dynamic, distance:Float = 0)
+	public static inline function anchorTo(object:Position, anchor:Position, distance:Float = 0)
 	{
 		point.x = object.x - anchor.x;
 		point.y = object.y - anchor.y;
@@ -462,7 +455,7 @@ class HXP
 	 * @param	x			X offset.
 	 * @param	y			Y offset.
 	 */
-	public static inline function angleXY(object:Dynamic, angle:Float, length:Float = 1, x:Float = 0, y:Float = 0)
+	public static inline function angleXY(object:Position, angle:Float, length:Float = 1, x:Float = 0, y:Float = 0)
 	{
 		angle *= RAD;
 		object.x = Math.cos(angle) * length + x;
@@ -490,7 +483,7 @@ class HXP
 	 * @param	angle		The amount of degrees to rotate by.
 	 * @param	relative	If the angle is relative to the angle between the object and the anchor.
 	 */
-	public static inline function rotateAround(object:Dynamic, anchor:Dynamic, angle:Float = 0, relative:Bool = true)
+	public static inline function rotateAround(object:Position, anchor:Position, angle:Float = 0, relative:Bool = true)
 	{
 		if (relative) angle += HXP.angle(anchor.x, anchor.y, object.x, object.y);
 		HXP.angleXY(object, angle, HXP.distance(anchor.x, anchor.y, object.x, object.y), anchor.x, anchor.y);
@@ -633,7 +626,7 @@ class HXP
 	 * @param	height		Rectangle's height.
 	 * @param	padding		Rectangle's padding.
 	 */
-	public static inline function clampInRect(object:Dynamic, x:Float, y:Float, width:Float, height:Float, padding:Float = 0)
+	public static inline function clampInRect(object:Position, x:Float, y:Float, width:Float, height:Float, padding:Float = 0)
 	{
 		object.x = clamp(object.x, x + padding, x + width - padding);
 		object.y = clamp(object.y, y + padding, y + height - padding);
@@ -677,7 +670,7 @@ class HXP
 	/**
 	 * The random seed used by HXP's random functions.
 	 */
-	public static var randomSeed(default, set_randomSeed):Int;
+	public static var randomSeed(default, set):Int;
 	private static inline function set_randomSeed(value:Int):Int
 	{
 		_seed = Std.int(clamp(value, 1.0, INT_MAX_VALUE));
@@ -696,7 +689,7 @@ class HXP
 	/**
 	 * A pseudo-random Float produced using HXP's random seed, where 0 <= Float < 1.
 	 */
-	public static var random(get_random, null):Float;
+	public static var random(get, null):Float;
 	private static inline function get_random():Float
 	{
 		_seed = Std.int((_seed * 16807.0) % INT_MAX_VALUE);
@@ -739,7 +732,7 @@ class HXP
 	 * @param	loop		If true, will jump to the first item after the last item is reached.
 	 * @return	The next item in the list.
 	 */
-	public static inline function next<T>(current:T, options:Array<T>, loop:Bool = true):Dynamic
+	public static inline function next<T>(current:T, options:Array<T>, loop:Bool = true):T
 	{
 		if (loop)
 			return options[(indexOf(options, current) + 1) % options.length];
@@ -754,7 +747,7 @@ class HXP
 	 * @param	loop		If true, will jump to the last item after the first is reached.
 	 * @return	The previous item in the list.
 	 */
-	public static inline function prev<T>(current:T, options:Array<T>, loop:Bool = true):Dynamic
+	public static inline function prev<T>(current:T, options:Array<T>, loop:Bool = true):T
 	{
 		if (loop)
 			return options[((indexOf(options, current) - 1) + options.length) % options.length];
@@ -769,7 +762,7 @@ class HXP
 	 * @param	b			Item b.
 	 * @return	Returns a if current is b, and b if current is a.
 	 */
-	public static inline function swap(current:Dynamic, a:Dynamic, b:Dynamic):Dynamic
+	public static inline function swap<T>(current:T, a:T, b:T):T
 	{
 		return current == a ? b : a;
 	}
@@ -988,7 +981,7 @@ class HXP
 	/**
 	 * The global Console object.
 	 */
-	public static var console(get_console, never):Console;
+	public static var console(get, never):Console;
 	private static inline function get_console():Console
 	{
 		if (_console == null) _console = new Console();
@@ -1007,8 +1000,7 @@ class HXP
 	 * Logs data to the console.
 	 * @param	...data		The data parameters to log, can be variables, objects, etc. Parameters will be separated by a space (" ").
 	 */
-	public static var log:Dynamic = Reflect.makeVarArgs(function(data:Array<Dynamic>)
-	{
+	public static var log = Reflect.makeVarArgs(function(data:Array<Dynamic>) {
 		if (_console != null)
 		{
 			_console.log(data);
@@ -1019,8 +1011,7 @@ class HXP
 	 * Adds properties to watch in the console's debug panel.
 	 * @param	...properties		The properties (strings) to watch.
 	 */
-	public static var watch:Dynamic = Reflect.makeVarArgs(function(properties:Array<Dynamic>)
-	{
+	public static var watch = Reflect.makeVarArgs(function(properties:Array<Dynamic>) {
 		if (_console != null)
 		{
 			_console.watch(properties);
@@ -1124,17 +1115,14 @@ class HXP
 	 * Shuffles the elements in the array.
 	 * @param	a		The Object to shuffle (an Array or Vector).
 	 */
-	public static function shuffle(a:Dynamic)
+	public static function shuffle<T>(a:Array<T>)
 	{
-		if (Std.is(a, Array))
+		var i:Int = a.length, j:Int, t:T;
+		while (--i > 0)
 		{
-			var i:Int = a.length, j:Int, t:Dynamic;
-			while (--i > 0)
-			{
-				t = a[i];
-				a[i] = a[j = HXP.rand(i + 1)];
-				a[j] = t;
-			}
+			t = a[i];
+			a[i] = a[j = HXP.rand(i + 1)];
+			a[j] = t;
 		}
 	}
 
@@ -1154,7 +1142,7 @@ class HXP
 		#end
 	}
 
-	public static var time(null, set_time):Float;
+	public static var time(null, set):Float;
 	private static inline function set_time(value:Float):Float {
 		_time = value;
 		return _time;
@@ -1188,9 +1176,9 @@ class HXP
 	private static var _soundTransform:SoundTransform = new SoundTransform();
 
 	// Used for rad-to-deg and deg-to-rad conversion.
-	public static var DEG(get_DEG, never):Float;
+	public static var DEG(get, never):Float;
 	public static inline function get_DEG(): Float { return -180 / Math.PI; }
-	public static var RAD(get_RAD, never):Float;
+	public static var RAD(get, never):Float;
 	public static inline function get_RAD(): Float { return Math.PI / -180; }
 
 	// Global Flash objects.

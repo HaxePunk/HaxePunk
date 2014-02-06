@@ -31,6 +31,7 @@ import com.haxepunk.graphics.Tilemap;
 import com.haxepunk.graphics.atlas.AtlasData;
 import com.haxepunk.graphics.atlas.Atlas;
 import com.haxepunk.graphics.atlas.AtlasRegion;
+import com.haxepunk.graphics.atlas.BitmapFontAtlas;
 import com.haxepunk.graphics.atlas.TextureAtlas;
 import com.haxepunk.graphics.atlas.TileAtlas;
 import com.haxepunk.masks.Circle;

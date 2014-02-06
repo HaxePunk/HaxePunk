@@ -32,7 +32,7 @@ class LayerScene extends DemoScene
 		e.addGraphic(img2);
 		add(e);
 
-		var text = new Text("Hello World!");
+		var text = new Text("Hello World!", {resizable: true});
 		text.size = 24;
 		addGraphic(text, 30, 150, 250);
 

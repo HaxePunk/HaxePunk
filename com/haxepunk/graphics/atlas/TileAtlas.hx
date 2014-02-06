@@ -1,29 +1,31 @@
 package com.haxepunk.graphics.atlas;
 
+import com.haxepunk.HXP;
+import com.haxepunk.ds.Either;
+import com.haxepunk.graphics.atlas.AtlasData;
 import flash.display.BitmapData;
 
 class TileAtlas extends Atlas
 {
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param	source		Source texture.
 	 * @param	tileWidth	With of the tiles.
 	 * @param	tileHeight	Height of the tiles.
 	 * @param	tileMarginWidth		Tile horizontal margin.
 	 * @param	tileMarginHeight	Tile vertical margin.
 	 */
-	public function new(source:Dynamic, tileWidth:Int, tileHeight:Int,?tileMarginWidth:Int=0,?tileMarginHeight:Int=0)
+	public function new(source:AtlasDataType)
 	{
 		super(source);
 		_regions = new Array<AtlasRegion>();
-		prepareTiles(_data.width, _data.height, tileWidth, tileHeight,tileMarginWidth,tileMarginHeight);
 	}
 
 	/**
 	 * Gets an atlas region based on an identifier
 	 * @param 	index	The tile index of the region to retrieve
-	 * 
+	 *
 	 * @return	The atlas region object.
 	 */
 	public function getRegion(index:Int):AtlasRegion
@@ -31,10 +33,11 @@ class TileAtlas extends Atlas
 		return _regions[index];
 	}
 
-	private function prepareTiles(width:Int, height:Int, tileWidth:Int, tileHeight:Int, tileMarginWidth:Int,tileMarginHeight:Int)
+	public function prepare(tileWidth:Int, tileHeight:Int, tileMarginWidth:Int=0, tileMarginHeight:Int=0)
 	{
-		var cols:Int = Math.floor(width / tileWidth);
-		var rows:Int = Math.floor(height / tileHeight);
+		if (_regions.length > 0) return; // only prepare once
+		var cols:Int = Math.floor(_data.width / tileWidth);
+		var rows:Int = Math.floor(_data.height / tileHeight);
 
 		HXP.rect.width = tileWidth;
 		HXP.rect.height = tileHeight;

@@ -1,6 +1,7 @@
 package com.haxepunk.graphics;
 
 import com.haxepunk.HXP;
+import com.haxepunk.Graphic;
 import com.haxepunk.graphics.atlas.TileAtlas;
 
 import flash.display.BitmapData;
@@ -37,9 +38,8 @@ class Spritemap extends Image
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
 	 * @param	cbFunc			Optional callback function for animation end.
-	 * @param	name			Optional name, necessary to identify the bitmapData if you are using flipped.
 	 */
-	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0, cbFunc:CallbackFunction = null, name:String = "")
+	public function new(source:TileType, frameWidth:Int = 0, frameHeight:Int = 0, ?cbFunc:CallbackFunction)
 	{
 		complete = true;
 		rate = 1;
@@ -47,20 +47,15 @@ class Spritemap extends Image
 		_timer = _frame = 0;
 
 		_rect = new Rectangle(0, 0, frameWidth, frameHeight);
-		if (Std.is(source, TileAtlas))
+		switch (source.type)
 		{
-			blit = false;
-			_atlas = cast(source, TileAtlas);
-			_region = _atlas.getRegion(_frame);
+			case Left(bd):
+				super(bd, _rect);
+			case Right(atlas):
+				_atlas = atlas;
+				_atlas.prepare(frameWidth, frameHeight);
+				super(atlas.getRegion(_frame), _rect);
 		}
-		else if (HXP.renderMode == RenderMode.HARDWARE)
-		{
-			blit = false;
-			_atlas = new TileAtlas(source, frameWidth, frameHeight);
-			_region = _atlas.getRegion(_frame);
-		}
-
-		super(source, _rect, name);
 
 		if (blit)
 		{
@@ -249,7 +244,7 @@ class Spritemap extends Image
 	 * Sets the current frame index. When you set this, any
 	 * animations playing will be stopped to force the frame.
 	 */
-	public var frame(get_frame, set_frame):Int;
+	public var frame(get, set):Int;
 	private function get_frame():Int { return _frame; }
 	private function set_frame(value:Int):Int
 	{
@@ -265,7 +260,7 @@ class Spritemap extends Image
 	/**
 	 * Current index of the playing animation.
 	 */
-	public var index(get_index, set_index):Int;
+	public var index(get, set):Int;
 	private function get_index():Int { return _anim != null ? _index : 0; }
 	private function set_index(value:Int):Int
 	{
@@ -281,25 +276,25 @@ class Spritemap extends Image
 	/**
 	 * The amount of frames in the Spritemap.
 	 */
-	public var frameCount(get_frameCount, null):Int;
+	public var frameCount(get, null):Int;
 	private function get_frameCount():Int { return _frameCount; }
 
 	/**
 	 * Columns in the Spritemap.
 	 */
-	public var columns(get_columns, null):Int;
+	public var columns(get, null):Int;
 	private function get_columns():Int { return _columns; }
 
 	/**
 	 * Rows in the Spritemap.
 	 */
-	public var rows(get_rows, null):Int;
+	public var rows(get, null):Int;
 	private function get_rows():Int { return _rows; }
 
 	/**
 	 * The currently playing animation.
 	 */
-	public var currentAnim(get_currentAnim, null):String;
+	public var currentAnim(get, null):String;
 	private function get_currentAnim():String { return (_anim != null) ? _anim.name : ""; }
 
 	// Spritemap information.

@@ -31,7 +31,7 @@ class Animation
 		_parent.play(name, reset);
 	}
 
-	public var parent(null, set_parent):Spritemap;
+	public var parent(null, set):Spritemap;
 	private function set_parent(value:Spritemap):Spritemap {
 		_parent = value;
 		return _parent;

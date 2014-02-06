@@ -1,11 +1,63 @@
 package com.haxepunk;
 
+import com.haxepunk.HXP;
+import com.haxepunk.ds.Either;
+import com.haxepunk.ds.Position;
+import com.haxepunk.graphics.atlas.Atlas;
+import com.haxepunk.graphics.atlas.TileAtlas;
+import com.haxepunk.graphics.atlas.AtlasRegion;
 import flash.display.BitmapData;
 import flash.geom.Point;
 
 typedef AssignCallback = Void -> Void;
 
-class Graphic
+abstract TileType(Either<BitmapData, TileAtlas>)
+{
+	private inline function new(e:Either<BitmapData, TileAtlas>) this = e;
+	public var type(get,never):Either<BitmapData, TileAtlas>;
+	@:to inline function get_type() return this;
+
+	@:from public static inline function fromString(tileset:String) {
+		if (HXP.renderMode == RenderMode.HARDWARE)
+			return new TileType(Right(new TileAtlas(tileset)));
+		else
+			return new TileType(Left(HXP.getBitmap(tileset)));
+	}
+	@:from public static inline function fromTileAtlas(atlas:TileAtlas) {
+		return new TileType(Right(atlas));
+	}
+	@:from public static inline function fromBitmapData(bd:BitmapData) {
+		if (HXP.renderMode == RenderMode.HARDWARE)
+			return new TileType(Right(new TileAtlas(bd)));
+		else
+			return new TileType(Left(bd));
+	}
+}
+
+abstract ImageType(Either<BitmapData, AtlasRegion>)
+{
+	private inline function new(e:Either<BitmapData, AtlasRegion>) this = e;
+	public var type(get,never):Either<BitmapData, AtlasRegion>;
+	@:to inline function get_type() return this;
+
+	@:from public static inline function fromString(s:String) {
+		if (HXP.renderMode == RenderMode.HARDWARE)
+			return new ImageType(Right(Atlas.loadImageAsRegion(s)));
+		else
+			return new ImageType(Left(HXP.getBitmap(s)));
+	}
+	@:from public static inline function fromAtlasRegion(region:AtlasRegion) {
+		return new ImageType(Right(region));
+	}
+	@:from public static inline function fromBitmapData(bd:BitmapData) {
+		if (HXP.renderMode == RenderMode.HARDWARE)
+			return new ImageType(Right(Atlas.loadImageAsRegion(bd)));
+		else
+			return new ImageType(Left(bd));
+	}
+}
+
+class Graphic implements Position
 {
 	/**
 	 * If the graphic should update.
@@ -15,19 +67,23 @@ class Graphic
 	/**
 	 * If the graphic should render.
 	 */
-	public var visible(get_visible, set_visible):Bool;
+	public var visible(get, set):Bool;
 	public function get_visible():Bool { return _visible; }
 	public function set_visible(value:Bool):Bool { return _visible = value; }
 
 	/**
 	 * X offset.
 	 */
-	public var x:Float;
+	@:isVar public var x(get, set):Float;
+	private inline function get_x():Float { return x; }
+	private inline function set_x(value:Float):Float { return x = value; }
 
 	/**
 	 * Y offset.
 	 */
-	public var y:Float;
+	@:isVar public var y(get, set):Float;
+	private inline function get_y():Float { return y; }
+	private inline function set_y(value:Float):Float { return y = value; }
 
 	/**
 	 * X scrollfactor, effects how much the camera offsets the drawn graphic.

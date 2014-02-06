@@ -1,5 +1,6 @@
 package com.haxepunk.graphics.atlas;
 
+import com.haxepunk.graphics.atlas.AtlasData;
 import com.haxepunk.HXP;
 import flash.display.BitmapData;
 import flash.geom.Point;
@@ -8,7 +9,7 @@ import openfl.Assets;
 
 class TextureAtlas extends Atlas
 {
-	private function new(source:Dynamic)
+	private function new(source:AtlasDataType)
 	{
 		_regions = new Map<String,AtlasRegion>();
 
@@ -44,14 +45,14 @@ class TextureAtlas extends Atlas
 	/**
 	 * Gets an atlas region based on an identifier
 	 * @param	name	The name identifier of the region to retrieve.
-	 * 
+	 *
 	 * @return	The retrieved region.
 	 */
 	public function getRegion(name:String):AtlasRegion
 	{
 		if (_regions.exists(name))
 			return _regions.get(name);
-			
+
 		throw "Region has not be defined yet: " + name;
 	}
 
@@ -60,7 +61,7 @@ class TextureAtlas extends Atlas
 	 * @param	name	The region name to create
 	 * @param	rect	Defines the rectangle of the tile on the tilesheet
 	 * @param	center	Positions the local center point to pivot on
-	 * 
+	 *
 	 * @return	The new AtlasRegion object.
 	 */
 	public function defineRegion(name:String, rect:Rectangle, ?center:Point):AtlasRegion

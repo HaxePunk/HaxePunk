@@ -161,7 +161,7 @@ class Scene extends Tweener
 	/**
 	 * X position of the mouse in the Scene.
 	 */
-	public var mouseX(get_mouseX, null):Int;
+	public var mouseX(get, null):Int;
 	private inline function get_mouseX():Int
 	{
 		return Std.int(HXP.screen.mouseX + camera.x);
@@ -170,7 +170,7 @@ class Scene extends Tweener
 	/**
 	 * Y position of the mouse in the scene.
 	 */
-	public var mouseY(get_mouseY, null):Int;
+	public var mouseY(get, null):Int;
 	private inline function get_mouseY():Int
 	{
 		return Std.int(HXP.screen.mouseY + camera.y);
@@ -179,7 +179,7 @@ class Scene extends Tweener
 	/**
 	 * Sprite used to store layer sprites when RenderMode.HARDWARE is set.
 	 */
-	public var sprite(get_sprite, null):Sprite;
+	public var sprite(get, null):Sprite;
 	private inline function get_sprite():Sprite
 	{
 		return _sprite;
@@ -773,7 +773,7 @@ class Scene extends Tweener
 	 * @param	useHitboxes	If the Entities' hitboxes should be used to determine the distance. If false, their x/y coordinates are used.
 	 * @return	The nearest Entity to e.
 	 */
-	public function nearestToClass(type:String, e:Entity, classType:Dynamic, useHitboxes:Bool = false):Entity
+	public function nearestToClass<T>(type:String, e:Entity, classType:Class<T>, useHitboxes:Bool = false):Entity
 	{
 		if (useHitboxes) return nearestToRect(type, e.x - e.originX, e.y - e.originY, e.width, e.height);
 		var n:Entity,
@@ -844,7 +844,7 @@ class Scene extends Tweener
 	/**
 	 * How many Entities are in the Scene.
 	 */
-	public var count(get_count, never):Int;
+	public var count(get, never):Int;
 	private inline function get_count():Int { return _count; }
 
 	/**
@@ -880,13 +880,13 @@ class Scene extends Tweener
 	/**
 	 * The first Entity in the Scene.
 	 */
-	public var first(get_first, null):Entity;
+	public var first(get, null):Entity;
 	private inline function get_first():Entity { return cast(_updateFirst, Entity); }
 
 	/**
 	 * How many Entity layers the Scene has.
 	 */
-	public var layers(get_layers, null):Int;
+	public var layers(get, null):Int;
 	private inline function get_layers():Int { return _layerList.length; }
 
 	/**
@@ -942,7 +942,7 @@ class Scene extends Tweener
 	/**
 	 * The Entity that will be rendered first by the Scene.
 	 */
-	public var farthest(get_farthest, null):Entity;
+	public var farthest(get, null):Entity;
 	private function get_farthest():Entity
 	{
 		if (_updateFirst == null) return null;
@@ -952,7 +952,7 @@ class Scene extends Tweener
 	/**
 	 * The Entity that will be rendered last by the scene.
 	 */
-	public var nearest(get_nearest, null):Entity;
+	public var nearest(get, null):Entity;
 	private function get_nearest():Entity
 	{
 		if (_updateFirst == null) return null;
@@ -962,7 +962,7 @@ class Scene extends Tweener
 	/**
 	 * The layer that will be rendered first by the Scene.
 	 */
-	public var layerFarthest(get_layerFarthest, null):Int;
+	public var layerFarthest(get, null):Int;
 	private function get_layerFarthest():Int
 	{
 		if (_updateFirst == null) return 0;
@@ -972,7 +972,7 @@ class Scene extends Tweener
 	/**
 	 * The layer that will be rendered last by the Scene.
 	 */
-	public var layerNearest(get_layerNearest, null):Int;
+	public var layerNearest(get, null):Int;
 	private function get_layerNearest():Int
 	{
 		if (_updateFirst == null) return 0;
@@ -982,7 +982,7 @@ class Scene extends Tweener
 	/**
 	 * How many different types have been added to the Scene.
 	 */
-	public var uniqueTypes(get_uniqueTypes, null):Int;
+	public var uniqueTypes(get, null):Int;
 	private inline function get_uniqueTypes():Int
 	{
 		var i:Int = 0;
@@ -1013,7 +1013,7 @@ class Scene extends Tweener
 	 * @param	c			The Class type to check.
 	 * @param	into		The Array or Vector to populate.
 	 */
-	public function getClass<E:Entity>(c:Class<Dynamic>, into:Array<E>)
+	public function getClass<T, E:Entity>(c:Class<T>, into:Array<E>)
 	{
 		var fe:FriendEntity = _updateFirst,
 			n:Int = into.length;

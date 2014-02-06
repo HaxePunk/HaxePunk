@@ -1,6 +1,7 @@
 package com.haxepunk.graphics.atlas;
 
 import com.haxepunk.Scene;
+import com.haxepunk.ds.Either;
 import flash.display.BitmapData;
 import flash.display.Graphics;
 import flash.display.Sprite;
@@ -8,6 +9,22 @@ import flash.geom.Rectangle;
 import flash.geom.Point;
 import flash.geom.Matrix;
 import openfl.display.Tilesheet;
+
+abstract AtlasDataType(AtlasData)
+{
+	private inline function new(data:AtlasData) this = data;
+	@:to public inline function toAtlasData():AtlasData return this;
+
+	@:from public static inline function fromString(s:String) {
+		return new AtlasDataType(AtlasData.getAtlasDataByName(s, true));
+	}
+	@:from public static inline function fromBitmapData(bd:BitmapData) {
+#if debug
+		HXP.log("Atlases using BitmapData will not be managed.");
+#end
+		return new AtlasDataType(new AtlasData(bd));
+	}
+}
 
 class AtlasData
 {
@@ -24,20 +41,9 @@ class AtlasData
 	 * @param	source	The image to initialize AtlasData with
 	 * @return	An AtlasData object
 	 */
-	public static function create(source:Dynamic):AtlasData
+	public static function create(source:AtlasDataType):AtlasData
 	{
-		var data:AtlasData;
-		if (Std.is(source, BitmapData))
-		{
-#if debug
-			HXP.log("Atlases using BitmapData will not be managed.");
-#end
-			data = new AtlasData(source);
-		}
-		else
-		{
-			data = getAtlasDataByName(source, true);
-		}
+		var data:AtlasData = source;
 
 		if (data != null)
 		{
@@ -72,7 +78,7 @@ class AtlasData
 		return data;
 	}
 
-	private function new(bd:BitmapData)
+	public function new(bd:BitmapData)
 	{
 		_data = new Array<Float>();
 
@@ -285,7 +291,7 @@ class AtlasData
 	 * Sets the render flag to enable/disable alpha
 	 * Default: true
 	 */
-	public var alpha(get_alpha, set_alpha):Bool;
+	public var alpha(get, set):Bool;
 	private function get_alpha():Bool { return (_renderFlags & Tilesheet.TILE_ALPHA != 0); }
 	private function set_alpha(value:Bool):Bool
 	{
@@ -299,7 +305,7 @@ class AtlasData
 	 * Sets the render flag to enable/disable rgb tinting
 	 * Default: true
 	 */
-	public var rgb(get_rgb, set_rgb):Bool;
+	public var rgb(get, set):Bool;
 	private function get_rgb():Bool { return (_renderFlags & Tilesheet.TILE_RGB != 0); }
 	private function set_rgb(value:Bool)
 	{
@@ -313,7 +319,7 @@ class AtlasData
 	 * Sets the blend mode for rendering (BLEND_NONE, BLEND_NORMAL, BLEND_ADD)
 	 * Default: BLEND_NORMAL
 	 */
-	public var blend(get_blend, set_blend):Int;
+	public var blend(get, set):Int;
 	private function get_blend():Int {
 		if (_renderFlags & Tilesheet.TILE_BLEND_NORMAL != 0)
 			return BLEND_NORMAL;

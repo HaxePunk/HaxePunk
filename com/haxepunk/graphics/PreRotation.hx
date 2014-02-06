@@ -25,21 +25,15 @@ class PreRotation extends Image
 	 * @param	frameCount		How many frames to use. More frames result in smoother rotations.
 	 * @param	smooth			Make the rotated graphic appear less pixelly.
 	 */
-	public function new(source:Dynamic, frameCount:Int = 36, smooth:Bool = false)
+	public function new(source:String, frameCount:Int = 36, smooth:Bool = false)
 	{
 		frameAngle = 0;
 		_last = _current = -1;
 
 		if (HXP.renderMode == RenderMode.BUFFER)
 		{
-			var name:String = '';
-			if (Std.is(source, String))
-				name = source;
-			else
-				name = Type.getClassName(source);
-
-			var r:BitmapData = _rotated.get(name);
-			var size = _sizes.get(name);
+			var r:BitmapData = _rotated.get(source);
+			var size = _sizes.get(source);
 			_frame = new Rectangle(0, 0, size, size);
 
 			if (r == null)
@@ -47,7 +41,7 @@ class PreRotation extends Image
 				// produce a rotated bitmap strip
 				var temp:BitmapData = HXP.getBitmap(source);
 				size = Math.ceil(HXP.distance(0, 0, temp.width, temp.height));
-				_sizes.set(name, size);
+				_sizes.set(source, size);
 				_frame.width = _frame.height = size;
 				var width:Int = Std.int(_frame.width * frameCount),
 					height:Int = Std.int(_frame.height);
@@ -57,7 +51,7 @@ class PreRotation extends Image
 					height = Std.int(Math.ceil(frameCount / (width / _frame.width)) * _frame.height);
 				}
 				r = HXP.createBitmap(width, height, true);
-				_rotated.set(name, r);
+				_rotated.set(source, r);
 				var m:Matrix = HXP.matrix,
 					a:Float = 0,
 					aa:Float = Math.PI * 2 / -frameCount,

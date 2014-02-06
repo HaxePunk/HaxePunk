@@ -393,13 +393,25 @@ class Console
 	/**
 	 * If the console should be visible.
 	 */
-	public var visible(get_visible, set_visible):Bool;
+	public var visible(get, set):Bool;
 	private function get_visible():Bool { return _sprite.visible; }
 	private function set_visible(value:Bool):Bool
 	{
 		_sprite.visible = value;
 		if (_enabled && value) updateLog();
 		return _sprite.visible;
+	}
+
+	/**
+	 * Allows masks to be turned on and off in the console
+	 */
+	public var debugDraw(default, set):Bool = true;
+	public function set_debugDraw(value:Bool):Bool
+	{
+		debugDraw = value;
+		updateEntityLists(false);
+		renderEntities();
+		return value;
 	}
 
 	/**
@@ -415,7 +427,7 @@ class Console
 		_entRead.x = width - _entReadText.width;
 		_layerList.x = width - _layerList.width - 20;
 		_layerList.y = (height - _layerList.height) / 2;
-
+		_layerList.visible = HXP.engine.paused && _debug;
 
 		// Update buttons.
 		if (_butRead.visible)
@@ -506,7 +518,7 @@ class Console
 	/**
 	 * If the Console is currently in paused mode.
 	 */
-	public var paused(get_paused, set_paused):Bool;
+	public var paused(get, set):Bool;
 	private function get_paused():Bool { return _paused; }
 	private function set_paused(value:Bool):Bool
 	{
@@ -520,7 +532,6 @@ class Console
 		// Panel visibility.
 		_back.visible = value;
 		_entScreen.visible = value;
-		_layerList.visible = value;
 #if !mobile // buttons always show on mobile devices
 		_butRead.visible = value;
 #end
@@ -548,7 +559,7 @@ class Console
 	/**
 	 * If the Console is currently in debug mode.
 	 */
-	public var debug(get_debug, set_debug):Bool;
+	public var debug(get, set):Bool;
 	private function get_debug():Bool { return _debug; }
 	private function set_debug(value:Bool):Bool
 	{
@@ -558,7 +569,6 @@ class Console
 		// Set the console to debug mode.
 		_debug = value;
 		_debRead.visible = value;
-		_layerList.visible = value;
 		_logRead.visible = !value;
 
 		// Update console state.
@@ -800,7 +810,9 @@ class Console
 		{
 			var g:Graphics = _entScreen.graphics,
 				sx:Float = HXP.screen.fullScaleX,
-				sy:Float = HXP.screen.fullScaleY;
+				sy:Float = HXP.screen.fullScaleY,
+				colorHitbox = 0xFFFFFF,
+				colorPosition = 0xFFFFFF;
 			g.clear();
 			for (e in SCREEN_LIST)
 			{
@@ -810,38 +822,29 @@ class Console
 				// If the Entity is not selected.
 				if (HXP.indexOf(SELECT_LIST, e) < 0)
 				{
-					// Draw the normal hitbox and position.
-					if (e.width != 0 && e.height != 0)
-					{
-						g.lineStyle(1, 0xFF0000);
-						g.drawRect((e.x - e.originX - HXP.camera.x * graphicScrollX) * sx, (e.y - e.originY - HXP.camera.y * graphicScrollY) * sy, e.width * sx, e.height * sy);
-
-						if (e.mask != null)
-						{
-							g.lineStyle(1, 0x0000FF);
-							e.mask.debugDraw(g, sx, sy);
-						}
-					}
-					g.lineStyle(1, 0x00FF00);
-					g.drawRect((e.x - HXP.camera.x * graphicScrollX) * sx - 3, (e.y - HXP.camera.y * graphicScrollY) * sy - 3, 6, 6);
+					colorHitbox = 0xFF0000;
+					colorPosition = 0x00FF00;
 				}
 				else
 				{
-					// Draw the selected hitbox and position.
-					if (e.width != 0 && e.height != 0)
-					{
-						g.lineStyle(1, 0xFFFFFF);
-						g.drawRect((e.x - e.originX - HXP.camera.x * graphicScrollX) * sx, (e.y - e.originY - HXP.camera.y * graphicScrollY) * sy, e.width * sx, e.height * sy);
-
-						if (e.mask != null)
-						{
-							g.lineStyle(1, 0x0000FF);
-							e.mask.debugDraw(g, sx, sy);
-						}
-					}
-					g.lineStyle(1, 0xFFFFFF);
-					g.drawRect((e.x - HXP.camera.x * graphicScrollX) * sx - 3, (e.y - HXP.camera.y * graphicScrollY) * sy - 3, 6, 6);
+					colorHitbox = 0xFFFFFF;
+					colorPosition = 0xFFFFFF;
 				}
+
+				// Draw the hitbox and position.
+				if (e.width != 0 && e.height != 0)
+				{
+					g.lineStyle(1, colorHitbox);
+					g.drawRect((e.x - e.originX - HXP.camera.x * graphicScrollX) * sx, (e.y - e.originY - HXP.camera.y * graphicScrollY) * sy, e.width * sx, e.height * sy);
+
+					if (debugDraw && e.mask != null)
+					{
+						g.lineStyle(1, 0x0000FF);
+						e.mask.debugDraw(g, sx, sy);
+					}
+				}
+				g.lineStyle(1, colorPosition);
+				g.drawCircle((e.x - HXP.camera.x * graphicScrollX) * sx, (e.y - HXP.camera.y * graphicScrollY) * sy, 3);
 			}
 		}
 	}
@@ -1091,10 +1094,10 @@ class Console
 	/**
 	 * Get the unscaled screen size for the Console.
 	 */
-	public var width(get_width, null):Int;
+	public var width(get, never):Int;
 	private function get_width():Int { return HXP.windowWidth; }
 
-	public var height(get_height, null):Int;
+	public var height(get, never):Int;
 	private function get_height():Int { return HXP.windowHeight; }
 
 	// Console state information.

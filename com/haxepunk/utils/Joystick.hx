@@ -16,7 +16,7 @@ class Joystick
 	/**
 	 * A map of buttons and their states
 	 */
-	public var buttons:Map<Int,JoyButtonState>;	
+	public var buttons:Map<Int,JoyButtonState>;
 	/**
 	 * Each axis contained in an array.
 	 */
@@ -117,7 +117,7 @@ class Joystick
 	/**
 	 * If the joystick is currently connected.
 	 */
-	public var connected(get_connected, set_connected):Bool;
+	public var connected(get, set):Bool;
 	private function get_connected():Bool { return _timeout > 0; }
 	private function set_connected(value:Bool):Bool
 	{
@@ -132,6 +132,7 @@ class Joystick
 
 class OUYA_GAMEPAD
 {
+	// buttons
 	public static inline var O_BUTTON:Int = 0; // 96
 	public static inline var U_BUTTON:Int = 3; // 99
 	public static inline var Y_BUTTON:Int = 4; // 100
@@ -140,14 +141,17 @@ class OUYA_GAMEPAD
 	public static inline var RB_BUTTON:Int = 7; // 103
 	public static inline var BACK_BUTTON:Int = 5;
 	public static inline var START_BUTTON:Int = 4;
-	public static inline var LEFT_ANALOGUE_BUTTON:Int = 8; // 106
-	public static inline var RIGHT_ANALOGUE_BUTTON:Int = 9; // 107
+	public static inline var LEFT_ANALOGUE_BUTTON:Int = 10; // 106
+	public static inline var RIGHT_ANALOGUE_BUTTON:Int = 11; // 107
+	public static inline var LEFT_TRIGGER_BUTTON:Int = 8;
+	public static inline var RIGHT_TRIGGER_BUTTON:Int = 9;
 	public static inline var HOME_BUTTON:Int = 10; // 82
 	public static inline var DPAD_UP:Int = 19;
 	public static inline var DPAD_DOWN:Int = 20;
 	public static inline var DPAD_LEFT:Int = 21;
 	public static inline var DPAD_RIGHT:Int = 22;
 
+	// axis
 	public static inline var LEFT_ANALOGUE_X:Int = 0;
 	public static inline var LEFT_ANALOGUE_Y:Int = 1;
 	public static inline var RIGHT_ANALOGUE_X:Int = 11;

@@ -17,7 +17,7 @@ class Graphiclist extends Graphic
 	 * Constructor.
 	 * @param	...graphic		Graphic objects to add to the list.
 	 */
-	public function new(graphic:Array<Dynamic> = null)
+	public function new(?graphic:Array<Graphic>)
 	{
 		_graphics = new Array<Graphic>();
 		_temp = new Array<Graphic>();
@@ -28,7 +28,7 @@ class Graphiclist extends Graphic
 
 		if (graphic != null)
 		{
-			for (g in graphic) if (cast(g, Graphic) != null) add(g);
+			for (g in graphic) add(g);
 		}
 	}
 
@@ -41,8 +41,7 @@ class Graphiclist extends Graphic
 		}
 	}
 
-	/** @private Renders the Graphics in the list. */
-	override public function render(target:BitmapData, point:Point, camera:Point)
+	private inline function renderList(renderFunc:Graphic->Void, point:Point, camera:Point)
 	{
 		point.x += x;
 		point.y += y;
@@ -61,34 +60,25 @@ class Graphiclist extends Graphic
 				else _point.x = _point.y = 0;
 				_camera.x = camera.x;
 				_camera.y = camera.y;
-				g.render(target, _point, _camera);
+				renderFunc(g);
 			}
 		}
 	}
 
 	/** @private Renders the Graphics in the list. */
+	override public function render(target:BitmapData, point:Point, camera:Point)
+	{
+		renderList(function(g:Graphic) {
+			g.render(target, _point, _camera);
+		}, point, camera);
+	}
+
+	/** @private Renders the Graphics in the list. */
 	override public function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
-		point.x += x;
-		point.y += y;
-		camera.x *= scrollX;
-		camera.y *= scrollY;
-
-		for (g in _graphics)
-		{
-			if (g.visible)
-			{
-				if (g.relative)
-				{
-					_point.x = point.x;
-					_point.y = point.y;
-				}
-				else _point.x = _point.y = 0;
-				_camera.x = camera.x;
-				_camera.y = camera.y;
-				g.renderAtlas(layer, _point, _camera);
-			}
-		}
+		renderList(function(g:Graphic) {
+			g.renderAtlas(layer, _point, _camera);
+		}, point, camera);
 	}
 
 	/**
@@ -168,13 +158,13 @@ class Graphiclist extends Graphic
 	/**
 	 * All Graphics in this list.
 	 */
-	public var children(get_children, null):Array<Graphic>;
+	public var children(get, null):Array<Graphic>;
 	private function get_children():Array<Graphic> { return _graphics; }
 
 	/**
 	 * Amount of Graphics in this list.
 	 */
-	public var count(get_count, null):Int;
+	public var count(get, null):Int;
 	private function get_count():Int { return _count; }
 
 	/**

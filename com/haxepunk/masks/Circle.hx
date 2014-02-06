@@ -195,7 +195,7 @@ class Circle extends Hitbox
 	{
 		var _otherHalfWidth:Float = other._width * 0.5;
 		var _otherHalfHeight:Float = other._height * 0.5;
-		
+
 		var distanceX:Float = Math.abs(parent.x + _x - other.parent.x - other._x - _otherHalfWidth),
 			distanceY:Float = Math.abs(parent.y + _y - other.parent.y - other._y - _otherHalfHeight);
 
@@ -230,7 +230,7 @@ class Circle extends Hitbox
 	/**
 	 * Radius.
 	 */
-	public var radius(get_radius, set_radius):Int;
+	public var radius(get, set):Int;
 	private inline function get_radius():Int { return _radius; }
 	private function set_radius(value:Int):Int
 	{

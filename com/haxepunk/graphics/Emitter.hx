@@ -26,7 +26,7 @@ class Emitter extends Graphic
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
 	 */
-	public function new(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0)
+	public function new(source:ImageType, frameWidth:Int = 0, frameHeight:Int = 0)
 	{
 		super();
 		_p = new Point();
@@ -44,62 +44,43 @@ class Emitter extends Graphic
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
 	 */
-	public function setSource(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0)
+	public function setSource(source:ImageType, frameWidth:Int = 0, frameHeight:Int = 0)
 	{
-		var region:AtlasRegion = null;
-		if (Std.is(source, BitmapData)) setBitmapSource(source);
-		else if(Std.is(source, AtlasRegion)) region = setAtlasRegion(source);
-		else
+		switch (source.type)
 		{
-			if (HXP.renderMode == RenderMode.HARDWARE)
-			{
-				region = setAtlasRegion(Atlas.loadImageAsRegion(source));
-			}
-			else
-			{
-				setBitmapSource(HXP.getBitmap(source));
-			}
+			case Left(bitmap):
+				_width = Std.int(bitmap.width);
+				_height = Std.int(bitmap.height);
+			case Right(region):
+				_width = Std.int(region.width);
+				_height = Std.int(region.height);
 		}
-
-		if (_source == null && region == null)
-			throw "Invalid source image.";
 
 		_frameWidth = (frameWidth != 0) ? frameWidth : _width;
 		_frameHeight = (frameHeight != 0) ? frameHeight : _height;
 		_frameCount = Std.int(_width / _frameWidth) * Std.int(_height / _frameHeight);
 
-		if (region != null)
+		switch (source.type)
 		{
-			var rect = new Rectangle(0, 0, _frameWidth, _frameHeight);
-			var center = new Point(_frameWidth / 2, _frameHeight / 2);
-			_frames = new Array<AtlasRegion>();
-			for (i in 0..._frameCount)
-			{
-				_frames.push(region.clip(rect, center));
-				rect.x += _frameWidth;
-				if (rect.x >= _width)
+			case Left(bitmap):
+				blit = true;
+				_source = bitmap;
+			case Right(region):
+				blit = false;
+				var rect = new Rectangle(0, 0, _frameWidth, _frameHeight);
+				var center = new Point(_frameWidth / 2, _frameHeight / 2);
+				_frames = new Array<AtlasRegion>();
+				for (i in 0..._frameCount)
 				{
-					rect.y += _frameHeight;
-					rect.x = 0;
+					_frames.push(region.clip(rect, center));
+					rect.x += _frameWidth;
+					if (rect.x >= _width)
+					{
+						rect.y += _frameHeight;
+						rect.x = 0;
+					}
 				}
-			}
 		}
-	}
-
-	private inline function setBitmapSource(bitmap:BitmapData)
-	{
-		blit = true;
-		_source = bitmap;
-		_width = Std.int(bitmap.width);
-		_height = Std.int(bitmap.height);
-	}
-
-	private inline function setAtlasRegion(region:AtlasRegion):AtlasRegion
-	{
-		blit = false;
-		_width = Std.int(region.width);
-		_height = Std.int(region.height);
-		return region;
 	}
 
 	override public function update()
@@ -135,8 +116,7 @@ class Emitter extends Graphic
 		}
 	}
 
-	/** @private Renders the particles. */
-	override public function render(target:BitmapData, point:Point, camera:Point)
+	private inline function renderParticle(renderFunc:ParticleType->Float->Float->Void, point:Point, camera:Point)
 	{
 		// quit if there are no particles
 		if (_particle == null) return;
@@ -148,10 +128,7 @@ class Emitter extends Graphic
 		// particle info
 		var t:Float, td:Float,
 			p:Particle = _particle,
-			scaleX:Float = HXP.screen.fullScaleX,
-			scaleY:Float = HXP.screen.fullScaleY,
-			type:ParticleType,
-			rect:Rectangle;
+			type:ParticleType;
 
 		// loop through the particles
 		while (p != null)
@@ -168,6 +145,18 @@ class Emitter extends Graphic
 			_p.y = _point.y + p._y + p._moveY * (type._backwards ? 1 - td : td);
 			p._moveY += p._gravity * td;
 
+			renderFunc(type, t, td);
+
+			// get next particle
+			p = p._next;
+		}
+	}
+
+	/** @private Renders the particles. */
+	override public function render(target:BitmapData, point:Point, camera:Point)
+	{
+		var rect:Rectangle;
+		renderParticle(function(type:ParticleType, t:Float, td:Float) {
 			rect = type._frame;
 
 			// get frame
@@ -204,55 +193,23 @@ class Emitter extends Graphic
 			{
 				target.copyPixels(_source, rect, _p, null, null, true);
 			}
-
-			// get next particle
-			p = p._next;
-		}
+		}, point, camera);
 	}
 
 	public override function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
-		// quit if there are no particles
-		if (_particle == null) return;
+		var fsx:Float = HXP.screen.fullScaleX,
+			fsy:Float = HXP.screen.fullScaleY;
 
-		// get rendering position
-		_point.x = point.x + x - camera.x * scrollX;
-		_point.y = point.y + y - camera.y * scrollY;
-
-		// particle info
-		var t:Float, td:Float,
-			p:Particle = _particle,
-			scaleX:Float = HXP.screen.fullScaleX,
-			scaleY:Float = HXP.screen.fullScaleY,
-			type:ParticleType,
-			rect:Rectangle;
-
-		// loop through the particles
-		while (p != null)
-		{
-			// get time scale
-			t = p._time / p._duration;
-
-			// get particle type
-			type = p._type;
-
-			// get position
-			td = (type._ease == null) ? t : type._ease(t);
-			_p.x = _point.x + p._x + p._moveX * (type._backwards ? 1 - td : td);
-			_p.y = _point.y + p._y + p._moveY * (type._backwards ? 1 - td : td);
-			p._moveY += p._gravity * td;
-
+		renderParticle(function(type:ParticleType, t:Float, td:Float) {
 			var frameIndex:Int = type._frames[Std.int(td * type._frames.length)];
-			_frames[frameIndex].draw(Math.floor(_p.x * scaleX), Math.floor(_p.y * scaleY), layer,
-				scaleX, scaleY, type._angle,
+			_frames[frameIndex].draw(Math.floor(_p.x * fsx), Math.floor(_p.y * fsy), layer,
+				fsx, fsy, type._angle,
 				type._red + type._redRange * td,
 				type._green + type._greenRange * td,
 				type._blue + type._blueRange * td,
 				type._alpha + type._alphaRange * ((type._alphaEase == null) ? t : type._alphaEase(t)));
-
-			// get next particle
-			p = p._next;
-		}
+		}, point, camera);
 	}
 
 	/**
@@ -430,6 +387,6 @@ class Emitter extends Graphic
 	// Drawing information.
 	private var _p:Point;
 	private var _tint:ColorTransform;
-	private static var SIN(get_SIN,never):Float;
+	private static var SIN(get,never):Float;
 	private static inline function get_SIN():Float { return Math.PI / 2; }
 }

@@ -8,7 +8,6 @@ import com.haxepunk.HXP;
 import com.haxepunk.graphics.atlas.TileAtlas;
 import com.haxepunk.masks.Grid;
 
-
 typedef Array2D = Array<Array<Int>>
 /**
  * A canvas to which Tiles can be drawn for fast multiple tile rendering.
@@ -30,7 +29,7 @@ class Tilemap extends Canvas
 	 * @param	tileSpacingWidth	Tile horizontal spacing.
 	 * @param	tileSpacingHeight	Tile vertical spacing.
 	 */
-	public function new(tileset:Dynamic, width:Int, height:Int, tileWidth:Int, tileHeight:Int,?tileSpacingWidth:Int=0,?tileSpacingHeight:Int=0)
+	public function new(tileset:TileType, width:Int, height:Int, tileWidth:Int, tileHeight:Int,?tileSpacingWidth:Int=0,?tileSpacingHeight:Int=0)
 	{
 		_rect = HXP.rect;
 
@@ -69,31 +68,15 @@ class Tilemap extends Canvas
 		}
 
 		// load the tileset graphic
-		if (Std.is(tileset, TileAtlas))
+		switch (tileset.type)
 		{
-			blit = false;
-			_atlas = cast(tileset, TileAtlas);
-		}
-		else
-		{
-			if (HXP.renderMode == RenderMode.HARDWARE)
-			{
+			case Left(bd):
+				blit = true;
+				_set = bd;
+			case Right(atlas):
 				blit = false;
-				_atlas = new TileAtlas(tileset, tileWidth, tileHeight,tileSpacingWidth,tileSpacingHeight);
-			}
-			else
-			{
-				if (Std.is(tileset, BitmapData))
-				{
-					blit = true;
-					_set = tileset;
-				}
-				else
-				{
-					blit = true;
-					_set = HXP.getBitmap(tileset);
-				}
-			}
+				_atlas = atlas;
+				atlas.prepare(tileWidth, tileHeight, tileSpacingWidth, tileSpacingHeight);
 		}
 
 		if (_set == null && _atlas == null)
@@ -500,13 +483,13 @@ class Tilemap extends Canvas
 	/**
 	 * The tile width.
 	 */
-	public var tileWidth(get_tileWidth, never):Int;
+	public var tileWidth(get, never):Int;
 	private inline function get_tileWidth():Int { return Std.int(_tile.width); }
 
 	/**
 	 * The tile height.
 	 */
-	public var tileHeight(get_tileHeight, never):Int;
+	public var tileHeight(get, never):Int;
 	private inline function get_tileHeight():Int { return Std.int(_tile.height); }
 
 	/**
@@ -522,19 +505,19 @@ class Tilemap extends Canvas
 	/**
 	 * How many tiles the tilemap has.
 	 */
-	public var tileCount(get_tileCount, never):Int;
+	public var tileCount(get, never):Int;
 	private inline function get_tileCount():Int { return _setCount; }
 
 	/**
 	 * How many columns the tilemap has.
 	 */
-	public var columns(get_columns, null):Int;
+	public var columns(get, null):Int;
 	private inline function get_columns():Int { return _columns; }
 
 	/**
 	 * How many rows the tilemap has.
 	 */
-	public var rows(get_rows, null):Int;
+	public var rows(get, null):Int;
 	private inline function get_rows():Int { return _rows; }
 
 	// Tilemap information.
