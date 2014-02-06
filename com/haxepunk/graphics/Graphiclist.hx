@@ -158,13 +158,13 @@ class Graphiclist extends Graphic
 	/**
 	 * All Graphics in this list.
 	 */
-	public var children(get_children, null):Array<Graphic>;
+	public var children(get, null):Array<Graphic>;
 	private function get_children():Array<Graphic> { return _graphics; }
 
 	/**
 	 * Amount of Graphics in this list.
 	 */
-	public var count(get_count, null):Int;
+	public var count(get, null):Int;
 	private function get_count():Int { return _count; }
 
 	/**

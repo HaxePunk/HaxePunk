@@ -16,7 +16,7 @@ class Joystick
 	/**
 	 * A map of buttons and their states
 	 */
-	public var buttons:Map<Int,JoyButtonState>;	
+	public var buttons:Map<Int,JoyButtonState>;
 	/**
 	 * Each axis contained in an array.
 	 */
@@ -117,7 +117,7 @@ class Joystick
 	/**
 	 * If the joystick is currently connected.
 	 */
-	public var connected(get_connected, set_connected):Bool;
+	public var connected(get, set):Bool;
 	private function get_connected():Bool { return _timeout > 0; }
 	private function set_connected(value:Bool):Bool
 	{
@@ -150,7 +150,7 @@ class OUYA_GAMEPAD
 	public static inline var DPAD_DOWN:Int = 20;
 	public static inline var DPAD_LEFT:Int = 21;
 	public static inline var DPAD_RIGHT:Int = 22;
-	
+
 	// axis
 	public static inline var LEFT_ANALOGUE_X:Int = 0;
 	public static inline var LEFT_ANALOGUE_Y:Int = 1;

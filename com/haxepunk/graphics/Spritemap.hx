@@ -249,7 +249,7 @@ class Spritemap extends Image
 	 * Sets the current frame index. When you set this, any
 	 * animations playing will be stopped to force the frame.
 	 */
-	public var frame(get_frame, set_frame):Int;
+	public var frame(get, set):Int;
 	private function get_frame():Int { return _frame; }
 	private function set_frame(value:Int):Int
 	{
@@ -265,7 +265,7 @@ class Spritemap extends Image
 	/**
 	 * Current index of the playing animation.
 	 */
-	public var index(get_index, set_index):Int;
+	public var index(get, set):Int;
 	private function get_index():Int { return _anim != null ? _index : 0; }
 	private function set_index(value:Int):Int
 	{
@@ -281,25 +281,25 @@ class Spritemap extends Image
 	/**
 	 * The amount of frames in the Spritemap.
 	 */
-	public var frameCount(get_frameCount, null):Int;
+	public var frameCount(get, null):Int;
 	private function get_frameCount():Int { return _frameCount; }
 
 	/**
 	 * Columns in the Spritemap.
 	 */
-	public var columns(get_columns, null):Int;
+	public var columns(get, null):Int;
 	private function get_columns():Int { return _columns; }
 
 	/**
 	 * Rows in the Spritemap.
 	 */
-	public var rows(get_rows, null):Int;
+	public var rows(get, null):Int;
 	private function get_rows():Int { return _rows; }
 
 	/**
 	 * The currently playing animation.
 	 */
-	public var currentAnim(get_currentAnim, null):String;
+	public var currentAnim(get, null):String;
 	private function get_currentAnim():String { return (_anim != null) ? _anim.name : ""; }
 
 	// Spritemap information.

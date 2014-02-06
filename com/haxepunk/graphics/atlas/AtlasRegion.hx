@@ -18,11 +18,11 @@ class AtlasRegion
 	/**
 	 * Width of this region
 	 */
-	public var width(get_width, never):Float;
+	public var width(get, never):Float;
 	/**
 	 * Height of this region
 	 */
-	public var height(get_height, never):Float;
+	public var height(get, never):Float;
 
 	/**
 	 * Creates a new AtlasRegion

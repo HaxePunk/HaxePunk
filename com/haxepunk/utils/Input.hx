@@ -47,7 +47,7 @@ class Input
 	 */
 	public static var mouseReleased:Bool;
 
-#if !js	
+#if !js
 	/**
 	 * If the right button mouse is held down
 	 */
@@ -64,7 +64,7 @@ class Input
 	 * If the right button mouse was recently released
 	 */
 	public static var rightMouseReleased:Bool;
-	
+
 	/**
 	 * If the middle button mouse is held down
 	 */
@@ -82,7 +82,7 @@ class Input
 	 */
 	public static var middleMouseReleased:Bool;
 #end
-	
+
 	/**
 	 * If the mouse wheel has moved
 	 */
@@ -96,7 +96,7 @@ class Input
 	/**
 	 * If the mouse wheel was moved this frame, this was the delta.
 	 */
-	public static var mouseWheelDelta(get_mouseWheelDelta, never):Int;
+	public static var mouseWheelDelta(get, never):Int;
 	public static function get_mouseWheelDelta():Int
 	{
 		if (mouseWheel)
@@ -110,7 +110,7 @@ class Input
 	/**
 	 * X position of the mouse on the screen.
 	 */
-	public static var mouseX(get_mouseX, never):Int;
+	public static var mouseX(get, never):Int;
 	private static function get_mouseX():Int
 	{
 		return HXP.screen.mouseX;
@@ -119,7 +119,7 @@ class Input
 	/**
 	 * Y position of the mouse on the screen.
 	 */
-	public static var mouseY(get_mouseY, never):Int;
+	public static var mouseY(get, never):Int;
 	private static function get_mouseY():Int
 	{
 		return HXP.screen.mouseY;
@@ -128,7 +128,7 @@ class Input
 	/**
 	 * The absolute mouse x position on the screen (unscaled).
 	 */
-	public static var mouseFlashX(get_mouseFlashX, never):Int;
+	public static var mouseFlashX(get, never):Int;
 	private static function get_mouseFlashX():Int
 	{
 		return Std.int(HXP.stage.mouseX);
@@ -137,7 +137,7 @@ class Input
 	/**
 	 * The absolute mouse y position on the screen (unscaled).
 	 */
-	public static var mouseFlashY(get_mouseFlashY, never):Int;
+	public static var mouseFlashY(get, never):Int;
 	private static function get_mouseFlashY():Int
 	{
 		return Std.int(HXP.stage.mouseY);
@@ -233,7 +233,7 @@ class Input
 		}
 	}
 
-	public static var touches(get_touches, never):Map<Int,Touch>;
+	public static var touches(get, never):Map<Int,Touch>;
 	private static inline function get_touches():Map<Int,Touch> { return _touches; }
 
 	/**
@@ -255,7 +255,7 @@ class Input
 	/**
 	 * Returns the number of connected joysticks
 	 */
-	public static var joysticks(get_joysticks, never):Int;
+	public static var joysticks(get, never):Int;
 	private static function get_joysticks():Int
 	{
 		var count:Int = 0;
@@ -281,14 +281,14 @@ class Input
 			HXP.stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown, false,  2);
 			HXP.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false,  2);
 			HXP.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel, false,  2);
-			
+
 		#if !js
 			HXP.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, onMiddleMouseDown, false, 2);
 			HXP.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, onMiddleMouseUp, false, 2);
 			HXP.stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN, onRightMouseDown, false, 2);
 			HXP.stage.addEventListener(MouseEvent.RIGHT_MOUSE_UP, onRightMouseUp, false, 2);
 		#end
-		
+
 			multiTouchSupported = Multitouch.supportsTouchEvents;
 			if (multiTouchSupported)
 			{
@@ -305,7 +305,7 @@ class Input
 			HXP.stage.addEventListener(JoystickEvent.BUTTON_DOWN, onJoyButtonDown);
 			HXP.stage.addEventListener(JoystickEvent.BUTTON_UP, onJoyButtonUp);
 			HXP.stage.addEventListener(JoystickEvent.HAT_MOVE, onJoyHatMove);
-			
+
 		#if ouya
 			// Initializing OuyaController
 			var getContext = JNI.createStaticMethod("org.haxe.lime.GameActivity", "getContext", "()Landroid/content/Context;",true);
@@ -316,9 +316,9 @@ class Input
 		#if !(flash || js)
 			_nativeCorrection.set("0_64", Key.INSERT);
 			_nativeCorrection.set("0_65", Key.END);
-			_nativeCorrection.set("0_66", Key.DOWN);	
+			_nativeCorrection.set("0_66", Key.DOWN);
 			_nativeCorrection.set("0_67", Key.PAGE_DOWN);
-			_nativeCorrection.set("0_68", Key.LEFT);	
+			_nativeCorrection.set("0_68", Key.LEFT);
 			_nativeCorrection.set("0_69", -1);
 			_nativeCorrection.set("0_70", Key.RIGHT);
 			_nativeCorrection.set("0_71", Key.HOME);
@@ -328,7 +328,7 @@ class Input
 			_nativeCorrection.set("123_222", Key.LEFT_SQUARE_BRACKET);
 			_nativeCorrection.set("125_187", Key.RIGHT_SQUARE_BRACKET);
 			_nativeCorrection.set("126_233", Key.TILDE);
-		
+
 			_nativeCorrection.set("0_80", Key.F1);
 			_nativeCorrection.set("0_81", Key.F2);
 			_nativeCorrection.set("0_82", Key.F3);
@@ -340,7 +340,7 @@ class Input
 			_nativeCorrection.set("0_88", Key.F9);
 			_nativeCorrection.set("0_89", Key.F10);
 			_nativeCorrection.set("0_90", Key.F11);
-			
+
 			_nativeCorrection.set("48_224", Key.DIGIT_0);
 			_nativeCorrection.set("49_38", Key.DIGIT_1);
 			_nativeCorrection.set("50_233", Key.DIGIT_2);
@@ -351,7 +351,7 @@ class Input
 			_nativeCorrection.set("55_232", Key.DIGIT_7);
 			_nativeCorrection.set("56_95", Key.DIGIT_8);
 			_nativeCorrection.set("57_231", Key.DIGIT_9);
-			
+
 			_nativeCorrection.set("48_64", Key.NUMPAD_0);
 			_nativeCorrection.set("49_65", Key.NUMPAD_1);
 			_nativeCorrection.set("50_66", Key.NUMPAD_2);
@@ -384,14 +384,14 @@ class Input
 		_releaseNum = 0;
 		if (mousePressed) mousePressed = false;
 		if (mouseReleased) mouseReleased = false;
-		
+
 	#if !js
 		if (middleMousePressed) middleMousePressed = false;
 		if (middleMouseReleased) middleMouseReleased = false;
 		if (rightMousePressed) rightMousePressed = false;
 		if (rightMouseReleased) rightMouseReleased = false;
 	#end
-		
+
 #if (openfl && (cpp || neko))
 		for (joystick in _joysticks) joystick.update();
 #end
@@ -406,7 +406,7 @@ class Input
 		var code:Int = keyCode(e);
 		if (code == -1) // No key
 			return;
-			
+
 		lastKey = code;
 
 		if (code == Key.BACKSPACE) keyString = keyString.substr(0, keyString.length - 1);
@@ -435,7 +435,7 @@ class Input
 		var code:Int = keyCode(e);
 		if (code == -1) // No key
 			return;
-		
+
 		if (_key[code])
 		{
 			_key[code] = false;
@@ -443,14 +443,14 @@ class Input
 			_release[_releaseNum++] = code;
 		}
 	}
-	
+
 	public static function keyCode(e:KeyboardEvent) : Int
 	{
 	#if (flash || js)
 		return e.keyCode;
-	#else		
+	#else
 		var code = _nativeCorrection.get(e.charCode + "_" + e.keyCode);
-		
+
 		if (code == null)
 			return e.keyCode;
 		else
@@ -491,14 +491,14 @@ class Input
 			middleMousePressed = true;
 		}
 	}
-	
+
 	private static function onMiddleMouseUp(e:MouseEvent)
 	{
 		middleMouseDown = false;
 		middleMouseUp = true;
 		middleMouseReleased = true;
 	}
-	
+
 	private static function onRightMouseDown(e:MouseEvent)
 	{
 		if (!rightMouseDown)
@@ -508,7 +508,7 @@ class Input
 			rightMousePressed = true;
 		}
 	}
-	
+
 	private static function onRightMouseUp(e:MouseEvent)
 	{
 		rightMouseDown = false;

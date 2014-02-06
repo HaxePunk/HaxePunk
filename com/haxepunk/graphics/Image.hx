@@ -29,7 +29,7 @@ class Image extends Graphic
 	/**
 	 * Scale of the image, effects both x and y scale.
 	 */
-	public var scale(get_scale, set_scale):Float;
+	public var scale(get, set):Float;
 	public function get_scale():Float { return _scale; }
 	public function set_scale(value:Float):Float { return _scale = value; }
 
@@ -344,7 +344,7 @@ class Image extends Graphic
 	/**
 	 * Change the opacity of the Image, a value from 0 to 1.
 	 */
-	public var alpha(get_alpha, set_alpha):Float;
+	public var alpha(get, set):Float;
 	private function get_alpha():Float { return _alpha; }
 	private function set_alpha(value:Float):Float
 	{
@@ -373,7 +373,7 @@ class Image extends Graphic
 	/**
 	 * The tinted color of the Image. Use 0xFFFFFF to draw the Image normally.
 	 */
-	public var color(get_color, set_color):Int;
+	public var color(get, set):Int;
 	private function get_color():Int { return _color; }
 	private function set_color(value:Int):Int
 	{
@@ -407,7 +407,7 @@ class Image extends Graphic
 	 * If you want to draw the Image horizontally flipped. This is
 	 * faster than setting scaleX to -1 if your image isn't transformed.
 	 */
-	public var flipped(get_flipped, set_flipped):Bool;
+	public var flipped(get, set):Bool;
 	private function get_flipped():Bool { return _flipped; }
 	private function set_flipped(value:Bool):Bool
 	{
@@ -467,7 +467,7 @@ class Image extends Graphic
 	 * This will affect drawing performance, but look less pixelly.
 	 */
 	#if flash
-	public var smooth(get_smooth, set_smooth):Bool;
+	public var smooth(get, set):Bool;
 	private function get_smooth():Bool { return _bitmap.smoothing; }
 	private function set_smooth(s:Bool):Bool {
 		_bitmap.smoothing = s;
@@ -480,19 +480,19 @@ class Image extends Graphic
 	/**
 	 * Width of the image.
 	 */
-	public var width(get_width, never):Int;
+	public var width(get, never):Int;
 	private function get_width():Int { return Std.int(blit ? _bufferRect.width : (!_region.rotated ? _region.width : _region.height)); }
 
 	/**
 	 * Height of the image.
 	 */
-	public var height(get_height, never):Int;
+	public var height(get, never):Int;
 	private function get_height():Int { return Std.int(blit ? _bufferRect.height : (!_region.rotated ? _region.height : _region.width)); }
 
 	/**
 	 * The scaled width of the image.
 	 */
-	public var scaledWidth(get_scaledWidth, set_scaledWidth):Float;
+	public var scaledWidth(get, set):Float;
 	private function get_scaledWidth():Float { return width * scaleX * scale; }
 	public function set_scaledWidth(w:Float):Float {
 		scaleX = w / scale / width;
@@ -502,7 +502,7 @@ class Image extends Graphic
 	/**
 	 * The scaled height of the image.
 	 */
-	public var scaledHeight(get_scaledHeight, set_scaledHeight):Float;
+	public var scaledHeight(get, set):Float;
 	private function get_scaledHeight():Float { return height * scaleY * scale; }
 	public function set_scaledHeight(h:Float):Float {
 		scaleY = h / scale / height;
@@ -512,7 +512,7 @@ class Image extends Graphic
 	/**
 	 * Clipping rectangle for the image.
 	 */
-	public var clipRect(get_clipRect, null):Rectangle;
+	public var clipRect(get, null):Rectangle;
 	private function get_clipRect():Rectangle { return _sourceRect; }
 
 	// Source and buffer information.

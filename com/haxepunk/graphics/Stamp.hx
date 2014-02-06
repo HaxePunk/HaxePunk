@@ -96,13 +96,13 @@ class Stamp extends Graphic
 	/**
 	 * Width of the image.
 	 */
-	public var width(get_width, never):Int;
+	public var width(get, never):Int;
 	private function get_width():Int { return Std.int(blit ? _source.width : _region.width); }
 
 	/**
 	 * Height of the image.
 	 */
-	public var height(get_height, never):Int;
+	public var height(get, never):Int;
 	private function get_height():Int { return Std.int(blit ? _source.height : _region.height); }
 
 	// Stamp information.

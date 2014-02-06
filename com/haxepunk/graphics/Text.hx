@@ -160,7 +160,7 @@ class Text extends Image
 			_region = Atlas.loadImageAsRegion(_source);
 		}
 	}
-	
+
 	override public function destroy()
 	{
 		if (_textHardware && _region != null)
@@ -172,7 +172,7 @@ class Text extends Image
 	/**
 	 * Text string.
 	 */
-	public var text(default, set_text):String;
+	public var text(default, set):String;
 	private function set_text(value:String):String
 	{
 		if (text == value) return value;
@@ -184,7 +184,7 @@ class Text extends Image
 	/**
 	 * Font family.
 	 */
-	public var font(default, set_font):String;
+	public var font(default, set):String;
 	private function set_font(value:String):String
 	{
 		if (font == value) return value;
@@ -197,7 +197,7 @@ class Text extends Image
 	/**
 	 * Font size.
 	 */
-	public var size(default, set_size):Int;
+	public var size(default, set):Int;
 	private function set_size(value:Int):Int
 	{
 		if (size == value) return value;

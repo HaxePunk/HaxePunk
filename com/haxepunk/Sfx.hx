@@ -166,7 +166,7 @@ class Sfx
 	/**
 	 * Alter the volume factor (a value from 0 to 1) of the sound during playback.
 	 */
-	public var volume(get_volume, set_volume):Float;
+	public var volume(get, set):Float;
 	private function get_volume():Float { return _volume; }
 	private function set_volume(value:Float):Float
 	{
@@ -184,7 +184,7 @@ class Sfx
 	/**
 	 * Alter the panning factor (a value from -1 to 1) of the sound during playback.
 	 */
-	public var pan(get_pan, set_pan):Float;
+	public var pan(get, set):Float;
 	private function get_pan():Float { return _pan; }
 	private function set_pan(value:Float):Float
 	{
@@ -202,7 +202,7 @@ class Sfx
 	 * Change the sound type. This an arbitrary string you can use to group
 	 * sounds to mute or pan en masse.
 	 */
-	public var type(get_type, set_type):String;
+	public var type(get, set):String;
 	private function get_type():String { return _type; }
 	private function set_type(value:String):String
 	{
@@ -226,19 +226,19 @@ class Sfx
 	/**
 	 * If the sound is currently playing.
 	 */
-	public var playing(get_playing, null):Bool;
+	public var playing(get, null):Bool;
 	private inline function get_playing():Bool { return _channel != null; }
 
 	/**
 	 * Position of the currently playing sound, in seconds.
 	 */
-	public var position(get_position, null):Float;
+	public var position(get, null):Float;
 	private function get_position():Float { return (playing ? _channel.position : _position) / 1000; }
 
 	/**
 	 * Length of the sound, in seconds.
 	 */
-	public var length(get_length, null):Float;
+	public var length(get, null):Float;
 	private function get_length():Float { return _sound.length / 1000; }
 
 	/**
