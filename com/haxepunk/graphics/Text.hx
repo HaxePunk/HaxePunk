@@ -40,8 +40,6 @@ class Text extends Image
 	public var resizable:Bool;
 	public var textWidth(default, null):Int;
 	public var textHeight(default, null):Int;
-	public var autoWidth:Bool = false;
-	public var autoHeight:Bool = false;
 
 	/**
 	 * Constructor.
@@ -86,15 +84,16 @@ class Text extends Image
 		if (width == 0)
 		{
 			width = Std.int(_field.textWidth + 4);
-			autoWidth = true;
 		}
 		if (height == 0)
 		{
 			height = Std.int(_field.textHeight + 4);
-			autoHeight = true;
 		}
 
-		var source = HXP.createBitmap(width, height, true);
+		_width = width;
+		_height = height;
+
+		var source = HXP.createBitmap(_width, _height, true);
 		if (HXP.renderMode == RenderMode.HARDWARE)
 		{
 			_sourceRect = source.rect;
@@ -117,24 +116,22 @@ class Text extends Image
 	public override function updateBuffer(clearBefore:Bool = false)
 	{
 		_field.setTextFormat(_format);
-		_field.width = _bufferRect.width;
 
-		if (autoWidth)
-			_field.width = textWidth = Math.ceil(_field.textWidth + 4);
-		if (autoHeight)
-			_field.height = textHeight = Math.ceil(_field.textHeight + 4);
+		_field.width = _width;
+		_field.width = textWidth = Math.ceil(_field.textWidth + 4);
+		_field.height = textHeight = Math.ceil(_field.textHeight + 4);
 
-		if (resizable)
+		if (resizable && (textWidth > _width || textHeight > _height))
 		{
-			_bufferRect.width = textWidth;
-			_bufferRect.height = textHeight;
+			if (_width < textWidth) _width = textWidth;
+			if (_height < textHeight) _height = textHeight;
 		}
 
-		if (textWidth > _source.width || textHeight > _source.height)
+		if (_width > _source.width || _height > _source.height)
 		{
 			_source = HXP.createBitmap(
-				Std.int(Math.max(textWidth, _source.width)),
-				Std.int(Math.max(textHeight, _source.height)),
+				Std.int(Math.max(_width, _source.width)),
+				Std.int(Math.max(_height, _source.height)),
 				true);
 
 			_sourceRect = _source.rect;
@@ -145,11 +142,8 @@ class Text extends Image
 			_source.fillRect(_sourceRect, HXP.blackColor);
 		}
 
-		if (resizable)
-		{
-			_field.width = textWidth;
-			_field.height = textHeight;
-		}
+		_field.width = _width;
+		_field.height = _height;
 
 		_source.draw(_field);
 		super.updateBuffer(clearBefore);
@@ -209,7 +203,12 @@ class Text extends Image
 		return value;
 	}
 
+	private override function get_width():Int { return Std.int(_width); }
+	private override function get_height():Int { return Std.int(_height); }
+
 	// Text information.
+	private var _width:Int;
+	private var _height:Int;
 	private var _field:TextField;
 	private var _format:TextFormat;
 	private var _textHardware:Bool = false;
