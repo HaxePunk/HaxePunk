@@ -102,14 +102,10 @@ class Text extends Image
 			_colorTransform = new ColorTransform();
 			createBuffer();
 			updateBuffer();
-			_textHardware = true;
-			blit = false;
-		}
-		else
-		{
-			blit = true;
 		}
 		super(source);
+
+		blit = HXP.renderMode == RenderMode.BUFFER;
 
 		this.text = text;
 		this.color = options.color;
@@ -153,7 +149,7 @@ class Text extends Image
 		_source.draw(_field);
 		super.updateBuffer(clearBefore);
 
-		if (_textHardware)
+		if (!blit)
 		{
 			if (_region != null)
 			{
@@ -165,7 +161,7 @@ class Text extends Image
 
 	override public function destroy()
 	{
-		if (_textHardware && _region != null)
+		if (_region != null)
 		{
 			_region.destroy();
 		}
