@@ -98,8 +98,12 @@ class Text extends Image
 			_sourceRect = source.rect;
 			_region = Atlas.loadImageAsRegion(_source);
 			blit = true;
+			super();
 		}
-		super(source);
+		else
+		{
+			super(source);
+		}
 
 		blit = HXP.renderMode == RenderMode.BUFFER;
 
