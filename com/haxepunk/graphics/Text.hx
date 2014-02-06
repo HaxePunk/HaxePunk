@@ -14,8 +14,6 @@ import openfl.Assets;
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
 import com.haxepunk.graphics.atlas.Atlas;
-import com.haxepunk.graphics.atlas.AtlasData;
-import com.haxepunk.graphics.atlas.AtlasRegion;
 
 typedef TextOptions = {
 	@:optional var font:String;
@@ -98,6 +96,7 @@ class Text extends Image
 		{
 			_source = source;
 			_sourceRect = source.rect;
+			_region = Atlas.loadImageAsRegion(_source);
 			blit = true;
 		}
 		super(source);
@@ -134,6 +133,15 @@ class Text extends Image
 
 			_sourceRect = _source.rect;
 			createBuffer();
+
+			if (!blit)
+			{
+				if (_region != null)
+				{
+					_region.destroy();
+				}
+				_region = Atlas.loadImageAsRegion(_source);
+			}
 		}
 		else
 		{
@@ -145,15 +153,6 @@ class Text extends Image
 
 		_source.draw(_field);
 		super.updateBuffer(clearBefore);
-
-		if (!blit)
-		{
-			if (_region != null)
-			{
-				_region.destroy();
-			}
-			_region = Atlas.loadImageAsRegion(_source);
-		}
 	}
 
 	override public function destroy()
