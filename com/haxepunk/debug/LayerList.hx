@@ -36,7 +36,6 @@ class VisibleLabel extends Sprite
 #end
 
 		this.x = 6;
-		this.display = true;
 
 		addChild(active);
 		addChild(label);
@@ -44,7 +43,7 @@ class VisibleLabel extends Sprite
 		addEventListener("click", onClick, true);
 	}
 
-	public var display(default, set):Bool;
+	public var display(default, set):Bool = true;
 	private function set_display(value:Bool):Bool
 	{
 		if (value != display)
