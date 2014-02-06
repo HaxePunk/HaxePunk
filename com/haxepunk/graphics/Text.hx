@@ -63,6 +63,9 @@ class Text extends Image
 		if (options.font == null)  options.font = HXP.defaultFont;
 		if (options.size == 0)     options.size = 16;
 		if (options.align == null) options.align = TextFormatAlign.LEFT;
+		#if neko
+		if (options.color == null) options.color = 0xFFFFFF;
+		#end
 
 		var fontObj = Assets.getFont(options.font);
 		_format = new TextFormat(fontObj.fontName, options.size, 0xFFFFFF);
