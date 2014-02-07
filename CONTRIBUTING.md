@@ -41,6 +41,7 @@ else
 	doSomethingElse();
 }
 
+// GOOD
 class MyClass extends AnotherClass
 {
 	public function new()
@@ -53,7 +54,9 @@ class MyClass extends AnotherClass
 if (performCheck(first,
 	second,
 	third)) {
-	nowDoThings();
+	foo();
+} else {
+	bar();
 }
 ```
 
@@ -63,8 +66,18 @@ Put spaces between operators and after commas. It makes code easier to scan.
 // GOOD
 var x = 10 + (52 / m) - z.q;
 
+// GOOD
+function (a:Int, b:Float, c:String)
+{
+}
+
 // BAD
 var x=10+(52/m)-z.q;
+
+// BAD
+function (a:Int,b:Float,c:String)
+{
+}
 ```
 
 Types only need to be included on variables that are not explicitly defined in a statement. Multiple vars may be created by connecting them with commas.
@@ -81,25 +94,31 @@ var i = 0; // float or int?
 var a = new Array<String>(), str = "my string", other:Int = 39, i, j, k; // split into multiple lines
 ```
 
-Function declarations should include the type. Public functions should include `Void` as a return and should have doc styled comments. Optional arguments should use a `?` if expected to be null or an `=` if assigning a value.
+Function declarations should always include the parameter types. Public functions should return `Void` if not returning a value and should have doc styled comments. Optional arguments should use a `?` if expected to be null or `=` if assigning a value.
 
 ```haxe
 /**
- * A function to do things
- * @param val1  The first value of this function
- * @param val2  This can be set to null
- * @param val3  This value defaults to 1
+ * My class
  */
-public function doThings(val1:Int, ?val2:String, val3:Int=1):Void
+class MyClass
 {
-}
+	/**
+	 * A function to do things
+	 * @param val1  The first value of this function
+	 * @param val2  This can be set to null
+	 * @param val3  This value defaults to 1
+	 */
+	public function doThings(val1:Int, ?val2:String, val3:Int=1):Void
+	{
+	}
 
-/**
- * Returns an array
- * @return An array of strings
- */
-private function createArray():Array<String>
-{
+	/**
+	 * Returns an array
+	 * @return An array of strings
+	 */
+	private function createArray():Array<String>
+	{
+	}
 }
 ```
 
@@ -130,6 +149,10 @@ class MyClass
 }
 ```
 
-### Nitpicks
+### Additional suggestions
 
-**Please delete trailing whitespace on save.** Most editors have this as an option. It makes commits less cluttered with whitespace changes.
+**Please delete trailing whitespace on save**
+	Most editors have this as an option. It makes commits less cluttered with whitespace changes.
+
+**Please document new functions and classes**
+	This helps others understand how to use the added functionality. We may request that you add this before merging your pull request.
