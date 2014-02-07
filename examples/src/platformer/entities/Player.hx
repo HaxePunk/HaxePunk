@@ -121,24 +121,33 @@ class Player extends Physics
 
 		// Always face the direction we were last heading
 		if (velocity.x < 0)
+		{
 			sprite.flipped = true; // left
+		}
 		else if (velocity.x > 0)
+		{
 			sprite.flipped = false; // right
+		}
 	}
 
 	private function setAnimation()
 	{
 		var anim:String = "norm_";
-		if (gravity.y < 0) {
+		if (gravity.y < 0)
+		{
 			anim = "grav_";
 		}
 
 		if (onGround)
 		{
 			if (velocity.x == 0)
+			{
 				sprite.play(anim + "idle");
+			}
 			else
+			{
 				sprite.play(anim + "walk");
+			}
 		}
 		else
 		{

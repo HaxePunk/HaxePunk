@@ -61,7 +61,8 @@ class GameScene extends DemoScene
 			for (j in 0...tilemap.rows)
 			{
 				var tile = map[j][i];
-				if (tile != 0) {
+				if (tile != 0)
+				{
 					tilemap.setTile(i, j, tile);
 					grid.setTile(i, j, true);
 				}
