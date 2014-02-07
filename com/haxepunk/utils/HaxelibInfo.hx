@@ -56,8 +56,8 @@ class HaxelibInfoBuilder
 
 		// Read haxelib.json
 		var doc = try {
-			Json.parse(sys.io.File.read(result + "haxelib.json").readAll().toString())
-		} catch (e:Dynamic) { };
+			Json.parse(sys.io.File.read(result + "haxelib.json").readAll().toString());
+		} catch (e:Dynamic) { }
 
 		// Construct fields
 		var fields:Array<Field> = Context.getBuildFields();
