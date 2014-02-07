@@ -77,7 +77,8 @@ class Joystick
 			{
 				if (buttons.get(k) == BUTTON_PRESSED) return true;
 			}
-		} else if (buttons.exists(button))
+		}
+		else if (buttons.exists(button))
 		{
 			return buttons.get(button) == BUTTON_PRESSED;
 		}
@@ -97,7 +98,8 @@ class Joystick
 			{
 				if (buttons.get(k) == BUTTON_RELEASED) return true;
 			}
-		} else if (buttons.exists(button))
+		}
+		else if (buttons.exists(button))
 		{
 			return buttons.get(button) == BUTTON_RELEASED;
 		}
@@ -118,7 +120,8 @@ class Joystick
 				var b = buttons.get(k);
 				if (b != BUTTON_OFF && b != BUTTON_RELEASED) return true;
 			}
-		} else if (buttons.exists(button))
+		}
+		else if (buttons.exists(button))
 		{
 			var b = buttons.get(button);
 			return b != BUTTON_OFF && b != BUTTON_RELEASED;
