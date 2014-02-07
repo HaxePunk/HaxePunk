@@ -104,17 +104,21 @@ class Pixelmask extends Hitbox
 
 			var intersect = r1.intersection(r2);
 
-			if (intersect.isEmpty()) {
+			if (intersect.isEmpty())
+			{
 				return false;
 			}
 
-			for(dx in Math.floor(intersect.x)...Math.floor(intersect.x + intersect.width + 1)) {
-				for(dy in Math.floor(intersect.y)...Math.floor(intersect.y + intersect.height + 1)) {
+			for(dx in Math.floor(intersect.x)...Math.floor(intersect.x + intersect.width + 1))
+			{
+				for(dy in Math.floor(intersect.y)...Math.floor(intersect.y + intersect.height + 1))
+				{
 					var p1 = (_data.getPixel32(dx, dy) >> 24) & 0xFF;
 					var p2 = (other._data.getPixel32(Math.floor(dx - _point.x),
-																					 Math.floor(dy - _point.y)) >> 24) & 0xFF;
+							Math.floor(dy - _point.y)) >> 24) & 0xFF;
 
-					if (p1 > 0 && p2 > 0) {
+					if (p1 > 0 && p2 > 0)
+					{
 						return true;
 					}
 				}

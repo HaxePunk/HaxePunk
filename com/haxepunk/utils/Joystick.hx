@@ -56,21 +56,32 @@ class Joystick
 		_timeout -= HXP.elapsed;
 		for (button in buttons.keys())
 		{
-			switch (buttons.get(button)) {
-				case BUTTON_PRESSED: { buttons.set(button, BUTTON_ON); }
-				case BUTTON_RELEASED: { buttons.set(button, BUTTON_OFF); }
-				default: {}
+			switch (buttons.get(button))
+			{
+				case BUTTON_PRESSED:
+					buttons.set(button, BUTTON_ON);
+				case BUTTON_RELEASED:
+					buttons.set(button, BUTTON_OFF);
+				default:
 			}
 		}
 	}
 
 	/**
 	 * If the joystick button was pressed this frame.
+	 * Omit argument to check for any button.
 	 * @param  button The button index to check.
 	 */
-	public function pressed(button:Int):Bool
+	public function pressed(?button:Int):Bool
 	{
-		if (buttons.exists(button))
+		if (button == null)
+		{
+			for (k in buttons.keys())
+			{
+				if (buttons.get(k) == BUTTON_PRESSED) return true;
+			}
+		}
+		else if (buttons.exists(button))
 		{
 			return buttons.get(button) == BUTTON_PRESSED;
 		}
@@ -79,11 +90,19 @@ class Joystick
 
 	/**
 	 * If the joystick button was released this frame.
+	 * Omit argument to check for any button.
 	 * @param  button The button index to check.
 	 */
-	public function released(button:Int):Bool
+	public function released(?button:Int):Bool
 	{
-		if (buttons.exists(button))
+		if (button == null)
+		{
+			for (k in buttons.keys())
+			{
+				if (buttons.get(k) == BUTTON_RELEASED) return true;
+			}
+		}
+		else if (buttons.exists(button))
 		{
 			return buttons.get(button) == BUTTON_RELEASED;
 		}
@@ -92,11 +111,20 @@ class Joystick
 
 	/**
 	 * If the joystick button is held down.
+	 * Omit argument to check for any button.
 	 * @param  button The button index to check.
 	 */
-	public function check(button:Int):Bool
+	public function check(?button:Int):Bool
 	{
-		if (buttons.exists(button))
+		if (button == null)
+		{
+			for (k in buttons.keys())
+			{
+				var b = buttons.get(k);
+				if (b != BUTTON_OFF && b != BUTTON_RELEASED) return true;
+			}
+		}
+		else if (buttons.exists(button))
 		{
 			var b = buttons.get(button);
 			return b != BUTTON_OFF && b != BUTTON_RELEASED;
@@ -145,11 +173,18 @@ class OUYA_GAMEPAD
 	public static inline var RIGHT_ANALOGUE_BUTTON:Int = 11; // 107
 	public static inline var LEFT_TRIGGER_BUTTON:Int = 8;
 	public static inline var RIGHT_TRIGGER_BUTTON:Int = 9;
-	public static inline var HOME_BUTTON:Int = 10; // 82
 	public static inline var DPAD_UP:Int = 19;
 	public static inline var DPAD_DOWN:Int = 20;
 	public static inline var DPAD_LEFT:Int = 21;
 	public static inline var DPAD_RIGHT:Int = 22;
+
+	/**
+	 * The Home button event is handled as a keyboard event!
+	 * Also, the up and down events happen at once,
+	 * therefore, use pressed() or released().
+	 */
+	public static inline var HOME_BUTTON:Int = 16777234; // 82
+
 
 	// axis
 	public static inline var LEFT_ANALOGUE_X:Int = 0;

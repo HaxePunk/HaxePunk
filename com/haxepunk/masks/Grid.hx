@@ -463,7 +463,8 @@ class Grid extends Hitbox
 		// Step through the overlapping rectangle
 		var y:Float = oy1;
 		var x:Float = 0;
-		while (y < oy2) {
+		while (y < oy2)
+		{
 			// Get the row indices for the top and bottom edges of the tile
 			var ar1:Int = Std.int((y - parent.y - _y) / _tile.height);
 			var br1:Int = Std.int((y - other.parent.y - other._y) / other._tile.height);
@@ -471,7 +472,8 @@ class Grid extends Hitbox
 			var br2:Int = Std.int(((y - other.parent.y - other._y) + (th - 1)) / other._tile.height);
 
 			x = ox1;
-			while (x < ox2) {
+			while (x < ox2)
+			{
 				// Get the column indices for the left and right edges of the tile
 				var ac1:Int = Std.int((x - parent.x - _x) / _tile.width);
 				var bc1:Int = Std.int((x - other.parent.x - other._x) / other._tile.width);

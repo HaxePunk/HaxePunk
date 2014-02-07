@@ -181,8 +181,10 @@ class Polygon extends Hitbox
 		_fakeTileHitbox._height = tileH;
 		_fakeTileHitbox.parent = _fakeEntity;
 
-		for (r in 0...grid.rows) {
-			for (c in 0...grid.columns) {
+		for (r in 0...grid.rows)
+		{
+			for (c in 0...grid.columns)
+			{
 				_fakeEntity.x = grid.parent.x + grid._x + c * tileW;
 				_fakeEntity.y = grid.parent.y + grid._y + r * tileH;
 				solidTile = grid.getTile(c, r);
@@ -209,7 +211,8 @@ class Polygon extends Hitbox
 		// check if circle center is inside the polygon
 		i = 0;
 		j = nPoints - 1;
-		while (i < nPoints) {
+		while (i < nPoints)
+		{
 			p1 = _points[i];
 			p2 = _points[j];
 
@@ -236,7 +239,8 @@ class Polygon extends Hitbox
 
 		i = 0;
 		j = nPoints - 1;
-		while (i < nPoints) {
+		while (i < nPoints)
+		{
 			p1 = _points[i];
 			p2 = _points[j];
 
@@ -245,13 +249,18 @@ class Polygon extends Hitbox
 			// find projection of center onto line (extended segment)
 			var t:Float = ((cx - p1.x - offsetX) * (p2.x - p1.x) + (cy - p1.y - offsetY) * (p2.y - p1.y)) / segmentLenSqr;
 
-			if (t < 0) {
+			if (t < 0)
+			{
 				closestX = p1.x;
 				closestY = p1.y;
-			} else if (t > 1) {
+			}
+			else if (t > 1)
+			{
 				closestX = p2.x;
 				closestY = p2.y;
-			} else {
+			}
+			else
+			{
 				closestX = p1.x + t * (p2.x - p1.x);
 				closestY = p1.y + t * (p2.y - p1.y);
 			}
@@ -373,7 +382,8 @@ class Polygon extends Hitbox
 	private inline function get_angle():Float { return _angle; }
 	private function set_angle(value:Float):Float
 	{
-		if (value != _angle) {
+		if (value != _angle)
+		{
 			rotate(value - _angle);
 			if (list != null || parent != null) update();
 		}
@@ -390,7 +400,8 @@ class Polygon extends Hitbox
 	private inline function get_points():Array<Point> { return _points; }
 	private function set_points(value:Array<Point>):Array<Point>
 	{
-		if (_points != value) {
+		if (_points != value)
+		{
 			_points = value;
 			if (list != null || parent != null) updateAxes();
 		}
@@ -516,7 +527,8 @@ class Polygon extends Hitbox
 
 		i = 0;
 		j = nPoints - 1;
-		while (i < nPoints) {
+		while (i < nPoints)
+		{
 			edge = new Vector();
 			edge.x = _points[i].x - _points[j].x;
 			edge.y = _points[i].y - _points[j].y;
