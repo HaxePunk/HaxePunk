@@ -95,7 +95,8 @@ class Spritemap extends Image
 		if (blit)
 		{
 			// get position of the current frame
-			if (_width > 0 && _height > 0) {
+			if (_width > 0 && _height > 0)
+			{
 				_rect.x = _rect.width * _frame;
 				_rect.y = Std.int(_rect.x / _width) * _rect.height;
 				_rect.x = _rect.x % _width;

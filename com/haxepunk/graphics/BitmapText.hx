@@ -16,7 +16,8 @@ import com.haxepunk.graphics.atlas.AtlasRegion;
 
 typedef RenderFunction = AtlasRegion -> GlyphData -> Float -> Float -> Void;
 
-class BitmapText extends Graphic {
+class BitmapText extends Graphic
+{
 	private var _buffer:BitmapData;
 	private var _set:BitmapData;
 	private var _font:BitmapFontAtlas;
@@ -42,10 +43,12 @@ class BitmapText extends Graphic {
 	public var text(default, set):String;
 	private var _lines:Array<String>;
 
-	public function new(text:String, x:Float=0, y:Float=0, width:Float=0, height:Float=0, ?options:TextOptions) {
+	public function new(text:String, x:Float=0, y:Float=0, width:Float=0, height:Float=0, ?options:TextOptions)
+	{
 		super();
 
-		if (options == null) {
+		if (options == null)
+		{
 			options = {};
 			options.color = 0xFFFFFF;
 		}
@@ -70,10 +73,11 @@ class BitmapText extends Graphic {
 		this.height = height;
 		this.size = options.size;
 
-		autoWidth = width==0;
-		autoHeight = height==0;
+		autoWidth = (width == 0);
+		autoHeight = (height == 0);
 
-		if (blit) {
+		if (blit)
+		{
 			_set = HXP.getBitmap(StringTools.replace(options.font, ".fnt", ".png"));
 			_matrix = HXP.matrix;
 			_colorTransform = new ColorTransform();
@@ -88,7 +92,8 @@ class BitmapText extends Graphic {
 	private var _green:Float;
 	private var _blue:Float;
 	public var color(default, set):Int;
-	private function set_color(value:Int):Int {
+	private function set_color(value:Int):Int
+	{
 		value &= 0xFFFFFF;
 		if (color == value) return value;
 
@@ -99,33 +104,38 @@ class BitmapText extends Graphic {
 	}
 
 	public var alpha(default,set):Float=1;
-	function set_alpha(value:Float) {
+	function set_alpha(value:Float)
+	{
 		alpha = value;
 		updateColor();
 
 		return value;
 	}
 
-	function updateColor() {
+	function updateColor()
+	{
 		// update _colorTransform if blitting
 		_red = HXP.getRed(color) / 255;
 		_green = HXP.getGreen(color) / 255;
 		_blue = HXP.getBlue(color) / 255;
 
-		if (blit) {
+		if (blit)
+		{
 			_colorTransform.color = color;
 			_colorTransform.alphaMultiplier = alpha;
 		}
 	}
 
-	public function set_text(text:String) {
+	public function set_text(text:String)
+	{
 		this.text = text;
 		var _oldLines:Array<String> = null;
 		if (_lines != null)
 			_oldLines = _lines;
 		_lines = text.split("\n");
 
-		if (wrap) {
+		if (wrap)
+		{
 			wordWrap();
 		}
 
@@ -135,18 +145,22 @@ class BitmapText extends Graphic {
 		return text;
 	}
 
-	public function wordWrap() {
+	public function wordWrap()
+	{
 		// subdivide lines
 		var newLines:Array<String> = [];
 		var spaceWidth = _font.glyphData.get(' ').xAdvance;
-		for (line in _lines) {
+		for (line in _lines)
+		{
 			var subLines:Array<String> = [];
 			var words:Array<String> = [];
 			// split this line into words
 			var thisWord = "";
-			for (n in 0 ... line.length) {
+			for (n in 0 ... line.length)
+			{
 				var char:String = line.charAt(n);
-				switch(char) {
+				switch(char)
+				{
 					case ' ', '-': {
 						words.push(thisWord + char);
 						thisWord = "";
@@ -157,14 +171,17 @@ class BitmapText extends Graphic {
 				}
 			}
 			if (thisWord != "") words.push(thisWord);
-			if (words.length > 1) {
+			if (words.length > 1)
+			{
 				var w = 0;
 				var lineWidth = 0;
 				var lastBreak = 0;
-				while (w < words.length) {
-					var wordWidth= 0;
+				while (w < words.length)
+				{
+					var wordWidth = 0;
 					var word = words[w];
-					for (letter in word.split('')) {
+					for (letter in word.split(''))
+					{
 						var letterWidth = _font.glyphData.exists(letter) ?
 						                  _font.glyphData.get(letter).xAdvance : 0;
 						wordWidth += letterWidth + charSpacing;
@@ -172,8 +189,9 @@ class BitmapText extends Graphic {
 					lineWidth += wordWidth;
 					// if the word ends in a space, don't count that last space
 					// toward the line length for determining overflow
-					var endsInSpace = word.charAt(word.length-1) == ' ';
-					if (lineWidth - (endsInSpace ? spaceWidth : 0) > width) {
+					var endsInSpace = word.charAt(word.length - 1) == ' ';
+					if (lineWidth - (endsInSpace ? spaceWidth : 0) > width)
+					{
 						// line is too long; split it before this word
 						subLines.push(words.slice(lastBreak, w).join(''));
 						lineWidth = wordWidth;
@@ -182,11 +200,14 @@ class BitmapText extends Graphic {
 					w += 1;
 				}
 				subLines.push(words.slice(lastBreak).join(''));
-			} else {
+			}
+			else
+			{
 				subLines.push(line);
 			}
 
-			for (subline in subLines) {
+			for (subline in subLines)
+			{
 				newLines.push(subline);
 			}
 		}
@@ -194,18 +215,20 @@ class BitmapText extends Graphic {
 		_lines = newLines;
 	}
 
-	public function computeTextSize() {
+	public function computeTextSize()
+	{
 		// make a pass through the text without actually rendering to compute
 		// textWidth/textHeight
 		renderFont();
 	}
 
-	public function updateBuffer(oldLines:Array<String>=null) {
+	public function updateBuffer(?oldLines:Array<String>)
+	{
 		// render the string of text to _buffer
 
 		if (text == null) return;
 
-		var fontScale = size/_font.fontSize;
+		var fontScale = size / _font.fontSize;
 
 		var fsx = HXP.screen.fullScaleX,
 			fsy = HXP.screen.fullScaleY;
@@ -215,11 +238,14 @@ class BitmapText extends Graphic {
 
 		var w:Int;
 		var h:Int;
-		if (autoWidth || autoHeight) {
+		if (autoWidth || autoHeight)
+		{
 			computeTextSize();
 			w = Std.int(autoWidth ? (textWidth) : width);
 			h = Std.int(autoHeight ? (textHeight) : height);
-		} else {
+		}
+		else
+		{
 			w = Std.int(width);
 			h = Std.int(height);
 		}
@@ -229,22 +255,30 @@ class BitmapText extends Graphic {
 		// if any of the previous lines of text are the same as the new lines,
 		// don't re-render those lines
 		var startLine = 0;
-		if (oldLines != null) {
-			for (n in 0 ... Std.int(Math.min(oldLines.length, _lines.length))) {
-				if (_lines[n] == oldLines[n]) {
+		if (oldLines != null)
+		{
+			for (n in 0 ... Std.int(Math.min(oldLines.length, _lines.length)))
+			{
+				if (_lines[n] == oldLines[n])
+				{
 					startLine += 1;
-				} else {
+				}
+				else
+				{
 					break;
 				}
 			}
 		}
 
 		// create or clear the buffer if necessary
-		if (_buffer == null || _buffer.width != w || _buffer.height != h) {
+		if (_buffer == null || _buffer.width != w || _buffer.height != h)
+		{
 			if (_buffer != null) _buffer.dispose();
 			_buffer = HXP.createBitmap(w, h, true, 0);
 			startLine = 0;
-		} else {
+		}
+		else
+		{
 			var r = _buffer.rect;
 			r.top = startLine * (_font.lineHeight + lineSpacing);
 			_buffer.fillRect(r, 0);
@@ -260,7 +294,8 @@ class BitmapText extends Graphic {
 		}, startLine);
 	}
 
-	private inline function renderFont(renderFunction:RenderFunction=null, startLine=0) {
+	private inline function renderFont(?renderFunction:RenderFunction, startLine=0)
+	{
 		// loop through the text one character at a time, calling the supplied
 		// rendering function for each character
 		var fontScale = size/_font.fontSize;
@@ -269,30 +304,37 @@ class BitmapText extends Graphic {
 
 		var rx:Int = 0;
 		var ry:Int = 0;
-		for (y in 0 ... _lines.length) {
+		for (y in 0 ... _lines.length)
+		{
 			var line = _lines[y];
 
-			for (x in 0 ... line.length) {
+			for (x in 0 ... line.length)
+			{
 				var letter = line.charAt(x);
 				var region = _font.getChar(letter);
 				var gd = _font.glyphData.get(letter);
 				// if a character isn't in this font, display a space
 				if (gd == null) letter = ' ';
 
-				if (letter==' ') {
+				if (letter==' ')
+				{
 					// it's a space, just move the cursor
 					rx += Std.int(gd.xAdvance);
-				} else {
+				}
+				else
+				{
 					// draw the character
 					if (renderFunction != null &&
-					    y >= startLine) {
+					    y >= startLine)
+					{
 						renderFunction(region, gd,
-						               (rx+gd.xOffset),
-						               (ry+gd.yOffset));
+						               (rx + gd.xOffset),
+						               (ry + gd.yOffset));
 					}
 					// advance cursor position
 					rx += Std.int((gd.xAdvance + charSpacing));
-					if (width != 0 && rx > width) {
+					if (width != 0 && rx > width)
+					{
 						textWidth = Std.int(width);
 						rx = 0;
 						ry += lineHeight;
@@ -310,9 +352,10 @@ class BitmapText extends Graphic {
 		}
 	}
 
-	override public function render(target:BitmapData, point:Point, camera:Point) {
+	override public function render(target:BitmapData, point:Point, camera:Point)
+	{
 		// determine drawing location
-		var fontScale = size/_font.fontSize;
+		var fontScale = size / _font.fontSize;
 
 		var sx = scale * scaleX * fontScale,
 			sy = scale * scaleY * fontScale;
@@ -333,7 +376,7 @@ class BitmapText extends Graphic {
 	public override function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
 		// determine drawing location
-		var fontScale = size/_font.fontSize;
+		var fontScale = size / _font.fontSize;
 
 		var fsx = HXP.screen.fullScaleX,
 			fsy = HXP.screen.fullScaleY;

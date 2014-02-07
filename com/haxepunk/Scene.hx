@@ -492,12 +492,16 @@ class Scene extends Tweener
 		{
 			e = cast(fe, Entity);
 			// only look for entities that collide
-			if (e.collidable && e.collidePoint(e.x, e.y, pX, pY)) {
+			if (e.collidable && e.collidePoint(e.x, e.y, pX, pY))
+			{
 				// the first one might be the front one
-				if (result == null) {
+				if (result == null)
+				{
 					result = e;
 				// compare if the new collided entity is above the former one (lower valuer is toward, higher value is backward)
-				} else if(e.layer < result.layer){
+				}
+				else if(e.layer < result.layer)
+				{
 					result = e;
 				}
 			}
@@ -1220,9 +1224,12 @@ class Scene extends Tweener
 			}
 		}
 		var newLayerCount:Int = _layerCount[fe._layer] - 1;
-		if (newLayerCount > 0) {
+		if (newLayerCount > 0)
+		{
 			_layerCount[fe._layer] = newLayerCount;
-		} else {
+		}
+		else
+		{
 			// Remove layer from maps if it contains 0 entities.
 			_layerCount.remove(fe._layer);
 			_renderFirst.remove(fe._layer);

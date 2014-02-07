@@ -56,10 +56,13 @@ class Joystick
 		_timeout -= HXP.elapsed;
 		for (button in buttons.keys())
 		{
-			switch (buttons.get(button)) {
-				case BUTTON_PRESSED: { buttons.set(button, BUTTON_ON); }
-				case BUTTON_RELEASED: { buttons.set(button, BUTTON_OFF); }
-				default: {}
+			switch (buttons.get(button))
+			{
+				case BUTTON_PRESSED:
+					buttons.set(button, BUTTON_ON);
+				case BUTTON_RELEASED:
+					buttons.set(button, BUTTON_OFF);
+				default:
 			}
 		}
 	}

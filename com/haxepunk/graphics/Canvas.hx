@@ -110,15 +110,18 @@ class Canvas extends Graphic
 			while (xx < _refWidth)
 			{
 				buffer = _buffers[_ref.getPixel(xx, yy)];
-				
+
 				if (angle == 0 && blend == null)
 				{
-					if (sx == 1 && sy == 1 && _tint == null) {
+					if (sx == 1 && sy == 1 && _tint == null)
+					{
 						// copy the pixels directly onto the buffer
 						_rect.width = buffer.width;
 						_rect.height = buffer.height;
 						target.copyPixels(buffer, _rect, _point, null, null, true);
-					} else {
+					}
+					else
+					{
 						// rescale first onto an intermediate buffer, then copy
 						var i = Std.int(_ref.getPixel(xx, yy));
 						var w = Std.int(buffer.width * sx);
@@ -126,13 +129,18 @@ class Canvas extends Graphic
 						var wrongSize = i >= _midBuffers.length ||
 							_midBuffers[i].width != w ||
 							_midBuffers[i].height != h;
-						if (_redrawBuffers || wrongSize) {
-							if (wrongSize) {
-								if (i < _midBuffers.length) {
+						if (_redrawBuffers || wrongSize)
+						{
+							if (wrongSize)
+							{
+								if (i < _midBuffers.length)
+								{
 									_midBuffers[i].dispose();
 								}
 								_midBuffers[i] = HXP.createBitmap(w, h, true);
-							} else {
+							}
+							else
+							{
 								_midBuffers[i].fillRect(_midBuffers[i].rect, 0);
 							}
 							_matrix.b = _matrix.c = 0;
@@ -140,10 +148,10 @@ class Canvas extends Graphic
 							_matrix.d = sy;
 							_matrix.tx = _matrix.ty = 0;
 							if (angle != 0) _matrix.rotate(angle * HXP.RAD);
-							
+
 							_midBuffers[i].draw(buffer, _matrix, _tint, blend);
 						}
-						
+
 						target.copyPixels(_midBuffers[i], _rect, _point, null, null, true);
 					}
 				}
@@ -170,7 +178,7 @@ class Canvas extends Graphic
 			yy ++;
 		}
 		#if !bitfive target.unlock(); #end
-		
+
 		_redrawBuffers = false;
 	}
 

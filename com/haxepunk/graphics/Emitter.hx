@@ -138,10 +138,12 @@ class Emitter extends Graphic
 	private inline function renderParticle(renderFunc:ParticleType->Float->Float->Void, point:Point, camera:Point)
 	{
 		// quit if there are no particles
-		if (_particle == null) {
+		if (_particle == null)
+		{
 			return;
-		} else {
-
+		}
+		else
+		{
 			// get rendering position
 			_point.x = point.x + x - camera.x * scrollX;
 			_point.y = point.y + y - camera.y * scrollY;

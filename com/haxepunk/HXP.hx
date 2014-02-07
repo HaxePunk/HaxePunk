@@ -354,11 +354,16 @@ class HXP
 	 */
 	public static inline function approach(value:Float, target:Float, amount:Float):Float
 	{
-		if (value < target - amount) {
+		if (value < target - amount)
+		{
 			return value + amount;
-		} else if (value > target + amount) {
+		}
+		else if (value > target + amount)
+		{
 			return value - amount;
-		} else {
+		}
+		else
+		{
 			return target;
 		}
 	}
@@ -384,9 +389,16 @@ class HXP
 	 */
 	public static inline function colorLerp(fromColor:Int, toColor:Int, t:Float = 1):Int
 	{
-		if (t <= 0) { return fromColor; }
-		else if (t >= 1) { return toColor; }
-		else {
+		if (t <= 0)
+		{
+			return fromColor;
+		}
+		else if (t >= 1)
+		{
+			return toColor;
+		}
+		else
+		{
 			var a:Int = fromColor >> 24 & 0xFF,
 				r:Int = fromColor >> 16 & 0xFF,
 				g:Int = fromColor >> 8 & 0xFF,
@@ -830,13 +842,20 @@ class HXP
 
 		var hue:Float = 0;
 
-		if (max == min) {
+		if (max == min)
+		{
 			hue = 0;
-		} else if (max == h) {
+		}
+		else if (max == h)
+		{
 			hue = (60 * (s - v) / (max - min) + 360) % 360;
-		} else if (max == s) {
+		}
+		else if (max == s)
+		{
 			hue = (60 * (v - h) / (max - min) + 120);
-		} else if (max == v) {
+		}
+		else if (max == v)
+		{
 			hue = (60 * (h - s) / (max - min) + 240);
 		}
 
@@ -856,9 +875,12 @@ class HXP
 
 		var max:Int = Std.int(Math.max(h, Math.max(s, v)));
 
-		if (max == 0) {
+		if (max == 0)
+		{
 			return 0;
-		} else {
+		}
+		else
+		{
 			var min:Int = Std.int(Math.min(h, Math.min(s, v)));
 
 			return (max - min) / max;
