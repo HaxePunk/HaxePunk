@@ -19,6 +19,8 @@ It is suggested that you test your changes on Flash and Neko if making updates t
 
 ## Programming Guidlines
 
+_The following are guidlines on how to format the code you submit to HaxePunk. In the end just use good judgement and try to match the styling of the other classes._
+
 A space should be placed after `if`, `for`, `while`, and `switch`. No space before or after the parentheses. Statements within blocks should be indented using a tab.
 
 ```haxe
@@ -151,8 +153,10 @@ class MyClass
 
 ### Additional suggestions
 
-**Please delete trailing whitespace on save**
-	Most editors have this as an option. It makes commits less cluttered with whitespace changes.
+<dl>
+<dt>Please delete trailing whitespace on save</dt>
+<dd>Most editors have this as an option. It makes commits less cluttered with whitespace changes.</dd>
 
-**Please document new functions and classes**
-	This helps others understand how to use the added functionality. We may request that you add this before merging your pull request.
+<dt>Please document new functions and classes</dt>
+<dd>This helps others understand how to use the added functionality. We may request that you add this before merging your pull request.</dd>
+</dl>
