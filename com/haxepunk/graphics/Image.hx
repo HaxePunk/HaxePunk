@@ -294,6 +294,23 @@ class Image extends Graphic
 		if (_tint != null) _buffer.colorTransform(_bufferRect, _tint);
 	}
 
+	private function updateColorTransform()
+	{
+		if (_alpha == 1 && _color == 0xFFFFFF)
+		{
+			_tint = null;
+		}
+		else
+		{
+			_tint = _colorTransform;
+			_tint.redMultiplier = _red;
+			_tint.greenMultiplier = _green;
+			_tint.blueMultiplier = _blue;
+			_tint.alphaMultiplier = _alpha;
+		}
+		updateBuffer();
+	}
+
 	/**
 	 * Clears the image buffer.
 	 */
@@ -313,22 +330,7 @@ class Image extends Graphic
 		value = value < 0 ? 0 : (value > 1 ? 1 : value);
 		if (_alpha == value) return value;
 		_alpha = value;
-		if (blit)
-		{
-			if (_alpha == 1 && _color == 0xFFFFFF)
-			{
-				_tint = null;
-			}
-			else
-			{
-				_tint = _colorTransform;
-				_tint.redMultiplier = _red;
-				_tint.greenMultiplier = _green;
-				_tint.blueMultiplier = _blue;
-				_tint.alphaMultiplier = _alpha;
-			}
-			updateBuffer();
-		}
+		if (blit) updateColorTransform();
 		return _alpha;
 	}
 
@@ -346,22 +348,7 @@ class Image extends Graphic
 		_red = HXP.getRed(_color) / 255;
 		_green = HXP.getGreen(_color) / 255;
 		_blue = HXP.getBlue(_color) / 255;
-		if (blit)
-		{
-			if (_alpha == 1 && _color == 0xFFFFFF)
-			{
-				_tint = null;
-			}
-			else
-			{
-				_tint = _colorTransform;
-				_tint.redMultiplier = _red;
-				_tint.greenMultiplier = _green;
-				_tint.blueMultiplier = _blue;
-				_tint.alphaMultiplier = _alpha;
-			}
-			updateBuffer();
-		}
+		if (blit) updateColorTransform();
 		return _color;
 	}
 

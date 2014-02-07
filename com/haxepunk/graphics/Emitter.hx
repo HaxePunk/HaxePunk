@@ -119,36 +119,39 @@ class Emitter extends Graphic
 	private inline function renderParticle(renderFunc:ParticleType->Float->Float->Void, point:Point, camera:Point)
 	{
 		// quit if there are no particles
-		if (_particle == null) return;
+		if (_particle == null) {
+			return;
+		} else {
 
-		// get rendering position
-		_point.x = point.x + x - camera.x * scrollX;
-		_point.y = point.y + y - camera.y * scrollY;
+			// get rendering position
+			_point.x = point.x + x - camera.x * scrollX;
+			_point.y = point.y + y - camera.y * scrollY;
 
-		// particle info
-		var t:Float, td:Float,
-			p:Particle = _particle,
-			type:ParticleType;
+			// particle info
+			var t:Float, td:Float,
+				p:Particle = _particle,
+				type:ParticleType;
 
-		// loop through the particles
-		while (p != null)
-		{
-			// get time scale
-			t = p._time / p._duration;
+			// loop through the particles
+			while (p != null)
+			{
+				// get time scale
+				t = p._time / p._duration;
 
-			// get particle type
-			type = p._type;
+				// get particle type
+				type = p._type;
 
-			// get position
-			td = (type._ease == null) ? t : type._ease(t);
-			_p.x = _point.x + p._x + p._moveX * (type._backwards ? 1 - td : td);
-			_p.y = _point.y + p._y + p._moveY * (type._backwards ? 1 - td : td);
-			p._moveY += p._gravity * td;
+				// get position
+				td = (type._ease == null) ? t : type._ease(t);
+				_p.x = _point.x + p._x + p._moveX * (type._backwards ? 1 - td : td);
+				_p.y = _point.y + p._y + p._moveY * (type._backwards ? 1 - td : td);
+				p._moveY += p._gravity * td;
 
-			renderFunc(type, t, td);
+				renderFunc(type, t, td);
 
-			// get next particle
-			p = p._next;
+				// get next particle
+				p = p._next;
+			}
 		}
 	}
 

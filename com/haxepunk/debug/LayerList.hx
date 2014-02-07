@@ -36,7 +36,6 @@ class VisibleLabel extends Sprite
 #end
 
 		this.x = 6;
-		this.display = true;
 
 		addChild(active);
 		addChild(label);
@@ -44,22 +43,31 @@ class VisibleLabel extends Sprite
 		addEventListener("click", onClick, true);
 	}
 
+	public var display(default, set):Bool = true;
+	private function set_display(value:Bool):Bool
+	{
+		if (value != display)
+		{
+			display = value;
+			if (value)
+			{
+				removeChild(inactive);
+				addChild(active);
+			}
+			else
+			{
+				removeChild(active);
+				addChild(inactive);
+			}
+		}
+		return value;
+	}
+
 	private function onClick(e:MouseEvent)
 	{
 		display = !display;
-		if (display)
-		{
-			removeChild(inactive);
-			addChild(active);
-		}
-		else
-		{
-			removeChild(active);
-			addChild(inactive);
-		}
 	}
 
-	private var display:Bool;
 	private var active:Bitmap;
 	private var inactive:Bitmap;
 	private var label:TextField;
@@ -162,7 +170,7 @@ class LayerList extends Sprite
 		}
 		keys.sort(layerSort);
 
-		var i = 0;
+		var i = 0, scene = HXP.scene;
 		for (layer in keys)
 		{
 			var label:LayerLabel;
@@ -176,6 +184,7 @@ class LayerList extends Sprite
 				_labels.set(layer, label);
 			}
 			label.count = list.get(layer);
+			label.display = scene.layerVisible(layer);
 			label.y = i++ * 20 + 5;
 			addChild(label);
 		}
