@@ -167,11 +167,18 @@ class OUYA_GAMEPAD
 	public static inline var RIGHT_ANALOGUE_BUTTON:Int = 11; // 107
 	public static inline var LEFT_TRIGGER_BUTTON:Int = 8;
 	public static inline var RIGHT_TRIGGER_BUTTON:Int = 9;
-	public static inline var HOME_BUTTON:Int = 10; // 82
 	public static inline var DPAD_UP:Int = 19;
 	public static inline var DPAD_DOWN:Int = 20;
 	public static inline var DPAD_LEFT:Int = 21;
 	public static inline var DPAD_RIGHT:Int = 22;
+
+	/**
+	 * The Home button event is handled as a keyboard event!
+	 * Also, the up and down events happen at once,
+	 * therefore, use pressed() or released().
+	 */
+	public static inline var HOME_BUTTON:Int = 16777234; // 82
+
 
 	// axis
 	public static inline var LEFT_ANALOGUE_X:Int = 0;
