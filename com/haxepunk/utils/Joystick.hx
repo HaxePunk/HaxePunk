@@ -66,11 +66,18 @@ class Joystick
 
 	/**
 	 * If the joystick button was pressed this frame.
+	 * Omit argument to check for any button.
 	 * @param  button The button index to check.
 	 */
-	public function pressed(button:Int):Bool
+	public function pressed(?button:Int):Bool
 	{
-		if (buttons.exists(button))
+		if (button == null)
+		{
+			for (k in buttons.keys())
+			{
+				if (buttons.get(k) == BUTTON_PRESSED) return true;
+			}
+		} else if (buttons.exists(button))
 		{
 			return buttons.get(button) == BUTTON_PRESSED;
 		}
@@ -79,11 +86,18 @@ class Joystick
 
 	/**
 	 * If the joystick button was released this frame.
+	 * Omit argument to check for any button.
 	 * @param  button The button index to check.
 	 */
-	public function released(button:Int):Bool
+	public function released(?button:Int):Bool
 	{
-		if (buttons.exists(button))
+		if (button == null)
+		{
+			for (k in buttons.keys())
+			{
+				if (buttons.get(k) == BUTTON_RELEASED) return true;
+			}
+		} else if (buttons.exists(button))
 		{
 			return buttons.get(button) == BUTTON_RELEASED;
 		}
@@ -92,11 +106,19 @@ class Joystick
 
 	/**
 	 * If the joystick button is held down.
+	 * Omit argument to check for any button.
 	 * @param  button The button index to check.
 	 */
-	public function check(button:Int):Bool
+	public function check(?button:Int):Bool
 	{
-		if (buttons.exists(button))
+		if (button == null)
+		{
+			for (k in buttons.keys())
+			{
+				var b = buttons.get(k);
+				if (b != BUTTON_OFF && b != BUTTON_RELEASED) return true;
+			}
+		} else if (buttons.exists(button))
 		{
 			var b = buttons.get(button);
 			return b != BUTTON_OFF && b != BUTTON_RELEASED;
