@@ -120,9 +120,6 @@ class Grid extends Hitbox
 		// check that tile is valid
 		if (column < 0 || column > columns - 1 || row < 0 || row > rows - 1)
 		{
-			#if debug
-				trace('Grid: Tile out of bounds: ' + column + ', ' + row);
-			#end
 			return false;
 		}
 		else
@@ -498,42 +495,76 @@ class Grid extends Hitbox
 
 	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
 	{
-		HXP.point.x = (_x + parent.x - HXP.camera.x) * HXP.screen.fullScaleX;
-		HXP.point.y = (_y + parent.y - HXP.camera.y) * HXP.screen.fullScaleY;
+		var cellX:Float, cellY:Float,
+			stepX = tileWidth * scaleX,
+			stepY = tileHeight * scaleY;
 
-		graphics.beginFill(0x0000FF, 0.3);
-		var stepX = tileWidth * HXP.screen.fullScaleX,
-			stepY = tileHeight * HXP.screen.fullScaleY,
-			pos = HXP.point.x + stepX;
+		// determine drawing location
+		var px = _x + parent.x - HXP.camera.x;
+		var py = _y + parent.y - HXP.camera.y;
 
-		for (i in 1...columns)
+		// determine start and end tiles to draw (optimization)
+		var startx = Math.floor( -px / tileWidth),
+			starty = Math.floor( -py / tileHeight),
+			destx = startx + 1 + Math.ceil(HXP.width / tileWidth),
+			desty = starty + 1 + Math.ceil(HXP.height / tileHeight);
+
+		// nothing will render if we're completely off screen
+		if (startx > columns || starty > rows || destx < 0 || desty < 0)
+			return;
+
+		// clamp values to boundaries
+		if (startx < 0) startx = 0;
+		if (destx > columns) destx = columns;
+		if (starty < 0) starty = 0;
+		if (desty > rows) desty = rows;
+
+		px = (px + (startx * tileWidth)) * scaleX;
+		py = (py + (starty * tileHeight)) * scaleY;
+
+		var row:Array<Bool>;
+		cellY = py;
+		for (y in starty...desty)
 		{
-			graphics.drawRect(pos, HXP.point.y, 1, _height * HXP.screen.fullScaleX);
-			pos += stepX;
-		}
-
-		pos = HXP.point.y + stepY;
-		for (i in 1...rows)
-		{
-			graphics.drawRect(HXP.point.x, pos, _width * HXP.screen.fullScaleY, 1);
-			pos += stepY;
-		}
-
-		HXP.rect.y = HXP.point.y;
-		for (y in 0...rows)
-		{
-			HXP.rect.x = HXP.point.x;
-			for (x in 0...columns)
+			cellX = px;
+			row = data[y];
+			for (x in startx...destx)
 			{
-				if (data[y][x])
+				if (row[x])
 				{
-					graphics.drawRect(HXP.rect.x, HXP.rect.y, stepX, stepY);
+					graphics.lineStyle(1, 0xFFFFFF, 0.3);
+					graphics.drawRect(cellX, cellY, stepX, stepY);
+
+					if (x < columns - 1 && !row[x + 1])
+					{
+						graphics.lineStyle(1, 0x0000FF);
+						graphics.moveTo(cellX + stepX, cellY);
+						graphics.lineTo(cellX + stepX, cellY + stepY);
+					}
+					if (x > 0 && !row[x - 1])
+					{
+						graphics.lineStyle(1, 0x0000FF);
+						graphics.moveTo(cellX, cellY);
+						graphics.lineTo(cellX, cellY + stepY);
+					}
+					if (y < rows - 1 && !data[y + 1][x])
+					{
+						graphics.lineStyle(1, 0x0000FF);
+						graphics.moveTo(cellX, cellY + stepY);
+						graphics.lineTo(cellX + stepX, cellY + stepY);
+					}
+					if (y > 0 && !data[y - 1][x])
+					{
+						graphics.lineStyle(1, 0x0000FF);
+						graphics.moveTo(cellX, cellY);
+						graphics.lineTo(cellX + stepX, cellY);
+					}
 				}
-				HXP.rect.x += stepX;
+				cellX += stepX;
 			}
-			HXP.rect.y += stepY;
+			cellY += stepY;
 		}
-		graphics.endFill();
+
 	}
 
 	public function squareProjection(axis:Point, point:Point):Void
