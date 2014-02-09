@@ -18,12 +18,6 @@ typedef RenderFunction = AtlasRegion -> GlyphData -> Float -> Float -> Void;
 
 class BitmapText extends Graphic
 {
-	private var _buffer:BitmapData;
-	private var _set:BitmapData;
-	private var _font:BitmapFontAtlas;
-	private var _matrix:Matrix;
-	private var _colorTransform:ColorTransform;
-
 	public var width:Float=0;
 	public var height:Float=0;
 	public var textWidth:Int=0;
@@ -40,9 +34,23 @@ class BitmapText extends Graphic
 	public var lineSpacing:Int=0;
 	public var charSpacing:Int=0;
 
-	public var text(default, set):String;
-	private var _lines:Array<String>;
-
+	/**
+	 * BitmapText constructor.
+	 * @param text    Text to display.
+	 * @param x       X offset.
+	 * @param y       Y offset.
+	 * @param width   Image width (leave as 0 to size to the starting text string).
+	 * @param height  Image height (leave as 0 to size to the starting text string).
+	 * @param options An object containing optional parameters contained in TextOptions
+	 * 						font		Path to .fnt file.
+	 * 						size		Font size.
+	 * 						align		Alignment ("left", "center" or "right"). (Currently ignored.)
+	 * 						wordWrap	Automatic word wrapping.
+	 * 						resizable	If the text field can automatically resize if its contents grow. (Currently ignored.)
+	 * 						color		Text color.
+	 * 						leading		Vertical space between lines.
+	 *						richText	If the text field uses a rich text string
+	 */
 	public function new(text:String, x:Float=0, y:Float=0, width:Float=0, height:Float=0, ?options:TextOptions)
 	{
 		super();
@@ -104,7 +112,7 @@ class BitmapText extends Graphic
 	}
 
 	public var alpha(default,set):Float=1;
-	function set_alpha(value:Float)
+	private function set_alpha(value:Float)
 	{
 		alpha = value;
 		updateColor();
@@ -112,7 +120,11 @@ class BitmapText extends Graphic
 		return value;
 	}
 
-	function updateColor()
+	/*
+	 * Called automatically to update the ColorTransform object whenever color
+	 * or alpha is set.
+	 */
+	private function updateColor()
 	{
 		// update _colorTransform if blitting
 		_red = HXP.getRed(color) / 255;
@@ -126,7 +138,8 @@ class BitmapText extends Graphic
 		}
 	}
 
-	public function set_text(text:String)
+	public var text(default, set):String;
+	private function set_text(text:String):String
 	{
 		this.text = text;
 		var _oldLines:Array<String> = null;
@@ -145,6 +158,10 @@ class BitmapText extends Graphic
 		return text;
 	}
 
+	/*
+	 * Automatically wraps text by figuring out how many words can fit on a
+	 * single line, and splitting the remainder onto a new line.
+	 */
 	public function wordWrap()
 	{
 		// subdivide lines
@@ -215,13 +232,20 @@ class BitmapText extends Graphic
 		_lines = newLines;
 	}
 
+	/*
+	 * Run through the render loop without actually drawing anything. This
+	 * will compute the textWidth and textHeight attributes.
+	 */
 	public function computeTextSize()
 	{
-		// make a pass through the text without actually rendering to compute
-		// textWidth/textHeight
 		renderFont();
 	}
 
+	/*
+	 * Update the drawing buffer on software rendering mode. For efficiency, if
+	 * any lines were unchanged from previously rendered text, they will not be
+	 * re-drawn.
+	 */
 	public function updateBuffer(?oldLines:Array<String>)
 	{
 		// render the string of text to _buffer
@@ -294,6 +318,11 @@ class BitmapText extends Graphic
 		}, startLine);
 	}
 
+	/*
+	 * Loops through the text, drawing each character on each line.
+	 * @param renderFunction    Function to render each character.
+	 * @param startLine         Line number to start rendering on.
+	 */
 	private inline function renderFont(?renderFunction:RenderFunction, startLine=0)
 	{
 		// loop through the text one character at a time, calling the supplied
@@ -392,4 +421,12 @@ class BitmapText extends Graphic
 			region.draw(_point.x * fsx + x * sx, _point.y * fsy + y * sy, layer, sx, sy, 0, _red, _green, _blue, alpha);
 		});
 	}
+
+	private var _buffer:BitmapData;
+	private var _set:BitmapData;
+	private var _font:BitmapFontAtlas;
+	private var _matrix:Matrix;
+	private var _colorTransform:ColorTransform;
+	private var _lines:Array<String>;
+
 }
