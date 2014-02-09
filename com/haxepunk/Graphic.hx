@@ -2,7 +2,6 @@ package com.haxepunk;
 
 import com.haxepunk.HXP;
 import com.haxepunk.ds.Either;
-import com.haxepunk.ds.Position;
 import com.haxepunk.graphics.atlas.Atlas;
 import com.haxepunk.graphics.atlas.TileAtlas;
 import com.haxepunk.graphics.atlas.AtlasRegion;
@@ -57,7 +56,7 @@ abstract ImageType(Either<BitmapData, AtlasRegion>)
 	}
 }
 
-class Graphic implements Position
+class Graphic
 {
 	/**
 	 * If the graphic should update.

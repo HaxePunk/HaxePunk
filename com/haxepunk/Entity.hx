@@ -3,7 +3,6 @@ package com.haxepunk;
 import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-import com.haxepunk.ds.Position;
 import com.haxepunk.graphics.Image;
 import com.haxepunk.graphics.Graphiclist;
 import com.haxepunk.ds.Either;
@@ -40,7 +39,7 @@ abstract SolidType(Either<String, Array<String>>)
 /**
  * Main game Entity class updated by Scene.
  */
-class Entity extends Tweener implements Position
+class Entity extends Tweener
 {
 	/**
 	 * If the Entity should render.
