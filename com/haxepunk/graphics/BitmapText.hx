@@ -18,12 +18,6 @@ typedef RenderFunction = AtlasRegion -> GlyphData -> Float -> Float -> Void;
 
 class BitmapText extends Graphic
 {
-	private var _buffer:BitmapData;
-	private var _set:BitmapData;
-	private var _font:BitmapFontAtlas;
-	private var _matrix:Matrix;
-	private var _colorTransform:ColorTransform;
-
 	public var width:Float=0;
 	public var height:Float=0;
 	public var textWidth:Int=0;
@@ -39,9 +33,6 @@ class BitmapText extends Graphic
 
 	public var lineSpacing:Int=0;
 	public var charSpacing:Int=0;
-
-	public var text(default, set):String;
-	private var _lines:Array<String>;
 
 	/**
 	 * BitmapText constructor.
@@ -121,7 +112,7 @@ class BitmapText extends Graphic
 	}
 
 	public var alpha(default,set):Float=1;
-	function set_alpha(value:Float)
+	private function set_alpha(value:Float)
 	{
 		alpha = value;
 		updateColor();
@@ -133,7 +124,7 @@ class BitmapText extends Graphic
 	 * Called automatically to update the ColorTransform object whenever color
 	 * or alpha is set.
 	 */
-	function updateColor()
+	private function updateColor()
 	{
 		// update _colorTransform if blitting
 		_red = HXP.getRed(color) / 255;
@@ -147,7 +138,8 @@ class BitmapText extends Graphic
 		}
 	}
 
-	public function set_text(text:String)
+	public var text(default, set):String;
+	private function set_text(text:String):String
 	{
 		this.text = text;
 		var _oldLines:Array<String> = null;
@@ -429,4 +421,12 @@ class BitmapText extends Graphic
 			region.draw(_point.x * fsx + x * sx, _point.y * fsy + y * sy, layer, sx, sy, 0, _red, _green, _blue, alpha);
 		});
 	}
+
+	private var _buffer:BitmapData;
+	private var _set:BitmapData;
+	private var _font:BitmapFontAtlas;
+	private var _matrix:Matrix;
+	private var _colorTransform:ColorTransform;
+	private var _lines:Array<String>;
+
 }
