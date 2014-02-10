@@ -202,7 +202,7 @@ class Image extends Graphic
 		}
 	}
 
-	public override function renderAtlas(layer:Int, point:Point, camera:Point)
+	override public function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
 		var sx = scale * scaleX,
 			sy = scale * scaleY,

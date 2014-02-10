@@ -402,7 +402,7 @@ class BitmapText extends Graphic
 		//target.copyPixels(_buffer, _buffer.rect, _point, null, null, true);
 	}
 
-	public override function renderAtlas(layer:Int, point:Point, camera:Point)
+	override public function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
 		// determine drawing location
 		var fontScale = size / _font.fontSize;

@@ -213,7 +213,7 @@ class Circle extends Hitbox
 		return distanceToCorner <= _squaredRadius;
 	}
 
-	public override function project(axis:Vector, projection:Projection):Void
+	override public function project(axis:Vector, projection:Projection):Void
 	{
 		projection.min = -_radius;
 		projection.max = _radius;
@@ -224,8 +224,8 @@ class Circle extends Hitbox
 		graphics.drawCircle((parent.x + _x - HXP.camera.x) * scaleX, (parent.y + _y - HXP.camera.y) * scaleY, radius * scaleX);
 	}
 
-	private override function get_x():Int { return _x - _radius; }
-	private override function get_y():Int { return _y - _radius; }
+	override private function get_x():Int { return _x - _radius; }
+	override private function get_y():Int { return _y - _radius; }
 
 	/**
 	 * Radius.
