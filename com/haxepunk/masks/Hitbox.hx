@@ -5,7 +5,7 @@ import flash.geom.Point;
 import com.haxepunk.masks.Polygon;
 
 /** Uses parent's hitbox to determine collision.
- * This class is used * internally by FlashPunk, you don't need to use this class because
+ * This class is used * internally by HaxePunk, you don't need to use this class because
  * this is the default behaviour of Entities without a Mask object. */
 class Hitbox extends Mask
 {
