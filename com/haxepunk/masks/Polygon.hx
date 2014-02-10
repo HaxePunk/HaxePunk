@@ -8,6 +8,7 @@ import com.haxepunk.masks.Grid;
 import com.haxepunk.masks.Hitbox;
 import com.haxepunk.math.Projection;
 import com.haxepunk.math.Vector;
+import flash.display.BitmapData;
 import flash.display.Graphics;
 import flash.geom.Point;
 
@@ -33,12 +34,18 @@ class Polygon extends Hitbox
 		if (points.length < 3) throw "The polygon needs at least 3 sides.";
 		_points = points;
 
+		_axes = new Array<Vector>();
+		_indicesToRemove = new Array<Int>();
+		
 		_fakeEntity = new Entity();
 		_fakeTileHitbox = new Hitbox();
+		_fakePixelmask = new Pixelmask(new BitmapData(1, 1, true, 0));
 
 		_check.set(Type.getClassName(Mask), collideMask);
 		_check.set(Type.getClassName(Hitbox), collideHitbox);
 		_check.set(Type.getClassName(Grid), collideGrid);
+		_check.set(Type.getClassName(Pixelmask), collidePixelmask);
+		_check.set(Type.getClassName(Imagemask), collidePixelmask);
 		_check.set(Type.getClassName(Circle), collideCircle);
 		_check.set(Type.getClassName(Polygon), collidePolygon);
 
@@ -193,6 +200,58 @@ class Polygon extends Hitbox
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Checks for collision with a Pixelmask.
+	 * May be slow (especially with big polygons), added for completeness sake.
+	 * 
+	 * Internally sets up a Pixelmask using the polygon representation and uses that for collision check.
+	 */
+	@:access(com.haxepunk.masks.Pixelmask)
+	private function collidePixelmask(pixelmask:Pixelmask):Bool
+	{
+		var data:BitmapData = _fakePixelmask._data;
+		
+		_fakeEntity.width = _width;
+		_fakeEntity.height = _height;
+		_fakeEntity.x = parent.x - _x;
+		_fakeEntity.y = parent.y - _y;
+		_fakeEntity.originX = parent.originX;
+		_fakeEntity.originY = parent.originY;
+
+		_fakePixelmask._x = _x - parent.originX;
+		_fakePixelmask._y = _y - parent.originY;
+		_fakePixelmask.parent = _fakeEntity;
+		
+		if (data == null || (data.width < _width || data.height < _height)) {
+			data = new BitmapData(_width, _height, true, 0);
+		} else {
+			data.fillRect(data.rect, 0);
+		}
+		
+		var graphics:Graphics = HXP.sprite.graphics;
+		graphics.clear();
+
+		graphics.beginFill(0xFFFFFF, 1);
+		graphics.lineStyle(1, 0xFFFFFF, 1);
+		
+		var offsetX:Float = _x + parent.originX;
+		var offsetY:Float = _y + parent.originY;
+		
+		graphics.moveTo(points[_points.length - 1].x + offsetX, _points[_points.length - 1].y + offsetY);
+		for (i in 0..._points.length)
+		{
+			graphics.lineTo(_points[i].x + offsetX, _points[i].y + offsetY);
+		}
+		
+		graphics.endFill();
+
+		data.draw(HXP.sprite);
+		
+		_fakePixelmask.data = data;
+		
+		return pixelmask.collide(_fakePixelmask);
 	}
 
 	/**
@@ -517,8 +576,8 @@ class Polygon extends Hitbox
 
 	private function generateAxes():Void
 	{
-		_axes = new Array<Vector>();
-		_indicesToRemove = new Array<Int>();
+		HXP.clear(_axes);
+		HXP.clear(_indicesToRemove);
 
 		var temp:Float;
 		var nPoints:Int = _points.length;
@@ -587,6 +646,7 @@ class Polygon extends Hitbox
 
 	private var _fakeEntity:Entity;				// used for Grid and Pixelmask collision
 	private var _fakeTileHitbox:Hitbox;			// used for Grid collision
+	private var _fakePixelmask:Pixelmask;		// used for Pixelmask collision
 
 	private var _indicesToRemove:Array<Int>;	// used in removeDuplicateAxes()
 

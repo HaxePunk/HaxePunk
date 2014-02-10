@@ -168,6 +168,25 @@ class Image extends Graphic
 		_bitmap.bitmapData = _buffer;
 	}
 
+	/**
+	 * Force creation and drawing to the buffer even in RenderMode.HARDWARE (needed by Imagemask).
+	 */
+	@:access(com.haxepunk.graphics.atlas.AtlasData)
+	@:access(com.haxepunk.graphics.atlas.AtlasRegion)
+	private function drawBuffer():Void {
+		if (HXP.renderMode == RenderMode.HARDWARE) {
+			if (_bitmap == null) _bitmap = new Bitmap();
+			if (_colorTransform == null) _colorTransform = new ColorTransform();
+			if (_buffer == null) createBuffer();
+		#if flash
+			_source = _region.parent._tilesheet.nmeBitmap;
+		#else
+			_source = _region.parent._tilesheet.__bitmap;
+		#end
+			updateBuffer();
+		}
+	}
+
 	/** Renders the image. */
 	override public function render(target:BitmapData, point:Point, camera:Point)
 	{

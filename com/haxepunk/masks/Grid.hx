@@ -61,6 +61,7 @@ class Grid extends Hitbox
 		_check.set(Type.getClassName(Mask), collideMask);
 		_check.set(Type.getClassName(Hitbox), collideHitbox);
 		_check.set(Type.getClassName(Pixelmask), collidePixelmask);
+		_check.set(Type.getClassName(Imagemask), collidePixelmask);
 		_check.set(Type.getClassName(Grid), collideGrid);
 
 		data = new Array<Array<Bool>>();
@@ -355,7 +356,6 @@ class Grid extends Hitbox
 	/** @private Collides against a Pixelmask. */
 	private function collidePixelmask(other:Pixelmask):Bool
 	{
-#if flash
 		var x1:Int = Std.int(other.parent.x + other.x - parent.x - _x),
 			y1:Int = Std.int(other.parent.y + other.y - parent.y - _y),
 			x2:Int = Std.int((x1 + other.width - 1) / _tile.width),
@@ -385,7 +385,11 @@ class Grid extends Hitbox
 
 				if (data[y1][x1])
 				{
+#if flash
 					if (other.data.hitTest(_point, 1, _tile)) return true;
+#else
+					if (Mask.hitTest(other.data, _point, 1, _tile)) return true;
+#end
 				}
 				x1 ++;
 				_tile.x += _tile.width;
@@ -395,9 +399,6 @@ class Grid extends Hitbox
 			_tile.x = x1 * _tile.width;
 			_tile.y += _tile.height;
 		}
-#else
-		trace('Pixelmasks will not work in targets other than flash due to hittest not being implemented in OpenFL.');
-#end
 		return false;
 	}
 

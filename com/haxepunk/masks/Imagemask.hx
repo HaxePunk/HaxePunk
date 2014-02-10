@@ -13,10 +13,8 @@ import com.haxepunk.graphics.Image;
  *
  * Example usage:
  *
- * class Object extends Entity
- * {
- *   public function new()
- *   {
+ * class Object extends Entity {
+ *   public function new() {
  *     super();
  *     var sprite = new Image("myimage.png", 100, 100);
  *     graphic = sprite;
@@ -35,84 +33,114 @@ import com.haxepunk.graphics.Image;
 class Imagemask extends Pixelmask
 {
 	/**
-	 * Constructor.
-	 * @param source    The image to use as a mask.
-	 * @param x     X offset of the mask.
-	 * @param y     Y offset of the mask.
-	 */
+	* Constructor.
+	* @param source		The Image to use as a mask.
+	*/
 	public function new(source:Image)
 	{
 		super(new BitmapData(1, 1));
-		_source = source;
-		update();
-		_check.set(Type.getClassName(Imagemask), collidePixelmask);
+
+		_bounds = new Rectangle();
+		this.source = source;
 	}
 
-	/**
-	 * Update Source image. Calls update().
-	 * @param newsource Update source image.
-	 */
-	public function setSource(newsource:Image)
+	/** The Image to use as source for the mask. */
+	public var source(get, set):Image;
+	private function get_source():Image { return _source; }
+	private function set_source(value:Image):Image 
 	{
-		_source = newsource;
-		update();
+		if (value != _source) 
+		{
+			_source = value;
+			update();
+		}
+		return _source;
 	}
 
 	/**
-	 * Updates mask.
-	 */
+	* Updates the mask.
+	*/
+	@:access(com.haxepunk.graphics.Image)
 	override public function update()
 	{
-		var r = getBounds();
+		getBounds();	// recalc bounds
 
-		_x = Math.floor(r.x);
-		_y = Math.floor(r.y);
-		_width = Math.ceil(r.width);
-		_height = Math.ceil(r.height);
+		_x = Math.floor(_bounds.x);
+		_y = Math.floor(_bounds.y);
+		_width = Math.ceil(_bounds.width);
+		_height = Math.ceil(_bounds.height);
 
-		_data = new BitmapData(_width, _height, true, 0x00000000);
-		_source.render(_data, new Point(-_x, -_y), new Point(0, 0));
+		if (_data == null || (_data.width != _width || _data.height != _height)) 
+		{
+			_data = new BitmapData(_width, _height, true, 0);
+		} 
+		else 
+		{
+			data.fillRect(data.rect, 0);
+		}
+		
+		_point.x = -_x;
+		_point.y = -_y;
+		
+		// draw source Image to its buffer (even if in RenderMode.HARDWARE)
+		if (!_source.blit) 
+		{
+			_source.blit = true;
+			_source.drawBuffer();
+			_source.render(_data, _point, HXP.zero);
+			_source.blit = false;
+		} 
+		else 
+		{
+			_source.render(_data, _point, HXP.zero);
+		}
 
 		super.update();
 	}
 
 	/**
-	 * Calculates the bound box of the source Image, taking account the Image
-	 * transformation.
-	 * @return  the bound box in local coordinates.
-	 */
-	public function getBounds():flash.geom.Rectangle {
+	* Calculates the bounding box of the source Image, taking into account the Image transform.
+	* @return  the bounding box in local coordinates.
+	*/
+	public function getBounds():Rectangle 
+	{
 		var sx = _source.scale * _source.scaleX;
 		var sy = _source.scale * _source.scaleY;
 
-		var matrix = new Matrix(sx, 0, 0, sy,
-			-_source.originX * sx,
-			-_source.originY * sy);
-		matrix.rotate(_source.angle * HXP.RAD);
+		_matrix.a = sx;
+		_matrix.b = 0;
+		_matrix.c = 0;
+		_matrix.d = sy;
+		_matrix.tx = -_source.originX * sx;
+		_matrix.ty = -_source.originY * sy;
+		_matrix.rotate(_source.angle * HXP.RAD);
 
-		var point = new Point(0, 0);
-		var p1 = matrix.transformPoint(point);
-		point.x = _source.width;
-		point.y = _source.height;
-		var p2 = matrix.transformPoint(point);
-		point.x = 0;
-		point.y = _source.height;
-		var p3 = matrix.transformPoint(point);
-		point.x = _source.width;
-		point.y = 0;
-		var p4 = matrix.transformPoint(point);
+		_point.x = 0;
+		_point.y = 0;
+		
+		// TODO: optimize this
+		var p1 = _matrix.transformPoint(_point);
+		_point.x = _source.width;
+		_point.y = _source.height;
+		var p2 = _matrix.transformPoint(_point);
+		_point.x = 0;
+		_point.y = _source.height;
+		var p3 = _matrix.transformPoint(_point);
+		_point.x = _source.width;
+		_point.y = 0;
+		var p4 = _matrix.transformPoint(_point);
 
-		var r = new Rectangle(0, 0, 0, 0);
-		r.x = Math.min(Math.min(p1.x, p2.x), Math.min(p3.x, p4.x));
-		r.y = Math.min(Math.min(p1.y, p2.y), Math.min(p3.y, p4.y));
-		r.width  = Math.max(Math.max(p1.x - r.x, p2.x - r.x), Math.max(p3.x - r.x, p4.x - r.x));
-		r.height = Math.max(Math.max(p1.y - r.y, p2.y - r.y), Math.max(p3.y - r.y, p4.y - r.y));
+		_bounds.x = Math.min(Math.min(p1.x, p2.x), Math.min(p3.x, p4.x));
+		_bounds.y = Math.min(Math.min(p1.y, p2.y), Math.min(p3.y, p4.y));
+		_bounds.width  = Math.max(Math.max(p1.x - _bounds.x, p2.x - _bounds.x), Math.max(p3.x - _bounds.x, p4.x - _bounds.x));
+		_bounds.height = Math.max(Math.max(p1.y - _bounds.y, p2.y - _bounds.y), Math.max(p3.y - _bounds.y, p4.y - _bounds.y));
 
-		return r;
+		return _bounds;
 	}
 
 	/**
-	 * Current Image mask.
+	 * Imagemask information.
 	 */
 	private var _source:Image;
+	private var _bounds:Rectangle;
 }
