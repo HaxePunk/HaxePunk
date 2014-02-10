@@ -217,7 +217,7 @@ class Console
 		// Used to determine some text sizing.
 		var big:Bool = width >= BIG_WIDTH_THRESHOLD;
 
-		// The transparent FlashPunk logo overlay bitmap.
+		// The transparent HaxePunk logo overlay bitmap.
 		_sprite.addChild(_back);
 
 		// The entity and selection sprites.

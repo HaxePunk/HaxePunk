@@ -103,7 +103,7 @@ class PreRotation extends Image
 		super.render(target, point, camera);
 	}
 
-	public override function renderAtlas(layer:Int, point:Point, camera:Point)
+	override public function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
 		angle = frameAngle;
 		super.renderAtlas(layer, point, camera);

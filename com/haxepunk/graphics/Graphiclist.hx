@@ -84,7 +84,7 @@ class Graphiclist extends Graphic
 	/**
 	 * Destroys the list of graphics
 	 */
-	public override function destroy()
+	override public function destroy()
 	{
 		for (g in _graphics)
 		{

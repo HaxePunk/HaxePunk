@@ -44,7 +44,7 @@ class Stamp extends Graphic
 	}
 
 	/** @private Renders the Graphic. */
-	public override function render(target:BitmapData, point:Point, camera:Point)
+	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;
@@ -52,7 +52,7 @@ class Stamp extends Graphic
 		target.copyPixels(_source, _sourceRect, _point, null, null, true);
 	}
 
-	public override function renderAtlas(layer:Int, point:Point, camera:Point)
+	override public function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;

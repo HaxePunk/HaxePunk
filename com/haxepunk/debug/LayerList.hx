@@ -82,7 +82,7 @@ class MaskLabel extends VisibleLabel
 		label.text = "Masks";
 	}
 
-	private override function onClick(e:MouseEvent)
+	override private function onClick(e:MouseEvent)
 	{
 		super.onClick(e);
 		HXP.console.debugDraw = display;
@@ -110,7 +110,7 @@ class LayerLabel extends VisibleLabel
 		return value;
 	}
 
-	private override function onClick(e:MouseEvent)
+	override private function onClick(e:MouseEvent)
 	{
 		super.onClick(e);
 		HXP.scene.showLayer(layer, display);

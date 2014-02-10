@@ -163,7 +163,7 @@ class Text extends Image
 		if (_richText != null) updateTextBuffer();
 	}
 
-	private override function updateColorTransform():Void
+	override private function updateColorTransform():Void
 	{
 		if (_richText != null)
 		{
@@ -304,7 +304,7 @@ class Text extends Image
 	/**
 	 * Override the tinting values for atlas
 	 */
-	private override function set_color(value:Int):Int
+	override private function set_color(value:Int):Int
 	{
 		value &= 0xFFFFFF;
 		if (_color == value) return value;
@@ -418,8 +418,8 @@ class Text extends Image
 		return value;
 	}
 
-	private override function get_width():Int { return Std.int(_width); }
-	private override function get_height():Int { return Std.int(_height); }
+	override private function get_width():Int { return Std.int(_width); }
+	override private function get_height():Int { return Std.int(_height); }
 
 	// Text information.
 	private var _width:Int;

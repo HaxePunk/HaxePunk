@@ -201,7 +201,7 @@ class Emitter extends Graphic
 		}, point, camera);
 	}
 
-	public override function renderAtlas(layer:Int, point:Point, camera:Point)
+	override public function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
 		var fsx:Float = HXP.screen.fullScaleX,
 			fsy:Float = HXP.screen.fullScaleY;
