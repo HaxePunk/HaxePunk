@@ -26,6 +26,12 @@ class BitmapFontAtlas extends TextureAtlas
 	public var fontSize:Int = 0;
 	public var glyphData:Map<String, GlyphData>;
 
+	/*
+	 * Loads a bitmap font, returning a BitmapFontAtlas. The first time a font
+	 * is loaded, it is cached for later use.
+	 * @param fontName    The path to a .fnt bitmap font description.
+	 * @param format      An enum specifying the font format. Default is Sparrow XML format.
+	 */
 	public static function getFont(fontName:String, ?format:BitmapFontFormat):BitmapFontAtlas
 	{
 		if (_fonts == null) _fonts = new Map();
@@ -42,6 +48,9 @@ class BitmapFontAtlas extends TextureAtlas
 		return _fonts[fontName];
 	}
 
+	/*
+	 * Load a font in Sparrow XML format.
+	 */
 	public static function loadXMLFont(file:String):BitmapFontAtlas
 	{
 		var atlas = new BitmapFontAtlas(StringTools.replace(file, ".fnt", ".png"));
@@ -91,6 +100,10 @@ class BitmapFontAtlas extends TextureAtlas
 		glyphData = new Map();
 	}
 
+	/*
+	 * Returns an AtlasRegion for a given character, or whitespace if that
+	 * character is not found.
+	 */
 	public function getChar(name:String):AtlasRegion
 	{
 		try {
