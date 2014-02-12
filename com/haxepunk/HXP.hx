@@ -195,17 +195,9 @@ class HXP
 	/**
 	 * The currently active World object (deprecated)
 	 */
-	public static var world(get, set):Scene;
-	private static inline function get_world():Scene
-	{
-		HXP.log('HXP.world is deprecated, please use HXP.scene instead');
-		return _scene;
-	}
-	private static inline function set_world(value:Scene):Scene
-	{
-		HXP.log('HXP.world is deprecated, please use HXP.scene instead');
-		return set_scene(value);
-	}
+	@:deprecated public static var world(get, set):Scene;
+	private static inline function get_world():Scene { return _scene; }
+	private static inline function set_world(value:Scene):Scene { return set_scene(value); }
 
 	/**
 	 * The currently active Scene object. When you set this, the Scene is flagged

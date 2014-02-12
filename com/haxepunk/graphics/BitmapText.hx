@@ -31,6 +31,7 @@ class BitmapText extends Graphic
 	public var scaleX:Float=1;
 	public var scaleY:Float=1;
 
+	public var lines:Array<String>;
 	public var lineSpacing:Int=0;
 	public var charSpacing:Int=0;
 
@@ -143,15 +144,16 @@ class BitmapText extends Graphic
 	{
 		this.text = text;
 		var _oldLines:Array<String> = null;
-		if (_lines != null)
-			_oldLines = _lines;
-		_lines = text.split("\n");
+		if (lines != null)
+			_oldLines = lines;
+		lines = text.split("\n");
 
 		if (wrap)
 		{
 			wordWrap();
 		}
 
+		textWidth = textHeight = 0;
 		if (blit) updateBuffer(_oldLines);
 		else computeTextSize();
 
@@ -162,12 +164,15 @@ class BitmapText extends Graphic
 	 * Automatically wraps text by figuring out how many words can fit on a
 	 * single line, and splitting the remainder onto a new line.
 	 */
-	public function wordWrap()
+	public function wordWrap():Void
 	{
 		// subdivide lines
 		var newLines:Array<String> = [];
 		var spaceWidth = _font.glyphData.get(' ').xAdvance;
-		for (line in _lines)
+		var fontScale = size / _font.fontSize;
+		var sx:Float = scale * scaleX * fontScale, 
+			sy:Float = scale * scaleY * fontScale;
+		for (line in lines)
 		{
 			var subLines:Array<String> = [];
 			var words:Array<String> = [];
@@ -190,24 +195,22 @@ class BitmapText extends Graphic
 			if (thisWord != "") words.push(thisWord);
 			if (words.length > 1)
 			{
-				var w = 0;
-				var lineWidth = 0;
-				var lastBreak = 0;
+				var w:Int = 0, lastBreak:Int = 0, lineWidth:Float = 0;
 				while (w < words.length)
 				{
-					var wordWidth = 0;
+					var wordWidth:Float = 0;
 					var word = words[w];
 					for (letter in word.split(''))
 					{
 						var letterWidth = _font.glyphData.exists(letter) ?
 						                  _font.glyphData.get(letter).xAdvance : 0;
-						wordWidth += letterWidth + charSpacing;
+						wordWidth += (letterWidth + charSpacing);
 					}
 					lineWidth += wordWidth;
 					// if the word ends in a space, don't count that last space
 					// toward the line length for determining overflow
 					var endsInSpace = word.charAt(word.length - 1) == ' ';
-					if (lineWidth - (endsInSpace ? spaceWidth : 0) > width)
+					if ((lineWidth - (endsInSpace ? spaceWidth : 0)) * sx > width)
 					{
 						// line is too long; split it before this word
 						subLines.push(words.slice(lastBreak, w).join(''));
@@ -229,7 +232,7 @@ class BitmapText extends Graphic
 			}
 		}
 
-		_lines = newLines;
+		lines = newLines;
 	}
 
 	/*
@@ -281,9 +284,9 @@ class BitmapText extends Graphic
 		var startLine = 0;
 		if (oldLines != null)
 		{
-			for (n in 0 ... Std.int(Math.min(oldLines.length, _lines.length)))
+			for (n in 0 ... Std.int(Math.min(oldLines.length, lines.length)))
 			{
-				if (_lines[n] == oldLines[n])
+				if (lines[n] == oldLines[n])
 				{
 					startLine += 1;
 				}
@@ -331,11 +334,12 @@ class BitmapText extends Graphic
 
 		var lineHeight:Int = Std.int(_font.lineHeight + lineSpacing);
 
-		var rx:Int = 0;
-		var ry:Int = 0;
-		for (y in 0 ... _lines.length)
+		var rx:Int = 0, ry:Int = 0;
+		var sx:Float = scale * scaleX * fontScale, 
+			sy:Float = scale * scaleY * fontScale;
+		for (y in 0 ... lines.length)
 		{
-			var line = _lines[y];
+			var line = lines[y];
 
 			for (x in 0 ... line.length)
 			{
@@ -343,7 +347,11 @@ class BitmapText extends Graphic
 				var region = _font.getChar(letter);
 				var gd = _font.glyphData.get(letter);
 				// if a character isn't in this font, display a space
-				if (gd == null) letter = ' ';
+				if (gd == null) 
+				{
+					letter = ' ';
+					gd = _font.glyphData.get(' ');
+				}
 
 				if (letter==' ')
 				{
@@ -364,20 +372,20 @@ class BitmapText extends Graphic
 					rx += Std.int((gd.xAdvance + charSpacing));
 					if (width != 0 && rx > width)
 					{
-						textWidth = Std.int(width);
+						textWidth = Std.int(width * sx);
 						rx = 0;
 						ry += lineHeight;
 					}
 				}
 
 				// longest line so far
-				if (rx > textWidth) textWidth = rx;
+				if (Std.int(rx*sx) > textWidth) textWidth = Std.int(rx*sx);
 			}
 
 			// next line
 			rx = 0;
 			ry += lineHeight;
-			if (ry > textHeight) textHeight = ry;
+			if (Std.int(ry) > textHeight) textHeight = Std.int(ry*sx);
 		}
 	}
 
@@ -427,6 +435,5 @@ class BitmapText extends Graphic
 	private var _font:BitmapFontAtlas;
 	private var _matrix:Matrix;
 	private var _colorTransform:ColorTransform;
-	private var _lines:Array<String>;
 
 }
