@@ -121,15 +121,15 @@ class Engine extends Sprite
 	 */
 	public function update()
 	{
-		HXP.scene.updateLists();
-		if (!HXP.gotoIsNull()) checkScene();
+		_scene.updateLists();
+		checkScene();
 		if (HXP.tweener.active && HXP.tweener.hasTween) HXP.tweener.updateTweens();
-		if (HXP.scene.active)
+		if (_scene.active)
 		{
-			if (HXP.scene.hasTween) HXP.scene.updateTweens();
-			HXP.scene.update();
+			if (_scene.hasTween) _scene.updateTweens();
+			_scene.update();
 		}
-		HXP.scene.updateLists(false);
+		_scene.updateLists(false);
 	}
 
 	/**
@@ -151,7 +151,7 @@ class Engine extends Sprite
 		}
 		Draw.resetTarget();
 
-		if (HXP.scene.visible) HXP.scene.render();
+		if (_scene.visible) _scene.render();
 
 		if (HXP.renderMode == RenderMode.BUFFER)
 		{
@@ -189,13 +189,13 @@ class Engine extends Sprite
 		HXP.stage.addEventListener(Event.ACTIVATE, function (e:Event) {
 			HXP.focused = true;
 			focusGained();
-			HXP.scene.focusGained();
+			_scene.focusGained();
 		});
 
 		HXP.stage.addEventListener(Event.DEACTIVATE, function (e:Event) {
 			HXP.focused = false;
 			focusLost();
-			HXP.scene.focusLost();
+			_scene.focusLost();
 		});
 
 #if !(flash || html5)
@@ -242,7 +242,7 @@ class Engine extends Sprite
 		Input.enable();
 
 		// switch scenes
-		if (!HXP.gotoIsNull()) checkScene();
+		checkScene();
 
 		// game start
 		Draw.init();
@@ -373,24 +373,57 @@ class Engine extends Sprite
 	}
 
 	/** @private Switch scenes if they've changed. */
-	private function checkScene()
+	private inline function checkScene()
 	{
-		if (HXP.gotoIsNull()) return;
+		if (_scenes.isEmpty() || _scenes.first() == _scene) return;
 
-		if (HXP.scene != null)
+		if (_scene != null)
 		{
-			HXP.scene.end();
-			HXP.scene.updateLists();
-			if (HXP.scene.autoClear && HXP.scene.hasTween) HXP.scene.clearTweens();
-			if (contains(HXP.scene.sprite)) removeChild(HXP.scene.sprite);
-			HXP.swapScene();
-			addChild(HXP.scene.sprite);
-			HXP.camera = HXP.scene.camera;
-			HXP.scene.updateLists();
-			HXP.scene.begin();
-			HXP.scene.updateLists();
+			_scene.end();
+			_scene.updateLists();
+			if (_scene.autoClear && _scene.hasTween) _scene.clearTweens();
+			if (contains(_scene.sprite)) removeChild(_scene.sprite);
+
+			_scene = _scenes.first();
+
+			addChild(_scene.sprite);
+			HXP.camera = _scene.camera;
+			_scene.updateLists();
+			_scene.begin();
+			_scene.updateLists();
 		}
 	}
+
+	public function pushScene(value:Scene):Void
+	{
+		_scenes.push(value);
+	}
+
+	public function popScene(value:Scene):Scene
+	{
+		return _scenes.pop();
+	}
+
+	/**
+	 * The currently active Scene object. When you set this, the Scene is flagged
+	 * to switch, but won't actually do so until the end of the current frame.
+	 */
+	public var scene(get, set):Scene;
+	private inline function get_scene():Scene { return _scene; }
+	private function set_scene(value:Scene):Scene
+	{
+		if (_scene == value) return value;
+		if (_scenes.length > 0)
+		{
+			_scenes.pop();
+		}
+		_scenes.push(value);
+		return _scene;
+	}
+
+	// Scene information.
+	private var _scene:Scene = new Scene();
+	private var _scenes:List<Scene> = new List<Scene>();
 
 	// Timing information.
 	private var _delta:Float;

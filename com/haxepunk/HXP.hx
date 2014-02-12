@@ -61,7 +61,7 @@ class HXP
 	/**
 	 * The color black
 	 */
-	@:deprecated public static inline var blackColor = 0x00000000;
+	@:deprecated public static inline var blackColor:Int = 0x00000000;
 
 	/**
 	 * Width of the game.
@@ -158,6 +158,11 @@ class HXP
 	public static var halfHeight(default, null):Float;
 
 	/**
+	 * Defines the allowed orientations
+	 */
+	public static var orientations:Array<Int> = [];
+
+	/**
 	 * Defines how to render the scene
 	 */
 	public static var renderMode(default, set):RenderMode;
@@ -173,11 +178,6 @@ class HXP
 
 		return value;
 	}
-
-	/**
-	 * Defines the allowed orientations
-	 */
-	public static var orientations:Array<Int> = [];
 
 	/**
 	 * The choose function randomly chooses and returns one of the provided values.
@@ -196,7 +196,7 @@ class HXP
 	 * The currently active World object (deprecated)
 	 */
 	@:deprecated public static var world(get, set):Scene;
-	private static inline function get_world():Scene { return _scene; }
+	private static inline function get_world():Scene { return get_scene(); }
 	private static inline function set_world(value:Scene):Scene { return set_scene(value); }
 
 	/**
@@ -204,26 +204,8 @@ class HXP
 	 * to switch, but won't actually do so until the end of the current frame.
 	 */
 	public static var scene(get, set):Scene;
-	private static inline function get_scene():Scene { return _scene; }
-	private static function set_scene(value:Scene):Scene
-	{
-		if (_goto != null)
-		{
-			if (_goto == value) return value;
-		}
-		else
-		{
-			if (_scene == value) return value;
-		}
-		_goto = value;
-		return _scene;
-	}
-
-	public static inline function swapScene()
-	{
-		_scene = _goto;
-		_goto = null;
-	}
+	private static inline function get_scene():Scene { return engine.scene; }
+	private static inline function set_scene(value:Scene):Scene { return engine.scene = value; }
 
 	/**
 	 * Resize the screen.
@@ -1162,12 +1144,6 @@ class HXP
 		_time = value;
 		return _time;
 	}
-
-	public static inline function gotoIsNull():Bool { return (_goto == null); }
-
-	// Scene information.
-	private static var _scene:Scene = new Scene();
-	private static var _goto:Scene;
 
 	// Console information.
 	private static var _console:Console;
