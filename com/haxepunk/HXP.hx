@@ -681,7 +681,7 @@ class HXP
 	/**
 	 * The random seed used by HXP's random functions.
 	 */
-	public static var randomSeed(default, set):Int;
+	public static var randomSeed(default, set):Int = 0;
 	private static inline function set_randomSeed(value:Int):Int
 	{
 		_seed = Std.int(clamp(value, 1.0, INT_MAX_VALUE));
