@@ -7,28 +7,9 @@ import com.haxepunk.graphics.Image;
 import com.haxepunk.graphics.Graphiclist;
 
 /**
- * Friend class used by Scene
- */
-typedef FriendEntity = {
-	private var _class:String;
-	private var _scene:Scene;
-	private var _type:String;
-	private var _layer:Int;
-	private var _name:String;
-
-	private var _updatePrev:FriendEntity;
-	private var _updateNext:FriendEntity;
-	private var _renderPrev:FriendEntity;
-	private var _renderNext:FriendEntity;
-
-	private var _typePrev:FriendEntity;
-	private var _typeNext:FriendEntity;
-	private var _recycleNext:Entity;
-}
-
-/**
  * Main game Entity class updated by Scene.
  */
+@:allow(com.haxepunk.Scene)
 class Entity extends Tweener
 {
 	/**
@@ -140,26 +121,17 @@ class Entity extends Tweener
 	/**
 	 * Override this, called when the Entity is added to a Scene.
 	 */
-	public function added():Void
-	{
-
-	}
+	public function added():Void { }
 
 	/**
 	 * Override this, called when the Entity is removed from a Scene.
 	 */
-	public function removed():Void
-	{
-
-	}
+	public function removed():Void { }
 
 	/**
 	 * Updates the Entity.
 	 */
-	override public function update():Void
-	{
-
-	}
+	override public function update():Void { }
 
 	/**
 	 * Renders the Entity. If you override this for special behaviour,
@@ -199,18 +171,16 @@ class Entity extends Tweener
 	{
 		if (_scene == null) return null;
 
-		var e:Entity,
-			fe:FriendEntity = _scene._typeFirst.get(type);
-		if (!collidable || fe == null) return null;
+		var e:Entity = _scene._typeFirst.get(type);
+		if (!collidable || e == null) return null;
 
 		_x = this.x; _y = this.y;
 		this.x = x; this.y = y;
 
 		if (_mask == null)
 		{
-			while (fe != null)
+			while (e != null)
 			{
-				e = cast(fe, Entity);
 				if (e.collidable && e != this
 					&& x - originX + width > e.x - e.originX
 					&& y - originY + height > e.y - e.originY
@@ -223,28 +193,27 @@ class Entity extends Tweener
 						return e;
 					}
 				}
-				fe = fe._typeNext;
+				e = e._typeNext;
 			}
-			this.x = _x; this.y = _y;
-			return null;
 		}
-
-		while (fe != null)
+		else
 		{
-			e = cast(fe, Entity);
-			if (e.collidable && e != this
-				&& x - originX + width > e.x - e.originX
-				&& y - originY + height > e.y - e.originY
-				&& x - originX < e.x - e.originX + e.width
-				&& y - originY < e.y - e.originY + e.height)
+			while (e != null)
 			{
-				if (_mask.collide(e._mask != null ? e._mask : e.HITBOX))
+				if (e.collidable && e != this
+					&& x - originX + width > e.x - e.originX
+					&& y - originY + height > e.y - e.originY
+					&& x - originX < e.x - e.originX + e.width
+					&& y - originY < e.y - e.originY + e.height)
 				{
-					this.x = _x; this.y = _y;
-					return e;
+					if (_mask.collide(e._mask != null ? e._mask : e.HITBOX))
+					{
+						this.x = _x; this.y = _y;
+						return e;
+					}
 				}
+				e = e._typeNext;
 			}
-			fe = fe._typeNext;
 		}
 		this.x = _x; this.y = _y;
 		return null;
@@ -396,13 +365,12 @@ class Entity extends Tweener
 	 * @param	y			Virtual y position to place this Entity.
 	 * @param	array		The Array or Vector object to populate.
 	 */
-	public function collideInto<E:Entity>(type:String, x:Float, y:Float, array:Array<E>)
+	public function collideInto<E:Entity>(type:String, x:Float, y:Float, array:Array<E>):Void
 	{
 		if (_scene == null) return;
 
-		var e:E,
-			fe:FriendEntity = _scene._typeFirst.get(type);
-		if (!collidable || fe == null) return;
+		var e:Entity = _scene._typeFirst.get(type);
+		if (!collidable || e == null) return;
 
 		_x = this.x; _y = this.y;
 		this.x = x; this.y = y;
@@ -410,38 +378,37 @@ class Entity extends Tweener
 
 		if (_mask == null)
 		{
-			while (fe != null)
+			while (e != null)
 			{
-				e = cast fe;
+				e = cast e;
 				if (e.collidable && e != this
 					&& x - originX + width > e.x - e.originX
 					&& y - originY + height > e.y - e.originY
 					&& x - originX < e.x - e.originX + e.width
 					&& y - originY < e.y - e.originY + e.height)
 				{
-					if ((untyped e._mask) == null || (untyped e._mask).collide(HITBOX)) array[n++] = e;
+					if ((untyped e._mask) == null || (untyped e._mask).collide(HITBOX)) array[n++] = cast e;
 				}
-				fe = fe._typeNext;
+				e = e._typeNext;
 			}
-			this.x = _x; this.y = _y;
-			return;
 		}
-
-		while (fe != null)
+		else
 		{
-			e = cast fe;
-			if (e.collidable && e != this
-				&& x - originX + width > e.x - e.originX
-				&& y - originY + height > e.y - e.originY
-				&& x - originX < e.x - e.originX + e.width
-				&& y - originY < e.y - e.originY + e.height)
+			while (e != null)
 			{
-				if (_mask.collide((untyped e._mask) != null ? (untyped e._mask) : (untyped e.HITBOX))) array[n++] = e;
+				e = cast e;
+				if (e.collidable && e != this
+					&& x - originX + width > e.x - e.originX
+					&& y - originY + height > e.y - e.originY
+					&& x - originX < e.x - e.originX + e.width
+					&& y - originY < e.y - e.originY + e.height)
+				{
+					if (_mask.collide((untyped e._mask) != null ? (untyped e._mask) : (untyped e.HITBOX))) array[n++] = cast e;
+				}
+				e = e._typeNext;
 			}
-			fe = fe._typeNext;
 		}
 		this.x = _x; this.y = _y;
-		return;
 	}
 
 	/**
@@ -927,13 +894,13 @@ class Entity extends Tweener
 	private var _layer:Int;
 	private var _name:String;
 
-	private var _updatePrev:FriendEntity;
-	private var _updateNext:FriendEntity;
-	private var _renderPrev:FriendEntity;
-	private var _renderNext:FriendEntity;
+	private var _updatePrev:Entity;
+	private var _updateNext:Entity;
+	private var _renderPrev:Entity;
+	private var _renderNext:Entity;
 
-	private var _typePrev:FriendEntity;
-	private var _typeNext:FriendEntity;
+	private var _typePrev:Entity;
+	private var _typeNext:Entity;
 	private var _recycleNext:Entity;
 
 	// Collision information.
