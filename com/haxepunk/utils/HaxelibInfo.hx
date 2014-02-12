@@ -11,7 +11,8 @@ import sys.io.Process;
 
 class HaxelibInfoBuilder
 {
-	macro public static function build () : Array<Field>
+
+	macro public static function build():Array<Field>
 	{
 		// Get HaxePuk path
 		var output = "";
@@ -50,7 +51,7 @@ class HaxelibInfoBuilder
 		{
 			if (StringTools.trim(lines[i]) == "-D HaxePunk")
 			{
-				result = StringTools.trim (lines[i - 1]);
+				result = StringTools.trim(lines[i - 1]);
 			}
 		}
 
@@ -74,7 +75,7 @@ class HaxelibInfoBuilder
 					doc: null,
 					meta: [],
 					access: [Access.APublic, Access.AStatic, Access.AInline],
-					kind: FieldType.FVar(macro : String, macro $v{value}),
+					kind: FieldType.FVar(macro:String, macro $v{value}),
 					pos: Context.currentPos()
 				});
 			}
@@ -88,7 +89,7 @@ class HaxelibInfoBuilder
 						doc: null,
 						meta: [],
 						access: [Access.APublic, Access.AStatic],
-						kind: FieldType.FVar(macro : Array<String>, macro $v{value}),
+						kind: FieldType.FVar(macro:Array<String>, macro $v{value}),
 						pos: Context.currentPos()
 					});
 				}
@@ -100,7 +101,7 @@ class HaxelibInfoBuilder
 						doc: null,
 						meta: [],
 						access: [Access.APublic, Access.AStatic],
-						kind: FieldType.FVar(macro : Dynamic, macro $v{value}),
+						kind: FieldType.FVar(macro:Dynamic, macro $v{value}),
 						pos: Context.currentPos()
 					});
 				}

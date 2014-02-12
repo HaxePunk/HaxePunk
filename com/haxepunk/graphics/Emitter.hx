@@ -187,7 +187,7 @@ class Emitter extends Graphic
 				_tint.redMultiplier = type._red + type._redRange * td;
 				_tint.greenMultiplier = type._green + type._greenRange * td;
 				_tint.blueMultiplier  = type._blue + type._blueRange * td;
-				type._buffer.fillRect(type._bufferRect, HXP.blackColor);
+				type._buffer.fillRect(type._bufferRect, 0);
 				type._buffer.copyPixels(_source, rect, HXP.zero);
 				type._buffer.colorTransform(type._bufferRect, _tint);
 

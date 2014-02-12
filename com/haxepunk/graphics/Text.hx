@@ -280,7 +280,7 @@ class Text extends Image
 		}
 		else
 		{
-			_source.fillRect(_sourceRect, HXP.blackColor);
+			_source.fillRect(_sourceRect, 0);
 		}
 
 		_field.width = _width;

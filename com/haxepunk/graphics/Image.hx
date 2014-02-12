@@ -289,7 +289,7 @@ class Image extends Graphic
 	public function updateBuffer(clearBefore:Bool = false)
 	{
 		if (_source == null) return;
-		if (clearBefore) _buffer.fillRect(_bufferRect, HXP.blackColor);
+		if (clearBefore) _buffer.fillRect(_bufferRect, 0);
 		_buffer.copyPixels(_source, _sourceRect, HXP.zero);
 		if (_tint != null) _buffer.colorTransform(_bufferRect, _tint);
 	}
@@ -317,7 +317,7 @@ class Image extends Graphic
 	public function clear()
 	{
 		if (_buffer == null) return;
-		_buffer.fillRect(_bufferRect, HXP.blackColor);
+		_buffer.fillRect(_bufferRect, 0);
 	}
 
 	/**

@@ -40,28 +40,28 @@ class HXP
 	 * The HaxePunk version.
 	 * Format: Major.Minor.Patch
 	 */
-	public static inline var VERSION : String = HaxelibInfo.version;
+	public static inline var VERSION:String = HaxelibInfo.version;
 
 	/**
 	 * Flash equivalent: Number.MAX_VALUE
 	 */
 #if flash
-	public static var NUMBER_MAX_VALUE(get_NUMBER_MAX_VALUE,never): Float;
-	public static inline function get_NUMBER_MAX_VALUE(): Float { return untyped __global__["Number"].MAX_VALUE; }
+	public static var NUMBER_MAX_VALUE(get_NUMBER_MAX_VALUE,never):Float;
+	public static inline function get_NUMBER_MAX_VALUE():Float { return untyped __global__["Number"].MAX_VALUE; }
 #else
-	public static var NUMBER_MAX_VALUE(get_NUMBER_MAX_VALUE,never): Float;
-	public static inline function get_NUMBER_MAX_VALUE(): Float { return 179 * Math.pow(10, 306); } // 1.79e+308
+	public static var NUMBER_MAX_VALUE(get_NUMBER_MAX_VALUE,never):Float;
+	public static inline function get_NUMBER_MAX_VALUE():Float { return 179 * Math.pow(10, 306); } // 1.79e+308
 #end
 
 	/**
 	 * Flash equivalent: int.MAX_VALUE
 	 */
-	public static inline var INT_MAX_VALUE = 2147483646;
+	public static inline var INT_MAX_VALUE:Int = 2147483646;
 
 	/**
-	 * The color black defined for neko (BitmapInt32) or flash (Int)
+	 * The color black
 	 */
-	public static inline var blackColor = 0x00000000;
+	@:deprecated public static inline var blackColor = 0x00000000;
 
 	/**
 	 * Width of the game.
