@@ -477,12 +477,8 @@ class Entity extends Tweener
 	/**
 	 * The World object is deprecated
 	 */
-	public var world(get, never):Scene;
-	private inline function get_world():Scene
-	{
-		HXP.log('Entity.world is deprecated, please use scene instead');
-		return _scene;
-	}
+	@:deprecated public var world(get, never):Scene;
+	private inline function get_world():Scene { return _scene; }
 
 	/**
 	 * The Scene object this Entity has been added to.
