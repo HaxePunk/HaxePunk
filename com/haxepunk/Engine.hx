@@ -394,12 +394,19 @@ class Engine extends Sprite
 		}
 	}
 
+	/**
+	 * Push a scene onto the stack. It will not become active until the next update.
+	 * @param value  The scene to push
+	 */
 	public function pushScene(value:Scene):Void
 	{
 		_scenes.push(value);
 	}
 
-	public function popScene(value:Scene):Scene
+	/**
+	 * Pop a scene from the stack. The current scene will remain active until the next update.
+	 */
+	public function popScene():Scene
 	{
 		return _scenes.pop();
 	}
