@@ -1294,16 +1294,21 @@ class Scene extends Tweener
 
 	// Render information.
 	private var _sprite:Sprite;
+
 	private var _layerSort:Bool;
 	private var _layerList:Array<Int>;
 	private var _layerDisplay:Map<Int,Bool>;
 	private var _layerCount:Map<Int, Int>;
+
 	private var _renderFirst:Map<Int,Entity>;
 	private var _renderLast:Map<Int,Entity>;
 
 	private var _classCount:Map<String,Int>;
-	public var _typeFirst:Map<String,Entity>;
+
+	@:allow(com.haxepunk.Entity)
+	private var _typeFirst:Map<String,Entity>;
 	private var _typeCount:Map<String,Int>;
+
 	private var _recycled:Map<String,Entity>;
 	private var _entityNames:Map<String,Entity>;
 }

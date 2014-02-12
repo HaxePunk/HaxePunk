@@ -30,7 +30,7 @@ class Tilemap extends Canvas
 	 * @param	tileSpacingWidth	Tile horizontal spacing.
 	 * @param	tileSpacingHeight	Tile vertical spacing.
 	 */
-	public function new(tileset:Dynamic, width:Int, height:Int, tileWidth:Int, tileHeight:Int,?tileSpacingWidth:Int=0,?tileSpacingHeight:Int=0)
+	public function new(tileset:Dynamic, width:Int, height:Int, tileWidth:Int, tileHeight:Int, ?tileSpacingWidth:Int=0, ?tileSpacingHeight:Int=0)
 	{
 		_rect = HXP.rect;
 
@@ -39,8 +39,9 @@ class Tilemap extends Canvas
 		_height = height - (height % tileHeight);
 		_columns = Std.int(_width / tileWidth);
 		_rows = Std.int(_height / tileHeight);
-		_tileSpacingWidth = tileSpacingWidth;
-		_tileSpacingHeight = tileSpacingHeight;
+
+		this.tileSpacingWidth = tileSpacingWidth;
+		this.tileSpacingHeight = tileSpacingHeight;
 
 		if (_columns == 0 || _rows == 0)
 			throw "Cannot create a bitmapdata of width/height = 0";
@@ -79,7 +80,7 @@ class Tilemap extends Canvas
 			if (HXP.renderMode == RenderMode.HARDWARE)
 			{
 				blit = false;
-				_atlas = new TileAtlas(tileset, tileWidth, tileHeight,tileSpacingWidth,tileSpacingHeight);
+				_atlas = new TileAtlas(tileset, tileWidth, tileHeight, tileSpacingWidth, tileSpacingHeight);
 			}
 			else
 			{
@@ -131,8 +132,8 @@ class Tilemap extends Canvas
 		_map[row][column] = index;
 		if (blit)
 		{
-			_tile.x = (index % _setColumns) * (_tile.width + _tileSpacingWidth);
-			_tile.y = Std.int(index / _setColumns) * (_tile.height + _tileSpacingHeight);
+			_tile.x = (index % _setColumns) * (_tile.width + tileSpacingWidth);
+			_tile.y = Std.int(index / _setColumns) * (_tile.height + tileSpacingHeight);
 			draw(Std.int(column * _tile.width), Std.int(row * _tile.height), _set, _tile);
 		}
 	}
@@ -516,12 +517,12 @@ class Tilemap extends Canvas
 	/**
 	 * The tile horizontal spacing of tile.
 	 */
-	public var _tileSpacingWidth(default, null):Int;
+	public var tileSpacingWidth(default, null):Int;
 
 	/**
 	 * The tile vertical spacing of tile.
 	 */
-	public var _tileSpacingHeight(default, null):Int;
+	public var tileSpacingHeight(default, null):Int;
 
 	/**
 	 * How many tiles the tilemap has.

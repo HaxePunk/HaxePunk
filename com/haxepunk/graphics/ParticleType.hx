@@ -10,6 +10,7 @@ import flash.geom.Rectangle;
  * Template used to define a particle type used by the Emitter class. Instead
  * of creating this object yourself, fetch one with Emitter's add() function.
  */
+@:allow(com.haxepunk.graphics.Emitter)
 class ParticleType
 {
 	/**
@@ -142,39 +143,39 @@ class ParticleType
 	}
 
 	// Particle information.
-	public var _name:String;
-	public var _frame:Rectangle;
-	public var _frames:Array<Int>;
+	private var _name:String;
+	private var _frame:Rectangle;
+	private var _frames:Array<Int>;
 
 	// Motion information.
-	public var _angle:Float;
-	public var _angleRange:Float;
-	public var _distance:Float;
-	public var _distanceRange:Float;
-	public var _duration:Float;
-	public var _durationRange:Float;
-	public var _ease:EaseFunction;
-	public var _backwards:Bool;
+	private var _angle:Float;
+	private var _angleRange:Float;
+	private var _distance:Float;
+	private var _distanceRange:Float;
+	private var _duration:Float;
+	private var _durationRange:Float;
+	private var _ease:EaseFunction;
+	private var _backwards:Bool;
 
 	// Gravity information.
-	public var _gravity:Float;
-	public var _gravityRange:Float;
+	private var _gravity:Float;
+	private var _gravityRange:Float;
 
 	// Alpha information.
-	public var _alpha:Float;
-	public var _alphaRange:Float;
-	public var _alphaEase:EaseFunction;
+	private var _alpha:Float;
+	private var _alphaRange:Float;
+	private var _alphaEase:EaseFunction;
 
 	// Color information.
-	public var _red:Float;
-	public var _redRange:Float;
-	public var _green:Float;
-	public var _greenRange:Float;
-	public var _blue:Float;
-	public var _blueRange:Float;
-	public var _colorEase:EaseFunction;
+	private var _red:Float;
+	private var _redRange:Float;
+	private var _green:Float;
+	private var _greenRange:Float;
+	private var _blue:Float;
+	private var _blueRange:Float;
+	private var _colorEase:EaseFunction;
 
 	// Buffer information.
-	public var _buffer:BitmapData;
-	public var _bufferRect:Rectangle;
+	private var _buffer:BitmapData;
+	private var _bufferRect:Rectangle;
 }

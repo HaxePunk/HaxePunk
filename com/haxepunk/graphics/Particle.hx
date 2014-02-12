@@ -7,6 +7,7 @@ import flash.geom.Rectangle;
 /**
  * Used by the Emitter class to track an existing Particle.
  */
+@:allow(com.haxepunk.graphics.Emitter)
 class Particle
 {
 	/**
@@ -22,20 +23,20 @@ class Particle
 	}
 
 	// Particle information.
-	public var _type:ParticleType;
-	public var _time:Float;
-	public var _duration:Float;
+	private var _type:ParticleType;
+	private var _time:Float;
+	private var _duration:Float;
 
 	// Motion information.
-	public var _x:Float;
-	public var _y:Float;
-	public var _moveX:Float;
-	public var _moveY:Float;
+	private var _x:Float;
+	private var _y:Float;
+	private var _moveX:Float;
+	private var _moveY:Float;
 
 	// Gravity information.
-	public var _gravity:Float;
+	private var _gravity:Float;
 
 	// List information.
-	public var _prev:Particle;
-	public var _next:Particle;
+	private var _prev:Particle;
+	private var _next:Particle;
 }
