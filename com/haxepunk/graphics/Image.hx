@@ -30,8 +30,8 @@ class Image extends Graphic
 	 * Scale of the image, effects both x and y scale.
 	 */
 	public var scale(get, set):Float;
-	public function get_scale():Float { return _scale; }
-	public function set_scale(value:Float):Float { return _scale = value; }
+	private function get_scale():Float { return _scale; }
+	private function set_scale(value:Float):Float { return _scale = value; }
 
 	/**
 	 * X scale of the image.
@@ -481,7 +481,7 @@ class Image extends Graphic
 	 */
 	public var scaledWidth(get, set):Float;
 	private function get_scaledWidth():Float { return width * scaleX * scale; }
-	public function set_scaledWidth(w:Float):Float {
+	private function set_scaledWidth(w:Float):Float {
 		scaleX = w / scale / width;
 		return scaleX;
 	}
@@ -491,7 +491,7 @@ class Image extends Graphic
 	 */
 	public var scaledHeight(get, set):Float;
 	private function get_scaledHeight():Float { return height * scaleY * scale; }
-	public function set_scaledHeight(h:Float):Float {
+	private function set_scaledHeight(h:Float):Float {
 		scaleY = h / scale / height;
 		return scaleY;
 	}

@@ -406,7 +406,7 @@ class Console
 	 * Allows masks to be turned on and off in the console
 	 */
 	public var debugDraw(default, set):Bool = true;
-	public function set_debugDraw(value:Bool):Bool
+	private function set_debugDraw(value:Bool):Bool
 	{
 		debugDraw = value;
 		updateEntityLists(false);
