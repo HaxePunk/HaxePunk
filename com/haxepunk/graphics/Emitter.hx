@@ -138,12 +138,17 @@ class Emitter extends Graphic
 	/**
 	 * Clears all particles.
 	 */
-	public function clear() {
+	public function clear() 
+	{
 		// quit if there are no particles
-		if (_particle == null) return;
+		if (_particle == null) 
+		{
+			return;
+		}
 		
 		// particle info
-		var p:Particle = _particle, n:Particle;
+		var p:Particle = _particle, 
+			n:Particle;
 
 		// loop through the particles
 		while (p != null)
