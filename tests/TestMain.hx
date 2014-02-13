@@ -8,6 +8,7 @@ class TestMain
 		r.add(new TestImport());
 		r.add(new TestMasks());
 		r.add(new TestScreen());
+		r.add(new TestScene());
 		r.run();
 	}
 }
