@@ -1,5 +1,16 @@
 HaxePunk CHANGELOG
 
+v2.5.1
+------------------------------
+* [andyli] Don't destroy graphic when Entity is removed
+* [Nananas] Ouya game pad corrections
+* [bendmorris] Fixing BitmapText textWidth/textHeight and word wrapping when font size changes
+* [bendmorris] Optimizing Canvas/Tilemap when scale or color are set on Flash
+* [MattTuttle] Pulled richText from FlashPunk into Text
+* [MattTuttle] Improved grid debug rendering
+* [steinarvk] Fixing AtlasRegion.clip from modifying the original Rectangle
+* Various improvements to the HaxePunk core
+
 v2.5.0
 ------------------------------
 * [ibilon] Added setup command to run tool

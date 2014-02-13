@@ -32,11 +32,11 @@ class Scene extends Tweener
 		super();
 		visible = true;
 		camera = new Point();
+		sprite = new Sprite();
 		_count = 0;
 
 		_layerList = new Array<Int>();
 		_layerCount = new Map<Int, Int>();
-		_sprite = new Sprite();
 
 		_add = new Array<Entity>();
 		_remove = new Array<Entity>();
@@ -175,11 +175,7 @@ class Scene extends Tweener
 	/**
 	 * Sprite used to store layer sprites when RenderMode.HARDWARE is set.
 	 */
-	public var sprite(get, null):Sprite;
-	private inline function get_sprite():Sprite
-	{
-		return _sprite;
-	}
+	public var sprite(default, null):Sprite;
 
 	/**
 	 * Adds the Entity to the Scene at the end of the frame.
@@ -309,9 +305,10 @@ class Scene extends Tweener
 	 * Clears stored reycled Entities of the Class type.
 	 * @param	classType		The Class type to clear.
 	 */
-	public function clearRecycled(classType:String)
+	public function clearRecycled<E:Entity>(classType:Class<E>)
 	{
-		var e:Entity = _recycled.get(classType),
+		var className:String = Type.getClassName(classType),
+			e:Entity = _recycled.get(className),
 			n:Entity;
 		while (e != null)
 		{
@@ -319,7 +316,7 @@ class Scene extends Tweener
 			e._recycleNext = null;
 			e = n;
 		}
-		_recycled.set(classType, null);
+		_recycled.remove(className);
 	}
 
 	/**
@@ -330,7 +327,7 @@ class Scene extends Tweener
 		var e:Entity;
 		for (e in _recycled)
 		{
-			clearRecycled(e._class);
+			clearRecycled(Type.resolveClass(e._class));
 		}
 	}
 
@@ -823,7 +820,7 @@ class Scene extends Tweener
 	 */
 	public inline function typeCount(type:String):Int
 	{
-		return _typeCount.get(type);
+		return _typeCount.exists(type) ? _typeCount.get(type) : 0;
 	}
 
 	/**
@@ -833,7 +830,7 @@ class Scene extends Tweener
 	 */
 	public inline function classCount(c:String):Int
 	{
-		return _classCount.get(c);
+		return _classCount.exists(c) ? _classCount.get(c) : 0;
 	}
 
 	/**
@@ -843,14 +840,14 @@ class Scene extends Tweener
 	 */
 	public inline function layerCount(layer:Int):Int
 	{
-		return _layerCount[layer];
+		return _layerCount.exists(layer) ? _layerCount.get(layer) : 0;
 	}
 
 	/**
 	 * The first Entity in the Scene.
 	 */
 	public var first(get, null):Entity;
-	private inline function get_first():Entity { return cast(_updateFirst, Entity); }
+	private inline function get_first():Entity { return _updateFirst; }
 
 	/**
 	 * How many Entity layers the Scene has.
@@ -866,7 +863,7 @@ class Scene extends Tweener
 	public function typeFirst(type:String):Entity
 	{
 		if (_updateFirst == null) return null;
-		return cast(_typeFirst.get(type), Entity);
+		return _typeFirst.get(type);
 	}
 
 	/**
@@ -894,7 +891,7 @@ class Scene extends Tweener
 	public function layerFirst(layer:Int):Entity
 	{
 		if (_updateFirst == null) return null;
-		return cast(_renderFirst.get(layer), Entity);
+		return _renderFirst.get(layer);
 	}
 
 	/**
@@ -905,7 +902,7 @@ class Scene extends Tweener
 	public function layerLast(layer:Int):Entity
 	{
 		if (_updateFirst == null) return null;
-		return cast(_renderLast.get(layer), Entity);
+		return _renderLast.get(layer);
 	}
 
 	/**
@@ -915,7 +912,7 @@ class Scene extends Tweener
 	private function get_farthest():Entity
 	{
 		if (_updateFirst == null) return null;
-		return cast(_renderLast.get(_layerList[_layerList.length - 1]), Entity);
+		return _renderLast.get(_layerList[_layerList.length - 1]);
 	}
 
 	/**
@@ -925,7 +922,7 @@ class Scene extends Tweener
 	private function get_nearest():Entity
 	{
 		if (_updateFirst == null) return null;
-		return cast(_renderFirst.get(_layerList[0]), Entity);
+		return _renderFirst.get(_layerList[0]);
 	}
 
 	/**
@@ -1130,7 +1127,8 @@ class Scene extends Tweener
 	}
 
 	/** @private Adds Entity to the render list. */
-	public function addRender(e:Entity)
+	@:allow(com.haxepunk.Entity)
+	private function addRender(e:Entity)
 	{
 		var next:Entity = _renderFirst.get(e._layer);
 		if (next != null)
@@ -1138,7 +1136,7 @@ class Scene extends Tweener
 			// Append entity to existing layer.
 			e._renderNext = next;
 			next._renderPrev = e;
-			_layerCount[e._layer] = _layerCount[e._layer] + 1;
+			_layerCount.set(e._layer, _layerCount.get(e._layer) + 1);
 		}
 		else
 		{
@@ -1147,14 +1145,15 @@ class Scene extends Tweener
 			_layerList[_layerList.length] = e._layer;
 			_layerSort = true;
 			e._renderNext = null;
-			_layerCount[e._layer] = 1;
+			_layerCount.set(e._layer, 1);
 		}
 		_renderFirst.set(e._layer, e);
 		e._renderPrev = null;
 	}
 
 	/** @private Removes Entity from the render list. */
-	public function removeRender(e:Entity)
+	@:allow(com.haxepunk.Entity)
+	private function removeRender(e:Entity)
 	{
 		if (e._renderNext != null) e._renderNext._renderPrev = e._renderPrev;
 		else _renderLast.set(e._layer, e._renderPrev);
@@ -1174,10 +1173,10 @@ class Scene extends Tweener
 				_layerList.pop();
 			}
 		}
-		var newLayerCount:Int = _layerCount[e._layer] - 1;
-		if (newLayerCount > 0)
+		var count:Int = _layerCount.get(e._layer) - 1;
+		if (count > 0)
 		{
-			_layerCount[e._layer] = newLayerCount;
+			_layerCount.set(e._layer, count);
 		}
 		else
 		{
@@ -1190,7 +1189,8 @@ class Scene extends Tweener
 	}
 
 	/** @private Adds Entity to the type list. */
-	public function addType(e:Entity)
+	@:allow(com.haxepunk.Entity)
+	private function addType(e:Entity)
 	{
 		// add to type list
 		if (_typeFirst.get(e._type) != null)
@@ -1209,24 +1209,35 @@ class Scene extends Tweener
 	}
 
 	/** @private Removes Entity from the type list. */
-	public function removeType(e:Entity)
+	@:allow(com.haxepunk.Entity)
+	private function removeType(e:Entity)
 	{
 		// remove from the type list
 		if (_typeFirst.get(e._type) == e) _typeFirst.set(e._type, e._typeNext);
 		if (e._typeNext != null) e._typeNext._typePrev = e._typePrev;
 		if (e._typePrev != null) e._typePrev._typeNext = e._typeNext;
 		e._typeNext = e._typePrev = null;
-		_typeCount.set(e._type, _typeCount.get(e._type) - 1);
+		var count:Int = _typeCount.get(e._type) - 1;
+		if (count <= 0)
+		{
+			_typeCount.remove(e._type);
+		}
+		else
+		{
+			_typeCount.set(e._type, count);
+		}
 	}
 
 	/** @private Register the entities instance name. */
-	public function registerName(e:Entity)
+	@:allow(com.haxepunk.Entity)
+	private inline function registerName(e:Entity)
 	{
 		_entityNames.set(e._name, e);
 	}
 
 	/** @private Unregister the entities instance name. */
-	public function unregisterName(e:Entity):Void
+	@:allow(com.haxepunk.Entity)
+	private inline function unregisterName(e:Entity):Void
 	{
 		_entityNames.remove(e._name);
 	}
@@ -1293,17 +1304,20 @@ class Scene extends Tweener
 	private var _count:Int;
 
 	// Render information.
-	private var _sprite:Sprite;
 	private var _layerSort:Bool;
 	private var _layerList:Array<Int>;
 	private var _layerDisplay:Map<Int,Bool>;
 	private var _layerCount:Map<Int, Int>;
+
 	private var _renderFirst:Map<Int,Entity>;
 	private var _renderLast:Map<Int,Entity>;
 
 	private var _classCount:Map<String,Int>;
-	public var _typeFirst:Map<String,Entity>;
+
+	@:allow(com.haxepunk.Entity)
+	private var _typeFirst:Map<String,Entity>;
 	private var _typeCount:Map<String,Int>;
+
 	private var _recycled:Map<String,Entity>;
 	private var _entityNames:Map<String,Entity>;
 }

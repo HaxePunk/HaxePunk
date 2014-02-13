@@ -32,9 +32,9 @@ class AtlasRegion
 	 */
 	public function new(parent:AtlasData, tileIndex:Int, rect:Rectangle)
 	{
-		this.parent = parent;
+		this._parent = parent;
 		this.tileIndex = tileIndex;
-		this.rect = rect.clone();
+		this._rect = rect.clone();
 		this.rotated = false;
 	}
 
@@ -50,19 +50,19 @@ class AtlasRegion
 		var clipRectCopy = new Rectangle( clipRect.x, clipRect.y, clipRect.width, clipRect.height );
 
 		// only clip within the current region
-		if (clipRectCopy.x + clipRectCopy.width > rect.width)
-			clipRectCopy.width = rect.width - clipRectCopy.x;
-		if (clipRectCopy.y + clipRectCopy.height > rect.height)
-			clipRectCopy.height = rect.height - clipRectCopy.y;
+		if (clipRectCopy.x + clipRectCopy.width > _rect.width)
+			clipRectCopy.width = _rect.width - clipRectCopy.x;
+		if (clipRectCopy.y + clipRectCopy.height > _rect.height)
+			clipRectCopy.height = _rect.height - clipRectCopy.y;
 
 		// do not allow negative width/height
 		if (clipRectCopy.width < 0) clipRectCopy.width = 0;
 		if (clipRectCopy.height < 0) clipRectCopy.height = 0;
 
 		// position clip rect where the last image was
-		clipRectCopy.x += rect.x;
-		clipRectCopy.y += rect.y;
-		return parent.createRegion(clipRectCopy, center);
+		clipRectCopy.x += _rect.x;
+		clipRectCopy.y += _rect.y;
+		return _parent.createRegion(clipRectCopy, center);
 	}
 
 	/**
@@ -83,7 +83,7 @@ class AtlasRegion
 		red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1)
 	{
 		if (rotated) angle = angle + 90;
-		parent.prepareTile(tileIndex, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha);
+		_parent.prepareTile(tileIndex, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha);
 	}
 
 	/**
@@ -107,22 +107,22 @@ class AtlasRegion
 		{
 			var matrix = new Matrix(a, b, c, d, tx, ty);
 			matrix.rotate(90 * HXP.RAD);
-			parent.prepareTileMatrix(tileIndex, layer,
+			_parent.prepareTileMatrix(tileIndex, layer,
 				matrix.tx, matrix.ty, matrix.a, matrix.b, matrix.c, matrix.d,
 				red, green, blue, alpha);
 		}
 		else
 		{
-			parent.prepareTileMatrix(tileIndex, layer, tx, ty, a, b, c, d, red, green, blue, alpha);
+			_parent.prepareTileMatrix(tileIndex, layer, tx, ty, a, b, c, d, red, green, blue, alpha);
 		}
 	}
 
 	public function destroy():Void
 	{
-		if (parent != null)
+		if (_parent != null)
 		{
-			parent.destroy();
-			parent = null;
+			_parent.destroy();
+			_parent = null;
 		}
 	}
 
@@ -136,10 +136,9 @@ class AtlasRegion
 		return "[AtlasRegion " + width + ", " + height + " " + tileIndex + "]";
 	}
 
-	private inline function get_width():Float { return rect.width; }
-	private inline function get_height():Float { return rect.height; }
+	private inline function get_width():Float { return _rect.width; }
+	private inline function get_height():Float { return _rect.height; }
 
-	private var rect:Rectangle;
-	private var center:Point;
-	private var parent:AtlasData;
+	private var _rect:Rectangle;
+	private var _parent:AtlasData;
 }
