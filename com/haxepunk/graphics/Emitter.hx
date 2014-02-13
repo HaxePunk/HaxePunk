@@ -135,6 +135,36 @@ class Emitter extends Graphic
 		}
 	}
 
+	/**
+	 * Clears all particles.
+	 */
+	public function clear() 
+	{
+		// quit if there are no particles
+		if (_particle == null) 
+		{
+			return;
+		}
+		
+		// particle info
+		var p:Particle = _particle, 
+			n:Particle;
+
+		// loop through the particles
+		while (p != null)
+		{
+			// move this particle to the cache
+			n = p._next;
+			p._next = _cache;
+			p._prev = null;
+			_cache = p;
+			p = n;
+			particleCount--;
+		}
+
+		_particle = null;
+	}
+
 	private inline function renderParticle(renderFunc:ParticleType->Float->Float->Void, point:Point, camera:Point)
 	{
 		// quit if there are no particles
