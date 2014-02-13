@@ -2,6 +2,7 @@ package com.haxepunk.graphics;
 
 import com.haxepunk.graphics.atlas.Atlas;
 import com.haxepunk.graphics.atlas.TextureAtlas;
+import com.haxepunk.graphics.atlas.TileAtlas;
 import com.haxepunk.graphics.atlas.AtlasRegion;
 import com.haxepunk.Graphic;
 import com.haxepunk.HXP;
@@ -83,6 +84,10 @@ class Image extends Graphic
 			else if (Std.is(source, AtlasRegion))
 			{
 				setAtlasRegion(source);
+			}
+			else if (Std.is(source, TileAtlas))
+			{
+				setAtlasRegion(cast(source, TileAtlas).getRegion(0));
 			}
 			else if (HXP.renderMode == RenderMode.HARDWARE)
 			{
