@@ -82,6 +82,37 @@ class TestSlopedGrid extends haxe.unit.TestCase
 		assertFalse(collideCircle(circle, 41, 200));
 	}
 
+	public function testCollideHitbox()
+	{
+		var box = new Hitbox(8, 8);
+		// hit
+		assertTrue(collideBox(box, 1, 1));
+		assertTrue(collideBox(box, 28, 156));
+		assertTrue(collideBox(box, 42, 42));
+		assertTrue(collideBox(box, 171, 42));
+		assertTrue(collideBox(box, 195, 36));
+		assertTrue(collideBox(box, 274, 262));
+		assertTrue(collideBox(box, 270, 41));
+		assertTrue(collideBox(box, 111, 278));
+		assertTrue(collideBox(box, 200, 278));
+		assertTrue(collideBox(box, 158, 158));
+		assertTrue(collideBox(box, 154, 35));
+
+		// miss
+		assertFalse(collideBox(box, 178, 169));
+		assertFalse(collideBox(box, 156, 134));
+		assertFalse(collideBox(box, 156, 178));
+		assertFalse(collideBox(box, 134, 143));
+		assertFalse(collideBox(box, 107, 274));
+	}
+
+	@:access(com.haxepunk.masks.Hitbox)
+	private inline function collideBox(box:Hitbox, x:Int, y:Int):Bool
+	{
+		box._x = x; box._y = y;
+		return grid.collideHitbox(box);
+	}
+
 	@:access(com.haxepunk.masks.Circle)
 	private inline function collideCircle(circle:Circle, x:Int, y:Int):Bool
 	{

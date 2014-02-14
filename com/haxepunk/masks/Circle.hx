@@ -120,11 +120,6 @@ class Circle extends Hitbox
 		return false;
 	}
 
-	private inline function cross(ax:Float, ay:Float, bx:Float, by:Float, cx:Float, cy:Float)
-	{
-		return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
-	}
-
 	private function collideSlopedGrid(other:SlopedGrid):Bool
 	{
 		var thisX:Float = _x, thisY:Float = _y;
@@ -193,8 +188,9 @@ class Circle extends Hitbox
 						// find points on the line
 						var x:Float = 0, y:Float = 0;
 						var normal = -1 / tile.slope;
-						var len = Math.sqrt(normal * normal + 1); // unit length
+						var len = Math.sqrt(normal * normal + 1); // slope length (0, 0) to (1, normal)
 
+						// set direction and length of collision vector
 						if (tile.slope != 0)
 						{
 							if (tile.type == AboveSlope)
@@ -209,11 +205,12 @@ class Circle extends Hitbox
 							}
 						}
 
+						// clamp point to tile boundaries to prevent "ghost" collisions
 						var mx = otherX + xx*other.tileWidth, my = otherY + yy*other.tileHeight;
 						x = HXP.clamp(thisX + (x * Math.abs(1 / len)), mx, mx + other.tileWidth);
 						y = HXP.clamp(thisY + (y * Math.abs(normal / len)), my, my + other.tileHeight);
 
-						// y = mx + b;
+						// attempt to collide with the slope
 						if (other.collidePoint(x, y))
 						{
 							return true;

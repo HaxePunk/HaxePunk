@@ -355,19 +355,41 @@ class SlopedGrid extends Hitbox
 	/** @private Collides against an Entity. */
 	override private function collideMask(other:Mask):Bool
 	{
-		return collideBox(other.parent.x - other.parent.originX,
-			other.parent.y - other.parent.originY,
-			other.parent.width, other.parent.height,
-			parent.x + parent.originX, parent.y + parent.originY);
+		if (other.parent != null)
+		{
+			var x:Float = _x, y:Float = _y;
+			if (parent != null)
+			{
+				x += parent.x;
+				y += parent.y;
+			}
+			return collideBox(other.parent.x - other.parent.originX,
+				other.parent.y - other.parent.originY,
+				other.parent.width, other.parent.height,
+				parent.x + parent.originX, parent.y + parent.originY);
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	/** @private Collides against a Hitbox. */
 	override private function collideHitbox(other:Hitbox):Bool
 	{
-		return collideBox(other.parent.x + other._x,
-			other.parent.y + other._y,
-			other._width, other._height,
-			parent.x + _x, parent.y + _y);
+		var x:Float = _x, y:Float = _y,
+			ox:Float = other._x, oy:Float = other._y;
+		if (other.parent != null)
+		{
+			ox += other.parent.x;
+			oy += other.parent.y;
+		}
+		if (parent != null)
+		{
+			x += parent.x;
+			y += parent.y;
+		}
+		return collideBox(ox, oy, other._width, other._height, x, y);
 	}
 
 	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
