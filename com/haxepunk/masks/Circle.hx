@@ -120,14 +120,28 @@ class Circle extends Hitbox
 		return false;
 	}
 
+	private inline function cross(ax:Float, ay:Float, bx:Float, by:Float, cx:Float, cy:Float)
+	{
+		return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
+	}
+
 	private function collideSlopedGrid(other:SlopedGrid):Bool
 	{
-		var thisX:Float = parent.x + _x,
-			thisY:Float = parent.y + _y,
-			otherX:Float = other.parent.x + other.x,
-			otherY:Float = other.parent.y + other.y,
-			entityDistX:Float = thisX - otherX,
-			entityDistY:Float = thisY - otherY;
+		var thisX:Float = _x, thisY:Float = _y;
+		if (parent != null)
+		{
+			thisX += parent.x;
+			thisY += parent.y;
+		}
+
+		var otherX:Float = other.x, otherY:Float = other.y;
+		if (other.parent != null)
+		{
+			otherX += other.parent.x;
+			otherY += other.parent.y;
+		}
+
+		var entityDistX:Float = thisX - otherX, entityDistY:Float = thisY - otherY;
 
 		var minx:Int = Math.floor((entityDistX - radius) / other.tileWidth),
 			miny:Int = Math.floor((entityDistY - radius) / other.tileHeight),
@@ -148,42 +162,63 @@ class Circle extends Hitbox
 			for (yy in miny...maxy)
 			{
 				var tile = other.getTile(xx, yy);
-				if (tile == null || tile.type == null) continue;
-				if (tile.type == Solid)
+				if (tile != null)
 				{
-					var mx = otherX + xx*other.tileWidth + hTileWidth,
-						my = otherY + yy*other.tileHeight + hTileHeight;
+					if (tile.type == Solid)
+					{
+						var mx = otherX + xx*other.tileWidth + hTileWidth,
+							my = otherY + yy*other.tileHeight + hTileHeight;
 
-					var dx = Math.abs(thisX - mx);
+						var dx = Math.abs(thisX - mx);
 
-					if (dx > hTileWidth + radius)
-						continue;
+						if (dx > hTileWidth + radius)
+							continue;
 
-					var dy = Math.abs(thisY - my);
+						var dy = Math.abs(thisY - my);
 
-					if (dy > hTileHeight + radius)
-						continue;
+						if (dy > hTileHeight + radius)
+							continue;
 
-					if (dx <= hTileWidth || dy <= hTileHeight)
-						return true;
+						if (dx <= hTileWidth || dy <= hTileHeight)
+							return true;
 
-					var xCornerDist = dx - hTileWidth;
-					var yCornerDist = dy - hTileHeight;
+						var xCornerDist = dx - hTileWidth;
+						var yCornerDist = dy - hTileHeight;
 
-					if (xCornerDist * xCornerDist + yCornerDist * yCornerDist <= _squaredRadius)
-						return true;
-				}
-				else if (tile.type == AboveSlope || tile.type == BelowSlope)
-				{
-					var normal = -1 / tile.slope;
-					var dx = -(otherX + xx*other.tileWidth - thisX);
-					var dy = -(otherY + yy*other.tileHeight - thisY);
-					var b = -(normal * dx - dy);
-					var x = Math.abs((b - tile.yOffset) / (normal - tile.slope));
-					var y = x * normal + b;
+						if (xCornerDist * xCornerDist + yCornerDist * yCornerDist <= _squaredRadius)
+							return true;
+					}
+					else if (tile.type == AboveSlope || tile.type == BelowSlope)
+					{
+						// find points on the line
+						var x:Float = 0, y:Float = 0;
+						var normal = -1 / tile.slope;
+						var len = Math.sqrt(normal * normal + 1); // unit length
 
-					var dist = HXP.distance(dx, dy, x, y);
-					if (dist <= radius) return true;
+						if (tile.slope != 0)
+						{
+							if (tile.type == AboveSlope)
+							{
+								x = (tile.slope < 0 ? -radius : radius);
+								y = -radius;
+							}
+							else
+							{
+								x = (tile.slope < 0 ? radius : -radius);
+								y = radius;
+							}
+						}
+
+						var mx = otherX + xx*other.tileWidth, my = otherY + yy*other.tileHeight;
+						x = HXP.clamp(thisX + (x * Math.abs(1 / len)), mx, mx + other.tileWidth);
+						y = HXP.clamp(thisY + (y * Math.abs(normal / len)), my, my + other.tileHeight);
+
+						// y = mx + b;
+						if (other.collidePoint(x, y))
+						{
+							return true;
+						}
+					}
 				}
 			}
 		}
