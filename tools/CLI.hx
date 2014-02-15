@@ -10,6 +10,13 @@ class CLI
 	public function new()
 	{
 		var args:Array<String> = Sys.args();
+
+		// Windows command line doesn't support ANSI colors...
+		if (Sys.systemName() == "Windows")
+		{
+			colorize = false;
+		}
+
 		if (args.length < 2)
 		{
 			usage();
