@@ -90,6 +90,12 @@ class SlopedGrid extends Hitbox
 		}
 	}
 
+	/**
+	 * Checks collision against SlopedGrid from a point
+	 * @param cx  x-axis of the collision point
+	 * @param cy  y-axis of the collision point
+	 * @return If the point collides with SlopedGrid
+	 */
 	public function collidePoint(cx:Float, cy:Float):Bool
 	{
 		var px:Float = _x, py:Float = _y;
@@ -119,7 +125,18 @@ class SlopedGrid extends Hitbox
 		return false;
 	}
 
-	private inline function collidePointInSlope(x1:Float, y1:Float, cx:Float, cy:Float, tile:Tile)
+	/**
+	 * Checks collision against a specific slope tile
+	 * Does not test if tile is a slope so this must be done before calling the method
+	 * @param x1    x-axis value of the tile (world coordinates)
+	 * @param y1    y-axis value of the tile (world coordinates)
+	 * @param px    x-axis of the collisions point (world coordinates)
+	 * @param py    y-axis of the collisions point (world coordinates)
+	 * @param tile  tile data for this position of SlopedGrid, saves an extra lookup
+	 * @return If the point collides with a slope
+	 */
+	@:allow(com.haxepunk.masks.Circle)
+	private inline function collidePointInSlope(x1:Float, y1:Float, px:Float, py:Float, tile:Tile):Bool
 	{
 		y1 += tile.yOffset;
 
@@ -128,25 +145,24 @@ class SlopedGrid extends Hitbox
 		var x2 = x1 + yoff / tile.slope,
 			y2 = y1 + yoff;
 
-		var left:Bool = ((x2 - x1) * (cy - y1) - (y2 - y1) * (cx - x1)) > 0;
+		var left:Bool = (x2 - x1) * (py - y1) > (y2 - y1) * (px - x1);
 
 		return (tile.type == AboveSlope && !left) || (tile.type == BelowSlope && left);
 	}
 
 	/**
-	 * Sets the value of the tile.
+	 * Sets the value of a tile.
 	 * @param	column		Tile column.
 	 * @param	row			Tile row.
 	 * @param	type		The type of the tile
 	 * @param	slope		The slope of the tile
 	 * @param	yOffset		The y offset of the tile
 	 */
-	public function setTile(column:Int = 0, row:Int = 0, ?type:TileType, slope:Float = 0, yOffset:Float=0)
+	public function setTile(column:Int = 0, row:Int = 0, ?type:TileType, slope:Float = 0, yOffset:Float=0):Void
 	{
-		if ( ! checkTile(column, row) ) return;
+		if (!checkTile(column, row)) return;
 
 		if (type == null) type = Solid;
-
 
 		if (usePositions)
 		{
@@ -195,7 +211,7 @@ class SlopedGrid extends Hitbox
 	 * @param	column		Tile column.
 	 * @param	row			Tile row.
 	 */
-	public inline function clearTile(column:Int = 0, row:Int = 0)
+	public inline function clearTile(column:Int = 0, row:Int = 0):Void
 	{
 		setTile(column, row, Empty);
 	}

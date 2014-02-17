@@ -59,6 +59,9 @@ class TestSlopedGrid extends haxe.unit.TestCase
 
 	public function testCollideCircle()
 	{
+		var circle = new Circle(24, -24, -24);
+		assertFalse(collideCircle(circle, 182, 126));
+
 		var circle = new Circle(8, -8, -8);
 		// hit
 		assertTrue(collideCircle(circle, -6, 0));

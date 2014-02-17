@@ -188,34 +188,38 @@ class Circle extends Hitbox
 				}
 				else if (tile.type == AboveSlope || tile.type == BelowSlope)
 				{
-					// find points on the line
-					var x:Float = 0, y:Float = 0;
-					var normal = -1 / tile.slope;
-					var len = Math.sqrt(normal * normal + 1); // slope length (0, 0) to (1, normal)
-
-					// set direction and length of collision vector
-					if (tile.slope != 0)
-					{
-						if (tile.type == AboveSlope)
-						{
-							x = (tile.slope < 0 ? -radius : radius);
-							y = -radius;
-						}
-						else
-						{
-							x = (tile.slope < 0 ? radius : -radius);
-							y = radius;
-						}
-					}
-
-					// clamp point to tile boundaries to prevent "ghost" collisions
-					x = HXP.clamp(thisX + (x * Math.abs(1 / len)), dx, dx + other.tileWidth);
-					y = HXP.clamp(thisY + (y * Math.abs(normal / len)), dy, dy + other.tileHeight);
-
-					// attempt to collide with the slope
-					if (other.collidePoint(x, y))
+					// test if center of circle is inside slope
+					if (other.collidePointInSlope(dx, dy, thisX, thisY, tile))
 					{
 						return true;
+					}
+
+					// attempt to collide with the slope
+					// Adapted from http://stackoverflow.com/questions/1073336/circle-line-collision-detection
+					var x1 = dx, y1 = dy + tile.yOffset;
+					var yoff = tile.slope * other.tileWidth;
+					var x2 = x1 + yoff / tile.slope,
+						y2 = y1 + yoff;
+
+					var dx = x2 - x1, dy = y2 - y1, // direction vector of line
+						fx = x1 - thisX, fy = y1 - thisY; // vector from center to line start
+
+					var a = dx * dx + dy * dy;
+					var b = (fx * dx + fy * dy) * 2;
+					var c = (fx * fx + fy * fy) - (radius * radius);
+					var discriminant = b * b - 4 * a * c;
+					if (discriminant >= 0)
+					{
+						discriminant = Math.sqrt(discriminant);
+						var t1 = (-b - discriminant) / (2 * a);
+						var t2 = (-b + discriminant) / (2 * a);
+
+						if ((t1 >= 0 && t1 <= 1) || // Impale, Poke
+							(t2 >= 0 && t2 <= 1) || // ExitWound
+							(t1 < 0 && t2 > 1)) // CompletelyInside
+						{
+							return true;
+						}
 					}
 				}
 				dx += other.tileWidth;
