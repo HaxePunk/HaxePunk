@@ -84,7 +84,7 @@ class SlopedGrid extends Hitbox
 #if (neko || cpp) // initialize to false instead of null
 			for (y in 0...columns)
 			{
-				data[x][y] = { type: Empty };
+				data[x][y] = _emptyTile;
 			}
 #end
 		}
@@ -216,7 +216,7 @@ class SlopedGrid extends Hitbox
 	{
 		if ( ! checkTile(column, row) )
 		{
-			return { type: Empty };
+			return _emptyTile;
 		}
 		else
 		{
@@ -544,4 +544,6 @@ class SlopedGrid extends Hitbox
 	private var _rect:Rectangle;
 	private var _point:Point;
 	private var _point2:Point;
+
+	private static var _emptyTile:Tile = { type: Empty }; // prevent recreation of empty tile
 }
