@@ -6,41 +6,43 @@ import com.haxepunk.masks.*;
 class TestHitbox extends haxe.unit.TestCase
 {
 
-	public override function setup()
+	override public function setup()
 	{
-		var engine = new Engine(640, 480);
-		HXP.scene = scene = new Scene();
-
-		hitbox = scene.addMask(new Hitbox(20, 20, -10, -10), "box");
-		circle = scene.addMask(new Circle(10), "circle");
-
-		// update entity lists
-		engine.update();
-	}
-
-	public override function tearDown()
-	{
-
+		box = new Hitbox(20, 20, -10, -10);
 	}
 
 	public function testHitbox()
 	{
-		// check that we collide with the circle
-		assertTrue(hitbox.collide("circle",  0,  0) != null);
-		assertTrue(hitbox.collide("circle", 30, 30) == null);
-
-		circle.x = 40; circle.y = 40; // move circle out of the way
-
-		// this shouldn't collide at all with the circle
-		hitbox.moveBy(20, 20, "circle");
-		assertTrue(hitbox.x == 20 && hitbox.y == 20);
-
-		// this should collide with the circle and move 20 to the left only
-		hitbox.moveBy(20, 20, "circle");
-		assertTrue(hitbox.x == 40 && hitbox.y == 30);
+		var hitbox = new Hitbox(50, 50);
+		assertTrue(collideHitbox(hitbox, 0, 0));
 	}
 
-	private var scene:Scene;
-	private var hitbox:Entity;
-	private var circle:Entity;
+	public function testCircle()
+	{
+		var circle = new Circle(8);
+		// hit
+		assertTrue(collideCircle(circle, 0, 0));
+
+		// miss
+		assertFalse(collideCircle(circle, 20, 0));
+		assertFalse(collideCircle(circle, 0, 20));
+	}
+
+	@:access(com.haxepunk.masks.Hitbox)
+	private function collideHitbox(hitbox:Hitbox, x:Int, y:Int):Bool
+	{
+		box._x = x;
+		box._y = y;
+		return hitbox.collideHitbox(box);
+	}
+
+	@:access(com.haxepunk.masks.Circle)
+	private function collideCircle(circle:Circle, x:Int, y:Int):Bool
+	{
+		circle._x = x;
+		circle._y = y;
+		return circle.collideHitbox(box);
+	}
+
+	private var box:Hitbox;
 }
