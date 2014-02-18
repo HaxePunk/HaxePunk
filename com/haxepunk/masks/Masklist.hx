@@ -135,7 +135,7 @@ class Masklist extends Hitbox
 
 	override public function assignTo(parent:Entity):Void
 	{
-		for (m in _masks) m.parent = parent;
+		for (m in _masks) m.assignTo(parent);
 		super.assignTo(parent);
 	}
 

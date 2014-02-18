@@ -29,19 +29,47 @@ class Hitbox extends Mask
 	/** @private Collides against an Entity. */
 	override private function collideMask(other:Mask):Bool
 	{
-		return parent.x + _x + _width > other.parent.x - other.parent.originX
-			&& parent.y + _y + _height > other.parent.y - other.parent.originY
-			&& parent.x + _x < other.parent.x - other.parent.originX + other.parent.width
-			&& parent.y + _y < other.parent.y - other.parent.originY + other.parent.height;
+		if (other.parent != null)
+		{
+			var px:Float = _x, py:Float = _y;
+			if (parent != null)
+			{
+				px += parent.x;
+				py += parent.y;
+			}
+
+			var ox = other.parent.originX + other.parent.x,
+				oy = other.parent.originY + other.parent.y;
+
+			return px + _width > ox
+				&& py + _height > oy
+				&& px < ox + other.parent.width
+				&& py < oy + other.parent.height;
+		}
+		return false;
 	}
 
 	/** @private Collides against a Hitbox. */
 	private function collideHitbox(other:Hitbox):Bool
 	{
-		return parent.x + _x + _width > other.parent.x + other._x
-			&& parent.y + _y + _height > other.parent.y + other._y
-			&& parent.x + _x < other.parent.x + other._x + other._width
-			&& parent.y + _y < other.parent.y + other._y + other._height;
+		var px:Float = _x, py:Float = _y;
+		if (parent != null)
+		{
+			px += parent.x;
+			py += parent.y;
+		}
+
+		var ox:Float = other._x, oy:Float = other._y;
+		if (other.parent != null)
+		{
+			ox += other.parent.x;
+			oy += other.parent.y;
+		}
+
+		return px + _width > ox
+			&& py + _height > oy
+			&& px < ox + other._width
+			&& py < oy + other._height;
 	}
 
 	/**
@@ -117,8 +145,8 @@ class Hitbox extends Mask
 	}
 
 	// Hitbox information.
-	private var _width:Int;
-	private var _height:Int;
-	private var _x:Int;
-	private var _y:Int;
+	private var _width:Int = 0;
+	private var _height:Int = 0;
+	private var _x:Int = 0;
+	private var _y:Int = 0;
 }

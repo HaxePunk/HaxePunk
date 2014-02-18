@@ -63,14 +63,51 @@ class Circle extends Hitbox
 		return (dx * dx + dy * dy) < Math.pow(_radius + other._radius, 2);
 	}
 
+	private inline function collideGridTile(mx:Float, my:Float, hTileWidth:Float, hTileHeight:Float, thisX:Float, thisY:Float)
+	{
+		var collide = false;
+		var dx = Math.abs(thisX - mx);
+
+		if (dx <= hTileWidth + radius)
+		{
+			var dy = Math.abs(thisY - my);
+
+			if (dy <= hTileHeight + radius)
+			{
+				if (dx <= hTileWidth || dy <= hTileHeight)
+				{
+					collide = true;
+				}
+				else
+				{
+					var xCornerDist = dx - hTileWidth;
+					var yCornerDist = dy - hTileHeight;
+
+					if (xCornerDist * xCornerDist + yCornerDist * yCornerDist <= _squaredRadius)
+						collide = true;
+				}
+			}
+		}
+		return collide;
+	}
+
 	private function collideGrid(other:Grid):Bool
 	{
-		var thisX:Float = parent.x + _x,
-			thisY:Float = parent.y + _y,
-			otherX:Float = other.parent.x + other.x,
-			otherY:Float = other.parent.y + other.y,
-			entityDistX:Float = thisX - otherX,
-			entityDistY:Float = thisY - otherY;
+		var thisX:Float = _x, thisY:Float = _y;
+		if (parent != null)
+		{
+			thisX += parent.x;
+			thisY += parent.y;
+		}
+
+		var otherX:Float = other.x, otherY:Float = other.y;
+		if (other.parent != null)
+		{
+			otherX += other.parent.x;
+			otherY += other.parent.y;
+		}
+
+		var entityDistX:Float = thisX - otherX, entityDistY:Float = thisY - otherY;
 
 		var minx:Int = Math.floor((entityDistX - radius) / other.tileWidth),
 			miny:Int = Math.floor((entityDistY - radius) / other.tileHeight),
@@ -83,38 +120,23 @@ class Circle extends Hitbox
 		if (maxy > other.rows)    maxy = other.rows;
 
 		var hTileWidth = other.tileWidth * 0.5,
-			hTileHeight = other.tileHeight * 0.5,
-			dx:Float, dy:Float;
+			hTileHeight = other.tileHeight * 0.5;
 
-		for (xx in minx...maxx)
+		var dx, dy = otherY + miny * other.tileHeight;
+		for (yy in miny...maxy)
 		{
-			for (yy in miny...maxy)
+			dx = otherX + minx * other.tileWidth;
+			for (xx in minx...maxx)
 			{
 				if (other.getTile(xx, yy))
 				{
-					var mx = otherX + xx*other.tileWidth + hTileWidth,
-						my = otherY + yy*other.tileHeight + hTileHeight;
-
-					var dx = Math.abs(thisX - mx);
-
-					if (dx > hTileWidth + radius)
-						continue;
-
-					var dy = Math.abs(thisY - my);
-
-					if (dy > hTileHeight + radius)
-						continue;
-
-					if (dx <= hTileWidth || dy <= hTileHeight)
-						return true;
-
-					var xCornerDist = dx - hTileWidth;
-					var yCornerDist = dy - hTileHeight;
-
-					if (xCornerDist * xCornerDist + yCornerDist * yCornerDist <= _squaredRadius)
+					if (collideGridTile(dx + hTileWidth, dy + hTileHeight,
+							hTileWidth, hTileHeight, thisX, thisY))
 						return true;
 				}
+				dx += other.tileWidth;
 			}
+			dy += other.tileHeight;
 		}
 
 		return false;
@@ -122,12 +144,21 @@ class Circle extends Hitbox
 
 	private function collideSlopedGrid(other:SlopedGrid):Bool
 	{
-		var thisX:Float = parent.x + _x,
-			thisY:Float = parent.y + _y,
-			otherX:Float = other.parent.x + other.x,
-			otherY:Float = other.parent.y + other.y,
-			entityDistX:Float = thisX - otherX,
-			entityDistY:Float = thisY - otherY;
+		var thisX:Float = _x, thisY:Float = _y;
+		if (parent != null)
+		{
+			thisX += parent.x;
+			thisY += parent.y;
+		}
+
+		var otherX:Float = other.x, otherY:Float = other.y;
+		if (other.parent != null)
+		{
+			otherX += other.parent.x;
+			otherY += other.parent.y;
+		}
+
+		var entityDistX:Float = thisX - otherX, entityDistY:Float = thisY - otherY;
 
 		var minx:Int = Math.floor((entityDistX - radius) / other.tileWidth),
 			miny:Int = Math.floor((entityDistY - radius) / other.tileHeight),
@@ -140,52 +171,60 @@ class Circle extends Hitbox
 		if (maxy > other.rows)    maxy = other.rows;
 
 		var hTileWidth = other.tileWidth * 0.5,
-			hTileHeight = other.tileHeight * 0.5,
-			dx:Float, dy:Float;
+			hTileHeight = other.tileHeight * 0.5;
 
-		for (xx in minx...maxx)
+		var dx, dy = otherY + miny * other.tileHeight;
+		for (yy in miny...maxy)
 		{
-			for (yy in miny...maxy)
+			dx = otherX + minx * other.tileWidth;
+			for (xx in minx...maxx)
 			{
 				var tile = other.getTile(xx, yy);
-				if (tile == null || tile.type == null) continue;
 				if (tile.type == Solid)
 				{
-					var mx = otherX + xx*other.tileWidth + hTileWidth,
-						my = otherY + yy*other.tileHeight + hTileHeight;
-
-					var dx = Math.abs(thisX - mx);
-
-					if (dx > hTileWidth + radius)
-						continue;
-
-					var dy = Math.abs(thisY - my);
-
-					if (dy > hTileHeight + radius)
-						continue;
-
-					if (dx <= hTileWidth || dy <= hTileHeight)
-						return true;
-
-					var xCornerDist = dx - hTileWidth;
-					var yCornerDist = dy - hTileHeight;
-
-					if (xCornerDist * xCornerDist + yCornerDist * yCornerDist <= _squaredRadius)
+					if (collideGridTile(dx + hTileWidth, dy + hTileHeight,
+							hTileWidth, hTileHeight, thisX, thisY))
 						return true;
 				}
 				else if (tile.type == AboveSlope || tile.type == BelowSlope)
 				{
-					var normal = -1 / tile.slope;
-					var dx = -(otherX + xx*other.tileWidth - thisX);
-					var dy = -(otherY + yy*other.tileHeight - thisY);
-					var b = -(normal * dx - dy);
-					var x = Math.abs((b - tile.yOffset) / (normal - tile.slope));
-					var y = x * normal + b;
+					// test if center of circle is inside slope
+					if (other.collidePointInSlope(dx, dy, thisX, thisY, tile))
+					{
+						return true;
+					}
 
-					var dist = HXP.distance(dx, dy, x, y);
-					if (dist <= radius) return true;
+					// attempt to collide with the slope
+					// Adapted from http://stackoverflow.com/questions/1073336/circle-line-collision-detection
+					var x1 = dx, y1 = dy + tile.yOffset;
+					var yoff = tile.slope * other.tileWidth;
+					var x2 = x1 + yoff / tile.slope,
+						y2 = y1 + yoff;
+
+					var dx = x2 - x1, dy = y2 - y1, // direction vector of line
+						fx = x1 - thisX, fy = y1 - thisY; // vector from center to line start
+
+					var a = dx * dx + dy * dy;
+					var b = (fx * dx + fy * dy) * 2;
+					var c = (fx * fx + fy * fy) - (radius * radius);
+					var discriminant = b * b - 4 * a * c;
+					if (discriminant >= 0)
+					{
+						discriminant = Math.sqrt(discriminant);
+						var t1 = (-b - discriminant) / (2 * a);
+						var t2 = (-b + discriminant) / (2 * a);
+
+						if ((t1 >= 0 && t1 <= 1) || // Impale, Poke
+							(t2 >= 0 && t2 <= 1) || // ExitWound
+							(t1 < 0 && t2 > 1)) // CompletelyInside
+						{
+							return true;
+						}
+					}
 				}
+				dx += other.tileWidth;
 			}
+			dy += other.tileHeight;
 		}
 		return false;
 	}
@@ -196,8 +235,22 @@ class Circle extends Hitbox
 		var _otherHalfWidth:Float = other._width * 0.5;
 		var _otherHalfHeight:Float = other._height * 0.5;
 
-		var distanceX:Float = Math.abs(parent.x + _x - other.parent.x - other._x - _otherHalfWidth),
-			distanceY:Float = Math.abs(parent.y + _y - other.parent.y - other._y - _otherHalfHeight);
+		var px:Float = _x, py:Float = _y;
+		if (parent != null)
+		{
+			px += parent.x;
+			py += parent.y;
+		}
+
+		var ox:Float = other._x, oy:Float = other._y;
+		if (other.parent != null)
+		{
+			ox = other.parent.x - ox;
+			oy = other.parent.y - oy;
+		}
+
+		var distanceX:Float = Math.abs(px - ox - _otherHalfWidth),
+			distanceY:Float = Math.abs(py - oy - _otherHalfHeight);
 
 		if (distanceX > _otherHalfWidth + radius || distanceY > _otherHalfHeight + radius)
 		{
