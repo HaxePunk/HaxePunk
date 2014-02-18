@@ -318,13 +318,28 @@ class HXP
 
 	private static inline function _choose(objs:Array<Dynamic>):Dynamic
 	{
-		if (objs == null || objs.length == 0 || (objs.length == 1 && Reflect.hasField(objs[0], "length") && objs[0].length == 0))
+		if (objs == null || objs.length == 0)
+		{
 			throw "Can't choose a random element on an empty array";
-
-		if (objs.length == 1 && Reflect.hasField(objs[0], "length"))
-			return objs[0][rand(objs[0].length)];
-
-		return objs[rand(objs.length)];
+		}
+		
+		if (Std.is(objs[0], Array)) // Passed an Array
+		{		
+			var c:Array<Dynamic> = cast(objs[0], Array<Dynamic>);
+		
+			if (c.length != 0)
+			{
+				return c[rand(c.length)];
+			}
+			else
+			{
+				throw "Can't choose a random element on an empty array";
+			}
+		}
+		else // Passed multiple args
+		{
+			return objs[rand(objs.length)];
+		}		
 	}
 
 	/**
