@@ -21,12 +21,10 @@ class TestScene extends haxe.unit.TestCase
 	public function testScene()
 	{
 		HXP.scene = scene;
-		assertFalse(HXP.gotoIsNull());
 		assertFalse(HXP.scene == scene);
 
 		// update to set the scene as active
 		HXP.engine.update();
-		assertTrue(HXP.gotoIsNull());
 		assertTrue(HXP.scene == scene);
 	}
 
