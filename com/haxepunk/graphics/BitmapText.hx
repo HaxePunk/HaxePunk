@@ -268,8 +268,8 @@ class BitmapText extends Graphic
 		if (autoWidth || autoHeight)
 		{
 			computeTextSize();
-			w = Std.int(autoWidth ? (textWidth) : width);
-			h = Std.int(autoHeight ? (textHeight) : height);
+			w = Std.int(autoWidth ? (textWidth/sx) : width);
+			h = Std.int(autoHeight ? (textHeight/sy) : height);
 		}
 		else
 		{
