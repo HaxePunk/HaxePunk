@@ -327,7 +327,7 @@ class Scene extends Tweener
 		var e:Entity;
 		for (e in _recycled)
 		{
-			clearRecycled(Type.resolveClass(e._class));
+			clearRecycled(Type.getClass(e));
 		}
 	}
 
