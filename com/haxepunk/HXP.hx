@@ -919,17 +919,12 @@ class HXP
 	 * @param	source		Embedded Bitmap class.
 	 * @return	The stored BitmapData object.
 	 */
-	public static function getBitmap(source:Dynamic):BitmapData
+	public static function getBitmap(name:String):BitmapData
 	{
-		var name:String = Std.string(source);
 		if (_bitmap.exists(name))
 			return _bitmap.get(name);
 
-#if openfl
-		var data:BitmapData = Assets.getBitmapData(source, false);
-#else
-		var data:BitmapData = source.bitmapData;
-#end
+		var data:BitmapData = Assets.getBitmapData(name, false);
 
 		if (data != null)
 			_bitmap.set(name, data);
@@ -937,9 +932,24 @@ class HXP
 		return data;
 	}
 
-	public static function removeBitmap(source:Dynamic):Bool
+	/**
+	 * Overwrites the image cache for a given name
+	 * @param name  The name of the BitmapData to overwrite.
+	 * @param data  The BitmapData object.
+	 */
+	public static function overwriteBitmapCache(name:String, data:BitmapData):Void
 	{
-		var name:String = Std.string(source);
+		removeBitmap(name);
+		_bitmap.set(name, data);
+	}
+
+	/**
+	 * Removes a bitmap from the cache
+	 * @param name  The name of the bitmap to remove.
+	 * @return True if the bitmap was removed.
+	 */
+	public static function removeBitmap(name:String):Bool
+	{
 		if (_bitmap.exists(name))
 		{
 			var bitmap = _bitmap.get(name);

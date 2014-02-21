@@ -113,14 +113,10 @@ class AtlasData
 	/**
 	 * Reloads the image for a particular atlas object
 	 */
-	public static function reloadAtlasData(name:String, bd:BitmapData):Void
+	public function reload(bd:BitmapData):Void
 	{
-		if (_dataPool.exists(name))
-		{
-			var data:AtlasData = _dataPool.get(name);
-			HXP.removeBitmap(name);
-			data._tilesheet = new Tilesheet(bd);
-		}
+		HXP.overwriteBitmapCache(_name, bd);
+		_tilesheet = new Tilesheet(bd);
 	}
 
 	/**
