@@ -2,33 +2,84 @@ package com.haxepunk.math;
 
 import flash.geom.Point;
 
-class Vector extends Point
+abstract Vector(Point)
 {
-	/**
-	 * Constructor.
-	 * 
-	 * @param	x	The x value of the vector.
-	 * @param	y	The y value of the vector.
-	 */
-	public function new(x:Float=0, y:Float=0)
+	public inline function new(x:Float=0, y:Float=0) { this = new Point(x, y); }
+
+	public var x(get,set):Float;
+	private inline function get_x():Float { return this.x; }
+	private inline function set_x(value:Float):Float { return this.x = value; }
+
+	public var y(get,set):Float;
+	private inline function get_y():Float { return this.y; }
+	private inline function set_y(value:Float):Float { return this.y = value; }
+
+	public inline function dot(b:Vector):Float
 	{
-		super(x, y);
+		return x * b.x + y * b.y;
 	}
 
-	/**
-	 * Calculates the dotProduct between two points
-	 * 
-	 * @param	p	The other point
-	 * 
-	 * @return The dot product.
-	 */
-	public inline function dot(p:Point):Float
+	public inline function cross(b:Vector):Float
 	{
-		return x * p.x + y * p.y;
+		return x * b.x - y * b.y;
 	}
 
-	public inline function cross():Vector
+	public inline function rotate(angle:Float):Vector
 	{
-		return new Vector(y, -x);
+		var sin:Float = Math.sin(angle),
+			cos:Float = Math.cos(angle);
+		return new Vector(x * cos - y * sin, x * sin + y * cos);
+	}
+
+	public function normalize(size:Float=1):Void
+	{
+		var len = length;
+		x = x / len * size;
+		y = y / len * size;
+	}
+
+	public var squareLength(get,never):Float;
+	private inline function get_squareLength():Float
+	{
+		return x * x + y * y;
+	}
+
+	public var length(get,never):Float;
+	private inline function get_length():Float
+	{
+		return Math.sqrt(squareLength);
+	}
+
+	public var angle(get,never):Float;
+	private inline function get_angle():Float
+	{
+		return Math.atan2(y, x);
+	}
+
+	public var unit(get,never):Vector;
+	public inline function get_unit():Vector
+	{
+		var len = length;
+		return new Vector(x / len, y / len);
+	}
+
+	@:op(A + B) static public function add(a:Vector, b:Vector):Vector
+	{
+		return new Vector(a.x + b.x, a.y + b.y);
+	}
+
+	@:op(A - B) static public function sub(a:Vector, b:Vector):Vector
+	{
+		return new Vector(a.x - b.x, a.y - b.y);
+	}
+
+	@:commutative @:op(A * B) static public function scalar_mult(a:Vector, b:Float):Vector
+	{
+		return new Vector(a.x * b, a.y * b);
+	}
+
+	@:op(A / B) static public function scalar_divide(a:Vector, b:Float):Vector
+	{
+		return new Vector(a.x / b, a.y / b);
 	}
 }

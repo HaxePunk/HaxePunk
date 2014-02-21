@@ -27,7 +27,7 @@ class Polygon extends Hitbox
 	 * @param	points		An array of coordinates that define the polygon (must have at least 3).
 	 * @param	origin	 	Pivot point for rotations.
 	 */
-	public function new(points:Array<Point>, ?origin:Point)
+	public function new(points:Array<Vector>, ?origin:Point)
 	{
 		super();
 		if (points.length < 3) throw "The polygon needs at least 3 sides.";
@@ -201,7 +201,7 @@ class Polygon extends Hitbox
 	private function collideCircle(circle:Circle):Bool
 	{
 		var edgesCrossed:Int = 0;
-		var p1:Point, p2:Point;
+		var p1:Vector, p2:Vector;
 		var i:Int, j:Int;
 		var nPoints:Int = _points.length;
 		var offsetX:Float = parent.x + _x;
@@ -330,7 +330,7 @@ class Polygon extends Hitbox
 	/** Projects this polygon points on axis and returns min and max values in projection object. */
 	override public function project(axis:Vector, projection:Projection):Void
 	{
-		var p:Point = _points[0];
+		var p:Vector = _points[0];
 
 		var min:Float = axis.dot(p),
 			max:Float = min;
@@ -396,9 +396,9 @@ class Polygon extends Hitbox
 	 * If you need to set a point yourself instead of passing in a new Array<Point> you need to call update()
 	 * to make sure the axes update as well.
 	 */
-	public var points(get, set):Array<Point>;
-	private inline function get_points():Array<Point> { return _points; }
-	private function set_points(value:Array<Point>):Array<Point>
+	public var points(get, set):Array<Vector>;
+	private inline function get_points():Array<Vector> { return _points; }
+	private function set_points(value:Array<Vector>):Array<Vector>
 	{
 		if (_points != value)
 		{
@@ -448,12 +448,12 @@ class Polygon extends Hitbox
 		var rotationAngle:Float = (Math.PI * 2) / sides;
 
 		// loop through and generate each point
-		var points:Array<Point> = new Array<Point>();
+		var points:Array<Vector> = new Array<Vector>();
 
 		for (i in 0...sides)
 		{
 			var tempAngle:Float = Math.PI + i * rotationAngle;
-			var p:Point = new Point();
+			var p:Vector = new Vector();
 			p.x = Math.cos(tempAngle) * radius + radius;
 			p.y = Math.sin(tempAngle) * radius + radius;
 			points.push(p);
@@ -475,12 +475,12 @@ class Polygon extends Hitbox
 	 */
 	public static function createFromArray(points:Array<Float>):Polygon
 	{
-		var p:Array<Point> = new Array<Point>();
+		var p:Array<Vector> = new Array<Vector>();
 
 		var i:Int = 0;
 		while (i < points.length)
 		{
-			p.push(new Point(points[i++], points[i++]));
+			p.push(new Vector(points[i++], points[i++]));
 		}
 		return new Polygon(p);
 	}
@@ -491,7 +491,7 @@ class Polygon extends Hitbox
 
 		angleDelta *= HXP.RAD;
 
-		var p:Point;
+		var p:Vector;
 
 		for (i in 0..._points.length)
 		{
@@ -582,7 +582,7 @@ class Polygon extends Hitbox
 
 	// Hitbox information.
 	private var _angle:Float;
-	private var _points:Array<Point>;
+	private var _points:Array<Vector>;
 	private var _axes:Array<Vector>;
 
 	private var _fakeEntity:Entity;				// used for Grid and Pixelmask collision
