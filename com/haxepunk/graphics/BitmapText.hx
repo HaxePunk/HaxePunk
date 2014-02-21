@@ -306,10 +306,10 @@ class BitmapText extends Graphic
 		}
 		else
 		{
+			if (startLine > 0) startLine -= 1;
 			var r = _buffer.rect;
 			r.top = startLine * (_font.lineHeight + lineSpacing);
-			_buffer.fillRect(r, 0);
-			if (startLine > 0) startLine -= 1;
+			_buffer.fillRect(r, HXP.blackColor);
 		}
 
 		// make a pass through each character, copying it onto the buffer
