@@ -2,6 +2,7 @@ package com.haxepunk.graphics;
 
 import com.haxepunk.graphics.atlas.Atlas;
 import com.haxepunk.graphics.atlas.TextureAtlas;
+import com.haxepunk.graphics.atlas.TileAtlas;
 import com.haxepunk.graphics.atlas.AtlasRegion;
 import com.haxepunk.Graphic;
 import com.haxepunk.HXP;
