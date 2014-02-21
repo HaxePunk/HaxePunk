@@ -26,7 +26,7 @@ class Atlas
 
 	private function new(source:AtlasDataType)
 	{
-		_data = AtlasData.create(source);
+		_data = source;
 	}
 
 	/**
@@ -36,7 +36,7 @@ class Atlas
 	 */
 	public static function loadImageAsRegion(source:AtlasDataType):AtlasRegion
 	{
-		var data = AtlasData.create(source);
+		var data:AtlasData = source;
 		return data.createRegion(new Rectangle(0, 0, data.width, data.height));
 	}
 

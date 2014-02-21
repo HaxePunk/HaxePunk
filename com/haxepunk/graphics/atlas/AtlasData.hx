@@ -19,10 +19,10 @@ abstract AtlasDataType(AtlasData)
 		return new AtlasDataType(AtlasData.getAtlasDataByName(s, true));
 	}
 	@:from public static inline function fromBitmapData(bd:BitmapData) {
-#if debug
-		HXP.log("Atlases using BitmapData will not be managed.");
-#end
 		return new AtlasDataType(new AtlasData(bd));
+	}
+	@:from public static inline function fromAtlasData(data:AtlasData) {
+		return new AtlasDataType(data);
 	}
 }
 
@@ -32,25 +32,50 @@ class AtlasData
 	public var width(default, null):Int;
 	public var height(default, null):Int;
 
-	public static inline var BLEND_NONE:Int = -1;
+	public static inline var BLEND_NONE:Int = 0;
 	public static inline var BLEND_ADD:Int = Tilesheet.TILE_BLEND_ADD;
 	public static inline var BLEND_NORMAL:Int = Tilesheet.TILE_BLEND_NORMAL;
+#if flash
+	public static inline var BLEND_MULTIPLY:Int = BLEND_NONE;
+	public static inline var BLEND_SCREEN:Int = BLEND_NONE;
+#else
+	public static inline var BLEND_MULTIPLY:Int = Tilesheet.TILE_BLEND_MULTIPLY;
+	public static inline var BLEND_SCREEN:Int = Tilesheet.TILE_BLEND_SCREEN;
+#end
 
 	/**
-	 * Creates a new AtlasData object
-	 * @param	source	The image to initialize AtlasData with
-	 * @return	An AtlasData object
+	 * Creates a new AtlasData class
+	 * NOTE: Only create one instace of AtlasData per name. An error will be thrown if you try to create a duplicate.
+	 * @param bd     BitmapData image to use for rendering
+	 * @param name   A reference to the image data, used with destroy and for setting rendering flags
 	 */
-	public static function create(source:AtlasDataType):AtlasData
+	public function new(bd:BitmapData, ?name:String, ?flags:Int)
 	{
-		var data:AtlasData = source;
+		_data = new Array<Float>();
 
-		if (data != null)
+		_tilesheet = new Tilesheet(bd);
+		// create a unique name if one is not specified
+		if (name == null)
 		{
-			data._refCount += 1;
+			name = "bitmapData_" + (_uniqueId++);
+		}
+		_name = name;
+
+		if (_dataPool.exists(_name))
+		{
+			throw "There should never be a duplicate AtlasData instance!";
+		}
+		else
+		{
+			_dataPool.set(_name, this);
 		}
 
-		return data;
+		_renderFlags = Tilesheet.TILE_TRANS_2x2 | Tilesheet.TILE_ALPHA | Tilesheet.TILE_BLEND_NORMAL | Tilesheet.TILE_RGB;
+		_flagAlpha = true;
+		_flagRGB = true;
+
+		width = bd.width;
+		height = bd.height;
 	}
 
 	/**
@@ -70,72 +95,75 @@ class AtlasData
 			var bitmap:BitmapData = HXP.getBitmap(name);
 			if (bitmap != null)
 			{
-				data = new AtlasData(bitmap);
-				data._name = name;
-				_dataPool.set(name, data);
+				data = new AtlasData(bitmap, name);
 			}
 		}
 		return data;
 	}
 
-	public function new(bd:BitmapData)
+	/**
+	 * String representation of AtlasData
+	 * @return the name of the AtlasData
+	 */
+	public function toString():String
 	{
-		_data = new Array<Float>();
+		return _name;
+	}
 
-		_tilesheet = new Tilesheet(bd);
-
-		_renderFlags = Tilesheet.TILE_TRANS_2x2 | Tilesheet.TILE_ALPHA | Tilesheet.TILE_BLEND_NORMAL | Tilesheet.TILE_RGB;
-		_flagAlpha = true;
-		_flagRGB = true;
-
-		width = bd.width;
-		height = bd.height;
-
-		_refCount = 0;
-		_layerIndex = -1;
-		_atlases.push(this);
+	/**
+	 * Reloads the image for a particular atlas object
+	 */
+	public static function reloadAtlasData(name:String, bd:BitmapData):Void
+	{
+		if (_dataPool.exists(name))
+		{
+			var data:AtlasData = _dataPool.get(name);
+			HXP.removeBitmap(name);
+			data._tilesheet = new Tilesheet(bd);
+		}
 	}
 
 	/**
 	 * Sets the scene object
 	 * @param	scene	The scene object to set
 	 */
-	public static inline function startScene(scene:Scene)
+	@:allow(com.haxepunk.Scene)
+	private static inline function startScene(scene:Scene):Void
 	{
 		_scene = scene;
 		_scene.sprite.graphics.clear();
 	}
 
-	public static inline function endScene()
+	/**
+	 * The active atlas data object
+	 */
+	public static var active(default, set):AtlasData;
+	private static inline function set_active(?value:AtlasData):AtlasData
 	{
-		if (_lastAtlas != null)
-			_lastAtlas.flush();
-		_lastAtlas = null;
+		if (active != value)
+		{
+			if (active != null)
+				active.flush();
+			active = value;
+		}
+		return value;
 	}
 
 	/**
 	 * Removes the object from memory
 	 */
-	public function destroy()
+	public function destroy():Void
 	{
-		_refCount -= 1;
-		if (_refCount <= 0)
-		{
-			if (this._name != null)
-			{
-				HXP.removeBitmap(this._name);
-				_dataPool.remove(this._name);
-			}
-			_atlases.remove(this);
-		}
+		HXP.removeBitmap(_name);
+		_dataPool.remove(_name);
 	}
 
 	/**
 	 * Removes all atlases from the display list
 	 */
-	public static function destroyAll()
+	public static function destroyAll():Void
 	{
-		for (atlas in _atlases)
+		for (atlas in _dataPool)
 		{
 			atlas.destroy();
 		}
@@ -156,7 +184,10 @@ class AtlasData
 		return new AtlasRegion(this, tileIndex, rect);
 	}
 
-	public inline function flush()
+	/**
+	 * Flushes the renderable data array
+	 */
+	public inline function flush():Void
 	{
 		if (_dataIndex != 0)
 		{
@@ -166,25 +197,6 @@ class AtlasData
 			}
 			_dataIndex = 0;
 			_tilesheet.drawTiles(_scene.sprite.graphics, _data, Atlas.smooth, _renderFlags);
-		}
-	}
-
-	/**
-	 * Performs several checks to see if data needs to be flushed to drawTiles
-	 * @param layer The layer to check
-	 */
-	private inline function checkForFlush(layer:Int)
-	{
-		if (_lastAtlas != this)
-		{
-			if (_lastAtlas != null)
-				_lastAtlas.flush();
-			_lastAtlas = this;
-		}
-		else if (_layerIndex != layer)
-		{
-			flush();
-			_layerIndex = layer;
 		}
 	}
 
@@ -207,7 +219,7 @@ class AtlasData
 		tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
 		red:Float, green:Float, blue:Float, alpha:Float)
 	{
-		checkForFlush(layer);
+		active = this;
 
 		_data[_dataIndex++] = tx;
 		_data[_dataIndex++] = ty;
@@ -250,7 +262,7 @@ class AtlasData
 		scaleX:Float, scaleY:Float, angle:Float,
 		red:Float, green:Float, blue:Float, alpha:Float)
 	{
-		checkForFlush(layer);
+		active = this;
 
 		_data[_dataIndex++] = x;
 		_data[_dataIndex++] = y;
@@ -325,30 +337,35 @@ class AtlasData
 			return BLEND_NORMAL;
 		else if (_renderFlags & Tilesheet.TILE_BLEND_ADD != 0)
 			return BLEND_ADD;
+#if !flash
+		else if (_renderFlags & Tilesheet.TILE_BLEND_MULTIPLY != 0)
+			return BLEND_MULTIPLY;
+		else if (_renderFlags & Tilesheet.TILE_BLEND_SCREEN != 0)
+			return BLEND_SCREEN;
+#end
 		else
 			return BLEND_NONE;
 	}
 	private function set_blend(value:Int):Int
 	{
-		switch (value)
-		{
-			case BLEND_NONE:
-				_renderFlags &= ~Tilesheet.TILE_BLEND_ADD;
-				_renderFlags &= ~Tilesheet.TILE_BLEND_NORMAL;
-			case BLEND_ADD:
-				_renderFlags |= Tilesheet.TILE_BLEND_ADD;
-				_renderFlags &= ~Tilesheet.TILE_BLEND_NORMAL;
-			case BLEND_NORMAL:
-				_renderFlags &= ~Tilesheet.TILE_BLEND_ADD;
-				_renderFlags |= Tilesheet.TILE_BLEND_NORMAL;
-		}
-		return value;
-	}
+		// unset blend flags
+		_renderFlags &= ~(BLEND_ADD | BLEND_SCREEN | BLEND_MULTIPLY | BLEND_NORMAL);
 
+		// check that value is actually a blend flag
+		if (value == BLEND_ADD ||
+			value == BLEND_MULTIPLY ||
+			value == BLEND_SCREEN ||
+			value == BLEND_NORMAL)
+		{
+			// set the blend flag
+			_renderFlags |= value;
+			return value;
+		}
+		return BLEND_NONE;
+	}
 
 	// used for pooling
 	private var _name:String;
-	private var _refCount:Int = 0; // memory management
 
 	private var _layerIndex:Int = 0;
 
@@ -361,7 +378,6 @@ class AtlasData
 	private var _dataIndex:Int = 0;
 
 	private static var _scene:Scene;
-	private static var _lastAtlas:AtlasData;
-	private static var _dataPool:Map<String,AtlasData> = new Map<String,AtlasData>();
-	private static var _atlases:Array<AtlasData> = new Array<AtlasData>();
+	private static var _dataPool:Map<String, AtlasData> = new Map<String, AtlasData>();
+	private static var _uniqueId:Int = 0; // allows for unique names
 }
