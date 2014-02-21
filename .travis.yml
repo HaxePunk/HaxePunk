@@ -22,8 +22,6 @@ before_install:
   - haxelib dev HaxePunk $TRAVIS_BUILD_DIR
   - ant tools
   - echo "y" | haxelib run HaxePunk setup
-  # openfl command
-  - sudo ln -s /usr/bin/lime /usr/bin/openfl
 
 script:
   - ant clean build unit-travis

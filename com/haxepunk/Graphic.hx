@@ -67,8 +67,8 @@ class Graphic
 	 * If the graphic should render.
 	 */
 	public var visible(get, set):Bool;
-	public function get_visible():Bool { return _visible; }
-	public function set_visible(value:Bool):Bool { return _visible = value; }
+	private function get_visible():Bool { return _visible; }
+	private function set_visible(value:Bool):Bool { return _visible = value; }
 
 	/**
 	 * X offset.

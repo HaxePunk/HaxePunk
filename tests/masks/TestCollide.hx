@@ -1,15 +1,12 @@
-import com.haxepunk.Mask;
-import com.haxepunk.Entity;
-import com.haxepunk.Scene;
-import com.haxepunk.Engine;
-import com.haxepunk.HXP;
-import com.haxepunk.masks.Circle;
-import com.haxepunk.masks.Hitbox;
+package masks;
 
-class TestMasks extends haxe.unit.TestCase
+import com.haxepunk.*;
+import com.haxepunk.masks.*;
+
+class TestCollide extends haxe.unit.TestCase
 {
 
-	public override function setup()
+	override public function setup()
 	{
 		var engine = new Engine(640, 480);
 		HXP.scene = scene = new Scene();
@@ -19,11 +16,6 @@ class TestMasks extends haxe.unit.TestCase
 
 		// update entity lists
 		engine.update();
-	}
-
-	public override function tearDown()
-	{
-
 	}
 
 	public function testHitbox()

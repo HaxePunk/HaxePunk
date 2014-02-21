@@ -238,14 +238,13 @@ class Text extends Image
 	/** @private Updates the drawing buffer. */
 	private function updateTextBuffer()
 	{
+		_format.color = _color;
 		if (_richText == null)
 		{
-			_format.color = 0xFFFFFF;
 			_field.setTextFormat(_format);
 		}
 		else
 		{
-			_format.color = _color;
 			matchStyles();
 		}
 
