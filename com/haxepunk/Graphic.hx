@@ -45,6 +45,9 @@ abstract ImageType(Either<BitmapData, AtlasRegion>)
 		else
 			return new ImageType(Left(HXP.getBitmap(s)));
 	}
+	@:from public static inline function fromTileAtlas(atlas:TileAtlas) {
+		return new ImageType(Right(atlas.getRegion(0)));
+	}
 	@:from public static inline function fromAtlasRegion(region:AtlasRegion) {
 		return new ImageType(Right(region));
 	}
