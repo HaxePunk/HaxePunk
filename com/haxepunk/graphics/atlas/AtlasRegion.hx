@@ -34,7 +34,7 @@ class AtlasRegion
 	{
 		this._parent = parent;
 		this.tileIndex = tileIndex;
-		this._rect = rect.clone();
+		this._rect = rect;
 		this.rotated = false;
 	}
 

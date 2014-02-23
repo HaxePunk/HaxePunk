@@ -51,6 +51,7 @@ class AtlasData
 	 */
 	public function new(bd:BitmapData, ?name:String, ?flags:Int)
 	{
+		_rects = new Array<Rectangle>();
 		_data = new Array<Float>();
 
 		_tilesheet = new Tilesheet(bd);
@@ -117,6 +118,11 @@ class AtlasData
 	{
 		HXP.overwriteBitmapCache(_name, bd);
 		_tilesheet = new Tilesheet(bd);
+		// recreate tile indexes
+		for (r in _rects)
+		{
+			_tilesheet.addTileRect(r);
+		}
 	}
 
 	/**
@@ -168,16 +174,16 @@ class AtlasData
 	/**
 	 * Creates a new AtlasRegion
 	 * @param	rect	Defines the rectangle of the tile on the tilesheet
-	 * @param	center	Positions the local center point to pivot on
+	 * @param	center	Positions the local center point to pivot on (not used)
 	 *
 	 * @return The new AtlasRegion object.
 	 */
 	public inline function createRegion(rect:Rectangle, ?center:Point):AtlasRegion
 	{
 		var r = rect.clone();
-		var p = center != null ? new Point(center.x, center.y) : null;
-		var tileIndex = _tilesheet.addTileRect(r, p);
-		return new AtlasRegion(this, tileIndex, rect);
+		_rects.push(r);
+		var tileIndex = _tilesheet.addTileRect(r, null);
+		return new AtlasRegion(this, tileIndex, r);
 	}
 
 	/**
@@ -372,6 +378,7 @@ class AtlasData
 	private var _tilesheet:Tilesheet;
 	private var _data:Array<Float>;
 	private var _dataIndex:Int = 0;
+	private var _rects:Array<Rectangle>;
 
 	private static var _scene:Scene;
 	private static var _dataPool:Map<String, AtlasData> = new Map<String, AtlasData>();
