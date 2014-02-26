@@ -68,6 +68,14 @@
 		</exec>
 	</target>
 
+	<target name="docset">
+		<exec executable="haxelib" dir="doc">
+			<arg line="run docset" />
+			<arg line="-i ../template/assets/HaxePunk.svg" />
+			<arg line="HaxePunk" />
+		</exec>
+	</target>
+
 	<target name="clean">
 		<delete quiet="true">
 			<fileset dir="Example" />

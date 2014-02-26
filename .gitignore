@@ -4,6 +4,7 @@
 *.n
 *.build
 *.hash
+*.docset/
 build-test/
 
 # OS specific files
