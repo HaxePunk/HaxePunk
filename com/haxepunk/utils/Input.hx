@@ -162,8 +162,8 @@ class Input
 	public static function defineButtons(name:String, id:Int, keys:Array<Int>)
 	{
 		joystick(id); // instantiate the joystick
-		if (_joyControl[id] == null) _joyControl[id] = new Map<String,Array<Int>>();
-		_joyControl[id].set(name, keys);
+		if (!_joyControl.exists(id)) _joyControl.set( id, new Map<String,Array<Int>>() );
+		_joyControl.get(id).set(name, keys);
 	}
 	
 	/**
@@ -209,26 +209,26 @@ class Input
 		
 		if(Std.is(input, String))
 		{
-			if (_joyControl[id] == null)
+			if (!_joyControl.exists(id))
 			{
 #if debug
 				HXP.log("Joystick input '" + input + "' not defined");
 #end
 				return false;
 			}
-#if debug
-			else if (!_joyControl[id].exists(input))
-			{
-				HXP.log("Joystick input '" + input + "' not defined");
-				return false;
-			}
-#end
 
-			if (_joyControl[id].exists(input))
+			if (_joyControl.get(id).exists(input))
 			{
-				for (i in _joyControl[id].get(input))
+				for (i in _joyControl.get(id).get(input))
 					joystick = joystick || Input.joystick(id).check(i);
 			}
+#if debug
+			else
+			{
+				HXP.log("Joystick input '" + input + "' not defined");
+				return false;
+			}
+#end
 		}
 		return joystick;
 	 }
@@ -277,16 +277,16 @@ class Input
 		
 		if (Std.is(input, String))
 		{
-			if(_joyControl[id] == null)
+			if(!_joyControl.exists(id))
 			{
 #if debug
 				HXP.log("Joystick input '" + input + "' not defined");
 #end
 				return joystick;
 			}
-			else if (_joyControl[id].exists(input))
+			else if (_joyControl.get(id).exists(input))
 			{
-				for (i in _joyControl[id].get(input))
+				for (i in _joyControl.get(id).get(input))
 					joystick = joystick || Input.joystick(id).pressed(i);
 			}
 		}
@@ -337,16 +337,16 @@ class Input
 		
 		if (Std.is(input, String))
 		{
-			if(_joyControl[id] == null)
+			if(!_joyControl.exists(id))
 			{
 #if debug
 				HXP.log("Joystick input '" + input + "' not defined");
 #end
 				return joystick;
 			}
-			else if (_joyControl[id].exists(input))
+			else if (_joyControl.get(id).exists(input))
 			{
-				for (i in _joyControl[id].get(input))
+				for (i in _joyControl.get(id).get(input))
 					joystick = joystick || Input.joystick(id).released(i);
 			}
 		}
@@ -754,6 +754,6 @@ class Input
 	private static var _touches:Map<Int,Touch> = new Map<Int,Touch>();
 	private static var _joysticks:Map<Int,Joystick> = new Map<Int,Joystick>();
 	private static var _control:Map<String,Array<Int>> = new Map<String,Array<Int>>();
-	private static var _joyControl:Array<Map<String,Array<Int>>> = new Array<Map<String,Array<Int>>>();
+	private static var _joyControl:Map<Int,Map<String,Array<Int>>> = new Map<Int,Map<String,Array<Int>>>();
 	private static var _nativeCorrection:Map<String, Int> = new Map<String, Int>();
 }
