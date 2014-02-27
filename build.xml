@@ -64,14 +64,19 @@
 			<arg line="doc.hxml" />
 		</exec>
 		<exec executable="haxedoc" dir="doc">
-			<arg line="haxedoc.xml" />
+			<arg line="neko.xml" />
+			<arg line="-f flash" />
+			<arg line="-f openfl" />
+			<arg line="-f com" />
 		</exec>
 	</target>
 
-	<target name="docset">
+	<target name="docset" depends="doc">
 		<exec executable="haxelib" dir="doc">
 			<arg line="run docset" />
 			<arg line="-i ../template/assets/HaxePunk.svg" />
+			<arg line="-x neko.xml" />
+			<arg line="-t local.xml" />
 			<arg line="HaxePunk" />
 		</exec>
 	</target>

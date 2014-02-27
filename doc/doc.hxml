@@ -1,9 +1,27 @@
+--no-output
+--macro include('com.haxepunk')
+-lib openfl
+-D doc
+-cp ..
+
+--each
+
 -swf haxedoc.swf
 -swf-version 11
--lib openfl
---no-output
--D doc
+-xml flash.xml
+
+--next
+
+-neko haxedoc.n
+-lib openfl-native
+-xml neko.xml
 -D desktop
--xml haxedoc.xml
--cp ..
---macro include('com.haxepunk')
+--remap flash:flash
+
+--next
+
+-cpp haxedoc_cpp
+-xml cpp.xml
+-D desktop
+-lib openfl-native
+--remap flash:flash
