@@ -1,6 +1,7 @@
 package com.haxepunk.masks;
 
 import com.haxepunk.Mask;
+import flash.display.Graphics;
 import flash.geom.Point;
 import com.haxepunk.masks.Polygon;
 
@@ -128,6 +129,15 @@ class Hitbox extends Mask
 		}
 	}
 
+	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
+	{
+		// draw only if the hitbox is part of a Masklist and has a parent
+		if (list != null && parent != null)
+		{
+			graphics.drawRect((parent.x - HXP.camera.x + x) * scaleX, (parent.y - HXP.camera.y + y) * scaleY, width * scaleX, height * scaleY);
+		}
+	}
+	
 	// Hitbox information.
 	private var _width:Int = 0;
 	private var _height:Int = 0;
