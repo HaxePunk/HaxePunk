@@ -6,6 +6,12 @@ abstract Vector(Point)
 {
 	public inline function new(x:Float=0, y:Float=0) { this = new Point(x, y); }
 
+	@:to public function toPoint():Point { return this; }
+	@:from static public function fromPoint(point:Point):Vector
+	{
+		return new Vector(point.x, point.y);
+	}
+
 	public var x(get,set):Float;
 	private inline function get_x():Float { return this.x; }
 	private inline function set_x(value:Float):Float { return this.x = value; }
@@ -24,6 +30,12 @@ abstract Vector(Point)
 		return x * b.x - y * b.y;
 	}
 
+	public inline function invert():Void
+	{
+		x = -x;
+		y = -y;
+	}
+
 	public inline function rotate(angle:Float):Vector
 	{
 		var sin:Float = Math.sin(angle),
@@ -34,8 +46,15 @@ abstract Vector(Point)
 	public function normalize(size:Float=1):Void
 	{
 		var len = length;
-		x = x / len * size;
-		y = y / len * size;
+		if (len == 0)
+		{
+			x = y = 0;
+		}
+		else
+		{
+			x = x / len * size;
+			y = y / len * size;
+		}
 	}
 
 	public var squareLength(get,never):Float;
