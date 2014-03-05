@@ -57,7 +57,7 @@ class HXP
 	public static inline var INT_MAX_VALUE = 2147483646;
 
 	/**
-	 * The color black defined for neko (BitmapInt32) or flash (Int)
+	 * The color black (as an Int)
 	 */
 	public static inline var blackColor = 0x00000000;
 
