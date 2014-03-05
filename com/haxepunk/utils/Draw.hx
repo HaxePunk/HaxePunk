@@ -294,7 +294,7 @@ class Draw
 		}
 		else
 		{
-			circlePlus(x, y, radius, color);
+			circlePlus(x, y, radius, color, 1.0, false);
 		}
 	}
 
