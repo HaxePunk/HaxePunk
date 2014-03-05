@@ -143,7 +143,10 @@ class Masklist extends Hitbox
 	override public function update()
 	{
 		// find bounds of the contained masks
-		var t:Int = 0, l:Int = 0, r:Int = 0, b:Int = 0, h:Hitbox;
+		var t:Int, l:Int, r:Int, b:Int, h:Hitbox;
+		t = l = HXP.INT_MAX_VALUE;
+		r = b = HXP.INT_MIN_VALUE;
+		
 		for (m in _masks)
 		{
 			if ((h = cast(m, Hitbox)) != null)
