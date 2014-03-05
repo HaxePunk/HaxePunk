@@ -94,8 +94,8 @@ class Mask
 	public function project(axis:Vector, projection:Projection):Void
 	{
 		var cur:Float,
-			max:Float = -9999999999.0,
-			min:Float = 9999999999.0;
+			max:Float = Math.NEGATIVE_INFINITY,
+			min:Float = Math.POSITIVE_INFINITY;
 
 		cur = -parent.originX * axis.x - parent.originY * axis.y;
 		if (cur < min)

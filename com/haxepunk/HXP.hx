@@ -52,9 +52,14 @@ class HXP
 #end
 
 	/**
+	 * Flash equivalent: int.MIN_VALUE
+	 */
+	public static inline var INT_MIN_VALUE = -2147483648;
+
+	/**
 	 * Flash equivalent: int.MAX_VALUE
 	 */
-	public static inline var INT_MAX_VALUE = 2147483646;
+	public static inline var INT_MAX_VALUE = 2147483647;
 
 	/**
 	 * The color black defined for neko (BitmapInt32) or flash (Int)
@@ -699,7 +704,7 @@ class HXP
 	public static var randomSeed(default, set):Int = 0;
 	private static inline function set_randomSeed(value:Int):Int
 	{
-		_seed = Std.int(clamp(value, 1.0, INT_MAX_VALUE));
+		_seed = Std.int(clamp(value, 1.0, INT_MAX_VALUE - 1));
 		randomSeed = _seed;
 		return _seed;
 	}
