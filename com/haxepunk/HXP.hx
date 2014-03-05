@@ -734,24 +734,6 @@ class HXP
 	}
 
 	/**
-	 * Optimized version of Lambda.indexOf for Array on dynamic platforms (Lambda.indexOf is less performant on those targets).
-	 *
-	 * @param	arr		The array to look into.
-	 * @param	param	The value to look for.
-	 * @return	Returns the index of the first element [v] within Array [arr].
-	 * This function uses operator [==] to check for equality.
-	 * If [v] does not exist in [arr], the result is -1.
-	 **/
-	public static inline function indexOf<T>(arr:Array<T>, v:T) : Int
-	{
-	#if (flash || js)
-		return untyped arr.indexOf(v);
-	#else
-		return std.Lambda.indexOf(arr, v);
-	#end
-	}
-
-	/**
 	 * Returns the next item after current in the list of options.
 	 * @param	current		The currently selected item (must be one of the options).
 	 * @param	options		An array of all the items to cycle through.
@@ -761,9 +743,9 @@ class HXP
 	public static inline function next<T>(current:T, options:Array<T>, loop:Bool = true):Dynamic
 	{
 		if (loop)
-			return options[(indexOf(options, current) + 1) % options.length];
+			return options[(options.indexOf(current) + 1) % options.length];
 		else
-			return options[Std.int(Math.max(indexOf(options, current) + 1, options.length - 1))];
+			return options[Std.int(Math.max(options.indexOf(current) + 1, options.length - 1))];
 	}
 
 	/**
@@ -776,9 +758,9 @@ class HXP
 	public static inline function prev<T>(current:T, options:Array<T>, loop:Bool = true):Dynamic
 	{
 		if (loop)
-			return options[((indexOf(options, current) - 1) + options.length) % options.length];
+			return options[((options.indexOf(current) - 1) + options.length) % options.length];
 		else
-			return options[Std.int(Math.max(indexOf(options, current) - 1, 0))];
+			return options[Std.int(Math.max(options.indexOf(current) - 1, 0))];
 	}
 
 	/**

@@ -710,7 +710,7 @@ class Console
 			HXP.rect.y = (e.y - HXP.camera.y) * sy - 3;
 			if (rect.intersects(HXP.rect))
 			{
-				if (HXP.indexOf(SELECT_LIST, e) < 0)
+				if (SELECT_LIST.indexOf(e) < 0)
 				{
 					SELECT_LIST.push(e);
 				}
@@ -820,7 +820,7 @@ class Console
 				var graphicScrollY = e.graphic != null ? e.graphic.scrollY : 1;
 
 				// If the Entity is not selected.
-				if (HXP.indexOf(SELECT_LIST, e) < 0)
+				if (SELECT_LIST.indexOf(e) < 0)
 				{
 					colorHitbox = 0xFF0000;
 					colorPosition = 0x00FF00;

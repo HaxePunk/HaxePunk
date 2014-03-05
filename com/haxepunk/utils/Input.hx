@@ -198,11 +198,11 @@ class Input
 				i:Int = v.length;
 			while (i-- > 0)
 			{
-				if ((v[i] < 0) ? _pressNum != 0 : HXP.indexOf(_press, v[i]) >= 0) return true;
+				if ((v[i] < 0) ? _pressNum != 0 : _press.indexOf(v[i]) >= 0) return true;
 			}
 			return false;
 		}
-		return (input < 0) ? _pressNum != 0 : HXP.indexOf(_press, input) >= 0;
+		return (input < 0) ? _pressNum != 0 : _press.indexOf(input) >= 0;
 	}
 
 	/**
@@ -218,11 +218,11 @@ class Input
 				i:Int = v.length;
 			while (i-- > 0)
 			{
-				if ((v[i] < 0) ? _releaseNum != 0 : HXP.indexOf(_release, v[i]) >= 0) return true;
+				if ((v[i] < 0) ? _releaseNum != 0 : _release.indexOf(v[i]) >= 0) return true;
 			}
 			return false;
 		}
-		return (input < 0) ? _releaseNum != 0 : HXP.indexOf(_release, input) >= 0;
+		return (input < 0) ? _releaseNum != 0 : _release.indexOf(input) >= 0;
 	}
 
 	public static function touchPoints(touchCallback:Touch->Void)
