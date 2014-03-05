@@ -5,7 +5,7 @@ class Setup
 	public static function setup()
 	{
 		installDependencies();
-		Sys.command("haxelib run $OPENFL setup");
+		Sys.command('haxelib run $OPENFL setup');
 	}
 
 	public static function update()
