@@ -154,12 +154,8 @@ class AtlasData
 	{
 		if (_dataIndex != 0)
 		{
-			if (_dataIndex < _data.length)
-			{
-				_data.splice(_dataIndex, _data.length - _dataIndex);
-			}
+			_tilesheet.drawTiles(_scene.sprite.graphics, _data, Atlas.smooth, _renderFlags, _dataIndex);
 			_dataIndex = 0;
-			_tilesheet.drawTiles(_scene.sprite.graphics, _data, Atlas.smooth, _renderFlags);
 		}
 	}
 
