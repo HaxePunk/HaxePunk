@@ -1049,7 +1049,7 @@ class Scene extends Tweener
 			{
 				if (e._scene == null)
 				{
-					var idx = _add.indexOf(e);
+					var idx = HXP.indexOf(_add, e);
 					if (idx >= 0) _add.splice(idx, 1);
 					continue;
 				}
@@ -1167,7 +1167,7 @@ class Scene extends Tweener
 				// Remove the layer from the layer list if this was the last entity.
 				if (_layerList.length > 1)
 				{
-					_layerList[_layerList.indexOf(e._layer)] = _layerList[_layerList.length - 1];
+					_layerList[HXP.indexOf(_layerList, e._layer)] = _layerList[_layerList.length - 1];
 					_layerSort = true;
 				}
 				_layerList.pop();
