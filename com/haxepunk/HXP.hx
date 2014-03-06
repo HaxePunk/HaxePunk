@@ -749,11 +749,15 @@ class HXP
 	 **/
 	public static inline function indexOf<T>(arr:Array<T>, v:T) : Int
 	{
-	#if (flash || js)
-		return untyped arr.indexOf(v);
-	#else
-		return std.Lambda.indexOf(arr, v);
-	#end
+		#if (haxe_ver >= 3.1) 
+		return arr.indexOf(v);
+		#else
+			#if (flash || js)
+			return untyped arr.indexOf(v);
+			#else
+			return std.Lambda.indexOf(arr, v);
+			#end
+		#end
 	}
 
 	/**
