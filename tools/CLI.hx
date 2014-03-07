@@ -44,7 +44,9 @@ class CLI
 				case "new":
 					Project.create(args);
 				case "setup":
-					Setup.installDependencies();
+					Setup.setup();
+				case "update":
+					Setup.update();
 				case "help":
 					usage();
 				default:
@@ -65,6 +67,7 @@ class CLI
 
 		print('/green/bold-- HaxePunk $version --/reset\n');
 		print('/blueUSAGE: /green$tool/reset setup');
+		print('/blueUSAGE: /green$tool/reset update');
 		print('/blueUSAGE: /green$tool/reset new [options] [PROJECT_NAME]');
 		print("Options:
   /yellow-s/reset <width>x<height> : Set default size of window (default: 640x480)

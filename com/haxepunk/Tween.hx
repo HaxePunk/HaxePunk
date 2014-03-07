@@ -43,11 +43,12 @@ class Tween extends EventDispatcher
 		_type = type;
 		_ease = ease;
 		_t = 0;
+		_callback = complete;
 		super();
 
-		if (complete != null)
+		if (_callback != null)
 		{
-			addEventListener(TweenEvent.FINISH, complete);
+			addEventListener(TweenEvent.FINISH, _callback);
 		}
 	}
 
@@ -105,6 +106,11 @@ class Tween extends EventDispatcher
 		}
 		_finish = false;
 		dispatchEvent(new TweenEvent(TweenEvent.FINISH));
+		
+		if (_callback != null)
+		{
+			removeEventListener(TweenEvent.FINISH, _callback);
+		}
 	}
 
 	/**
@@ -133,6 +139,7 @@ class Tween extends EventDispatcher
 	private var _time:Float;
 	private var _target:Float;
 
+	private var _callback:CompleteCallback;
 	private var _finish:Bool;
 	private var _parent:Tweener;
 	private var _prev:FriendTween;

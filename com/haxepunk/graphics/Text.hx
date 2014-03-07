@@ -39,7 +39,9 @@ abstract StyleType(TextFormat)
 	@:to public function toTextformat():TextFormat return this;
 
 	@:from public static inline function fromTextFormat(format:TextFormat) return new StyleType(format);
-	@:from public static inline function fromDynamic(object:Dynamic) {
+	@:from public static inline function fromTextOptions(object:TextOptions) return fromDynamic(object);
+	@:from public static inline function fromDynamic(object:Dynamic)
+	{
 		var format = new TextFormat();
 		for (key in Reflect.fields(object))
 		{

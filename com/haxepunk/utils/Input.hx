@@ -617,7 +617,7 @@ class Input
 
 	private static var _enabled:Bool = false;
 	private static var _touchNum:Int = 0;
-	private static var _key:Array<Bool> = new Array<Bool>();
+	private static var _key:Map<Int, Bool> = new Map<Int, Bool>();
 	private static var _keyNum:Int = 0;
 	private static var _press:Array<Int> = new Array<Int>();
 	private static var _pressNum:Int = 0;

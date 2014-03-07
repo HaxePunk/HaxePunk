@@ -101,6 +101,11 @@ class Project
 
 						filename = replaceTemplateVars(filename);
 					}
+					
+					if (StringTools.endsWith(filename, ".hxproj"))
+					{
+						filename = StringTools.replace(filename, "{{PROJECT_NAME}}", projectName);
+					}
 
 					CLI.print(filename);
 

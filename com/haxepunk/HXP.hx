@@ -53,12 +53,17 @@ class HXP
 #end
 
 	/**
-	 * Flash equivalent: int.MAX_VALUE
+	 * Flash equivalent: int.MIN_VALUE
 	 */
-	public static inline var INT_MAX_VALUE:Int = 2147483646;
+	public static inline var INT_MIN_VALUE = -2147483648;
 
 	/**
-	 * The color black
+	 * Flash equivalent: int.MAX_VALUE
+	 */
+	public static inline var INT_MAX_VALUE = 2147483647;
+
+	/**
+	 * The color black (as an Int)
 	 */
 	@:deprecated public static inline var blackColor:Int = 0x00000000;
 
@@ -674,7 +679,7 @@ class HXP
 	public static var randomSeed(default, set):Int = 0;
 	private static inline function set_randomSeed(value:Int):Int
 	{
-		_seed = Std.int(clamp(value, 1.0, INT_MAX_VALUE));
+		_seed = Std.int(clamp(value, 1.0, INT_MAX_VALUE - 1));
 		randomSeed = _seed;
 		return _seed;
 	}
@@ -719,11 +724,15 @@ class HXP
 	 **/
 	public static inline function indexOf<T>(arr:Array<T>, v:T) : Int
 	{
-	#if (flash || js)
-		return untyped arr.indexOf(v);
-	#else
-		return std.Lambda.indexOf(arr, v);
-	#end
+		#if (haxe_ver >= 3.1)
+		return arr.indexOf(v);
+		#else
+			#if (flash || js)
+			return untyped arr.indexOf(v);
+			#else
+			return std.Lambda.indexOf(arr, v);
+			#end
+		#end
 	}
 
 	/**

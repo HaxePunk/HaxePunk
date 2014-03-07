@@ -249,6 +249,38 @@ class Draw
 	}
 
 	/**
+	 * Draws a rectangle.
+	 * @param	x			X position of the rectangle.
+	 * @param	y			Y position of the rectangle.
+	 * @param	width		Width of the rectangle.
+	 * @param	height		Height of the rectangle.
+	 * @param	color		Color of the rectangle.
+	 * @param	alpha		Alpha of the rectangle.
+	 * @param	fill		If the rectangle should be filled with the color (true) or just an outline (false).
+	 * @param	thick		How thick the outline should be (only applicable when fill = false).
+	 */
+	public static function rectPlus(x:Float, y:Float, width:Float, height:Float, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1)
+	{
+		color = 0xFFFFFF & color;
+		
+		if (HXP.renderMode == RenderMode.BUFFER) _graphics.clear();
+		
+		if (fill) 
+		{
+			_graphics.beginFill(color, alpha);
+		} 
+		else 
+		{
+			_graphics.lineStyle(thick, color, alpha);
+		}
+		
+		_graphics.drawRect(x - _camera.x, y - _camera.y, width, height);
+		_graphics.endFill();
+		
+		HXP.renderMode == RenderMode.BUFFER ? drawToScreen() : _graphics.lineStyle(0);
+	}
+		
+	/**
 	 * Draws a non-filled, pixelated circle.
 	 * @param	x			Center x position.
 	 * @param	y			Center y position.
@@ -294,7 +326,7 @@ class Draw
 		}
 		else
 		{
-			circlePlus(x, y, radius, color);
+			circlePlus(x, y, radius, color, 1.0, false);
 		}
 	}
 
