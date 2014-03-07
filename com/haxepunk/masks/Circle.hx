@@ -245,8 +245,8 @@ class Circle extends Hitbox
 		var ox:Float = other._x, oy:Float = other._y;
 		if (other.parent != null)
 		{
-			ox = other.parent.x - ox;
-			oy = other.parent.y - oy;
+			ox += other.parent.x;
+			oy += other.parent.y;
 		}
 
 		var distanceX:Float = Math.abs(px - ox - _otherHalfWidth),
