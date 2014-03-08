@@ -22,6 +22,12 @@ class Polygon extends Hitbox
 	public var origin:Point;
 
 
+	// Polygon bounding box.
+	public var minX(default, null):Int = 0;
+	public var minY(default, null):Int = 0;
+	public var maxX(default, null):Int = 0;
+	public var maxY(default, null):Int = 0;
+
 	/**
 	 * Constructor.
 	 * @param	points		An array of coordinates that define the polygon (must have at least 3).
@@ -415,6 +421,11 @@ class Polygon extends Hitbox
 		var projY:Int = Math.round(secondProj.min);
 		_height = Math.round(secondProj.max - secondProj.min);
 
+		minX = projX;
+		minY = projY;
+		maxX = Math.round(minX + _width);
+		maxY = Math.round(minY + _height);
+		
 		if (list != null)
 		{
 			// update parent list

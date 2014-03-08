@@ -146,10 +146,23 @@ class Masklist extends Hitbox
 		var t:Int, l:Int, r:Int, b:Int, h:Hitbox;
 		t = l = HXP.INT_MAX_VALUE;
 		r = b = HXP.INT_MIN_VALUE;
+		var h:Hitbox;
+		var p:Polygon;
 		
 		for (m in _masks)
 		{
-			if ((h = cast(m, Hitbox)) != null)
+			if (Std.is(m, Polygon)) 
+			{
+				p = cast m;
+				if (p != null)
+				{
+					if (p.minX < l) l = p.minX;
+					if (p.minY < t) t = p.minY;
+					if (p.maxX > r) r = p.maxX;
+					if (p.maxY > b) b = p.maxY;
+				}
+			} 
+			else if ((h = cast(m, Hitbox)) != null)
 			{
 				if (h.x < l) l = h.x;
 				if (h.y < t) t = h.y;

@@ -93,10 +93,10 @@ class Circle extends Hitbox
 
 	private function collideGrid(other:Grid):Bool
 	{
-		var thisX:Float = _x + _parent.x, 
+		var thisX:Float = _x + _parent.x,
 			thisY:Float = _y + _parent.y;
 
-		var otherX:Float = other.x + other._parent.x, 
+		var otherX:Float = other.x + other._parent.x,
 			otherY:Float = other.y + other._parent.y;
 
 		var entityDistX:Float = thisX - otherX, entityDistY:Float = thisY - otherY;
@@ -136,10 +136,10 @@ class Circle extends Hitbox
 
 	private function collideSlopedGrid(other:SlopedGrid):Bool
 	{
-		var thisX:Float = _x + _parent.x, 
+		var thisX:Float = _x + _parent.x,
 			thisY:Float = _y + _parent.y;
 
-		var otherX:Float = other.x + other._parent.x, 
+		var otherX:Float = other.x + other._parent.x,
 			otherY:Float = other.y + other._parent.y;
 
 		var entityDistX:Float = thisX - otherX, entityDistY:Float = thisY - otherY;
@@ -219,11 +219,15 @@ class Circle extends Hitbox
 		var _otherHalfWidth:Float = other._width * 0.5;
 		var _otherHalfHeight:Float = other._height * 0.5;
 
-		var px:Float = _x + _parent.x, 
+		var px:Float = _x + _parent.x,
 			py:Float = _y + _parent.y;
 
-		var ox:Float = other._x + other._parent.x, 
-			oy:Float = other._y + other._parent.y;
+		var ox:Float = other._x, oy:Float = other._y;
+		if (other.parent != null)
+		{
+			ox += other.parent.x;
+			oy += other.parent.y;
+		}
 
 		var distanceX:Float = Math.abs(px - ox - _otherHalfWidth),
 			distanceY:Float = Math.abs(py - oy - _otherHalfHeight);

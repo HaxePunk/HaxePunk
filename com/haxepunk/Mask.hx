@@ -114,7 +114,7 @@ class Mask
 		if (cur > max)
 			max = cur;
 
-		cur = (-_parent.originX + _parent.width) * axis.x + (-_parent.originY + _parent.height)* axis.y;
+		cur = (-_parent.originX + _parent.width) * axis.x + (-_parent.originY + _parent.height) * axis.y;
 		if (cur < min)
 			min = cur;
 		if (cur > max)
