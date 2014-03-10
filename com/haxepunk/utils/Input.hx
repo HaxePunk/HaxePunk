@@ -182,7 +182,10 @@ class Input
 			}
 			return false;
 		}
-		return input < 0 ? _keyNum > 0 : _key[input];
+		if (Std.is(input, Int)) {
+			return input < 0 ? _keyNum > 0 : _key[cast input];
+		}
+		return false;
 	}
 
 	/**
