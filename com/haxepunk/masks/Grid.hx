@@ -307,11 +307,14 @@ class Grid extends Hitbox
 	/** @private Collides against an Entity. */
 	override private function collideMask(other:Mask):Bool
 	{
+		var parent = this.parent != null ? this.parent : Entity._FAKE_PARENT,
+			otherParent = other.parent != null ? other.parent : Entity._FAKE_PARENT;
+		
 		var rectX:Int, rectY:Int, pointX:Int, pointY:Int;
-		_rect.x = other.parent.x - other.parent.originX - parent.x + parent.originX;
-		_rect.y = other.parent.y - other.parent.originY - parent.y + parent.originY;
-		pointX  = Std.int((_rect.x + other.parent.width - 1) / _tile.width) + 1;
-		pointY  = Std.int((_rect.y + other.parent.height -1) / _tile.height) + 1;
+		_rect.x = otherParent.x - otherParent.originX - parent.x + parent.originX;
+		_rect.y = otherParent.y - otherParent.originY - parent.y + parent.originY;
+		pointX  = Std.int((_rect.x + otherParent.width - 1) / _tile.width) + 1;
+		pointY  = Std.int((_rect.y + otherParent.height -1) / _tile.height) + 1;
 		rectX   = Std.int(_rect.x / _tile.width);
 		rectY   = Std.int(_rect.y / _tile.height);
 
@@ -331,9 +334,12 @@ class Grid extends Hitbox
 	/** @private Collides against a Hitbox. */
 	override private function collideHitbox(other:Hitbox):Bool
 	{
+		var parent = this.parent != null ? this.parent : Entity._FAKE_PARENT,
+			otherParent = other.parent != null ? other.parent : Entity._FAKE_PARENT;
+		
 		var rectX:Int, rectY:Int, pointX:Int, pointY:Int;
-		_rect.x = other.parent.x - other._x - parent.x + _x;
-		_rect.y = other.parent.y - other._y - parent.y + _y;
+		_rect.x = otherParent.x - other._x - parent.x + _x;
+		_rect.y = otherParent.y - other._y - parent.y + _y;
 		pointX = Std.int((_rect.x + other._width  - 1) / _tile.width) + 1;
 		pointY = Std.int((_rect.y + other._height - 1) / _tile.height) + 1;
 		rectX  = Std.int(_rect.x / _tile.width);
@@ -356,8 +362,11 @@ class Grid extends Hitbox
 	private function collidePixelmask(other:Pixelmask):Bool
 	{
 #if flash
-		var x1:Int = Std.int(other.parent.x + other.x - parent.x - _x),
-			y1:Int = Std.int(other.parent.y + other.y - parent.y - _y),
+		var parent = this.parent != null ? this.parent : Entity._FAKE_PARENT,
+			otherParent = other.parent != null ? other.parent : Entity._FAKE_PARENT;
+		
+		var x1:Int = Std.int(otherParent.x + other.x - parent.x - _x),
+			y1:Int = Std.int(otherParent.y + other.y - parent.y - _y),
 			x2:Int = Std.int((x1 + other.width - 1) / _tile.width),
 			y2:Int = Std.int((y1 + other.height - 1) / _tile.height);
 		_point.x = x1;
@@ -404,17 +413,20 @@ class Grid extends Hitbox
 	/** @private Collides against a Grid. */
 	private function collideGrid(other:Grid):Bool
 	{
+		var parent = this.parent != null ? this.parent : Entity._FAKE_PARENT,
+			otherParent = other.parent != null ? other.parent : Entity._FAKE_PARENT;
+		
 		// Find the X edges
 		var ax1:Float = parent.x + _x;
 		var ax2:Float = ax1 + _width;
-		var bx1:Float = other.parent.x + other._x;
+		var bx1:Float = otherParent.x + other._x;
 		var bx2:Float = bx1 + other._width;
 		if (ax2 < bx1 || ax1 > bx2) return false;
 
 		// Find the Y edges
 		var ay1:Float = parent.y + _y;
 		var ay2:Float = ay1 + _height;
-		var by1:Float = other.parent.y + other._y;
+		var by1:Float = otherParent.y + other._y;
 		var by2:Float = by1 + other._height;
 		if (ay2 < by1 || ay1 > by2) return false;
 
@@ -438,9 +450,9 @@ class Grid extends Hitbox
 		else
 		{
 			tw = other._tile.width;
-			ox1 -= other.parent.x + other._x;
+			ox1 -= otherParent.x + other._x;
 			ox1 = Std.int(ox1 / tw) * tw;
-			ox1 += other.parent.x + other._x;
+			ox1 += otherParent.x + other._x;
 		}
 		if (_tile.height < other._tile.height)
 		{
@@ -452,9 +464,9 @@ class Grid extends Hitbox
 		else
 		{
 			th = other._tile.height;
-			oy1 -= other.parent.y + other._y;
+			oy1 -= otherParent.y + other._y;
 			oy1 = Std.int(oy1 / th) * th;
-			oy1 += other.parent.y + other._y;
+			oy1 += otherParent.y + other._y;
 		}
 
 		// Step through the overlapping rectangle
@@ -464,18 +476,18 @@ class Grid extends Hitbox
 		{
 			// Get the row indices for the top and bottom edges of the tile
 			var ar1:Int = Std.int((y - parent.y - _y) / _tile.height);
-			var br1:Int = Std.int((y - other.parent.y - other._y) / other._tile.height);
+			var br1:Int = Std.int((y - otherParent.y - other._y) / other._tile.height);
 			var ar2:Int = Std.int(((y - parent.y - _y) + (th - 1)) / _tile.height);
-			var br2:Int = Std.int(((y - other.parent.y - other._y) + (th - 1)) / other._tile.height);
+			var br2:Int = Std.int(((y - otherParent.y - other._y) + (th - 1)) / other._tile.height);
 
 			x = ox1;
 			while (x < ox2)
 			{
 				// Get the column indices for the left and right edges of the tile
 				var ac1:Int = Std.int((x - parent.x - _x) / _tile.width);
-				var bc1:Int = Std.int((x - other.parent.x - other._x) / other._tile.width);
+				var bc1:Int = Std.int((x - otherParent.x - other._x) / other._tile.width);
 				var ac2:Int = Std.int(((x - parent.x - _x) + (tw - 1)) / _tile.width);
-				var bc2:Int = Std.int(((x - other.parent.x - other._x) + (tw - 1)) / other._tile.width);
+				var bc2:Int = Std.int(((x - otherParent.x - other._x) + (tw - 1)) / other._tile.width);
 
 				// Check all the corners for collisions
 				if ((getTile(ac1, ar1) && other.getTile(bc1, br1))

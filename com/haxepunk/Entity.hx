@@ -10,6 +10,8 @@ import com.haxepunk.graphics.Graphiclist;
  * Main game Entity class updated by Scene.
  */
 @:allow(com.haxepunk.Scene)
+@:allow(com.haxepunk.Mask)
+@:allow(com.haxepunk.masks)
 class Entity extends Tweener
 {
 	/**
@@ -915,4 +917,6 @@ class Entity extends Tweener
 	private var _graphic:Graphic;
 	private var _point:Point;
 	private var _camera:Point;
+	
+	static private var _FAKE_PARENT = new Entity();
 }

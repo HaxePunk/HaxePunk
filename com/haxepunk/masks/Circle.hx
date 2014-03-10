@@ -38,28 +38,35 @@ class Circle extends Hitbox
 	/** @private Collides against an Entity. */
 	override private function collideMask(other:Mask):Bool
 	{
-		var distanceX = Math.abs(parent.x + _x - other.parent.x - other.parent.width * 0.5),
-			distanceY = Math.abs(parent.y + _y - other.parent.y - other.parent.height * 0.5);
+		var parent = this.parent != null ? this.parent : Entity._FAKE_PARENT,
+			otherParent = other.parent != null ? other.parent : Entity._FAKE_PARENT;
+		
+ 		var otherHalfWidth:Float = otherParent.width * 0.5,
+			otherHalfHeight:Float = otherParent.height * 0.5,
+			distanceX = Math.abs(parent.x + _x - otherParent.x - otherHalfWidth),
+			distanceY = Math.abs(parent.y + _y - otherParent.y - otherHalfHeight);
 
-		if (distanceX > other.parent.width * 0.5 + radius
-			|| distanceY > other.parent.height * 0.5 + radius)
+		if (distanceX > otherHalfWidth + radius || distanceY > otherHalfHeight + radius)
 		{
-			return false;//The hitbox is to far away so return false
+			return false;	// the hitbox is too far away so return false
 		}
-		if (distanceX <= other.parent.width * 0.5|| distanceY <= other.parent.height * 0.5)
+		if (distanceX <= otherHalfWidth || distanceY <= otherHalfHeight)
 		{
 			return true;
 		}
-		var distanceToCorner = (distanceX - other.parent.width * 0.5) * (distanceX - other.parent.width * 0.5)
-			+ (distanceY - other.parent.height * 0.5) * (distanceY - other.parent.height * 0.5);
+		var distanceToCorner = (distanceX - otherHalfWidth) * (distanceX - otherHalfWidth)
+			+ (distanceY - otherHalfHeight) * (distanceY - otherHalfHeight);
 
 		return distanceToCorner <= _squaredRadius;
 	}
 
 	private function collideCircle(other:Circle):Bool
 	{
-		var dx:Float = (parent.x + _x) - (other.parent.x + other._x);
-		var dy:Float = (parent.y + _y) - (other.parent.y + other._y);
+		var parent = this.parent != null ? this.parent : Entity._FAKE_PARENT,
+			otherParent = other.parent != null ? other.parent : Entity._FAKE_PARENT;
+		
+		var dx:Float = (parent.x + _x) - (otherParent.x + other._x);
+		var dy:Float = (parent.y + _y) - (otherParent.y + other._y);
 		return (dx * dx + dy * dy) < Math.pow(_radius + other._radius, 2);
 	}
 
@@ -93,19 +100,13 @@ class Circle extends Hitbox
 
 	private function collideGrid(other:Grid):Bool
 	{
-		var thisX:Float = _x, thisY:Float = _y;
-		if (parent != null)
-		{
-			thisX += parent.x;
-			thisY += parent.y;
-		}
-
-		var otherX:Float = other.x, otherY:Float = other.y;
-		if (other.parent != null)
-		{
-			otherX += other.parent.x;
-			otherY += other.parent.y;
-		}
+		var parent = this.parent != null ? this.parent : Entity._FAKE_PARENT,
+			otherParent = other.parent != null ? other.parent : Entity._FAKE_PARENT;
+		
+		var thisX:Float = _x + parent.x, 
+			thisY:Float = _y + parent.y,
+			otherX:Float = other.x + otherParent.x,
+			otherY:Float = other.y + otherParent.y;
 
 		var entityDistX:Float = thisX - otherX, entityDistY:Float = thisY - otherY;
 
@@ -144,19 +145,13 @@ class Circle extends Hitbox
 
 	private function collideSlopedGrid(other:SlopedGrid):Bool
 	{
-		var thisX:Float = _x, thisY:Float = _y;
-		if (parent != null)
-		{
-			thisX += parent.x;
-			thisY += parent.y;
-		}
-
-		var otherX:Float = other.x, otherY:Float = other.y;
-		if (other.parent != null)
-		{
-			otherX += other.parent.x;
-			otherY += other.parent.y;
-		}
+		var parent = this.parent != null ? this.parent : Entity._FAKE_PARENT,
+			otherParent = other.parent != null ? other.parent : Entity._FAKE_PARENT;
+		
+		var thisX:Float = _x + parent.x, 
+			thisY:Float = _y + parent.y,
+			otherX:Float = other.x + otherParent.x,
+			otherY:Float = other.y + otherParent.y;
 
 		var entityDistX:Float = thisX - otherX, entityDistY:Float = thisY - otherY;
 
@@ -232,36 +227,24 @@ class Circle extends Hitbox
 	/** @private Collides against a Hitbox. */
 	override private function collideHitbox(other:Hitbox):Bool
 	{
-		var _otherHalfWidth:Float = other._width * 0.5;
-		var _otherHalfHeight:Float = other._height * 0.5;
+		var parent = this.parent != null ? this.parent : Entity._FAKE_PARENT,
+			otherParent = other.parent != null ? other.parent : Entity._FAKE_PARENT;
+		
+ 		var otherHalfWidth:Float = other._width * 0.5,
+			otherHalfHeight:Float = other._height * 0.5,
+			distanceX = Math.abs(parent.x + _x - otherParent.x - otherHalfWidth),
+			distanceY = Math.abs(parent.y + _y - otherParent.y - otherHalfHeight);
 
-		var px:Float = _x, py:Float = _y;
-		if (parent != null)
-		{
-			px += parent.x;
-			py += parent.y;
-		}
-
-		var ox:Float = other._x, oy:Float = other._y;
-		if (other.parent != null)
-		{
-			ox += other.parent.x;
-			oy += other.parent.y;
-		}
-
-		var distanceX:Float = Math.abs(px - ox - _otherHalfWidth),
-			distanceY:Float = Math.abs(py - oy - _otherHalfHeight);
-
-		if (distanceX > _otherHalfWidth + radius || distanceY > _otherHalfHeight + radius)
+		if (distanceX > otherHalfWidth + radius || distanceY > otherHalfHeight + radius)
 		{
 			return false;	// the hitbox is too far away so return false
 		}
-		if (distanceX <= _otherHalfWidth || distanceY <= _otherHalfHeight)
+		if (distanceX <= otherHalfWidth || distanceY <= otherHalfHeight)
 		{
 			return true;
 		}
-		var distanceToCorner:Float = (distanceX - _otherHalfWidth) * (distanceX - _otherHalfWidth)
-			+ (distanceY - _otherHalfHeight) * (distanceY - _otherHalfHeight);
+		var distanceToCorner = (distanceX - otherHalfWidth) * (distanceX - otherHalfWidth)
+			+ (distanceY - otherHalfHeight) * (distanceY - otherHalfHeight);
 
 		return distanceToCorner <= _squaredRadius;
 	}

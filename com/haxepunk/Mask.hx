@@ -59,10 +59,13 @@ class Mask
 	/** @private Collide against an Entity. */
 	private function collideMask(other:Mask):Bool
 	{
-		return parent.x - parent.originX + parent.width > other.parent.x - other.parent.originX
-			&& parent.y - parent.originY + parent.height > other.parent.y - other.parent.originY
-			&& parent.x - parent.originX < other.parent.x - other.parent.originX + other.parent.width
-			&& parent.y - parent.originY < other.parent.y - other.parent.originY + other.parent.height;
+		var parent = this.parent != null ? this.parent : Entity._FAKE_PARENT,
+			otherParent = other.parent != null ? other.parent : Entity._FAKE_PARENT;
+		
+		return parent.x - parent.originX + parent.width > otherParent.x - otherParent.originX
+			&& parent.y - parent.originY + parent.height > otherParent.y - otherParent.originY
+			&& parent.x - parent.originX < otherParent.x - otherParent.originX + otherParent.width
+			&& parent.y - parent.originY < otherParent.y - otherParent.originY + otherParent.height;
 	}
 
 	private function collideMasklist(other:Masklist):Bool
@@ -93,6 +96,7 @@ class Mask
 
 	public function project(axis:Vector, projection:Projection):Void
 	{
+		var parent = this.parent != null ? this.parent : Entity._FAKE_PARENT;
 		var cur:Float,
 			max:Float = Math.NEGATIVE_INFINITY,
 			min:Float = Math.POSITIVE_INFINITY;

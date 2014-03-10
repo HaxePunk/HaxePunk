@@ -59,9 +59,12 @@ class Polygon extends Hitbox
 	 */
 	override private function collideMask(other:Mask):Bool
 	{
+		var parent = this.parent != null ? this.parent : Entity._FAKE_PARENT,
+			otherParent = other.parent != null ? other.parent : Entity._FAKE_PARENT;
+		
 		var offset:Float,
-			offsetX:Float = parent.x + _x - other.parent.x,
-			offsetY:Float = parent.y + _y - other.parent.y;
+			offsetX:Float = parent.x + _x - otherParent.x,
+			offsetY:Float = parent.y + _y - otherParent.y;
 
 		// project on the vertical axis of the hitbox/mask
 		project(vertical, firstProj);
@@ -112,15 +115,18 @@ class Polygon extends Hitbox
 	/**
 	 * Checks for collisions with a Hitbox.
 	 */
-	override private function collideHitbox(hitbox:Hitbox):Bool
+	override private function collideHitbox(other:Hitbox):Bool
 	{
+		var parent = this.parent != null ? this.parent : Entity._FAKE_PARENT,
+			otherParent = other.parent != null ? other.parent : Entity._FAKE_PARENT;
+		
 		var offset:Float,
-			offsetX:Float = parent.x + _x - hitbox.parent.x,
-			offsetY:Float = parent.y + _y - hitbox.parent.y;
+			offsetX:Float = parent.x + _x - otherParent.x,
+			offsetY:Float = parent.y + _y - otherParent.y;
 
 		// project on the vertical axis of the hitbox
 		project(vertical, firstProj);
-		hitbox.project(vertical, secondProj);
+		other.project(vertical, secondProj);
 
 		firstProj.min += offsetY;
 		firstProj.max += offsetY;
@@ -133,7 +139,7 @@ class Polygon extends Hitbox
 
 		// project on the horizontal axis of the hitbox
 		project(horizontal, firstProj);
-		hitbox.project(horizontal, secondProj);
+		other.project(horizontal, secondProj);
 
 		firstProj.min += offsetX;
 		firstProj.max += offsetX;
@@ -149,7 +155,7 @@ class Polygon extends Hitbox
 		for (a in _axes)
 		{
 			project(a, firstProj);
-			hitbox.project(a, secondProj);
+			other.project(a, secondProj);
 
 			offset = offsetX * a.x + offsetY * a.y;
 			firstProj.min += offset;
@@ -170,30 +176,33 @@ class Polygon extends Hitbox
 	 *
 	 * Internally sets up an Hitbox out of each solid Grid tile and uses that for collision check.
 	 */
-	private function collideGrid(grid:Grid):Bool
+	private function collideGrid(other:Grid):Bool
 	{
-		var tileW:Int = grid.tileWidth;
-		var tileH:Int = grid.tileHeight;
+		var parent = this.parent != null ? this.parent : Entity._FAKE_PARENT,
+			otherParent = other.parent != null ? other.parent : Entity._FAKE_PARENT;
+		
+		var tileW:Int = other.tileWidth;
+		var tileH:Int = other.tileHeight;
 		var solidTile:Bool;
 
 		_fakeEntity.width = tileW;
 		_fakeEntity.height = tileH;
 		_fakeEntity.x = parent.x;
 		_fakeEntity.y = parent.y;
-		_fakeEntity.originX = grid.parent.originX + grid._x;
-		_fakeEntity.originY = grid.parent.originY + grid._y;
+		_fakeEntity.originX = otherParent.originX + other._x;
+		_fakeEntity.originY = otherParent.originY + other._y;
 
 		_fakeTileHitbox._width = tileW;
 		_fakeTileHitbox._height = tileH;
 		_fakeTileHitbox.parent = _fakeEntity;
 
-		for (r in 0...grid.rows)
+		for (r in 0...other.rows)
 		{
-			for (c in 0...grid.columns)
+			for (c in 0...other.columns)
 			{
-				_fakeEntity.x = grid.parent.x + grid._x + c * tileW;
-				_fakeEntity.y = grid.parent.y + grid._y + r * tileH;
-				solidTile = grid.getTile(c, r);
+				_fakeEntity.x = otherParent.x + other._x + c * tileW;
+				_fakeEntity.y = otherParent.y + other._y + r * tileH;
+				solidTile = other.getTile(c, r);
 
 				if (solidTile && collideHitbox(_fakeTileHitbox)) return true;
 			}
@@ -204,8 +213,11 @@ class Polygon extends Hitbox
 	/**
 	 * Checks for collision with a circle.
 	 */
-	private function collideCircle(circle:Circle):Bool
+	private function collideCircle(other:Circle):Bool
 	{
+		var parent = this.parent != null ? this.parent : Entity._FAKE_PARENT,
+			otherParent = other.parent != null ? other.parent : Entity._FAKE_PARENT;
+		
 		var edgesCrossed:Int = 0;
 		var p1:Point, p2:Point;
 		var i:Int, j:Int;
@@ -222,10 +234,10 @@ class Polygon extends Hitbox
 			p1 = _points[i];
 			p2 = _points[j];
 
-			var distFromCenter:Float = (p2.x - p1.x) * (circle._y + circle.parent.y - p1.y - offsetY) / (p2.y - p1.y) + p1.x + offsetX;
+			var distFromCenter:Float = (p2.x - p1.x) * (other._y + otherParent.y - p1.y - offsetY) / (p2.y - p1.y) + p1.x + offsetX;
 
-			if ((p1.y + offsetY > circle._y + circle.parent.y) != (p2.y + offsetY > circle._y + circle.parent.y)
-				&& (circle._x + circle.parent.x < distFromCenter))
+			if ((p1.y + offsetY > other._y + otherParent.y) != (p2.y + offsetY > other._y + otherParent.y)
+				&& (other._x + otherParent.x < distFromCenter))
 			{
 				edgesCrossed++;
 			}
@@ -236,9 +248,9 @@ class Polygon extends Hitbox
 		if (edgesCrossed & 1 > 0) return true;
 
 		// check if minimum distance from circle center to each polygon side is less than radius
-		var radiusSqr:Float = circle.radius * circle.radius;
-		var cx:Float = circle._x + circle.parent.x;
-		var cy:Float = circle._y + circle.parent.y;
+		var radiusSqr:Float = other.radius * other.radius;
+		var cx:Float = other._x + otherParent.x;
+		var cy:Float = other._y + otherParent.y;
 		var minDistanceSqr:Float = 0;
 		var closestX:Float;
 		var closestY:Float;
@@ -289,9 +301,12 @@ class Polygon extends Hitbox
 	 */
 	private function collidePolygon(other:Polygon):Bool
 	{
+		var parent = this.parent != null ? this.parent : Entity._FAKE_PARENT,
+			otherParent = other.parent != null ? other.parent : Entity._FAKE_PARENT;
+		
 		var offset:Float;
-		var offsetX:Float = parent.x + _x - other.parent.x;
-		var offsetY:Float = parent.y + _y - other.parent.y;
+		var offsetX:Float = parent.x + _x - otherParent.x;
+		var offsetY:Float = parent.y + _y - otherParent.y;
 
 		// project other on this polygon axes
 		// for a collision to be present all projections must overlap
