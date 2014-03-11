@@ -18,22 +18,22 @@ typedef RenderFunction = AtlasRegion -> GlyphData -> Float -> Float -> Void;
 
 class BitmapText extends Graphic
 {
-	public var width:Float=0;
-	public var height:Float=0;
-	public var textWidth:Int=0;
-	public var textHeight:Int=0;
+	public var width:Float = 0;
+	public var height:Float = 0;
+	public var textWidth:Int = 0;
+	public var textHeight:Int = 0;
 	public var autoWidth:Bool = false;
 	public var autoHeight:Bool = false;
-	public var size:Int=0;
-	public var wrap:Bool=false;
+	public var size:Int = 0;
+	public var wrap:Bool = false;
 
-	public var scale:Float=1;
-	public var scaleX:Float=1;
-	public var scaleY:Float=1;
+	public var scale:Float = 1;
+	public var scaleX:Float = 1;
+	public var scaleY:Float = 1;
 
 	public var lines:Array<String>;
-	public var lineSpacing:Int=0;
-	public var charSpacing:Int=0;
+	public var lineSpacing:Int = 0;
+	public var charSpacing:Int = 0;
 
 	/**
 	 * BitmapText constructor.
@@ -49,22 +49,20 @@ class BitmapText extends Graphic
 	 * 						wordWrap	Automatic word wrapping.
 	 * 						resizable	If the text field can automatically resize if its contents grow. (Currently ignored.)
 	 * 						color		Text color.
-	 * 						leading		Vertical space between lines.
-	 *						richText	If the text field uses a rich text string
+	 * 						leading		Vertical space between lines. (Currently ignored.)
+	 *						richText	If the text field uses a rich text string. (Currently ignored.) 
 	 */
-	public function new(text:String, x:Float=0, y:Float=0, width:Float=0, height:Float=0, ?options:TextOptions)
+	public function new(text:String, x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0, ?options:TextOptions)
 	{
 		super();
 
-		if (options == null)
-		{
-			options = {};
-			options.color = 0xFFFFFF;
-		}
-		wrap = options.wordWrap;
+		if (options == null) options = {};
 
-		if (options.font == null)  options.font = HXP.defaultFont;
-		if (options.size == 0)     options.size = 16;
+		// defaults
+		if (!Reflect.hasField(options, "font"))      options.font      = HXP.defaultFont;
+		if (!Reflect.hasField(options, "size"))      options.size      = 16;
+		if (!Reflect.hasField(options, "color"))     options.color     = 0xFFFFFF;
+		if (!Reflect.hasField(options, "wordWrap"))  options.wordWrap  = false;
 
 		// load the font as a TextureAtlas
 		var font = BitmapFontAtlas.getFont(options.font);
@@ -94,7 +92,7 @@ class BitmapText extends Graphic
 
 		this.color = options.color;
 		updateColor();
-		this.text = text;
+		this.text = text != null ? text : "";
 	}
 
 	private var _red:Float;

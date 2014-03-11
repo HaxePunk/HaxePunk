@@ -54,7 +54,12 @@ class BitmapFontAtlas extends TextureAtlas
 	{
 		var atlas = new BitmapFontAtlas(StringTools.replace(file, ".fnt", ".png"));
 
-		var xml = Xml.parse(Assets.getText(file));
+		var xmlText = Assets.getText(file);
+		
+		if (xmlText == null) throw 'BitmapFontAtlas: "$file" not found!';
+
+		var xml = Xml.parse(xmlText);
+		
 		var fast = new Fast(xml.firstElement());
 
 		atlas.lineHeight = Std.parseInt(fast.node.common.att.lineHeight);
@@ -68,7 +73,15 @@ class BitmapFontAtlas extends TextureAtlas
 			HXP.rect.width = Std.parseInt(char.att.width);
 			HXP.rect.height = Std.parseInt(char.att.height);
 
-			var glyph = char.att.letter;
+			
+			var glyph:String = null;
+			if (char.has.letter) {
+				glyph = char.att.letter;
+			} else if (char.has.id) {
+				glyph = String.fromCharCode(Std.parseInt(char.att.id));
+			}
+			if (glyph == null) throw '"$file" is not a valid .fnt file!';
+			
 			glyph = switch(glyph) {
 				case "space": ' ';
 				case "&quot;": '"';
