@@ -60,7 +60,7 @@ class BitmapText extends Graphic
 
 		// defaults
 		if (!Reflect.hasField(options, "font"))      options.font      = HXP.defaultFont;
-		if (!Reflect.hasField(options, "size"))      options.size      = 16;
+		if (!Reflect.hasField(options, "size"))      options.size      = null;
 		if (!Reflect.hasField(options, "color"))     options.color     = 0xFFFFFF;
 		if (!Reflect.hasField(options, "wordWrap"))  options.wordWrap  = false;
 
@@ -73,12 +73,13 @@ class BitmapText extends Graphic
 		// failure to load
 		if (_font == null)
 			throw "Invalid font glyphs provided.";
-
+		
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		this.size = options.size;
+		wrap = options.wordWrap;
+		size = options.size != null ? options.size : _font.fontSize;
 
 		autoWidth = (width == 0);
 		autoHeight = (height == 0);
@@ -132,8 +133,10 @@ class BitmapText extends Graphic
 
 		if (blit)
 		{
-			_colorTransform.color = color;
-			_colorTransform.alphaMultiplier = alpha;
+			if (alpha < 1 || color != 0xFFFFFF) {
+				_colorTransform.color = color;
+				_colorTransform.alphaMultiplier = alpha;
+			}
 		}
 	}
 
