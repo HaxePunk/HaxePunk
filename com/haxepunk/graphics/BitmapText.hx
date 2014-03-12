@@ -16,6 +16,13 @@ import com.haxepunk.graphics.atlas.AtlasRegion;
 
 typedef RenderFunction = AtlasRegion -> GlyphData -> Float -> Float -> Void;
 
+typedef BitmapTextOptions = {
+	> TextOptions,
+	@:optional var format:BitmapFontFormat;
+	@:optional var extraParams:Dynamic;
+};
+
+
 class BitmapText extends Graphic
 {
 	public var width:Float = 0;
@@ -52,20 +59,20 @@ class BitmapText extends Graphic
 	 * 						leading		Vertical space between lines. (Currently ignored.)
 	 *						richText	If the text field uses a rich text string. (Currently ignored.) 
 	 */
-	public function new(text:String, x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0, ?options:TextOptions)
+	public function new(text:String, x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0, ?options:BitmapTextOptions)
 	{
 		super();
 
 		if (options == null) options = {};
 
 		// defaults
-		if (!Reflect.hasField(options, "font"))      options.font      = HXP.defaultFont;
+		if (!Reflect.hasField(options, "font"))      options.font      = HXP.defaultFont + ".png";
 		if (!Reflect.hasField(options, "size"))      options.size      = null;
 		if (!Reflect.hasField(options, "color"))     options.color     = 0xFFFFFF;
 		if (!Reflect.hasField(options, "wordWrap"))  options.wordWrap  = false;
 
 		// load the font as a BitmapFontAtlas
-		var font = BitmapFontAtlas.getFont(options.font);
+		var font = BitmapFontAtlas.getFont(options.font, options.format, options.extraParams);
 
 		blit = HXP.renderMode != RenderMode.HARDWARE;
 		_font = cast(font, BitmapFontAtlas);
@@ -73,7 +80,7 @@ class BitmapText extends Graphic
 		// failure to load
 		if (_font == null)
 			throw "Invalid font glyphs provided.";
-
+		
 		this.x = x;
 		this.y = y;
 		this.width = width;
