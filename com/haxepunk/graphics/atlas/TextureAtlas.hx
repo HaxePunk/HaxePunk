@@ -52,7 +52,7 @@ class TextureAtlas extends Atlas
 		if (_regions.exists(name))
 			return _regions.get(name);
 			
-		throw "Region has not be defined yet: " + name;
+		throw 'Region has not be defined yet "$name".';
 	}
 
 	/**
