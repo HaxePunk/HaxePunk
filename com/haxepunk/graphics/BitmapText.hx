@@ -64,7 +64,7 @@ class BitmapText extends Graphic
 		if (!Reflect.hasField(options, "color"))     options.color     = 0xFFFFFF;
 		if (!Reflect.hasField(options, "wordWrap"))  options.wordWrap  = false;
 
-		// load the font as a TextureAtlas
+		// load the font as a BitmapFontAtlas
 		var font = BitmapFontAtlas.getFont(options.font);
 
 		blit = HXP.renderMode != RenderMode.HARDWARE;
@@ -73,7 +73,7 @@ class BitmapText extends Graphic
 		// failure to load
 		if (_font == null)
 			throw "Invalid font glyphs provided.";
-		
+
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -133,10 +133,10 @@ class BitmapText extends Graphic
 
 		if (blit)
 		{
-			if (alpha < 1 || color != 0xFFFFFF) {
-				_colorTransform.color = color;
-				_colorTransform.alphaMultiplier = alpha;
-			}
+			_colorTransform.redMultiplier = _red;
+			_colorTransform.greenMultiplier = _green;
+			_colorTransform.blueMultiplier = _blue;
+			_colorTransform.alphaMultiplier = alpha;
 		}
 	}
 
