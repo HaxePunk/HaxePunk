@@ -43,9 +43,11 @@ abstract StyleType(TextFormat)
 	@:from public static inline function fromDynamic(object:Dynamic)
 	{
 		var format = new TextFormat();
+		var fields = Type.getInstanceFields(TextFormat);
+		
 		for (key in Reflect.fields(object))
 		{
-			if (Reflect.hasField(format, key))
+			if (HXP.indexOf(fields, key) > -1)
 			{
 				Reflect.setField(format, key, Reflect.field(object, key));
 			}
