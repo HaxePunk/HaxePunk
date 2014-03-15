@@ -366,7 +366,7 @@ class Console
 		// Set the state to unpaused.
 		paused = false;
 
-		if (trace_capture != TraceCapture.No)
+		if (trace_capture == TraceCapture.Yes)
 			Log.trace = traceLog;
 
 		LOG.push("-- HaxePunk v" + HXP.VERSION + " --");
