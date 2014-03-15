@@ -56,12 +56,12 @@ class Pixelmask extends Hitbox
 	/** @private Collide against an Entity. */
 	override private function collideMask(other:Mask):Bool
 	{
-		_point.x = parent.x + _x;
-		_point.y = parent.y + _y;
-		_rect.x = other.parent.x - other.parent.originX;
-		_rect.y = other.parent.y - other.parent.originY;
-		_rect.width = other.parent.width;
-		_rect.height = other.parent.height;
+		_point.x = _parent.x + _x;
+		_point.y = _parent.y + _y;
+		_rect.x = other._parent.x - other._parent.originX;
+		_rect.y = other._parent.y - other._parent.originY;
+		_rect.width = other._parent.width;
+		_rect.height = other._parent.height;
 		#if flash
 		return _data.hitTest(_point, threshold, _rect);
 		#else
@@ -72,10 +72,10 @@ class Pixelmask extends Hitbox
 	/** @private Collide against a Hitbox. */
 	override private function collideHitbox(other:Hitbox):Bool
 	{
-		_point.x = parent.x + _x;
-		_point.y = parent.y + _y;
-		_rect.x = other.parent.x + other._x;
-		_rect.y = other.parent.y + other._y;
+		_point.x = _parent.x + _x;
+		_point.y = _parent.y + _y;
+		_rect.x = other._parent.x + other._x;
+		_rect.y = other._parent.y + other._y;
 		_rect.width = other._width;
 		_rect.height = other._height;
 		#if flash
@@ -89,15 +89,15 @@ class Pixelmask extends Hitbox
 	private function collidePixelmask(other:Pixelmask):Bool
 	{
 		#if flash
-			_point.x = parent.x + _x;
-			_point.y = parent.y + _y;
-			_point2.x = other.parent.x + other._x;
-			_point2.y = other.parent.y + other._y;
+			_point.x = _parent.x + _x;
+			_point.y = _parent.y + _y;
+			_point2.x = other._parent.x + other._x;
+			_point2.y = other._parent.y + other._y;
 			return _data.hitTest(_point, threshold, other._data, _point2, other.threshold);
 		#else
 
-			_point.x = other.parent.x + other._x - (parent.x + _x);
-			_point.y = other.parent.y + other._y - (parent.y + _y);
+			_point.x = other._parent.x + other._x - (_parent.x + _x);
+			_point.y = other._parent.y + other._y - (_parent.y + _y);
 
 			var r1 = new Rectangle(0, 0, _data.width, _data.height);
 			var r2 = new Rectangle(_point.x, _point.y, other._data.width, other._data.height);
