@@ -301,18 +301,6 @@ class Text extends Image
 	}
 
 	/**
-	 * Override the tinting values for atlas
-	 */
-	override private function set_color(value:Int):Int
-	{
-		value &= 0xFFFFFF;
-		if (_color == value) return value;
-		_color = value;
-		if (blit) updateColorTransform();
-		return _color;
-	}
-
-	/**
 	 * Text string.
 	 */
 	public var text(get, set):String;
@@ -347,6 +335,7 @@ class Text extends Image
 		if (fromPlain && _richText != null)
 		{
 			_format.color = 0xFFFFFFFF;
+			_red = _green = _blue = 1;
 			updateColorTransform();
 		}
 		else
