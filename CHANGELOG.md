@@ -1,5 +1,30 @@
 HaxePunk CHANGELOG
 
+v2.5.2
+------------------------------
+* [bendmorris] Adding clear method to Emitter
+* [bendmorris] Allow initializing an Image with a TileAtlas
+* [MattTuttle] Fix CLI on windows
+* [MattTuttle] Fix SlopedGrid collisions
+* [MattTuttle] Grid mask optimizations
+* [MattTuttle] Don't require parent for Hitbox/Circle
+* [ibilon] Fix HXP.choose
+* [bendmorris] Fix textWidth/textHeight calculation bug when BitmapText is scaled
+* [bendmorris] Fix one line was sometimes being drawn twice on Flash BitmapText
+* [bendmorris] Fix Scene.clearRecycledAll
+* [Marc010] Fix Input Handling
+* [Anheurystics] Fixed Draw.circle in HXP.HARDWARE bug
+* [ibilon] Add update command
+* [ibilon] Fix Tween addEventListener but doesn't remove it
+* [azrafe7] HXP.INT_MIN/MAX_VALUE
+* [azrafe7] Small fix for seed clamping
+* [azrafe7] Inited min/max in Mask.project() with non-arbitrary values
+* [azrafe7] Added rectPlus() to Draw 
+* [ibilon] Add flashdevelop project file to the new project template
+* [ibilon] Use Array.indexOf if Haxe 3.1
+* [azrafe7] Small fix for circle vs hitbox collision
+* Updating dependencies
+
 v2.5.1
 ------------------------------
 * [andyli] Don't destroy graphic when Entity is removed
