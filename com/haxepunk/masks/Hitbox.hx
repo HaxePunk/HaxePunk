@@ -1,6 +1,9 @@
 package com.haxepunk.masks;
 
 import com.haxepunk.Mask;
+import com.haxepunk.math.Projection;
+import com.haxepunk.math.Vector;
+import flash.display.Graphics;
 import flash.geom.Point;
 import com.haxepunk.masks.Polygon;
 
@@ -144,6 +147,51 @@ class Hitbox extends Mask
 		}
 	}
 
+	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
+	{
+		// draw only if the hitbox is part of a Masklist and has a parent
+		if (list != null && parent != null && list.count > 1)
+		{
+			graphics.drawRect((parent.x - HXP.camera.x + x) * scaleX, (parent.y - HXP.camera.y + y) * scaleY, width * scaleX, height * scaleY);
+		}
+	}
+	
+	override public function project(axis:Vector, projection:Projection):Void
+	{
+		var px = _x;
+		var py = _y;
+		var cur:Float,
+			max:Float = Math.NEGATIVE_INFINITY,
+			min:Float = Math.POSITIVE_INFINITY;
+
+		cur = px * axis.x + py * axis.y;
+		if (cur < min)
+			min = cur;
+		if (cur > max)
+			max = cur;
+
+		cur = (px + _width) * axis.x + py * axis.y;
+		if (cur < min)
+			min = cur;
+		if (cur > max)
+			max = cur;
+
+		cur = px * axis.x + (py + _height) * axis.y;
+		if (cur < min)
+			min = cur;
+		if (cur > max)
+			max = cur;
+
+		cur = (px + _width) * axis.x + (py + _height) * axis.y;
+		if (cur < min)
+			min = cur;
+		if (cur > max)
+			max = cur;
+
+		projection.min = min;
+		projection.max = max;
+	}
+	
 	// Hitbox information.
 	private var _width:Int = 0;
 	private var _height:Int = 0;
