@@ -371,9 +371,7 @@ class Engine extends Sprite
 	/** @private Switch scenes if they've changed. */
 	private inline function checkScene()
 	{
-		if (_scenes.isEmpty() || _scenes.first() == _scene) return;
-
-		if (_scene != null)
+		if (_scene != null && !_scenes.isEmpty() && _scenes.first() != _scene)
 		{
 			_scene.end();
 			_scene.updateLists();

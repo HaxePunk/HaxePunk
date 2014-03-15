@@ -187,11 +187,11 @@ class Input
 						if (_keyNum > 0) return true;
 						continue;
 					}
-					if (_key[key] == true) return true;
+					if (_key.get(key) == true) return true;
 				}
 				return false;
 			case Right(i):
-				return i < 0 ? _keyNum > 0 : _key[i];
+				return i < 0 ? _keyNum > 0 : _key.get(i);
 		}
 	}
 
