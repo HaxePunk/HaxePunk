@@ -181,13 +181,12 @@ class Spritemap extends Image
 		if (!reset && _anim != null && _anim.name == name) return _anim;
 		if (!_anims.exists(name))
 		{
-			stop();
+			stop(reset);
 			return null;
 		}
 
 		_anim = _anims.get(name);
 		restart();
-		updateBuffer();
 		return _anim;
 	}
 
@@ -203,7 +202,7 @@ class Spritemap extends Image
 	{
 		if(frames == null || frames.length == 0)
 		{
-			stop();		
+			stop(reset);		
 			return null;
 		}
 
@@ -228,7 +227,6 @@ class Spritemap extends Image
 
 		_anim = anim;
 		restart();
-		updateBuffer();
 		return anim;
 	}
 
@@ -240,16 +238,20 @@ class Spritemap extends Image
 		_timer = _index = 0;
 		_frame = _anim.frames[0];
 		complete = false;
+		updateBuffer();
 	}
 
 	/**
-	 * Stops the currently playing animation.
+	 * Immediately stops the currently playing animation.
+	 * @param	reset		If true, resets the animation to the first frame.
 	 */
-	public function stop()
+	public function stop(reset:Bool = false)
 	{
 		_anim = null;
-		_frame = _index = 0;
+		if(reset)
+			_frame = _index = 0;
 		complete = true;
+		updateBuffer();
 	}
 
 	/**
