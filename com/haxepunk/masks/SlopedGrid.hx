@@ -98,12 +98,8 @@ class SlopedGrid extends Hitbox
 	 */
 	public function collidePoint(cx:Float, cy:Float):Bool
 	{
-		var px:Float = _x, py:Float = _y;
-		if (parent != null)
-		{
-			px += parent.x;
-			py += parent.y;
-		}
+		var px:Float = _x + _parent.x, 
+			py:Float = _y + _parent.y;
 
 		var column = Std.int((cx - px) / _tile.width),
 			row = Std.int((cy - py) / _tile.height),
@@ -371,40 +367,23 @@ class SlopedGrid extends Hitbox
 	/** @private Collides against an Entity. */
 	override private function collideMask(other:Mask):Bool
 	{
-		if (other.parent != null)
-		{
-			var x:Float = _x, y:Float = _y;
-			if (parent != null)
-			{
-				x += parent.x;
-				y += parent.y;
-			}
-			return collideBox(other.parent.x - other.parent.originX,
-				other.parent.y - other.parent.originY,
-				other.parent.width, other.parent.height,
-				parent.x + parent.originX, parent.y + parent.originY);
-		}
-		else
-		{
-			return false;
-		}
+		var x:Float = _x + _parent.x, 
+			y:Float = _y + _parent.y;
+			
+		return collideBox(other._parent.x - other._parent.originX,
+				other._parent.y - other._parent.originY,
+				other._parent.width, other._parent.height,
+				_parent.x + _parent.originX, _parent.y + _parent.originY);
 	}
 
 	/** @private Collides against a Hitbox. */
 	override private function collideHitbox(other:Hitbox):Bool
 	{
-		var x:Float = _x, y:Float = _y,
-			ox:Float = other._x, oy:Float = other._y;
-		if (other.parent != null)
-		{
-			ox += other.parent.x;
-			oy += other.parent.y;
-		}
-		if (parent != null)
-		{
-			x += parent.x;
-			y += parent.y;
-		}
+		var x:Float = _x + _parent.x, 
+			y:Float = _y + _parent.y,
+			ox:Float = other._x + other._parent.x, 
+			oy:Float = other._y + other._parent.y;
+		
 		return collideBox(ox, oy, other._width, other._height, x, y);
 	}
 
@@ -415,8 +394,8 @@ class SlopedGrid extends Hitbox
 			stepY = tileHeight * scaleY;
 
 		// determine drawing location
-		var px = _x + parent.x - HXP.camera.x;
-		var py = _y + parent.y - HXP.camera.y;
+		var px = _x + _parent.x - HXP.camera.x;
+		var py = _y + _parent.y - HXP.camera.y;
 
 		// determine start and end tiles to draw (optimization)
 		var startx = Math.floor( -px / tileWidth),
