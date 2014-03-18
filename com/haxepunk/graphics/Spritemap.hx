@@ -159,9 +159,6 @@ class Spritemap extends Image
 		if (_anims.get(name) != null)
 			throw "Cannot have multiple animations with the same name";
 
-		if(frameRate == 0)
-			frameRate = HXP.assignedFrameRate;
-
 		for (i in 0...frames.length)
 		{
 			frames[i] %= _frameCount;
@@ -174,7 +171,7 @@ class Spritemap extends Image
 	}
 
 	/**
-	 * Plays an animation.
+	 * Plays an animation previous defined by add().
 	 * @param	name		Name of the animation to play.
 	 * @param	reset		If the animation should force-restart if it is already playing.
 	 * @return	Anim object representing the played animation.
@@ -182,21 +179,79 @@ class Spritemap extends Image
 	public function play(name:String = "", reset:Bool = false):Animation
 	{
 		if (!reset && _anim != null && _anim.name == name) return _anim;
-		if (_anims.exists(name))
+		if (!_anims.exists(name))
 		{
-			_anim = _anims.get(name);
-			_timer = _index = 0;
-			_frame = _anim.frames[0];
-			complete = false;
+			stop(reset);
+			return null;
 		}
-		else
-		{
-			_anim = null;
-			_frame = _index = 0;
-			complete = true;
-		}
-		updateBuffer();
+
+		_anim = _anims.get(name);
+		restart();
 		return _anim;
+	}
+
+	/**
+	 * Plays a new ad hoc animation.
+	 * @param	frames		Array of frame indices to animate through.
+	 * @param	frameRate	Animation speed (in frames per second, 0 defaults to assigned frame rate)
+	 * @param	loop		If the animation should loop
+	 * @param	reset		When the supplied frames are currently playing, should the animation be force-restarted
+	 * @return	Anim object representing the played animation.
+	 */
+	public function playFrames(frames:Array<Int>, frameRate:Float = 0, loop:Bool = true, reset:Bool = false):Animation
+	{
+		if(frames == null || frames.length == 0)
+		{
+			stop(reset);		
+			return null;
+		}
+
+		if(reset == false && _anim != null && _anim.frames == frames)
+			return _anim;
+
+		return playAnimation(new Animation(null, frames, frameRate, loop), reset);
+	}
+
+	/**
+	 * Plays or restarts the supplied Animation.
+	 * @param	animation	The Animation object to play
+	 * @param	reset		When the supplied animation is currently playing, should it be force-restarted
+	 * @return	Anim object representing the played animation.
+	 */
+ 	public function playAnimation(anim:Animation, reset:Bool = false): Animation
+	{
+		if(anim == null)
+			throw "No animation supplied";
+		if(reset == false && _anim == anim)
+			return anim;
+
+		_anim = anim;
+		restart();
+		return anim;
+	}
+
+	/**
+	 * Resets the animation to play from the beginning.
+	 */
+	public function restart()
+	{
+		_timer = _index = 0;
+		_frame = _anim.frames[0];
+		complete = false;
+		updateBuffer();
+	}
+
+	/**
+	 * Immediately stops the currently playing animation.
+	 * @param	reset		If true, resets the animation to the first frame.
+	 */
+	public function stop(reset:Bool = false)
+	{
+		_anim = null;
+		if(reset)
+			_frame = _index = 0;
+		complete = true;
+		updateBuffer();
 	}
 
 	/**
