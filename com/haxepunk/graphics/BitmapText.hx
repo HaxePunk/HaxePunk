@@ -134,7 +134,9 @@ class BitmapText extends Graphic
 
 		if (blit)
 		{
-			_colorTransform.color = color;
+			_colorTransform.redMultiplier = _red;
+			_colorTransform.greenMultiplier = _green;
+			_colorTransform.blueMultiplier = _blue;
 			_colorTransform.alphaMultiplier = alpha;
 		}
 	}
@@ -210,7 +212,7 @@ class BitmapText extends Graphic
 					// if the word ends in a space, don't count that last space
 					// toward the line length for determining overflow
 					var endsInSpace = word.charAt(word.length - 1) == ' ';
-					if ((lineWidth - (endsInSpace ? spaceWidth : 0)) * sx > width)
+					if ((lineWidth - (endsInSpace ? spaceWidth : 0)) > width/sx)
 					{
 						// line is too long; split it before this word
 						subLines.push(words.slice(lastBreak, w).join(''));
@@ -268,48 +270,26 @@ class BitmapText extends Graphic
 		if (autoWidth || autoHeight)
 		{
 			computeTextSize();
-			w = Std.int(autoWidth ? (textWidth/sx) : width);
-			h = Std.int(autoHeight ? (textHeight/sy) : height);
+			w = Std.int(autoWidth ? (textWidth/sx) : (width/sx));
+			h = Std.int(autoHeight ? (textHeight/sy) : (height/sy));
 		}
 		else
 		{
-			w = Std.int(width);
-			h = Std.int(height);
+			w = Std.int(width/sx);
+			h = Std.int(height/sy);
 		}
 		w = Std.int(w);
 		h = Std.int(h+_font.lineHeight+lineSpacing);
-
-		// if any of the previous lines of text are the same as the new lines,
-		// don't re-render those lines
-		var startLine = 0;
-		if (oldLines != null)
-		{
-			for (n in 0 ... Std.int(Math.min(oldLines.length, lines.length)))
-			{
-				if (lines[n] == oldLines[n])
-				{
-					startLine += 1;
-				}
-				else
-				{
-					break;
-				}
-			}
-		}
 
 		// create or clear the buffer if necessary
 		if (_buffer == null || _buffer.width != w || _buffer.height != h)
 		{
 			if (_buffer != null) _buffer.dispose();
 			_buffer = HXP.createBitmap(w, h, true, 0);
-			startLine = 0;
 		}
 		else
 		{
-			if (startLine > 0) startLine -= 1;
-			var r = _buffer.rect;
-			r.top = startLine * (_font.lineHeight + lineSpacing);
-			_buffer.fillRect(r, HXP.blackColor);
+			_buffer.fillRect(_buffer.rect, HXP.blackColor);
 		}
 
 		// make a pass through each character, copying it onto the buffer
@@ -318,15 +298,14 @@ class BitmapText extends Graphic
 			_point.y = y;
 
 			_buffer.copyPixels(_set, gd.rect, _point, null, null, true);
-		}, startLine);
+		});
 	}
 
 	/*
 	 * Loops through the text, drawing each character on each line.
 	 * @param renderFunction    Function to render each character.
-	 * @param startLine         Line number to start rendering on.
 	 */
-	private inline function renderFont(?renderFunction:RenderFunction, startLine=0)
+	private inline function renderFont(?renderFunction:RenderFunction)
 	{
 		// loop through the text one character at a time, calling the supplied
 		// rendering function for each character
@@ -361,8 +340,7 @@ class BitmapText extends Graphic
 				else
 				{
 					// draw the character
-					if (renderFunction != null &&
-					    y >= startLine)
+					if (renderFunction != null)
 					{
 						renderFunction(region, gd,
 						               (rx + gd.xOffset),
@@ -370,9 +348,9 @@ class BitmapText extends Graphic
 					}
 					// advance cursor position
 					rx += Std.int((gd.xAdvance + charSpacing));
-					if (width != 0 && rx > width)
+					if (width != 0 && rx > width/sx)
 					{
-						textWidth = Std.int(width * sx);
+						textWidth = Std.int(width);
 						rx = 0;
 						ry += lineHeight;
 					}
@@ -385,7 +363,7 @@ class BitmapText extends Graphic
 			// next line
 			rx = 0;
 			ry += lineHeight;
-			if (Std.int(ry) > textHeight) textHeight = Std.int(ry*sx);
+			if (Std.int(ry*sx) > textHeight) textHeight = Std.int(ry*sx);
 		}
 	}
 
