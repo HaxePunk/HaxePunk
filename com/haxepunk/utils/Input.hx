@@ -154,11 +154,24 @@ class Input
 	}
 
 	/**
+	 * Defines a new joystick button input.
+	 * @param	id			The id of the joystick, starting with 0
+	 * @param	name		String to map the input to.
+	 * @param	keys		The keys to use for the Input.
+	 */	
+	public static function defineButtons(name:String, id:Int, keys:Array<Int>)
+	{
+		joystick(id); // instantiate the joystick
+		if (!_joyControl.exists(id)) _joyControl.set( id, new Map<String,Array<Int>>() );
+		_joyControl.get(id).set(name, keys);
+	}
+	
+	/**
 	 * If the input or key is held down.
 	 * @param	input		An input name or key to check for.
 	 * @return	True or false.
 	 */
-	public static function check(input:Dynamic):Bool
+	public static function checkKeys(input:Dynamic):Bool
 	{
 		if (Std.is(input, String))
 		{
@@ -190,13 +203,60 @@ class Input
 
 		return false;
 	}
+	
+	/**
+	 * If the input or key is held down.
+	 * @param	input		An input name or key to check for.
+	 * @return	True or false.
+	 */
+	 public static function checkButtons(input:Dynamic, id:Int):Bool
+	 {
+		var joystick:Bool = false;
+		
+		if(Std.is(input, String))
+		{
+			if (!_joyControl.exists(id))
+			{
+#if debug
+				HXP.log("Joystick input '" + input + "' not defined");
+#end
+				return false;
+			}
+
+			if (_joyControl.get(id).exists(input))
+			{
+				for (i in _joyControl.get(id).get(input))
+					joystick = joystick || Input.joystick(id).check(i);
+			}
+#if debug
+			else
+			{
+				HXP.log("Joystick input '" + input + "' not defined");
+				return false;
+			}
+#end
+		}
+		return joystick;
+	 }
+	 
+	/**
+	 * If the key or joystick button is held
+	 * @param	input		An input name or key to check for.
+	 * @param	id			The id of the joystick, starting with 0
+	 * @return	True or false.
+	 */
+	public static function check(input:Dynamic, ?id:Int):Bool
+	{
+		if(id == null) return checkKeys(input);
+		else return checkKeys(input) || checkButtons(input, id);
+	}
 
 	/**
 	 * If the input or key was pressed this frame.
 	 * @param	input		An input name or key to check for.
 	 * @return	True or false.
 	 */
-	public static function pressed(input:Dynamic):Bool
+	public static function pressedKeys(input:Dynamic):Bool
 	{
 		if (Std.is(input, String) && _control.exists(input))
 		{
@@ -210,13 +270,53 @@ class Input
 		}
 		return (input < 0) ? _pressNum != 0 : HXP.indexOf(_press, input) >= 0;
 	}
+	
+	/**
+	 * If the joystick button was pressed this frame.
+	 * @param	input		An input name or key to check for.
+	 * @param	id			The id of the joystick, starting with 0
+	 * @return	True or false.
+	 */
+	public static function pressedButtons(input:Dynamic, ?id:Int):Bool
+	{
+		var joystick:Bool = false;
+		
+		if (Std.is(input, String))
+		{
+			if(!_joyControl.exists(id))
+			{
+#if debug
+				HXP.log("Joystick input '" + input + "' not defined");
+#end
+				return joystick;
+			}
+			else if (_joyControl.get(id).exists(input))
+			{
+				for (i in _joyControl.get(id).get(input))
+					joystick = joystick || Input.joystick(id).pressed(i);
+			}
+		}
+		return joystick;
+	}
+	
+	/**
+	 * If the key or joystick button was pressed this frame
+	 * @param	input		An input name or key to check for.
+	 * @param	id			The id of the joystick, starting with 0
+	 * @return	True or false.
+	 */
+	public static function pressed(input:Dynamic, ?id:Int):Bool
+	{
+		if(id == null) return pressedKeys(input);
+		else return pressedKeys(input) || pressedButtons(input, id);
+	}
 
 	/**
 	 * If the input or key was released this frame.
 	 * @param	input		An input name or key to check for.
 	 * @return	True or false.
 	 */
-	public static function released(input:Dynamic):Bool
+	public static function releasedKeys(input:Dynamic):Bool
 	{
 		if (Std.is(input, String))
 		{
@@ -229,6 +329,46 @@ class Input
 			return false;
 		}
 		return (input < 0) ? _releaseNum != 0 : HXP.indexOf(_release, input) >= 0;
+	}
+	
+	/**
+	 * If the joystick button was released this frame.
+	 * @param	input		An input name or key to check for.
+	 * @param	id			The id of the joystick, starting with 0
+	 * @return	True or false.
+	 */
+	public static function releasedButtons(input:Dynamic, id:Int):Bool
+	{
+		var joystick:Bool = false;
+		
+		if (Std.is(input, String))
+		{
+			if(!_joyControl.exists(id))
+			{
+#if debug
+				HXP.log("Joystick input '" + input + "' not defined");
+#end
+				return joystick;
+			}
+			else if (_joyControl.get(id).exists(input))
+			{
+				for (i in _joyControl.get(id).get(input))
+					joystick = joystick || Input.joystick(id).released(i);
+			}
+		}
+		return joystick;
+	}
+	
+	/**
+	 * If the key or joystick button was released this frame
+	 * @param	input		An input name or key to check for.
+	 * @param	id			The id of the joystick, starting with 0
+	 * @return	True or false.
+	 */
+	public static function released(input:Dynamic, ?id:Int):Bool
+	{
+		if(id == null) return releasedKeys(input);
+		else return releasedKeys(input) || releasedButtons(input, id);
 	}
 
 	public static function touchPoints(touchCallback:Touch->Void)
@@ -620,5 +760,6 @@ class Input
 	private static var _touches:Map<Int,Touch> = new Map<Int,Touch>();
 	private static var _joysticks:Map<Int,Joystick> = new Map<Int,Joystick>();
 	private static var _control:Map<String,Array<Int>> = new Map<String,Array<Int>>();
+	private static var _joyControl:Map<Int,Map<String,Array<Int>>> = new Map<Int,Map<String,Array<Int>>>();
 	private static var _nativeCorrection:Map<String, Int> = new Map<String, Int>();
 }
