@@ -47,7 +47,7 @@ class Emitter extends Graphic
 	public function setSource(source:Dynamic, frameWidth:Int = 0, frameHeight:Int = 0)
 	{
 		var region:AtlasRegion = null;
-		if (Std.is(source, BitmapData)) setBitmapSource(source);
+		if (HXP.renderMode == RenderMode.BUFFER && Std.is(source, BitmapData)) setBitmapSource(source);
 		else if(Std.is(source, AtlasRegion)) region = setAtlasRegion(source);
 		else
 		{
