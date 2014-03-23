@@ -107,7 +107,7 @@ class Tween extends EventDispatcher
 		_finish = false;
 		dispatchEvent(new TweenEvent(TweenEvent.FINISH));
 		
-		if (_callback != null)
+		if (_type == TweenType.OneShot && _callback != null)
 		{
 			removeEventListener(TweenEvent.FINISH, _callback);
 		}
