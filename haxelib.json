@@ -14,6 +14,7 @@
 		"openfl": "1.3.0",
 		"openfl-native": "1.3.0",
 		"openfl-bitfive": "1.0.5",
+		"openfl-html5-dom": "1.2.1",
 		"openfl-html5": "1.1.0-beta",
 		"openfl-ouya": "1.0.2"
 	}
