@@ -10,6 +10,13 @@ import flash.geom.Point;
 
 typedef AssignCallback = Void -> Void;
 
+/**
+ * Converts multiple types of image data to a TileType
+ * @from String The asset name of a tiled image
+ * @from TileAtlas A TileAtlas object
+ * @from BitmapData The raw bitmap of a tiled image
+ * @to An enum defining a BitmapData or TileAtlas
+ */
 abstract TileType(Either<BitmapData, TileAtlas>)
 {
 	private inline function new(e:Either<BitmapData, TileAtlas>) this = e;

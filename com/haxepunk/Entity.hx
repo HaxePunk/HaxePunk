@@ -182,15 +182,15 @@ class Entity extends Tweener
 	{
 		if (_scene == null) return null;
 
-		var e:Entity = _scene._typeFirst.get(type);
-		if (!collidable || e == null) return null;
+		var entities = _scene.entitiesForType(type);
+		if (!collidable || entities == null) return null;
 
 		_x = this.x; _y = this.y;
 		this.x = x; this.y = y;
 
 		if (_mask == null)
 		{
-			while (e != null)
+			for (e in entities)
 			{
 				if (e.collidable && e != this
 					&& x - originX + width > e.x - e.originX
@@ -204,12 +204,11 @@ class Entity extends Tweener
 						return e;
 					}
 				}
-				e = e._typeNext;
 			}
 		}
 		else
 		{
-			while (e != null)
+			for (e in entities)
 			{
 				if (e.collidable && e != this
 					&& x - originX + width > e.x - e.originX
@@ -223,7 +222,6 @@ class Entity extends Tweener
 						return e;
 					}
 				}
-				e = e._typeNext;
 			}
 		}
 		this.x = _x; this.y = _y;
@@ -375,8 +373,8 @@ class Entity extends Tweener
 	{
 		if (_scene == null) return;
 
-		var e:Entity = _scene._typeFirst.get(type);
-		if (!collidable || e == null) return;
+		var entities = _scene.entitiesForType(type);
+		if (!collidable || entities == null) return;
 
 		_x = this.x; _y = this.y;
 		this.x = x; this.y = y;
@@ -384,7 +382,7 @@ class Entity extends Tweener
 
 		if (_mask == null)
 		{
-			while (e != null)
+			for (e in entities)
 			{
 				e = cast e;
 				if (e.collidable && e != this
@@ -395,12 +393,11 @@ class Entity extends Tweener
 				{
 					if ((untyped e._mask) == null || (untyped e._mask).collide(HITBOX)) array[n++] = cast e;
 				}
-				e = e._typeNext;
 			}
 		}
 		else
 		{
-			while (e != null)
+			for (e in entities)
 			{
 				e = cast e;
 				if (e.collidable && e != this
@@ -411,7 +408,6 @@ class Entity extends Tweener
 				{
 					if (_mask.collide((untyped e._mask) != null ? (untyped e._mask) : (untyped e.HITBOX))) array[n++] = cast e;
 				}
-				e = e._typeNext;
 			}
 		}
 		this.x = _x; this.y = _y;
@@ -900,13 +896,9 @@ class Entity extends Tweener
 	private var _layer:Int;
 	private var _name:String;
 
-	private var _updatePrev:Entity;
-	private var _updateNext:Entity;
 	private var _renderPrev:Entity;
 	private var _renderNext:Entity;
 
-	private var _typePrev:Entity;
-	private var _typeNext:Entity;
 	private var _recycleNext:Entity;
 
 	// Collision information.
