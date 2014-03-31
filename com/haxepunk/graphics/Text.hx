@@ -16,16 +16,10 @@ import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
 import com.haxepunk.graphics.atlas.Atlas;
 
-#if (flash || js)
-typedef TextFormatAlignType = TextFormatAlign;
-#else
-typedef TextFormatAlignType = String;
-#end
-
 typedef TextOptions = {
 	@:optional var font:String;
 	@:optional var size:Int;
-	@:optional var align:TextFormatAlignType;
+	@:optional var align:String;
 	@:optional var wordWrap:Bool;
 	@:optional var resizable:Bool;
 	@:optional var color:Int;
@@ -104,7 +98,7 @@ class Text extends Image
 		// defaults
 		if (!Reflect.hasField(options, "font"))      options.font      = HXP.defaultFont;
 		if (!Reflect.hasField(options, "size"))      options.size      = 16;
-		if (!Reflect.hasField(options, "align"))     options.align     = TextFormatAlign.LEFT;
+		if (!Reflect.hasField(options, "align"))     options.align     = "left";
 		if (!Reflect.hasField(options, "color"))     options.color     = 0xFFFFFF;
 		if (!Reflect.hasField(options, "resizable")) options.resizable = true;
 		if (!Reflect.hasField(options, "wordWrap"))  options.wordWrap  = false;
@@ -112,7 +106,7 @@ class Text extends Image
 
 		var fontObj = Assets.getFont(options.font);
 		_format = new TextFormat(fontObj.fontName, options.size, 0xFFFFFF);
-		_format.align = options.align;
+		_format.align = alignConv(options.align);
 		_format.leading = options.leading;
 
 		_field = new TextField();
@@ -199,7 +193,32 @@ class Text extends Image
 			super.updateColorTransform();
 		}
 	}
-
+	
+	private inline function alignConv (value:String) 
+	{
+		#if (flash || js)
+		return switch (value)
+			{
+				case "left":
+					TextFormatAlign.LEFT;
+					
+				case "right":
+					TextFormatAlign.RIGHT;
+					
+				case "center":
+					TextFormatAlign.CENTER;
+					
+				case "justify":
+					TextFormatAlign.JUSTIFY;
+					
+				default:
+					throw 'Invalid text align value "$value"';
+			}
+		#else
+		return value;
+		#end
+	}
+	
 	private static var tag_re = ~/<([^>]+)>([^(?:<\/)]+)<\/[^>]+>/g;
 	private function matchStyles()
 	{
@@ -386,11 +405,11 @@ class Text extends Image
 	/**
 	 * Font alignment.
 	 */
-	public var align(default, set):TextFormatAlignType;
-	private function set_align(value:TextFormatAlignType):TextFormatAlignType
+	public var align(default, set):String;
+	private function set_align(value:String):String
 	{
 		if (align == value) return value;
-		_format.align = align = value;
+		_format.align = alignConv(align = value);
 		updateTextBuffer();
 		return value;
 	}
