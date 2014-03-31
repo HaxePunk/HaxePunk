@@ -1199,17 +1199,11 @@ class Scene extends Tweener
 		}
 		if (x1 > x2)
 		{
-			if (y1 > y2) return squarePoints(x1, y1, (x2 + w2), (y2 + h2));
-			return squarePoints(x1, y1 + h1, x2 + w2, y2);
+			if (y1 > y2) return HXP.distanceSquared((x2 + w2), (y2 + h2), x1, y1);
+			return HXP.distanceSquared(x2 + w2, y2, x1, y1 + h1);
 		}
-		if (y1 > y2) return squarePoints(x1 + w1, y1, x2, y2 + h2);
-		return squarePoints(x1 + w1, y1 + h1, x2, y2);
-	}
-
-	/** @private Calculates the squared distance between two points. */
-	private static function squarePoints(x1:Float, y1:Float, x2:Float, y2:Float):Float
-	{
-		return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
+		if (y1 > y2) return HXP.distanceSquared(x2, y2 + h2, x1 + w1, y1);
+		return HXP.distanceSquared(x2, y2, x1 + w1, y1 + h1);
 	}
 
 	/** @private Calculates the squared distance between a rectangle and a point. */
@@ -1228,11 +1222,11 @@ class Scene extends Tweener
 		}
 		if (px > rx)
 		{
-			if (py > ry) return squarePoints(px, py, rx + rw, ry + rh);
-			return squarePoints(px, py, rx + rw, ry);
+			if (py > ry) return HXP.distanceSquared(rx + rw, ry + rh, px, py);
+			return HXP.distanceSquared(rx + rw, ry, px, py);
 		}
-		if (py > ry) return squarePoints(px, py, rx, ry + rh);
-		return squarePoints(px, py, rx, ry);
+		if (py > ry) return HXP.distanceSquared(rx, ry + rh, px, py);
+		return HXP.distanceSquared(rx, ry, px, py);
 	}
 
 	// Adding and removal.
