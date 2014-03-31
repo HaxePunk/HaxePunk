@@ -35,7 +35,6 @@ class Scene extends Tweener
 		sprite = new Sprite();
 
 		_layerList = new Array<Int>();
-		_layerCount = new Map<Int, Int>();
 
 		_add = new Array<Entity>();
 		_remove = new Array<Entity>();
@@ -43,8 +42,7 @@ class Scene extends Tweener
 
 		_update = new List<Entity>();
 		_layerDisplay = new Map<Int,Bool>();
-		_renderFirst = new Map<Int,Entity>();
-		_renderLast = new Map<Int,Entity>();
+		_layers = new Map<Int,List<Entity>>();
 		_types = new Map<String,List<Entity>>();
 
 		_classCount = new Map<String,Int>();
@@ -124,26 +122,16 @@ class Scene extends Tweener
 	 */
 	public function render()
 	{
-		// sort the depth list
-		if (_layerSort)
-		{
-			if (_layerList.length > 1) _layerList.sort(layerSort);
-			_layerSort = false;
-		}
-
 		if (HXP.renderMode == RenderMode.HARDWARE)
 			AtlasData.startScene(this);
 
 		// render the entities in order of depth
-		var e:Entity;
 		for (layer in _layerList)
 		{
 			if (!layerVisible(layer)) continue;
-			e = _renderLast.get(layer);
-			while (e != null)
+			for (e in _layers.get(layer))
 			{
 				if (e.visible) e.render();
-				e = e._renderPrev;
 			}
 		}
 
@@ -333,16 +321,10 @@ class Scene extends Tweener
 	 */
 	public function bringToFront(e:Entity):Bool
 	{
-		if (e._scene != this || e._renderPrev == null) return false;
-		// pull from list
-		e._renderPrev._renderNext = e._renderNext;
-		if (e._renderNext != null) e._renderNext._renderPrev = e._renderPrev;
-		else _renderLast.set(e._layer, e._renderPrev);
-		// place at the start
-		e._renderNext = _renderFirst.get(e._layer);
-		e._renderNext._renderPrev = e;
-		_renderFirst.set(e._layer, e);
-		e._renderPrev = null;
+		if (e._scene != this) return false;
+		var list = _layers.get(e._layer);
+		list.remove(e);
+		list.push(e);
 		return true;
 	}
 
@@ -353,16 +335,10 @@ class Scene extends Tweener
 	 */
 	public function sendToBack(e:Entity):Bool
 	{
-		if (e._scene != this || e._renderNext == null) return false;
-		// pull from list
-		e._renderNext._renderPrev = e._renderPrev;
-		if (e._renderPrev != null) e._renderPrev._renderNext = e._renderNext;
-		else _renderFirst.set(e._layer, e._renderNext);
-		// place at the end
-		e._renderPrev = _renderLast.get(e._layer);
-		e._renderPrev._renderNext = e;
-		_renderLast.set(e._layer, e);
-		e._renderNext = null;
+		if (e._scene != this) return false;
+		var list = _layers.get(e._layer);
+		list.remove(e);
+		list.add(e);
 		return true;
 	}
 
@@ -373,17 +349,8 @@ class Scene extends Tweener
 	 */
 	public function bringForward(e:Entity):Bool
 	{
-		if (e._scene != this || e._renderPrev == null) return false;
-		// pull from list
-		e._renderPrev._renderNext = e._renderNext;
-		if (e._renderNext != null) e._renderNext._renderPrev = e._renderPrev;
-		else _renderLast.set(e._layer, e._renderPrev);
-		// shift towards the front
-		e._renderNext = e._renderPrev;
-		e._renderPrev = e._renderPrev._renderPrev;
-		e._renderNext._renderPrev = e;
-		if (e._renderPrev != null) e._renderPrev._renderNext = e;
-		else _renderFirst.set(e._layer, e);
+		if (e._scene != this) return false;
+		// TODO: implement bringForward
 		return true;
 	}
 
@@ -394,17 +361,8 @@ class Scene extends Tweener
 	 */
 	public function sendBackward(e:Entity):Bool
 	{
-		if (e._scene != this || e._renderNext == null) return false;
-		// pull from list
-		e._renderNext._renderPrev = e._renderPrev;
-		if (e._renderPrev != null) e._renderPrev._renderNext = e._renderNext;
-		else _renderFirst.set(e._layer, e._renderNext);
-		// shift towards the back
-		e._renderPrev = e._renderNext;
-		e._renderNext = e._renderNext._renderNext;
-		e._renderPrev._renderNext = e;
-		if (e._renderNext != null) e._renderNext._renderPrev = e;
-		else _renderLast.set(e._layer, e);
+		if (e._scene != this) return false;
+		// TODO: implement sendBackward
 		return true;
 	}
 
@@ -415,7 +373,7 @@ class Scene extends Tweener
 	 */
 	public inline function isAtFront(e:Entity):Bool
 	{
-		return e._renderPrev == null;
+		return e == _layers.get(e._layer).first();
 	}
 
 	/**
@@ -425,7 +383,7 @@ class Scene extends Tweener
 	 */
 	public inline function isAtBack(e:Entity):Bool
 	{
-		return e._renderNext == null;
+		return e == _layers.get(e._layer).last();
 	}
 
 	/**
@@ -816,7 +774,7 @@ class Scene extends Tweener
 	 */
 	public inline function layerCount(layer:Int):Int
 	{
-		return _layerCount.exists(layer) ? _layerCount.get(layer) : 0;
+		return _layers.exists(layer) ? _layers.get(layer).length : 0;
 	}
 
 	/**
@@ -862,7 +820,7 @@ class Scene extends Tweener
 	 */
 	public function layerFirst(layer:Int):Entity
 	{
-		return _renderFirst.exists(layer) ? _renderFirst.get(layer) : null;
+		return _layers.exists(layer) ? _layers.get(layer).first() : null;
 	}
 
 	/**
@@ -872,7 +830,7 @@ class Scene extends Tweener
 	 */
 	public function layerLast(layer:Int):Entity
 	{
-		return _renderFirst.exists(layer) ? _renderLast.get(layer) : null;
+		return _layers.exists(layer) ? _layers.get(layer).last() : null;
 	}
 
 	/**
@@ -882,7 +840,7 @@ class Scene extends Tweener
 	private function get_farthest():Entity
 	{
 		if (_layerList.length == 0) return null;
-		return _renderLast.get(_layerList[_layerList.length - 1]);
+		return _layers.get(_layerList[_layerList.length - 1]).last();
 	}
 
 	/**
@@ -892,7 +850,7 @@ class Scene extends Tweener
 	private function get_nearest():Entity
 	{
 		if (_layerList.length == 0) return null;
-		return _renderFirst.get(_layerList[0]);
+		return _layers.get(_layerList[0]).first();
 	}
 
 	/**
@@ -965,12 +923,10 @@ class Scene extends Tweener
 	 */
 	public function getLayer<E:Entity>(layer:Int, into:Array<E>)
 	{
-		var e:Entity = _renderLast.get(layer),
-			n:Int = into.length;
-		while (e != null)
+		var n:Int = into.length;
+		for (e in _layers.get(layer))
 		{
 			into[n ++] = cast e;
-			e = e._renderPrev;
 		}
 	}
 
@@ -1081,62 +1037,40 @@ class Scene extends Tweener
 	@:allow(com.haxepunk.Entity)
 	private function addRender(e:Entity)
 	{
-		var next:Entity = _renderFirst.get(e._layer);
-		if (next != null)
+		var list:List<Entity>;
+		if (_layers.exists(e._layer))
 		{
-			// Append entity to existing layer.
-			e._renderNext = next;
-			next._renderPrev = e;
-			_layerCount.set(e._layer, _layerCount.get(e._layer) + 1);
+			list = _layers.get(e._layer);
 		}
 		else
 		{
 			// Create new layer with entity.
-			_renderLast.set(e._layer, e);
-			_layerList[_layerList.length] = e._layer;
-			_layerSort = true;
-			e._renderNext = null;
-			_layerCount.set(e._layer, 1);
+			list = new List<Entity>();
+			_layers.set(e._layer, list);
+
+			if (_layerList.length == 0)
+			{
+				_layerList[0] = e._layer;
+			}
+			else
+			{
+				HXP.insertSortedKey(_layerList, e._layer, layerSort);
+			}
 		}
-		_renderFirst.set(e._layer, e);
-		e._renderPrev = null;
+		list.add(e);
 	}
 
 	/** @private Removes Entity from the render list. */
 	@:allow(com.haxepunk.Entity)
 	private function removeRender(e:Entity)
 	{
-		if (e._renderNext != null) e._renderNext._renderPrev = e._renderPrev;
-		else _renderLast.set(e._layer, e._renderPrev);
-		if (e._renderPrev != null) e._renderPrev._renderNext = e._renderNext;
-		else
+		var list = _layers.get(e._layer);
+		list.remove(e);
+		if (list.length == 0)
 		{
-			// Remove this entity from the layer.
-			_renderFirst.set(e._layer, e._renderNext);
-			if (e._renderNext == null)
-			{
-				// Remove the layer from the layer list if this was the last entity.
-				if (_layerList.length > 1)
-				{
-					_layerList[HXP.indexOf(_layerList, e._layer)] = _layerList[_layerList.length - 1];
-					_layerSort = true;
-				}
-				_layerList.pop();
-			}
+			_layerList.remove(e._layer);
+			_layers.remove(e._layer);
 		}
-		var count:Int = _layerCount.get(e._layer) - 1;
-		if (count > 0)
-		{
-			_layerCount.set(e._layer, count);
-		}
-		else
-		{
-			// Remove layer from maps if it contains 0 entities.
-			_layerCount.remove(e._layer);
-			_renderFirst.remove(e._layer);
-			_renderLast.remove(e._layer);
-		}
-		e._renderNext = e._renderPrev = null;
 	}
 
 	/** @private Adds Entity to the type list. */
@@ -1238,13 +1172,9 @@ class Scene extends Tweener
 	private var _update:List<Entity>;
 
 	// Render information.
-	private var _layerSort:Bool;
 	private var _layerList:Array<Int>;
 	private var _layerDisplay:Map<Int,Bool>;
-	private var _layerCount:Map<Int, Int>;
-
-	private var _renderFirst:Map<Int,Entity>;
-	private var _renderLast:Map<Int,Entity>;
+	private var _layers:Map<Int,List<Entity>>;
 
 	private var _classCount:Map<String,Int>;
 

@@ -896,9 +896,6 @@ class Entity extends Tweener
 	private var _layer:Int;
 	private var _name:String;
 
-	private var _renderPrev:Entity;
-	private var _renderNext:Entity;
-
 	private var _recycleNext:Entity;
 
 	// Collision information.
