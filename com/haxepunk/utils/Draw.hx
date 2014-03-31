@@ -447,9 +447,12 @@ class Draw
 			else HXP.point.x = HXP.point.y = 0;
 			HXP.point2.x = HXP.camera.x;
 			HXP.point2.y = HXP.camera.y;
-			if (HXP.renderMode == RenderMode.BUFFER) {
+			if (HXP.renderMode == RenderMode.BUFFER) 
+			{
 				g.render(_target, HXP.point, HXP.point2);	
-			} else {
+			} 
+			else 
+			{
 				g.renderAtlas(layer, HXP.point, HXP.point2);
 			}
 		}
