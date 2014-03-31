@@ -117,18 +117,19 @@ class Spritemap extends Image
 			{
 				while (_timer >= 1)
 				{
-					_timer --;
-					_index ++;
-					if (_index == _anim.frameCount)
+					_timer--;
+					_index += reverse ? -1 : 1;
+					
+					if ((reverse && _index == -1) || (!reverse && _index == _anim.frameCount))
 					{
 						if (_anim.loop)
 						{
-							_index = 0;
+							_index = reverse ? _anim.frameCount - 1 : 0;
 							if (callbackFunc != null) callbackFunc();
 						}
 						else
 						{
-							_index = _anim.frameCount - 1;
+							_index = reverse ? 0 : _anim.frameCount - 1;
 							complete = true;
 							if (callbackFunc != null) callbackFunc();
 							break;
@@ -174,14 +175,20 @@ class Spritemap extends Image
 	 * @param	reset		If the animation should force-restart if it is already playing.
 	 * @return	Anim object representing the played animation.
 	 */
-	public function play(name:String = "", reset:Bool = false):Animation
+	public function play(name:String = "", reset:Bool = false, reverse:Bool = false):Animation
 	{
-		if (!reset && _anim != null && _anim.name == name) return _anim;
+		if (!reset && _anim != null && _anim.name == name)
+		{
+			return _anim;
+		}
+		
 		if (_anims.exists(name))
 		{
 			_anim = _anims.get(name);
-			_timer = _index = 0;
-			_frame = _anim.frames[0];
+			_timer = 0;
+			this.reverse = reverse;
+			_index = reverse ? _anim.frames.length - 1 : 0;			
+			_frame = _anim.frames[index];				
 			complete = false;
 		}
 		else
@@ -190,7 +197,9 @@ class Spritemap extends Image
 			_frame = _index = 0;
 			complete = true;
 		}
+		
 		updateBuffer();
+		
 		return _anim;
 	}
 
@@ -273,6 +282,11 @@ class Spritemap extends Image
 		updateBuffer();
 		return _index;
 	}
+	
+	/**
+	 * If the animation is played in reverse.
+	 */
+	public var reverse:Bool;
 
 	/**
 	 * The amount of frames in the Spritemap.

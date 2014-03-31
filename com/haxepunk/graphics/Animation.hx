@@ -26,9 +26,9 @@ class Animation
 	 * Plays the animation.
 	 * @param	reset		If the animation should force-restart if it is already playing.
 	 */
-	public function play(reset:Bool = false)
+	public function play(reset:Bool = false, reverse:Bool = false)
 	{
-		_parent.play(name, reset);
+		_parent.play(name, reset, reverse);
 	}
 
 	public var parent(null, set):Spritemap;

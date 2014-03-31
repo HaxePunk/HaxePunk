@@ -19,6 +19,7 @@ abstract SolidType(Either<String, Array<String>>)
 /**
  * Main game Entity class updated by Scene.
  */
+@:allow(com.haxepunk.Mask)
 @:allow(com.haxepunk.Scene)
 class Entity extends Tweener
 {
@@ -124,7 +125,7 @@ class Entity extends Tweener
 
 		if (graphic != null) this.graphic = graphic;
 		if (mask != null) this.mask = mask;
-		HITBOX.assignTo(this);
+		HITBOX.parent = this;
 		_class = Type.getClassName(Type.getClass(this));
 	}
 
@@ -556,9 +557,9 @@ class Entity extends Tweener
 	private function set_mask(value:Mask):Mask
 	{
 		if (_mask == value) return value;
-		if (_mask != null) _mask.assignTo(null);
+		if (_mask != null) _mask.parent = null;
 		_mask = value;
-		if (value != null) _mask.assignTo(this);
+		if (value != null) _mask.parent = this;
 		return _mask;
 	}
 
@@ -920,4 +921,6 @@ class Entity extends Tweener
 	private var _graphic:Graphic;
 	private var _point:Point;
 	private var _camera:Point;
+	
+	static private var _EMPTY = new Entity();
 }

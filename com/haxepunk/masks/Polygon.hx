@@ -54,8 +54,8 @@ class Polygon extends Hitbox
 	override private function collideMask(other:Mask):Bool
 	{
 		var offset:Float,
-			offsetX:Float = parent.x + _x - other.parent.x,
-			offsetY:Float = parent.y + _y - other.parent.y;
+			offsetX:Float = _parent.x + _x - other._parent.x,
+			offsetY:Float = _parent.y + _y - other._parent.y;
 
 		// project on the vertical axis of the hitbox/mask
 		project(vertical, firstProj);
@@ -109,8 +109,8 @@ class Polygon extends Hitbox
 	override private function collideHitbox(hitbox:Hitbox):Bool
 	{
 		var offset:Float,
-			offsetX:Float = parent.x + _x - hitbox.parent.x,
-			offsetY:Float = parent.y + _y - hitbox.parent.y;
+			offsetX:Float = _parent.x + _x - hitbox._parent.x,
+			offsetY:Float = _parent.y + _y - hitbox._parent.y;
 
 		// project on the vertical axis of the hitbox
 		project(vertical, firstProj);
@@ -172,10 +172,10 @@ class Polygon extends Hitbox
 
 		_fakeEntity.width = tileW;
 		_fakeEntity.height = tileH;
-		_fakeEntity.x = parent.x;
-		_fakeEntity.y = parent.y;
-		_fakeEntity.originX = grid.parent.originX + grid._x;
-		_fakeEntity.originY = grid.parent.originY + grid._y;
+		_fakeEntity.x = _parent.x;
+		_fakeEntity.y = _parent.y;
+		_fakeEntity.originX = grid._parent.originX + grid._x;
+		_fakeEntity.originY = grid._parent.originY + grid._y;
 
 		_fakeTileHitbox._width = tileW;
 		_fakeTileHitbox._height = tileH;
@@ -185,8 +185,8 @@ class Polygon extends Hitbox
 		{
 			for (c in 0...grid.columns)
 			{
-				_fakeEntity.x = grid.parent.x + grid._x + c * tileW;
-				_fakeEntity.y = grid.parent.y + grid._y + r * tileH;
+				_fakeEntity.x = grid._parent.x + grid._x + c * tileW;
+				_fakeEntity.y = grid._parent.y + grid._y + r * tileH;
 				solidTile = grid.getTile(c, r);
 
 				if (solidTile && collideHitbox(_fakeTileHitbox)) return true;
@@ -204,8 +204,8 @@ class Polygon extends Hitbox
 		var p1:Vector, p2:Vector;
 		var i:Int, j:Int;
 		var nPoints:Int = _points.length;
-		var offsetX:Float = parent.x + _x;
-		var offsetY:Float = parent.y + _y;
+		var offsetX:Float = _parent.x + _x;
+		var offsetY:Float = _parent.y + _y;
 
 
 		// check if circle center is inside the polygon
@@ -216,10 +216,10 @@ class Polygon extends Hitbox
 			p1 = _points[i];
 			p2 = _points[j];
 
-			var distFromCenter:Float = (p2.x - p1.x) * (circle._y + circle.parent.y - p1.y - offsetY) / (p2.y - p1.y) + p1.x + offsetX;
+			var distFromCenter:Float = (p2.x - p1.x) * (circle._y + circle._parent.y - p1.y - offsetY) / (p2.y - p1.y) + p1.x + offsetX;
 
-			if ((p1.y + offsetY > circle._y + circle.parent.y) != (p2.y + offsetY > circle._y + circle.parent.y)
-				&& (circle._x + circle.parent.x < distFromCenter))
+			if ((p1.y + offsetY > circle._y + circle._parent.y) != (p2.y + offsetY > circle._y + circle._parent.y)
+				&& (circle._x + circle._parent.x < distFromCenter))
 			{
 				edgesCrossed++;
 			}
@@ -231,8 +231,8 @@ class Polygon extends Hitbox
 
 		// check if minimum distance from circle center to each polygon side is less than radius
 		var radiusSqr:Float = circle.radius * circle.radius;
-		var cx:Float = circle._x + circle.parent.x;
-		var cy:Float = circle._y + circle.parent.y;
+		var cx:Float = circle._x + circle._parent.x;
+		var cy:Float = circle._y + circle._parent.y;
 		var minDistanceSqr:Float = 0;
 		var closestX:Float;
 		var closestY:Float;
@@ -284,8 +284,8 @@ class Polygon extends Hitbox
 	private function collidePolygon(other:Polygon):Bool
 	{
 		var offset:Float;
-		var offsetX:Float = parent.x + _x - other.parent.x;
-		var offsetY:Float = parent.y + _y - other.parent.y;
+		var offsetX:Float = _parent.x + _x - other._parent.x;
+		var offsetY:Float = _parent.y + _y - other._parent.y;
 
 		// project other on this polygon axes
 		// for a collision to be present all projections must overlap
@@ -355,24 +355,21 @@ class Polygon extends Hitbox
 
 	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
 	{
-		if (parent != null)
+		var	offsetX:Float = _parent.x + _x - HXP.camera.x,
+			offsetY:Float = _parent.y + _y - HXP.camera.y;
+
+		graphics.beginFill(0x0000FF, .3);
+
+		graphics.moveTo((points[_points.length - 1].x + offsetX) * scaleX , (_points[_points.length - 1].y + offsetY) * scaleY);
+		for (i in 0..._points.length)
 		{
-			var	offsetX:Float = parent.x + _x - HXP.camera.x,
-				offsetY:Float = parent.y + _y - HXP.camera.y;
-
-			graphics.beginFill(0x0000FF, .3);
-
-			graphics.moveTo((points[_points.length - 1].x + offsetX) * scaleX , (_points[_points.length - 1].y + offsetY) * scaleY);
-			for (i in 0..._points.length)
-			{
-				graphics.lineTo((_points[i].x + offsetX) * scaleX, (_points[i].y + offsetY) * scaleY);
-			}
-
-			graphics.endFill();
-
-			// draw pivot
-			graphics.drawCircle((offsetX + origin.x) * scaleX, (offsetY + origin.y) * scaleY, 2);
+			graphics.lineTo((_points[i].x + offsetX) * scaleX, (_points[i].y + offsetY) * scaleY);
 		}
+
+		graphics.endFill();
+
+		// draw pivot
+		graphics.drawCircle((offsetX + origin.x) * scaleX, (offsetY + origin.y) * scaleY, 2);
 	}
 
 	/**
@@ -425,12 +422,11 @@ class Polygon extends Hitbox
 		}
 		else if (parent != null)
 		{
-			parent.originX = -_x - projX;
-			parent.originY = -_y - projY;
-			parent.width = _width;
-			parent.height = _height;
+			_parent.originX = -_x - projX;
+			_parent.originY = -_y - projY;
+			_parent.width = _width;
+			_parent.height = _height;
 		}
-
 	}
 
 	/**

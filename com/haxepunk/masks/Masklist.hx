@@ -133,10 +133,10 @@ class Masklist extends Hitbox
 		return _masks[index % _masks.length];
 	}
 
-	override public function assignTo(parent:Entity):Void
+	override public function set_parent(parent:Entity):Entity
 	{
-		for (m in _masks) m.assignTo(parent);
-		super.assignTo(parent);
+		for (m in _masks) m.set_parent(parent);
+		return super.set_parent(parent);
 	}
 
 	/** @private Updates the parent's bounds for this mask. */

@@ -193,6 +193,8 @@ class Input
 			case Right(i):
 				return i < 0 ? _keyNum > 0 : _key.get(i);
 		}
+
+		return false;
 	}
 
 	/**
