@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
-	<app preloader="com.haxepunk.Preloader" />
+	<app preloader="com.haxepunk.Preloader" unless="noHaxepunkPreloader" />
 
 	<assets path="assets/graphics" rename="gfx" include="*.png" />
 	<assets path="assets/font" rename="font" include="*.ttf" />
