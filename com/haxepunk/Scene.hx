@@ -397,9 +397,12 @@ class Scene extends Tweener
 	 */
 	public function collideRect(type:String, rX:Float, rY:Float, rWidth:Float, rHeight:Float):Entity
 	{
-		for (e in _types.get(type))
+		if (_types.exists(type))
 		{
-			if (e.collidable && e.collideRect(e.x, e.y, rX, rY, rWidth, rHeight)) return e;
+			for (e in _types.get(type))
+			{
+				if (e.collidable && e.collideRect(e.x, e.y, rX, rY, rWidth, rHeight)) return e;
+			}
 		}
 		return null;
 	}
@@ -414,20 +417,23 @@ class Scene extends Tweener
 	public function collidePoint(type:String, pX:Float, pY:Float):Entity
 	{
 		var result:Entity = null;
-		for (e in _types.get(type))
+		if (_types.exists(type))
 		{
-			// only look for entities that collide
-			if (e.collidable && e.collidePoint(e.x, e.y, pX, pY))
+			for (e in _types.get(type))
 			{
-				// the first one might be the front one
-				if (result == null)
+				// only look for entities that collide
+				if (e.collidable && e.collidePoint(e.x, e.y, pX, pY))
 				{
-					result = e;
-				}
-				// compare if the new collided entity is above the former one (lower valuer is toward, higher value is backward)
-				else if(e.layer < result.layer)
-				{
-					result = e;
+					// the first one might be the front one
+					if (result == null)
+					{
+						result = e;
+					}
+					// compare if the new collided entity is above the former one (lower valuer is toward, higher value is backward)
+					else if(e.layer < result.layer)
+					{
+						result = e;
+					}
 				}
 			}
 		}
