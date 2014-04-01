@@ -802,10 +802,11 @@ class HXP
 		var result:Int = 0,
 			mid:Int = 0,
 			min:Int = 0,
-			max:Int = list.length;
+			max:Int = list.length - 1;
 		while (max >= min)
 		{
 			mid = min + Std.int((max - min) / 2);
+			trace(mid);
 			result = compare(list[mid], key);
 			if (result > 0) max = mid - 1;
 			else if (result < 0) min = mid + 1;
