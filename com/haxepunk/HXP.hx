@@ -806,7 +806,6 @@ class HXP
 		while (max >= min)
 		{
 			mid = min + Std.int((max - min) / 2);
-			trace(mid);
 			result = compare(list[mid], key);
 			if (result > 0) max = mid - 1;
 			else if (result < 0) min = mid + 1;
