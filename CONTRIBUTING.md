@@ -13,6 +13,23 @@ Follow the steps below to make changes and submit a pull request.
 * Push to your repository `git push origin <my branch name>`
 * Create a pull request and point it to the appropriate branch for HaxePunk
 
+## Git Branches and Tagging
+
+HaxePunk uses multiple branches for development and each one has a specific purpose. Here is an overview of each branch type.
+
+<dl>
+	<dt>master</dt>
+	<dd>Reflects the last stable release to haxelib</dd>
+	<dt>dev</dt>
+	<dd>The bleeding edge branch. This will always contain the most recent and volatile changes.</dd>
+	<dt>release-x.x.x</dt>
+	<dd>This is a release branch which contains the features scheduled for a specific release on haxelib.</dd>
+	<dt>feature-*</dt>
+	<dd>This is a feature branch. It will contain code specific to a feature in development or that needs additional testing/approval.</dd>
+</dl>
+
+When each release is merged into the master branch it is tagged as a version (v2.5.2 for example). This allows anyone to download past versions of HaxePunk.
+
 ## Testing HaxePunk
 
 It is suggested that you test your changes on Flash and Neko if making updates to cross-platform code. There are unit tests that can be run by typing `ant unit` on the command line. It's also good to run the full suite, with examples, by typing `ant`. This may require you to install [Ant](http://ant.apache.org/) unless you already have it on your computer.
