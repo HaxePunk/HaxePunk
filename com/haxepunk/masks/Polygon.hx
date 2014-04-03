@@ -290,8 +290,8 @@ class Polygon extends Hitbox
 	private function collidePolygon(other:Polygon):Bool
 	{
 		var offset:Float;
-		var offsetX:Float = parent.x + _x - other.parent.x;
-		var offsetY:Float = parent.y + _y - other.parent.y;
+		var offsetX:Float = parent.x + _x - other.parent.x - other.x;
+		var offsetY:Float = parent.y + _y - other.parent.y - other.y;
 
 		// project other on this polygon axes
 		// for a collision to be present all projections must overlap
