@@ -583,9 +583,12 @@ class Scene extends Tweener
 	public function collideRectInto<E:Entity>(type:String, rX:Float, rY:Float, rWidth:Float, rHeight:Float, into:Array<E>)
 	{
 		var n:Int = into.length;
-		for (e in _types.get(type))
+		if (_types.exists(type))
 		{
-			if (e.collidable && e.collideRect(e.x, e.y, rX, rY, rWidth, rHeight)) into[n ++] = cast e;
+			for (e in _types.get(type))
+			{
+				if (e.collidable && e.collideRect(e.x, e.y, rX, rY, rWidth, rHeight)) into[n ++] = cast e;
+			}
 		}
 	}
 
@@ -600,6 +603,7 @@ class Scene extends Tweener
 	 */
 	public function collideCircleInto<E:Entity>(type:String, circleX:Float, circleY:Float, radius:Float , into:Array<E>)
 	{
+		if (!_types.exists(type)) return;
 		var n:Int = into.length;
 
 		radius *= radius;//Square it to avoid the square root
@@ -619,6 +623,7 @@ class Scene extends Tweener
 	 */
 	public function collidePointInto<E:Entity>(type:String, pX:Float, pY:Float, into:Array<E>)
 	{
+		if (!_types.exists(type)) return;
 		var n:Int = into.length;
 		for (e in _types.get(type))
 		{
@@ -637,6 +642,7 @@ class Scene extends Tweener
 	 */
 	public function nearestToRect(type:String, x:Float, y:Float, width:Float, height:Float):Entity
 	{
+		if (!_types.exists(type)) return null;
 		var nearDist:Float = HXP.NUMBER_MAX_VALUE,
 			near:Entity = null, dist:Float;
 		for (e in _types.get(type))
@@ -660,6 +666,7 @@ class Scene extends Tweener
 	 */
 	public function nearestToEntity(type:String, e:Entity, useHitboxes:Bool = false):Entity
 	{
+		if (!_types.exists(type)) return null;
 		if (useHitboxes) return nearestToRect(type, e.x - e.originX, e.y - e.originY, e.width, e.height);
 		var nearDist:Float = HXP.NUMBER_MAX_VALUE,
 			near:Entity = null,
@@ -689,6 +696,7 @@ class Scene extends Tweener
 	 */
 	public function nearestToClass<T>(type:String, e:Entity, classType:Class<T>, useHitboxes:Bool = false):Entity
 	{
+		if (!_types.exists(type)) return null;
 		if (useHitboxes) return nearestToRect(type, e.x - e.originX, e.y - e.originY, e.width, e.height);
 		var nearDist:Float = HXP.NUMBER_MAX_VALUE,
 			near:Entity = null,
@@ -717,6 +725,7 @@ class Scene extends Tweener
 	 */
 	public function nearestToPoint(type:String, x:Float, y:Float, useHitboxes:Bool = false):Entity
 	{
+		if (!_types.exists(type)) return null;
 		var nearDist:Float = HXP.NUMBER_MAX_VALUE,
 			near:Entity = null,
 			dist:Float;
@@ -898,6 +907,7 @@ class Scene extends Tweener
 	 */
 	public function getType<E:Entity>(type:String, into:Array<E>)
 	{
+		if (!_types.exists(type)) return;
 		var n:Int = into.length;
 		for (e in _types.get(type))
 		{
@@ -1101,6 +1111,7 @@ class Scene extends Tweener
 	@:allow(com.haxepunk.Entity)
 	private function removeType(e:Entity)
 	{
+		if (!_types.exists(e._type)) return;
 		var list = _types.get(e._type);
 		list.remove(e);
 		if (list.length == 0)
