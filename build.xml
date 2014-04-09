@@ -39,23 +39,19 @@
 			<arg line="run HaxePunk new build-test" />
 		</exec>
 		<exec executable="lime" dir="build-test">
-			<arg line="build project.xml" />
-			<arg line="flash" />
+			<arg line="build flash" />
 		</exec>
 		<exec executable="lime" dir="build-test">
-			<arg line="build project.xml" />
-			<arg line="neko" />
+			<arg line="build neko" />
 		</exec>
 		<exec executable="lime" dir="build-test">
-			<arg line="build project.xml" />
-			<arg line="html5" />
+			<arg line="build html5" />
 		</exec>
 	</target>
 
 	<target name="examples" depends="haxelib">
 		<exec executable="lime" dir="examples">
-			<arg line="test project.xml" />
-			<arg line="neko -debug" />
+			<arg line="test neko -debug" />
 		</exec>
 	</target>
 

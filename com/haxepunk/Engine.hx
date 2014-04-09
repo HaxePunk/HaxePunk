@@ -169,7 +169,9 @@ class Engine extends Sprite
 	{
 		HXP.stage.frameRate = HXP.assignedFrameRate;
 		HXP.stage.align = StageAlign.TOP_LEFT;
+#if !js
 		HXP.stage.quality = StageQuality.HIGH;
+#end
 		HXP.stage.scaleMode = StageScaleMode.NO_SCALE;
 		HXP.stage.displayState = StageDisplayState.NORMAL;
 		HXP.windowWidth = HXP.stage.stageWidth;

@@ -14,7 +14,6 @@ import flash.display.Sprite;
 import flash.events.Event;
 import flash.geom.ColorTransform;
 import flash.geom.Rectangle;
-import flash.system.System;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
@@ -963,8 +962,10 @@ class Console
 		_fpsInfoText1.text =
 			"System: " + Std.string(HXP._systemTime) + "ms\n" +
 			"Game: " + Std.string(HXP._gameTime) + "ms";
+#if !js
 		_memReadText.text =
-			(width >= BIG_WIDTH_THRESHOLD ? "Mem: " : "") + HXP.round(System.totalMemory / 1024 / 1024, 2) + "MB";
+			(width >= BIG_WIDTH_THRESHOLD ? "Mem: " : "") + HXP.round(flash.system.System.totalMemory / 1024 / 1024, 2) + "MB";
+#end
 	}
 
 	/** @private Update the debug panel text. */
