@@ -467,7 +467,7 @@ class Draw
 	 * @param	x		X position.
 	 * @param	y		Y position.
 	 */
-	public static function graphic(g:Graphic, x:Int = 0, y:Int = 0)
+	public static function graphic(g:Graphic, x:Int = 0, y:Int = 0, layer: Int = 0)
 	{
 		if (g.visible)
 		{
@@ -479,7 +479,14 @@ class Draw
 			else HXP.point.x = HXP.point.y = 0;
 			HXP.point2.x = HXP.camera.x;
 			HXP.point2.y = HXP.camera.y;
-			g.render(_target, HXP.point, HXP.point2);
+			if (HXP.renderMode == RenderMode.BUFFER) 
+			{
+				g.render(_target, HXP.point, HXP.point2);	
+			} 
+			else 
+			{
+				g.renderAtlas(layer, HXP.point, HXP.point2);
+			}
 		}
 	}
 
