@@ -206,10 +206,10 @@ class AtlasData
 		if (_smoothDataIndex != 0)
 		{
 			#if !html5
-			_tilesheet.drawTiles(_scene.sprite.graphics, _smoothData, false, _renderFlags, _smoothDataIndex);
+			_tilesheet.drawTiles(_scene.sprite.graphics, _smoothData, true, _renderFlags, _smoothDataIndex);
 			_smoothDataIndex = 0;
 			#else
-			_tilesheet.drawTiles(_scene.sprite.graphics, _smoothData, false, _renderFlags);
+			_tilesheet.drawTiles(_scene.sprite.graphics, _smoothData, true, _renderFlags);
 			#end
 		}
 	}
