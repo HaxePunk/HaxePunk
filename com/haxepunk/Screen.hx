@@ -147,8 +147,8 @@ class Screen
 		{
 			x -= _shakeX;
 			y -= _shakeY;
-			_shakeX = Std.random(_shakeMagnitude*2) - _shakeMagnitude;
-			_shakeY = Std.random(_shakeMagnitude*2) - _shakeMagnitude;
+			_shakeX = Std.random(_shakeMagnitude*2+1) - _shakeMagnitude;
+			_shakeY = Std.random(_shakeMagnitude*2+1) - _shakeMagnitude;
 			x += _shakeX;
 			y += _shakeY;
 			_shakeTime -= HXP.elapsed;
