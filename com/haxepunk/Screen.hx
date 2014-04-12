@@ -31,7 +31,7 @@ class Screen
 		x = y = originX = originY = 0;
 		_angle = _current = 0;
 		scale = scaleX = scaleY = 1;
-		update();
+		updateTransformation();
 
 		// create screen buffers
 		if (HXP.engine.contains(_sprite))
@@ -123,7 +123,7 @@ class Screen
 	}
 
 	/** @private Re-applies transformation matrix. */
-	public function update()
+	private function updateTransformation()
 	{
 		if (_matrix == null)
 		{
@@ -138,6 +138,28 @@ class Screen
 		_matrix.tx += originX * fullScaleX + x;
 		_matrix.ty += originY * fullScaleY + y;
 		_sprite.transform.matrix = _matrix;
+	}
+
+	public function update()
+	{
+		// screen shake
+		if (_shakeTime > 0)
+		{
+			x -= _shakeX;
+			y -= _shakeY;
+			_shakeX = Std.random(_shakeMagnitude*2) - _shakeMagnitude;
+			_shakeY = Std.random(_shakeMagnitude*2) - _shakeMagnitude;
+			x += _shakeX;
+			y += _shakeY;
+			_shakeTime -= HXP.elapsed;
+			if (_shakeTime < 0) _shakeTime = 0;
+		}
+		else if (_shakeX != 0 || _shakeY != 0)
+		{
+			x -= _shakeX;
+			y -= _shakeY;
+			_shakeX = _shakeY = 0;
+		}
 	}
 
 	/**
@@ -160,7 +182,7 @@ class Screen
 	{
 		if (x == value) return value;
 		HXP.engine.x = x = value;
-		update();
+		updateTransformation();
 		return x;
 	}
 
@@ -172,7 +194,7 @@ class Screen
 	{
 		if (y == value) return value;
 		HXP.engine.y = y = value;
-		update();
+		updateTransformation();
 		return y;
 	}
 
@@ -184,7 +206,7 @@ class Screen
 	{
 		if (originX == value) return value;
 		originX = value;
-		update();
+		updateTransformation();
 		return originX;
 	}
 
@@ -196,7 +218,7 @@ class Screen
 	{
 		if (originY == value) return value;
 		originY = value;
-		update();
+		updateTransformation();
 		return originY;
 	}
 
@@ -209,7 +231,7 @@ class Screen
 		if (scaleX == value) return value;
 		scaleX = value;
 		fullScaleX = scaleX * scale;
-		update();
+		updateTransformation();
 		needsResize = true;
 		return scaleX;
 	}
@@ -223,7 +245,7 @@ class Screen
 		if (scaleY == value) return value;
 		scaleY = value;
 		fullScaleY = scaleY * scale;
-		update();
+		updateTransformation();
 		needsResize = true;
 		return scaleY;
 	}
@@ -239,7 +261,7 @@ class Screen
 		scale = value;
 		fullScaleX = scaleX * scale;
 		fullScaleY = scaleY * scale;
-		update();
+		updateTransformation();
 		needsResize = true;
 		return scale;
 	}
@@ -268,7 +290,7 @@ class Screen
 	{
 		if (_angle == value * HXP.RAD) return value;
 		_angle = value * HXP.RAD;
-		update();
+		updateTransformation();
 		return _angle;
 	}
 
@@ -338,10 +360,20 @@ class Screen
 		}
 	}
 
+	public function shake(magnitude:Int, duration:Float)
+	{
+		if (_shakeTime < duration) _shakeTime = duration;
+		_shakeMagnitude = magnitude;
+	}
+
 	// Screen infromation.
 	private var _sprite:Sprite;
 	private var _bitmap:Array<Bitmap>;
 	private var _current:Int;
 	private var _matrix:Matrix;
 	private var _angle:Float;
+	private var _shakeTime:Float=0;
+	private var _shakeMagnitude:Int=0;
+	private var _shakeX:Int=0;
+	private var _shakeY:Int=0;
 }

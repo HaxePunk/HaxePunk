@@ -126,6 +126,7 @@ class Engine extends Sprite
 			_scene.update();
 		}
 		_scene.updateLists(false);
+		HXP.screen.update();
 	}
 
 	/**
