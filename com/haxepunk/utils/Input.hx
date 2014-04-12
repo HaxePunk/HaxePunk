@@ -141,7 +141,7 @@ class Input
 	public static var mouseFlashX(get, never):Int;
 	private static function get_mouseFlashX():Int
 	{
-		return Std.int(HXP.stage.mouseX);
+		return Std.int(HXP.stage.mouseX - HXP.screen.x);
 	}
 
 	/**
@@ -150,7 +150,7 @@ class Input
 	public static var mouseFlashY(get, never):Int;
 	private static function get_mouseFlashY():Int
 	{
-		return Std.int(HXP.stage.mouseY);
+		return Std.int(HXP.stage.mouseY - HXP.screen.y);
 	}
 
 	/**
