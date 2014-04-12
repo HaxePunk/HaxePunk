@@ -193,7 +193,7 @@ class Ease
 
 	// Easing constants.
 	private static var PI(get,never):Float;
-	private static var PI2(get_PI2,never):Float;
+	private static var PI2(get,never):Float;
 	private static var EL(get,never):Float;
 	private static inline var B1:Float = 1 / 2.75;
 	private static inline var B2:Float = 2 / 2.75;
