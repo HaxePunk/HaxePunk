@@ -159,7 +159,7 @@ class Screen
 	private function set_x(value:Int):Int
 	{
 		if (x == value) return value;
-		x = value;
+		HXP.engine.x = x = value;
 		update();
 		return x;
 	}
@@ -171,7 +171,7 @@ class Screen
 	private function set_y(value:Int):Int
 	{
 		if (y == value) return value;
-		y = value;
+		HXP.engine.y = y = value;
 		update();
 		return y;
 	}
