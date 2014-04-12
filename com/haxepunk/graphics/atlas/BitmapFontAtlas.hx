@@ -1,5 +1,6 @@
 package com.haxepunk.graphics.atlas;
 
+import com.haxepunk.HXP;
 import com.haxepunk.graphics.atlas.AtlasData;
 import com.haxepunk.HXP;
 import flash.display.BitmapData;
@@ -217,7 +218,7 @@ class BitmapFontAtlas extends TextureAtlas
 
 	private function new(source:AtlasDataType)
 	{
-		super(source);
+		super(HXP.getBitmap(source));
 		glyphData = new Map();
 	}
 
