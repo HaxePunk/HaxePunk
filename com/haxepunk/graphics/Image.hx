@@ -198,7 +198,7 @@ class Image extends Graphic
 			// render without rotation
 			_region.draw(_point.x, _point.y, layer,
 				sx * fsx * (_flipped ? -1 : 1), sy * fsy, angle,
-				_red, _green, _blue, _alpha);
+				_red, _green, _blue, _alpha, smooth);
 		}
 		else
 		{
@@ -221,7 +221,7 @@ class Image extends Graphic
 			ty = ((tx * sin + ty * cos) + originY + _point.y) * fsy;
 			tx = (tx1 + originX + _point.x) * fsx;
 
-			_region.drawMatrix(tx, ty, a, b, c, d, layer, _red, _green, _blue, _alpha);
+			_region.drawMatrix(tx, ty, a, b, c, d, layer, _red, _green, _blue, _alpha, smooth);
 		}
 	}
 
@@ -510,7 +510,7 @@ class Image extends Graphic
 		return _bitmap.smoothing = s;
 	}
 	#else
-	public var smooth:Bool = false;
+	public var smooth:Bool = true;
 	#end
 
 	/**
