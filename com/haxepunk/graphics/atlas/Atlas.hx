@@ -64,9 +64,9 @@ class Atlas
 	 */
 	public inline function prepareTile(tile:Int, x:Float, y:Float, layer:Int,
 		scaleX:Float, scaleY:Float, angle:Float,
-		red:Float, green:Float, blue:Float, alpha:Float)
+		red:Float, green:Float, blue:Float, alpha:Float, ?smooth:Bool)
 	{
-		_data.prepareTile(tile, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha);
+		_data.prepareTile(tile, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha, smooth);
 	}
 
 	/**
