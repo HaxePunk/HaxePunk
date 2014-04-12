@@ -243,7 +243,8 @@ class Emitter extends Graphic
 				type._red + type._redRange * td,
 				type._green + type._greenRange * td,
 				type._blue + type._blueRange * td,
-				type._alpha + type._alphaRange * ((type._alphaEase == null) ? t : type._alphaEase(t)));
+				type._alpha + type._alphaRange * ((type._alphaEase == null) ? t : type._alphaEase(t)),
+				smooth);
 		}, point, camera);
 	}
 
@@ -404,6 +405,8 @@ class Emitter extends Graphic
 	 * Amount of currently existing particles.
 	 */
 	public var particleCount(default, null):Int;
+
+	public var smooth:Bool = true;
 
 	// Particle information.
 	private var _types:Map<String,ParticleType>;
