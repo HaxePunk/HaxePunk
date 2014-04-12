@@ -805,6 +805,8 @@ class Console
 		var e:Entity;
 		// If debug mode is on.
 		_entScreen.visible = _debug;
+		_entScreen.x = HXP.screen.x;
+		_entScreen.y = HXP.screen.y;
 		if (_debug)
 		{
 			var g:Graphics = _entScreen.graphics,
