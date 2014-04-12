@@ -411,9 +411,11 @@ class BitmapText extends Graphic
 
 		// use hardware accelerated rendering
 		renderFont(function(region:AtlasRegion, gd:GlyphData, x:Float, y:Float) {
-			region.draw(_point.x * fsx + x * sx, _point.y * fsy + y * sy, layer, sx, sy, 0, _red, _green, _blue, alpha);
+			region.draw(_point.x * fsx + x * sx, _point.y * fsy + y * sy, layer, sx, sy, 0, _red, _green, _blue, alpha, smooth);
 		});
 	}
+
+	public var smooth:Bool = true;
 
 	private var _buffer:BitmapData;
 	private var _set:BitmapData;
