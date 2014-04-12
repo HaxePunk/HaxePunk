@@ -189,7 +189,7 @@ class Canvas extends Graphic
 	 * @param	source		Source BitmapData.
 	 * @param	rect		Optional area of the source image to draw from. If null, the entire BitmapData will be drawn.
 	 */
-	public function draw(x:Int, y:Int, source:BitmapData, rect:Rectangle = null)
+	public function draw(x:Float, y:Float, source:BitmapData, rect:Rectangle = null)
 	{
 		var xx:Int = 0, yy:Int = 0;
 		var i = 0;

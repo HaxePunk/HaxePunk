@@ -117,7 +117,7 @@ class Tilemap extends Canvas
 		{
 			_tile.x = (index % _setColumns) * (_tile.width + tileSpacingWidth);
 			_tile.y = Std.int(index / _setColumns) * (_tile.height + tileSpacingHeight);
-			draw(Std.int(column * _tile.width), Std.int(row * _tile.height), _set, _tile);
+			draw(column * _tile.width, row * _tile.height, _set, _tile);
 		}
 	}
 
@@ -431,8 +431,10 @@ class Tilemap extends Canvas
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;
 
-		var scalex:Float = HXP.screen.fullScaleX, scaley:Float = HXP.screen.fullScaleY,
-			tw:Int = Math.ceil(tileWidth), th:Int = Math.ceil(tileHeight);
+		var scalex:Float = HXP.screen.fullScaleX,
+			scaley:Float = HXP.screen.fullScaleY,
+			tw:Int = Std.int(tileWidth),
+			th:Int = Std.int(tileHeight);
 
 		var scx = scale * scaleX,
 			scy = scale * scaleY;
@@ -440,8 +442,8 @@ class Tilemap extends Canvas
 		// determine start and end tiles to draw (optimization)
 		var startx = Math.floor( -_point.x / (tw * scx)),
 			starty = Math.floor( -_point.y / (th * scy)),
-			destx = startx + 1 + Math.ceil(HXP.width / (tw * scx)),
-			desty = starty + 1 + Math.ceil(HXP.height / (th * scy));
+			destx = startx + 1 + Math.ceil((HXP.width-HXP.screen.x) / (tw * scx)),
+			desty = starty + 1 + Math.ceil((HXP.height-HXP.screen.y) / (th * scy));
 
 		// nothing will render if we're completely off screen
 		if (startx > _columns || starty > _rows || destx < 0 || desty < 0)
@@ -460,8 +462,8 @@ class Tilemap extends Canvas
 			tile:Int = 0;
 
 		// adjust scale to fill gaps
-		scx = Math.ceil(stepx) / tileWidth;
-		scy = Math.ceil(stepy) / tileHeight;
+		scx = stepx / tileWidth;
+		scy = stepy / tileHeight;
 
 		for (y in starty...desty)
 		{
@@ -471,7 +473,7 @@ class Tilemap extends Canvas
 				tile = _map[y % _rows][x % _columns];
 				if (tile >= 0)
 				{
-					_atlas.prepareTile(tile, Std.int(wx), Std.int(wy), layer, scx, scy, 0, _red, _green, _blue, alpha);
+					_atlas.prepareTile(tile, wx, wy, layer, scx, scy, 0, _red, _green, _blue, alpha);
 				}
 				wx += stepx;
 			}
