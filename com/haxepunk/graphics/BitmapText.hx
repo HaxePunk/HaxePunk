@@ -391,7 +391,7 @@ class BitmapText extends Graphic
 		_matrix.d = sy;
 		_matrix.tx = _point.x;
 		_matrix.ty = _point.y;
-		target.draw(_buffer, _matrix, _colorTransform);
+		target.draw(_buffer, _matrix, _colorTransform, null, null, smooth);
 		//target.copyPixels(_buffer, _buffer.rect, _point, null, null, true);
 	}
 
