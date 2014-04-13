@@ -145,12 +145,15 @@ class Screen
 		// screen shake
 		if (_shakeTime > 0)
 		{
-			x -= _shakeX;
-			y -= _shakeY;
-			_shakeX = Std.random(_shakeMagnitude*2+1) - _shakeMagnitude;
-			_shakeY = Std.random(_shakeMagnitude*2+1) - _shakeMagnitude;
-			x += _shakeX;
-			y += _shakeY;
+			var sx:Int = Std.random(_shakeMagnitude*2+1) - _shakeMagnitude;
+			var sy:Int = Std.random(_shakeMagnitude*2+1) - _shakeMagnitude;
+
+			x += sx - _shakeX;
+			y += sy - _shakeY;
+
+			_shakeX = sx;
+			_shakeY = sy;
+
 			_shakeTime -= HXP.elapsed;
 			if (_shakeTime < 0) _shakeTime = 0;
 		}
