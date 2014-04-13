@@ -475,7 +475,7 @@ class Tilemap extends Canvas
 					// ensure no horizontal overlap between this and next tile
 					scx = (Math.floor(wx+stepx) - Math.floor(wx)) / tileWidth;
 
-					_atlas.prepareTile(tile, wx, wy, layer, scx, scy, 0, _red, _green, _blue, alpha);
+					_atlas.prepareTile(tile, Math.floor(wx), Math.floor(wy), layer, scx, scy, 0, _red, _green, _blue, alpha);
 				}
 				wx += stepx;
 			}
