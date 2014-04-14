@@ -1104,7 +1104,7 @@ class Scene extends Tweener
 			list = new List<Entity>();
 			_types.set(e._type, list);
 		}
-		list.add(e);
+		list.push(e);
 	}
 
 	/** @private Removes Entity from the type list. */
