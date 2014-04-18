@@ -4,6 +4,8 @@ import com.haxepunk.graphics.atlas.Atlas;
 import com.haxepunk.graphics.atlas.TextureAtlas;
 import com.haxepunk.graphics.atlas.TileAtlas;
 import com.haxepunk.graphics.atlas.AtlasRegion;
+import com.haxepunk.masks.Polygon;
+import com.haxepunk.math.Vector;
 import com.haxepunk.Graphic;
 import com.haxepunk.HXP;
 import com.haxepunk.RenderMode;
@@ -15,6 +17,9 @@ import flash.geom.ColorTransform;
 import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
+import flash.display.Graphics;
+import flash.display.JointStyle;
+import flash.display.LineScaleMode;
 
 /**
  * Performance-optimized non-animated image. Can be drawn to the screen with transformations.
@@ -281,6 +286,88 @@ class Image extends Graphic
 		image.color = color;
 		image.alpha = alpha;
 
+		return image;
+	}
+
+	/**
+	 * Creates a new polygon Image from an array of points.
+	 * @param	polygon		A Polygon object to create the Image from.
+	 * @param	color		Color of the polygon.
+	 * @param	alpha		Alpha of the polygon.
+	 * @param	fill		If the polygon should be filled with the color (true) or just an outline (false).
+	 * @param	thick		How thick the outline should be (only applicable when fill = false).
+	 * @return	A new Image object.
+	 */
+	public static function createPolygon(polygon:Polygon, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Int = 1):Image
+	{
+		var graphics:Graphics = HXP.sprite.graphics;
+		var points:Array<Vector> = polygon.points;
+		
+		var minX:Float;
+		var	maxX:Float;
+		var	minY:Float;
+		var	maxY:Float;
+			
+		var p:Point;
+		var originalAngle:Float = polygon.angle;
+		
+		polygon.angle = 0;	// set temporarily angle to 0 so we can sync with image angle later
+		
+		minX = minY = HXP.NUMBER_MAX_VALUE;
+		maxX = maxY = -HXP.NUMBER_MAX_VALUE;
+		
+		// find polygon bounds
+		for (p in points)
+		{
+			if (p.x < minX) minX = p.x;
+			if (p.x > maxX) maxX = p.x;
+			if (p.y < minY) minY = p.y;
+			if (p.y > maxY) maxY = p.y;
+		}
+		
+		var w:Int = Math.ceil(maxX - minX);
+		var h:Int = Math.ceil(maxY - minY);
+		
+		if (color > 0xFFFFFF) color = 0xFFFFFF & color;
+		graphics.clear();
+		
+		if (fill)
+			graphics.beginFill(color, alpha);
+		else
+			graphics.lineStyle(thick, color, alpha, false, LineScaleMode.NORMAL, null, JointStyle.MITER);
+			
+		
+		graphics.moveTo(points[points.length - 1].x, points[points.length - 1].y);		
+		for (p in points)
+		{
+			graphics.lineTo(p.x, p.y);
+		}
+		graphics.endFill();
+		
+		HXP.matrix.identity();
+		HXP.matrix.translate( -minX, -minY);
+
+		var data:BitmapData = HXP.createBitmap(w, h, true, 0);
+		data.draw(HXP.sprite, HXP.matrix);
+		
+		var image:Image;
+		if (HXP.renderMode == RenderMode.HARDWARE)
+		{
+			image = new Image(Atlas.loadImageAsRegion(data));
+		}
+		else
+		{
+			image = new Image(data);
+		}
+		
+		// adjust position, origin and angle
+		image.x = polygon.x + polygon.origin.x;
+		image.y = polygon.y + polygon.origin.y;
+		image.originX = image.x - polygon.minX;
+		image.originY = image.y - polygon.minY;
+		image.angle = originalAngle;
+		polygon.angle = originalAngle;
+		
 		return image;
 	}
 
