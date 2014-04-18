@@ -208,7 +208,7 @@ class Draw
 			_graphics.lineStyle(thick, color, alpha, false, LineScaleMode.NONE);
 			_graphics.moveTo(x1 - _camera.x, y1 - _camera.y);
 			_graphics.lineTo(x2 - _camera.x, y2 - _camera.y);
-			_graphics.lineStyle(0);
+			_graphics.lineStyle();
 		}
 	}
 
@@ -248,6 +248,38 @@ class Draw
 		}
 	}
 
+	/**
+	 * Draws a rectangle.
+	 * @param	x			X position of the rectangle.
+	 * @param	y			Y position of the rectangle.
+	 * @param	width		Width of the rectangle.
+	 * @param	height		Height of the rectangle.
+	 * @param	color		Color of the rectangle.
+	 * @param	alpha		Alpha of the rectangle.
+	 * @param	fill		If the rectangle should be filled with the color (true) or just an outline (false).
+	 * @param	thick		How thick the outline should be (only applicable when fill = false).
+	 */
+	public static function rectPlus(x:Float, y:Float, width:Float, height:Float, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1)
+	{
+		color = 0xFFFFFF & color;
+		
+		if (HXP.renderMode == RenderMode.BUFFER) _graphics.clear();
+		
+		if (fill) 
+		{
+			_graphics.beginFill(color, alpha);
+		} 
+		else 
+		{
+			_graphics.lineStyle(thick, color, alpha);
+		}
+		
+		_graphics.drawRect(x - _camera.x, y - _camera.y, width, height);
+		_graphics.endFill();
+		
+		HXP.renderMode == RenderMode.BUFFER ? drawToScreen() : _graphics.lineStyle();
+	}
+		
 	/**
 	 * Draws a non-filled, pixelated circle.
 	 * @param	x			Center x position.
@@ -338,11 +370,121 @@ class Draw
 			{
 				_graphics.lineStyle(thick, color & 0xFFFFFF, alpha);
 				_graphics.drawCircle(x - _camera.x, y - _camera.y, radius);
-				_graphics.lineStyle(0);
+				_graphics.lineStyle();
 			}
 		}
 	}
-
+	
+	/**
+	 * Draws a series of lines, given two points
+	 * @param	x			Array of X-coordinates
+	 * @param	y			Array of Y-coordinates
+	 * @param	color		Color of the set of points
+	 * @param	alpha		Alpha of the set of points
+	 * @param	fill		If the set should be filled with the color (true) or just an outline (false).
+	 * @param	thick		How thick the outline should be (only applicable when fill = false).
+	 */
+	public static function points(x:Array<Float>, y:Array<Float>, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick: Int = 1, rotated:Bool = false, angle: Float = 0, centerX: Float = 0, centerY: Float = 0)
+	{
+		if (x.length != y.length)
+		{
+			HXP.log("Invalid points");
+			return;
+		}
+		if (rotated) 
+		{
+			var theta: Float = angle * HXP.RAD;
+			var cos: Float = Math.cos(theta);
+			var sin: Float = Math.sin(theta);
+			for (i in 0...x.length) 
+			{
+				var rX: Float = x[i] - centerX;
+				var rY: Float = y[i] - centerY;
+				x[i] = (cos * rX) - (sin * rY) + centerX;
+				y[i] = (sin * rX) + (cos * rY) + centerY;
+			}
+		}
+		if (HXP.renderMode == RenderMode.BUFFER)
+		{
+			_graphics.clear();			
+			if (fill) 
+			{
+				_graphics.beginFill(color & 0xFFFFFF, alpha);
+				_graphics.moveTo(x[0], y[0]);
+				for (i in 1...x.length) 
+				{
+					_graphics.lineTo(x[i], y[i]);
+				}
+				_graphics.lineTo(x[0], y[0]);
+				_graphics.endFill();
+			} 
+			else 
+			{
+				_graphics.lineStyle(thick, color & 0xFFFFFF, alpha, true);
+				_graphics.moveTo(x[0], y[0]);
+				for (i in 1...x.length) 
+				{
+					_graphics.lineTo(x[i], y[i]);
+				}
+				_graphics.lineTo(x[0], y[0]);
+			}
+			drawToScreen();
+		}
+		else
+		{
+			if (fill) 
+			{
+				_graphics.beginFill(color, alpha);
+				_graphics.moveTo(x[0], y[0]);
+				for (i in 1...x.length) 
+				{
+					_graphics.lineTo(x[i], y[i]);
+				}
+				_graphics.lineTo(x[0], y[0]);
+				_graphics.endFill();
+			} 
+			else 
+			{
+				_graphics.lineStyle(thick, color & 0xFFFFFF, alpha);
+				_graphics.moveTo(x[0], y[0]);
+				for (i in 1...x.length) 
+				{
+					_graphics.lineTo(x[i], y[i]);
+				}
+				_graphics.lineTo(x[0], y[0]);
+				_graphics.lineStyle();
+			}
+		}
+	}
+	
+	/**
+	 * Draws a polygon using Draw.points()
+	 * @param	x			X-coordinate of the center of the polygon
+	 * @param	y			Y-coordinate of the center of the polygon
+	 * @param	sides		Number of sides of the polygon
+	 * @param	radius		"Radius" of the polygon (distance of each point to the center
+	 * @param	rotation 	Rotation of the polygon
+	 * @param	color		Color of the polygon
+	 * @param	alpha		Alpha of the polygon
+	 * @param	fill		If the polygon should be filled with the color (true) or just an outline (false).
+	 * @param	thick		How thick the outline should be (only applicable when fill = false).
+	 */
+	public static function polygon(x:Float, y:Float, sides:Int, radius:Float, rotation:Float = 0, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick: Int = 1)
+	{
+		if (sides < 3) return;
+		rotation += 180;
+		var angleInterval: Float = 360.0 / sides;
+		var xArr: Array<Float> = new Array();
+		var yArr: Array<Float> = new Array();
+		for (i in 0...sides) 
+		{
+			xArr.push(x + (Math.cos(rotation * HXP.RAD) * radius));
+			yArr.push(y + (Math.sin(rotation * HXP.RAD) * radius));
+			rotation += angleInterval;
+		}
+		points(xArr, yArr, color, alpha, fill, thick);
+	}
+	
 	/**
 	 * Draws the Entity's hitbox.
 	 * @param	e			The Entity whose hitbox is to be drawn.
@@ -425,7 +567,7 @@ class Draw
 			_graphics.lineStyle(thick, color, alpha);
 			_graphics.moveTo(x1 - _camera.x, y1 - _camera.y);
 			_graphics.curveTo(x2 - _camera.x, y2 - _camera.y, x3 - _camera.x, y3 - _camera.y);
-			_graphics.lineStyle(0);
+			_graphics.lineStyle();
 		}
 	}
 
@@ -434,8 +576,9 @@ class Draw
 	 * @param	g		The Graphic to draw.
 	 * @param	x		X position.
 	 * @param	y		Y position.
+	 * @param	layer	The layer to draw the graphic at
 	 */
-	public static function graphic(g:Graphic, x:Int = 0, y:Int = 0, layer: Int = 0)
+	public static function graphic(g:Graphic, x:Int = 0, y:Int = 0, layer:Int = 0)
 	{
 		if (g.visible)
 		{
@@ -447,12 +590,9 @@ class Draw
 			else HXP.point.x = HXP.point.y = 0;
 			HXP.point2.x = HXP.camera.x;
 			HXP.point2.y = HXP.camera.y;
-			if (HXP.renderMode == RenderMode.BUFFER) 
-			{
+			if (HXP.renderMode == RenderMode.BUFFER) {
 				g.render(_target, HXP.point, HXP.point2);	
-			} 
-			else 
-			{
+			} else {
 				g.renderAtlas(layer, HXP.point, HXP.point2);
 			}
 		}
