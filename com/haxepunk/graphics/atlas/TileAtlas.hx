@@ -11,10 +11,6 @@ class TileAtlas extends Atlas
 	 * Constructor.
 	 *
 	 * @param	source		Source texture.
-	 * @param	tileWidth	With of the tiles.
-	 * @param	tileHeight	Height of the tiles.
-	 * @param	tileMarginWidth		Tile horizontal margin.
-	 * @param	tileMarginHeight	Tile vertical margin.
 	 */
 	public function new(source:AtlasDataType)
 	{
@@ -32,7 +28,14 @@ class TileAtlas extends Atlas
 	{
 		return _regions[index];
 	}
-
+	
+	/**
+	 * Prepares the atlas for drawing.
+	 * @param	tileWidth	With of the tiles.
+	 * @param	tileHeight	Height of the tiles.
+	 * @param	tileMarginWidth		Tile horizontal margin.
+	 * @param	tileMarginHeight	Tile vertical margin.
+	 */
 	public function prepare(tileWidth:Int, tileHeight:Int, tileMarginWidth:Int=0, tileMarginHeight:Int=0)
 	{
 		if (_regions.length > 0) return; // only prepare once
