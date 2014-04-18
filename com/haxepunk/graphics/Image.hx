@@ -304,10 +304,10 @@ class Image extends Graphic
 		var points:Array<Vector> = polygon.points;
 		
 		var minX:Float;
-		var	maxX:Float;
-		var	minY:Float;
-		var	maxY:Float;
-			
+		var maxX:Float;
+		var minY:Float;
+		var maxY:Float;
+		
 		var p:Point;
 		var originalAngle:Float = polygon.angle;
 		
