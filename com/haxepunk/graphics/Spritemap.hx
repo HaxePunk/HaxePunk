@@ -228,6 +228,14 @@ class Spritemap extends Image
 		_frame = frame;
 		updateBuffer();
 	}
+	
+	/**
+	 * Stops the animation on the current display frame.
+	 */
+	public inline function stop()
+	{
+		frame = frame;
+	}
 
 	/**
 	 * Assigns the Spritemap to a random frame.
