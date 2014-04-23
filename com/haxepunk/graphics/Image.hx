@@ -187,8 +187,8 @@ class Image extends Graphic
 
 			if (_flipped) _point.x += _sourceRect.width * sx;
 
-			_point.x = Math.floor(_point.x * fsx);
-			_point.y = Math.floor(_point.y * fsy);
+			_point.x = _point.x * fsx;
+			_point.y = _point.y * fsy;
 
 			// render without rotation
 			_region.draw(_point.x, _point.y, layer,
@@ -216,7 +216,7 @@ class Image extends Graphic
 			ty = ((tx * sin + ty * cos) + originY + _point.y) * fsy;
 			tx = (tx1 + originX + _point.x) * fsx;
 
-			_region.drawMatrix(Std.int(tx), Std.int(ty), a, b, c, d, layer, _red, _green, _blue, _alpha);
+			_region.drawMatrix(tx, ty, a, b, c, d, layer, _red, _green, _blue, _alpha);
 		}
 	}
 
