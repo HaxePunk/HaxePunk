@@ -421,8 +421,8 @@ class Polygon extends Hitbox
 		var projY:Int = Math.round(secondProj.min);
 		_height = Math.round(secondProj.max - secondProj.min);
 
-		minX = projX;
-		minY = projY;
+		minX = _x + projX;
+		minY = _y + projY;
 		maxX = Math.round(minX + _width);
 		maxY = Math.round(minY + _height);
 		
