@@ -30,7 +30,7 @@ class Screen
 		x = y = originX = originY = 0;
 		_angle = _current = 0;
 		scale = scaleX = scaleY = 1;
-		_color = 0xFF202020;
+		_color = 0x00000000;
 		update();
 
 		// create screen buffers
