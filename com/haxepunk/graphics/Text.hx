@@ -19,7 +19,11 @@ import com.haxepunk.graphics.atlas.Atlas;
 typedef TextOptions = {
 	@:optional var font:String;
 	@:optional var size:Int;
+#if (flash || js)
+	@:optional var align:TextFormatAlign;
+#else
 	@:optional var align:String;
+#end
 	@:optional var wordWrap:Bool;
 	@:optional var resizable:Bool;
 	@:optional var color:Int;
@@ -85,7 +89,7 @@ class Text extends Image
 	 * @param options An object containing optional parameters contained in TextOptions
 	 * 						font		Font family.
 	 * 						size		Font size.
-	 * 						align		Alignment ("left", "center" or "right").
+	 * 						align		Alignment (one of: TextFormatAlign.LEFT, TextFormatAlign.CENTER, TextFormatAlign.RIGHT, TextFormatAlign.JUSTIFY).
 	 * 						wordWrap	Automatic word wrapping.
 	 * 						resizable	If the text field can automatically resize if its contents grow.
 	 * 						color		Text color.
@@ -100,7 +104,7 @@ class Text extends Image
 		// defaults
 		if (!Reflect.hasField(options, "font"))      options.font      = HXP.defaultFont;
 		if (!Reflect.hasField(options, "size"))      options.size      = 16;
-		if (!Reflect.hasField(options, "align"))     options.align     = "left";
+		if (!Reflect.hasField(options, "align"))     options.align     = TextFormatAlign.LEFT;
 		if (!Reflect.hasField(options, "color"))     options.color     = 0xFFFFFF;
 		if (!Reflect.hasField(options, "resizable")) options.resizable = true;
 		if (!Reflect.hasField(options, "wordWrap"))  options.wordWrap  = false;
@@ -108,7 +112,7 @@ class Text extends Image
 
 		var fontObj = Assets.getFont(options.font);
 		_format = new TextFormat(fontObj.fontName, options.size, 0xFFFFFF);
-		_format.align = alignConv(options.align);
+		_format.align = options.align;
 		_format.leading = options.leading;
 
 		_field = new TextField();
@@ -194,31 +198,6 @@ class Text extends Image
 		{
 			super.updateColorTransform();
 		}
-	}
-	
-	private inline function alignConv (value:String) 
-	{
-		#if (flash || js)
-		return switch (value)
-			{
-				case "left":
-					TextFormatAlign.LEFT;
-					
-				case "right":
-					TextFormatAlign.RIGHT;
-					
-				case "center":
-					TextFormatAlign.CENTER;
-					
-				case "justify":
-					TextFormatAlign.JUSTIFY;
-					
-				default:
-					throw 'Invalid text align value "$value"';
-			}
-		#else
-		return value;
-		#end
 	}
 	
 	private static var tag_re = ~/<([^>]+)>([^(?:<\/)]+)<\/[^>]+>/g;
@@ -368,6 +347,55 @@ class Text extends Image
 		return value;
 	}
 
+	/** 
+	 * Gets the specified property, by also inspecting the underlying TextField and TextFormat objects.
+	 * Returns null if the property doesn't exist.
+	 */ 
+	public function getTextProperty(name:String):Dynamic
+	{
+		var value = Reflect.getProperty(this, name);
+		if (value == null) value = Reflect.getProperty(_field, name);
+		if (value == null) value = Reflect.getProperty(_format, name);
+		return value;
+	}
+	
+	/** 
+	 * Sets the specified property, by also inspecting the underlying TextField and TextFormat objects.
+	 * Returns true if the property has been found and set, false otherwise.
+	 */ 
+	public function setTextProperty(name:String, value:Dynamic):Bool
+	{
+		var propertyFound:Bool = false;
+		
+		// chain of try-catch: ugly but Reflect.hasField doesn't work with non-anon structs
+		try // on this Text
+		{
+			Reflect.setProperty(this, name, value);
+			return true; // exit early to avoid calling update twice
+		} 
+		catch (e:Dynamic) 
+		{
+			try // on TextField
+			{
+				Reflect.setProperty(_field, name, value);
+				propertyFound = true;
+			} 
+			catch (e:Dynamic) 
+			{
+				try // on TextFormat
+				{
+					Reflect.setProperty(_format, name, value);
+					propertyFound = true;
+				} 
+				catch (e:Dynamic) {}
+			}
+		}
+		if (!propertyFound) return false;
+		
+		updateTextBuffer();
+		return true;
+	}
+
 	/**
 	 * Font family.
 	 */
@@ -396,11 +424,16 @@ class Text extends Image
 	/**
 	 * Font alignment.
 	 */
+#if (flash || js)
+	public var align(default, set):TextFormatAlign;
+	private function set_align(value:TextFormatAlign):TextFormatAlign
+#else
 	public var align(default, set):String;
 	private function set_align(value:String):String
+#end
 	{
 		if (align == value) return value;
-		_format.align = alignConv(align = value);
+		_format.align = value;
 		updateTextBuffer();
 		return value;
 	}
