@@ -9,6 +9,7 @@ import flash.display.PixelSnapping;
 import flash.display.Sprite;
 import flash.filters.BitmapFilter;
 import flash.geom.Matrix;
+import flash.Lib;
 
 /**
  * Container for the main screen buffer. Can be used to transform the screen.
@@ -30,7 +31,6 @@ class Screen
 		x = y = originX = originY = 0;
 		_angle = _current = 0;
 		scale = scaleX = scaleY = 1;
-		_color = 0xFF202020;
 		update();
 
 		// create screen buffers
@@ -106,7 +106,7 @@ class Screen
 	public function refresh()
 	{
 		// refreshes the screen
-		HXP.buffer.fillRect(HXP.bounds, _color);
+		HXP.buffer.fillRect(HXP.bounds, HXP.stage.color);
 	}
 
 	/**
@@ -144,14 +144,11 @@ class Screen
 	 * Refresh color of the screen.
 	 */
 	public var color(get, set):Int;
-	private function get_color():Int { return _color; }
+	private function get_color():Int { return HXP.stage.color; }
 	private function set_color(value:Int):Int
 	{
-#if (flash || html5)
-		_color = 0xFF000000 | value;
-#elseif debug
-		HXP.log("screen.color should only be set in flash and html5");
-#end
+		HXP.stage.color = value;
+		
 		return value;
 	}
 
@@ -347,5 +344,4 @@ class Screen
 	private var _current:Int;
 	private var _matrix:Matrix;
 	private var _angle:Float;
-	private var _color:Int;
 }
