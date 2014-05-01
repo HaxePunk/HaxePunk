@@ -106,7 +106,7 @@ class Screen
 	public function refresh()
 	{
 		// refreshes the screen
-		HXP.buffer.fillRect(HXP.bounds, Lib.current.stage.color);
+		HXP.buffer.fillRect(HXP.bounds, HXP.stage.color);
 	}
 
 	/**
@@ -144,10 +144,10 @@ class Screen
 	 * Refresh color of the screen.
 	 */
 	public var color(get, set):Int;
-	private function get_color():Int { return Lib.current.stage.color; }
+	private function get_color():Int { return HXP.stage.color; }
 	private function set_color(value:Int):Int
 	{
-		Lib.current.stage.color = value;
+		HXP.stage.color = value;
 		
 		return value;
 	}
