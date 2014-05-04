@@ -55,7 +55,7 @@ class BitmapFontAtlas extends TextureAtlas
 	}
 
 	/*
-	 * Load a font from Sparrow (or XNA/BMFont) XML format.
+	 * Load a font from Sparrow (or BMFont) XML format.
 	 */
 	public static function loadXMLFont(file:String):BitmapFontAtlas
 	{
@@ -202,7 +202,7 @@ class BitmapFontAtlas extends TextureAtlas
 			cy += (rowHeight + 1);
 		}
 		
-		atlas.lineHeight = atlas.fontSize + 2;
+		atlas.lineHeight = atlas.fontSize;
 		
 		// remove background color
 		var bgColor32:Int = bmd.getPixel32(0, 0);

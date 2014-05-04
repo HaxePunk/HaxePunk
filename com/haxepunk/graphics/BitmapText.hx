@@ -49,13 +49,14 @@ class BitmapText extends Graphic
 	 * @param y       Y offset.
 	 * @param width   Image width (leave as 0 to size to the starting text string).
 	 * @param height  Image height (leave as 0 to size to the starting text string).
-	 * @param options An object containing optional parameters contained in TextOptions
-	 * 						font		Path to .fnt file.
+	 * @param options An object containing optional parameters contained in BitmapTextOptions
+	 * 						font		Name of the font asset (.fnt or .png).
 	 * 						size		Font size.
-	 * 						align		Alignment ("left", "center" or "right"). (Currently ignored.)
+	 * 						format		Font format (BitmapFontFormat.XML or BitmapFontFormat.XNA).
 	 * 						wordWrap	Automatic word wrapping.
-	 * 						resizable	If the text field can automatically resize if its contents grow. (Currently ignored.)
 	 * 						color		Text color.
+	 * 						align		Alignment ("left", "center" or "right"). (Currently ignored.)
+	 * 						resizable	If the text field can automatically resize if its contents grow. (Currently ignored.)
 	 * 						leading		Vertical space between lines. (Currently ignored.)
 	 *						richText	If the text field uses a rich text string. (Currently ignored.) 
 	 */
@@ -369,7 +370,7 @@ class BitmapText extends Graphic
 			// next line
 			rx = 0;
 			ry += lineHeight;
-			if (Std.int(ry*sx) > textHeight) textHeight = Std.int(ry*sx);
+			if (Std.int(ry*sy) > textHeight) textHeight = Std.int(ry*sy);
 		}
 	}
 
