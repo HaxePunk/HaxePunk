@@ -237,7 +237,7 @@ class Emitter extends Graphic
 			fsy:Float = HXP.screen.fullScaleY;
 
 		renderParticle(function(type:ParticleType, t:Float, td:Float) {
-			var frameIndex:Int = type._frames[Std.int(td * type._frames.length)];
+			var frameIndex:Int = type._frames[Std.int(td * type._frames.length) % type._frames.length];
 			_frames[frameIndex].draw(Math.floor(_p.x * fsx), Math.floor(_p.y * fsy), layer,
 				fsx, fsy, type._angle,
 				type._red + type._redRange * td,
