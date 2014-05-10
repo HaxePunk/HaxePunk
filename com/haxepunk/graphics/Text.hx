@@ -143,6 +143,7 @@ class Text extends Image
 		blit = HXP.renderMode == RenderMode.BUFFER;
 		updateTextBuffer();
 
+		this.size = options.size;
 		this.color = options.color;
 		this.x = x;
 		this.y = y;
@@ -151,8 +152,8 @@ class Text extends Image
 	/**
 	 * Add a style for a subset of the text, for use with the richText property.
 	 * Usage:
-	 *    text.setStyle("red", {color: 0xFF0000});
-	 *    text.setStyle("big", {size: text.size * 2, bold: true});
+	 *    text.addStyle("red", {color: 0xFF0000});
+	 *    text.addStyle("big", {size: text.size * 2, bold: true});
 	 *    text.richText = "<big>Hello</big> <red>world</red>";
 	 */
 	public function addStyle(tagName:String, params:StyleType):Void
@@ -261,13 +262,14 @@ class Text extends Image
 	/** @private Updates the drawing buffer. */
 	private function updateTextBuffer()
 	{
-		_format.color = _color;
 		if (_richText == null)
 		{
+			_format.color = 0xFFFFFFFF;
 			_field.setTextFormat(_format);
 		}
 		else
 		{
+			_format.color = _color;
 			matchStyles();
 		}
 
