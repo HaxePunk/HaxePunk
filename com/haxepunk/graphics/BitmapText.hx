@@ -16,24 +16,31 @@ import com.haxepunk.graphics.atlas.AtlasRegion;
 
 typedef RenderFunction = AtlasRegion -> GlyphData -> Float -> Float -> Void;
 
+typedef BitmapTextOptions = {
+	> TextOptions,
+	@:optional var format:BitmapFontFormat;
+	@:optional var extraParams:Dynamic;
+};
+
+
 class BitmapText extends Graphic
 {
-	public var width:Float=0;
-	public var height:Float=0;
-	public var textWidth:Int=0;
-	public var textHeight:Int=0;
+	public var width:Float = 0;
+	public var height:Float = 0;
+	public var textWidth:Int = 0;
+	public var textHeight:Int = 0;
 	public var autoWidth:Bool = false;
 	public var autoHeight:Bool = false;
-	public var size:Int=0;
-	public var wrap:Bool=false;
+	public var size:Int = 0;
+	public var wrap:Bool = false;
 
-	public var scale:Float=1;
-	public var scaleX:Float=1;
-	public var scaleY:Float=1;
+	public var scale:Float = 1;
+	public var scaleX:Float = 1;
+	public var scaleY:Float = 1;
 
 	public var lines:Array<String>;
-	public var lineSpacing:Int=0;
-	public var charSpacing:Int=0;
+	public var lineSpacing:Int = 0;
+	public var charSpacing:Int = 0;
 
 	/**
 	 * BitmapText constructor.
@@ -42,32 +49,31 @@ class BitmapText extends Graphic
 	 * @param y       Y offset.
 	 * @param width   Image width (leave as 0 to size to the starting text string).
 	 * @param height  Image height (leave as 0 to size to the starting text string).
-	 * @param options An object containing optional parameters contained in TextOptions
-	 * 						font		Path to .fnt file.
+	 * @param options An object containing optional parameters contained in BitmapTextOptions
+	 * 						font		Name of the font asset (.fnt or .png).
 	 * 						size		Font size.
-	 * 						align		Alignment ("left", "center" or "right"). (Currently ignored.)
+	 * 						format		Font format (BitmapFontFormat.XML or BitmapFontFormat.XNA).
 	 * 						wordWrap	Automatic word wrapping.
-	 * 						resizable	If the text field can automatically resize if its contents grow. (Currently ignored.)
 	 * 						color		Text color.
-	 * 						leading		Vertical space between lines.
-	 *						richText	If the text field uses a rich text string
+	 * 						align		Alignment ("left", "center" or "right"). (Currently ignored.)
+	 * 						resizable	If the text field can automatically resize if its contents grow. (Currently ignored.)
+	 * 						leading		Vertical space between lines. (Currently ignored.)
+	 *						richText	If the text field uses a rich text string. (Currently ignored.) 
 	 */
-	public function new(text:String, x:Float=0, y:Float=0, width:Float=0, height:Float=0, ?options:TextOptions)
+	public function new(text:String, x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0, ?options:BitmapTextOptions)
 	{
 		super();
 
-		if (options == null)
-		{
-			options = {};
-			options.color = 0xFFFFFF;
-		}
-		wrap = options.wordWrap;
+		if (options == null) options = {};
 
-		if (options.font == null)  options.font = HXP.defaultFont;
-		if (options.size == 0)     options.size = 16;
+		// defaults
+		if (!Reflect.hasField(options, "font"))      options.font      = HXP.defaultFont + ".png";
+		if (!Reflect.hasField(options, "size"))      options.size      = null;
+		if (!Reflect.hasField(options, "color"))     options.color     = 0xFFFFFF;
+		if (!Reflect.hasField(options, "wordWrap"))  options.wordWrap  = false;
 
-		// load the font as a TextureAtlas
-		var font = BitmapFontAtlas.getFont(options.font);
+		// load the font as a BitmapFontAtlas
+		var font = BitmapFontAtlas.getFont(options.font, options.format, options.extraParams);
 
 		blit = HXP.renderMode != RenderMode.HARDWARE;
 		_font = cast(font, BitmapFontAtlas);
@@ -75,12 +81,13 @@ class BitmapText extends Graphic
 		// failure to load
 		if (_font == null)
 			throw "Invalid font glyphs provided.";
-
+		
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		this.size = options.size;
+		wrap = options.wordWrap;
+		size = options.size != null ? options.size : _font.fontSize;
 
 		autoWidth = (width == 0);
 		autoHeight = (height == 0);
@@ -94,7 +101,7 @@ class BitmapText extends Graphic
 
 		this.color = options.color;
 		updateColor();
-		this.text = text;
+		this.text = text != null ? text : "";
 	}
 
 	private var _red:Float;
@@ -363,7 +370,7 @@ class BitmapText extends Graphic
 			// next line
 			rx = 0;
 			ry += lineHeight;
-			if (Std.int(ry*sx) > textHeight) textHeight = Std.int(ry*sx);
+			if (Std.int(ry*sy) > textHeight) textHeight = Std.int(ry*sy);
 		}
 	}
 
@@ -403,7 +410,7 @@ class BitmapText extends Graphic
 		_point.y = Math.floor(point.y + y - camera.y * scrollY);
 
 		// use hardware accelerated rendering
-		renderFont(function(region:AtlasRegion,gd:GlyphData, x:Float,y:Float) {
+		renderFont(function(region:AtlasRegion, gd:GlyphData, x:Float, y:Float) {
 			region.draw(_point.x * fsx + x * sx, _point.y * fsy + y * sy, layer, sx, sy, 0, _red, _green, _blue, alpha);
 		});
 	}
