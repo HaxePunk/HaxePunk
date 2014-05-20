@@ -20,8 +20,8 @@ class VisibleLabel extends Sprite
 	{
 		super();
 
-		active = new Bitmap(Assets.getBitmapData("gfx/debug/console_visible.png"));
-		inactive = new Bitmap(Assets.getBitmapData("gfx/debug/console_hidden.png"));
+		active = new Bitmap(Assets.getBitmapData("graphics/debug/console_visible.png"));
+		inactive = new Bitmap(Assets.getBitmapData("graphics/debug/console_hidden.png"));
 
 		label = new TextField();
 		label.defaultTextFormat = textFormat;

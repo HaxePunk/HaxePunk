@@ -198,12 +198,12 @@ class Console
 		// load assets based on embedding method
 		try
 		{
-			_bmpLogo = new Bitmap(Assets.getBitmapData("gfx/debug/console_logo.png"));
-			_butDebug = new Bitmap(Assets.getBitmapData("gfx/debug/console_debug.png"));
-			_butOutput = new Bitmap(Assets.getBitmapData("gfx/debug/console_output.png"));
-			_butPlay = new Bitmap(Assets.getBitmapData("gfx/debug/console_play.png"));
-			_butPause = new Bitmap(Assets.getBitmapData("gfx/debug/console_pause.png"));
-			_butStep = new Bitmap(Assets.getBitmapData("gfx/debug/console_step.png"));
+			_bmpLogo = new Bitmap(Assets.getBitmapData("graphics/debug/console_logo.png"));
+			_butDebug = new Bitmap(Assets.getBitmapData("graphics/debug/console_debug.png"));
+			_butOutput = new Bitmap(Assets.getBitmapData("graphics/debug/console_output.png"));
+			_butPlay = new Bitmap(Assets.getBitmapData("graphics/debug/console_play.png"));
+			_butPause = new Bitmap(Assets.getBitmapData("graphics/debug/console_pause.png"));
+			_butStep = new Bitmap(Assets.getBitmapData("graphics/debug/console_step.png"));
 		} catch (e:Dynamic) {
 			return;
 		}
