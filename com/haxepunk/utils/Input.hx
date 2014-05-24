@@ -251,6 +251,9 @@ class Input
 	public static var touches(get, never):Map<Int,Touch>;
 	private static inline function get_touches():Map<Int,Touch> { return _touches; }
 
+	public static var touchOrder(get, never):Array<Int>;
+	private static inline function get_touchOrder():Array<Int> { return _touchOrder; }
+
 	/**
 	 * Returns a joystick object (creates one if not connected)
 	 * @param  id The id of the joystick, starting with 0
@@ -413,6 +416,17 @@ class Input
 		if (multiTouchSupported)
 		{
 			for (touch in _touches) touch.update();
+			
+			if (Gesture.enabled) Gesture.update();
+			
+			for (touch in _touches)
+			{
+				if (touch.released && !touch.pressed)
+				{
+					_touches.remove(touch.id);
+					_touchOrder.remove(touch.id);
+				}
+			}
 		}
 	}
 
@@ -536,7 +550,7 @@ class Input
 	{
 		var touchPoint = new Touch(e.stageX / HXP.screen.fullScaleX, e.stageY / HXP.screen.fullScaleY, e.touchPointID);
 		_touches.set(e.touchPointID, touchPoint);
-		_touchNum += 1;
+		_touchOrder.push(e.touchPointID);
 	}
 
 	private static function onTouchMove(e:TouchEvent)
@@ -548,8 +562,7 @@ class Input
 
 	private static function onTouchEnd(e:TouchEvent)
 	{
-		_touches.remove(e.touchPointID);
-		_touchNum -= 1;
+		_touches.get(e.touchPointID).released = true;
 	}
 
 #if (openfl && (cpp || neko))
@@ -618,7 +631,6 @@ class Input
 	private static inline var kKeyStringMax = 100;
 
 	private static var _enabled:Bool = false;
-	private static var _touchNum:Int = 0;
 	private static var _key:Map<Int, Bool> = new Map<Int, Bool>();
 	private static var _keyNum:Int = 0;
 	private static var _press:Array<Int> = new Array<Int>();
@@ -627,6 +639,7 @@ class Input
 	private static var _releaseNum:Int = 0;
 	private static var _mouseWheelDelta:Int = 0;
 	private static var _touches:Map<Int,Touch> = new Map<Int,Touch>();
+	private static var _touchOrder:Array<Int> = new Array();
 	private static var _joysticks:Map<Int,Joystick> = new Map<Int,Joystick>();
 	private static var _control:Map<String,Array<Int>> = new Map<String,Array<Int>>();
 	private static var _nativeCorrection:Map<String, Int> = new Map<String, Int>();
