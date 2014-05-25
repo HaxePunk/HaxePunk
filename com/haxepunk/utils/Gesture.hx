@@ -293,7 +293,7 @@ class Gesture
 				{
 					mode = READY;
 				}
-				if (touchCount == 1)
+				else
 				{
 					var touch:Touch = getTouch(touches, touchOrder, 0);
 					var dist = HXP.distance(touch.startX, touch.startY, touch.x, touch.y);
@@ -305,6 +305,15 @@ class Gesture
 					g.x2 = touch.x;
 					g.y2 = touch.y;
 					g.magnitude = dist;
+				}
+				if (touchCount > 1)
+				{
+					var touch:Touch = getTouch(touches, touchOrder, 1);
+					start(TWO_FINGER_TAP, touch.x, touch.y);
+				}
+				else if (check(TWO_FINGER_TAP))
+				{
+					finish(TWO_FINGER_TAP);
 				}
 			}
 			case MULTI_TOUCH:
