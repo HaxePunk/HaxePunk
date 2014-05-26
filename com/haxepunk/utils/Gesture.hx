@@ -144,6 +144,7 @@ class Gesture
 
 	static inline function getTouch(touches:Map<Int, Touch>, touchOrder:Array<Int>, n:Int):Touch
 	{
+		if (n >= touchOrder.length) return null;
 		return touches[touchOrder[n]];
 	}
 
@@ -236,7 +237,14 @@ class Gesture
 		var touchCount:Int = 0;
 		for (touch in touchOrder)
 		{
-			if (touches[touch].pressed || !touches[touch].released) touchCount += 1;
+			if (touches.exists(touch))
+			{
+				if (touches[touch].pressed || !touches[touch].released) touchCount += 1;
+			}
+			else
+			{
+				touchOrder.remove(touch);
+			}
 		}
 
 		if (_lastTap > 0) _lastTap = Math.max(0, _lastTap - HXP.elapsed / doubleTapTime);
@@ -325,9 +333,12 @@ class Gesture
 					{
 						var t1:Touch = getTouch(touches, touchOrder, 0);
 						var t2:Touch = getTouch(touches, touchOrder, 1);
-						var mx = (t1.startX - t2.startX) / 2;
-						var my = (t1.startY - t2.startY) / 2;
-						start(TWO_FINGER_TAP, mx, my);
+						if (t2 != null)
+						{
+							var mx = (t1.startX - t2.startX) / 2;
+							var my = (t1.startY - t2.startY) / 2;
+							start(TWO_FINGER_TAP, mx, my);
+						}
 					}
 					finishAll();
 				}
@@ -335,19 +346,22 @@ class Gesture
 				{
 					var t1:Touch = getTouch(touches, touchOrder, 0);
 					var t2:Touch = getTouch(touches, touchOrder, 1);
-					var d1 = HXP.distance(t1.startX, t1.startY, t1.x, t1.y);
-					var d2 = HXP.distance(t2.startX, t2.startY, t2.x, t2.y);
-					if (d1 > deadZone && d2 > deadZone)
+					if (t1 != null && t2 != null)
 					{
-						if (!check(PINCH))
+						var d1 = HXP.distance(t1.startX, t1.startY, t1.x, t1.y);
+						var d2 = HXP.distance(t2.startX, t2.startY, t2.x, t2.y);
+						if (d1 > deadZone && d2 > deadZone)
 						{
-							var mx = (t1.startX - t2.startX) / 2;
-							var my = (t1.startY - t2.startY) / 2;
-							start(PINCH, mx, my);
+							if (!check(PINCH))
+							{
+								var mx = (t1.startX - t2.startX) / 2;
+								var my = (t1.startY - t2.startY) / 2;
+								start(PINCH, mx, my);
+							}
+							var inner = HXP.distance(t1.startX, t1.startY, t2.startX, t2.startY);
+							var outer = HXP.distance(t1.x, t1.y, t2.x, t2.y);
+							get(PINCH).magnitude = inner / outer;
 						}
-						var inner = HXP.distance(t1.startX, t1.startY, t2.startX, t2.startY);
-						var outer = HXP.distance(t1.x, t1.y, t2.x, t2.y);
-						get(PINCH).magnitude = inner / outer;
 					}
 				}
 			}
