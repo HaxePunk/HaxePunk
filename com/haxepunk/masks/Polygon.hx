@@ -525,7 +525,6 @@ class Polygon extends Hitbox
 	private function generateAxes():Void
 	{
 		_axes = new Array<Vector>();
-		_indicesToRemove = new Array<Int>();
 
 		var temp:Float;
 		var nPoints:Int = _points.length;
@@ -555,29 +554,27 @@ class Polygon extends Hitbox
 
 	private function removeDuplicateAxes():Void
 	{
-		var nAxes:Int = _axes.length;
-		HXP.clear(_indicesToRemove);
-
-		for (i in 0...nAxes)
+		var i = _axes.length - 1;
+		var j = i - 1;
+		while (i > 0) 
 		{
-			for (j in 0...nAxes)
+			// if the first vector is equal or similar to the second vector,
+			// remove it from the list. (for example, [1, 1] and [-1, -1]
+			// represent the same axis)
+			if ((Math.abs(_axes[i].x - _axes[j].x) < EPSILON && Math.abs(_axes[i].y - _axes[j].y) < EPSILON)
+				|| (Math.abs(_axes[j].x + _axes[i].x) < EPSILON && Math.abs(_axes[i].y + _axes[j].y) < EPSILON))	// first axis inverted
 			{
-				if (i == j || Math.max(i, j) >= nAxes) continue;
-
-				// if the first vector is equal or similar to the second vector,
-				// add it to the remove list. (for example, [1, 1] and [-1, -1]
-				// represent the same axis)
-				if ((_axes[i].x == _axes[j].x && _axes[i].y == _axes[j].y)
-					|| ( -_axes[i].x == _axes[j].x && -_axes[i].y == _axes[j].y))	// first axis inverted
-				{
-					_indicesToRemove.push(j);
-				}
+				_axes.splice(i, 1);
+				i--;
+			}
+			
+			j--;
+			if (j < 0) 
+			{
+				i--;
+				j = i - 1;
 			}
 		}
-
-		// remove duplicate axes
-		var indexToRemove:Null<Int>;
-		while ((indexToRemove = _indicesToRemove.pop()) != null) _axes.splice(indexToRemove, 1);
 	}
 
 	private function updateAxes():Void
@@ -595,8 +592,8 @@ class Polygon extends Hitbox
 	private var _fakeEntity:Entity;				// used for Grid and Pixelmask collision
 	private var _fakeTileHitbox:Hitbox;			// used for Grid collision
 
-	private var _indicesToRemove:Array<Int>;	// used in removeDuplicateAxes()
-
+	private static var EPSILON = 0.000000001;	// used for axes comparison in removeDuplicateAxes
+	
 	private static var firstProj = new Projection();
 	private static var secondProj = new Projection();
 
