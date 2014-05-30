@@ -10,7 +10,7 @@ import lime.utils.Int16Array;
 import lime.utils.Float32Array;
 import lime.utils.Matrix3D;
 
-class Mesh
+class Mesh implements Graphic
 {
 
 	/**

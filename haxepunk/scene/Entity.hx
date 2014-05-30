@@ -2,7 +2,7 @@ package haxepunk.scene;
 
 import lime.utils.Matrix3D;
 import lime.utils.Vector3D;
-import haxepunk.graphics.Mesh;
+import haxepunk.graphics.Graphic;
 
 class Entity
 {
@@ -23,10 +23,10 @@ class Entity
 		modelViewMatrix.appendRotation(angle, Vector3D.X_AXIS);
 		modelViewMatrix.appendRotation(angle++, Vector3D.Y_AXIS);
 
-		if (mesh != null) mesh.draw(projectionMatrix, modelViewMatrix);
+		if (graphic != null) graphic.draw(projectionMatrix, modelViewMatrix);
 	}
 
-	private var mesh:Mesh;
+	private var graphic:Graphic;
 	private var modelViewMatrix:Matrix3D;
 
 }

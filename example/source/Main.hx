@@ -10,9 +10,10 @@ class CubeEntity extends Entity
 	{
 		super();
 		// var meshList = Wavefront.load("assets/project.obj");
-		// mesh = meshList.first();
-		mesh = new Cube();
-		mesh.material.addTexture(new Texture("assets/lime.png"));
+		// graphic = meshList.first();
+		var cube = new Cube();
+		cube.material.addTexture(new Texture("assets/lime.png"));
+		graphic = cube;
 	}
 }
 
