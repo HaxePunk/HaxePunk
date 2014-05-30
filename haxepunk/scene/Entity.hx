@@ -7,19 +7,21 @@ import haxepunk.graphics.Graphic;
 class Entity
 {
 
-	public var position:Vector3D;
-	public var angle:Float = 0;
+	public var x:Float = 0;
+	public var y:Float = 0;
+	public var z:Float = 0;
+
+	public var angle:Float = 0; // TODO: remove this!!
 
 	public function new()
 	{
-		position = new Vector3D();
 		modelViewMatrix = new Matrix3D();
 	}
 
 	public function draw(projectionMatrix:Matrix3D)
 	{
 		modelViewMatrix.identity();
-		modelViewMatrix.appendTranslation(position.x, position.y, position.z);
+		modelViewMatrix.appendTranslation(x, y, z);
 		modelViewMatrix.appendRotation(angle, Vector3D.X_AXIS);
 		modelViewMatrix.appendRotation(angle++, Vector3D.Y_AXIS);
 
