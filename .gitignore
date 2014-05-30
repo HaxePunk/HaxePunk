@@ -1,0 +1,13 @@
+*.swf
+*.sublime*
+*.zip
+*.n
+*.build
+*.hash
+build-test/
+export/
+
+# OS specific files
+.DS_Store
+Thumbs.db
+.tm*

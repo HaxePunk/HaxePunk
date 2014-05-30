@@ -1,0 +1,8 @@
+-x TestMain
+-cp source
+-lib lime
+-lib format
+-lib haxepunk
+-D no-compilation
+-D desktop
+-D lime_native

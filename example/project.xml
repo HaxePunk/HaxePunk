@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+
+	<meta title="HaxePunk" package="com.haxepunk" version="1.0.0" company="Matt Tuttle" />
+	<app main="Main" path="export" file="HaxePunk" />
+
+	<window width="320" height="320" fps="30" />
+	<window hardware="true" allow-shaders="true" require-shaders="true" depth-buffer="true" stencil-buffer="false" />
+
+	<source path="source" />
+
+	<haxelib name="haxepunk" />
+
+	<assets path="assets" exclude="*.svg" />
+	<icon path="assets/lime.svg" />
+
+</project>
