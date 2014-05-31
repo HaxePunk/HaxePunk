@@ -26,7 +26,7 @@ class Texture
 	public var onload(never, set):OnloadCallback;
 	private function set_onload(value:OnloadCallback):OnloadCallback
 	{
-		_onload.push(value);
+		_loaded ? value() : _onload.push(value);
 		return value;
 	}
 
@@ -70,6 +70,7 @@ class Texture
 		GL.bindTexture(GL.TEXTURE_2D, null);
 
 		for (onload in _onload) onload();
+		_loaded = true;
 	}
 
 	private inline function loadImage(path:String)
@@ -97,5 +98,6 @@ class Texture
 
 	private var _texture:GLTexture;
 	private var _onload:Array<OnloadCallback>;
+	private var _loaded:Bool = false;
 
 }

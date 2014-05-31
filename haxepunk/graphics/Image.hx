@@ -11,8 +11,36 @@ class Image implements Graphic
 
 	public var material:Material;
 
+	/**
+	 * Rotation of the image, in degrees.
+	 */
 	public var angle:Float = 0;
+
+	/**
+	 * Scale of the image, effects both x and y scale.
+	 */
+	public var scale:Float = 1;
+
+	/**
+	 * X scale of the image.
+	 */
+	public var scaleX:Float = 1;
+
+	/**
+	 * Y scale of the image.
+	 */
+	public var scaleY:Float = 1;
+
+	/**
+	 * X origin of the image, determines transformation point.
+	 * Defaults to top-left corner.
+	 */
 	public var originX:Float = 0;
+
+	/**
+	 * Y origin of the image, determines transformation point.
+	 * Defaults to top-left corner.
+	 */
 	public var originY:Float = 0;
 
 	public var width(get, never):Float;
@@ -58,16 +86,15 @@ class Image implements Graphic
 	public function draw(projectionMatrix:Matrix3D, modelViewMatrix:Matrix3D):Void
 	{
 		modelViewMatrix.prependRotation(angle, Vector3D.Z_AXIS);
+		modelViewMatrix.prependScale(scale * scaleX, scale * scaleY, 1);
 		modelViewMatrix.prependTranslation(originX, originY, 0);
 		modelViewMatrix.prependScale(_texture.width, _texture.height, 1);
 
-		material.use(projectionMatrix, modelViewMatrix);
-
 		GL.bindBuffer(GL.ARRAY_BUFFER, _vertexBuffer);
+		material.use(projectionMatrix, modelViewMatrix);
 		GL.drawArrays(GL.TRIANGLE_STRIP, 0, 4);
-		GL.bindBuffer(GL.ARRAY_BUFFER, null);
-
 		material.disable();
+		GL.bindBuffer(GL.ARRAY_BUFFER, null);
 	}
 
 	private var _texture:Texture;

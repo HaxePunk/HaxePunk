@@ -16,6 +16,9 @@ class CubeEntity extends Entity
 
 		image = new Image("assets/lime.png");
 		image.centerOrigin();
+		image.scale = 0.5;
+		image.scaleX = 2;
+		image.scaleY = 0.5;
 		graphic = image;
 	}
 
