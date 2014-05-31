@@ -34,10 +34,10 @@ class Image implements Graphic
 		{
 			var data = [
 				/* vertex | tex coord | normal */
-				 1,  1, 0, 1.00, 0.00, 0, 0, -1,
-				 1, -1, 0, 1.00, 1.00, 0, 0, -1,
-				-1,  1, 0, 0.00, 0.00, 0, 0, -1,
-				-1, -1, 0, 0.00, 1.00, 0, 0, -1
+				 1,  1, 0, 0.00, 0.00, 0, 0, -1,
+				 1, -1, 0, 0.00, 1.00, 0, 0, -1,
+				-1,  1, 0, 1.00, 0.00, 0, 0, -1,
+				-1, -1, 0, 1.00, 1.00, 0, 0, -1
 			];
 			_vertexBuffer = GL.createBuffer();
 			GL.bindBuffer(GL.ARRAY_BUFFER, _vertexBuffer);
@@ -48,7 +48,7 @@ class Image implements Graphic
 	public function draw(projectionMatrix:Matrix3D, modelViewMatrix:Matrix3D):Void
 	{
 		modelViewMatrix.appendScale(_texture.width, _texture.height, 1);
-		modelViewMatrix.appendRotation(-angle, Vector3D.Z_AXIS);
+		modelViewMatrix.appendRotation(angle, Vector3D.Z_AXIS);
 
 		material.use(projectionMatrix, modelViewMatrix);
 
