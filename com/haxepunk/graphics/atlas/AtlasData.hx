@@ -195,22 +195,14 @@ class AtlasData
 	{
 		if (_dataIndex != 0)
 		{
-			#if !html5
 			_tilesheet.drawTiles(_scene.sprite.graphics, _data, false, _renderFlags, _dataIndex);
 			_dataIndex = 0;
-			#else
-			_tilesheet.drawTiles(_scene.sprite.graphics, _data, false, _renderFlags);
-			#end
 		}
 
 		if (_smoothDataIndex != 0)
 		{
-			#if !html5
 			_tilesheet.drawTiles(_scene.sprite.graphics, _smoothData, true, _renderFlags, _smoothDataIndex);
 			_smoothDataIndex = 0;
-			#else
-			_tilesheet.drawTiles(_scene.sprite.graphics, _smoothData, true, _renderFlags);
-			#end
 		}
 	}
 
