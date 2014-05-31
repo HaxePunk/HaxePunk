@@ -5,6 +5,7 @@
 	<app main="Main" path="export" file="HaxePunk" />
 
 	<window width="320" height="320" fps="30" />
+	<window width="800" height="600" fps="30" if="html5" />
 	<window hardware="true" allow-shaders="true" require-shaders="true" depth-buffer="true" stencil-buffer="false" />
 
 	<source path="source" />

@@ -13,12 +13,20 @@ class CubeEntity extends Entity
 		// var meshList = Wavefront.load("assets/project.obj");
 		// graphic = meshList.first();
 
-		var cube = new Cube();
-		cube.material.addTexture(new Texture("assets/lime.png"));
+		// var cube = new Cube();
+		// cube.material.addTexture(new Texture("assets/lime.png"));
 
-		var image = new Image("assets/lime.png");
+		image = new Image("assets/lime.png");
 		graphic = image;
 	}
+
+	override public function update()
+	{
+		image.angle += 1;
+		super.update();
+	}
+
+	private var image:Image;
 }
 
 class Main extends Engine

@@ -13,13 +13,16 @@ class Camera
 
 	public function new()
 	{
-		// should this really be the projection matrix or a separate camera matrix?
-		// var projectionMatrix = Matrix3D.createOrtho(0, lime.config.width, lime.config.height, 0, 1000, -1000);
-		matrix = Matrix3D.createOrtho(-5, 5, -5, 5, 500, -500);
+	}
+
+	public function make2D()
+	{
+		matrix = Matrix3D.createOrtho(0, HXP.windowWidth, HXP.windowHeight, 0, 500, -500);
 	}
 
 	public function setup()
 	{
+		make2D();
 		GL.viewport(0, 0, HXP.windowWidth, HXP.windowHeight);
 		GL.enable(GL.DEPTH_TEST);
 

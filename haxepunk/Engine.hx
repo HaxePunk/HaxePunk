@@ -39,6 +39,11 @@ class Engine
 		scene.draw();
 	}
 
+	private function update():Void
+	{
+		scene.update();
+	}
+
 	/**
 	 * Replaces the current scene
 	 * @param scene The replacement scene

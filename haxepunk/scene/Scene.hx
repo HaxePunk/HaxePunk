@@ -27,6 +27,14 @@ class Scene
 		}
 	}
 
+	public function update()
+	{
+		for (entity in entities)
+		{
+			entity.update();
+		}
+	}
+
 	private var entities:List<Entity>;
 
 }
