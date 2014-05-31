@@ -12,6 +12,8 @@ class Image implements Graphic
 	public var material:Material;
 
 	public var angle:Float = 0;
+	public var originX:Float = 0;
+	public var originY:Float = 0;
 
 	public var width(get, never):Float;
 	private inline function get_width():Float { return _texture.width; }
@@ -34,10 +36,10 @@ class Image implements Graphic
 		{
 			var data = [
 				/* vertex | tex coord | normal */
-				 1,  1, 0, 0.00, 0.00, 0, 0, -1,
-				 1, -1, 0, 0.00, 1.00, 0, 0, -1,
-				-1,  1, 0, 1.00, 0.00, 0, 0, -1,
-				-1, -1, 0, 1.00, 1.00, 0, 0, -1
+				0, 0, 0, 0.00, 0.00, 0, 0, -1,
+				0, 1, 0, 0.00, 1.00, 0, 0, -1,
+				1, 0, 0, 1.00, 0.00, 0, 0, -1,
+				1, 1, 0, 1.00, 1.00, 0, 0, -1
 			];
 			_vertexBuffer = GL.createBuffer();
 			GL.bindBuffer(GL.ARRAY_BUFFER, _vertexBuffer);
@@ -45,10 +47,19 @@ class Image implements Graphic
 		}
 	}
 
+	public function centerOrigin():Void
+	{
+		_texture.onload = function() {
+			originX = -(_texture.width / 2);
+			originY = -(_texture.height / 2);
+		}
+	}
+
 	public function draw(projectionMatrix:Matrix3D, modelViewMatrix:Matrix3D):Void
 	{
-		modelViewMatrix.appendScale(_texture.width, _texture.height, 1);
-		modelViewMatrix.appendRotation(angle, Vector3D.Z_AXIS);
+		modelViewMatrix.prependRotation(angle, Vector3D.Z_AXIS);
+		modelViewMatrix.prependTranslation(originX, originY, 0);
+		modelViewMatrix.prependScale(_texture.width, _texture.height, 1);
 
 		material.use(projectionMatrix, modelViewMatrix);
 

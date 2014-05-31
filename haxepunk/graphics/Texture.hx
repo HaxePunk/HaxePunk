@@ -8,18 +8,27 @@ import lime.utils.Assets;
 import lime.utils.UInt8Array;
 import lime.utils.ByteArray;
 
+typedef OnloadCallback = Void->Void;
+
 class Texture
 {
 
 	/**
 	 * The width of the texture
 	 */
-	public var width(default, null):Int;
+	public var width(default, null):Int = 0;
 
 	/**
 	 * The height of the texture
 	 */
-	public var height(default, null):Int;
+	public var height(default, null):Int = 0;
+
+	public var onload(never, set):OnloadCallback;
+	private function set_onload(value:OnloadCallback):OnloadCallback
+	{
+		_onload.push(value);
+		return value;
+	}
 
 	/**
 	 * Creates a new Texture
@@ -28,6 +37,7 @@ class Texture
 	public function new(path:String)
 	{
 		_texture = GL.createTexture();
+		_onload = new Array<OnloadCallback>();
 		loadImage(path);
 	}
 
@@ -58,6 +68,8 @@ class Texture
 		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
 		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
 		GL.bindTexture(GL.TEXTURE_2D, null);
+
+		for (onload in _onload) onload();
 	}
 
 	private inline function loadImage(path:String)
@@ -84,5 +96,6 @@ class Texture
 	}
 
 	private var _texture:GLTexture;
+	private var _onload:Array<OnloadCallback>;
 
 }
