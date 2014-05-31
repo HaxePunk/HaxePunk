@@ -2,7 +2,7 @@
 -cp source
 -lib lime
 -lib format
--lib haxepunk
+-lib HaxePunk
 -D no-compilation
 -D desktop
 -D lime_native

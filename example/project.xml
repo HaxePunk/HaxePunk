@@ -4,12 +4,12 @@
 	<meta title="HaxePunk" package="com.haxepunk" version="1.0.0" company="Matt Tuttle" />
 	<app main="Main" path="export" file="HaxePunk" />
 
-	<window width="800" height="600" fps="30" />
+	<window width="800" height="600" fps="60" />
 	<window hardware="true" allow-shaders="true" require-shaders="true" depth-buffer="true" stencil-buffer="false" />
 
 	<source path="source" />
 
-	<haxelib name="haxepunk" />
+	<haxelib name="HaxePunk" />
 
 	<assets path="assets" exclude="*.svg" />
 	<icon path="assets/lime.svg" />
