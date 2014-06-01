@@ -442,8 +442,8 @@ class Tilemap extends Canvas
 		// determine start and end tiles to draw (optimization)
 		var startx = Math.floor( -_point.x / (tw * scx)),
 			starty = Math.floor( -_point.y / (th * scy)),
-			destx = startx + 1 + Math.ceil((HXP.width-HXP.screen.x) / (tw * scx)),
-			desty = starty + 1 + Math.ceil((HXP.height-HXP.screen.y) / (th * scy));
+			destx = startx + 1 + Math.ceil(HXP.width / (tw * scx)),
+			desty = starty + 1 + Math.ceil(HXP.height / (th * scy));
 
 		// nothing will render if we're completely off screen
 		if (startx > _columns || starty > _rows || destx < 0 || desty < 0)
