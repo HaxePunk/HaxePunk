@@ -21,6 +21,10 @@ class Entity
 	private inline function get_z():Float { return position.z; }
 	private inline function set_z(value:Float) { return position.z = value; }
 
+	public var layer(get, set):Float;
+	private inline function get_layer():Float { return position.z; }
+	private inline function set_layer(value:Float) { return position.z = value; }
+
 	public function new(x:Float = 0, y:Float = 0, z:Float = 0)
 	{
 		position = new Vector3D(x, y, z);
@@ -30,7 +34,7 @@ class Entity
 	public function draw(projectionMatrix:Matrix3D)
 	{
 		modelViewMatrix.identity();
-		modelViewMatrix.appendTranslation(position.x, position.y, position.y);
+		modelViewMatrix.appendTranslation(position.x, position.y, position.z);
 
 		if (graphic != null) graphic.draw(projectionMatrix, modelViewMatrix);
 	}

@@ -23,8 +23,14 @@ class Camera
 	public function setup()
 	{
 		make2D();
+#if !neko
 		GL.viewport(0, 0, HXP.windowWidth, HXP.windowHeight);
+#end
 		GL.enable(GL.DEPTH_TEST);
+
+		// TODO: move this to texture?
+		GL.enable(GL.BLEND);
+		GL.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
 
 		// TODO: set option for clear color per camera?
 		GL.clearColor(0.117, 0.117, 0.117, 1.0);

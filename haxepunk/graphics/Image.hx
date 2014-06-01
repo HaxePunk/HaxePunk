@@ -43,11 +43,27 @@ class Image implements Graphic
 	 */
 	public var originY:Float = 0;
 
+	/**
+	 * Width of the image.
+	 */
 	public var width(get, never):Float;
 	private inline function get_width():Float { return _texture.width; }
 
+	/**
+	 * Height of the image.
+	 */
 	public var height(get, never):Float;
 	private inline function get_height():Float { return _texture.height; }
+
+	/**
+	 * Change the opacity of the Image, a value from 0 to 1.
+	 */
+	public var alpha(default, set):Float;
+	private function set_alpha(value:Float):Float
+	{
+		value = value < 0 ? 0 : (value > 1 ? 1 : value);
+		return (alpha == value) ? value : alpha = value;
+	}
 
 	public function new(name:String)
 	{
