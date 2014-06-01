@@ -16,11 +16,11 @@ class CubeEntity extends Entity
 
 		image = new Image(imageName);
 		image.centerOrigin();
-		// image.scale = 0.5;
-		// image.scaleX = 2;
-		// image.scaleY = 0.5;
-		// image.alpha = 0.3;
-		graphic = image;
+		image.scale = 0.5;
+		image.scaleX = 2;
+		image.scaleY = 0.5;
+		image.alpha = 0.3;
+		addGraphic(image);
 	}
 
 	override public function update()
@@ -39,5 +39,6 @@ class Main extends Engine
 	override public function init()
 	{
 		scene.add(new CubeEntity("assets/lime.png"));
+		scene.addGraphic(new Image("assets/lime.png"), 3, 100, 200);
 	}
 }

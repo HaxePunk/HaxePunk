@@ -31,12 +31,28 @@ class Entity
 		modelViewMatrix = new Matrix3D();
 	}
 
+	public function addGraphic(graphic:Graphic):Void
+	{
+		if (_graphic == null)
+		{
+			_graphic = graphic;
+		}
+		else if (Std.is(_graphic, GraphicList))
+		{
+			cast(_graphic, GraphicList).add(graphic);
+		}
+		else
+		{
+			_graphic = new GraphicList([_graphic, graphic]);
+		}
+	}
+
 	public function draw(projectionMatrix:Matrix3D)
 	{
 		modelViewMatrix.identity();
 		modelViewMatrix.appendTranslation(position.x, position.y, position.z);
 
-		if (graphic != null) graphic.draw(projectionMatrix, modelViewMatrix);
+		if (_graphic != null) _graphic.draw(projectionMatrix, modelViewMatrix);
 	}
 
 	public function update()
@@ -44,7 +60,7 @@ class Entity
 
 	}
 
-	private var graphic:Graphic;
+	private var _graphic:Graphic;
 	private var modelViewMatrix:Matrix3D;
 
 }
