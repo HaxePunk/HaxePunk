@@ -53,6 +53,8 @@ class AtlasData
 	{
 		_rects = new Array<Rectangle>();
 		_data = new Array<Float>();
+		_smoothData = new Array<Float>();
+		_dataIndex = _smoothDataIndex = 0;
 
 		_tilesheet = new Tilesheet(bd);
 		// create a unique name if one is not specified
@@ -193,12 +195,14 @@ class AtlasData
 	{
 		if (_dataIndex != 0)
 		{
-			#if !html5
-			_tilesheet.drawTiles(_scene.sprite.graphics, _data, Atlas.smooth, _renderFlags, _dataIndex);
+			_tilesheet.drawTiles(_scene.sprite.graphics, _data, false, _renderFlags, _dataIndex);
 			_dataIndex = 0;
-			#else
-			_tilesheet.drawTiles(_scene.sprite.graphics, _data, Atlas.smooth, _renderFlags);
-			#end
+		}
+
+		if (_smoothDataIndex != 0)
+		{
+			_tilesheet.drawTiles(_scene.sprite.graphics, _smoothData, true, _renderFlags, _smoothDataIndex);
+			_smoothDataIndex = 0;
 		}
 	}
 
@@ -219,9 +223,14 @@ class AtlasData
 	 */
 	public inline function prepareTileMatrix(tile:Int, layer:Int,
 		tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
-		red:Float, green:Float, blue:Float, alpha:Float)
+		red:Float, green:Float, blue:Float, alpha:Float, ?smooth:Bool)
 	{
 		active = this;
+
+		if (smooth == null) smooth = Atlas.smooth;
+
+		var _data = smooth ? _smoothData : _data;
+		var _dataIndex = smooth ? _smoothDataIndex : _dataIndex;
 
 		_data[_dataIndex++] = tx;
 		_data[_dataIndex++] = ty;
@@ -244,6 +253,15 @@ class AtlasData
 		{
 			_data[_dataIndex++] = alpha;
 		}
+
+		if (smooth)
+		{
+			this._smoothDataIndex = _dataIndex;
+		}
+		else
+		{
+			this._dataIndex = _dataIndex;
+		}
 	}
 
 	/**
@@ -262,9 +280,14 @@ class AtlasData
 	 */
 	public inline function prepareTile(tile:Int, x:Float, y:Float, layer:Int,
 		scaleX:Float, scaleY:Float, angle:Float,
-		red:Float, green:Float, blue:Float, alpha:Float)
+		red:Float, green:Float, blue:Float, alpha:Float, ?smooth:Bool)
 	{
 		active = this;
+
+		if (smooth == null) smooth = Atlas.smooth;
+
+		var _data = smooth ? _smoothData : _data;
+		var _dataIndex = smooth ? _smoothDataIndex : _dataIndex;
 
 		_data[_dataIndex++] = x;
 		_data[_dataIndex++] = y;
@@ -298,6 +321,15 @@ class AtlasData
 		if (_flagAlpha)
 		{
 			_data[_dataIndex++] = alpha;
+		}
+
+		if (smooth)
+		{
+			this._smoothDataIndex = _dataIndex;
+		}
+		else
+		{
+			this._dataIndex = _dataIndex;
 		}
 	}
 
@@ -377,7 +409,9 @@ class AtlasData
 
 	private var _tilesheet:Tilesheet;
 	private var _data:Array<Float>;
-	private var _dataIndex:Int = 0;
+	private var _dataIndex:Int;
+	private var _smoothData:Array<Float>;
+	private var _smoothDataIndex:Int;
 	private var _rects:Array<Rectangle>;
 
 	private static var _scene:Scene;

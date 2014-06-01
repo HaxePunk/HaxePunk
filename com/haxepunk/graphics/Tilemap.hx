@@ -475,7 +475,7 @@ class Tilemap extends Canvas
 					// ensure no horizontal overlap between this and next tile
 					scx = (Math.floor(wx+stepx) - Math.floor(wx)) / tileWidth;
 
-					_atlas.prepareTile(tile, Math.floor(wx), Math.floor(wy), layer, scx, scy, 0, _red, _green, _blue, alpha);
+					_atlas.prepareTile(tile, Math.floor(wx), Math.floor(wy), layer, scx, scy, 0, _red, _green, _blue, alpha, smooth);
 				}
 				wx += stepx;
 			}
@@ -528,6 +528,8 @@ class Tilemap extends Canvas
 	 */
 	public var rows(get, null):Int;
 	private inline function get_rows():Int { return _rows; }
+
+	public var smooth:Bool = true;
 
 	// Tilemap information.
 	private var _map:Array2D;
