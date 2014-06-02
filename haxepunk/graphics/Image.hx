@@ -67,7 +67,7 @@ class Image implements Graphic
 
 	public function new(name:String)
 	{
-		_texture = new Texture(name);
+		_texture = Texture.create(name);
 		material = new Material();
 		material.addTexture(_texture);
 

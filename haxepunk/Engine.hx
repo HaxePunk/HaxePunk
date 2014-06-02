@@ -1,9 +1,14 @@
 package haxepunk;
 
 import lime.Lime;
-import lime.gl.GL;
 import lime.utils.Matrix3D;
 import haxepunk.scene.Scene;
+
+#if cpp
+import cpp.vm.Thread;
+#elseif neko
+import neko.vm.Thread;
+#end
 
 class Engine
 {
@@ -41,6 +46,18 @@ class Engine
 
 	private function update():Void
 	{
+#if (neko || cpp)
+		var msg = Thread.readMessage(false);
+		if (msg != null)
+		{
+			switch (msg.type)
+			{
+				case "loadTexture":
+					msg.texture.createTexture(msg.data);
+			}
+		}
+#end
+
 		scene.update();
 	}
 
