@@ -24,7 +24,7 @@ class Engine
 
 	public function ready(lime:Lime):Void
 	{
-		_lime = lime;
+		HXP.lime = lime;
 		init();
 	}
 
@@ -38,8 +38,8 @@ class Engine
 
 	private function render():Void
 	{
-		HXP.windowWidth = _lime.config.width;
-		HXP.windowHeight = _lime.config.height;
+		HXP.windowWidth = HXP.lime.config.width;
+		HXP.windowHeight = HXP.lime.config.height;
 
 		scene.draw();
 	}
@@ -53,7 +53,7 @@ class Engine
 			switch (msg.type)
 			{
 				case "loadTexture":
-					msg.texture.createTexture(msg.data);
+					msg.texture.createTexture(msg.width, msg.height, msg.data);
 			}
 		}
 #end
@@ -92,7 +92,6 @@ class Engine
 		_scenes.push(scene);
 	}
 
-	private var _lime:Lime;
 	private var _scenes:List<Scene>;
 
 }

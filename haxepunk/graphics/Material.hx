@@ -36,7 +36,9 @@ class Material
 	public function addTexture(texture:Texture, uniformName:String="uImage0")
 	{
 		// keep uniform to allow removal of textures?
-		GL.uniform1i(_shader.uniform(uniformName), _textures.length);
+		var uniform = _shader.uniform(uniformName);
+		_shader.use();
+		GL.uniform1i(uniform, _textures.length);
 		_textures.push(texture);
 	}
 
