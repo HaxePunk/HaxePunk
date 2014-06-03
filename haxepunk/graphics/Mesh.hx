@@ -72,6 +72,6 @@ class Mesh implements Graphic
 
 	private var _indexBuffer:GLBuffer;
 	private var _vertexBuffer:GLBuffer;
-	private var _indexSize:Int;
+	private var _indexSize:Int = 0;
 
 }
