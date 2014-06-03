@@ -10,6 +10,7 @@ class Cube extends Mesh
 		createBuffers(); // create or reuse buffers
 		_vertexBuffer = defaultVertexBuffer;
 		_indexBuffer = defaultIndexBuffer;
+		_indexSize = 36;
 		super();
 	}
 
