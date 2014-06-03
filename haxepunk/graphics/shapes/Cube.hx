@@ -15,15 +15,10 @@ class Cube extends Mesh
 	{
 		rotation = new Vector3D();
 
-		// TODO: figure out why c++ and html5 don't like reused buffers...
-#if !neko
-		defaultVertexBuffer = null;
-		defaultIndexBuffer = null;
-#end
-
 		createBuffers(); // create or reuse buffers
 		_vertexBuffer = defaultVertexBuffer;
 		_indexBuffer = defaultIndexBuffer;
+		_indexSize = 32;
 		super(null, null, material);
 	}
 
