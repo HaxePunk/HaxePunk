@@ -2,15 +2,29 @@ package haxepunk.graphics.shapes;
 
 import haxepunk.graphics.Mesh;
 import lime.gl.GLBuffer;
+import lime.utils.Matrix3D;
+import lime.utils.Vector3D;
 
 class Cube extends Mesh
 {
-	public function new()
+
+	public var scale:Float = 0;
+	public var rotation:Vector3D;
+
+	public function new(material:Material)
 	{
+		rotation = new Vector3D();
+
+		// TODO: figure out why c++ and html5 don't like reused buffers...
+#if !neko
+		defaultVertexBuffer = null;
+		defaultIndexBuffer = null;
+#end
+
 		createBuffers(); // create or reuse buffers
 		_vertexBuffer = defaultVertexBuffer;
 		_indexBuffer = defaultIndexBuffer;
-		super();
+		super(null, null, material);
 	}
 
 	private inline function createBuffers()
@@ -19,35 +33,35 @@ class Cube extends Mesh
 		if (defaultVertexBuffer == null)
 		{
 			defaultVertexBuffer = createBuffer([
-				 1,  1, -1, 0.00, 0.00,  0,  0, -1,
-				 1, -1, -1, 0.00, 1.00,  0,  0, -1,
-				-1, -1, -1, 1.00, 1.00,  0,  0, -1,
-				-1,  1, -1, 1.00, 0.00,  0,  0, -1,
+				 0.5,  0.5, -0.5, 0.00, 0.00,  0,  0, -1,
+				 0.5, -0.5, -0.5, 0.00, 1.00,  0,  0, -1,
+				-0.5, -0.5, -0.5, 1.00, 1.00,  0,  0, -1,
+				-0.5,  0.5, -0.5, 1.00, 0.00,  0,  0, -1,
 
-				-1, -1,  1, 0.00, 0.00, -1,  0,  0,
-				-1,  1,  1, 0.00, 1.00, -1,  0,  0,
-				-1,  1, -1, 1.00, 1.00, -1,  0,  0,
-				-1, -1, -1, 1.00, 0.00, -1,  0,  0,
+				-0.5, -0.5,  0.5, 0.00, 0.00, -1,  0,  0,
+				-0.5,  0.5,  0.5, 0.00, 1.00, -1,  0,  0,
+				-0.5,  0.5, -0.5, 1.00, 1.00, -1,  0,  0,
+				-0.5, -0.5, -0.5, 1.00, 0.00, -1,  0,  0,
 
-				 1, -1,  1, 1.00, 1.00,  0,  0,  1,
-				 1,  1,  1, 0.00, 1.00,  0,  0,  1,
-				-1, -1,  1, 1.00, 0.00,  0,  0,  1,
-				-1,  1,  1, 0.00, 0.00,  0,  0,  1,
+				 0.5, -0.5,  0.5, 1.00, 1.00,  0,  0,  1,
+				 0.5,  0.5,  0.5, 0.00, 1.00,  0,  0,  1,
+				-0.5, -0.5,  0.5, 1.00, 0.00,  0,  0,  1,
+				-0.5,  0.5,  0.5, 0.00, 0.00,  0,  0,  1,
 
-				 1, -1, -1, 1.00, 0.00,  1,  0,  0,
-				 1,  1, -1, 1.00, 1.00,  1,  0,  0,
-				 1, -1,  1, 0.00, 0.00,  1,  0,  0,
-				 1,  1,  1, 0.00, 1.00,  1,  0,  0,
+				 0.5, -0.5, -0.5, 1.00, 0.00,  1,  0,  0,
+				 0.5,  0.5, -0.5, 1.00, 1.00,  1,  0,  0,
+				 0.5, -0.5,  0.5, 0.00, 0.00,  1,  0,  0,
+				 0.5,  0.5,  0.5, 0.00, 1.00,  1,  0,  0,
 
-				 1,  1, -1, 1.00, 1.00,  0,  1,  0,
-				-1,  1, -1, 1.00, 0.00,  0,  1,  0,
-				 1,  1,  1, 0.00, 1.00,  0,  1,  0,
-				-1,  1,  1, 0.00, 0.00,  0,  1,  0,
+				 0.5,  0.5, -0.5, 1.00, 1.00,  0,  1,  0,
+				-0.5,  0.5, -0.5, 1.00, 0.00,  0,  1,  0,
+				 0.5,  0.5,  0.5, 0.00, 1.00,  0,  1,  0,
+				-0.5,  0.5,  0.5, 0.00, 0.00,  0,  1,  0,
 
-				 1, -1, -1, 0.00, 0.00,  0, -1,  0,
-				 1, -1,  1, 0.00, 1.00,  0, -1,  0,
-				-1, -1,  1, 1.00, 1.00,  0, -1,  0,
-				-1, -1, -1, 1.00, 0.00,  0, -1,  0
+				 0.5, -0.5, -0.5, 0.00, 0.00,  0, -1,  0,
+				 0.5, -0.5,  0.5, 0.00, 1.00,  0, -1,  0,
+				-0.5, -0.5,  0.5, 1.00, 1.00,  0, -1,  0,
+				-0.5, -0.5, -0.5, 1.00, 0.00,  0, -1,  0
 			]);
 		}
 		if (defaultIndexBuffer == null)
@@ -61,6 +75,15 @@ class Cube extends Mesh
 				20, 21, 22,  20, 22, 23
 			]);
 		}
+	}
+
+	override public function draw(projectionMatrix:Matrix3D, modelViewMatrix:Matrix3D):Void
+	{
+		modelViewMatrix.prependScale(scale, scale, scale);
+		modelViewMatrix.prependRotation(rotation.z, Vector3D.Z_AXIS);
+		modelViewMatrix.prependRotation(rotation.y, Vector3D.Y_AXIS);
+		modelViewMatrix.prependRotation(rotation.x, Vector3D.X_AXIS);
+		super.draw(projectionMatrix, modelViewMatrix);
 	}
 
 	private static var defaultVertexBuffer:GLBuffer;

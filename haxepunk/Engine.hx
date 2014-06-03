@@ -25,6 +25,9 @@ class Engine
 	public function ready(lime:Lime):Void
 	{
 		HXP.lime = lime;
+		HXP.windowWidth = lime.config.width;
+		HXP.windowHeight = lime.config.height;
+
 		init();
 	}
 
@@ -38,9 +41,6 @@ class Engine
 
 	private function render():Void
 	{
-		HXP.windowWidth = HXP.lime.config.width;
-		HXP.windowHeight = HXP.lime.config.height;
-
 		scene.draw();
 	}
 

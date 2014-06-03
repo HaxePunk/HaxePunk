@@ -19,6 +19,11 @@ class Scene
 		entities.add(e);
 	}
 
+	public function remove(e:Entity)
+	{
+		entities.remove(e);
+	}
+
 	public function addGraphic(graphic:Graphic, layer:Int=0, x:Float=0, y:Float=0)
 	{
 		var e = new Entity(x, y, layer);

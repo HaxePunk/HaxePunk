@@ -52,7 +52,10 @@ class Entity
 		modelViewMatrix.identity();
 		modelViewMatrix.appendTranslation(position.x, position.y, position.z);
 
-		if (_graphic != null) _graphic.draw(projectionMatrix, modelViewMatrix);
+		if (_graphic != null)
+		{
+			_graphic.draw(projectionMatrix, modelViewMatrix);
+		}
 	}
 
 	public function update()

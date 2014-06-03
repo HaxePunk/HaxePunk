@@ -41,7 +41,6 @@ class Mesh implements Graphic
 	public function draw(projectionMatrix:Matrix3D, modelViewMatrix:Matrix3D):Void
 	{
 		GL.bindBuffer(GL.ARRAY_BUFFER, _vertexBuffer);
-
 		material.use(projectionMatrix, modelViewMatrix);
 
 		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, _indexBuffer);
@@ -49,7 +48,6 @@ class Mesh implements Graphic
 		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, null);
 
 		material.disable();
-
 		GL.bindBuffer(GL.ARRAY_BUFFER, null);
 	}
 

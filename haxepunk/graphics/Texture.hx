@@ -67,6 +67,7 @@ class Texture
 	 */
 	public inline function bind():Void
 	{
+		if (!_loaded) return;
 		GL.bindTexture(GL.TEXTURE_2D, _texture);
 	}
 
@@ -80,7 +81,7 @@ class Texture
 		GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, dataArray);
 		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
 		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
-		GL.bindTexture(GL.TEXTURE_2D, null);
+		// GL.bindTexture(GL.TEXTURE_2D, null);
 
 		for (onload in _onload) onload();
 		_loaded = true;

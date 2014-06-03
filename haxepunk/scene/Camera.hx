@@ -36,6 +36,11 @@ class Camera
 		matrix = Matrix3D.createOrtho(0, HXP.windowWidth, HXP.windowHeight, 0, 500, -500);
 	}
 
+	public function make3D()
+	{
+		matrix = Matrix3D.createOrtho(-5, 5, -5, 5, 500, -500);
+	}
+
 	public function setup()
 	{
 		make2D();
