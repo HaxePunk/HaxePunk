@@ -58,15 +58,15 @@ class Material
 		GL.uniformMatrix3D(_modelViewMatrixUniform, false, modelViewMatrix);
 
 		// set the vertices as the first 3 floats in a buffer
-		GL.vertexAttribPointer(_vertexAttribute, 3, GL.FLOAT, false, 32, 0);
+		GL.vertexAttribPointer(_vertexAttribute, 3, GL.FLOAT, false, 8*4, 0);
 		GL.enableVertexAttribArray(_vertexAttribute);
 
 		// set the tex coords as the next 2 floats in a buffer
-		GL.vertexAttribPointer(_texCoordAttribute, 2, GL.FLOAT, false, 32, 12);
+		GL.vertexAttribPointer(_texCoordAttribute, 2, GL.FLOAT, false, 8*4, 3*4);
 		GL.enableVertexAttribArray(_texCoordAttribute);
 
 		// set the normals as the last 3 floats in a buffer
-		GL.vertexAttribPointer(_normalAttribute, 3, GL.FLOAT, true, 32, 20);
+		GL.vertexAttribPointer(_normalAttribute, 3, GL.FLOAT, false, 8*4, 5*4);
 		GL.enableVertexAttribArray(_normalAttribute);
 	}
 
@@ -74,8 +74,8 @@ class Material
 	{
 		GL.disableVertexAttribArray(_vertexAttribute);
 		GL.disableVertexAttribArray(_texCoordAttribute);
+		GL.disableVertexAttribArray(_normalAttribute);
 
-		GL.disable(GL.TEXTURE_2D);
 		GL.bindTexture(GL.TEXTURE_2D, null);
 
 		GL.useProgram(null);

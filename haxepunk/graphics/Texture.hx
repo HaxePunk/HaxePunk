@@ -59,7 +59,6 @@ class Texture
 	private function new(path:String)
 	{
 		_onload = new Array<OnloadCallback>();
-		_texture = GL.createTexture();
 		loadImage(path);
 	}
 
@@ -76,7 +75,8 @@ class Texture
 		this.width = width;
 		this.height = height;
 
-		bind();
+		_texture = GL.createTexture();
+		GL.bindTexture(GL.TEXTURE_2D, _texture);
 		GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, dataArray);
 		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
 		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
@@ -86,22 +86,29 @@ class Texture
 		_loaded = true;
 	}
 
+	private inline function toPowerOfTwo(value:Int):Int
+	{
+		return Std.int(Math.pow(2, Math.ceil(Math.log(value) / Math.log(2))));
+	}
+
 	private inline function loadImage(path:String)
 	{
 #if lime_html5
 		var image: js.html.ImageElement = js.Browser.document.createImageElement();
 		image.onload = function(a) {
+			var width = toPowerOfTwo(image.width);
+			var height = toPowerOfTwo(image.height);
 			var tmpCanvas = js.Browser.document.createCanvasElement();
-				tmpCanvas.width = image.width;
-				tmpCanvas.height = image.height;
+			tmpCanvas.width = width;
+			tmpCanvas.height = height;
 
 			var tmpContext = tmpCanvas.getContext2d();
-				tmpContext.clearRect(0,0, tmpCanvas.width, tmpCanvas.height);
-				tmpContext.drawImage(image, 0, 0, image.width, image.height);
+			tmpContext.clearRect(0, 0, tmpCanvas.width, tmpCanvas.height);
+			tmpContext.drawImage(image, 0, 0, image.width, image.height);
 
 			var imageBytes = tmpContext.getImageData(0, 0, tmpCanvas.width, tmpCanvas.height);
 
-			createTexture(image.width, image.height, new UInt8Array(imageBytes.data));
+			createTexture(width, height, new UInt8Array(imageBytes.data));
 
 			tmpCanvas = null;
 			tmpContext = null;
