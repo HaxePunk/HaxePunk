@@ -66,18 +66,16 @@ class Main extends Engine
 		material.addTexture(Texture.create("assets/lime.png"));
 		var numCubes = Std.int(Math.random() * 50 + 150);
 
-		var image = new Image("assets/lime.png");
-		image.centerOrigin();
-		image.scale = 0.2;
+		var image = new Spritemap("assets/character.png", 32, 32);
 
 		for (i in 0...numCubes)
 		{
-			scene.add(new CubeEntity(material));
+			// scene.add(new CubeEntity(material));
 
-			// scene.addGraphic(image,
-			// 	Std.int(Math.random() * -50),
-			// 	Math.random() * HXP.windowWidth,
-			// 	Math.random() * HXP.windowHeight);
+			scene.addGraphic(image,
+				Std.int(Math.random() * -50),
+				Math.random() * HXP.windowWidth,
+				Math.random() * HXP.windowHeight);
 		}
 	}
 }

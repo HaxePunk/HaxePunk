@@ -30,6 +30,9 @@ class Texture
 	 */
 	public var height(default, null):Int = 0;
 
+	public var originalWidth(default, null):Int = 0;
+	public var originalHeight(default, null):Int = 0;
+
 	public var onload(never, set):OnloadCallback;
 	private function set_onload(value:OnloadCallback):OnloadCallback
 	{
@@ -109,6 +112,8 @@ class Texture
 
 			var imageBytes = tmpContext.getImageData(0, 0, tmpCanvas.width, tmpCanvas.height);
 
+			originalWidth = image.width;
+			originalHeight = image.height;
 			createTexture(width, height, new UInt8Array(imageBytes.data));
 
 			tmpCanvas = null;

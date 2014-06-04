@@ -65,16 +65,16 @@ class Image implements Graphic
 		return (alpha == value) ? value : alpha = value;
 	}
 
-	public function new(name:String)
+	public function new(path:String)
 	{
-		_texture = Texture.create(name);
+		_texture = Texture.create(path);
 		material = new Material();
 		material.addTexture(_texture);
 
 		initBuffer();
 	}
 
-	private inline function initBuffer():Void
+	private function initBuffer():Void
 	{
 		if (_vertexBuffer == null)
 		{
