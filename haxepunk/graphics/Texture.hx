@@ -136,6 +136,8 @@ class Texture
 			var dataArray = new UInt8Array(byteData);
 			// bgra to rgba (flip blue and red channels)
 			var size = header.width * header.height;
+			originalWidth = header.width;
+			originalHeight = header.height;
 			for (i in 0...size)
 			{
 				var b = dataArray[i*4];
