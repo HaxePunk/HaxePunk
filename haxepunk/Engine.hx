@@ -29,7 +29,7 @@ class Engine
 		HXP.windowWidth = lime.config.width;
 		HXP.windowHeight = lime.config.height;
 
-		Input.enable();
+		Input.init();
 
 		init();
 	}

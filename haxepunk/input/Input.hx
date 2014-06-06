@@ -131,27 +131,31 @@ class Input
 	/**
 	 * Enables input handling
 	 */
-	public static function enable()
+	public static function init()
 	{
-		if (!_enabled && HXP.lime != null && HXP.lime.input != null)
+		if (HXP.lime != null && HXP.lime.input != null)
 		{
 			input = HXP.lime.input;
+		
+			mouseDown 			= false;
+			mouseUp 			= false;
+			mousePressed 		= false;
+			mouseReleased 		= false;
+			rightMouseDown 		= false;
+			rightMouseUp 		= false;
+			rightMousePressed 	= false;
+			rightMouseReleased 	= false;
+			middleMouseDown 	= false;
+			middleMouseUp 		= false;
+			middleMousePressed 	= false;
+			middleMouseReleased = false;
 		}
-
-		mouseDown 			= false;
-		mouseUp 			= false;
-		mousePressed 		= false;
-		mouseReleased 		= false;
-		rightMouseDown 		= false;
-		rightMouseUp 		= false;
-		rightMousePressed 	= false;
-		rightMouseReleased 	= false;
-		middleMouseDown 	= false;
-		middleMouseUp 		= false;
-		middleMousePressed 	= false;
-		middleMouseReleased = false;
-
-		_enabled = true;
+	#if debug
+		else
+		{
+			trace ("HXP.lime or HXP.lime.input are not yet specified.");
+		}
+	#end
 	}
 
 	/**
@@ -171,5 +175,4 @@ class Input
 
 	// Lime input handler
 	private static var input:InputHandler;
-	private static var _enabled:Bool = false;
 }
