@@ -5,6 +5,7 @@ import haxepunk.graphics.*;
 import haxepunk.graphics.shapes.Cube;
 import haxepunk.graphics.importer.Wavefront;
 import lime.utils.Vector3D;
+import lime.utils.Assets;
 
 class ImageTexture extends Entity
 {
@@ -62,20 +63,33 @@ class Main extends Engine
 {
 	override public function init()
 	{
-		var material = new Material();
-		material.addTexture(Texture.create("assets/lime.png"));
-		var numCubes = Std.int(Math.random() * 50 + 150);
+		// adding cubes with lighting shader at the right side of the screen
+		var shader = new Shader([
+				{src: Assets.getText("shaders/lighting.vert"), fragment:false},
+				{src: Assets.getText("shaders/lighting.frag"), fragment:true}
+			]);
 
-		var image = new Spritemap("assets/character.png", 32, 32);
+		var texture = Texture.create("assets/lime.png");
+		var material = new Material(shader);
+		material.addTexture(texture);	
 
-		for (i in 0...numCubes)
-		{
-			// scene.add(new CubeEntity(material));
+		var numCubes = 50;
 
-			scene.addGraphic(image,
-				Std.int(Math.random() * -50),
-				Math.random() * HXP.windowWidth,
-				Math.random() * HXP.windowHeight);
+		for (i in 0...numCubes) {
+			var cube = new CubeEntity(material);
+			if (cube.x < HXP.windowWidth/2) cube.x += HXP.windowWidth;
+			scene.add(cube);
+		}
+
+		// adding cubes with default shader at the left side of the screen
+		texture = Texture.create("assets/lime.png");
+		material = new Material();
+		material.addTexture(texture);	
+
+		for (i in 0...numCubes) {
+			var cube = new CubeEntity(material);
+			if (cube.x > HXP.windowWidth/2) cube.x -= HXP.windowWidth;
+			scene.add(cube);
 		}
 	}
 }
