@@ -14,12 +14,14 @@ varying vec3 vLightPos;
 
 uniform mat4 uModelViewMatrix;
 uniform mat4 uProjectionMatrix;
+uniform mat4 uNormalMatrix;
 
 void main(void)
 {
 	vPosition = uModelViewMatrix * vec4(aVertexPosition, 1.0);
-	vNormal = normalize(aNormal);
+	vNormal = normalize((uNormalMatrix * vec4(aNormal, 1.0)).xyz);
 	vTexCoord = aTexCoord;
-	vLightPos = aLightPos;
+		// setting the position of the light for now...
+	vLightPos = vec3(600,-100,-400);
 	gl_Position = uProjectionMatrix * vPosition;
 }
