@@ -35,7 +35,6 @@ class Material
 		_normalMatrixUniform = _shader.uniform("uNormalMatrix");
 
 		_normalMatrix = new Matrix3D();
-		_modelViewMatrix = new Matrix3D();
 	}
 
 	public function addTexture(texture:Texture, uniformName:String="uImage0")
@@ -61,14 +60,9 @@ class Material
 		// calculate the normal matrix, if the model changed since last calculation
 		if (_normalMatrixUniform != -1)
 		{
-			if (modelViewMatrix.rawData != _modelViewMatrix.rawData)
-			{
-				_normalMatrix.rawData = modelViewMatrix.rawData.copy();
-				_normalMatrix.invert();
-				_normalMatrix.transpose();
-
-				_modelViewMatrix.rawData = modelViewMatrix.rawData.copy();
-			}
+			_normalMatrix.rawData = modelViewMatrix.rawData.copy();
+			_normalMatrix.invert();
+			_normalMatrix.transpose();
 			
 			GL.uniformMatrix3D(_normalMatrixUniform, false, _normalMatrix);
 		}
@@ -113,5 +107,4 @@ class Material
 	private var _normalAttribute:Int;
 
 	private var _normalMatrix:Matrix3D;
-	private var _modelViewMatrix:Matrix3D;
 }
