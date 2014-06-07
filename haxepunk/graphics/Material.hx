@@ -23,7 +23,6 @@ class Material
 		else
 		{
 			_shader = shader;
-			trace("custom shader");
 		}
 
 		_vertexAttribute = _shader.attribute("aVertexPosition");
