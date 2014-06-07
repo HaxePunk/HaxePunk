@@ -56,7 +56,7 @@ class Material
 			_textures[i].bind();
 		}
 
-		// calculate the normal matrix, if the model changed since last calculation
+		// calculate the normal matrix, only if the shader needs one
 		if (_normalMatrixUniform != -1)
 		{
 			_normalMatrix.rawData = modelViewMatrix.rawData.copy();
