@@ -13,7 +13,7 @@ class Material
 		_textures = new Array<Texture>();
 
 		// set a default shader if none is given
-		if (_shader == null)
+		if (shader == null)
 		{
 			_shader = new Shader([
 				{src: Assets.getText("shaders/default.vert"), fragment:false},
@@ -31,6 +31,9 @@ class Material
 
 		_projectionMatrixUniform = _shader.uniform("uProjectionMatrix");
 		_modelViewMatrixUniform = _shader.uniform("uModelViewMatrix");
+		_normalMatrixUniform = _shader.uniform("uNormalMatrix");
+
+		_normalMatrix = new Matrix3D();
 	}
 
 	public function addTexture(texture:Texture, uniformName:String="uImage0")
@@ -51,6 +54,16 @@ class Material
 		{
 			GL.activeTexture(GL.TEXTURE0 + i);
 			_textures[i].bind();
+		}
+
+		// calculate the normal matrix, only if the shader needs one
+		if (_normalMatrixUniform != -1)
+		{
+			_normalMatrix.rawData = modelViewMatrix.rawData.copy();
+			_normalMatrix.invert();
+			_normalMatrix.transpose();
+			
+			GL.uniformMatrix3D(_normalMatrixUniform, false, _normalMatrix);
 		}
 
 		// assign the projection and modelview matrices
@@ -86,9 +99,11 @@ class Material
 
 	private var _modelViewMatrixUniform:GLUniformLocation;
 	private var _projectionMatrixUniform:GLUniformLocation;
+	private var _normalMatrixUniform:GLUniformLocation;
 
 	private var _texCoordAttribute:Int;
 	private var _vertexAttribute:Int;
 	private var _normalAttribute:Int;
 
+	private var _normalMatrix:Matrix3D;
 }
