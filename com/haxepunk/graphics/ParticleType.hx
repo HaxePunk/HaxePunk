@@ -76,6 +76,8 @@ class ParticleType
 	{
 		_angle = Math.atan2(y, x);
 		_angleRange = 0;
+		_distance = Math.sqrt(x * x + y * y);
+		_distanceRange = 0;
 		_duration = duration;
 		_durationRange = durationRange;
 		_ease = ease;
