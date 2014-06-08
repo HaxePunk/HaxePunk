@@ -5,54 +5,48 @@ import lime.utils.Float32Array;
 
 class Matrix3D
 {
-	public var _11:Float = 0;
+
+	public var _11:Float = 1;
 	public var _12:Float = 0;
 	public var _13:Float = 0;
 	public var _14:Float = 0;
 	public var _21:Float = 0;
-	public var _22:Float = 0;
+	public var _22:Float = 1;
 	public var _23:Float = 0;
 	public var _24:Float = 0;
 	public var _31:Float = 0;
 	public var _32:Float = 0;
-	public var _33:Float = 0;
+	public var _33:Float = 1;
 	public var _34:Float = 0;
 	public var _41:Float = 0;
 	public var _42:Float = 0;
 	public var _43:Float = 0;
-	public var _44:Float = 0;
+	public var _44:Float = 1;
 
-	public function new(
-		a1:Float=1, a2:Float=0, a3:Float=0, a4:Float=0,
-		b1:Float=0, b2:Float=1, b3:Float=0, b4:Float=0,
-		c1:Float=0, c2:Float=0, c3:Float=1, c4:Float=0,
-		d1:Float=0, d2:Float=0, d3:Float=0, d4:Float=1)
+	public function new()
 	{
-		_11 = a1; _21 = b1; _31 = c1; _41 = d1;
-		_12 = a2; _22 = b2; _32 = c2; _42 = d2;
-		_13 = a3; _23 = b3; _33 = c3; _43 = d3;
-		_14 = a4; _24 = b4; _34 = c4; _44 = d4;
 	}
 
 	public var rawData(get, never):Float32Array;
 	private inline function get_rawData():Float32Array
 	{
-		return new Float32Array([
+		var data:Array<Float> = [
 			_11, _12, _13, _14,
 			_21, _22, _23, _24,
 			_31, _32, _33, _34,
 			_41, _42, _43, _44
-		]);
+		];
+		return new Float32Array(data);
 	}
 
 	public function clone():Matrix3D
 	{
-		return new Matrix3D(
-			_11, _12, _13, _14,
-			_21, _22, _23, _24,
-			_31, _32, _33, _34,
-			_41, _42, _43, _44
-		);
+		var m = new Matrix3D();
+		m._11 = _11; m._21 = _21; m._31 = _31; m._41 = _41;
+		m._12 = _12; m._22 = _22; m._32 = _32; m._42 = _42;
+		m._13 = _13; m._23 = _23; m._33 = _33; m._43 = _43;
+		m._14 = _14; m._24 = _24; m._34 = _34; m._44 = _44;
+		return m;
 	}
 
 	public function identity()
@@ -176,15 +170,20 @@ class Matrix3D
 
 	public static inline function createOrtho(x0:Float, x1:Float,  y0:Float, y1:Float, zNear:Float, zFar:Float):Matrix3D
 	{
+		var m = new Matrix3D();
 		var sx = 1.0 / (x1 - x0);
 		var sy = 1.0 / (y1 - y0);
 		var sz = 1.0 / (zFar - zNear);
 
-		return new Matrix3D(
-			2.0*sx,       0,          0,                 0,
-			0,            2.0*sy,     0,                 0,
-			0,            0,          -2.0*sz,           0,
-			- (x0+x1)*sx, - (y0+y1)*sy, - (zNear+zFar)*sz,  1
-		);
+		m._11 = 2.0 * sx;
+		m._22 = 2.0 * sy;
+		m._33 = -2.0 * sz;
+
+		m._41 = -(x0 + x1) * sx;
+		m._42 = -(y0 + y1) * sy;
+		m._43 = -(zNear + zFar) * sz;
+
+		return m;
 	}
+
 }

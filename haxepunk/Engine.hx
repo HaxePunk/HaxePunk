@@ -3,6 +3,7 @@ package haxepunk;
 import lime.Lime;
 import haxepunk.math.Matrix3D;
 import haxepunk.scene.Scene;
+import haxepunk.graphics.Material;
 
 #if cpp
 import cpp.vm.Thread;
@@ -42,6 +43,8 @@ class Engine
 	private function render():Void
 	{
 		scene.draw();
+
+		Material.clear(); // clear any material
 	}
 
 	private function update():Void

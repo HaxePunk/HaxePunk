@@ -86,9 +86,20 @@ class Shader
 	 */
 	public inline function use()
 	{
-		GL.useProgram(_program);
+		if (_lastUsedProgram != _program)
+		{
+			GL.useProgram(_program);
+			_lastUsedProgram = _program;
+		}
+	}
+
+	public static function clear()
+	{
+		_lastUsedProgram = null;
+		GL.useProgram(_lastUsedProgram);
 	}
 
 	private var _program:GLProgram;
+	private static var _lastUsedProgram:GLProgram;
 
 }

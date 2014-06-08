@@ -71,15 +71,17 @@ class Material
 		GL.enableVertexAttribArray(_normalAttribute);
 	}
 
-	public function disable()
+	public inline function disable()
 	{
 		GL.disableVertexAttribArray(_vertexAttribute);
 		GL.disableVertexAttribArray(_texCoordAttribute);
 		GL.disableVertexAttribArray(_normalAttribute);
+	}
 
-		GL.bindTexture(GL.TEXTURE_2D, null);
-
-		GL.useProgram(null);
+	public static inline function clear()
+	{
+		Texture.clear();
+		Shader.clear();
 	}
 
 	private var _textures:Array<Texture>;

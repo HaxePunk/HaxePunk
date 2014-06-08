@@ -70,8 +70,17 @@ class Texture
 	 */
 	public inline function bind():Void
 	{
-		if (!_loaded) return;
-		GL.bindTexture(GL.TEXTURE_2D, _texture);
+		if (_loaded && _lastBoundTexture != _texture)
+		{
+			GL.bindTexture(GL.TEXTURE_2D, _texture);
+			_lastBoundTexture = _texture;
+		}
+	}
+
+	public static function clear():Void
+	{
+		_lastBoundTexture = null;
+		GL.bindTexture(GL.TEXTURE_2D, _lastBoundTexture);
 	}
 
 	private function createTexture(width:Int, height:Int, dataArray:UInt8Array)
@@ -160,5 +169,6 @@ class Texture
 	private var _onload:Array<OnloadCallback>;
 	private var _loaded:Bool = false;
 	private static var _textures = new StringMap<Texture>();
+	private static var _lastBoundTexture:GLTexture;
 
 }

@@ -65,7 +65,7 @@ class Main extends Engine
 		var material = new Material();
 		material.addTexture(Texture.create("assets/lime.png"));
 		var numCubes = Std.int(Math.random() * 50 + 150);
-		numCubes = 5000;
+		numCubes = 10000;
 
 		var sprite = new Spritemap("assets/character.png", 32, 32);
 		sprite.add("walk", [0, 1, 2, 3, 4, 5], 12);
