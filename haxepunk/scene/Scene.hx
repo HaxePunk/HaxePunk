@@ -1,7 +1,7 @@
 package haxepunk.scene;
 
 import haxepunk.graphics.Graphic;
-import lime.utils.Matrix3D;
+import haxepunk.math.Matrix3D;
 
 class Scene
 {
@@ -34,9 +34,10 @@ class Scene
 	public function draw()
 	{
 		camera.setup();
+		var matrix = new lime.utils.Float32Array(camera.matrix.rawData);
 		for (entity in entities)
 		{
-			entity.draw(camera.matrix);
+			entity.draw(matrix);
 		}
 	}
 

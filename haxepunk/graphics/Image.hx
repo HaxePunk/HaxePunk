@@ -4,7 +4,7 @@ import lime.gl.GL;
 import lime.gl.GLBuffer;
 import lime.utils.Float32Array;
 import lime.utils.Vector3D;
-import lime.utils.Matrix3D;
+import haxepunk.math.Matrix3D;
 
 class Image implements Graphic
 {
@@ -99,7 +99,7 @@ class Image implements Graphic
 		}
 	}
 
-	public function draw(projectionMatrix:Matrix3D, modelViewMatrix:Matrix3D):Void
+	public function draw(projectionMatrix:lime.utils.Float32Array, modelViewMatrix:Matrix3D):Void
 	{
 		modelViewMatrix.prependRotation(angle, Vector3D.Z_AXIS);
 		modelViewMatrix.prependScale(scale * scaleX, scale * scaleY, 1);

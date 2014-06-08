@@ -3,7 +3,8 @@ package haxepunk.graphics;
 import lime.gl.GL;
 import lime.gl.GLUniformLocation;
 import lime.utils.Assets;
-import lime.utils.Matrix3D;
+import lime.utils.Float32Array;
+import haxepunk.math.Matrix3D;
 
 class Material
 {
@@ -42,7 +43,7 @@ class Material
 		_textures.push(texture);
 	}
 
-	public function use(projectionMatrix:Matrix3D, modelViewMatrix:Matrix3D)
+	public function use(projectionMatrix:Float32Array, modelViewMatrix:Matrix3D)
 	{
 		_shader.use();
 
@@ -54,8 +55,13 @@ class Material
 		}
 
 		// assign the projection and modelview matrices
-		GL.uniformMatrix3D(_projectionMatrixUniform, false, projectionMatrix);
+		#if lime_html5
+		GL.uniformMatrix4fv(_projectionMatrixUniform, false, projectionMatrix);
 		GL.uniformMatrix3D(_modelViewMatrixUniform, false, modelViewMatrix);
+		#else
+		GL.uniformMatrix4fv(_projectionMatrixUniform, false, projectionMatrix);
+		GL.uniformMatrix4fv(_modelViewMatrixUniform, false, new Float32Array(modelViewMatrix.rawData));
+		#end
 
 		// set the vertices as the first 3 floats in a buffer
 		GL.vertexAttribPointer(_vertexAttribute, 3, GL.FLOAT, false, 8*4, 0);

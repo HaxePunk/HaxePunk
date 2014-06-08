@@ -2,7 +2,7 @@ package haxepunk.graphics.shapes;
 
 import haxepunk.graphics.Mesh;
 import lime.gl.GLBuffer;
-import lime.utils.Matrix3D;
+import haxepunk.math.Matrix3D;
 import lime.utils.Vector3D;
 
 class Cube extends Mesh
@@ -72,7 +72,7 @@ class Cube extends Mesh
 		}
 	}
 
-	override public function draw(projectionMatrix:Matrix3D, modelViewMatrix:Matrix3D):Void
+	override public function draw(projectionMatrix:lime.utils.Float32Array, modelViewMatrix:Matrix3D):Void
 	{
 		modelViewMatrix.prependScale(scale, scale, scale);
 		modelViewMatrix.prependRotation(rotation.z, Vector3D.Z_AXIS);

@@ -1,7 +1,7 @@
 package haxepunk;
 
 import lime.Lime;
-import lime.utils.Matrix3D;
+import haxepunk.math.Matrix3D;
 import haxepunk.scene.Scene;
 
 #if cpp

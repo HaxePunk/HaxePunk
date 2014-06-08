@@ -5,7 +5,7 @@ import lime.gl.GL;
 import lime.gl.GLFramebuffer;
 import lime.gl.GLRenderbuffer;
 import lime.utils.Vector3D;
-import lime.utils.Matrix3D;
+import haxepunk.math.Matrix3D;
 
 class Camera
 {
@@ -49,11 +49,12 @@ class Camera
 #if !neko
 		GL.viewport(0, 0, HXP.windowWidth, HXP.windowHeight);
 #end
-		GL.enable(GL.DEPTH_TEST);
+		GL.disable(GL.DEPTH_TEST);
+		GL.depthFunc(GL.EQUAL);
 
 		// TODO: move this to texture?
-		GL.enable(GL.BLEND);
 		GL.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
+		GL.enable(GL.BLEND);
 
 		// TODO: set option for clear color per camera?
 		GL.clearColor(0.117, 0.117, 0.117, 1.0);

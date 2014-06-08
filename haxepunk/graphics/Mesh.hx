@@ -8,7 +8,7 @@ import js.html.Int16Array;
 import lime.utils.Int16Array;
 #end
 import lime.utils.Float32Array;
-import lime.utils.Matrix3D;
+import haxepunk.math.Matrix3D;
 
 class Mesh implements Graphic
 {
@@ -38,7 +38,7 @@ class Mesh implements Graphic
 	 * @param projectionMatrix The projection matrix to apply
 	 * @param modelViewMatrix The model view matrix to apply
 	 */
-	public function draw(projectionMatrix:Matrix3D, modelViewMatrix:Matrix3D):Void
+	public function draw(projectionMatrix:lime.utils.Float32Array, modelViewMatrix:Matrix3D):Void
 	{
 		GL.bindBuffer(GL.ARRAY_BUFFER, _vertexBuffer);
 		material.use(projectionMatrix, modelViewMatrix);

@@ -1,6 +1,6 @@
 package haxepunk.scene;
 
-import lime.utils.Matrix3D;
+import haxepunk.math.Matrix3D;
 import lime.utils.Vector3D;
 import haxepunk.graphics.Graphic;
 
@@ -47,7 +47,7 @@ class Entity
 		}
 	}
 
-	public function draw(projectionMatrix:Matrix3D)
+	public function draw(projectionMatrix:lime.utils.Float32Array)
 	{
 		modelViewMatrix.identity();
 		modelViewMatrix.appendTranslation(position.x, position.y, position.z);
