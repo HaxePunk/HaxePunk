@@ -34,7 +34,7 @@ class Scene
 	public function draw()
 	{
 		camera.setup();
-		var matrix = new lime.utils.Float32Array(camera.matrix.rawData);
+		var matrix = camera.matrix.rawData;
 		for (entity in entities)
 		{
 			entity.draw(matrix);

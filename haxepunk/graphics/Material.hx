@@ -55,13 +55,8 @@ class Material
 		}
 
 		// assign the projection and modelview matrices
-		#if lime_html5
 		GL.uniformMatrix4fv(_projectionMatrixUniform, false, projectionMatrix);
-		GL.uniformMatrix3D(_modelViewMatrixUniform, false, modelViewMatrix);
-		#else
-		GL.uniformMatrix4fv(_projectionMatrixUniform, false, projectionMatrix);
-		GL.uniformMatrix4fv(_modelViewMatrixUniform, false, new Float32Array(modelViewMatrix.rawData));
-		#end
+		GL.uniformMatrix4fv(_modelViewMatrixUniform, false, modelViewMatrix.rawData);
 
 		// set the vertices as the first 3 floats in a buffer
 		GL.vertexAttribPointer(_vertexAttribute, 3, GL.FLOAT, false, 8*4, 0);

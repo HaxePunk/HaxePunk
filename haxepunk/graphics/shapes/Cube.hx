@@ -74,10 +74,10 @@ class Cube extends Mesh
 
 	override public function draw(projectionMatrix:lime.utils.Float32Array, modelViewMatrix:Matrix3D):Void
 	{
-		modelViewMatrix.prependScale(scale, scale, scale);
-		modelViewMatrix.prependRotation(rotation.z, Vector3D.Z_AXIS);
-		modelViewMatrix.prependRotation(rotation.y, Vector3D.Y_AXIS);
-		modelViewMatrix.prependRotation(rotation.x, Vector3D.X_AXIS);
+		// modelViewMatrix.prependScale(scale, scale, scale);
+		modelViewMatrix.rotateZ(rotation.z);
+		modelViewMatrix.rotateY(rotation.y);
+		modelViewMatrix.rotateX(rotation.x);
 		super.draw(projectionMatrix, modelViewMatrix);
 	}
 

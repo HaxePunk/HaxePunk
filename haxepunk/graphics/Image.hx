@@ -47,13 +47,13 @@ class Image implements Graphic
 	 * Width of the image.
 	 */
 	public var width(get, never):Float;
-	private inline function get_width():Float { return _texture.width; }
+	private function get_width():Float { return _texture.width; }
 
 	/**
 	 * Height of the image.
 	 */
 	public var height(get, never):Float;
-	private inline function get_height():Float { return _texture.height; }
+	private function get_height():Float { return _texture.height; }
 
 	/**
 	 * Change the opacity of the Image, a value from 0 to 1.
@@ -67,6 +67,7 @@ class Image implements Graphic
 
 	public function new(path:String)
 	{
+		_matrix = new Matrix3D();
 		_texture = Texture.create(path);
 		material = new Material();
 		material.addTexture(_texture);
@@ -96,23 +97,39 @@ class Image implements Graphic
 		_texture.onload = function() {
 			originX = -(_texture.width / 2);
 			originY = -(_texture.height / 2);
+			_matrixDirty = true;
 		}
 	}
 
-	public function draw(projectionMatrix:lime.utils.Float32Array, modelViewMatrix:Matrix3D):Void
+	private inline function drawBuffer(projectionMatrix:Float32Array, modelViewMatrix:Matrix3D, buffer:GLBuffer, offset:Int=0):Void
 	{
-		modelViewMatrix.prependRotation(angle, Vector3D.Z_AXIS);
-		modelViewMatrix.prependScale(scale * scaleX, scale * scaleY, 1);
-		modelViewMatrix.prependTranslation(originX, originY, 0);
-		modelViewMatrix.prependScale(_texture.width, _texture.height, 1);
+		if (buffer != null)
+		{
+			if (_matrixDirty)
+			{
+				_matrix.identity();
+				_matrix.scale(width, height, 1);
+				_matrix.translate(originX, originY, 0);
+				_matrix.scale(scale * scaleX, scale * scaleY, 1);
+				_matrix.rotateZ(angle);
+				_matrixDirty = false;
+			}
 
-		GL.bindBuffer(GL.ARRAY_BUFFER, _vertexBuffer);
-		material.use(projectionMatrix, modelViewMatrix);
-		GL.drawArrays(GL.TRIANGLE_STRIP, 0, 4);
-		material.disable();
-		GL.bindBuffer(GL.ARRAY_BUFFER, null);
+			GL.bindBuffer(GL.ARRAY_BUFFER, buffer);
+			material.use(projectionMatrix, _matrix.clone().multiply(modelViewMatrix));
+			GL.drawArrays(GL.TRIANGLE_STRIP, offset, 4);
+			material.disable();
+			GL.bindBuffer(GL.ARRAY_BUFFER, null);
+		}
 	}
 
+	public function draw(projectionMatrix:Float32Array, modelViewMatrix:Matrix3D):Void
+	{
+		drawBuffer(projectionMatrix, modelViewMatrix, _vertexBuffer);
+	}
+
+	private var _matrix:Matrix3D;
+	private var _matrixDirty:Bool = true;
 	private var _texture:Texture;
 	private static var _vertexBuffer:GLBuffer;
 

@@ -89,6 +89,10 @@ class Spritemap extends Image
 	public var columns(default, null):Int;
 	public var rows(default, null):Int;
 
+	// override width/height for sprite size
+	override private function get_width():Float { return _spriteWidth; }
+	override private function get_height():Float { return _spriteHeight; }
+
 	public function new(path:String, width:Int, height:Int)
 	{
 		super(path);
@@ -217,17 +221,7 @@ class Spritemap extends Image
 
 	override public function draw(projectionMatrix:lime.utils.Float32Array, modelViewMatrix:Matrix3D):Void
 	{
-		if (_buffer == null) return;
-		// modelViewMatrix.prependRotation(angle, Vector3D.Z_AXIS);
-		// modelViewMatrix.prependScale(scale * scaleX, scale * scaleY, 1);
-		// modelViewMatrix.prependTranslation(originX, originY, 0);
-		modelViewMatrix.prependScale(_spriteWidth, _spriteHeight, 1);
-
-		GL.bindBuffer(GL.ARRAY_BUFFER, _buffer);
-		material.use(projectionMatrix, modelViewMatrix);
-		GL.drawArrays(GL.TRIANGLE_STRIP, _frame * 4, 4);
-		material.disable();
-		GL.bindBuffer(GL.ARRAY_BUFFER, null);
+		drawBuffer(projectionMatrix, modelViewMatrix, _buffer, _frame * 4);
 
 		var now = Timer.stamp();
 		if (now - _time > 0.1)

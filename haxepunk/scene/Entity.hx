@@ -50,7 +50,7 @@ class Entity
 	public function draw(projectionMatrix:lime.utils.Float32Array)
 	{
 		modelViewMatrix.identity();
-		modelViewMatrix.appendTranslation(position.x, position.y, position.z);
+		modelViewMatrix.translateVector3D(position);
 
 		if (_graphic != null)
 		{
