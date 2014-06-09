@@ -24,13 +24,13 @@ class Mesh implements Graphic
 	 * @param indices An array referencing the vertex, textCoord, and normal
 	 * @param material The material to apply to this mesh
 	 */
-	public function new(?data:Array<Float>, ?indices:Array<Int>, ?material:Material)
+	public function new(?material:Material)
 	{
 		this.material = (material == null ? new Material() : material);
 
 		// check that the buffers aren't already loaded from a super class
-		if (_vertexBuffer == null) createBuffer(data);
-		if (_indexBuffer == null) createIndexBuffer(indices);
+		// if (_vertexBuffer == null) createBuffer(data);
+		// if (_indexBuffer == null) createIndexBuffer(indices);
 	}
 
 	/**
@@ -51,7 +51,7 @@ class Mesh implements Graphic
 		GL.bindBuffer(GL.ARRAY_BUFFER, null);
 	}
 
-	private function createBuffer(data:Array<Float>):GLBuffer
+	public function createBuffer(data:Array<Float>):GLBuffer
 	{
 		if (data == null) throw "Vertex data buffer must not be null";
 		_vertexBuffer = GL.createBuffer();
@@ -60,7 +60,7 @@ class Mesh implements Graphic
 		return _vertexBuffer;
 	}
 
-	private function createIndexBuffer(indices:Array<Int>):GLBuffer
+	public function createIndexBuffer(indices:Array<Int>):GLBuffer
 	{
 		if (indices == null) throw "Index buffer must not be null";
 		_indexSize = indices.length;

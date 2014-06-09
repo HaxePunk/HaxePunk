@@ -54,7 +54,10 @@ class Wavefront
 						var data = createMeshData(vertices, texCoords, normals, indices);
 						if (data.length > 0)
 						{
-							meshList.push(new Mesh(data, faces));
+							var mesh = new Mesh();
+							mesh.createBuffer(data);
+							mesh.createIndexBuffer(faces);
+							meshList.push(mesh);
 						}
 						// t = n = v = 0;
 						groupName = null;
@@ -103,7 +106,10 @@ class Wavefront
 		var data = createMeshData(vertices, texCoords, normals, indices);
 		if (data.length > 0)
 		{
-			meshList.push(new Mesh(data, faces));
+			var mesh = new Mesh();
+			mesh.createBuffer(data);
+			mesh.createIndexBuffer(faces);
+			meshList.push(mesh);
 		}
 
 		return meshList;

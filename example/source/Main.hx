@@ -2,7 +2,7 @@ import haxepunk.Engine;
 import haxepunk.HXP;
 import haxepunk.scene.Entity;
 import haxepunk.graphics.*;
-import haxepunk.graphics.shapes.Cube;
+import haxepunk.graphics.Shape;
 import haxepunk.graphics.importer.Wavefront;
 import lime.utils.Vector3D;
 
@@ -40,8 +40,8 @@ class CubeEntity extends Entity
 			Math.random() * HXP.windowHeight,
 			Math.random() * -500);
 
-		cube = new Cube(material);
-		cube.scale = Math.random() * 30 + 30;
+		cube = Shape.createCube(material);
+		// cube.scale = Math.random() * 30 + 30;
 		addGraphic(cube);
 
 		rotate = new Vector3D(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
@@ -49,12 +49,12 @@ class CubeEntity extends Entity
 
 	override public function update()
 	{
-		cube.rotation.x += rotate.x;
-		cube.rotation.y += rotate.y;
-		cube.rotation.z += rotate.z;
+		// cube.rotation.x += rotate.x;
+		// cube.rotation.y += rotate.y;
+		// cube.rotation.z += rotate.z;
 	}
 
-	private var cube:Cube;
+	private var cube:Shape;
 	private var rotate:Vector3D;
 }
 
@@ -73,12 +73,12 @@ class Main extends Engine
 
 		for (i in 0...numCubes)
 		{
-			// scene.add(new CubeEntity(material));
+			scene.add(new CubeEntity(material));
 
-			scene.addGraphic(sprite,
-				Std.int(Math.random() * -50),
-				Math.random() * HXP.windowWidth,
-				Math.random() * HXP.windowHeight);
+			// scene.addGraphic(sprite,
+			// 	Std.int(Math.random() * -50),
+			// 	Math.random() * HXP.windowWidth,
+			// 	Math.random() * HXP.windowHeight);
 		}
 	}
 }
