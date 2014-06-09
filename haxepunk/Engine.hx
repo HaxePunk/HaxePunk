@@ -4,6 +4,7 @@ import lime.Lime;
 import haxepunk.math.Matrix3D;
 import haxepunk.scene.Scene;
 import haxepunk.graphics.Material;
+import haxepunk.input.Input;
 
 #if cpp
 import cpp.vm.Thread;
@@ -28,6 +29,8 @@ class Engine
 		HXP.lime = lime;
 		HXP.windowWidth = lime.config.width;
 		HXP.windowHeight = lime.config.height;
+
+		Input.init();
 
 		init();
 	}
@@ -62,6 +65,8 @@ class Engine
 #end
 
 		scene.update();
+
+		Input.update();
 	}
 
 	/**
@@ -95,6 +100,28 @@ class Engine
 		_scenes.push(scene);
 	}
 
-	private var _scenes:List<Scene>;
 
+	// Lime exposed event callbacks, is passed to Input
+	private function onmousedown(_event:Dynamic)
+	{
+		Input.onmousedown(_event);
+	}
+
+	// Lime exposed event callbacks, is passed to Input
+	private function onmouseup(_event:Dynamic)
+	{
+		Input.onmouseup(_event);
+	}
+
+	// Lime exposed event callbacks, is passed to Input
+	private function onmousemove(_event:Dynamic)
+	{
+		Input.onmouseup(_event);
+	}
+
+	// TODO: add other callbacks
+
+
+
+	private var _scenes:List<Scene>;
 }
