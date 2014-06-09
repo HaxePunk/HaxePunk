@@ -41,6 +41,8 @@ class CubeEntity extends Entity
 			Math.random() * -500);
 
 		cube = Shape.createCube(material);
+		cube.transform.identity();
+		cube.transform.scale(15, 15, 15);
 		// cube.scale = Math.random() * 30 + 30;
 		addGraphic(cube);
 
@@ -49,9 +51,7 @@ class CubeEntity extends Entity
 
 	override public function update()
 	{
-		// cube.rotation.x += rotate.x;
-		// cube.rotation.y += rotate.y;
-		// cube.rotation.z += rotate.z;
+		cube.transform.rotateVector3D(rotate);
 	}
 
 	private var cube:Shape;
@@ -65,7 +65,7 @@ class Main extends Engine
 		var material = new Material();
 		material.addTexture(Texture.create("assets/lime.png"));
 		var numCubes = Std.int(Math.random() * 50 + 150);
-		numCubes = 10000;
+		numCubes = 1000;
 
 		var sprite = new Spritemap("assets/character.png", 32, 32);
 		sprite.add("walk", [0, 1, 2, 3, 4, 5], 12);

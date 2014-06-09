@@ -18,6 +18,8 @@ class Mesh implements Graphic
 	 */
 	public var material:Material;
 
+	public var transform:Matrix3D;
+
 	/**
 	 * Create a new mesh
 	 * @param data An array of data containing the following for each index <vertex x, y, z> <texCoord u, v> <normal x, y, z>
@@ -26,6 +28,7 @@ class Mesh implements Graphic
 	 */
 	public function new(?material:Material)
 	{
+		transform = new Matrix3D();
 		this.material = (material == null ? new Material() : material);
 
 		// check that the buffers aren't already loaded from a super class
@@ -41,7 +44,7 @@ class Mesh implements Graphic
 	public function draw(projectionMatrix:lime.utils.Float32Array, modelViewMatrix:Matrix3D):Void
 	{
 		GL.bindBuffer(GL.ARRAY_BUFFER, _vertexBuffer);
-		material.use(projectionMatrix, modelViewMatrix);
+		material.use(projectionMatrix, transform.clone().multiply(modelViewMatrix));
 
 		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, _indexBuffer);
 		GL.drawElements(GL.TRIANGLES, _indexSize, GL.UNSIGNED_SHORT, 0);

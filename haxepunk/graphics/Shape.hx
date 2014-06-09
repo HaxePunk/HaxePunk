@@ -71,16 +71,7 @@ class Shape extends Mesh
 		return cube;
 	}
 
-	private function new(material:Material)
-	{
-		super(material);
-	}
-
-	override public function draw(projectionMatrix:lime.utils.Float32Array, modelViewMatrix:Matrix3D):Void
-	{
-		super.draw(projectionMatrix, modelViewMatrix);
-	}
-
 	private static var cubeVertexBuffer:GLBuffer;
 	private static var cubeIndexBuffer:GLBuffer;
+
 }
