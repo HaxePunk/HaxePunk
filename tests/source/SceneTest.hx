@@ -1,7 +1,7 @@
 import haxepunk.Engine;
 import haxepunk.scene.Scene;
 
-class TestScene extends haxe.unit.TestCase
+class SceneTest extends haxe.unit.TestCase
 {
 
 	public function testScene()

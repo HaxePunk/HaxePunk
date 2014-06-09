@@ -3,7 +3,7 @@ package haxepunk.math;
 import lime.utils.Vector3D;
 import lime.utils.Float32Array;
 
-class Matrix3D
+class Matrix3D implements ArrayAccess<Float>
 {
 
 	public var _11:Float = 1;
@@ -81,6 +81,16 @@ class Matrix3D
 	private var _rawData:Float32Array;
 	private static var _identityData:Array<Float> = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1];
 
+	public function toArray():Array<Float>
+	{
+		return [
+			_11, _12, _13, _14,
+			_21, _22, _23, _24,
+			_31, _32, _33, _34,
+			_41, _42, _43, _44
+		];
+	}
+
 	public function clone():Matrix3D
 	{
 		var m = new Matrix3D(_rawData);
@@ -141,43 +151,77 @@ class Matrix3D
 		_43 = _43 * z;
 	}
 
+	public inline function rotateVector3D(v:Vector3D):Void
+	{
+		rotateX(v.x);
+		rotateY(v.y);
+		rotateZ(v.z);
+	}
+
 	public function rotateX(angle:Float):Void
 	{
 		var cos = Math.cos(angle);
 		var sin = Math.sin(angle);
-		var tmp = new Matrix3D();
-		tmp.identity();
-		tmp._22 = cos;
-		tmp._23 = sin;
-		tmp._32 = -sin;
-		tmp._33 = cos;
-		multiply(tmp);
+
+		var tmp = _12;
+		_12 = tmp * cos + _13 * -sin;
+		_13 = tmp * sin + _13 * cos;
+
+		tmp = _22;
+		_22 = tmp * cos + _23 * -sin;
+		_23 = tmp * sin + _23 * cos;
+
+		tmp = _32;
+		_32 = tmp * cos + _33 * -sin;
+		_33 = tmp * sin + _33 * cos;
+
+		tmp = _42;
+		_42 = tmp * cos + _43 * -sin;
+		_43 = tmp * sin + _43 * cos;
 	}
 
 	public function rotateY(angle:Float):Void
 	{
 		var cos = Math.cos(angle);
 		var sin = Math.sin(angle);
-		var tmp = new Matrix3D();
-		tmp.identity();
-		tmp._11 = cos;
-		tmp._13 = -sin;
-		tmp._31 = sin;
-		tmp._33 = cos;
-		multiply(tmp);
+
+		var tmp = _11;
+		_11 = tmp * cos + _13 * sin;
+		_13 = tmp * -sin + _13 * cos;
+
+		tmp = _21;
+		_21 = tmp * cos + _23 * sin;
+		_23 = tmp * -sin + _23 * cos;
+
+		tmp = _31;
+		_31 = tmp * cos + _33 * sin;
+		_33 = tmp * -sin + _33 * cos;
+
+		tmp = _41;
+		_41 = tmp * cos + _43 * sin;
+		_43 = tmp * -sin + _43 * cos;
 	}
 
 	public function rotateZ(angle:Float):Void
 	{
 		var cos = Math.cos(angle);
 		var sin = Math.sin(angle);
-		var tmp = new Matrix3D();
-		tmp.identity();
-		tmp._11 = cos;
-		tmp._12 = sin;
-		tmp._21 = -sin;
-		tmp._22 = cos;
-		multiply(tmp);
+
+		var tmp = _11;
+		_11 = tmp * cos + _12 * -sin;
+		_12 = tmp * sin + _12 * cos;
+
+		tmp = _21;
+		_21 = tmp * cos + _22 * -sin;
+		_22 = tmp * sin + _22 * cos;
+
+		tmp = _31;
+		_31 = tmp * cos + _32 * -sin;
+		_32 = tmp * sin + _32 * cos;
+
+		tmp = _41;
+		_41 = tmp * cos + _42 * -sin;
+		_42 = tmp * sin + _42 * cos;
 	}
 
 	public function multiply(m:Matrix3D):Matrix3D
@@ -226,6 +270,54 @@ class Matrix3D
 		m._43 = -(zNear + zFar) * sz;
 
 		return m;
+	}
+
+	private function __get(index:Int):Float
+	{
+		return switch (index)
+		{
+			case 0: _11;
+			case 1: _12;
+			case 2: _13;
+			case 3: _14;
+			case 4: _21;
+			case 5: _22;
+			case 6: _23;
+			case 7: _24;
+			case 8: _31;
+			case 9: _32;
+			case 10: _33;
+			case 11: _34;
+			case 12: _41;
+			case 13: _42;
+			case 14: _43;
+			case 15: _44;
+			default: throw "Invalid index value for Matrix3D (0-15).";
+		}
+	}
+
+	private function __set(index:Int, value:Float):Float
+	{
+		return switch (index)
+		{
+			case 0: _11 = value;
+			case 1: _12 = value;
+			case 2: _13 = value;
+			case 3: _14 = value;
+			case 4: _21 = value;
+			case 5: _22 = value;
+			case 6: _23 = value;
+			case 7: _24 = value;
+			case 8: _31 = value;
+			case 9: _32 = value;
+			case 10: _33 = value;
+			case 11: _34 = value;
+			case 12: _41 = value;
+			case 13: _42 = value;
+			case 14: _43 = value;
+			case 15: _44 = value;
+			default: throw "Invalid index value for Matrix3D (0-15).";
+		}
 	}
 
 }
