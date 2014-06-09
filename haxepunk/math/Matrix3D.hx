@@ -91,6 +91,15 @@ class Matrix3D implements ArrayAccess<Float>
 		];
 	}
 
+	public function toString():String
+	{
+		return "<Matrix3D>\n| " +
+			_11 + ", " + _12 + ", " + _13 + ", " + _14 + " |\n| " +
+			_21 + ", " + _22 + ", " + _23 + ", " + _24 + " |\n| " +
+			_31 + ", " + _32 + ", " + _33 + ", " + _34 + " |\n| " +
+			_41 + ", " + _42 + ", " + _43 + ", " + _44 + " |";
+	}
+
 	public function clone():Matrix3D
 	{
 		var m = new Matrix3D(_rawData);
@@ -252,6 +261,26 @@ class Matrix3D implements ArrayAccess<Float>
 		_44 = a41 * m._14 + a42 * m._24 + a43 * m._34 + a44 * m._44;
 
 		return this;
+	}
+
+	public static inline function createPerspective(fov:Float, aspect:Float, near:Float, far:Float):Matrix3D
+	{
+		var m = new Matrix3D();
+		if (fov <= 0 || aspect == 0)
+		{
+			return m;
+		}
+
+		var frustumDepth = far - near;
+		var oneOverDepth = 1 / frustumDepth;
+
+		m._22 = 1 / Math.tan(0.5 * fov);
+		m._11 = m._22 / aspect;
+		m._33 = far * oneOverDepth;
+		m._43 = (-far * near) * oneOverDepth;
+		m._34 = 1;
+		m._44 = 0;
+		return m;
 	}
 
 	public static inline function createOrtho(x0:Float, x1:Float,  y0:Float, y1:Float, zNear:Float, zFar:Float):Matrix3D
