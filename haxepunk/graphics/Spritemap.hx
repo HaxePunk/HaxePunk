@@ -221,7 +221,7 @@ class Spritemap extends Image
 
 	override public function draw(projectionMatrix:lime.utils.Float32Array, modelViewMatrix:Matrix3D):Void
 	{
-		drawBuffer(projectionMatrix, modelViewMatrix, _buffer, _frame * 4);
+		drawBuffer(projectionMatrix, modelViewMatrix, _buffer, _frame);
 
 		var now = Timer.stamp();
 		if (now - _time > 0.1)

@@ -23,25 +23,67 @@ class Matrix3D
 	public var _43:Float = 0;
 	public var _44:Float = 1;
 
-	public function new()
+	public function new(?data:Float32Array)
 	{
+		if (data == null) data = new Float32Array(_identityData);
+		_rawData = data;
 	}
 
 	public var rawData(get, never):Float32Array;
 	private inline function get_rawData():Float32Array
 	{
-		var data:Array<Float> = [
-			_11, _12, _13, _14,
-			_21, _22, _23, _24,
-			_31, _32, _33, _34,
-			_41, _42, _43, _44
-		];
-		return new Float32Array(data);
+		#if cpp
+		untyped {
+			var bytes = _rawData.bytes;
+			__global__.__hxcpp_memory_set_float(bytes, 0, _11);
+			__global__.__hxcpp_memory_set_float(bytes, 4, _12);
+			__global__.__hxcpp_memory_set_float(bytes, 8, _13);
+			__global__.__hxcpp_memory_set_float(bytes, 12, _14);
+
+			__global__.__hxcpp_memory_set_float(bytes, 16, _21);
+			__global__.__hxcpp_memory_set_float(bytes, 20, _22);
+			__global__.__hxcpp_memory_set_float(bytes, 24, _23);
+			__global__.__hxcpp_memory_set_float(bytes, 28, _24);
+
+			__global__.__hxcpp_memory_set_float(bytes, 32, _31);
+			__global__.__hxcpp_memory_set_float(bytes, 36, _32);
+			__global__.__hxcpp_memory_set_float(bytes, 40, _33);
+			__global__.__hxcpp_memory_set_float(bytes, 44, _34);
+
+			__global__.__hxcpp_memory_set_float(bytes, 48, _41);
+			__global__.__hxcpp_memory_set_float(bytes, 52, _42);
+			__global__.__hxcpp_memory_set_float(bytes, 56, _43);
+			__global__.__hxcpp_memory_set_float(bytes, 60, _44);
+		}
+		#else
+			_rawData[0] = _11;
+			_rawData[1] = _12;
+			_rawData[2] = _13;
+			_rawData[3] = _14;
+
+			_rawData[4] = _21;
+			_rawData[5] = _22;
+			_rawData[6] = _23;
+			_rawData[7] = _24;
+
+			_rawData[8] = _31;
+			_rawData[9] = _32;
+			_rawData[10] = _33;
+			_rawData[11] = _34;
+
+			_rawData[12] = _41;
+			_rawData[13] = _42;
+			_rawData[14] = _43;
+			_rawData[15] = _44;
+		#end
+		return _rawData;
 	}
+	private var _rawData:Float32Array;
+	private static var _identityData:Array<Float> = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1];
 
 	public function clone():Matrix3D
 	{
-		var m = new Matrix3D();
+		var m = new Matrix3D(_rawData);
 		m._11 = _11; m._21 = _21; m._31 = _31; m._41 = _41;
 		m._12 = _12; m._22 = _22; m._32 = _32; m._42 = _42;
 		m._13 = _13; m._23 = _23; m._33 = _33; m._43 = _43;

@@ -117,7 +117,7 @@ class Image implements Graphic
 
 			GL.bindBuffer(GL.ARRAY_BUFFER, buffer);
 			material.use(projectionMatrix, _matrix.clone().multiply(modelViewMatrix));
-			GL.drawArrays(GL.TRIANGLE_STRIP, offset, 4);
+			GL.drawArrays(GL.TRIANGLE_STRIP, offset << 2, 4);
 			material.disable();
 		}
 	}
