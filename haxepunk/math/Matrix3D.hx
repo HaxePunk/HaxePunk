@@ -1,6 +1,5 @@
 package haxepunk.math;
 
-import lime.utils.Vector3D;
 import lime.utils.Float32Array;
 
 class Matrix3D implements ArrayAccess<Float>
@@ -125,6 +124,7 @@ class Matrix3D implements ArrayAccess<Float>
 
 	public function translate(x:Float, y:Float, z:Float):Void
 	{
+		// not using += because it compiles better in c++
 		_11 = _11 + x * _14;
 		_12 = _12 + y * _14;
 		_13 = _13 + z * _14;
@@ -146,6 +146,7 @@ class Matrix3D implements ArrayAccess<Float>
 
 	public function scale(x:Float, y:Float, z:Float):Void
 	{
+		// not using *= because it compiles better in c++
 		_11 = _11 * x;
 		_21 = _21 * x;
 		_31 = _31 * x;

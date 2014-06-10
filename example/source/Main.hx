@@ -4,7 +4,7 @@ import haxepunk.scene.Entity;
 import haxepunk.graphics.*;
 import haxepunk.graphics.Shape;
 import haxepunk.graphics.importer.Wavefront;
-import lime.utils.Vector3D;
+import haxepunk.math.Vector3D;
 
 class ImageTexture extends Entity
 {

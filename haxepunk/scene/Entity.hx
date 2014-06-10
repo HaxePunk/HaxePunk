@@ -1,7 +1,7 @@
 package haxepunk.scene;
 
 import haxepunk.math.Matrix3D;
-import lime.utils.Vector3D;
+import haxepunk.math.Vector3D;
 import haxepunk.graphics.Graphic;
 
 class Entity
