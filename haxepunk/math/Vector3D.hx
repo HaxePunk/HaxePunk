@@ -39,7 +39,7 @@ abstract Vector3D (lime.utils.Vector3D)
 		return new Vector3D(a.x * b, a.y * b, a.z * b, a.w * b);
 	}
 
-	@:commutative @:op(A / B) public static inline function divideByScalar(a:Vector3D, b:Float):Vector3D
+	@:op(A / B) public static inline function divideByScalar(a:Vector3D, b:Float):Vector3D
 	{
 		return new Vector3D(a.x / b, a.y / b, a.z / b, a.w / b);
 	}
@@ -61,7 +61,7 @@ abstract Vector3D (lime.utils.Vector3D)
 
 	@:op(A != B) public static inline function notEquals(a:Vector3D, b:Vector3D):Bool
 	{
-		return a.x != b.x && a.y != b.y && a.z != b.z && a.w != b.w;
+		return !equals(a, b);
 	}
 
 	@:op(-A) public static inline function negate(a:Vector3D):Vector3D

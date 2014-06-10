@@ -1,8 +1,16 @@
+package haxepunk.scene;
+
 import haxepunk.Engine;
-import haxepunk.scene.Scene;
 
 class SceneTest extends haxe.unit.TestCase
 {
+
+	public function testInitialScene()
+	{
+		var scene = new Scene();
+		var e = new Engine(scene);
+		assertEquals(scene, e.scene);
+	}
 
 	public function testScene()
 	{

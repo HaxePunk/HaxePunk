@@ -1,6 +1,6 @@
-import haxepunk.math.Matrix3D;
+package haxepunk.math;
 
-class MatrixTest extends haxe.unit.TestCase
+class Matrix3DTest extends haxe.unit.TestCase
 {
 
 	public function testCreate()
