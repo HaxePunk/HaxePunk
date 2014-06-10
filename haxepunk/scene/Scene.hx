@@ -34,7 +34,7 @@ class Scene
 	public function draw()
 	{
 		camera.setup();
-		var matrix = camera.matrix.rawData;
+		var matrix = camera.transform.float32Array;
 		for (entity in entities)
 		{
 			entity.draw(matrix);

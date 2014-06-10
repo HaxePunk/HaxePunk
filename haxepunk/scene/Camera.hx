@@ -10,7 +10,7 @@ import haxepunk.math.Matrix3D;
 class Camera
 {
 
-	public var matrix:Matrix3D;
+	public var transform:Matrix3D;
 	public var position:Vector3D;
 
 	public function new()
@@ -33,12 +33,12 @@ class Camera
 
 	public function make2D()
 	{
-		matrix = Matrix3D.createOrtho(0, HXP.windowWidth, HXP.windowHeight, 0, 500, -500);
+		transform = Matrix3D.createOrtho(0, HXP.windowWidth, HXP.windowHeight, 0, 500, -500);
 	}
 
 	public function make3D()
 	{
-		matrix = Matrix3D.createOrtho(-5, 5, -5, 5, 500, -500);
+		transform = Matrix3D.createOrtho(-5, 5, -5, 5, 500, -500);
 	}
 
 	public function setup()

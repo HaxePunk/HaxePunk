@@ -25,15 +25,15 @@ class Matrix3D implements ArrayAccess<Float>
 	public function new(?data:Float32Array)
 	{
 		if (data == null) data = new Float32Array(_identityData);
-		_rawData = data;
+		_float32Array = data;
 	}
 
-	public var rawData(get, never):Float32Array;
-	private inline function get_rawData():Float32Array
+	public var float32Array(get, never):Float32Array;
+	private inline function get_float32Array():Float32Array
 	{
 		#if cpp
 		untyped {
-			var bytes = _rawData.bytes;
+			var bytes = _float32Array.bytes;
 			__global__.__hxcpp_memory_set_float(bytes, 0, _11);
 			__global__.__hxcpp_memory_set_float(bytes, 4, _12);
 			__global__.__hxcpp_memory_set_float(bytes, 8, _13);
@@ -55,29 +55,29 @@ class Matrix3D implements ArrayAccess<Float>
 			__global__.__hxcpp_memory_set_float(bytes, 60, _44);
 		}
 		#else
-			_rawData[0] = _11;
-			_rawData[1] = _12;
-			_rawData[2] = _13;
-			_rawData[3] = _14;
+			_float32Array[0] = _11;
+			_float32Array[1] = _12;
+			_float32Array[2] = _13;
+			_float32Array[3] = _14;
 
-			_rawData[4] = _21;
-			_rawData[5] = _22;
-			_rawData[6] = _23;
-			_rawData[7] = _24;
+			_float32Array[4] = _21;
+			_float32Array[5] = _22;
+			_float32Array[6] = _23;
+			_float32Array[7] = _24;
 
-			_rawData[8] = _31;
-			_rawData[9] = _32;
-			_rawData[10] = _33;
-			_rawData[11] = _34;
+			_float32Array[8] = _31;
+			_float32Array[9] = _32;
+			_float32Array[10] = _33;
+			_float32Array[11] = _34;
 
-			_rawData[12] = _41;
-			_rawData[13] = _42;
-			_rawData[14] = _43;
-			_rawData[15] = _44;
+			_float32Array[12] = _41;
+			_float32Array[13] = _42;
+			_float32Array[14] = _43;
+			_float32Array[15] = _44;
 		#end
-		return _rawData;
+		return _float32Array;
 	}
-	private var _rawData:Float32Array;
+	private var _float32Array:Float32Array;
 	private static var _identityData:Array<Float> = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1];
 
 	public function toArray():Array<Float>
@@ -101,7 +101,7 @@ class Matrix3D implements ArrayAccess<Float>
 
 	public function clone():Matrix3D
 	{
-		var m = new Matrix3D(_rawData);
+		var m = new Matrix3D(_float32Array);
 		m._11 = _11; m._21 = _21; m._31 = _31; m._41 = _41;
 		m._12 = _12; m._22 = _22; m._32 = _32; m._42 = _42;
 		m._13 = _13; m._23 = _23; m._33 = _33; m._43 = _43;
