@@ -175,9 +175,6 @@ class Input
 	public static function onkeydown(_event:Dynamic)
 	{
 		var code:Int = _event.value;
-		
-		if (code==Key.CAPS_LOCK)
-			capsLock != capsLock;
 
 		lastKey = code;
 
@@ -187,7 +184,7 @@ class Input
 			if (keyString.length > kKeyStringMax) keyString = keyString.substr(1);
 			var char:String = String.fromCharCode(code);
 
-		// TODO: Caps lock
+	// TODO: Caps lock
 			//if (e.shiftKey != #if flash  #else check(Key.CAPS_LOCK) #end)
 			//	char = char.toUpperCase();
 			//else char = char.toLowerCase();
