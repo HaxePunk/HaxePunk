@@ -119,6 +119,16 @@ class Engine
 		Input.onmouseup(_event);
 	}
 
+	private function onkeydown(_event:Dynamic)
+	{
+		Input.onkeydown(_event);
+	}
+
+	private function onkeyup(_event:Dynamic)
+	{
+		Input.onkeyup(_event);
+	}
+
 	// TODO: add other callbacks
 
 
