@@ -1,10 +1,9 @@
 package haxepunk.input;
 
-import lime.InputHandler;
 import haxepunk.HXP;
 
+import lime.InputHandler;
 import lime.InputHandler.MouseButton;
-import lime.helpers.Keys;
 
 class Input
 {
