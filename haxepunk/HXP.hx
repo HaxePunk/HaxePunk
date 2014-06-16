@@ -1,11 +1,10 @@
 package haxepunk;
 
-import lime.Lime;
+import lime.ui.Window;
+import haxepunk.input.Input;
 
 class HXP
 {
-	public static var windowWidth:Int = 0;
-	public static var windowHeight:Int = 0;
-
-	public static var lime:Lime;
+	public static var window:Window;
+	public static var input:Input;
 }

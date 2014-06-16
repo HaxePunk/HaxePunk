@@ -23,8 +23,8 @@ class ImageTexture extends Entity
 
 	override public function update()
 	{
-		x = HXP.windowWidth / 2;
-		y = HXP.windowHeight / 2;
+		x = HXP.window.width / 2;
+		y = HXP.window.height / 2;
 		image.angle += 1;
 		super.update();
 	}
@@ -36,8 +36,8 @@ class CubeEntity extends Entity
 {
 	public function new(material:Material)
 	{
-		super(Math.random() * HXP.windowWidth,
-			Math.random() * HXP.windowHeight,
+		super(Math.random() * HXP.window.width,
+			Math.random() * HXP.window.height,
 			Math.random() * -500);
 
 		cube = Shape.createCube(material);
@@ -77,8 +77,8 @@ class Main extends Engine
 
 			// scene.addGraphic(sprite,
 			// 	Std.int(Math.random() * -50),
-			// 	Math.random() * HXP.windowWidth,
-			// 	Math.random() * HXP.windowHeight);
+			// 	Math.random() * HXP.window.width,
+			// 	Math.random() * HXP.window.height);
 		}
 	}
 }

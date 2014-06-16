@@ -1,9 +1,9 @@
 package haxepunk.graphics;
 
 import haxepunk.graphics.Mesh;
-import lime.gl.GLBuffer;
+import lime.graphics.opengl.GLBuffer;
 import haxepunk.math.Matrix3D;
-import lime.utils.Vector3D;
+import haxepunk.math.Vector3D;
 
 class Shape extends Mesh
 {

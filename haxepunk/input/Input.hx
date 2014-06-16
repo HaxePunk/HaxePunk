@@ -1,106 +1,99 @@
 package haxepunk.input;
 
-import lime.InputHandler;
 import haxepunk.HXP;
+import lime.ui.*;
 
-import lime.InputHandler.MouseButton;
-
-class Input
+class Input implements IMouseEventListener// implements IKeyEventListener implements ITouchEventListener
 {
 
 	/**
 	 * If the left button mouse is held down
 	 */
-	public static var mouseDown:Bool;
+	public var mouseDown:Bool;
 	/**
 	 * If the left button mouse is up
 	 */
-	public static var mouseUp:Bool;
+	public var mouseUp:Bool;
 	/**
 	 * If the left button mouse was recently pressed
 	 */
-	public static var mousePressed:Bool;
+	public var mousePressed:Bool;
 	/**
 	 * If the left button mouse was recently released
 	 */
-	public static var mouseReleased:Bool;
+	public var mouseReleased:Bool;
 
 	/**
 	 * If the right button mouse is held down
 	 */
-	public static var rightMouseDown:Bool;
+	public var rightMouseDown:Bool;
 	/**
 	 * If the right button mouse is up
 	 */
-	public static var rightMouseUp:Bool;
+	public var rightMouseUp:Bool;
 	/**
 	 * If the right button mouse was recently pressed
 	 */
-	public static var rightMousePressed:Bool;
+	public var rightMousePressed:Bool;
 	/**
 	 * If the right button mouse was recently released
 	 */
-	public static var rightMouseReleased:Bool;
+	public var rightMouseReleased:Bool;
 
 	/**
 	 * If the middle button mouse is held down
 	 */
-	public static var middleMouseDown:Bool;
+	public var middleMouseDown:Bool;
 	/**
 	 * If the middle button mouse is up
 	 */
-	public static var middleMouseUp:Bool;
+	public var middleMouseUp:Bool;
 	/**
 	 * If the middle button mouse was recently pressed
 	 */
-	public static var middleMousePressed:Bool;
+	public var middleMousePressed:Bool;
 	/**
 	 * If the middle button mouse was recently released
 	 */
-	public static var middleMouseReleased:Bool;
+	public var middleMouseReleased:Bool;
 
 	/**
 	 * X position of the mouse on the screen.
 	 */
-	public static var mouseX(get, never):Int;
-	private static function get_mouseX():Int
-	{
-		return input.last_mouse_x;
-	}
+	public var mouseX(default, null):Float;
 
 	/**
 	 * Y position of the mouse on the screen.
 	 */
-	public static var mouseY(get, never):Int;
-	private static function get_mouseY():Int
-	{
-		return input.last_mouse_y;
-	}
+	public var mouseY(default, null):Float;
 
 
 	/**
 	 * Lime onmousemove event
 	 */
-	public static function onmousemove(_event:Dynamic)
+	public function onMouseMove(event:MouseEvent)
 	{
-
+		mouseX = event.x;
+		mouseY = event.y;
 	}
 
 	/**
 	 * Lime onmousedown event
 	 */
-	public static function onmousedown(_event:Dynamic)
+	public function onMouseDown(event:MouseEvent)
 	{
-		switch (_event.button) {
-			case MouseButton.left:
+		mouseX = event.x;
+		mouseY = event.y;
+		switch (event.id) {
+			case 0:
 				mousePressed = true;
 				mouseDown = true;
 				mouseUp = false;
-			case MouseButton.right:
+			case 2:
 				rightMouseDown = true;
 				rightMouseUp = false;
 				rightMousePressed = true;
-			case MouseButton.middle:
+			case 1:
 				middleMouseDown = true;
 				middleMouseUp = false;
 				middleMousePressed = true;
@@ -110,18 +103,20 @@ class Input
 	/**
 	 * Lime onmouseup event
 	 */
-	public static function onmouseup(_event:Dynamic)
+	public function onMouseUp(event:MouseEvent)
 	{
-		switch (_event.button) {
-			case MouseButton.left:
+		mouseX = event.x;
+		mouseY = event.y;
+		switch (event.id) {
+			case 0:
 				mouseReleased = true;
 				mouseDown = false;
 				mouseUp = true;
-			case MouseButton.right:
+			case 2:
 				rightMouseDown = false;
 				rightMouseUp = true;
 				rightMouseReleased = true;
-			case MouseButton.middle:
+			case 1:
 				middleMouseDown = false;
 				middleMouseUp = true;
 				middleMouseReleased = true;
@@ -131,37 +126,30 @@ class Input
 	/**
 	 * Enables input handling
 	 */
-	public static function init()
+	public function new()
 	{
-		if (HXP.lime != null && HXP.lime.input != null)
-		{
-			input = HXP.lime.input;
-		
-			mouseDown 			= false;
-			mouseUp 			= false;
-			mousePressed 		= false;
-			mouseReleased 		= false;
-			rightMouseDown 		= false;
-			rightMouseUp 		= false;
-			rightMousePressed 	= false;
-			rightMouseReleased 	= false;
-			middleMouseDown 	= false;
-			middleMouseUp 		= false;
-			middleMousePressed 	= false;
-			middleMouseReleased = false;
-		}
-	#if debug
-		else
-		{
-			trace ("HXP.lime or HXP.lime.input are not yet specified.");
-		}
-	#end
+		MouseEventManager.addEventListener(this);
+		// KeyEventManager.addEventListener(this);
+		// TouchEventManager.addEventListener(this);
+
+		mouseDown 			= false;
+		mouseUp 			= false;
+		mousePressed 		= false;
+		mouseReleased 		= false;
+		rightMouseDown 		= false;
+		rightMouseUp 		= false;
+		rightMousePressed 	= false;
+		rightMouseReleased 	= false;
+		middleMouseDown 	= false;
+		middleMouseUp 		= false;
+		middleMousePressed 	= false;
+		middleMouseReleased = false;
 	}
 
 	/**
 	 * Updates the input states
 	 */
-	public static function update()
+	public function update()
 	{
 		if (mousePressed) mousePressed = false;
 		if (mouseReleased) mouseReleased = false;
@@ -173,6 +161,4 @@ class Input
 		if (rightMouseReleased) rightMouseReleased = false;
 	}
 
-	// Lime input handler
-	private static var input:InputHandler;
 }

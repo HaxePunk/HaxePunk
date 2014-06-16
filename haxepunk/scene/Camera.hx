@@ -1,10 +1,10 @@
 package haxepunk.scene;
 
 import haxepunk.HXP;
-import lime.gl.GL;
-import lime.gl.GLFramebuffer;
-import lime.gl.GLRenderbuffer;
-import lime.utils.Vector3D;
+import lime.graphics.opengl.GL;
+import lime.graphics.opengl.GLFramebuffer;
+import lime.graphics.opengl.GLRenderbuffer;
+import haxepunk.math.Vector3D;
 import haxepunk.math.Matrix3D;
 
 class Camera
@@ -33,7 +33,7 @@ class Camera
 
 	public function make2D()
 	{
-		transform = Matrix3D.createOrtho(0, HXP.windowWidth, HXP.windowHeight, 0, 500, -500);
+		transform = Matrix3D.createOrtho(0, HXP.window.width, HXP.window.height, 0, 500, -500);
 	}
 
 	public function make3D()
@@ -47,7 +47,7 @@ class Camera
 		// GL.bindFramebuffer(GL.FRAMEBUFFER, null);
 		// GL.bindRenderbuffer(GL.RENDERBUFFER, null);
 #if !neko
-		GL.viewport(0, 0, HXP.windowWidth, HXP.windowHeight);
+		GL.viewport(0, 0, HXP.window.width, HXP.window.height);
 #end
 		GL.disable(GL.DEPTH_TEST);
 		GL.depthFunc(GL.EQUAL);

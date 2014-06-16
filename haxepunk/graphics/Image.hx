@@ -1,9 +1,9 @@
 package haxepunk.graphics;
 
-import lime.gl.GL;
-import lime.gl.GLBuffer;
+import lime.graphics.opengl.GL;
+import lime.graphics.opengl.GLBuffer;
 import lime.utils.Float32Array;
-import lime.utils.Vector3D;
+import haxepunk.math.Vector3D;
 import haxepunk.math.Matrix3D;
 
 class Image implements Graphic

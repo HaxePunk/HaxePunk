@@ -1,7 +1,7 @@
 package haxepunk.graphics.importer;
 
 import haxe.ds.StringMap;
-import lime.utils.Assets;
+import lime.Assets;
 import haxepunk.graphics.Mesh;
 
 using StringTools;

@@ -1,7 +1,7 @@
 package haxepunk.graphics;
 
-import lime.gl.GL;
-import lime.gl.GLBuffer;
+import lime.graphics.opengl.GL;
+import lime.graphics.opengl.GLBuffer;
 #if lime_html5
 import js.html.Int16Array;
 #else

@@ -1,11 +1,27 @@
 package haxepunk.math;
 
-abstract Vector3D (lime.utils.Vector3D)
+class Point3D
+{
+	public var x:Float;
+	public var y:Float;
+	public var z:Float;
+	public var w:Float;
+
+	public function new(x:Float, y:Float, z:Float, w:Float)
+	{
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.w = w;
+	}
+}
+
+abstract Vector3D (Point3D)
 {
 
 	public function new(x:Float=0, y:Float=0, z:Float=0, w:Float=0)
 	{
-		this = new lime.utils.Vector3D(x, y, z, w);
+		this = new Point3D(x, y, z, w);
 	}
 
 	public var x(get, set):Float;

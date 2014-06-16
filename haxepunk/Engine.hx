@@ -1,10 +1,16 @@
 package haxepunk;
 
-import lime.Lime;
 import haxepunk.math.Matrix3D;
 import haxepunk.scene.Scene;
 import haxepunk.graphics.Material;
-import haxepunk.input.Input;
+// import haxepunk.input.Input;
+import lime.app.Application;
+import lime.app.Config;
+import lime.graphics.RenderContext;
+import lime.graphics.Renderer;
+import lime.ui.WindowEvent;
+import lime.ui.MouseEvent;
+import lime.ui.Window;
 
 #if cpp
 import cpp.vm.Thread;
@@ -12,7 +18,7 @@ import cpp.vm.Thread;
 import neko.vm.Thread;
 #end
 
-class Engine
+class Engine extends Application
 {
 
 	public var scene(get, never):Scene;
@@ -20,17 +26,17 @@ class Engine
 
 	public function new(?scene:Scene)
 	{
+		super();
 		_scenes = new List<Scene>();
 		pushScene(scene == null ? new Scene() : scene);
 	}
 
-	public function ready(lime:Lime):Void
+	override public function create(config:Config):Void
 	{
-		HXP.lime = lime;
-		HXP.windowWidth = lime.config.width;
-		HXP.windowHeight = lime.config.height;
+		super.create(config);
 
-		Input.init();
+		HXP.window = windows[0];
+		// HXP.input = new Input();
 
 		init();
 	}
@@ -43,14 +49,14 @@ class Engine
 		throw "Override the init function to begin";
 	}
 
-	private function render():Void
+	override public function render(context:RenderContext):Void
 	{
 		scene.draw();
 
 		Material.clear(); // clear any material
 	}
 
-	private function update():Void
+	override public function update(deltaTime:Int):Void
 	{
 #if (neko || cpp)
 		var msg = Thread.readMessage(false);
@@ -65,8 +71,7 @@ class Engine
 #end
 
 		scene.update();
-
-		Input.update();
+		// HXP.input.update();
 	}
 
 	/**
@@ -99,29 +104,6 @@ class Engine
 	{
 		_scenes.push(scene);
 	}
-
-
-	// Lime exposed event callbacks, is passed to Input
-	private function onmousedown(_event:Dynamic)
-	{
-		Input.onmousedown(_event);
-	}
-
-	// Lime exposed event callbacks, is passed to Input
-	private function onmouseup(_event:Dynamic)
-	{
-		Input.onmouseup(_event);
-	}
-
-	// Lime exposed event callbacks, is passed to Input
-	private function onmousemove(_event:Dynamic)
-	{
-		Input.onmouseup(_event);
-	}
-
-	// TODO: add other callbacks
-
-
 
 	private var _scenes:List<Scene>;
 }

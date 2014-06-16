@@ -3,11 +3,11 @@ package haxepunk.graphics;
 import haxe.ds.StringMap;
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
-import lime.gl.GL;
-import lime.gl.GLTexture;
-import lime.utils.Assets;
+import lime.graphics.opengl.GL;
+import lime.graphics.opengl.GLTexture;
 import lime.utils.UInt8Array;
 import lime.utils.ByteArray;
+import lime.Assets;
 
 #if cpp
 import cpp.vm.Thread;
