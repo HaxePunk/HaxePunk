@@ -75,7 +75,7 @@ class Input
 	public static var mouseX(get, never):Int;
 	private static function get_mouseX():Int
 	{
-		return input.last_mouse_x;
+		return _input.last_mouse_x;
 	}
 
 	/**
@@ -84,7 +84,7 @@ class Input
 	public static var mouseY(get, never):Int;
 	private static function get_mouseY():Int
 	{
-		return input.last_mouse_y;
+		return _input.last_mouse_y;
 	}
 
 	/**
@@ -177,17 +177,20 @@ class Input
 
 		lastKey = code;
 
+		if (code == Key.CAPS_LOCK)
+		{
+			_capsLockDown =  !_capsLockDown;
+		}
+
 		if (code == Key.BACKSPACE) keyString = keyString.substr(0, keyString.length - 1);
 		else if ((code > 47 && code < 58) || (code > 64 && code < 91) || code == 32)
 		{
 			if (keyString.length > kKeyStringMax) keyString = keyString.substr(1);
 			var char:String = String.fromCharCode(code);
 
-	// TODO: Caps lock
-			//if (e.shiftKey != #if flash  #else check(Key.CAPS_LOCK) #end)
-			//	char = char.toUpperCase();
-			//else char = char.toLowerCase();
-
+			if (_event.shift_down != _capsLockDown)
+				char = char.toUpperCase();
+			else char = char.toLowerCase();
 
 			keyString += char;
 		}
@@ -268,7 +271,7 @@ class Input
 	{
 		if (HXP.lime != null && HXP.lime.input != null)
 		{
-			input = HXP.lime.input;
+			_input = HXP.lime.input;
 		
 			mouseDown 			= false;
 			mouseUp 			= false;
@@ -312,7 +315,7 @@ class Input
 	}
 
 	// Lime input handler
-	private static var input:InputHandler;
+	private static var _input:InputHandler;
 
 	private static inline var kKeyStringMax = 100;
 
@@ -329,5 +332,5 @@ class Input
 	private static var _control:Map<String,Array<Int>> = new Map<String,Array<Int>>();
 //	private static var _nativeCorrection:Map<String, Int> = new Map<String, Int>();
 
-	public static var capsLock:Bool = false;
+	private static var _capsLockDown:Bool = false;
 }
