@@ -119,6 +119,18 @@ class Engine
 		Input.onmouseup(_event);
 	}
 
+	// Lime exposed event callbacks, is passed to Input
+	private function onkeydown(_event:Dynamic)
+	{
+		Input.onkeydown(_event);
+	}
+
+	// Lime exposed event callbacks, is passed to Input
+	private function onkeyup(_event:Dynamic)
+	{
+		Input.onkeyup(_event);
+	}
+
 	// TODO: add other callbacks
 
 
