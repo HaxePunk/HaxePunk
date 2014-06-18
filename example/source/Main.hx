@@ -73,12 +73,12 @@ class Main extends Engine
 
 		for (i in 0...numCubes)
 		{
-			scene.add(new CubeEntity(material));
+			// scene.add(new CubeEntity(material));
 
-			// scene.addGraphic(sprite,
-			// 	Std.int(Math.random() * -50),
-			// 	Math.random() * HXP.window.width,
-			// 	Math.random() * HXP.window.height);
+			scene.addGraphic(sprite,
+				Std.int(Math.random() * -50),
+				Math.random() * HXP.window.width,
+				Math.random() * HXP.window.height);
 		}
 	}
 }

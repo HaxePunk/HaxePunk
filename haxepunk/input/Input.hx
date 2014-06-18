@@ -71,20 +71,20 @@ class Input implements IMouseEventListener// implements IKeyEventListener implem
 	/**
 	 * Lime onmousemove event
 	 */
-	public function onMouseMove(event:MouseEvent)
+	public function onMouseMove(x:Float, y:Float, button:Int)
 	{
-		mouseX = event.x;
-		mouseY = event.y;
+		mouseX = x;
+		mouseY = y;
 	}
 
 	/**
 	 * Lime onmousedown event
 	 */
-	public function onMouseDown(event:MouseEvent)
+	public function onMouseDown(x:Float, y:Float, button:Int)
 	{
-		mouseX = event.x;
-		mouseY = event.y;
-		switch (event.id) {
+		mouseX = x;
+		mouseY = y;
+		switch (button) {
 			case 0:
 				mousePressed = true;
 				mouseDown = true;
@@ -103,11 +103,11 @@ class Input implements IMouseEventListener// implements IKeyEventListener implem
 	/**
 	 * Lime onmouseup event
 	 */
-	public function onMouseUp(event:MouseEvent)
+	public function onMouseUp(x:Float, y:Float, button:Int)
 	{
-		mouseX = event.x;
-		mouseY = event.y;
-		switch (event.id) {
+		mouseX = x;
+		mouseY = y;
+		switch (button) {
 			case 0:
 				mouseReleased = true;
 				mouseDown = false;

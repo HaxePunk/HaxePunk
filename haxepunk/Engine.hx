@@ -8,8 +8,6 @@ import lime.app.Application;
 import lime.app.Config;
 import lime.graphics.RenderContext;
 import lime.graphics.Renderer;
-import lime.ui.WindowEvent;
-import lime.ui.MouseEvent;
 import lime.ui.Window;
 
 #if cpp
