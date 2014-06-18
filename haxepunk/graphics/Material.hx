@@ -14,17 +14,7 @@ class Material
 		_textures = new Array<Texture>();
 
 		// set a default shader if none is given
-		if (_shader == null)
-		{
-			_shader = new Shader([
-				{src: Assets.getText("shaders/default.vert"), fragment:false},
-				{src: Assets.getText("shaders/default.frag"), fragment:true}
-			]);
-		}
-		else
-		{
-			_shader = shader;
-		}
+		_shader = (shader == null) ? _defaultShader : shader;
 
 		_vertexAttribute = _shader.attribute("aVertexPosition");
 		_texCoordAttribute = _shader.attribute("aTexCoord");
@@ -86,6 +76,57 @@ class Material
 
 	private var _textures:Array<Texture>;
 	private var _shader:Shader;
+
+	private static var _defaultVertexShader:String = "
+#ifdef GL_ES
+	precision mediump float;
+#endif
+
+attribute vec3 aVertexPosition;
+attribute vec2 aTexCoord;
+attribute vec3 aNormal;
+
+varying vec2 vTexCoord;
+varying vec3 vNormal;
+varying vec4 vPosition;
+
+uniform mat4 uModelViewMatrix;
+uniform mat4 uProjectionMatrix;
+
+void main(void)
+{
+	vPosition = uModelViewMatrix * vec4(aVertexPosition, 1.0);
+	vNormal = normalize(aNormal);
+	vTexCoord = aTexCoord;
+	gl_Position = uProjectionMatrix * vPosition;
+}";
+	private static var _defaultFragmentShader:String = "
+#ifdef GL_ES
+	precision mediump float;
+#endif
+
+varying vec2 vTexCoord;
+varying vec3 vNormal;
+varying vec4 vPosition;
+
+uniform sampler2D uImage0;
+
+void main(void)
+{
+	gl_FragColor = texture2D(uImage0, vTexCoord);
+}
+";
+	private static var _defaultShader(get, null):Shader;
+	private static inline function get__defaultShader():Shader {
+		if (_defaultShader == null)
+		{
+			_defaultShader = new Shader([
+				{src: _defaultVertexShader, fragment:false},
+				{src: _defaultFragmentShader, fragment:true}
+			]);
+		}
+		return _defaultShader;
+	}
 
 	private var _modelViewMatrixUniform:GLUniformLocation;
 	private var _projectionMatrixUniform:GLUniformLocation;
