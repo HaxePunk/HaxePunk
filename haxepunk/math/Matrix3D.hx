@@ -24,8 +24,7 @@ class Matrix3D implements ArrayAccess<Float>
 
 	public function new(?data:Float32Array)
 	{
-		if (data == null) data = new Float32Array(_identityData);
-		_float32Array = data;
+		_float32Array = (data == null ? new Float32Array(_identityData) : data);
 	}
 
 	public var float32Array(get, never):Float32Array;

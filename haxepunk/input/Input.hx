@@ -3,7 +3,7 @@ package haxepunk.input;
 import haxepunk.HXP;
 import lime.ui.*;
 
-class Input implements IMouseEventListener// implements IKeyEventListener implements ITouchEventListener
+class Input
 {
 
 	/**
@@ -128,9 +128,9 @@ class Input implements IMouseEventListener// implements IKeyEventListener implem
 	 */
 	public function new()
 	{
-		MouseEventManager.addEventListener(this);
-		// KeyEventManager.addEventListener(this);
-		// TouchEventManager.addEventListener(this);
+		// MouseEventManager.onMouseMove.add(onMouseMove);
+		// MouseEventManager.onMouseUp.add(onMouseUp);
+		// MouseEventManager.onMouseDown.add(onMouseDown);
 
 		mouseDown 			= false;
 		mouseUp 			= false;

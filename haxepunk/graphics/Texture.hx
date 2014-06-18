@@ -131,8 +131,10 @@ class Texture
 		};
 		image.src = path;
 #else
+	#if HXP_BACKGROUND_LOAD
 		var t = Thread.create(function() {
 			var current = Thread.readMessage(true);
+	#end
 
 			var bytes = Assets.getBytes(path);
 			if (bytes == null) return;
@@ -153,6 +155,7 @@ class Texture
 				dataArray[i*4] = dataArray[i*4+2]; // r
 				dataArray[i*4+2] = b; // b
 			}
+	#if HXP_BACKGROUND_LOAD
 			current.sendMessage({
 				type: "loadTexture",
 				texture: this,
@@ -162,6 +165,9 @@ class Texture
 			});
 		});
 		t.sendMessage(Thread.current());
+	#else
+		createTexture(width, height, dataArray);
+	#end
 #end
 	}
 
