@@ -155,6 +155,7 @@ class Texture
 				dataArray[i*4] = dataArray[i*4+2]; // r
 				dataArray[i*4+2] = b; // b
 			}
+
 	#if HXP_BACKGROUND_LOAD
 			current.sendMessage({
 				type: "loadTexture",
@@ -166,7 +167,7 @@ class Texture
 		});
 		t.sendMessage(Thread.current());
 	#else
-		createTexture(width, height, dataArray);
+		createTexture(header.width, header.height, dataArray);
 	#end
 #end
 	}

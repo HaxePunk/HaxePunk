@@ -56,7 +56,7 @@ class Engine extends Application
 
 	override public function update(deltaTime:Int):Void
 	{
-#if (neko || cpp)
+#if ((neko || cpp) && HXP_BACKGROUND_LOAD)
 		var msg = Thread.readMessage(false);
 		if (msg != null)
 		{

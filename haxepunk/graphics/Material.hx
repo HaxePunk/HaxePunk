@@ -14,7 +14,7 @@ class Material
 		_textures = new Array<Texture>();
 
 		// set a default shader if none is given
-		_shader = (shader == null) ? _defaultShader : shader;
+		_shader = (shader == null ? _defaultShader : shader);
 
 		_vertexAttribute = _shader.attribute("aVertexPosition");
 		_texCoordAttribute = _shader.attribute("aTexCoord");
@@ -114,8 +114,7 @@ uniform sampler2D uImage0;
 void main(void)
 {
 	gl_FragColor = texture2D(uImage0, vTexCoord);
-}
-";
+}";
 	private static var _defaultShader(get, null):Shader;
 	private static inline function get__defaultShader():Shader {
 		if (_defaultShader == null)
