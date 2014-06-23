@@ -1,7 +1,7 @@
 package haxepunk.graphics;
 
-import lime.graphics.opengl.GL;
-import lime.graphics.opengl.GLBuffer;
+import lime.graphics.GL;
+import lime.graphics.GLBuffer;
 import lime.utils.Float32Array;
 import haxepunk.math.Matrix3D;
 import haxepunk.math.Vector3D;
@@ -95,11 +95,12 @@ class Spritemap extends Image
 
 	public function new(path:String, width:Int, height:Int)
 	{
-		super(path);
 		_spriteWidth = width;
 		_spriteHeight = height;
 		_time = Timer.stamp();
 		_anims = new StringMap<Animation>();
+
+		super(path);
 	}
 
 	/**

@@ -1,7 +1,7 @@
 package haxepunk.graphics;
 
-import lime.graphics.opengl.GL;
-import lime.graphics.opengl.GLUniformLocation;
+import lime.graphics.GL;
+import lime.graphics.GLUniformLocation;
 import lime.Assets;
 import lime.utils.Float32Array;
 import haxepunk.math.Matrix3D;

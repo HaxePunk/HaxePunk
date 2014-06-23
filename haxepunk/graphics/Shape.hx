@@ -1,7 +1,7 @@
 package haxepunk.graphics;
 
 import haxepunk.graphics.Mesh;
-import lime.graphics.opengl.GLBuffer;
+import lime.graphics.GLBuffer;
 import haxepunk.math.Matrix3D;
 import haxepunk.math.Vector3D;
 

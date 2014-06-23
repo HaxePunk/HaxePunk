@@ -1,9 +1,9 @@
 package haxepunk.scene;
 
 import haxepunk.HXP;
-import lime.graphics.opengl.GL;
-import lime.graphics.opengl.GLFramebuffer;
-import lime.graphics.opengl.GLRenderbuffer;
+import lime.graphics.GL;
+import lime.graphics.GLFramebuffer;
+import lime.graphics.GLRenderbuffer;
 import haxepunk.math.Vector3D;
 import haxepunk.math.Matrix3D;
 

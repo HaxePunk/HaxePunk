@@ -1,9 +1,9 @@
 package haxepunk.graphics;
 
-import lime.graphics.opengl.GL;
-import lime.graphics.opengl.GLShader;
-import lime.graphics.opengl.GLProgram;
-import lime.graphics.opengl.GLUniformLocation;
+import lime.graphics.GL;
+import lime.graphics.GLShader;
+import lime.graphics.GLProgram;
+import lime.graphics.GLUniformLocation;
 
 typedef ShaderSource = {
 	var src:String;

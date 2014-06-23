@@ -3,8 +3,8 @@ package haxepunk.graphics;
 import haxe.ds.StringMap;
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
-import lime.graphics.opengl.GL;
-import lime.graphics.opengl.GLTexture;
+import lime.graphics.GL;
+import lime.graphics.GLTexture;
 import lime.utils.UInt8Array;
 import lime.utils.ByteArray;
 import lime.Assets;
@@ -95,8 +95,8 @@ class Texture
 		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
 		// GL.bindTexture(GL.TEXTURE_2D, null);
 
-		for (onload in _onload) onload();
 		_loaded = true;
+		for (onload in _onload) onload();
 	}
 
 	private inline function toPowerOfTwo(value:Int):Int
