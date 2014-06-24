@@ -1,5 +1,6 @@
 package haxepunk;
 
+import haxepunk.math.Math;
 import haxepunk.math.Matrix3D;
 import haxepunk.scene.Scene;
 import haxepunk.graphics.Material;
@@ -68,7 +69,10 @@ class Engine extends Application
 		}
 #end
 
-		// TODO: fix this if deltaTime is less than _lastTime (when wrapping Int value)
+		// handle time wrapping by negating the last time by the max Int value
+		// not sure this is worth it since the game would have to be running almost 19 days straight
+		if (deltaTime < _lastTime) _lastTime -= Math.INT_MAX_VALUE;
+
 		var elapsed:Float = (deltaTime - _lastTime) / 1000.0;
 		scene.update(elapsed);
 		_lastTime = deltaTime;
