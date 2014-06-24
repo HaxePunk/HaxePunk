@@ -21,12 +21,12 @@ class ImageTexture extends Entity
 		addGraphic(image);
 	}
 
-	override public function update()
+	override public function update(elapsed:Float)
 	{
 		x = HXP.window.width / 2;
 		y = HXP.window.height / 2;
 		image.angle += 1;
-		super.update();
+		super.update(elapsed);
 	}
 
 	private var image:Image;
@@ -49,7 +49,7 @@ class CubeEntity extends Entity
 		rotate = new Vector3D(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
 	}
 
-	override public function update()
+	override public function update(elapsed:Float)
 	{
 		cube.transform.rotateVector3D(rotate);
 	}
@@ -68,8 +68,9 @@ class Main extends Engine
 		numCubes = 1000;
 
 		var sprite = new Spritemap("assets/character.png", 32, 32);
-		sprite.add("walk", [0, 1, 2, 3, 4, 5], 12);
+		sprite.add("walk", [0, 1, 2, 3, 4, 5, 6, 7], 0.01);
 		sprite.play("walk");
+		sprite.centerOrigin();
 
 		for (i in 0...numCubes)
 		{

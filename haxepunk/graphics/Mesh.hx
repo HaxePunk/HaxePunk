@@ -36,6 +36,8 @@ class Mesh implements Graphic
 		// if (_indexBuffer == null) createIndexBuffer(indices);
 	}
 
+	public function update(elapsed:Float):Void {}
+
 	/**
 	 * Draw the mesh
 	 * @param projectionMatrix The projection matrix to apply

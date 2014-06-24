@@ -5,6 +5,7 @@ import haxepunk.math.Matrix3D;
 interface Graphic
 {
 
+	public function update(elapsed:Float):Void;
 	public function draw(projectionMatrix:lime.utils.Float32Array, modelViewMatrix:Matrix3D):Void;
 
 }
@@ -53,6 +54,14 @@ class GraphicList implements Graphic
 		for (graphic in _children)
 		{
 			graphic.draw(projectionMatrix, modelViewMatrix);
+		}
+	}
+
+	public function update(elapsed:Float):Void
+	{
+		for (graphic in _children)
+		{
+			graphic.update(elapsed);
 		}
 	}
 

@@ -21,16 +21,22 @@ class Texture
 {
 
 	/**
-	 * The width of the texture
+	 * The width of the texture in memory
 	 */
 	public var width(default, null):Int = 0;
 
 	/**
-	 * The height of the texture
+	 * The height of the texture in memory
 	 */
 	public var height(default, null):Int = 0;
 
+	/**
+	 * The width of the original texture
+	 */
 	public var originalWidth(default, null):Int = 0;
+	/**
+	 * The height of the original texture
+	 */
 	public var originalHeight(default, null):Int = 0;
 
 	public var onload(never, set):OnloadCallback;

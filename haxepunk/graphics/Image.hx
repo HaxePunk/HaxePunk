@@ -75,6 +75,8 @@ class Image implements Graphic
 		initBuffer();
 	}
 
+	public function update(elapsed:Float) {}
+
 	private function initBuffer():Void
 	{
 		if (_vertexBuffer == null)
@@ -95,8 +97,8 @@ class Image implements Graphic
 	public function centerOrigin():Void
 	{
 		_texture.onload = function() {
-			originX = -(_texture.width / 2);
-			originY = -(_texture.height / 2);
+			originX = -(width / 2);
+			originY = -(height / 2);
 			_matrixDirty = true;
 		}
 	}

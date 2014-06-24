@@ -41,11 +41,13 @@ class Scene
 		}
 	}
 
-	public function update()
+	@:access(haxepunk.scene.Entity)
+	public function update(elapsed:Float)
 	{
-		for (entity in entities)
+		for (e in entities)
 		{
-			entity.update();
+			e.update(elapsed);
+			if (e._graphic != null) e._graphic.update(elapsed);
 		}
 	}
 

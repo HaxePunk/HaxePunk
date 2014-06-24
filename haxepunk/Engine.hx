@@ -68,8 +68,10 @@ class Engine extends Application
 		}
 #end
 
-		scene.update();
-		// HXP.input.update();
+		// TODO: fix this if deltaTime is less than _lastTime (when wrapping Int value)
+		var elapsed:Float = (deltaTime - _lastTime) / 1000.0;
+		scene.update(elapsed);
+		_lastTime = deltaTime;
 	}
 
 	/**
@@ -104,4 +106,5 @@ class Engine extends Application
 	}
 
 	private var _scenes:List<Scene>;
+	private var _lastTime:Int = 0;
 }

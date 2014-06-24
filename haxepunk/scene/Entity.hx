@@ -58,10 +58,10 @@ class Entity
 		}
 	}
 
-	public function update()
-	{
-
-	}
+	/**
+	 * Updates the Entity.
+	 */
+	public function update(elapsed:Float):Void { }
 
 	private var _graphic:Graphic;
 	private var modelViewMatrix:Matrix3D;
