@@ -89,6 +89,13 @@ class Matrix3D implements ArrayAccess<Float>
 		];
 	}
 
+	#if flash
+	public function toFlashMatrix3D():flash.geom.Matrix3D
+	{
+		return new flash.geom.Matrix3D(flash.Vector.ofArray(toArray()));
+	}
+	#end
+
 	public function toString():String
 	{
 		return "<Matrix3D>\n| " +

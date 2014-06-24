@@ -1,8 +1,11 @@
 package haxepunk.graphics;
 
-import lime.app.Event;
+#if flash
+import flash.display.BitmapData;
+#end
 import lime.graphics.GL;
 import lime.graphics.GLBuffer;
+import lime.app.Event;
 import lime.utils.Float32Array;
 import haxepunk.math.Matrix3D;
 import haxepunk.math.Vector3D;
@@ -130,15 +133,13 @@ class Spritemap extends Image
 		if (_anims.get(name) != null)
 			throw "Cannot have multiple animations with the same name";
 
-		_texture.onload = function() {
-			for (i in 0...frames.length)
-			{
-				frames[i] %= frameCount;
-				if (frames[i] < 0) frames[i] += frameCount;
-			}
-			var anim = new Animation(name, frames, frameRate, loop);
-			_anims.set(name, anim);
+		for (i in 0...frames.length)
+		{
+			frames[i] %= frameCount;
+			if (frames[i] < 0) frames[i] += frameCount;
 		}
+		var anim = new Animation(name, frames, frameRate, loop);
+		_anims.set(name, anim);
 	}
 
 	/**
@@ -345,61 +346,78 @@ class Spritemap extends Image
 		}
 	}
 
-	override private function initBuffer():Void
+	override private function createBuffer():Void
 	{
-		_texture.onload = function() {
-			columns = Math.ceil(_texture.originalWidth / _spriteWidth);
-			rows = Math.ceil(_texture.originalHeight / _spriteHeight);
-			frameCount = columns * rows;
+#if flash
+#else
+		columns = Math.ceil(_texture.originalWidth / _spriteWidth);
+		rows = Math.ceil(_texture.originalHeight / _spriteHeight);
+		frameCount = columns * rows;
 
-			var data = new Array<Float>();
-			data[frameCount*32] = 0;
+		var data = new Array<Float>();
+		data[frameCount*32] = 0;
 
-			var xx = (_spriteWidth / _texture.originalWidth) * (_texture.originalWidth / _texture.width);
-			var yy = (_spriteHeight / _texture.originalHeight) * (_texture.originalHeight / _texture.height);
-			var i = 0;
-			for (y in 0...rows)
+		var xx = (_spriteWidth / _texture.originalWidth) * (_texture.originalWidth / _texture.width);
+		var yy = (_spriteHeight / _texture.originalHeight) * (_texture.originalHeight / _texture.height);
+		var i = 0;
+		for (y in 0...rows)
+		{
+			for (x in 0...columns)
 			{
-				for (x in 0...columns)
-				{
-					data[i++] = data[i++] = data[i++] = 0; // vert (0, 0, 0)
-					data[i++] = x * xx; // tex
-					data[i++] = y * yy;
-					data[i++] = data[i++] = 0; data[i++] = -1; // normal (0, 0, -1)
+				data[i++] = data[i++] = data[i++] = 0; // vert (0, 0, 0)
+				data[i++] = x * xx; // tex
+				data[i++] = y * yy;
+				data[i++] = data[i++] = 0; data[i++] = -1; // normal (0, 0, -1)
 
-					data[i++] = 0; data[i++] = 1; data[i++] = 0; // vert (0, 1, 0)
-					data[i++] = x * xx; // tex
-					data[i++] = (y + 1) * yy;
-					data[i++] = data[i++] = 0; data[i++] = -1; // normal (0, 0, -1)
+				data[i++] = 0; data[i++] = 1; data[i++] = 0; // vert (0, 1, 0)
+				data[i++] = x * xx; // tex
+				data[i++] = (y + 1) * yy;
+				data[i++] = data[i++] = 0; data[i++] = -1; // normal (0, 0, -1)
 
-					data[i++] = 1; data[i++] = data[i++] = 0; // vert (1, 0, 0)
-					data[i++] = (x + 1) * xx; // tex
-					data[i++] = y * yy;
-					data[i++] = data[i++] = 0; data[i++] = -1; // normal (0, 0, -1)
+				data[i++] = 1; data[i++] = data[i++] = 0; // vert (1, 0, 0)
+				data[i++] = (x + 1) * xx; // tex
+				data[i++] = y * yy;
+				data[i++] = data[i++] = 0; data[i++] = -1; // normal (0, 0, -1)
 
-					data[i++] = data[i++] = 1; data[i++] = 0; // vert (1, 1, 0)
-					data[i++] = (x + 1) * xx; // tex
-					data[i++] = (y + 1) * yy;
-					data[i++] = data[i++] = 0; data[i++] = -1; // normal (0, 0, -1)
-				}
+				data[i++] = data[i++] = 1; data[i++] = 0; // vert (1, 1, 0)
+				data[i++] = (x + 1) * xx; // tex
+				data[i++] = (y + 1) * yy;
+				data[i++] = data[i++] = 0; data[i++] = -1; // normal (0, 0, -1)
 			}
-			_buffer = GL.createBuffer();
-			GL.bindBuffer(GL.ARRAY_BUFFER, _buffer);
-			GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(cast data), GL.STATIC_DRAW);
 		}
+		_buffer = GL.createBuffer();
+		GL.bindBuffer(GL.ARRAY_BUFFER, _buffer);
+		GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(cast data), GL.STATIC_DRAW);
+#end
 	}
 
 	override public function draw(projectionMatrix:lime.utils.Float32Array, modelViewMatrix:Matrix3D):Void
 	{
-		drawBuffer(projectionMatrix, modelViewMatrix, _buffer, _frame);
+		switch (HXP.context)
+		{
+			case OPENGL(gl):
+			#if !flash
+				drawBuffer(projectionMatrix, modelViewMatrix, _buffer, _frame);
+			#end
+			case FLASH(stage):
+			#if flash
+			#end
+			default:
+				throw "Unsupported render context!";
+		}
 	}
 
+#if flash
+	private var _source:BitmapData;
+#else
 	private var _buffer:GLBuffer;
+#end
+
 	private var _frame:Int = 0;
+	private var _index:Int = 0;
 	private var _spriteWidth:Float = 0;
 	private var _spriteHeight:Float = 0;
 	private var _time:Float = 0;
-	private var _index:Int = 0;
 	private var _anim:Animation;
 	private var _anims:StringMap<Animation>;
 

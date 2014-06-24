@@ -15,8 +15,6 @@ import cpp.vm.Thread;
 import neko.vm.Thread;
 #end
 
-typedef OnloadCallback = Void->Void;
-
 class Texture
 {
 
@@ -39,13 +37,6 @@ class Texture
 	 */
 	public var originalHeight(default, null):Int = 0;
 
-	public var onload(never, set):OnloadCallback;
-	private function set_onload(value:OnloadCallback):OnloadCallback
-	{
-		_loaded ? value() : _onload.push(value);
-		return value;
-	}
-
 	public static function create(path:String):Texture
 	{
 		var texture:Texture = null;
@@ -67,7 +58,6 @@ class Texture
 	 */
 	private function new(path:String)
 	{
-		_onload = new Array<OnloadCallback>();
 		loadImage(path);
 	}
 
@@ -76,7 +66,7 @@ class Texture
 	 */
 	public inline function bind():Void
 	{
-		if (_loaded && _lastBoundTexture != _texture)
+		if (_lastBoundTexture != _texture)
 		{
 			GL.bindTexture(GL.TEXTURE_2D, _texture);
 			_lastBoundTexture = _texture;
@@ -89,98 +79,39 @@ class Texture
 		GL.bindTexture(GL.TEXTURE_2D, _lastBoundTexture);
 	}
 
-	private function createTexture(width:Int, height:Int, dataArray:UInt8Array)
-	{
-		this.width = width;
-		this.height = height;
-
-		_texture = GL.createTexture();
-		GL.bindTexture(GL.TEXTURE_2D, _texture);
-		GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, dataArray);
-		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
-		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
-		// GL.bindTexture(GL.TEXTURE_2D, null);
-
-		_loaded = true;
-		for (onload in _onload) onload();
-	}
-
 	private inline function toPowerOfTwo(value:Int):Int
 	{
 		return Std.int(Math.pow(2, Math.ceil(Math.log(value) / Math.log(2))));
 	}
 
+	@:access(lime.graphics.Image)
 	private inline function loadImage(path:String)
 	{
-#if lime_html5
-		var image: js.html.ImageElement = js.Browser.document.createImageElement();
-		image.onload = function(a) {
-			var width = toPowerOfTwo(image.width);
-			var height = toPowerOfTwo(image.height);
-			var tmpCanvas = js.Browser.document.createCanvasElement();
-			tmpCanvas.width = width;
-			tmpCanvas.height = height;
+		var image = Assets.getImage(path);
+		width = originalWidth = image.width;
+		height = originalHeight = image.height;
 
-			var tmpContext = tmpCanvas.getContext2d();
-			tmpContext.clearRect(0, 0, tmpCanvas.width, tmpCanvas.height);
-			tmpContext.drawImage(image, 0, 0, image.width, image.height);
+		switch (HXP.context)
+		{
+			case OPENGL(gl):
+				// TODO: handle power of 2 textures
+				// width = toPowerOfTwo(image.width);
+				// height = toPowerOfTwo(image.height);
+				// if (width != originalWidth || height != originalHeight)
+				// {
+				// }
 
-			var imageBytes = tmpContext.getImageData(0, 0, tmpCanvas.width, tmpCanvas.height);
-
-			originalWidth = image.width;
-			originalHeight = image.height;
-			createTexture(width, height, new UInt8Array(imageBytes.data));
-
-			tmpCanvas = null;
-			tmpContext = null;
-			imageBytes = null;
-		};
-		image.src = path;
-#else
-	#if HXP_BACKGROUND_LOAD
-		var t = Thread.create(function() {
-			var current = Thread.readMessage(true);
-	#end
-
-			var bytes = Assets.getBytes(path);
-			if (bytes == null) return;
-			var byteInput = new BytesInput(bytes, 0, bytes.length);
-			var png = new format.png.Reader(byteInput).read();
-			var data = format.png.Tools.extract32(png);
-			var header = format.png.Tools.getHeader(png);
-
-			var byteData = #if neko ByteArray.fromBytes(data) #else data.getData() #end;
-			var dataArray = new UInt8Array(byteData);
-			// bgra to rgba (flip blue and red channels)
-			var size = header.width * header.height;
-			originalWidth = header.width;
-			originalHeight = header.height;
-			for (i in 0...size)
-			{
-				var b = dataArray[i*4];
-				dataArray[i*4] = dataArray[i*4+2]; // r
-				dataArray[i*4+2] = b; // b
-			}
-
-	#if HXP_BACKGROUND_LOAD
-			current.sendMessage({
-				type: "loadTexture",
-				texture: this,
-				width: header.width,
-				height: header.height,
-				data: dataArray
-			});
-		});
-		t.sendMessage(Thread.current());
-	#else
-		createTexture(header.width, header.height, dataArray);
-	#end
-#end
+				_texture = GL.createTexture();
+				GL.bindTexture(GL.TEXTURE_2D, _texture);
+				GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, image.__bytes);
+				GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
+				GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
+			case FLASH(stage):
+			default:
+		}
 	}
 
 	private var _texture:GLTexture;
-	private var _onload:Array<OnloadCallback>;
-	private var _loaded:Bool = false;
 	private static var _textures = new StringMap<Texture>();
 	private static var _lastBoundTexture:GLTexture;
 

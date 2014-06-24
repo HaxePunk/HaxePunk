@@ -1,5 +1,10 @@
 package haxepunk.graphics;
 
+#if flash
+import flash.display.Bitmap;
+import flash.display.BitmapData;
+import flash.geom.Rectangle;
+#end
 import lime.graphics.GL;
 import lime.graphics.GLBuffer;
 import lime.utils.Float32Array;
@@ -72,13 +77,47 @@ class Image implements Graphic
 		material = new Material();
 		material.addTexture(_texture);
 
-		initBuffer();
+		createBuffer();
 	}
 
 	public function update(elapsed:Float) {}
 
-	private function initBuffer():Void
+#if flash
+	/**
+	 * Creates BitmapData based on platform specifics
+	 *
+	 * @param	width			BitmapData's width.
+	 * @param	height			BitmapData's height.
+	 * @param	transparent		If the BitmapData can have transparency.
+	 * @param	color			BitmapData's color.
+	 *
+	 * @return	The BitmapData.
+	 */
+	public static function createBitmap(width:Int, height:Int, ?transparent:Bool = false, ?color:Int = 0):BitmapData
 	{
+	#if flash8
+		var sizeError:Bool = (width > 2880 || height > 2880);
+	#else
+		var sizeError:Bool = (width * height > 16777215 || width > 8191 || height > 8191); // flash 10 requires size to be under 16,777,215
+	#end
+		if (sizeError)
+		{
+			trace("BitmapData is too large (" + width + ", " + height + ")");
+			return null;
+		}
+
+		return new BitmapData(width, height, transparent, color);
+	}
+#end // flash
+
+	/** @private Creates the buffer. */
+	private function createBuffer():Void
+	{
+#if flash
+		_buffer = createBitmap(_texture.width, _texture.height, true);
+		_bufferRect = _buffer.rect;
+		_bitmap.bitmapData = _buffer;
+#else
 		if (_vertexBuffer == null)
 		{
 			var data = [
@@ -92,17 +131,17 @@ class Image implements Graphic
 			GL.bindBuffer(GL.ARRAY_BUFFER, _vertexBuffer);
 			GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(cast data), GL.STATIC_DRAW);
 		}
+#end
 	}
 
 	public function centerOrigin():Void
 	{
-		_texture.onload = function() {
-			originX = -(width / 2);
-			originY = -(height / 2);
-			_matrixDirty = true;
-		}
+		originX = -(width / 2);
+		originY = -(height / 2);
+		_matrixDirty = true;
 	}
 
+	#if !flash
 	private inline function drawBuffer(projectionMatrix:Float32Array, modelViewMatrix:Matrix3D, buffer:GLBuffer, offset:Int=0):Void
 	{
 		if (buffer != null)
@@ -120,18 +159,60 @@ class Image implements Graphic
 			GL.bindBuffer(GL.ARRAY_BUFFER, buffer);
 			material.use(projectionMatrix, _matrix.clone().multiply(modelViewMatrix));
 			GL.drawArrays(GL.TRIANGLE_STRIP, offset << 2, 4);
-			material.disable();
+			// material.disable();
 		}
 	}
+	#end
 
 	public function draw(projectionMatrix:Float32Array, modelViewMatrix:Matrix3D):Void
 	{
-		drawBuffer(projectionMatrix, modelViewMatrix, _vertexBuffer);
+		switch (HXP.context)
+		{
+			case OPENGL(gl):
+			#if !flash
+				drawBuffer(projectionMatrix, modelViewMatrix, _vertexBuffer);
+			#end
+			case FLASH(stage):
+			#if flash
+				var sx = scale * scaleX,
+					sy = scale * scaleY;
+
+				// determine drawing location
+				// var point = new flash.geom.Point(point.x + x - originX - camera.x * scrollX, point.y + y - originY - camera.y * scrollY);
+
+				// if (angle == 0 && sx == 1 && sy == 1)
+				// {
+				// 	// render without transformation
+				// 	stage.copyPixels(_buffer, _bufferRect, _point, null, null, true);
+				// }
+				// else
+				// {
+				// 	// render with transformation
+				// 	_matrix.b = _matrix.c = 0;
+				// 	_matrix.a = sx;
+				// 	_matrix.d = sy;
+				// 	_matrix.tx = -originX * sx;
+				// 	_matrix.ty = -originY * sy;
+				// 	if (angle != 0) _matrix.rotate(angle * HXP.RAD);
+				// 	_matrix.tx += originX + _point.x;
+				// 	_matrix.ty += originY + _point.y;
+				// 	stage.draw(_bitmap, _matrix, null, blend, null, _bitmap.smoothing);
+				// }
+			#end
+			default:
+				throw "Unsupported render context!";
+		}
 	}
 
 	private var _matrix:Matrix3D;
 	private var _matrixDirty:Bool = true;
 	private var _texture:Texture;
+#if flash
+	private var _bitmap:Bitmap;
+	private var _buffer:BitmapData;
+	private var _bufferRect:Rectangle;
+#else
 	private static var _vertexBuffer:GLBuffer;
+#end
 
 }

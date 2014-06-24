@@ -4,7 +4,7 @@ import haxepunk.math.Math;
 import haxepunk.math.Matrix3D;
 import haxepunk.scene.Scene;
 import haxepunk.graphics.Material;
-// import haxepunk.input.Input;
+import haxepunk.input.Input;
 import lime.app.Application;
 import lime.app.Config;
 import lime.graphics.RenderContext;
@@ -20,8 +20,9 @@ import neko.vm.Thread;
 class Engine extends Application
 {
 
-	public var scene(get, never):Scene;
+	public var scene(get, set):Scene;
 	private inline function get_scene():Scene { return _scenes.first(); }
+	private inline function set_scene(scene:Scene):Scene { return replaceScene(scene); }
 
 	public function new(?scene:Scene)
 	{
@@ -35,7 +36,8 @@ class Engine extends Application
 		super.create(config);
 
 		HXP.window = windows[0];
-		// HXP.input = new Input();
+		HXP.context = HXP.window.currentRenderer.context;
+		HXP.input = new Input();
 
 		init();
 	}
@@ -50,6 +52,8 @@ class Engine extends Application
 
 	override public function render(context:RenderContext):Void
 	{
+		// make sure the render context stays updated
+		HXP.context = context;
 		scene.draw();
 
 		Material.clear(); // clear any material
@@ -82,33 +86,33 @@ class Engine extends Application
 	 * Replaces the current scene
 	 * @param scene The replacement scene
 	 */
-	public function replaceScene(scene:Scene)
+	public function replaceScene(scene:Scene):Scene
 	{
 		_scenes.pop();
 		_scenes.push(scene);
+		return scene;
 	}
 
 	/**
 	 * Pops a scene from the stack
 	 */
-	public function popScene()
+	public function popScene():Scene
 	{
 		// should always have at least one scene
-		if (_scenes.length > 1)
-		{
-			_scenes.pop();
-		}
+		return (_scenes.length > 1 ? _scenes.pop() : _scenes.first());
 	}
 
 	/**
 	 * Pushes a scene (keeping the old one to use later)
 	 * @param scene The scene to push
 	 */
-	public function pushScene(scene:Scene)
+	public function pushScene(scene:Scene):Scene
 	{
 		_scenes.push(scene);
+		return scene;
 	}
 
 	private var _scenes:List<Scene>;
 	private var _lastTime:Int = 0;
+
 }

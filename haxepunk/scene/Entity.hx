@@ -31,7 +31,7 @@ class Entity
 		modelViewMatrix = new Matrix3D();
 	}
 
-	public function addGraphic(graphic:Graphic):Void
+	public function addGraphic(graphic:Graphic):Graphic
 	{
 		if (_graphic == null)
 		{
@@ -45,6 +45,7 @@ class Entity
 		{
 			_graphic = new GraphicList([_graphic, graphic]);
 		}
+		return _graphic;
 	}
 
 	public function draw(projectionMatrix:lime.utils.Float32Array)
