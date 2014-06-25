@@ -9,14 +9,15 @@ install:
   - sudo apt-get install haxe -y --force-yes
   - mkdir -p ~/haxelib
   - haxelib setup ~/haxelib
-  # Download dependencies
+  # Compile lime and aether
+  - sudo apt-get install mesa-common-dev libgl1-mesa-dev libglu1-mesa-dev -y
+  - sudo apt-get install g++-multilib gcc-multilib
   - haxelib install hxcpp
   - haxelib install format
   - git clone https://github.com/openfl/aether.git ~/aether --depth 1
   - haxelib dev aether ~/aether
   - git clone https://github.com/openfl/lime.git ~/lime -b next --recursive --depth 1
   - haxelib dev lime ~/lime
-  # - haxelib install lime
   - haxelib run lime rebuild linux
   - haxelib run lime rebuild tools
   - echo "y" | haxelib run lime setup
