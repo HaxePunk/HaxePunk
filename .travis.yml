@@ -14,6 +14,7 @@ install:
   - sudo apt-get install g++-multilib gcc-multilib
   - haxelib install hxcpp
   - haxelib install format
+  - haxelib install svg
   - git clone https://github.com/openfl/aether.git ~/aether --depth 1
   - haxelib dev aether ~/aether
   - git clone https://github.com/openfl/lime.git ~/lime -b next --recursive --depth 1
