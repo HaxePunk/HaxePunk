@@ -10,12 +10,13 @@ install:
   - mkdir -p ~/haxelib
   - haxelib setup ~/haxelib
   # Download dependencies
+  - haxelib install hxcpp
   - haxelib install format
-  # - haxelib install lime
-  - git clone https://github.com/openfl/aether ~/aether --depth 1
+  - git clone https://github.com/openfl/aether.git ~/aether --depth 1
   - haxelib dev aether ~/aether
-  - git clone https://github.com/openfl/lime ~/lime -b next --depth 1
+  - git clone https://github.com/openfl/lime.git ~/lime -b next --depth 1
   - haxelib dev lime ~/lime
+  # - haxelib install lime
   - haxelib run lime rebuild linux
   - haxelib run lime rebuild tools
   - echo "y" | haxelib run lime setup
