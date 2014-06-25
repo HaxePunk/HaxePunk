@@ -15,8 +15,8 @@ abstract MouseButton(Int) to Int
 	var Middle = 3;
 	var Right = 6;
 
-	@:op(A+B) private inline function addInputValue (rhs:InputValue):Int { return rhs + this; }
-	@:op(A+B) private inline function addInt (rhs:Int):Int { return this + rhs; }
+	@:op(A+B) private inline function add (rhs:InputValue):Int { return rhs + this; }
+	@:op(A<B) private inline function less (rhs:Int):Bool { return this < rhs; }
 }
 
 /**
@@ -85,7 +85,7 @@ class Mouse
 	@:allow(haxepunk.input.Input)
 	private static inline function value(button:MouseButton, v:haxepunk.input.Input.InputValue):Int
 	{
-		if (button+0 < 0) // Little trick to convert to int // Any
+		if (button < 0) // Any
 		{
 			return values[v] + values[v+3] + values[v+6];
 		}
