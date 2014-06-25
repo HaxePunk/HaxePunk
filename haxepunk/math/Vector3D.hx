@@ -7,7 +7,7 @@ class Point3D
 	public var z:Float;
 	public var w:Float;
 
-	public function new(x:Float, y:Float, z:Float, w:Float)
+	public function new(x:Float=0, y:Float=0, z:Float=0, w:Float=0)
 	{
 		this.x = x;
 		this.y = y;
@@ -72,7 +72,7 @@ abstract Vector3D (Point3D)
 
 	@:op(A == B) public static inline function equals(a:Vector3D, b:Vector3D):Bool
 	{
-		return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w;
+		return (a == null ? b == null : (b != null && a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w));
 	}
 
 	@:op(A != B) public static inline function notEquals(a:Vector3D, b:Vector3D):Bool

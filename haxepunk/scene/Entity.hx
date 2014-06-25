@@ -1,8 +1,9 @@
 package haxepunk.scene;
 
+import haxepunk.graphics.Graphic;
+import haxepunk.masks.AABB;
 import haxepunk.math.Matrix3D;
 import haxepunk.math.Vector3D;
-import haxepunk.graphics.Graphic;
 
 class Entity
 {
@@ -25,9 +26,17 @@ class Entity
 	private inline function get_layer():Float { return position.z; }
 	private inline function set_layer(value:Float) { return position.z = value; }
 
+	@:allow(haxepunk.scene.Scene)
+	public var scene(default, null):Scene;
+
+	public var hitbox:AABB;
+
+	public var type:String = "";
+
 	public function new(x:Float = 0, y:Float = 0, z:Float = 0)
 	{
 		position = new Vector3D(x, y, z);
+		hitbox = new AABB();
 		modelViewMatrix = new Matrix3D();
 	}
 

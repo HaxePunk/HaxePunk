@@ -15,6 +15,9 @@ class TestMain
 		// input tests
 		runner.add(new haxepunk.input.MouseTest());
 
+		// mask tests
+		runner.add(new haxepunk.masks.AABBTest());
+
 		runner.run();
 	}
 

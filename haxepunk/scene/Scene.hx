@@ -16,11 +16,13 @@ class Scene
 
 	public function add(e:Entity)
 	{
+		e.scene = this;
 		entities.add(e);
 	}
 
 	public function remove(e:Entity)
 	{
+		e.scene = null;
 		entities.remove(e);
 	}
 
