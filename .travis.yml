@@ -14,7 +14,7 @@ install:
   - haxelib install format
   - git clone https://github.com/openfl/aether.git ~/aether --depth 1
   - haxelib dev aether ~/aether
-  - git clone https://github.com/openfl/lime.git ~/lime -b next --depth 1
+  - git clone https://github.com/openfl/lime.git ~/lime -b next --recursive --depth 1
   - haxelib dev lime ~/lime
   # - haxelib install lime
   - haxelib run lime rebuild linux
