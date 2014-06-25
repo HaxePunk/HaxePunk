@@ -1,7 +1,7 @@
 package haxepunk.input;
 
+import haxe.ds.IntMap;
 import lime.ui.MouseEventManager;
-
 import haxepunk.input.Input;
 
 /**
@@ -12,11 +12,28 @@ abstract MouseButton(Int) to Int
 {
 	var Any = -1;
 	var Left = 0;
-	var Middle = 3;
-	var Right = 6;
+	var Middle = 1;
+	var Right = 2;
 
-	@:op(A+B) private inline function add (rhs:InputValue):Int { return rhs + this; }
 	@:op(A<B) private inline function less (rhs:Int):Bool { return this < rhs; }
+}
+
+class MouseState
+{
+	public var on:Int = 0;
+	public var pressed:Int = 0;
+	public var released:Int = 0;
+
+	public function value(v:haxepunk.input.Input.InputValue):Int
+	{
+		return switch (v)
+		{
+			case InputValue.On: return on;
+			case InputValue.Pressed: return pressed;
+			case InputValue.Released: return released;
+			default: return 0;
+		};
+	}
 }
 
 /**
@@ -25,7 +42,7 @@ abstract MouseButton(Int) to Int
 class Mouse
 {
 	/** Holds the last mouse buttons pressed */
-	public static var last(default, null):MouseButton = MouseButton.Any;
+	public static var lastButton(default, null):MouseButton = MouseButton.Any;
 
 	/** The delta of the mouse wheel, 0 if it wasn't moved this frame */
 	public static var wheelDelta(default, null):Float = 0;
@@ -87,11 +104,16 @@ class Mouse
 	{
 		if (button < 0) // Any
 		{
-			return values[v] + values[v+3] + values[v+6];
+			var result = 0;
+			for (state in _states)
+			{
+				result += state.value(v);
+			}
+			return result;
 		}
 		else
 		{
-			return values[button + v];
+			return getMouseState(button).value(v);
 		}
 	}
 
@@ -103,14 +125,12 @@ class Mouse
 	{
 		// Was On last frame if was on the previous one and there is at least the same amount of Pressed than Released.
 		// Or wasn't On last frame and Pressed > 0
-		values[0] = ( (values[0] > 0 && values[1] >= values[2]) || (values[0] == 0 && values[1] > 0) ) ? 1 : 0; // Left
-		values[3] = ( (values[3] > 0 && values[4] >= values[5]) || (values[3] == 0 && values[4] > 0) ) ? 1 : 0; // Middle
-		values[6] = ( (values[6] > 0 && values[7] >= values[8]) || (values[6] == 0 && values[7] > 0) ) ? 1 : 0; // Right
-
-		// Reset counter for Pressed and Released
-		values[1] = values[2] = 0; // Left
-		values[4] = values[5] = 0; // Middle
-		values[7] = values[8] = 0; // Right
+		for (state in _states)
+		{
+			state.on = ( (state.on > 0 && state.pressed >= state.released) || (state.on == 0 && state.pressed > 0) ) ? 1 : 0;
+			state.pressed = 0;
+			state.released = 0;
+		}
 
 		// Reset wheelDelta
 		wheelDelta = 0;
@@ -119,7 +139,7 @@ class Mouse
 	/**
 	 * Lime onMouseMove event.
 	 */
-	private static function onMouseMove(x:Float, y:Float, button:Int):Void
+	private static inline function onMouseMove(x:Float, y:Float, button:Int):Void
 	{
 		Mouse.x = x;
 		Mouse.y = y;
@@ -132,11 +152,8 @@ class Mouse
 	{
 		onMouseMove(x, y, button);
 
-		if (button <= 3) // one of left, middle and right
-		{
-			values[button*3 + 1] += 1; // pressed value
-			untyped last = button*3;
-		}
+		getMouseState(button).pressed += 1; // pressed value
+		untyped lastButton = button;
 	}
 
 	/**
@@ -146,11 +163,8 @@ class Mouse
 	{
 		onMouseMove(x, y, button);
 
-		if (button <= 3) // one of left, middle and right
-		{
-			values[button*3 + 2] += 1; // released value
-			untyped last = button*3;
-		}
+		getMouseState(button).released += 1; // released value
+		untyped lastButton = button;
 	}
 
 	/**
@@ -161,6 +175,24 @@ class Mouse
 		wheelDelta = deltaX;
 	}
 
-	/** Values for On,Pressed,Released for each button */
-	private static var values:Array<Int> = [0,0,0, 0,0,0, 0,0,0];
+	/**
+	 * Gets a mouse state object
+	 */
+	private static function getMouseState(button:Int):MouseState
+	{
+		var state:MouseState;
+		if (_states.exists(button))
+		{
+			state = _states.get(button);
+		}
+		else
+		{
+			state = new MouseState();
+			_states.set(button, state);
+		}
+		return state;
+	}
+
+	/** states for On,Pressed,Released for each button */
+	private static var _states:IntMap<MouseState> = new IntMap<MouseState>();
 }

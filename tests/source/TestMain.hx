@@ -12,6 +12,9 @@ class TestMain
 		runner.add(new haxepunk.math.Matrix3DTest());
 		runner.add(new haxepunk.math.Vector3DTest());
 
+		// input tests
+		runner.add(new haxepunk.input.MouseTest());
+
 		runner.run();
 	}
 
