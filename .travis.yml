@@ -12,10 +12,12 @@ install:
   # Download dependencies
   - haxelib install format
   # - haxelib install lime
-  - haxelib git aether https://github.com/openfl/aether.git
-  - haxelib git lime https://github.com/openfl/lime.git branch next
-  - haxelib run lime rebuild tools
+  - git clone https://github.com/openfl/aether ~/aether --depth 1
+  - haxelib dev aether ~/aether
+  - git clone https://github.com/openfl/lime ~/lime -b next --depth 1
+  - haxelib dev lime ~/lime
   - haxelib run lime rebuild linux
+  - haxelib run lime rebuild tools
   - echo "y" | haxelib run lime setup
   - haxelib dev HaxePunk $TRAVIS_BUILD_DIR
 
