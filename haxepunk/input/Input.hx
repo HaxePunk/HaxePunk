@@ -1,164 +1,202 @@
 package haxepunk.input;
 
-import haxepunk.HXP;
-import lime.ui.*;
+import haxepunk.input.Mouse;
 
+/**
+ * Either enum used by InputType.
+ */
+private enum EitherInput
+{
+	String(s:String);
+	MouseButton(mb:MouseButton);
+}
+
+/**
+ * Represent any of the following types: String, Key, MouseButton, GamepadButton and Gesture.
+ */
+private abstract InputType(EitherInput)
+{
+	public inline function new(e:EitherInput) this = e;
+	public var type(get, never):EitherInput;
+
+	@:to inline function get_type() return this;
+
+	@:from static function fromString(s:String) return new InputType(String(s));
+	@:from static function fromMouseButton(mb:MouseButton) return new InputType(MouseButton(mb));
+}
+
+/**
+ * Manages the Input from Keyboard, Mouse, Touch and Gamepad.
+ * Allow to check the state of Key, MouseButton, GamepadButton and Gesture.
+ */
 class Input
 {
-
 	/**
-	 * If the left button mouse is held down
+	 * Check if an input is held down.
+	 *
+	 * @param input An input to check for
+	 * @return If [input] is held down
 	 */
-	public var mouseDown:Bool;
-	/**
-	 * If the left button mouse is up
-	 */
-	public var mouseUp:Bool;
-	/**
-	 * If the left button mouse was recently pressed
-	 */
-	public var mousePressed:Bool;
-	/**
-	 * If the left button mouse was recently released
-	 */
-	public var mouseReleased:Bool;
-
-	/**
-	 * If the right button mouse is held down
-	 */
-	public var rightMouseDown:Bool;
-	/**
-	 * If the right button mouse is up
-	 */
-	public var rightMouseUp:Bool;
-	/**
-	 * If the right button mouse was recently pressed
-	 */
-	public var rightMousePressed:Bool;
-	/**
-	 * If the right button mouse was recently released
-	 */
-	public var rightMouseReleased:Bool;
-
-	/**
-	 * If the middle button mouse is held down
-	 */
-	public var middleMouseDown:Bool;
-	/**
-	 * If the middle button mouse is up
-	 */
-	public var middleMouseUp:Bool;
-	/**
-	 * If the middle button mouse was recently pressed
-	 */
-	public var middleMousePressed:Bool;
-	/**
-	 * If the middle button mouse was recently released
-	 */
-	public var middleMouseReleased:Bool;
-
-	/**
-	 * X position of the mouse on the screen.
-	 */
-	public var mouseX(default, null):Float;
-
-	/**
-	 * Y position of the mouse on the screen.
-	 */
-	public var mouseY(default, null):Float;
-
-
-	/**
-	 * Lime onmousemove event
-	 */
-	public function onMouseMove(x:Float, y:Float, button:Int)
+	public static inline function check(input:InputType):Bool
 	{
-		mouseX = x;
-		mouseY = y;
+		return value(input, InputValue.On) > 0 || value(input, InputValue.Pressed) > 0;
 	}
 
 	/**
-	 * Lime onmousedown event
+	 * Defines a new input.
+	 *
+	 * @param name String to map the input to
+	 * @param keys The inputs to use for the Input, don't use string in the array
+	 * @param merge If the input is already defined merge the arrays instead of replacing it
 	 */
-	public function onMouseDown(x:Float, y:Float, button:Int)
+	public static function define(name:String, inputs:Array<InputType>, merge:Bool=false):Void
 	{
-		mouseX = x;
-		mouseY = y;
-		switch (button) {
-			case 0:
-				mousePressed = true;
-				mouseDown = true;
-				mouseUp = false;
-			case 2:
-				rightMouseDown = true;
-				rightMouseUp = false;
-				rightMousePressed = true;
-			case 1:
-				middleMouseDown = true;
-				middleMouseUp = false;
-				middleMousePressed = true;
+		if (!merge || !defines.exists(name))
+		{
+			defines.set(name, inputs);
+		}
+		else
+		{
+			var existing = defines.get(name);
+
+			for (input in inputs)
+			{
+				if (existing.indexOf(input) == -1) // Not already in the array
+				{
+					existing.push(input);
+				}
+			}
+
+			defines.set(name, existing);
 		}
 	}
 
 	/**
-	 * Lime onmouseup event
+	 * How many times an input was pressed this frame.
+	 *
+	 * @param input An input to check for
+	 * @return The number of times [input] was pressed
 	 */
-	public function onMouseUp(x:Float, y:Float, button:Int)
+	public static inline function pressed(input:InputType):Int
 	{
-		mouseX = x;
-		mouseY = y;
-		switch (button) {
-			case 0:
-				mouseReleased = true;
-				mouseDown = false;
-				mouseUp = true;
-			case 2:
-				rightMouseDown = false;
-				rightMouseUp = true;
-				rightMouseReleased = true;
-			case 1:
-				middleMouseDown = false;
-				middleMouseUp = true;
-				middleMouseReleased = true;
+		return value(input, InputValue.Pressed);
+	}
+
+	/**
+	 * How many times an input was released this frame.
+	 *
+	 * @param input An input to check for
+	 * @return The number of times [input] was released
+	 */
+	public static inline function released(input:InputType):Int
+	{
+		return value(input, InputValue.Released);
+	}
+
+
+
+	/**
+	 * Init the input systems.
+	 */
+	@:allow(haxepunk.Engine)
+	private static function init()
+	{
+		//Keyboard.init();
+		Mouse.init();
+		//Gamepad.init();
+		//Touch.init();
+	}
+
+	/**
+	 * Get a value from an input.
+	 *
+	 * If [input] is a String returns the sum of the inputs in the define.
+	 *
+	 * @param input The input to test against
+	 * @param v The value to get
+	 * @return The value [v] for the input [input]
+	 */
+	private static function value(input:InputType, v:InputValue):Int
+	{
+		switch (input.type)
+		{
+			case String(name):
+				if (defines.exists(name))
+				{
+					var sum = 0;
+
+					for (i in defines.get(name))
+					{
+						sum = sum + subsystemValue(i, v);
+					}
+
+					return sum;
+				}
+				else
+				{
+					#if debug trace('[Warning] Input has no define of name "$name"'); #end
+					return 0;
+				}
+
+			default: // not a string
+				return subsystemValue(input, v);
 		}
 	}
 
 	/**
-	 * Enables input handling
+	 * Get a value from an input, ignore string value.
+	 *
+	 * @param input The input to test against, if it's a String returns 0
+	 * @param v The value to get
+	 * @return The value [v] for the input [input]
 	 */
-	public function new()
+	private static function subsystemValue(input:InputType, v:InputValue):Int
 	{
-		// MouseEventManager.onMouseMove.add(onMouseMove);
-		// MouseEventManager.onMouseUp.add(onMouseUp);
-		// MouseEventManager.onMouseDown.add(onMouseDown);
+		return switch (input.type)
+		{
+			case String(name):
+				0; // ignore strings
 
-		mouseDown 			= false;
-		mouseUp 			= false;
-		mousePressed 		= false;
-		mouseReleased 		= false;
-		rightMouseDown 		= false;
-		rightMouseUp 		= false;
-		rightMousePressed 	= false;
-		rightMouseReleased 	= false;
-		middleMouseDown 	= false;
-		middleMouseUp 		= false;
-		middleMousePressed 	= false;
-		middleMouseReleased = false;
+			/*case Key(k):
+				Keyboard.value(k, v);
+			*/
+			case MouseButton(mb):
+				Mouse.value(mb, v);
+			/*
+			case GamepadButton(gb):
+				Gamepad.value(gb, v);
+
+			case Gesture(g):
+				Touch.value(g, v);*/
+		}
 	}
 
 	/**
-	 * Updates the input states
+	 * Update all input subsystems.
 	 */
-	public function update()
+	@:allow(haxepunk.Engine)
+	private static function update():Void
 	{
-		if (mousePressed) mousePressed = false;
-		if (mouseReleased) mouseReleased = false;
-
-		if (middleMousePressed) middleMousePressed = false;
-		if (middleMouseReleased) middleMouseReleased = false;
-
-		if (rightMousePressed) rightMousePressed = false;
-		if (rightMouseReleased) rightMouseReleased = false;
+		//Keyboard.update();
+		Mouse.update();
+		//Gamepad.update();
+		//Touch.update();
 	}
 
+	/** Stocks the inputs the user defined using its name as key. */
+	private static var defines = new Map<String, Array<InputType>>();
+}
+
+/**
+ * The types of value for an input.
+ */
+@:allow(haxepunk.input)
+@:enum
+/*private*/ abstract InputValue(Int) to Int
+{
+	var On = 0;
+	var Pressed = 1;
+	var Released = 2;
+
+	@:op(A+B) private inline function add (rhs:Int):Int { return rhs + this; }
 }

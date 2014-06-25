@@ -37,7 +37,9 @@ class Engine extends Application
 
 		HXP.window = windows[0];
 		HXP.context = HXP.window.currentRenderer.context;
-		HXP.input = new Input();
+		
+		// Init the input system
+		Input.init();
 
 		init();
 	}
@@ -80,6 +82,9 @@ class Engine extends Application
 		var elapsed:Float = (deltaTime - _lastTime) / 1000.0;
 		scene.update(elapsed);
 		_lastTime = deltaTime;
+		
+		// Update the input system
+		Input.update();
 	}
 
 	/**
