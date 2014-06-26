@@ -60,7 +60,7 @@ class CubeEntity extends Entity
 
 class Main extends Engine
 {
-	override public function init()
+	override public function ready()
 	{
 		var material = new Material();
 		material.addTexture(Texture.create("assets/lime.png"));

@@ -33,28 +33,22 @@ class Engine extends Application
 
 	override public function create(config:Config):Void
 	{
+		super.create(config);
+		
+		HXP.window = windows[0];
+		HXP.context = HXP.window.currentRenderer.context;
+		
 		// Init the input system
 		Input.init();
 
-		init();
-		
-		super.create(config);	
-	}
-	
-	override public function addWindow(window:Window):Void
-	{
-		HXP.window = window;
-		HXP.context = HXP.window.currentRenderer.context;
-		
-		super.addWindow(window);
+		ready();
 	}
 
 	/**
 	 * This function is called when the engine is ready. All initialization code should go here.
 	 */
-	public function init()
+	public function ready()
 	{
-		throw "Override the init function to begin";
 	}
 
 	override public function render(context:RenderContext):Void
