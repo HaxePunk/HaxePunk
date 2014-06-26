@@ -57,14 +57,14 @@ class Entity
 		return _graphic;
 	}
 
-	public function draw(projectionMatrix:lime.utils.Float32Array)
+	public function draw(camera:Camera)
 	{
 		modelViewMatrix.identity();
 		modelViewMatrix.translateVector3D(position);
 
 		if (_graphic != null)
 		{
-			_graphic.draw(projectionMatrix, modelViewMatrix);
+			_graphic.draw(camera, modelViewMatrix);
 		}
 	}
 

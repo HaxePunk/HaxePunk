@@ -24,60 +24,70 @@ class Matrix3D implements ArrayAccess<Float>
 
 	public function new(?data:Float32Array)
 	{
-		_float32Array = (data == null ? new Float32Array(_identityData) : data);
+		if (data != null)
+		{
+			_float32Array = data;
+			_isDirty = false;
+		}
 	}
 
 	public var float32Array(get, never):Float32Array;
 	private inline function get_float32Array():Float32Array
 	{
-		#if cpp
-		untyped {
-			var bytes = _float32Array.bytes;
-			__global__.__hxcpp_memory_set_float(bytes, 0, _11);
-			__global__.__hxcpp_memory_set_float(bytes, 4, _12);
-			__global__.__hxcpp_memory_set_float(bytes, 8, _13);
-			__global__.__hxcpp_memory_set_float(bytes, 12, _14);
-
-			__global__.__hxcpp_memory_set_float(bytes, 16, _21);
-			__global__.__hxcpp_memory_set_float(bytes, 20, _22);
-			__global__.__hxcpp_memory_set_float(bytes, 24, _23);
-			__global__.__hxcpp_memory_set_float(bytes, 28, _24);
-
-			__global__.__hxcpp_memory_set_float(bytes, 32, _31);
-			__global__.__hxcpp_memory_set_float(bytes, 36, _32);
-			__global__.__hxcpp_memory_set_float(bytes, 40, _33);
-			__global__.__hxcpp_memory_set_float(bytes, 44, _34);
-
-			__global__.__hxcpp_memory_set_float(bytes, 48, _41);
-			__global__.__hxcpp_memory_set_float(bytes, 52, _42);
-			__global__.__hxcpp_memory_set_float(bytes, 56, _43);
-			__global__.__hxcpp_memory_set_float(bytes, 60, _44);
+		if (_float32Array == null)
+		{
+			_float32Array = new Float32Array(toArray());
 		}
-		#else
-			_float32Array[0] = _11;
-			_float32Array[1] = _12;
-			_float32Array[2] = _13;
-			_float32Array[3] = _14;
 
-			_float32Array[4] = _21;
-			_float32Array[5] = _22;
-			_float32Array[6] = _23;
-			_float32Array[7] = _24;
+		if (_isDirty)
+		{
+			#if cpp
+			untyped {
+				var bytes = _float32Array.bytes;
+				__global__.__hxcpp_memory_set_float(bytes, 0, _11);
+				__global__.__hxcpp_memory_set_float(bytes, 4, _12);
+				__global__.__hxcpp_memory_set_float(bytes, 8, _13);
+				__global__.__hxcpp_memory_set_float(bytes, 12, _14);
 
-			_float32Array[8] = _31;
-			_float32Array[9] = _32;
-			_float32Array[10] = _33;
-			_float32Array[11] = _34;
+				__global__.__hxcpp_memory_set_float(bytes, 16, _21);
+				__global__.__hxcpp_memory_set_float(bytes, 20, _22);
+				__global__.__hxcpp_memory_set_float(bytes, 24, _23);
+				__global__.__hxcpp_memory_set_float(bytes, 28, _24);
 
-			_float32Array[12] = _41;
-			_float32Array[13] = _42;
-			_float32Array[14] = _43;
-			_float32Array[15] = _44;
-		#end
+				__global__.__hxcpp_memory_set_float(bytes, 32, _31);
+				__global__.__hxcpp_memory_set_float(bytes, 36, _32);
+				__global__.__hxcpp_memory_set_float(bytes, 40, _33);
+				__global__.__hxcpp_memory_set_float(bytes, 44, _34);
+
+				__global__.__hxcpp_memory_set_float(bytes, 48, _41);
+				__global__.__hxcpp_memory_set_float(bytes, 52, _42);
+				__global__.__hxcpp_memory_set_float(bytes, 56, _43);
+				__global__.__hxcpp_memory_set_float(bytes, 60, _44);
+			}
+			#else
+				_float32Array[0] = _11;
+				_float32Array[1] = _12;
+				_float32Array[2] = _13;
+				_float32Array[3] = _14;
+
+				_float32Array[4] = _21;
+				_float32Array[5] = _22;
+				_float32Array[6] = _23;
+				_float32Array[7] = _24;
+
+				_float32Array[8] = _31;
+				_float32Array[9] = _32;
+				_float32Array[10] = _33;
+				_float32Array[11] = _34;
+
+				_float32Array[12] = _41;
+				_float32Array[13] = _42;
+				_float32Array[14] = _43;
+				_float32Array[15] = _44;
+			#end
+		}
 		return _float32Array;
 	}
-	private var _float32Array:Float32Array;
-	private static var _identityData:Array<Float> = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1];
 
 	public function toArray():Array<Float>
 	{
@@ -121,6 +131,7 @@ class Matrix3D implements ArrayAccess<Float>
 		_21 = 0.0; _22 = 1.0; _23 = 0.0; _24 = 0.0;
 		_31 = 0.0; _32 = 0.0; _33 = 1.0; _34 = 0.0;
 		_41 = 0.0; _42 = 0.0; _43 = 0.0; _44 = 1.0;
+		_isDirty = true;
 	}
 
 	public inline function translateVector3D(v:Vector3D):Void
@@ -143,6 +154,7 @@ class Matrix3D implements ArrayAccess<Float>
 		_41 = _41 + x * _44;
 		_42 = _42 + y * _44;
 		_43 = _43 + z * _44;
+		_isDirty = true;
 	}
 
 	public inline function scaleVector3D(v:Vector3D):Void
@@ -165,6 +177,7 @@ class Matrix3D implements ArrayAccess<Float>
 		_23 = _23 * z;
 		_33 = _33 * z;
 		_43 = _43 * z;
+		_isDirty = true;
 	}
 
 	public inline function rotateVector3D(v:Vector3D):Void
@@ -194,6 +207,8 @@ class Matrix3D implements ArrayAccess<Float>
 		tmp = _42;
 		_42 = tmp * cos + _43 * -sin;
 		_43 = tmp * sin + _43 * cos;
+
+		_isDirty = true;
 	}
 
 	public function rotateY(angle:Float):Void
@@ -216,6 +231,8 @@ class Matrix3D implements ArrayAccess<Float>
 		tmp = _41;
 		_41 = tmp * cos + _43 * sin;
 		_43 = tmp * -sin + _43 * cos;
+
+		_isDirty = true;
 	}
 
 	public function rotateZ(angle:Float):Void
@@ -238,6 +255,8 @@ class Matrix3D implements ArrayAccess<Float>
 		tmp = _41;
 		_41 = tmp * cos + _42 * -sin;
 		_42 = tmp * sin + _42 * cos;
+
+		_isDirty = true;
 	}
 
 	public function multiply(m:Matrix3D):Matrix3D
@@ -266,6 +285,8 @@ class Matrix3D implements ArrayAccess<Float>
 		_42 = a41 * m._12 + a42 * m._22 + a43 * m._32 + a44 * m._42;
 		_43 = a41 * m._13 + a42 * m._23 + a43 * m._33 + a44 * m._43;
 		_44 = a41 * m._14 + a42 * m._24 + a43 * m._34 + a44 * m._44;
+
+		_isDirty = true;
 
 		return this;
 	}
@@ -334,6 +355,7 @@ class Matrix3D implements ArrayAccess<Float>
 
 	private function __set(index:Int, value:Float):Float
 	{
+		_isDirty = true;
 		return switch (index)
 		{
 			case 0: _11 = value;
@@ -355,5 +377,8 @@ class Matrix3D implements ArrayAccess<Float>
 			default: throw "Invalid index value for Matrix3D (0-15).";
 		}
 	}
+
+	private var _float32Array:Float32Array;
+	private var _isDirty:Bool = true;
 
 }

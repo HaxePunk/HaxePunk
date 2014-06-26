@@ -10,6 +10,7 @@ import lime.graphics.GLBuffer;
 import lime.utils.Float32Array;
 import haxepunk.math.Vector3D;
 import haxepunk.math.Matrix3D;
+import haxepunk.scene.Camera;
 
 class Image implements Graphic
 {
@@ -142,7 +143,7 @@ class Image implements Graphic
 	}
 
 	#if !flash
-	private inline function drawBuffer(projectionMatrix:Float32Array, modelViewMatrix:Matrix3D, buffer:GLBuffer, offset:Int=0):Void
+	private inline function drawBuffer(camera:Camera, modelViewMatrix:Matrix3D, buffer:GLBuffer, offset:Int=0):Void
 	{
 		if (buffer != null)
 		{
@@ -157,20 +158,20 @@ class Image implements Graphic
 			}
 
 			GL.bindBuffer(GL.ARRAY_BUFFER, buffer);
-			material.use(projectionMatrix, _matrix.clone().multiply(modelViewMatrix));
+			material.use(camera.transform.float32Array, _matrix.clone().multiply(modelViewMatrix));
 			GL.drawArrays(GL.TRIANGLE_STRIP, offset << 2, 4);
 			// material.disable();
 		}
 	}
 	#end
 
-	public function draw(projectionMatrix:Float32Array, modelViewMatrix:Matrix3D):Void
+	public function draw(camera:Camera, modelViewMatrix:Matrix3D):Void
 	{
 		switch (HXP.context)
 		{
 			case OPENGL(gl):
 			#if !flash
-				drawBuffer(projectionMatrix, modelViewMatrix, _vertexBuffer);
+				drawBuffer(camera, modelViewMatrix, _vertexBuffer);
 			#end
 			case FLASH(stage):
 			#if flash

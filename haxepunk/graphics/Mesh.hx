@@ -9,6 +9,7 @@ import lime.utils.Int16Array;
 #end
 import lime.utils.Float32Array;
 import haxepunk.math.Matrix3D;
+import haxepunk.scene.Camera;
 
 class Mesh implements Graphic
 {
@@ -43,10 +44,10 @@ class Mesh implements Graphic
 	 * @param projectionMatrix The projection matrix to apply
 	 * @param modelViewMatrix The model view matrix to apply
 	 */
-	public function draw(projectionMatrix:lime.utils.Float32Array, modelViewMatrix:Matrix3D):Void
+	public function draw(camera:Camera, modelViewMatrix:Matrix3D):Void
 	{
 		GL.bindBuffer(GL.ARRAY_BUFFER, _vertexBuffer);
-		material.use(projectionMatrix, transform.clone().multiply(modelViewMatrix));
+		material.use(camera.transform.float32Array, transform.clone().multiply(modelViewMatrix));
 
 		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, _indexBuffer);
 		GL.drawElements(GL.TRIANGLES, _indexSize, GL.UNSIGNED_SHORT, 0);

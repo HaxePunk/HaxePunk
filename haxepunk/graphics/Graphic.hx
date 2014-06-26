@@ -1,12 +1,13 @@
 package haxepunk.graphics;
 
 import haxepunk.math.Matrix3D;
+import haxepunk.scene.Camera;
 
 interface Graphic
 {
 
 	public function update(elapsed:Float):Void;
-	public function draw(projectionMatrix:lime.utils.Float32Array, modelViewMatrix:Matrix3D):Void;
+	public function draw(camera:Camera, modelViewMatrix:Matrix3D):Void;
 
 }
 
@@ -49,11 +50,11 @@ class GraphicList implements Graphic
 	}
 
 	/** @private Draws the Graphics in the list. */
-	public function draw(projectionMatrix:lime.utils.Float32Array, modelViewMatrix:Matrix3D):Void
+	public function draw(camera:Camera, modelViewMatrix:Matrix3D):Void
 	{
 		for (graphic in _children)
 		{
-			graphic.draw(projectionMatrix, modelViewMatrix);
+			graphic.draw(camera, modelViewMatrix);
 		}
 	}
 

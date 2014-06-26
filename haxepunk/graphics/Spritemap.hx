@@ -10,6 +10,7 @@ import lime.utils.Float32Array;
 import haxepunk.math.Matrix3D;
 import haxepunk.math.Vector3D;
 import haxepunk.math.Math;
+import haxepunk.scene.Camera;
 import haxe.ds.StringMap;
 
 /**
@@ -391,13 +392,13 @@ class Spritemap extends Image
 #end
 	}
 
-	override public function draw(projectionMatrix:lime.utils.Float32Array, modelViewMatrix:Matrix3D):Void
+	override public function draw(camera:Camera, modelViewMatrix:Matrix3D):Void
 	{
 		switch (HXP.context)
 		{
 			case OPENGL(gl):
 			#if !flash
-				drawBuffer(projectionMatrix, modelViewMatrix, _buffer, _frame);
+				drawBuffer(camera, modelViewMatrix, _buffer, _frame);
 			#end
 			case FLASH(stage):
 			#if flash

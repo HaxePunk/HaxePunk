@@ -1,6 +1,5 @@
 package haxepunk.graphics;
 
-import lime.graphics.GL;
 import lime.graphics.GLUniformLocation;
 import lime.Assets;
 import lime.utils.Float32Array;
@@ -13,59 +12,79 @@ class Material
 	{
 		_textures = new Array<Texture>();
 
-		// set a default shader if none is given
-		_shader = (shader == null ? _defaultShader : shader);
+		switch (HXP.context)
+		{
+			case OPENGL(gl):
+				// set a default shader if none is given
+				_shader = (shader == null ? _defaultShader : shader);
 
-		_vertexAttribute = _shader.attribute("aVertexPosition");
-		_texCoordAttribute = _shader.attribute("aTexCoord");
-		_normalAttribute = _shader.attribute("aNormal");
+				_vertexAttribute = _shader.attribute("aVertexPosition");
+				_texCoordAttribute = _shader.attribute("aTexCoord");
+				_normalAttribute = _shader.attribute("aNormal");
 
-		_projectionMatrixUniform = _shader.uniform("uProjectionMatrix");
-		_modelViewMatrixUniform = _shader.uniform("uModelViewMatrix");
+				_projectionMatrixUniform = _shader.uniform("uProjectionMatrix");
+				_modelViewMatrixUniform = _shader.uniform("uModelViewMatrix");
+			default:
+		}
 	}
 
 	public function addTexture(texture:Texture, uniformName:String="uImage0")
 	{
-		// keep uniform to allow removal of textures?
-		var uniform = _shader.uniform(uniformName);
-		_shader.use();
-		GL.uniform1i(uniform, _textures.length);
+		switch (HXP.context)
+		{
+			case OPENGL(gl):
+				// keep uniform to allow removal of textures?
+				var uniform = _shader.uniform(uniformName);
+				_shader.use();
+				gl.uniform1i(uniform, _textures.length);
+			default:
+		}
 		_textures.push(texture);
 	}
 
 	public function use(projectionMatrix:Float32Array, modelViewMatrix:Matrix3D)
 	{
-		_shader.use();
-
-		// assign any textures
-		for (i in 0..._textures.length)
+		switch (HXP.context)
 		{
-			GL.activeTexture(GL.TEXTURE0 + i);
-			_textures[i].bind();
+			case OPENGL(gl):
+				_shader.use();
+
+				// assign any textures
+				for (i in 0..._textures.length)
+				{
+					gl.activeTexture(gl.TEXTURE0 + i);
+					_textures[i].bind();
+				}
+
+				// assign the projection and modelview matrices
+				gl.uniformMatrix4fv(_projectionMatrixUniform, false, projectionMatrix);
+				gl.uniformMatrix4fv(_modelViewMatrixUniform, false, modelViewMatrix.float32Array);
+
+				// set the vertices as the first 3 floats in a buffer
+				gl.vertexAttribPointer(_vertexAttribute, 3, gl.FLOAT, false, 8*4, 0);
+				gl.enableVertexAttribArray(_vertexAttribute);
+
+				// set the tex coords as the next 2 floats in a buffer
+				gl.vertexAttribPointer(_texCoordAttribute, 2, gl.FLOAT, false, 8*4, 3*4);
+				gl.enableVertexAttribArray(_texCoordAttribute);
+
+				// set the normals as the last 3 floats in a buffer
+				gl.vertexAttribPointer(_normalAttribute, 3, gl.FLOAT, false, 8*4, 5*4);
+				gl.enableVertexAttribArray(_normalAttribute);
+			default:
 		}
-
-		// assign the projection and modelview matrices
-		GL.uniformMatrix4fv(_projectionMatrixUniform, false, projectionMatrix);
-		GL.uniformMatrix4fv(_modelViewMatrixUniform, false, modelViewMatrix.float32Array);
-
-		// set the vertices as the first 3 floats in a buffer
-		GL.vertexAttribPointer(_vertexAttribute, 3, GL.FLOAT, false, 8*4, 0);
-		GL.enableVertexAttribArray(_vertexAttribute);
-
-		// set the tex coords as the next 2 floats in a buffer
-		GL.vertexAttribPointer(_texCoordAttribute, 2, GL.FLOAT, false, 8*4, 3*4);
-		GL.enableVertexAttribArray(_texCoordAttribute);
-
-		// set the normals as the last 3 floats in a buffer
-		GL.vertexAttribPointer(_normalAttribute, 3, GL.FLOAT, false, 8*4, 5*4);
-		GL.enableVertexAttribArray(_normalAttribute);
 	}
 
 	public inline function disable()
 	{
-		GL.disableVertexAttribArray(_vertexAttribute);
-		GL.disableVertexAttribArray(_texCoordAttribute);
-		GL.disableVertexAttribArray(_normalAttribute);
+		switch (HXP.context)
+		{
+			case OPENGL(gl):
+				gl.disableVertexAttribArray(_vertexAttribute);
+				gl.disableVertexAttribArray(_texCoordAttribute);
+				gl.disableVertexAttribArray(_normalAttribute);
+			default:
+		}
 	}
 
 	public static inline function clear()
