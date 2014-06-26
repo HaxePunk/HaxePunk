@@ -8,10 +8,10 @@ import haxepunk.input.Input;
 /**
  * The mouse buttons.
  * To be used with Input.define, Input.check, Input.pressed, Input.released and Mouse.nameOf.
- * 
+ *
  * Warning: ANY also encompass buttons that aren't listed here, for mouse with more than 3 buttons.
  */
-@:enum abstract MouseButton(Int)
+@:enum abstract MouseButton(Int) to Int
 {
 	var ANY = -1;
 	var LEFT = 0;
@@ -66,7 +66,7 @@ class Mouse
 
 	/**
 	 * Returns the name of the mouse button.
-	 * 
+	 *
 	 * Examples:
 	 * Mouse.nameOf(MouseButton.LEFT);
 	 * Mouse.nameOf(Mouse.last);
@@ -81,7 +81,7 @@ class Mouse
 			var v:Int = cast button;
 			return "BUTTON " + v;
 		}
-		
+
 		return switch(button)
 		{
 			case ANY:

@@ -16,10 +16,10 @@ class MouseTest extends haxe.unit.TestCase
 
 	public function testCheck()
 	{
-		Input.define("left", [Mouse.MouseButton.Left]);
-		Input.define("right", [Mouse.MouseButton.Right]);
-		Input.define("all", [Mouse.MouseButton.Any]);
-		Input.define("both", [Mouse.MouseButton.Left, Mouse.MouseButton.Right]);
+		Input.define("left", [Mouse.MouseButton.LEFT]);
+		Input.define("right", [Mouse.MouseButton.RIGHT]);
+		Input.define("all", [Mouse.MouseButton.ANY]);
+		Input.define("both", [Mouse.MouseButton.LEFT, Mouse.MouseButton.RIGHT]);
 
 		assertFalse(Input.check("left"));
 		assertFalse(Input.check("right"));
@@ -27,18 +27,18 @@ class MouseTest extends haxe.unit.TestCase
 		// undefined but should return false instead of throwing an error
 		assertFalse(Input.check("foo"));
 
-		Mouse.onMouseDown(0, 0, Mouse.MouseButton.Left);
+		Mouse.onMouseDown(0, 0, Mouse.MouseButton.LEFT);
 		assertTrue(Input.check("left"));
 		assertTrue(Input.check("all"));
 
-		Mouse.onMouseDown(0, 0, Mouse.MouseButton.Right);
+		Mouse.onMouseDown(0, 0, Mouse.MouseButton.RIGHT);
 		assertTrue(Input.check("right"));
 		assertTrue(Input.check("all"));
 		assertTrue(Input.check("both"));
 
 		Input.update();
 
-		Mouse.onMouseUp(0, 0, Mouse.MouseButton.Left);
+		Mouse.onMouseUp(0, 0, Mouse.MouseButton.LEFT);
 
 		assertTrue(Input.check("left")); // left is still "on" but not "pressed"
 
@@ -50,25 +50,25 @@ class MouseTest extends haxe.unit.TestCase
 
 	public function testMousePressed()
 	{
-		assertEquals(0, Input.pressed(Mouse.MouseButton.Left));
+		assertEquals(0, Input.pressed(Mouse.MouseButton.LEFT));
 
-		Mouse.onMouseDown(0, 0, Mouse.MouseButton.Left);
-		assertEquals(1, Input.pressed(Mouse.MouseButton.Left));
+		Mouse.onMouseDown(0, 0, Mouse.MouseButton.LEFT);
+		assertEquals(1, Input.pressed(Mouse.MouseButton.LEFT));
 
-		Mouse.onMouseDown(0, 0, Mouse.MouseButton.Left);
-		assertEquals(0, Input.released(Mouse.MouseButton.Left));
-		assertEquals(2, Input.pressed(Mouse.MouseButton.Left));
+		Mouse.onMouseDown(0, 0, Mouse.MouseButton.LEFT);
+		assertEquals(0, Input.released(Mouse.MouseButton.LEFT));
+		assertEquals(2, Input.pressed(Mouse.MouseButton.LEFT));
 
-		Mouse.onMouseUp(0, 0, Mouse.MouseButton.Left);
-		assertEquals(1, Input.released(Mouse.MouseButton.Left));
+		Mouse.onMouseUp(0, 0, Mouse.MouseButton.LEFT);
+		assertEquals(1, Input.released(Mouse.MouseButton.LEFT));
 
 		Input.update();
-		assertEquals(0, Input.pressed(Mouse.MouseButton.Left));
+		assertEquals(0, Input.pressed(Mouse.MouseButton.LEFT));
 	}
 
 	public function testMousePosition()
 	{
-		Mouse.onMouseDown(10, 45, Mouse.MouseButton.Left);
+		Mouse.onMouseDown(10, 45, Mouse.MouseButton.LEFT);
 		assertEquals(10.0, Mouse.x);
 		assertEquals(45.0, Mouse.y);
 	}
@@ -76,7 +76,8 @@ class MouseTest extends haxe.unit.TestCase
 	public function testMouseWheel()
 	{
 		Mouse.onMouseWheel(1, 2);
-		assertEquals(1.0, Mouse.wheelDelta);
+		assertEquals(1.0, Mouse.wheelDeltaX);
+		assertEquals(2.0, Mouse.wheelDeltaY);
 	}
 
 }
