@@ -33,15 +33,20 @@ class Engine extends Application
 
 	override public function create(config:Config):Void
 	{
-		super.create(config);
-
-		HXP.window = windows[0];
-		HXP.context = HXP.window.currentRenderer.context;
-		
 		// Init the input system
 		Input.init();
 
 		init();
+		
+		super.create(config);	
+	}
+	
+	override public function addWindow(window:Window):Void
+	{
+		HXP.window = window;
+		HXP.context = HXP.window.currentRenderer.context;
+		
+		super.addWindow(window);
 	}
 
 	/**
