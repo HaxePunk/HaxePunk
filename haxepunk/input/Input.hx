@@ -1,5 +1,6 @@
 package haxepunk.input;
 
+import haxepunk.input.Keyboard;
 import haxepunk.input.Mouse;
 
 /**
@@ -9,6 +10,7 @@ private enum EitherInput
 {
 	String(s:String);
 	MouseButton(mb:MouseButton);
+	Key(k:Key);
 }
 
 /**
@@ -16,13 +18,14 @@ private enum EitherInput
  */
 private abstract InputType(EitherInput)
 {
-	public inline function new(e:EitherInput) this = e;
+	public inline function new(e:EitherInput) { this = e; }
 	public var type(get, never):EitherInput;
 
-	@:to inline function get_type() return this;
+	@:to inline function get_type() { return this; }
 
-	@:from static function fromString(s:String) return new InputType(String(s));
-	@:from static function fromMouseButton(mb:MouseButton) return new InputType(MouseButton(mb));
+	@:from static function fromString(s:String) { return new InputType(String(s)); }
+	@:from static function fromMouseButton(mb:MouseButton) { return new InputType(MouseButton(mb)); }
+	@:from static function fromKey(k:Key) { return new InputType(Key(k)); }
 }
 
 /**
@@ -51,13 +54,13 @@ class Input
 	 */
 	public static function define(name:String, inputs:Array<InputType>, merge:Bool=false):Void
 	{
-		if (!merge || !defines.exists(name))
+		if (!merge || !_defines.exists(name))
 		{
-			defines.set(name, inputs);
+			_defines.set(name, inputs);
 		}
 		else
 		{
-			var existing = defines.get(name);
+			var existing = _defines.get(name);
 
 			for (input in inputs)
 			{
@@ -67,7 +70,7 @@ class Input
 				}
 			}
 
-			defines.set(name, existing);
+			_defines.set(name, existing);
 		}
 	}
 
@@ -101,7 +104,7 @@ class Input
 	@:allow(haxepunk.Engine)
 	private static function init()
 	{
-		//Keyboard.init();
+		Keyboard.init();
 		Mouse.init();
 		//Gamepad.init();
 		//Touch.init();
@@ -121,11 +124,11 @@ class Input
 		switch (input.type)
 		{
 			case String(name):
-				if (defines.exists(name))
+				if (_defines.exists(name))
 				{
 					var sum = 0;
 
-					for (i in defines.get(name))
+					for (i in _defines.get(name))
 					{
 						sum = sum + subsystemValue(i, v);
 					}
@@ -157,9 +160,9 @@ class Input
 			case String(name):
 				0; // ignore strings
 
-			/*case Key(k):
+			case Key(k):
 				Keyboard.value(k, v);
-			*/
+
 			case MouseButton(mb):
 				Mouse.value(mb, v);
 			/*
@@ -177,26 +180,23 @@ class Input
 	@:allow(haxepunk.Engine)
 	private static function update():Void
 	{
-		//Keyboard.update();
+		Keyboard.update();
 		Mouse.update();
 		//Gamepad.update();
 		//Touch.update();
 	}
 
 	/** Stocks the inputs the user defined using its name as key. */
-	private static var defines = new Map<String, Array<InputType>>();
+	private static var _defines = new Map<String, Array<InputType>>();
 }
 
 /**
  * The types of value for an input.
  */
-@:allow(haxepunk.input)
-@:enum
-/*private*/ abstract InputValue(Int) to Int
+//@:allow(haxepunk.input)
+@:enum /*private*/ abstract InputValue(Int)
 {
 	var On = 0;
 	var Pressed = 1;
 	var Released = 2;
-
-	@:op(A+B) private inline function add (rhs:Int):Int { return rhs + this; }
 }
