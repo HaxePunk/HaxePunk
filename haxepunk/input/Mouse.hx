@@ -154,7 +154,7 @@ class Mouse
 		}
 
 		// Reset wheelDelta
-		wheelDelta = 0;
+		wheelDeltaX = wheelDeltaY = 0;
 	}
 
 	/**
