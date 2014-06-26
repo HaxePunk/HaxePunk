@@ -2,7 +2,7 @@ package haxepunk.masks;
 
 import haxepunk.math.Vector3D;
 
-class AABB
+class AABB implements Mask
 {
 
 	/**
@@ -119,6 +119,18 @@ class AABB
 		this.min = (min == null ? new Vector3D() : min);
 		this.max = (max == null ? new Vector3D() : max);
 		_center = new Vector3D();
+	}
+
+	public function intersects(other:Mask):Bool
+	{
+		if (Std.is(other, AABB)) return intersectsAABB(cast other);
+		return false;
+	}
+
+	public function collide(other:Mask):Vector3D
+	{
+		if (Std.is(other, AABB)) return collideAABB(cast other);
+		return Vector3D.ZERO;
 	}
 
 	public function intersectsAABB(other:AABB):Bool

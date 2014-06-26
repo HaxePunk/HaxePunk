@@ -1,6 +1,7 @@
 package haxepunk.scene;
 
 import haxepunk.graphics.Graphic;
+import haxepunk.masks.Mask;
 import haxepunk.masks.AABB;
 import haxepunk.math.Matrix3D;
 import haxepunk.math.Vector3D;
@@ -30,8 +31,23 @@ class Entity
 	public var scene(default, null):Scene;
 
 	public var hitbox:AABB;
+	public var collidable:Bool = true;
 
-	public var type:String = "";
+	/**
+	 * The collision type, used for collision checking.
+	 */
+	public var type(get, set):String;
+	private inline function get_type():String { return _type; }
+	private function set_type(value:String):String
+	{
+		if (_type == value) return _type;
+		if (scene != null)
+		{
+			if (_type != "") scene.removeType(this);
+			if (value != "") scene.addType(this);
+		}
+		return _type = value;
+	}
 
 	public function new(x:Float = 0, y:Float = 0, z:Float = 0)
 	{
@@ -69,11 +85,48 @@ class Entity
 	}
 
 	/**
+	 * Checks for a collision against an Entity type.
+	 * @param	type		The Entity type to check for.
+	 * @param	x			Virtual x position to place this Entity.
+	 * @param	y			Virtual y position to place this Entity.
+	 * @return	The first Entity collided with, or null if none were collided.
+	 */
+	public function collide(type:String, x:Float, y:Float):Entity
+	{
+		// check that the entity has been added to a scene
+		if (scene == null) return null;
+
+		var entities = scene.entitiesForType(type);
+		if (!collidable || entities == null) return null;
+
+		var _x = this.x, _y = this.y;
+		this.x = x; this.y = y;
+
+		for (e in entities)
+		{
+			if (e.collidable && e != this && e.hitbox.intersectsAABB(hitbox))
+			{
+				if (_mask == null || e._mask != null && _mask.intersects(e._mask))
+				{
+					this.x = _x; this.y = _y;
+					return e;
+				}
+			}
+		}
+
+		this.x = _x; this.y = _y;
+		return null;
+	}
+
+	/**
 	 * Updates the Entity.
 	 */
 	public function update(elapsed:Float):Void { }
 
 	private var _graphic:Graphic;
+	private var _mask:Mask;
+	private var _type:String = "";
+
 	private var modelViewMatrix:Matrix3D;
 
 }

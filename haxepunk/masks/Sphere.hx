@@ -2,7 +2,7 @@ package haxepunk.masks;
 
 import haxepunk.math.Vector3D;
 
-class Sphere
+class Sphere implements Mask
 {
 
 	/**
@@ -19,6 +19,17 @@ class Sphere
 	{
 		this.position = (position == null ? new Vector3D() : position);
 		this.radius = radius;
+	}
+
+	public function intersects(other:Mask):Bool
+	{
+		if (Std.is(other, Sphere)) return intersectsSphere(cast other);
+		return false;
+	}
+
+	public function collide(other:Mask):Vector3D
+	{
+		return Vector3D.ZERO;
 	}
 
 	public function intersectsSphere(other:Sphere):Bool

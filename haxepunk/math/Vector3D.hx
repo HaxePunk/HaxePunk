@@ -19,6 +19,8 @@ class Point3D
 abstract Vector3D (Point3D)
 {
 
+	public static var ZERO:Vector3D = new Vector3D(0, 0, 0, 0);
+
 	public function new(x:Float=0, y:Float=0, z:Float=0, w:Float=0)
 	{
 		this = new Point3D(x, y, z, w);
