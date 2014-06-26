@@ -24,6 +24,8 @@ class MouseState
 	public var pressed:Int = 0;
 	public var released:Int = 0;
 
+	public function new() { }
+
 	public function value(v:haxepunk.input.Input.InputValue):Int
 	{
 		return switch (v)

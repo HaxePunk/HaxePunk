@@ -57,6 +57,15 @@ class AABBTest extends haxe.unit.TestCase
 		assertEquals(1.0, aabb.max.x);
 		assertEquals(1.0, aabb.max.y);
 		assertEquals(1.0, aabb.max.z);
+
+		assertEquals(-2.0, aabb.x = aabb.y = aabb.z = -2);
+		assertEquals(-2.0, aabb.x);
+		assertEquals(-2.0, aabb.y);
+		assertEquals(-2.0, aabb.z);
+
+		assertEquals(0.0, aabb.right);
+		assertEquals(0.0, aabb.bottom);
+		assertEquals(0.0, aabb.back);
 	}
 
 }

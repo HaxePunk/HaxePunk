@@ -16,6 +16,36 @@ class AABB
 	public var max:Vector3D;
 
 	/**
+	 * X Offset.
+	 */
+	public var x(get, set):Float;
+	private inline function get_x():Float { return min.x; }
+	private inline function set_x(value:Float):Float {
+		max.x = value + width;
+		return min.x = value;
+	}
+
+	/**
+	 * Y Offset.
+	 */
+	public var y(get, set):Float;
+	private inline function get_y():Float { return min.y; }
+	private inline function set_y(value:Float):Float {
+		max.y = value + height;
+		return min.y = value;
+	}
+
+	/**
+	 * Z Offset.
+	 */
+	public var z(get, set):Float;
+	private inline function get_z():Float { return min.z; }
+	private inline function set_z(value:Float):Float {
+		max.z = value + depth;
+		return min.z = value;
+	}
+
+	/**
 	 * Width of the AABB
 	 */
 	public var width(get, set):Float;
@@ -93,9 +123,9 @@ class AABB
 
 	public function intersectsAABB(other:AABB):Bool
 	{
-		return !(max.x <= other.min.x || min.x >= other.max.x ||
-			max.y <= other.min.y || min.y >= other.max.y ||
-			max.z <= other.min.z || min.z >= other.max.z);
+		return max.x > other.min.x && min.x < other.max.x &&
+			max.y > other.min.y && min.y < other.max.y &&
+			max.z > other.min.z && min.z < other.max.z;
 	}
 
 	public function collideAABB(other:AABB):Vector3D

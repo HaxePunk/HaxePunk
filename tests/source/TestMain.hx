@@ -17,6 +17,7 @@ class TestMain
 
 		// mask tests
 		runner.add(new haxepunk.masks.AABBTest());
+		runner.add(new haxepunk.masks.SphereTest());
 
 		runner.run();
 	}
