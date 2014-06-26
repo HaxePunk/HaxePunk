@@ -34,14 +34,16 @@ class Engine extends Application
 	override public function create(config:Config):Void
 	{
 		super.create(config);
-		
+
 		HXP.window = windows[0];
 		HXP.context = HXP.window.currentRenderer.context;
-		
+
 		// Init the input system
 		Input.init();
 
 		ready();
+
+		exec();
 	}
 
 	/**
@@ -74,14 +76,8 @@ class Engine extends Application
 		}
 #end
 
-		// handle time wrapping by negating the last time by the max Int value
-		// not sure this is worth it since the game would have to be running almost 19 days straight
-		if (deltaTime < _lastTime) _lastTime -= Math.INT_MAX_VALUE;
+		scene.update(deltaTime / 1000.0);
 
-		var elapsed:Float = (deltaTime - _lastTime) / 1000.0;
-		scene.update(elapsed);
-		_lastTime = deltaTime;
-		
 		// Update the input system
 		Input.update();
 	}
@@ -117,6 +113,5 @@ class Engine extends Application
 	}
 
 	private var _scenes:List<Scene>;
-	private var _lastTime:Int = 0;
 
 }

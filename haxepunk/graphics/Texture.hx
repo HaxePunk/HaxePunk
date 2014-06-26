@@ -79,12 +79,6 @@ class Texture
 		GL.bindTexture(GL.TEXTURE_2D, _lastBoundTexture);
 	}
 
-	private inline function toPowerOfTwo(value:Int):Int
-	{
-		return Std.int(Math.pow(2, Math.ceil(Math.log(value) / Math.log(2))));
-	}
-
-	@:access(lime.graphics.Image)
 	private inline function loadImage(path:String)
 	{
 		var image = Assets.getImage(path);
@@ -94,18 +88,15 @@ class Texture
 		switch (HXP.context)
 		{
 			case OPENGL(gl):
-				// TODO: handle power of 2 textures
-				// width = toPowerOfTwo(image.width);
-				// height = toPowerOfTwo(image.height);
-				// if (width != originalWidth || height != originalHeight)
-				// {
-				// }
+				image.convertToPOT();
+				width = image.width;
+				height = image.height;
 
-				_texture = GL.createTexture();
-				GL.bindTexture(GL.TEXTURE_2D, _texture);
-				GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, image.__bytes);
-				GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
-				GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
+				_texture = gl.createTexture();
+				gl.bindTexture(gl.TEXTURE_2D, _texture);
+				gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, image.bytes);
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 			case FLASH(stage):
 			default:
 		}
