@@ -42,8 +42,6 @@ class Engine extends Application
 		Input.init();
 
 		ready();
-
-		exec();
 	}
 
 	/**

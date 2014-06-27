@@ -4,6 +4,7 @@ import haxe.ds.IntMap;
 import lime.ui.MouseEventManager;
 
 import haxepunk.input.Input;
+import haxepunk.input.InputState;
 
 /**
  * The mouse buttons.
@@ -20,28 +21,6 @@ import haxepunk.input.Input;
 
 	@:op(A<B) private inline function less (rhs:Int):Bool { return this < rhs; }
 	@:op(A>B) private inline function more (rhs:Int):Bool { return this > rhs; }
-}
-
-/**
- * Store the values on, pressed and released for a mouse button.
- */
-private class MouseState
-{
-	public var on:Int = 0;
-	public var pressed:Int = 0;
-	public var released:Int = 0;
-
-	public function new() { }
-
-	public function value(v:InputValue):Int
-	{
-		return switch (v)
-		{
-			case InputValue.On: return on;
-			case InputValue.Pressed: return pressed;
-			case InputValue.Released: return released;
-		};
-	}
 }
 
 /**
@@ -134,7 +113,7 @@ class Mouse
 		}
 		else
 		{
-			return getMouseState(cast button).value(v);
+			return getInputState(cast button).value(v);
 		}
 	}
 
@@ -173,7 +152,7 @@ class Mouse
 	{
 		onMouseMove(x, y, button);
 
-		getMouseState(button).pressed += 1;
+		getInputState(button).pressed += 1;
 		last = cast button;
 	}
 
@@ -184,7 +163,7 @@ class Mouse
 	{
 		onMouseMove(x, y, button);
 
-		getMouseState(button).released += 1;
+		getInputState(button).released += 1;
 		last = cast button;
 	}
 
@@ -200,21 +179,21 @@ class Mouse
 	/**
 	 * Gets a mouse state object from a button number.
 	 */
-	private static function getMouseState(button:Int):MouseState
+	private static function getInputState(button:Int):InputState
 	{
-		var state:MouseState;
+		var state:InputState;
 		if (_states.exists(button))
 		{
 			state = _states.get(button);
 		}
 		else
 		{
-			state = new MouseState();
+			state = new InputState();
 			_states.set(button, state);
 		}
 		return state;
 	}
 
 	/** States for On,Pressed,Released for each button */
-	private static var _states:IntMap<MouseState> = new IntMap<MouseState>();
+	private static var _states:IntMap<InputState> = new IntMap<InputState>();
 }

@@ -1,14 +1,16 @@
 package haxepunk.input;
 
-import lime.ui.KeyEventManager;
-
+import haxe.ds.IntMap;
 import haxepunk.input.Input;
+import haxepunk.input.InputState;
+import lime.ui.KeyEventManager;
 
 /**
  * Get information on the keyboard input.
  */
 class Keyboard
 {
+
 	/** Contains the string of the last keys pressed */
 	public static var keyString(default, null):String = "";
 
@@ -24,20 +26,20 @@ class Keyboard
 	public static function nameOf(key:Key):String
 	{
 		var char:Int = cast key;
-		
+
 		if (char == -1)
 		{
 			return "";
-		}		
+		}
 		if (Key.A <= char && Key.Z >= char) // the keys needs to be on the left side of the operator for the operator overloading
 		{
 			return String.fromCharCode(char);
-		}		
+		}
 		if (Key.F1 <= char && Key.F15 >= char)
 		{
 			return "F" + Std.string(char - 111);
-		}		
-		if (Key.NUMPAD_0 <= char && Key.NUMPAD_9 >= char) 
+		}
+		if (Key.NUMPAD_0 <= char && Key.NUMPAD_9 >= char)
 		{
 			return "NUMPAD " + Std.string(char - 96);
 		}
@@ -45,7 +47,7 @@ class Keyboard
 		{
 			return Std.string(char - 48);
 		}
-		
+
 		return switch (key)
 		{
 			case LEFT: "LEFT";
@@ -78,7 +80,7 @@ class Keyboard
 			case NUMPAD_ENTER: "NUMPAD ENTER";
 			case NUMPAD_MULTIPLY: "NUMPAD MULTIPLY";
 			case NUMPAD_SUBTRACT: "NUMPAD SUBTRACT";
-			
+
 			default: "KEY " + char; // maybe something better?
 		}
 	}
@@ -95,15 +97,26 @@ class Keyboard
 		KeyEventManager.onKeyDown.add(onKeyDown);
 		KeyEventManager.onKeyUp.add(onKeyUp);
 	}
-	
+
 	/**
 	 *
 	 */
 	@:allow(haxepunk.input.Input)
 	private static function value(key:Key, v:InputValue):Int
 	{
-		// stub
-		return 0;
+		if (key <= -1) // Any
+		{
+			var result = 0;
+			for (state in _states)
+			{
+				result += state.value(v);
+			}
+			return result;
+		}
+		else
+		{
+			return getInputState(cast key).value(v);
+		}
 	}
 
 	/**
@@ -112,13 +125,22 @@ class Keyboard
 	@:allow(haxepunk.input.Input)
 	private static function update():Void
 	{
+		// Was On last frame if was on the previous one and there is at least the same amount of Pressed than Released.
+		// Or wasn't On last frame and Pressed > 0
+		for (state in _states)
+		{
+			state.on = ( (state.on > 0 && state.pressed >= state.released) || (state.on == 0 && state.pressed > 0) ) ? 1 : 0;
+			state.pressed = 0;
+			state.released = 0;
+		}
 	}
-	
+
 	/**
 	 * Lime onKeyDown event.
 	 */
 	private static function onKeyDown(keycode:Int, modifiers:Int):Void
 	{
+		getInputState(keycode).pressed += 1;
 		last = cast keycode;
 	}
 
@@ -127,8 +149,30 @@ class Keyboard
 	 */
 	private static function onKeyUp(keycode:Int, modifiers:Int):Void
 	{
+		getInputState(keycode).released += 1;
 		last = cast keycode;
 	}
+
+	/**
+	 * Gets a mouse state object from a button number.
+	 */
+	private static function getInputState(button:Int):InputState
+	{
+		var state:InputState;
+		if (_states.exists(button))
+		{
+			state = _states.get(button);
+		}
+		else
+		{
+			state = new InputState();
+			_states.set(button, state);
+		}
+		return state;
+	}
+
+	private static var _states:IntMap<InputState> = new IntMap<InputState>();
+
 }
 
 
@@ -235,7 +279,7 @@ abstract Key(Int)
 	var NUMPAD_ENTER = 108;
 	var NUMPAD_MULTIPLY = 106;
 	var NUMPAD_SUBTRACT = 109;
-	
+
 	@:op(A<=B) private inline function lessEq (rhs:Int):Bool { return this <= rhs; }
 	@:op(A>=B) private inline function moreEq (rhs:Int):Bool { return this >= rhs; }
 }

@@ -2,6 +2,7 @@ package haxepunk.input;
 
 import haxepunk.input.Keyboard;
 import haxepunk.input.Mouse;
+import haxepunk.input.InputState;
 
 /**
  * Either enum used by InputType.
@@ -188,15 +189,4 @@ class Input
 
 	/** Stocks the inputs the user defined using its name as key. */
 	private static var _defines = new Map<String, Array<InputType>>();
-}
-
-/**
- * The types of value for an input.
- */
-//@:allow(haxepunk.input)
-@:enum /*private*/ abstract InputValue(Int)
-{
-	var On = 0;
-	var Pressed = 1;
-	var Released = 2;
 }
