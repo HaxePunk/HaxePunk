@@ -20,7 +20,7 @@ install:
   - haxelib dev aether ~/aether
   - git clone https://github.com/openfl/lime.git ~/lime -b next --recursive --depth 1
   - haxelib dev lime ~/lime
-  - haxelib run lime rebuild linux
+  - haxelib run lime rebuild linux -64
   - haxelib run lime rebuild tools
   - echo "y" | haxelib run lime setup
   - haxelib dev HaxePunk $TRAVIS_BUILD_DIR
