@@ -24,11 +24,15 @@ class Vector3DTest extends haxe.unit.TestCase
 		var a = new Vector3D(1, 2, 3),
 			b = new Vector3D(4, 5, 6);
 
-		assertVector(a % b, -3, 6, -3, 1);
-		assertVector(a.cross(b), -3, 6, -3, 1);
+		assertVector(a % b, -3, 6, -3);
+		assertVector(a.cross(b), -3, 6, -3);
 
-		assertVector(b % a, 3, -6, 3, 1);
-		assertVector(b.cross(a), 3, -6, 3, 1);
+		assertVector(b % a, 3, -6, 3);
+		assertVector(b.cross(a), 3, -6, 3);
+
+		assertVector(a, 1, 2, 3);
+		a %= b;
+		assertVector(a, -3, 6, -3);
 	}
 
 	public function testAdd()
@@ -38,6 +42,11 @@ class Vector3DTest extends haxe.unit.TestCase
 
 		assertVector(a + b, 5, 7, 9);
 		assertVector(b + a, 5, 7, 9);
+
+		// addition with side effects
+		assertVector(a, 1, 2, 3);
+		a += b;
+		assertVector(a, 5, 7, 9);
 	}
 
 	public function testSubtract()
@@ -47,6 +56,11 @@ class Vector3DTest extends haxe.unit.TestCase
 
 		assertVector(a - b, -3, -3, -3);
 		assertVector(b - a, 3, 3, 3);
+
+		// subtract with side effects
+		assertVector(a, 1, 2, 3);
+		a -= b;
+		assertVector(a, -3, -3, -3);
 	}
 
 	public function testScalar()
@@ -61,6 +75,13 @@ class Vector3DTest extends haxe.unit.TestCase
 		assertVector(a / 0.5, 2, 4, 6);
 		// not allowed
 		// assertVector(2 / a, 0.5, 1, 1.5);
+
+		// scalar with side effects
+		assertVector(a, 1, 2, 3);
+		a *= 2;
+		assertVector(a, 2, 4, 6);
+		a /= 2;
+		assertVector(a, 1, 2, 3);
 	}
 
 	public function testEquality()
@@ -70,6 +91,25 @@ class Vector3DTest extends haxe.unit.TestCase
 
 		assertFalse(a == b);
 		assertTrue(a != b);
+		assertTrue(a != null);
+	}
+
+	public function testDistance()
+	{
+		var a = new Vector3D(1, 2, 3),
+			b = new Vector3D(4, 5, 6);
+
+		assertEquals(0.0, a.distance(a));
+		assertEquals(b.distance(a), a.distance(b));
+	}
+
+	public function testNormalize()
+	{
+		var a = new Vector3D(1, 2, 3);
+
+		assertTrue(a.length > 1.0);
+		a.normalize();
+		assertEquals(1.0, a.length);
 	}
 
 	public function testNegate()
@@ -80,12 +120,11 @@ class Vector3DTest extends haxe.unit.TestCase
 		assertVector(a.negate(), -1, -2, -3);
 	}
 
-	private function assertVector(v:Vector3D, x:Float=0, y:Float=0, z:Float=0, w:Float=0)
+	private function assertVector(v:Vector3D, x:Float=0, y:Float=0, z:Float=0)
 	{
 		assertEquals(x, v.x);
 		assertEquals(y, v.y);
 		assertEquals(z, v.z);
-		assertEquals(w, v.w);
 	}
 
 }
