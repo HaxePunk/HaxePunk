@@ -3,8 +3,7 @@ package haxepunk.input;
 /**
  * The types of value for an input.
  */
-//@:allow(haxepunk.input)
-@:enum /*private*/ abstract InputValue(Int)
+@:enum abstract InputValue(Int)
 {
 	var On = 0;
 	var Pressed = 1;
@@ -20,7 +19,8 @@ class InputState
 	public var pressed:Int = 0;
 	public var released:Int = 0;
 
-	public function new() { }
+	@:allow(haxepunk.input)
+	private function new() { }
 
 	public function value(v:InputValue):Int
 	{
