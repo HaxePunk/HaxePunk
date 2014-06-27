@@ -60,6 +60,13 @@ abstract Vector3D (Point3D)
 		}
 	}
 
+	public function negate():Void
+	{
+		x = -x;
+		y = -y;
+		z = -z;
+	}
+
 	/**
 	 * Distance between two vectors
 	 * @param v Another vector to check distance
@@ -142,6 +149,24 @@ abstract Vector3D (Point3D)
 		return a;
 	}
 
+	@:op(A * B) public static inline function multiplyMatrix(v:Vector3D, m:Matrix3D):Vector3D
+	{
+		return new Vector3D(
+			m._11 * v.x + m._12 * v.y + m._13 * v.z + m._41,
+			m._21 * v.x + m._22 * v.y + m._23 * v.z + m._42,
+			m._31 * v.x + m._32 * v.y + m._33 * v.z + m._43
+		);
+	}
+
+	@:op(A * B) public static inline function multiplyInverseMatrix(m:Matrix3D, v:Vector3D):Vector3D
+	{
+		return new Vector3D(
+			m._11 * v.x + m._21 * v.y + m._31 * v.z + m._41,
+			m._12 * v.x + m._22 * v.y + m._32 * v.z + m._42,
+			m._13 * v.x + m._23 * v.y + m._33 * v.z + m._43
+		);
+	}
+
 	@:op(A * B) public static inline function dot(a:Vector3D, b:Vector3D):Float
 	{
 		return a.x * b.x + a.y * b.y + a.z * b.z;
@@ -157,7 +182,7 @@ abstract Vector3D (Point3D)
 		return !equals(a, b);
 	}
 
-	@:op(-A) public static inline function negate(a:Vector3D):Vector3D
+	@:op(-A) public static inline function negativeVector(a:Vector3D):Vector3D
 	{
 		return new Vector3D(-a.x, -a.y, -a.z);
 	}

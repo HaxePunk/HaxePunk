@@ -84,6 +84,20 @@ class Vector3DTest extends haxe.unit.TestCase
 		assertVector(a, 1, 2, 3);
 	}
 
+	public function testMultiplyMatrix()
+	{
+		var a = new Vector3D(1, 2, 3);
+		var m = new Matrix3D();
+		assertVector(a * m, 1, 2, 3);
+		assertVector(m * a, 1, 2, 3);
+
+		m.scale(1, 2, 3);
+		assertVector(a * m, 1, 4, 9);
+
+		m.translate(2, 2, 2);
+		assertVector(a * m, 3, 6, 11);
+	}
+
 	public function testEquality()
 	{
 		var a = new Vector3D(1, 2, 3),
@@ -117,7 +131,10 @@ class Vector3DTest extends haxe.unit.TestCase
 		var a = new Vector3D(1, 2, 3);
 
 		assertVector(-a, -1, -2, -3);
-		assertVector(a.negate(), -1, -2, -3);
+
+		assertVector(a, 1, 2, 3);
+		a.negate();
+		assertVector(a, -1, -2, -3);
 	}
 
 	private function assertVector(v:Vector3D, x:Float=0, y:Float=0, z:Float=0)
