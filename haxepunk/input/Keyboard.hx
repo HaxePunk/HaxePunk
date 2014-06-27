@@ -181,7 +181,7 @@ class Keyboard
  * The keyboard keys.
  */
 @:enum
-abstract Key(Int)
+abstract Key(Int) to Int
 {
 	var ANY = -1;
 
