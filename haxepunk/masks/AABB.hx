@@ -135,9 +135,9 @@ class AABB implements Mask
 
 	public function intersectsAABB(other:AABB):Bool
 	{
-		return max.x > other.min.x && min.x < other.max.x &&
-			max.y > other.min.y && min.y < other.max.y &&
-			max.z > other.min.z && min.z < other.max.z;
+		return max.x >= other.min.x && min.x <= other.max.x &&
+			max.y >= other.min.y && min.y <= other.max.y &&
+			max.z >= other.min.z && min.z <= other.max.z;
 	}
 
 	public function collideAABB(other:AABB):Vector3D

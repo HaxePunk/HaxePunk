@@ -12,6 +12,7 @@ install:
   # Compile lime and aether
   - sudo apt-get install mesa-common-dev libgl1-mesa-dev libglu1-mesa-dev -y
   - sudo apt-get install g++-multilib gcc-multilib
+  - sudo apt-get install libgc-dev
   - haxelib install hxcpp
   - haxelib install format
   - haxelib install svg

@@ -40,13 +40,43 @@ class Entity
 	private inline function get_type():String { return _type; }
 	private function set_type(value:String):String
 	{
-		if (_type == value) return _type;
-		if (scene != null)
+		if (_type != value)
 		{
-			if (_type != "") scene.removeType(this);
-			if (value != "") scene.addType(this);
+			if (scene == null)
+			{
+				_type = value;
+			}
+			else
+			{
+				if (_type != "") scene.removeType(this);
+				_type = value;
+				if (value != "") scene.addType(this);
+			}
 		}
-		return _type = value;
+		return _type;
+	}
+
+	/**
+	 * The entity name
+	 */
+	public var name(get, set):String;
+	private inline function get_name():String { return _name; }
+	private function set_name(value:String):String
+	{
+		if (_name != value)
+		{
+			if (scene == null)
+			{
+				_name = value;
+			}
+			else
+			{
+				if (_name != "") scene.unregisterName(this);
+				_name = value;
+				if (value != "") scene.registerName(this);
+			}
+		}
+		return _name;
 	}
 
 	public function new(x:Float = 0, y:Float = 0, z:Float = 0)
@@ -54,6 +84,11 @@ class Entity
 		position = new Vector3D(x, y, z);
 		hitbox = new AABB();
 		modelViewMatrix = new Matrix3D();
+	}
+
+	public function toString():String
+	{
+		return _name;
 	}
 
 	public function addGraphic(graphic:Graphic):Graphic
@@ -91,7 +126,7 @@ class Entity
 	 * @param	y			Virtual y position to place this Entity.
 	 * @return	The first Entity collided with, or null if none were collided.
 	 */
-	public function collide(type:String, x:Float, y:Float):Entity
+	public function collide(type:String, ?offset:Vector3D):Entity
 	{
 		// check that the entity has been added to a scene
 		if (scene == null) return null;
@@ -99,22 +134,32 @@ class Entity
 		var entities = scene.entitiesForType(type);
 		if (!collidable || entities == null) return null;
 
-		var _x = this.x, _y = this.y;
-		this.x = x; this.y = y;
+		var _x = hitbox.x, _y = hitbox.x;
+		offset = (offset == null ? position : offset + position);
+		hitbox.min += offset;
+		hitbox.max += offset;
 
 		for (e in entities)
 		{
-			if (e.collidable && e != this && e.hitbox.intersectsAABB(hitbox))
+			if (e.collidable && e != this)
 			{
-				if (_mask == null || e._mask != null && _mask.intersects(e._mask))
+				e.hitbox.min += e.position;
+				e.hitbox.max += e.position;
+				var result = e.hitbox.intersectsAABB(hitbox);
+				e.hitbox.min -= e.position;
+				e.hitbox.max -= e.position;
+
+				if (result && (_mask == null || e._mask != null && _mask.intersects(e._mask)))
 				{
-					this.x = _x; this.y = _y;
+					hitbox.min -= offset;
+					hitbox.max -= offset;
 					return e;
 				}
 			}
 		}
 
-		this.x = _x; this.y = _y;
+		hitbox.min -= offset;
+		hitbox.max -= offset;
 		return null;
 	}
 
@@ -126,6 +171,7 @@ class Entity
 	private var _graphic:Graphic;
 	private var _mask:Mask;
 	private var _type:String = "";
+	private var _name:String = "";
 
 	private var modelViewMatrix:Matrix3D;
 

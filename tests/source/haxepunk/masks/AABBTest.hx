@@ -28,10 +28,10 @@ class AABBTest extends haxe.unit.TestCase
 		var a = new AABB(new Vector3D(-1, -1, -1), new Vector3D(1, 1, 1));
 		var b = new AABB(new Vector3D(-1, -1, -1), new Vector3D(2, 2, 2));
 		assertTrue(a.intersectsAABB(b));
+		assertTrue(b.intersectsAABB(a));
 
-		// touching edges does not count as collision (no penetration)
 		b.min.x = b.min.y = b.min.z = 1;
-		assertFalse(a.intersectsAABB(b));
+		assertTrue(a.intersectsAABB(b));
 	}
 
 	public function testProperties()

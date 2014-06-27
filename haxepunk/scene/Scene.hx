@@ -14,18 +14,23 @@ class Scene
 		camera = new Camera();
 		_entities = new List<Entity>();
 		_types = new StringMap<List<Entity>>();
+		_entityNames = new StringMap<Entity>();
 	}
 
 	public function add(e:Entity)
 	{
 		e.scene = this;
 		_entities.add(e);
+		if (e.type != "") addType(e);
+		if (e.name != "") registerName(e);
 	}
 
 	public function remove(e:Entity)
 	{
 		e.scene = null;
 		_entities.remove(e);
+		if (e.type != "") removeType(e);
+		if (e.name != "") unregisterName(e);
 	}
 
 	public function addGraphic(graphic:Graphic, layer:Int=0, x:Float=0, y:Float=0)
@@ -113,6 +118,20 @@ class Scene
 		}
 	}
 
+	/** @private Register the entities instance name. */
+	@:allow(haxepunk.scene.Entity)
+	private inline function registerName(e:Entity)
+	{
+		_entityNames.set(e.name, e);
+	}
+
+	/** @private Unregister the entities instance name. */
+	@:allow(haxepunk.scene.Entity)
+	private inline function unregisterName(e:Entity):Void
+	{
+		_entityNames.remove(e.name);
+	}
+
 	public function draw()
 	{
 		camera.setup();
@@ -134,5 +153,6 @@ class Scene
 
 	private var _entities:List<Entity>;
 	private var _types:StringMap<List<Entity>>;
+	private var _entityNames:StringMap<Entity>;
 
 }
