@@ -82,6 +82,9 @@ class Vector3DTest extends haxe.unit.TestCase
 		assertVector(a, 2, 4, 6);
 		a /= 2;
 		assertVector(a, 1, 2, 3);
+
+		a *= a;
+		assertVector(a, 1, 4, 9);
 	}
 
 	public function testMultiplyMatrix()

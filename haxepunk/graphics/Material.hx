@@ -42,7 +42,7 @@ class Material
 		_textures.push(texture);
 	}
 
-	public function use(projectionMatrix:Float32Array, modelViewMatrix:Matrix3D)
+	public function use(projectionMatrix:Float32Array, modelViewMatrix:Float32Array)
 	{
 		switch (HXP.context)
 		{
@@ -58,7 +58,7 @@ class Material
 
 				// assign the projection and modelview matrices
 				gl.uniformMatrix4fv(_projectionMatrixUniform, false, projectionMatrix);
-				gl.uniformMatrix4fv(_modelViewMatrixUniform, false, modelViewMatrix.float32Array);
+				gl.uniformMatrix4fv(_modelViewMatrixUniform, false, modelViewMatrix);
 
 				// set the vertices as the first 3 floats in a buffer
 				gl.vertexAttribPointer(_vertexAttribute, 3, gl.FLOAT, false, 8*4, 0);

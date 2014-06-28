@@ -34,13 +34,13 @@ class Matrix3D implements ArrayAccess<Float>
 	public var float32Array(get, never):Float32Array;
 	private inline function get_float32Array():Float32Array
 	{
-		if (_float32Array == null)
-		{
-			_float32Array = new Float32Array(toArray());
-		}
-
 		if (_isDirty)
 		{
+			if (_float32Array == null)
+			{
+				_float32Array = new Float32Array(toArray());
+			}
+
 			#if cpp
 			untyped {
 				var bytes = _float32Array.bytes;
@@ -85,6 +85,7 @@ class Matrix3D implements ArrayAccess<Float>
 				_float32Array[14] = _43;
 				_float32Array[15] = _44;
 			#end
+			_isDirty = false;
 		}
 		return _float32Array;
 	}
@@ -168,15 +169,15 @@ class Matrix3D implements ArrayAccess<Float>
 		_11 = _11 * x;
 		_21 = _21 * x;
 		_31 = _31 * x;
-		_41 = _41 * x;
+
 		_12 = _12 * y;
 		_22 = _22 * y;
 		_32 = _32 * y;
-		_42 = _42 * y;
+
 		_13 = _13 * z;
 		_23 = _23 * z;
 		_33 = _33 * z;
-		_43 = _43 * z;
+
 		_isDirty = true;
 	}
 

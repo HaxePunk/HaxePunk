@@ -83,7 +83,6 @@ class Entity
 	{
 		position = new Vector3D(x, y, z);
 		hitbox = new AABB();
-		modelViewMatrix = new Matrix3D();
 	}
 
 	public function toString():String
@@ -110,12 +109,9 @@ class Entity
 
 	public function draw(camera:Camera)
 	{
-		modelViewMatrix.identity();
-		modelViewMatrix.translateVector3D(position);
-
 		if (_graphic != null)
 		{
-			_graphic.draw(camera, modelViewMatrix);
+			_graphic.draw(camera, position);
 		}
 	}
 
@@ -172,7 +168,5 @@ class Entity
 	private var _mask:Mask;
 	private var _type:String = "";
 	private var _name:String = "";
-
-	private var modelViewMatrix:Matrix3D;
 
 }

@@ -2,12 +2,9 @@ package haxepunk.graphics;
 
 import lime.graphics.GL;
 import lime.graphics.GLBuffer;
-#if lime_html5
-import js.html.Int16Array;
-#else
 import lime.utils.Int16Array;
-#end
 import lime.utils.Float32Array;
+import haxepunk.math.Vector3D;
 import haxepunk.math.Matrix3D;
 import haxepunk.scene.Camera;
 
@@ -44,10 +41,12 @@ class Mesh implements Graphic
 	 * @param projectionMatrix The projection matrix to apply
 	 * @param modelViewMatrix The model view matrix to apply
 	 */
-	public function draw(camera:Camera, modelViewMatrix:Matrix3D):Void
+	public function draw(camera:Camera, offset:Vector3D):Void
 	{
+		transform.translateVector3D(offset);
+
 		GL.bindBuffer(GL.ARRAY_BUFFER, _vertexBuffer);
-		material.use(camera.transform.float32Array, transform.clone().multiply(modelViewMatrix));
+		material.use(camera.transform.float32Array, transform.float32Array);
 
 		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, _indexBuffer);
 		GL.drawElements(GL.TRIANGLES, _indexSize, GL.UNSIGNED_SHORT, 0);

@@ -23,31 +23,14 @@ class Image implements Graphic
 	public var angle:Float = 0;
 
 	/**
-	 * Scale of the image, effects both x and y scale.
+	 * Scale of the image.
 	 */
-	public var scale:Float = 1;
+	public var scale:Vector3D;
 
 	/**
-	 * X scale of the image.
+	 * Origin of the image.
 	 */
-	public var scaleX:Float = 1;
-
-	/**
-	 * Y scale of the image.
-	 */
-	public var scaleY:Float = 1;
-
-	/**
-	 * X origin of the image, determines transformation point.
-	 * Defaults to top-left corner.
-	 */
-	public var originX:Float = 0;
-
-	/**
-	 * Y origin of the image, determines transformation point.
-	 * Defaults to top-left corner.
-	 */
-	public var originY:Float = 0;
+	public var origin:Vector3D;
 
 	/**
 	 * Width of the image.
@@ -73,6 +56,8 @@ class Image implements Graphic
 
 	public function new(path:String)
 	{
+		scale = new Vector3D(1, 1, 1);
+		origin = new Vector3D();
 		_matrix = new Matrix3D();
 		_texture = Texture.create(path);
 		material = new Material();
@@ -137,41 +122,41 @@ class Image implements Graphic
 
 	public function centerOrigin():Void
 	{
-		originX = -(width / 2);
-		originY = -(height / 2);
-		_matrixDirty = true;
+		origin.x = -(width / 2);
+		origin.y = -(height / 2);
 	}
 
 	#if !flash
-	private inline function drawBuffer(camera:Camera, modelViewMatrix:Matrix3D, buffer:GLBuffer, offset:Int=0):Void
+	private inline function drawBuffer(camera:Camera, offset:Vector3D, buffer:GLBuffer, tileOffset:Int=0):Void
 	{
 		if (buffer != null)
 		{
-			if (_matrixDirty)
-			{
-				_matrix.identity();
-				_matrix.scale(width, height, 1);
-				_matrix.translate(originX, originY, 0);
-				_matrix.scale(scale * scaleX, scale * scaleY, 1);
-				_matrix.rotateZ(angle);
-				_matrixDirty = false;
-			}
+			origin *= scale;
+			origin += offset;
+
+			_matrix.identity();
+			_matrix.scale(width, height, 1);
+			_matrix.translateVector3D(origin);
+			_matrix.scaleVector3D(scale);
+			if (angle != 0) _matrix.rotateZ(angle);
+
+			origin -= offset;
+			origin /= scale;
 
 			GL.bindBuffer(GL.ARRAY_BUFFER, buffer);
-			material.use(camera.transform.float32Array, _matrix.clone().multiply(modelViewMatrix));
-			GL.drawArrays(GL.TRIANGLE_STRIP, offset << 2, 4);
-			// material.disable();
+			material.use(camera.transform.float32Array, _matrix.float32Array);
+			GL.drawArrays(GL.TRIANGLE_STRIP, tileOffset << 2, 4);
 		}
 	}
 	#end
 
-	public function draw(camera:Camera, modelViewMatrix:Matrix3D):Void
+	public function draw(camera:Camera, offset:Vector3D):Void
 	{
 		switch (HXP.context)
 		{
 			case OPENGL(gl):
 			#if !flash
-				drawBuffer(camera, modelViewMatrix, _vertexBuffer);
+				drawBuffer(camera, offset, _vertexBuffer);
 			#end
 			case FLASH(stage):
 			#if flash
@@ -206,7 +191,6 @@ class Image implements Graphic
 	}
 
 	private var _matrix:Matrix3D;
-	private var _matrixDirty:Bool = true;
 	private var _texture:Texture;
 #if flash
 	private var _bitmap:Bitmap;

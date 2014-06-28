@@ -31,9 +31,9 @@ class Camera
 		// GL.framebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, texture, 0);
 	}
 
-	public function make2D()
+	public function make2D(width:Float, height:Float)
 	{
-		transform = Matrix3D.createOrtho(0, HXP.window.width, HXP.window.height, 0, 500, -500);
+		transform = Matrix3D.createOrtho(0, width, height, 0, 500, -500);
 	}
 
 	public function make3D()
@@ -41,9 +41,15 @@ class Camera
 		transform = Matrix3D.createOrtho(-5, 5, -5, 5, 500, -500);
 	}
 
+	private var init:Bool = false;
 	public function setup()
 	{
-		make2D();
+		if (!init)
+		{
+			make2D(HXP.window.width, HXP.window.height);
+			init = true;
+		}
+
 		// GL.bindFramebuffer(GL.FRAMEBUFFER, null);
 		// GL.bindRenderbuffer(GL.RENDERBUFFER, null);
 #if !neko

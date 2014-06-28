@@ -46,7 +46,7 @@ class Player extends Entity
 		}
 		else
 		{
-			// sprite.flipped = velocity.x > 0;
+			sprite.scale.x = velocity.x > 0 ? 1 : -1;
 			sprite.play("walk");
 		}
 

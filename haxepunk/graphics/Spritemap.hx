@@ -392,13 +392,13 @@ class Spritemap extends Image
 #end
 	}
 
-	override public function draw(camera:Camera, modelViewMatrix:Matrix3D):Void
+	override public function draw(camera:Camera, offset:Vector3D):Void
 	{
 		switch (HXP.context)
 		{
 			case OPENGL(gl):
 			#if !flash
-				drawBuffer(camera, modelViewMatrix, _buffer, _frame);
+				drawBuffer(camera, offset, _buffer, _frame);
 			#end
 			case FLASH(stage):
 			#if flash

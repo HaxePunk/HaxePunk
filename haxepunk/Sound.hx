@@ -1,11 +1,13 @@
 package haxepunk;
 
+import lime.Assets;
+
 class Sound
 {
 
 	public function new(path:String)
 	{
-		_sound = HXP.lime.audio.create(path, path);
+		_sound = Assets.getSound(path);
 	}
 
 	/**
@@ -63,6 +65,6 @@ class Sound
 	public var position(get, never):Float;
 	private inline function get_position():Float { return _sound.position; }
 
-	private var _sound:lime.helpers.AudioHelper.Sound;
+	private var _sound:lime.Sound;
 
 }
