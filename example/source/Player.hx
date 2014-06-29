@@ -11,7 +11,7 @@ class Player extends Entity
 
 	public function new()
 	{
-		super(HXP.window.width / 2, HXP.window.height / 2);
+		super();
 
 		acceleration = new Vector3D();
 		velocity = new Vector3D();
@@ -26,6 +26,7 @@ class Player extends Entity
 
 	override public function update(elapsed:Float)
 	{
+		acceleration.x = 0;
 		super.update(elapsed);
 		if (Input.check(Key.LEFT))
 		{
@@ -37,8 +38,10 @@ class Player extends Entity
 		}
 
 		velocity += acceleration;
+		velocity *= drag;
 
 		if (Math.abs(velocity.x) > maxVelocity) velocity.x = maxVelocity * Math.sign(velocity.x);
+		else if (Math.abs(velocity.x) < 0.5) velocity.x = 0;
 
 		if (velocity.x == 0)
 		{
@@ -51,11 +54,15 @@ class Player extends Entity
 		}
 
 		position += velocity;
+
+		scene.camera.position.x = position.x - HXP.window.width / 2;
+		scene.camera.position.y = position.y - HXP.window.height / 2;
 	}
 
 	private var sprite:Spritemap;
 	private var acceleration:Vector3D;
 	private var velocity:Vector3D;
+	private var drag:Float = 0.9;
 	private var maxVelocity:Float = 10;
 
 }

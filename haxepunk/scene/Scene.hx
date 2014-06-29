@@ -134,7 +134,7 @@ class Scene
 
 	public function draw()
 	{
-		camera.setup();
+		camera.beginDraw();
 		for (entity in _entities)
 		{
 			entity.draw(camera);
@@ -149,6 +149,7 @@ class Scene
 			e.update(elapsed);
 			if (e._graphic != null) e._graphic.update(elapsed);
 		}
+		camera.update();
 	}
 
 	private var _entities:List<Entity>;

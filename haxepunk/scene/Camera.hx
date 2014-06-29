@@ -6,15 +6,20 @@ import lime.graphics.GLFramebuffer;
 import lime.graphics.GLRenderbuffer;
 import haxepunk.math.Vector3D;
 import haxepunk.math.Matrix3D;
+import haxepunk.math.Math;
 
-class Camera
+class Camera extends SceneNode
 {
 
-	public var transform:Matrix3D;
-	public var position:Vector3D;
+	public var transform(default, null):Matrix3D;
 
 	public function new()
 	{
+		super();
+		transform = new Matrix3D();
+		// make2D(HXP.window.width, HXP.window.height);
+		make2D(800, 600);
+
 		// var width = 512, height = 512;
 		// _framebuffer = GL.createFramebuffer();
 		// GL.bindFramebuffer(GL.FRAMEBUFFER, _framebuffer);
@@ -31,25 +36,26 @@ class Camera
 		// GL.framebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, texture, 0);
 	}
 
-	public function make2D(width:Float, height:Float)
+	public function make2D(width:Float, height:Float):Void
 	{
-		transform = Matrix3D.createOrtho(0, width, height, 0, 500, -500);
+		_projection = Matrix3D.createOrtho(0, width, height, 0, 500, -500);
 	}
 
-	public function make3D()
+	public function make3D(width:Float, height:Float):Void
 	{
-		transform = Matrix3D.createOrtho(-5, 5, -5, 5, 500, -500);
+		_projection = Matrix3D.createPerspective(60 * Math.RAD, width / height, -50, 50);
 	}
 
 	private var init:Bool = false;
-	public function setup()
+	public function update():Void
 	{
-		if (!init)
-		{
-			make2D(HXP.window.width, HXP.window.height);
-			init = true;
-		}
+		transform.identity();
+		transform.translate(-position.x, -position.y, -position.z);
+		transform.multiply(_projection);
+	}
 
+	public function beginDraw()
+	{
 		// GL.bindFramebuffer(GL.FRAMEBUFFER, null);
 		// GL.bindRenderbuffer(GL.RENDERBUFFER, null);
 #if !neko
@@ -72,6 +78,7 @@ class Camera
 
 	}
 
+	private var _projection:Matrix3D;
 	private var _framebuffer:GLFramebuffer;
 	private var _renderbuffer:GLRenderbuffer;
 

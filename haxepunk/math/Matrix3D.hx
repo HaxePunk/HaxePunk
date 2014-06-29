@@ -142,19 +142,9 @@ class Matrix3D implements ArrayAccess<Float>
 
 	public function translate(x:Float, y:Float, z:Float):Void
 	{
-		// not using += because it compiles better in c++
-		_11 = _11 + x * _14;
-		_12 = _12 + y * _14;
-		_13 = _13 + z * _14;
-		_21 = _21 + x * _24;
-		_22 = _22 + y * _24;
-		_23 = _23 + z * _24;
-		_31 = _31 + x * _34;
-		_32 = _32 + y * _34;
-		_33 = _33 + z * _34;
-		_41 = _41 + x * _44;
-		_42 = _42 + y * _44;
-		_43 = _43 + z * _44;
+		_41 = x;
+		_42 = y;
+		_43 = z;
 		_isDirty = true;
 	}
 
@@ -292,6 +282,13 @@ class Matrix3D implements ArrayAccess<Float>
 		return this;
 	}
 
+	/**
+	 * Creates a perspective matrix
+	 * @param fov The field of view in radians
+	 * @param aspect The viewport's aspect ratio
+	 * @param near The z-axis nearest value
+	 * @param far The z-axis farthest value
+	 */
 	public static inline function createPerspective(fov:Float, aspect:Float, near:Float, far:Float):Matrix3D
 	{
 		var m = new Matrix3D();
@@ -300,14 +297,14 @@ class Matrix3D implements ArrayAccess<Float>
 			return m;
 		}
 
-		var frustumDepth = far - near;
-		var oneOverDepth = 1 / frustumDepth;
+		var depth = near - far;
+		var oneOverDepth = 1 / depth;
 
 		m._22 = 1 / Math.tan(0.5 * fov);
 		m._11 = m._22 / aspect;
-		m._33 = far * oneOverDepth;
-		m._43 = (-far * near) * oneOverDepth;
-		m._34 = 1;
+		m._33 = (far + near) * oneOverDepth;
+		m._43 = (2 * far * near) * oneOverDepth;
+		m._34 = -1;
 		m._44 = 0;
 		return m;
 	}
