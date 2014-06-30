@@ -6,3 +6,4 @@
 -D no-compilation
 -D desktop
 -D lime_native
+-D unit_test

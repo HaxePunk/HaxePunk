@@ -5,6 +5,9 @@ class TestMain
 	{
 		var runner = new haxe.unit.TestRunner();
 
+		// graphic tests
+		runner.add(new haxepunk.graphics.ImageTest());
+
 		// scene tests
 		runner.add(new haxepunk.scene.EntityTest());
 		runner.add(new haxepunk.scene.SceneTest());

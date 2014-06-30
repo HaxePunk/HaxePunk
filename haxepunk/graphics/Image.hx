@@ -33,6 +33,28 @@ class Image implements Graphic
 	public var origin:Vector3D;
 
 	/**
+	 * Flip image on the x-axis
+	 * NOTE: This changes the image's scale value. By modifying scale.x you may unintentionally update flippedX.
+	 */
+	public var flippedX(get, set):Bool;
+	private inline function get_flippedX():Bool { return scale.x < 0; }
+	private function set_flippedX(value:Bool):Bool {
+		scale.x = Math.abs(scale.x) * (value ? -1 : 1);
+		return value;
+	}
+
+	/**
+	 * Flip image on the y-axis
+	 * NOTE: This changes the image's scale value. By modifying scale.y you may unintentionally update flippedY.
+	 */
+	public var flippedY(get, set):Bool;
+	private inline function get_flippedY():Bool { return scale.y < 0; }
+	private function set_flippedY(value:Bool):Bool {
+		scale.y = Math.abs(scale.y) * (value ? -1 : 1);
+		return value;
+	}
+
+	/**
 	 * Width of the image.
 	 */
 	public var width(get, never):Float;
@@ -54,16 +76,19 @@ class Image implements Graphic
 		return (alpha == value) ? value : alpha = value;
 	}
 
-	public function new(path:String)
+	public function new(id:String)
 	{
 		scale = new Vector3D(1, 1, 1);
 		origin = new Vector3D();
 		_matrix = new Matrix3D();
-		_texture = Texture.create(path);
+
+#if !unit_test
+		_texture = Texture.create(id);
 		material = new Material();
 		material.addTexture(_texture);
 
 		createBuffer();
+#end
 	}
 
 	public function update(elapsed:Float) {}
