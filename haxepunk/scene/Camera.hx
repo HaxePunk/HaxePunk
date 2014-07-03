@@ -41,12 +41,11 @@ class Camera extends SceneNode
 		_projection = Matrix3D.createOrtho(0, width, height, 0, 500, -500);
 	}
 
-	public function make3D(width:Float, height:Float):Void
+	public function make3D(fov:Float, width:Float, height:Float):Void
 	{
-		_projection = Matrix3D.createPerspective(60 * Math.RAD, width / height, -50, 50);
+		_projection = Matrix3D.createPerspective(fov * Math.RAD, width / height, -100, 100);
 	}
 
-	private var init:Bool = false;
 	public function update():Void
 	{
 		transform.identity();

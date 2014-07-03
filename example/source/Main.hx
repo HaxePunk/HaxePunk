@@ -5,7 +5,10 @@ class Main extends Engine
 {
 	override public function ready()
 	{
-		scene.addGraphic(new Image("assets/lime.png"));
+		var image = new Image("assets/lime.jpg");
+		image.centerOrigin();
+		scene.addGraphic(image);
+
 		scene.add(new Player());
 	}
 }

@@ -300,8 +300,8 @@ class Matrix3D implements ArrayAccess<Float>
 		var depth = near - far;
 		var oneOverDepth = 1 / depth;
 
-		m._22 = 1 / Math.tan(0.5 * fov);
-		m._11 = m._22 / aspect;
+		m._22 = -1 / Math.tan(0.5 * fov);
+		m._11 = -m._22 / aspect;
 		m._33 = (far + near) * oneOverDepth;
 		m._43 = (2 * far * near) * oneOverDepth;
 		m._34 = -1;
@@ -309,20 +309,20 @@ class Matrix3D implements ArrayAccess<Float>
 		return m;
 	}
 
-	public static inline function createOrtho(x0:Float, x1:Float,  y0:Float, y1:Float, zNear:Float, zFar:Float):Matrix3D
+	public static inline function createOrtho(left:Float, right:Float,  top:Float, bottom:Float, near:Float, far:Float):Matrix3D
 	{
 		var m = new Matrix3D();
-		var sx = 1.0 / (x1 - x0);
-		var sy = 1.0 / (y1 - y0);
-		var sz = 1.0 / (zFar - zNear);
+		var sx = 1.0 / (right - left);
+		var sy = 1.0 / (bottom - top);
+		var sz = 1.0 / (far - near);
 
 		m._11 = 2.0 * sx;
 		m._22 = 2.0 * sy;
 		m._33 = -2.0 * sz;
 
-		m._41 = -(x0 + x1) * sx;
-		m._42 = -(y0 + y1) * sy;
-		m._43 = -(zNear + zFar) * sz;
+		m._41 = -(left + right) * sx;
+		m._42 = -(top + bottom) * sy;
+		m._43 = -(near + far) * sz;
 
 		return m;
 	}

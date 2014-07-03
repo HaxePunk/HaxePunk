@@ -22,17 +22,20 @@ class Player extends Entity
 		sprite.play("idle");
 		sprite.centerOrigin();
 		addGraphic(sprite);
+
+		Input.define("left", [Key.LEFT, Key.A]);
+		Input.define("right", [Key.RIGHT, Key.D]);
 	}
 
 	override public function update(elapsed:Float)
 	{
 		acceleration.x = 0;
 		super.update(elapsed);
-		if (Input.check(Key.LEFT))
+		if (Input.check("left"))
 		{
 			acceleration.x = -1;
 		}
-		if (Input.check(Key.RIGHT))
+		if (Input.check("right"))
 		{
 			acceleration.x = 1;
 		}
@@ -49,7 +52,7 @@ class Player extends Entity
 		}
 		else
 		{
-			sprite.scale.x = velocity.x > 0 ? 1 : -1;
+			sprite.flippedX = velocity.x < 0;
 			sprite.play("walk");
 		}
 
