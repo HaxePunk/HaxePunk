@@ -12,11 +12,13 @@ class Camera extends SceneNode
 {
 
 	public var transform(default, null):Matrix3D;
+	public var up:Vector3D;
 
 	public function new()
 	{
 		super();
 		transform = new Matrix3D();
+		up = new Vector3D();
 		// make2D(HXP.window.width, HXP.window.height);
 		make2D(800, 600);
 
@@ -46,6 +48,11 @@ class Camera extends SceneNode
 		_projection = Matrix3D.createPerspective(fov * Math.RAD, width / height, -100, 100);
 	}
 
+	public function lookAt(target:Vector3D):Void
+	{
+		transform.lookAt(position, target, up);
+	}
+
 	public function update():Void
 	{
 		transform.identity();
@@ -70,11 +77,6 @@ class Camera extends SceneNode
 		// TODO: set option for clear color per camera?
 		GL.clearColor(0.117, 0.117, 0.117, 1.0);
 		GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
-	}
-
-	public function lookAt(target:Vector3D):Void
-	{
-
 	}
 
 	private var _projection:Matrix3D;

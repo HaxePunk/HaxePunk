@@ -135,6 +135,25 @@ class Matrix3D implements ArrayAccess<Float>
 		_isDirty = true;
 	}
 
+	public function lookAt(eye:Vector3D, target:Vector3D, up:Vector3D):Matrix3D
+	{
+		var zaxis = eye - target;
+		zaxis.normalize();
+		var yaxis = up % zaxis;
+		yaxis.normalize();
+		var xaxis = zaxis % yaxis;
+
+		_11 = xaxis.x; _12 = yaxis.x; _13 = zaxis.x;
+		_21 = xaxis.y; _22 = yaxis.y; _23 = zaxis.y;
+		_31 = xaxis.z; _32 = yaxis.z; _33 = zaxis.z;
+
+		_41 = -(xaxis * eye);
+		_42 = -(yaxis * eye);
+		_43 = -(zaxis * eye);
+
+		return this;
+	}
+
 	public inline function translateVector3D(v:Vector3D):Void
 	{
 		translate(v.x, v.y, v.z);
@@ -280,6 +299,63 @@ class Matrix3D implements ArrayAccess<Float>
 		_isDirty = true;
 
 		return this;
+	}
+
+	public var determinant(get, never):Float;
+	private function get_determinant():Float
+	{
+		var a11 = _11; var a12 = _12; var a13 = _13; var a14 = _14;
+		var a21 = _21; var a22 = _22; var a23 = _23; var a24 = _24;
+		var a31 = _31; var a32 = _32; var a33 = _33; var a34 = _34;
+		var a41 = _41; var a42 = _42; var a43 = _43; var a44 = _44;
+
+		return a11 * (a23*a34*a42 - a24*a33*a42 + a24*a32*a43 - a22*a34*a43 - a23*a32*a44 + a22*a33*a44) +
+			a12 * (a14*a33*a42 - a13*a34*a42 - a14*a32*a43 + a12*a34*a43 + a13*a32*a44 - a12*a33*a44) +
+			a13 * (a13*a24*a42 - a14*a23*a42 + a14*a22*a43 - a12*a24*a43 - a13*a22*a44 + a12*a23*a44) +
+			a14 * (a14*a23*a32 - a13*a24*a32 - a14*a22*a33 + a12*a24*a33 + a13*a22*a34 - a12*a23*a34);
+	}
+
+	public function invert():Void
+	{
+		var a11 = _11; var a12 = _12; var a13 = _13; var a14 = _14;
+		var a21 = _21; var a22 = _22; var a23 = _23; var a24 = _24;
+		var a31 = _31; var a32 = _32; var a33 = _33; var a34 = _34;
+		var a41 = _41; var a42 = _42; var a43 = _43; var a44 = _44;
+
+		// based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm
+		_11 = a23*a34*a42 - a24*a33*a42 + a24*a32*a43 - a22*a34*a43 - a23*a32*a44 + a22*a33*a44;
+		_12 = a14*a33*a42 - a13*a34*a42 - a14*a32*a43 + a12*a34*a43 + a13*a32*a44 - a12*a33*a44;
+		_13 = a13*a24*a42 - a14*a23*a42 + a14*a22*a43 - a12*a24*a43 - a13*a22*a44 + a12*a23*a44;
+		_14 = a14*a23*a32 - a13*a24*a32 - a14*a22*a33 + a12*a24*a33 + a13*a22*a34 - a12*a23*a34;
+		_21 = a24*a33*a41 - a23*a34*a41 - a24*a31*a43 + a21*a34*a43 + a23*a31*a44 - a21*a33*a44;
+		_22 = a13*a34*a41 - a14*a33*a41 + a14*a31*a43 - a11*a34*a43 - a13*a31*a44 + a11*a33*a44;
+		_23 = a14*a23*a41 - a13*a24*a41 - a14*a21*a43 + a11*a24*a43 + a13*a21*a44 - a11*a23*a44;
+		_24 = a13*a24*a31 - a14*a23*a31 + a14*a21*a33 - a11*a24*a33 - a13*a21*a34 + a11*a23*a34;
+		_31 = a22*a34*a41 - a24*a32*a41 + a24*a31*a42 - a21*a34*a42 - a22*a31*a44 + a21*a32*a44;
+		_32 = a14*a32*a41 - a12*a34*a41 - a14*a31*a42 + a11*a34*a42 + a12*a31*a44 - a11*a32*a44;
+		_33 = a12*a24*a41 - a14*a22*a41 + a14*a21*a42 - a11*a24*a42 - a12*a21*a44 + a11*a22*a44;
+		_34 = a14*a22*a31 - a12*a24*a31 - a14*a21*a32 + a11*a24*a32 + a12*a21*a34 - a11*a22*a34;
+		_41 = a23*a32*a41 - a22*a33*a41 - a23*a31*a42 + a21*a33*a42 + a22*a31*a43 - a21*a32*a43;
+		_42 = a12*a33*a41 - a13*a32*a41 + a13*a31*a42 - a11*a33*a42 - a12*a31*a43 + a11*a32*a43;
+		_43 = a13*a22*a41 - a12*a23*a41 - a13*a21*a42 + a11*a23*a42 + a12*a21*a43 - a11*a22*a43;
+		_44 = a12*a23*a31 - a13*a22*a31 + a13*a21*a32 - a11*a23*a32 - a12*a21*a33 + a11*a22*a33;
+
+		var det = a11 * _11 + a21 * _12 + a31 * _13 + a41 * _14;
+
+		if (det == 0)
+		{
+			return;
+		}
+
+		multiplyScalar(1 / det);
+	}
+
+	public function multiplyScalar(s:Float):Void
+	{
+		_11 *= s; _12 *= s; _13 *= s; _14 *= s;
+		_21 *= s; _22 *= s; _23 *= s; _24 *= s;
+		_31 *= s; _32 *= s; _33 *= s; _34 *= s;
+		_41 *= s; _42 *= s; _43 *= s; _44 *= s;
 	}
 
 	/**
