@@ -58,7 +58,9 @@ class Texture
 	 */
 	private function new(path:String)
 	{
+#if !unit_test
 		loadImage(path);
+#end
 	}
 
 	/**

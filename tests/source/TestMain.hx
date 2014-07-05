@@ -7,6 +7,7 @@ class TestMain
 
 		// graphic tests
 		runner.add(new haxepunk.graphics.ImageTest());
+		runner.add(new haxepunk.graphics.TextureAtlasTest());
 
 		// scene tests
 		runner.add(new haxepunk.scene.EntityTest());
