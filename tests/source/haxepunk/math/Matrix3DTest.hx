@@ -20,8 +20,23 @@ class Matrix3DTest extends haxe.unit.TestCase
 
 	public function testDeterminant()
 	{
-		var matrix = new Matrix3D();
-		assertEquals(1.0, matrix.determinant);
+		var m = new Matrix3D();
+
+		assertEquals(1.0, m.determinant);
+
+		m._11 = 1; m._12 = 2; m._13 = 3; m._14 = 1;
+		m._21 = 3; m._22 = 4; m._23 = 5; m._24 = 2;
+		m._31 = 2; m._32 = 4; m._33 = 3; m._34 = 5;
+		m._41 = 1; m._42 = 2; m._43 = 4; m._44 = 3;
+
+		assertEquals(18.0, m.determinant);
+
+		m._11 = 1; m._12 = 2; m._13 = 3; m._14 = 4;
+		m._21 = 2; m._22 = 3; m._23 = 4; m._24 = 5;
+		m._31 = 3; m._32 = 4; m._33 = 5; m._34 = 6;
+		m._41 = 4; m._42 = 5; m._43 = 6; m._44 = 7;
+
+		assertEquals(0.0, m.determinant);
 	}
 
 	public function testInverse()
@@ -31,9 +46,17 @@ class Matrix3DTest extends haxe.unit.TestCase
 		a.translate(0, 3, 5);
 
 		var b = a.clone();
-		b.invert();
+		assertTrue(b.invert());
 		a.multiply(b);
 		isIdentityMatrix(a);
+
+		// check that inverse fails when the determinant is zero
+		b._11 = 1; b._12 = 2; b._13 = 3; b._14 = 4;
+		b._21 = 2; b._22 = 3; b._23 = 4; b._24 = 5;
+		b._31 = 3; b._32 = 4; b._33 = 5; b._34 = 6;
+		b._41 = 4; b._42 = 5; b._43 = 6; b._44 = 7;
+
+		assertFalse(b.invert());
 	}
 
 	public function testRotateZ()

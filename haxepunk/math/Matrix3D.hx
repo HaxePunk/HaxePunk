@@ -304,58 +304,45 @@ class Matrix3D implements ArrayAccess<Float>
 	public var determinant(get, never):Float;
 	private function get_determinant():Float
 	{
-		var a11 = _11; var a12 = _12; var a13 = _13; var a14 = _14;
-		var a21 = _21; var a22 = _22; var a23 = _23; var a24 = _24;
-		var a31 = _31; var a32 = _32; var a33 = _33; var a34 = _34;
-		var a41 = _41; var a42 = _42; var a43 = _43; var a44 = _44;
-
-		return a11 * (a23*a34*a42 - a24*a33*a42 + a24*a32*a43 - a22*a34*a43 - a23*a32*a44 + a22*a33*a44) +
-			a12 * (a14*a33*a42 - a13*a34*a42 - a14*a32*a43 + a12*a34*a43 + a13*a32*a44 - a12*a33*a44) +
-			a13 * (a13*a24*a42 - a14*a23*a42 + a14*a22*a43 - a12*a24*a43 - a13*a22*a44 + a12*a23*a44) +
-			a14 * (a14*a23*a32 - a13*a24*a32 - a14*a22*a33 + a12*a24*a33 + a13*a22*a34 - a12*a23*a34);
+		return ((_11 * _22 - _12 * _21) * (_33 * _44 - _34 * _43)
+			- (_11 * _23 - _13 * _21) * (_32 * _44 - _34 * _42)
+			+ (_11 * _24 - _14 * _21) * (_32 * _43 - _33 * _42)
+			+ (_12 * _23 - _13 * _22) * (_31 * _44 - _34 * _41)
+			- (_12 * _24 - _14 * _22) * (_31 * _43 - _33 * _41)
+			+ (_13 * _24 - _14 * _23) * (_31 * _42 - _32 * _41));
 	}
 
-	public function invert():Void
+	public function invert():Bool
 	{
-		var a11 = _11; var a12 = _12; var a13 = _13; var a14 = _14;
-		var a21 = _21; var a22 = _22; var a23 = _23; var a24 = _24;
-		var a31 = _31; var a32 = _32; var a33 = _33; var a34 = _34;
-		var a41 = _41; var a42 = _42; var a43 = _43; var a44 = _44;
+		var d = determinant;
 
-		// based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm
-		_11 = a23*a34*a42 - a24*a33*a42 + a24*a32*a43 - a22*a34*a43 - a23*a32*a44 + a22*a33*a44;
-		_12 = a14*a33*a42 - a13*a34*a42 - a14*a32*a43 + a12*a34*a43 + a13*a32*a44 - a12*a33*a44;
-		_13 = a13*a24*a42 - a14*a23*a42 + a14*a22*a43 - a12*a24*a43 - a13*a22*a44 + a12*a23*a44;
-		_14 = a14*a23*a32 - a13*a24*a32 - a14*a22*a33 + a12*a24*a33 + a13*a22*a34 - a12*a23*a34;
-		_21 = a24*a33*a41 - a23*a34*a41 - a24*a31*a43 + a21*a34*a43 + a23*a31*a44 - a21*a33*a44;
-		_22 = a13*a34*a41 - a14*a33*a41 + a14*a31*a43 - a11*a34*a43 - a13*a31*a44 + a11*a33*a44;
-		_23 = a14*a23*a41 - a13*a24*a41 - a14*a21*a43 + a11*a24*a43 + a13*a21*a44 - a11*a23*a44;
-		_24 = a13*a24*a31 - a14*a23*a31 + a14*a21*a33 - a11*a24*a33 - a13*a21*a34 + a11*a23*a34;
-		_31 = a22*a34*a41 - a24*a32*a41 + a24*a31*a42 - a21*a34*a42 - a22*a31*a44 + a21*a32*a44;
-		_32 = a14*a32*a41 - a12*a34*a41 - a14*a31*a42 + a11*a34*a42 + a12*a31*a44 - a11*a32*a44;
-		_33 = a12*a24*a41 - a14*a22*a41 + a14*a21*a42 - a11*a24*a42 - a12*a21*a44 + a11*a22*a44;
-		_34 = a14*a22*a31 - a12*a24*a31 - a14*a21*a32 + a11*a24*a32 + a12*a21*a34 - a11*a22*a34;
-		_41 = a23*a32*a41 - a22*a33*a41 - a23*a31*a42 + a21*a33*a42 + a22*a31*a43 - a21*a32*a43;
-		_42 = a12*a33*a41 - a13*a32*a41 + a13*a31*a42 - a11*a33*a42 - a12*a31*a43 + a11*a32*a43;
-		_43 = a13*a22*a41 - a12*a23*a41 - a13*a21*a42 + a11*a23*a42 + a12*a21*a43 - a11*a22*a43;
-		_44 = a12*a23*a31 - a13*a22*a31 + a13*a21*a32 - a11*a23*a32 - a12*a21*a33 + a11*a22*a33;
+		if (d == 0) return false;
 
-		var det = a11 * _11 + a21 * _12 + a31 * _13 + a41 * _14;
+		var m11:Float = _11; var m21:Float = _21; var m31:Float = _31; var m41:Float = _41;
+		var m12:Float = _12; var m22:Float = _22; var m32:Float = _32; var m42:Float = _42;
+		var m13:Float = _13; var m23:Float = _23; var m33:Float = _33; var m43:Float = _43;
+		var m14:Float = _14; var m24:Float = _24; var m34:Float = _34; var m44:Float = _44;
 
-		if (det == 0)
-		{
-			return;
-		}
+		d = 1 / d;
 
-		multiplyScalar(1 / det);
-	}
+		_11 =  d * (m22 * (m33 * m44 - m43 * m34) - m32 * (m23 * m44 - m43 * m24) + m42 * (m23 * m34 - m33 * m24));
+		_12 = -d * (m12 * (m33 * m44 - m43 * m34) - m32 * (m13 * m44 - m43 * m14) + m42 * (m13 * m34 - m33 * m14));
+		_13 =  d * (m12 * (m23 * m44 - m43 * m24) - m22 * (m13 * m44 - m43 * m14) + m42 * (m13 * m24 - m23 * m14));
+		_14 = -d * (m12 * (m23 * m34 - m33 * m24) - m22 * (m13 * m34 - m33 * m14) + m32 * (m13 * m24 - m23 * m14));
+		_21 = -d * (m21 * (m33 * m44 - m43 * m34) - m31 * (m23 * m44 - m43 * m24) + m41 * (m23 * m34 - m33 * m24));
+		_22 =  d * (m11 * (m33 * m44 - m43 * m34) - m31 * (m13 * m44 - m43 * m14) + m41 * (m13 * m34 - m33 * m14));
+		_23 = -d * (m11 * (m23 * m44 - m43 * m24) - m21 * (m13 * m44 - m43 * m14) + m41 * (m13 * m24 - m23 * m14));
+		_24 =  d * (m11 * (m23 * m34 - m33 * m24) - m21 * (m13 * m34 - m33 * m14) + m31 * (m13 * m24 - m23 * m14));
+		_31 =  d * (m21 * (m32 * m44 - m42 * m34) - m31 * (m22 * m44 - m42 * m24) + m41 * (m22 * m34 - m32 * m24));
+		_32 = -d * (m11 * (m32 * m44 - m42 * m34) - m31 * (m12 * m44 - m42 * m14) + m41 * (m12 * m34 - m32 * m14));
+		_33 =  d * (m11 * (m22 * m44 - m42 * m24) - m21 * (m12 * m44 - m42 * m14) + m41 * (m12 * m24 - m22 * m14));
+		_34 = -d * (m11 * (m22 * m34 - m32 * m24) - m21 * (m12 * m34 - m32 * m14) + m31 * (m12 * m24 - m22 * m14));
+		_41 = -d * (m21 * (m32 * m43 - m42 * m33) - m31 * (m22 * m43 - m42 * m23) + m41 * (m22 * m33 - m32 * m23));
+		_42 =  d * (m11 * (m32 * m43 - m42 * m33) - m31 * (m12 * m43 - m42 * m13) + m41 * (m12 * m33 - m32 * m13));
+		_43 = -d * (m11 * (m22 * m43 - m42 * m23) - m21 * (m12 * m43 - m42 * m13) + m41 * (m12 * m23 - m22 * m13));
+		_44 =  d * (m11 * (m22 * m33 - m32 * m23) - m21 * (m12 * m33 - m32 * m13) + m31 * (m12 * m23 - m22 * m13));
 
-	public function multiplyScalar(s:Float):Void
-	{
-		_11 *= s; _12 *= s; _13 *= s; _14 *= s;
-		_21 *= s; _22 *= s; _23 *= s; _24 *= s;
-		_31 *= s; _32 *= s; _33 *= s; _34 *= s;
-		_41 *= s; _42 *= s; _43 *= s; _44 *= s;
+		return _isDirty = true;
 	}
 
 	/**
@@ -382,6 +369,8 @@ class Matrix3D implements ArrayAccess<Float>
 		m._43 = (2 * far * near) * oneOverDepth;
 		m._34 = -1;
 		m._44 = 0;
+		m._isDirty = true;
+
 		return m;
 	}
 
@@ -399,6 +388,7 @@ class Matrix3D implements ArrayAccess<Float>
 		m._41 = -(left + right) * sx;
 		m._42 = -(top + bottom) * sy;
 		m._43 = -(near + far) * sz;
+		m._isDirty = true;
 
 		return m;
 	}
