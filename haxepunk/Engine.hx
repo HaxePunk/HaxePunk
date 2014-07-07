@@ -8,7 +8,6 @@ import haxepunk.input.Input;
 import lime.app.Application;
 import lime.app.Config;
 import lime.graphics.RenderContext;
-import lime.graphics.Renderer;
 import lime.ui.Window;
 
 #if cpp
@@ -37,6 +36,18 @@ class Engine extends Application
 
 		HXP.window = windows[0];
 		HXP.context = HXP.window.currentRenderer.context;
+		switch (HXP.context)
+		{
+			#if flash
+			case FLASH(stage):
+				HXP.renderer = new haxepunk.renderers.FlashRenderer(stage);
+			#else
+			case OPENGL(gl):
+				HXP.renderer = new haxepunk.renderers.GLRenderer(gl);
+			#end
+			default:
+				throw "Unsupported renderer";
+		}
 
 		// Init the input system
 		Input.init();

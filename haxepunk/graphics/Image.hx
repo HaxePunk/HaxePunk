@@ -185,9 +185,6 @@ class Image implements Graphic
 			#end
 			case FLASH(stage):
 			#if flash
-				var sx = scale * scaleX,
-					sy = scale * scaleY;
-
 				// determine drawing location
 				// var point = new flash.geom.Point(point.x + x - originX - camera.x * scrollX, point.y + y - originY - camera.y * scrollY);
 

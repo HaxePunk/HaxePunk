@@ -12,20 +12,15 @@ class Material
 	{
 		_textures = new Array<Texture>();
 
-		switch (HXP.context)
-		{
-			case OPENGL(gl):
-				// set a default shader if none is given
-				_shader = (shader == null ? _defaultShader : shader);
+		// set a default shader if none is given
+		_shader = (shader == null ? _defaultShader : shader);
 
-				_vertexAttribute = _shader.attribute("aVertexPosition");
-				_texCoordAttribute = _shader.attribute("aTexCoord");
-				_normalAttribute = _shader.attribute("aNormal");
+		_vertexAttribute = _shader.attribute("aVertexPosition");
+		_texCoordAttribute = _shader.attribute("aTexCoord");
+		_normalAttribute = _shader.attribute("aNormal");
 
-				_projectionMatrixUniform = _shader.uniform("uProjectionMatrix");
-				_modelViewMatrixUniform = _shader.uniform("uModelViewMatrix");
-			default:
-		}
+		_projectionMatrixUniform = _shader.uniform("uProjectionMatrix");
+		_modelViewMatrixUniform = _shader.uniform("uModelViewMatrix");
 	}
 
 	public function addTexture(texture:Texture, uniformName:String="uImage0")
@@ -96,44 +91,44 @@ class Material
 	private var _textures:Array<Texture>;
 	private var _shader:Shader;
 
-	private static var _defaultVertexShader:String = "
-#ifdef GL_ES
-	precision mediump float;
-#endif
+	private static var _defaultVertexShader:String =
+		"#ifdef GL_ES
+			precision mediump float;
+		#endif
 
-attribute vec3 aVertexPosition;
-attribute vec2 aTexCoord;
-attribute vec3 aNormal;
+		attribute vec3 aVertexPosition;
+		attribute vec2 aTexCoord;
+		attribute vec3 aNormal;
 
-varying vec2 vTexCoord;
-varying vec3 vNormal;
-varying vec4 vPosition;
+		varying vec2 vTexCoord;
+		varying vec3 vNormal;
+		varying vec4 vPosition;
 
-uniform mat4 uModelViewMatrix;
-uniform mat4 uProjectionMatrix;
+		uniform mat4 uModelViewMatrix;
+		uniform mat4 uProjectionMatrix;
 
-void main(void)
-{
-	vPosition = uModelViewMatrix * vec4(aVertexPosition, 1.0);
-	vNormal = normalize(aNormal);
-	vTexCoord = aTexCoord;
-	gl_Position = uProjectionMatrix * vPosition;
-}";
-	private static var _defaultFragmentShader:String = "
-#ifdef GL_ES
-	precision mediump float;
-#endif
+		void main(void)
+		{
+			vPosition = uModelViewMatrix * vec4(aVertexPosition, 1.0);
+			vNormal = normalize(aNormal);
+			vTexCoord = aTexCoord;
+			gl_Position = uProjectionMatrix * vPosition;
+		}";
+	private static var _defaultFragmentShader:String =
+		"#ifdef GL_ES
+			precision mediump float;
+		#endif
 
-varying vec2 vTexCoord;
-varying vec3 vNormal;
-varying vec4 vPosition;
+		varying vec2 vTexCoord;
+		varying vec3 vNormal;
+		varying vec4 vPosition;
 
-uniform sampler2D uImage0;
+		uniform sampler2D uImage0;
 
-void main(void)
-{
-	gl_FragColor = texture2D(uImage0, vTexCoord);
-}";
+		void main(void)
+		{
+			gl_FragColor = texture2D(uImage0, vTexCoord);
+		}";
 	private static var _defaultShader(get, null):Shader;
 	private static inline function get__defaultShader():Shader {
 		if (_defaultShader == null)

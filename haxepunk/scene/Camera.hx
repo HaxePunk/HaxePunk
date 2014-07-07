@@ -4,6 +4,7 @@ import haxepunk.HXP;
 import lime.graphics.GL;
 import lime.graphics.GLFramebuffer;
 import lime.graphics.GLRenderbuffer;
+import haxepunk.graphics.Color;
 import haxepunk.math.Vector3D;
 import haxepunk.math.Matrix3D;
 import haxepunk.math.Math;
@@ -13,29 +14,17 @@ class Camera extends SceneNode
 
 	public var transform(default, null):Matrix3D;
 	public var up:Vector3D;
+	public var clearColor:Color;
 
 	public function new()
 	{
 		super();
 		transform = new Matrix3D();
 		up = new Vector3D();
+		clearColor = new Color(0.7, 0.7, 0.7, 1.0);
+
 		// make2D(HXP.window.width, HXP.window.height);
 		make2D(800, 600);
-
-		// var width = 512, height = 512;
-		// _framebuffer = GL.createFramebuffer();
-		// GL.bindFramebuffer(GL.FRAMEBUFFER, _framebuffer);
-
-		// _renderbuffer = GL.createRenderbuffer();
-		// GL.bindRenderbuffer(GL.RENDERBUFFER, _renderbuffer);
-		// GL.renderbufferStorage(GL.RENDERBUFFER, GL.RGBA, width, height);
-		// GL.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.RENDERBUFFER, _renderbuffer);
-
-		// var texture = GL.createTexture();
-		// GL.bindTexture(GL.TEXTURE_2D, texture);
-		// GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
-		// GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA,  width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
-		// GL.framebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, texture, 0);
 	}
 
 	public function make2D(width:Float, height:Float):Void
@@ -74,13 +63,9 @@ class Camera extends SceneNode
 		GL.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
 		GL.enable(GL.BLEND);
 
-		// TODO: set option for clear color per camera?
-		GL.clearColor(0.117, 0.117, 0.117, 1.0);
-		GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
+		HXP.renderer.clear(clearColor);
 	}
 
 	private var _projection:Matrix3D;
-	private var _framebuffer:GLFramebuffer;
-	private var _renderbuffer:GLRenderbuffer;
 
 }

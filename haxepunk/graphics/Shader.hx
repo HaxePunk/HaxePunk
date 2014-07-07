@@ -1,8 +1,7 @@
 package haxepunk.graphics;
 
+import haxepunk.renderers.Renderer;
 import lime.graphics.GL;
-import lime.graphics.GLShader;
-import lime.graphics.GLProgram;
 import lime.graphics.GLUniformLocation;
 
 typedef ShaderSource = {
@@ -22,45 +21,17 @@ class Shader
 	 */
 	public function new(sources:Array<ShaderSource>)
 	{
-		_program = GL.createProgram();
+		var vertex = "", fragment = "";
 
 		for (source in sources)
 		{
-			var shader = compile(source.src, source.fragment ? GL.FRAGMENT_SHADER : GL.VERTEX_SHADER);
-			if (shader == null) return;
-			GL.attachShader(_program, shader);
-			GL.deleteShader(shader);
+			if (source.fragment)
+				fragment = source.src;
+			else
+				vertex = source.src;
 		}
 
-		GL.linkProgram(_program);
-
-		if (GL.getProgramParameter(_program, GL.LINK_STATUS) == 0)
-		{
-			trace(GL.getProgramInfoLog(_program));
-			trace("VALIDATE_STATUS: " + GL.getProgramParameter(_program, GL.VALIDATE_STATUS));
-			trace("ERROR: " + GL.getError());
-			return;
-		}
-	}
-
-	/**
-	 * Compiles the shader source into a GlShader object and prints any errors
-	 * @param source  The shader source code
-	 * @param type    The type of shader to compile (fragment, vertex)
-	 */
-	private function compile(source:String, type:Int):GLShader
-	{
-		var shader = GL.createShader(type);
-		GL.shaderSource(shader, source);
-		GL.compileShader(shader);
-
-		if (GL.getShaderParameter(shader, GL.COMPILE_STATUS) == 0)
-		{
-			trace(GL.getShaderInfoLog(shader));
-			return null;
-		}
-
-		return shader;
+		_program = HXP.renderer.compileShaderProgram(vertex, fragment);
 	}
 
 	/**
@@ -69,7 +40,14 @@ class Shader
 	 */
 	public inline function attribute(a:String):Int
 	{
+		#if flash
+		return switch (a)
+		{
+			default: -1;
+		}
+		#else
 		return GL.getAttribLocation(_program, a);
+		#end
 	}
 
 	/**
@@ -78,7 +56,16 @@ class Shader
 	 */
 	public inline function uniform(u:String):GLUniformLocation
 	{
+		#if flash
+		return switch (u)
+		{
+			case "uProjectionMatrix": 0;
+			case "uModelViewMatrix": 1;
+			default: -1;
+		}
+		#else
 		return GL.getUniformLocation(_program, u);
+		#end
 	}
 
 	/**
@@ -88,7 +75,7 @@ class Shader
 	{
 		if (_lastUsedProgram != _program)
 		{
-			GL.useProgram(_program);
+			HXP.renderer.bindProgram(_program);
 			_lastUsedProgram = _program;
 		}
 	}
@@ -96,10 +83,10 @@ class Shader
 	public static function clear()
 	{
 		_lastUsedProgram = null;
-		GL.useProgram(_lastUsedProgram);
+		HXP.renderer.bindProgram(_lastUsedProgram);
 	}
 
-	private var _program:GLProgram;
-	private static var _lastUsedProgram:GLProgram;
+	private var _program:ShaderProgram;
+	private static var _lastUsedProgram:ShaderProgram;
 
 }
