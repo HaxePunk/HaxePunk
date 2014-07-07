@@ -1,9 +1,9 @@
 package haxepunk.graphics;
 
 import haxepunk.graphics.Mesh;
-import lime.graphics.GLBuffer;
 import haxepunk.math.Matrix3D;
 import haxepunk.math.Vector3D;
+import haxepunk.renderers.Renderer;
 
 class Shape extends Mesh
 {
@@ -65,13 +65,13 @@ class Shape extends Mesh
 		else
 		{
 			cube._indexBuffer = cubeIndexBuffer;
-			cube._indexSize = 36;
+			cube._numTriangles = 12;
 		}
 
 		return cube;
 	}
 
-	private static var cubeVertexBuffer:GLBuffer;
-	private static var cubeIndexBuffer:GLBuffer;
+	private static var cubeVertexBuffer:VertexBuffer;
+	private static var cubeIndexBuffer:IndexBuffer;
 
 }

@@ -1,17 +1,14 @@
 package haxepunk.graphics;
 
-#if flash
-import flash.display.BitmapData;
-#end
-import lime.graphics.GL;
-import lime.graphics.GLBuffer;
-import lime.app.Event;
-import lime.utils.Float32Array;
 import haxepunk.math.Matrix3D;
 import haxepunk.math.Vector3D;
 import haxepunk.math.Math;
+import haxepunk.renderers.Renderer;
 import haxepunk.scene.Camera;
 import haxe.ds.StringMap;
+import lime.app.Event;
+import lime.utils.Float32Array;
+import lime.utils.Int16Array;
 
 /**
  * Template used by Spritemap to define animations. Don't create
@@ -349,8 +346,6 @@ class Spritemap extends Image
 
 	override private function createBuffer():Void
 	{
-#if flash
-#else
 		columns = Math.ceil(_texture.originalWidth / _spriteWidth);
 		rows = Math.ceil(_texture.originalHeight / _spriteHeight);
 		frameCount = columns * rows;
@@ -386,33 +381,25 @@ class Spritemap extends Image
 				data[i++] = data[i++] = 0; data[i++] = -1; // normal (0, 0, -1)
 			}
 		}
-		_buffer = GL.createBuffer();
-		GL.bindBuffer(GL.ARRAY_BUFFER, _buffer);
-		GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(cast data), GL.STATIC_DRAW);
-#end
+		_vertexBuffer = HXP.renderer.createBuffer(new Float32Array(cast data), STATIC_DRAW);
+
+		var indices = new Array<Int>();
+		for (frame in 0...frameCount)
+		{
+			indices.push(frame * 4 + 0);
+			indices.push(frame * 4 + 1);
+			indices.push(frame * 4 + 2);
+			indices.push(frame * 4 + 1);
+			indices.push(frame * 4 + 2);
+			indices.push(frame * 4 + 3);
+		}
+		_indexBuffer = HXP.renderer.createIndexBuffer(new Int16Array(cast indices));
 	}
 
 	override public function draw(camera:Camera, offset:Vector3D):Void
 	{
-		switch (HXP.context)
-		{
-			case OPENGL(gl):
-			#if !flash
-				drawBuffer(camera, offset, _buffer, _frame);
-			#end
-			case FLASH(stage):
-			#if flash
-			#end
-			default:
-				throw "Unsupported render context!";
-		}
+		drawBuffer(camera, offset, _frame);
 	}
-
-#if flash
-	private var _source:BitmapData;
-#else
-	private var _buffer:GLBuffer;
-#end
 
 	private var _frame:Int = 0;
 	private var _index:Int = 0;

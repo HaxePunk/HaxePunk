@@ -19,18 +19,8 @@ class Shader
 	 * Creates a new Shader
 	 * @param sources  A list of glsl shader sources to compile and link into a program
 	 */
-	public function new(sources:Array<ShaderSource>)
+	public function new(vertex:String, fragment:String)
 	{
-		var vertex = "", fragment = "";
-
-		for (source in sources)
-		{
-			if (source.fragment)
-				fragment = source.src;
-			else
-				vertex = source.src;
-		}
-
 		_program = HXP.renderer.compileShaderProgram(vertex, fragment);
 	}
 

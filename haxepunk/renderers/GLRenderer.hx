@@ -7,7 +7,10 @@ import haxepunk.renderers.Renderer;
 import lime.graphics.GL;
 import lime.graphics.GLShader;
 import lime.graphics.GLProgram;
+import lime.graphics.GLBuffer;
 import lime.graphics.GLRenderContext;
+import lime.utils.Float32Array;
+import lime.utils.Int16Array;
 
 class GLRenderer implements Renderer
 {
@@ -22,6 +25,8 @@ class GLRenderer implements Renderer
 		gl.clearColor(color.r, color.g, color.b, color.a);
 		gl.clear(gl.COLOR_BUFFER_BIT);
 	}
+
+	public function present():Void { }
 
 	public function compileShaderProgram(vertex:String, fragment:String):ShaderProgram
 	{
@@ -53,6 +58,33 @@ class GLRenderer implements Renderer
 	public function bindProgram(program:ShaderProgram):Void
 	{
 		gl.useProgram(program);
+	}
+
+	public function bindBuffer(v:VertexBuffer):Void
+	{
+		gl.bindBuffer(GL.ARRAY_BUFFER, v);
+	}
+
+	public function createBuffer(data:Float32Array, ?usage:BufferUsage):VertexBuffer
+	{
+		var buffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+		gl.bufferData(gl.ARRAY_BUFFER, data, usage == DYNAMIC_DRAW ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW);
+		return buffer;
+	}
+
+	public function createIndexBuffer(data:Int16Array, ?usage:BufferUsage):IndexBuffer
+	{
+		var buffer = gl.createBuffer();
+		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, usage == DYNAMIC_DRAW ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW);
+		return buffer;
+	}
+
+	public function draw(i:IndexBuffer, numTriangles:Int, offset:Int=0):Void
+	{
+		gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, i);
+		gl.drawElements(GL.TRIANGLES, numTriangles * 3, GL.UNSIGNED_SHORT, offset * 3);
 	}
 
 	/**

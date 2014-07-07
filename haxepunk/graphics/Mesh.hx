@@ -1,12 +1,11 @@
 package haxepunk.graphics;
 
-import lime.graphics.GL;
-import lime.graphics.GLBuffer;
 import lime.utils.Int16Array;
 import lime.utils.Float32Array;
 import haxepunk.math.Vector3D;
 import haxepunk.math.Matrix3D;
 import haxepunk.scene.Camera;
+import haxepunk.renderers.Renderer;
 
 class Mesh implements Graphic
 {
@@ -45,38 +44,30 @@ class Mesh implements Graphic
 	{
 		transform.translateVector3D(offset);
 
-		GL.bindBuffer(GL.ARRAY_BUFFER, _vertexBuffer);
+		HXP.renderer.bindBuffer(_vertexBuffer);
 		material.use(camera.transform.float32Array, transform.float32Array);
+		HXP.renderer.draw(_indexBuffer, _numTriangles);
 
-		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, _indexBuffer);
-		GL.drawElements(GL.TRIANGLES, _indexSize, GL.UNSIGNED_SHORT, 0);
-		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, null);
-
-		material.disable();
-		GL.bindBuffer(GL.ARRAY_BUFFER, null);
+		// HXP.renderer.bindIndexBuffer(null);
+		// material.disable();
+		// HXP.renderer.bindBuffer(null);
 	}
 
-	public function createBuffer(data:Array<Float>):GLBuffer
+	public function createBuffer(data:Array<Float>):VertexBuffer
 	{
 		if (data == null) throw "Vertex data buffer must not be null";
-		_vertexBuffer = GL.createBuffer();
-		GL.bindBuffer(GL.ARRAY_BUFFER, _vertexBuffer);
-		GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(cast data), GL.STATIC_DRAW);
-		return _vertexBuffer;
+		return _vertexBuffer = HXP.renderer.createBuffer(new Float32Array(cast data));
 	}
 
-	public function createIndexBuffer(indices:Array<Int>):GLBuffer
+	public function createIndexBuffer(data:Array<Int>):IndexBuffer
 	{
-		if (indices == null) throw "Index buffer must not be null";
-		_indexSize = indices.length;
-		_indexBuffer = GL.createBuffer();
-		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, _indexBuffer);
-		GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, new Int16Array(cast indices), GL.STATIC_DRAW);
-		return _indexBuffer;
+		if (data == null) throw "Index buffer must not be null";
+		_numTriangles = Std.int(data.length / 3);
+		return _indexBuffer = HXP.renderer.createIndexBuffer(new Int16Array(cast data));
 	}
 
-	private var _indexBuffer:GLBuffer;
-	private var _vertexBuffer:GLBuffer;
-	private var _indexSize:Int = 0;
+	private var _indexBuffer:IndexBuffer;
+	private var _vertexBuffer:VertexBuffer;
+	private var _numTriangles:Int = 0;
 
 }

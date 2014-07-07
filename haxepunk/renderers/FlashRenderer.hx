@@ -2,11 +2,9 @@ package haxepunk.renderers;
 
 #if flash
 
+import com.adobe.flash.utils.AGALMiniAssembler;
 import haxepunk.graphics.Color;
 import haxepunk.renderers.Renderer;
-import lime.graphics.FlashRenderContext;
-
-import com.adobe.flash.utils.AGALMiniAssembler;
 import flash.Lib;
 import flash.display.BitmapData;
 import flash.display.Stage3D;
@@ -14,6 +12,9 @@ import flash.display3D.Context3D;
 import flash.display3D.Context3DBlendFactor;
 import flash.display3D.Context3DProgramType;
 import flash.events.Event;
+import lime.graphics.FlashRenderContext;
+import lime.utils.Float32Array;
+import lime.utils.Int16Array;
 
 class FlashRenderer implements Renderer
 {
@@ -28,6 +29,11 @@ class FlashRenderer implements Renderer
 	public function clear(color:Color):Void
 	{
 		context.clear(color.r, color.g, color.b, color.a);
+	}
+
+	public function present()
+	{
+		context.present();
 	}
 
 	public function compileShaderProgram(vertex:String, fragment:String):ShaderProgram
@@ -47,6 +53,35 @@ class FlashRenderer implements Renderer
 	public function bindProgram(program:ShaderProgram):Void
 	{
 		context.setProgram(program);
+	}
+
+	public function bindBuffer(v:VertexBuffer):Void
+	{
+
+	}
+
+	public function createBuffer(data:Float32Array, ?usage:BufferUsage):VertexBuffer
+	{
+		var numVerts = 3; // TODO: don't hardcode this
+		#if false
+		var buffer = context.createVertexBuffer(data.length, numVerts, usage == DYNAMIC_DRAW ? "dynamicDraw" : "staticDraw");
+		#else
+		var buffer = context.createVertexBuffer(data.length, numVerts);
+		#end
+		buffer.uploadFromByteArray(data.buffer, 0, 0, data.length);
+		return buffer;
+	}
+
+	public function createIndexBuffer(data:Int16Array, ?usage:BufferUsage):IndexBuffer
+	{
+		var buffer = context.createIndexBuffer(data.length);
+		buffer.uploadFromByteArray(data.buffer, 0, 0, data.length);
+		return buffer;
+	}
+
+	public function draw(i:IndexBuffer, numTriangles:Int, offset:Int=0):Void
+	{
+		context.drawTriangles(i, offset, numTriangles);
 	}
 
 	private function onCreateContext(_)

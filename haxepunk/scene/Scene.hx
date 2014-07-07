@@ -134,11 +134,13 @@ class Scene
 
 	public function draw()
 	{
+		HXP.renderer.clear(camera.clearColor);
 		camera.beginDraw();
 		for (entity in _entities)
 		{
 			entity.draw(camera);
 		}
+		HXP.renderer.present();
 	}
 
 	@:access(haxepunk.scene.Entity)

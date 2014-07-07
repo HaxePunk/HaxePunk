@@ -92,51 +92,56 @@ class Material
 	private var _shader:Shader;
 
 	private static var _defaultVertexShader:String =
-		"#ifdef GL_ES
-			precision mediump float;
-		#endif
+		#if flash
+			"mov v0, va1"
+		#else
+			"#ifdef GL_ES
+				precision mediump float;
+			#endif
 
-		attribute vec3 aVertexPosition;
-		attribute vec2 aTexCoord;
-		attribute vec3 aNormal;
+			attribute vec3 aVertexPosition;
+			attribute vec2 aTexCoord;
+			attribute vec3 aNormal;
 
-		varying vec2 vTexCoord;
-		varying vec3 vNormal;
-		varying vec4 vPosition;
+			varying vec2 vTexCoord;
+			varying vec3 vNormal;
+			varying vec4 vPosition;
 
-		uniform mat4 uModelViewMatrix;
-		uniform mat4 uProjectionMatrix;
+			uniform mat4 uModelViewMatrix;
+			uniform mat4 uProjectionMatrix;
 
-		void main(void)
-		{
-			vPosition = uModelViewMatrix * vec4(aVertexPosition, 1.0);
-			vNormal = normalize(aNormal);
-			vTexCoord = aTexCoord;
-			gl_Position = uProjectionMatrix * vPosition;
-		}";
+			void main(void)
+			{
+				vPosition = uModelViewMatrix * vec4(aVertexPosition, 1.0);
+				vNormal = normalize(aNormal);
+				vTexCoord = aTexCoord;
+				gl_Position = uProjectionMatrix * vPosition;
+			}"
+		#end;
 	private static var _defaultFragmentShader:String =
-		"#ifdef GL_ES
-			precision mediump float;
-		#endif
+		#if flash
+			"mov oc, v0"
+		#else
+			"#ifdef GL_ES
+				precision mediump float;
+			#endif
 
-		varying vec2 vTexCoord;
-		varying vec3 vNormal;
-		varying vec4 vPosition;
+			varying vec2 vTexCoord;
+			varying vec3 vNormal;
+			varying vec4 vPosition;
 
-		uniform sampler2D uImage0;
+			uniform sampler2D uImage0;
 
-		void main(void)
-		{
-			gl_FragColor = texture2D(uImage0, vTexCoord);
-		}";
+			void main(void)
+			{
+				gl_FragColor = texture2D(uImage0, vTexCoord);
+			}"
+		#end;
 	private static var _defaultShader(get, null):Shader;
 	private static inline function get__defaultShader():Shader {
 		if (_defaultShader == null)
 		{
-			_defaultShader = new Shader([
-				{src: _defaultVertexShader, fragment:false},
-				{src: _defaultFragmentShader, fragment:true}
-			]);
+			_defaultShader = new Shader(_defaultVertexShader, _defaultFragmentShader);
 		}
 		return _defaultShader;
 	}

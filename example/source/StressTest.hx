@@ -14,9 +14,8 @@ class ImageTexture extends Entity
 
 		image = new Image(imageName);
 		image.centerOrigin();
-		image.scale = 0.5;
-		image.scaleX = 2;
-		image.scaleY = 0.5;
+		image.scale.x = 2;
+		image.scale.y = 0.5;
 		image.alpha = 0.3;
 		addGraphic(image);
 	}
@@ -58,7 +57,7 @@ class CubeEntity extends Entity
 	private var rotate:Vector3D;
 }
 
-class Main extends Engine
+class StressTest extends Engine
 {
 	override public function ready()
 	{

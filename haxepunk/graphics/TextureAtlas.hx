@@ -1,8 +1,7 @@
 package haxepunk.graphics;
 
-import lime.graphics.GL;
-import lime.graphics.GLBuffer;
 import lime.utils.Float32Array;
+import haxepunk.renderers.Renderer;
 
 class TextureAtlas
 {
@@ -17,11 +16,11 @@ class TextureAtlas
 	public function bind():Void
 	{
 		_texture.bind();
-		if (_buffer == null) _buffer = GL.createBuffer();
+		// if (_buffer == null) _buffer = GL.createBuffer();
 		if (_dirty)
 		{
-			GL.bindBuffer(GL.ARRAY_BUFFER, _buffer);
-			GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(cast _texCoords), GL.STATIC_DRAW);
+			// TODO: only set data, don't recreate buffer every time
+			_buffer = HXP.renderer.createBuffer(new Float32Array(cast _texCoords));
 		}
 	}
 
@@ -90,6 +89,6 @@ class TextureAtlas
 	private var _texCoords:Array<Float>;
 	private var _dirty:Bool = false;
 	private var _texture:Texture;
-	private var _buffer:GLBuffer;
+	private var _buffer:VertexBuffer;
 
 }
