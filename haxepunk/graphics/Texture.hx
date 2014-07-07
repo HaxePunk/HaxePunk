@@ -3,11 +3,10 @@ package haxepunk.graphics;
 import haxe.ds.StringMap;
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
-import lime.graphics.GL;
-import lime.graphics.GLTexture;
 import lime.utils.UInt8Array;
 import lime.utils.ByteArray;
 import lime.Assets;
+import haxepunk.renderers.Renderer;
 
 #if cpp
 import cpp.vm.Thread;
@@ -70,7 +69,7 @@ class Texture
 	{
 		if (_lastBoundTexture != _texture)
 		{
-			GL.bindTexture(GL.TEXTURE_2D, _texture);
+			HXP.renderer.bindTexture(_texture);
 			_lastBoundTexture = _texture;
 		}
 	}
@@ -78,7 +77,7 @@ class Texture
 	public static function clear():Void
 	{
 		_lastBoundTexture = null;
-		GL.bindTexture(GL.TEXTURE_2D, _lastBoundTexture);
+		HXP.renderer.bindTexture(_lastBoundTexture);
 	}
 
 	private inline function loadImage(path:String)
@@ -87,25 +86,13 @@ class Texture
 		width = originalWidth = image.width;
 		height = originalHeight = image.height;
 
-		switch (HXP.context)
-		{
-			case OPENGL(gl):
-				image.convertToPOT();
-				width = image.width;
-				height = image.height;
-
-				_texture = gl.createTexture();
-				gl.bindTexture(gl.TEXTURE_2D, _texture);
-				gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, image.bytes);
-				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-			case FLASH(stage):
-			default:
-		}
+		_texture = HXP.renderer.createTexture(image);
+		width = image.width;
+		height = image.height;
 	}
 
-	private var _texture:GLTexture;
+	private var _texture:NativeTexture;
 	private static var _textures = new StringMap<Texture>();
-	private static var _lastBoundTexture:GLTexture;
+	private static var _lastBoundTexture:NativeTexture;
 
 }

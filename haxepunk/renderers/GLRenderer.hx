@@ -4,6 +4,7 @@ package haxepunk.renderers;
 
 import haxepunk.graphics.Color;
 import haxepunk.renderers.Renderer;
+import lime.graphics.Image;
 import lime.graphics.GL;
 import lime.graphics.GLShader;
 import lime.graphics.GLProgram;
@@ -27,6 +28,24 @@ class GLRenderer implements Renderer
 	}
 
 	public function present():Void { }
+
+	public function createTexture(image:Image):NativeTexture
+	{
+		image.convertToPOT();
+
+		var texture = gl.createTexture();
+		gl.bindTexture(gl.TEXTURE_2D, texture);
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, image.width, image.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, image.bytes);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+
+		return texture;
+	}
+
+	public function bindTexture(texture:NativeTexture):Void
+	{
+		gl.bindTexture(gl.TEXTURE_2D, texture);
+	}
 
 	public function compileShaderProgram(vertex:String, fragment:String):ShaderProgram
 	{
@@ -105,6 +124,29 @@ class GLRenderer implements Renderer
 		}
 
 		return shader;
+	}
+
+	public function setDepthTest(depthMask:Bool, test:DepthTestCompare):Void
+	{
+		if (depthMask)
+		{
+			gl.enable(gl.DEPTH_TEST);
+			switch (test)
+			{
+				case NEVER: gl.depthFunc(gl.NEVER);
+				case ALWAYS: gl.depthFunc(gl.ALWAYS);
+				case GREATER: gl.depthFunc(gl.GREATER);
+				case GREATER_EQUAL: gl.depthFunc(gl.GEQUAL);
+				case LESS: gl.depthFunc(gl.LESS);
+				case LESS_EQUAL: gl.depthFunc(gl.LEQUAL);
+				case EQUAL: gl.depthFunc(gl.EQUAL);
+				case NOT_EQUAL: gl.depthFunc(gl.NOTEQUAL);
+			}
+		}
+		else
+		{
+			gl.disable(gl.DEPTH_TEST);
+		}
 	}
 
 

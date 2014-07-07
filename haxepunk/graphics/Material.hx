@@ -39,11 +39,11 @@ class Material
 
 	public function use(projectionMatrix:Float32Array, modelViewMatrix:Float32Array)
 	{
+		_shader.use();
+
 		switch (HXP.context)
 		{
 			case OPENGL(gl):
-				_shader.use();
-
 				// assign any textures
 				for (i in 0..._textures.length)
 				{
@@ -67,6 +67,10 @@ class Material
 				gl.vertexAttribPointer(_normalAttribute, 3, gl.FLOAT, false, 8*4, 5*4);
 				gl.enableVertexAttribArray(_normalAttribute);
 			default:
+				for (i in 0..._textures.length)
+				{
+					_textures[i].bind();
+				}
 		}
 	}
 
@@ -93,7 +97,15 @@ class Material
 
 	private static var _defaultVertexShader:String =
 		#if flash
-			"mov v0, va1"
+			"mov vt0.w, vc0.x
+			mov vt0.xyz, va0.xyzx
+			m44 vt0, vt0, vc1
+			mov v1, vt0
+			mov v0, vc0
+			nrm v0.xyz, va1.xyzx
+			mov v2, vc0
+			mov v2.xy, va2.xyxx
+			m44 op, vt0, vc5"
 		#else
 			"#ifdef GL_ES
 				precision mediump float;
@@ -120,7 +132,7 @@ class Material
 		#end;
 	private static var _defaultFragmentShader:String =
 		#if flash
-			"mov oc, v0"
+			"tex oc, v0.xyxx, fs0 <linear mipdisable repeat 2d>"
 		#else
 			"#ifdef GL_ES
 				precision mediump float;

@@ -36,31 +36,29 @@ class Engine extends Application
 
 		HXP.window = windows[0];
 		HXP.context = HXP.window.currentRenderer.context;
-		switch (HXP.context)
-		{
-			#if flash
-			case FLASH(stage):
-				HXP.renderer = new haxepunk.renderers.FlashRenderer(stage);
-			#else
-			case OPENGL(gl):
-				HXP.renderer = new haxepunk.renderers.GLRenderer(gl);
-			#end
-			default:
-				throw "Unsupported renderer";
-		}
 
 		// Init the input system
 		Input.init();
 
-		ready();
+		switch (HXP.context)
+		{
+			#if flash
+			case FLASH(stage):
+				HXP.renderer = new haxepunk.renderers.FlashRenderer(stage, ready);
+			#else
+			case OPENGL(gl):
+				HXP.renderer = new haxepunk.renderers.GLRenderer(gl);
+				ready();
+			#end
+			default:
+				throw "Unsupported renderer";
+		}
 	}
 
 	/**
 	 * This function is called when the engine is ready. All initialization code should go here.
 	 */
-	public function ready()
-	{
-	}
+	public function ready() { }
 
 	override public function render(context:RenderContext):Void
 	{
