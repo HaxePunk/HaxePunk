@@ -2,7 +2,7 @@ package haxepunk.scene;
 
 import haxe.ds.StringMap;
 import haxepunk.graphics.Graphic;
-import haxepunk.math.Matrix3D;
+import haxepunk.math.Matrix4;
 
 class Scene
 {

@@ -1,14 +1,14 @@
 package haxepunk.graphics;
 
-import haxepunk.math.Matrix3D;
-import haxepunk.math.Vector3D;
+import haxepunk.math.Matrix4;
+import haxepunk.math.Vector3;
 import haxepunk.scene.Camera;
 
 interface Graphic
 {
 
 	public function update(elapsed:Float):Void;
-	public function draw(camera:Camera, offset:Vector3D):Void;
+	public function draw(camera:Camera, offset:Vector3):Void;
 
 }
 
@@ -51,7 +51,7 @@ class GraphicList implements Graphic
 	}
 
 	/** @private Draws the Graphics in the list. */
-	public function draw(camera:Camera, offset:Vector3D):Void
+	public function draw(camera:Camera, offset:Vector3):Void
 	{
 		for (graphic in _children)
 		{

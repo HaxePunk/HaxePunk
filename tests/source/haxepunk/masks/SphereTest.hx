@@ -1,6 +1,6 @@
 package haxepunk.masks;
 
-import haxepunk.math.Vector3D;
+import haxepunk.math.Vector3;
 
 class SphereTest extends haxe.unit.TestCase
 {
@@ -14,8 +14,8 @@ class SphereTest extends haxe.unit.TestCase
 
 	public function testIntersection()
 	{
-		var a = new Sphere(new Vector3D(0, 0, 0), 1);
-		var b = new Sphere(new Vector3D(1, 1, 1), 1);
+		var a = new Sphere(new Vector3(0, 0, 0), 1);
+		var b = new Sphere(new Vector3(1, 1, 1), 1);
 		assertTrue(a.intersectsSphere(b));
 
 		b.position.x = b.position.y = b.position.z = 2;

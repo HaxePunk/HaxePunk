@@ -1,7 +1,7 @@
 package haxepunk.graphics;
 
-import haxepunk.math.Vector3D;
-import haxepunk.math.Matrix3D;
+import haxepunk.math.Vector3;
+import haxepunk.math.Matrix4;
 import haxepunk.scene.Camera;
 import haxepunk.renderers.Renderer;
 import lime.utils.Float32Array;
@@ -20,12 +20,12 @@ class Image implements Graphic
 	/**
 	 * Scale of the image.
 	 */
-	public var scale:Vector3D;
+	public var scale:Vector3;
 
 	/**
 	 * Origin of the image.
 	 */
-	public var origin:Vector3D;
+	public var origin:Vector3;
 
 	/**
 	 * Flip image on the x-axis
@@ -73,9 +73,9 @@ class Image implements Graphic
 
 	public function new(id:String)
 	{
-		scale = new Vector3D(1, 1, 1);
-		origin = new Vector3D();
-		_matrix = new Matrix3D();
+		scale = new Vector3(1, 1, 1);
+		origin = new Vector3();
+		_matrix = new Matrix4();
 
 #if !unit_test
 		_texture = Texture.create(id);
@@ -118,7 +118,7 @@ class Image implements Graphic
 		origin.y = -(height / 2);
 	}
 
-	private inline function drawBuffer(camera:Camera, offset:Vector3D, tileOffset:Int=0):Void
+	private inline function drawBuffer(camera:Camera, offset:Vector3, tileOffset:Int=0):Void
 	{
 		if (_vertexBuffer == null || _indexBuffer == null) return;
 
@@ -127,8 +127,8 @@ class Image implements Graphic
 
 		_matrix.identity();
 		_matrix.scale(width, height, 1);
-		_matrix.translateVector3D(origin);
-		_matrix.scaleVector3D(scale);
+		_matrix.translateVector3(origin);
+		_matrix.scaleVector3(scale);
 		if (angle != 0) _matrix.rotateZ(angle);
 
 		origin -= offset;
@@ -139,12 +139,12 @@ class Image implements Graphic
 		HXP.renderer.draw(_indexBuffer, 2, tileOffset << 2);
 	}
 
-	public function draw(camera:Camera, offset:Vector3D):Void
+	public function draw(camera:Camera, offset:Vector3):Void
 	{
 		drawBuffer(camera, offset);
 	}
 
-	private var _matrix:Matrix3D;
+	private var _matrix:Matrix4;
 	private var _texture:Texture;
 	private var _vertexBuffer:VertexBuffer;
 	private var _indexBuffer:IndexBuffer;

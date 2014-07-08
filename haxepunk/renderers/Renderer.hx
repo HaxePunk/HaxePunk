@@ -1,7 +1,7 @@
 package haxepunk.renderers;
 
 import haxepunk.graphics.Color;
-import haxepunk.math.Matrix3D;
+import haxepunk.math.Matrix4;
 import lime.utils.Float32Array;
 import lime.utils.Int16Array;
 import lime.graphics.Image;
@@ -9,6 +9,15 @@ import lime.graphics.Image;
 enum BufferUsage {
 	STATIC_DRAW;
 	DYNAMIC_DRAW;
+}
+
+enum BlendFactor {
+	ONE;
+	ZERO;
+	SOURCE_ALPHA;
+	DESTINATION_COLOR;
+	ONE_MINUS_SOURCE_ALPHA;
+	ONE_MINUS_SOURCE_COLOR;
 }
 
 enum DepthTestCompare {
@@ -51,7 +60,8 @@ interface Renderer
 	public function createBuffer(data:Float32Array, ?usage:BufferUsage):VertexBuffer;
 	public function bindBuffer(v:VertexBuffer):Void;
 
-	public function setMatrix(loc:Location, matrix:Matrix3D):Void;
+	public function setMatrix(loc:Location, matrix:Matrix4):Void;
+	public function setBlendMode(source:BlendFactor, destination:BlendFactor):Void;
 
 	public function createTexture(image:Image):NativeTexture;
 	public function bindTexture(texture:NativeTexture, sampler:Int):Void;

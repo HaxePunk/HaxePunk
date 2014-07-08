@@ -1,12 +1,12 @@
 package haxepunk.math;
 
 #if flash
-typedef NativeMatrix3D = flash.geom.Matrix3D;
+typedef NativeMatrix4 = flash.geom.Matrix3D;
 #else
-typedef NativeMatrix3D = lime.utils.Float32Array;
+typedef NativeMatrix4 = lime.utils.Float32Array;
 #end
 
-class Matrix3D implements ArrayAccess<Float>
+class Matrix4 implements ArrayAccess<Float>
 {
 
 	public var _11:Float = 1;
@@ -26,7 +26,7 @@ class Matrix3D implements ArrayAccess<Float>
 	public var _43:Float = 0;
 	public var _44:Float = 1;
 
-	public function new(?data:NativeMatrix3D)
+	public function new(?data:NativeMatrix4)
 	{
 		if (data != null)
 		{
@@ -35,14 +35,14 @@ class Matrix3D implements ArrayAccess<Float>
 		}
 	}
 
-	public var native(get, never):NativeMatrix3D;
-	private inline function get_native():NativeMatrix3D
+	public var native(get, never):NativeMatrix4;
+	private inline function get_native():NativeMatrix4
 	{
 		if (_isDirty)
 		{
 			if (_native == null)
 			{
-				_native = new NativeMatrix3D(#if flash flash.Vector.ofArray(toArray()) #else toArray() #end);
+				_native = new NativeMatrix4(#if flash flash.Vector.ofArray(toArray()) #else toArray() #end);
 			}
 			else
 			{
@@ -109,16 +109,16 @@ class Matrix3D implements ArrayAccess<Float>
 
 	public function toString():String
 	{
-		return "<Matrix3D>\n| " +
+		return "<Matrix4>\n| " +
 			_11 + ", " + _12 + ", " + _13 + ", " + _14 + " |\n| " +
 			_21 + ", " + _22 + ", " + _23 + ", " + _24 + " |\n| " +
 			_31 + ", " + _32 + ", " + _33 + ", " + _34 + " |\n| " +
 			_41 + ", " + _42 + ", " + _43 + ", " + _44 + " |";
 	}
 
-	public function clone():Matrix3D
+	public function clone():Matrix4
 	{
-		var m = new Matrix3D(_native);
+		var m = new Matrix4(_native);
 		m._11 = _11; m._21 = _21; m._31 = _31; m._41 = _41;
 		m._12 = _12; m._22 = _22; m._32 = _32; m._42 = _42;
 		m._13 = _13; m._23 = _23; m._33 = _33; m._43 = _43;
@@ -135,7 +135,7 @@ class Matrix3D implements ArrayAccess<Float>
 		_isDirty = true;
 	}
 
-	public function lookAt(eye:Vector3D, target:Vector3D, up:Vector3D):Matrix3D
+	public function lookAt(eye:Vector3, target:Vector3, up:Vector3):Matrix4
 	{
 		var zaxis = eye - target;
 		zaxis.normalize();
@@ -154,7 +154,7 @@ class Matrix3D implements ArrayAccess<Float>
 		return this;
 	}
 
-	public inline function translateVector3D(v:Vector3D):Void
+	public inline function translateVector3(v:Vector3):Void
 	{
 		translate(v.x, v.y, v.z);
 	}
@@ -167,7 +167,7 @@ class Matrix3D implements ArrayAccess<Float>
 		_isDirty = true;
 	}
 
-	public inline function scaleVector3D(v:Vector3D):Void
+	public inline function scaleVector3(v:Vector3):Void
 	{
 		scale(v.x, v.y, v.z);
 	}
@@ -190,7 +190,7 @@ class Matrix3D implements ArrayAccess<Float>
 		_isDirty = true;
 	}
 
-	public inline function rotateVector3D(v:Vector3D):Void
+	public inline function rotateVector3(v:Vector3):Void
 	{
 		rotateX(v.x);
 		rotateY(v.y);
@@ -269,7 +269,7 @@ class Matrix3D implements ArrayAccess<Float>
 		_isDirty = true;
 	}
 
-	public function multiply(m:Matrix3D):Matrix3D
+	public function multiply(m:Matrix4):Matrix4
 	{
 		var a11 = _11; var a12 = _12; var a13 = _13; var a14 = _14;
 		var a21 = _21; var a22 = _22; var a23 = _23; var a24 = _24;
@@ -352,9 +352,9 @@ class Matrix3D implements ArrayAccess<Float>
 	 * @param near The z-axis nearest value
 	 * @param far The z-axis farthest value
 	 */
-	public static inline function createPerspective(fov:Float, aspect:Float, near:Float, far:Float):Matrix3D
+	public static inline function createPerspective(fov:Float, aspect:Float, near:Float, far:Float):Matrix4
 	{
-		var m = new Matrix3D();
+		var m = new Matrix4();
 		if (fov <= 0 || aspect == 0)
 		{
 			return m;
@@ -374,9 +374,9 @@ class Matrix3D implements ArrayAccess<Float>
 		return m;
 	}
 
-	public static inline function createOrtho(left:Float, right:Float,  top:Float, bottom:Float, near:Float, far:Float):Matrix3D
+	public static inline function createOrtho(left:Float, right:Float,  top:Float, bottom:Float, near:Float, far:Float):Matrix4
 	{
-		var m = new Matrix3D();
+		var m = new Matrix4();
 		var sx = 1.0 / (right - left);
 		var sy = 1.0 / (bottom - top);
 		var sz = 1.0 / (far - near);
@@ -413,7 +413,7 @@ class Matrix3D implements ArrayAccess<Float>
 			case 13: _42;
 			case 14: _43;
 			case 15: _44;
-			default: throw "Invalid index value for Matrix3D (0-15).";
+			default: throw "Invalid index value for Matrix4 (0-15).";
 		}
 	}
 
@@ -438,11 +438,11 @@ class Matrix3D implements ArrayAccess<Float>
 			case 13: _42 = value;
 			case 14: _43 = value;
 			case 15: _44 = value;
-			default: throw "Invalid index value for Matrix3D (0-15).";
+			default: throw "Invalid index value for Matrix4 (0-15).";
 		}
 	}
 
-	private var _native:NativeMatrix3D;
+	private var _native:NativeMatrix4;
 	private var _isDirty:Bool = true;
 
 }

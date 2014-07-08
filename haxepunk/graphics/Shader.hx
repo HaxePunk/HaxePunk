@@ -1,7 +1,7 @@
 package haxepunk.graphics;
 
 import haxepunk.renderers.Renderer;
-import haxepunk.math.Matrix3D;
+import haxepunk.math.Matrix4;
 import lime.graphics.GL;
 
 typedef ShaderSource = {
@@ -61,7 +61,7 @@ class Shader
 		#end
 	}
 
-	public inline function setMatrix(u:Location, m:Matrix3D):Void
+	public inline function setMatrix(u:Location, m:Matrix4):Void
 	{
 		HXP.renderer.setMatrix(u, m);
 	}

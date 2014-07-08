@@ -1,6 +1,6 @@
 package haxepunk.graphics;
 
-import haxepunk.math.Matrix3D;
+import haxepunk.math.Matrix4;
 import haxepunk.renderers.Renderer;
 import lime.Assets;
 
@@ -36,7 +36,7 @@ class Material
 		_textures.push(texture);
 	}
 
-	public function use(projectionMatrix:Matrix3D, modelViewMatrix:Matrix3D)
+	public function use(projectionMatrix:Matrix4, modelViewMatrix:Matrix4)
 	{
 		_shader.use();
 		// assign the projection and modelview matrices

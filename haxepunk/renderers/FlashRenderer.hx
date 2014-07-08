@@ -4,7 +4,7 @@ package haxepunk.renderers;
 
 import com.adobe.utils.AGALMiniAssembler;
 import haxepunk.graphics.Color;
-import haxepunk.math.Matrix3D;
+import haxepunk.math.Matrix4;
 import haxepunk.renderers.Renderer;
 import flash.Lib;
 import flash.display.BitmapData;
@@ -71,7 +71,7 @@ class FlashRenderer implements Renderer
 		context.setProgram(program);
 	}
 
-	public function setMatrix(loc:Location, matrix:Matrix3D):Void
+	public function setMatrix(loc:Location, matrix:Matrix4):Void
 	{
 		context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, loc, matrix.native, true);
 	}
@@ -118,6 +118,23 @@ class FlashRenderer implements Renderer
 		} catch (e:Dynamic) {
 			trace(e);
 		}
+	}
+
+	private inline function getBlendFactor(factor:BlendFactor):Context3DBlendFactor
+	{
+		return switch (factor) {
+			case ONE: Context3DBlendFactor.ONE;
+			case ZERO: Context3DBlendFactor.ZERO;
+			case SOURCE_ALPHA: Context3DBlendFactor.SOURCE_ALPHA;
+			case DESTINATION_COLOR: Context3DBlendFactor.DESTINATION_COLOR;
+			case ONE_MINUS_SOURCE_ALPHA: Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA;
+			case ONE_MINUS_SOURCE_COLOR: Context3DBlendFactor.ONE_MINUS_SOURCE_COLOR;
+		};
+	}
+
+	public function setBlendMode(source:BlendFactor, destination:BlendFactor):Void
+	{
+		context.setBlendFactors(getBlendFactor(source), getBlendFactor(destination));
 	}
 
 	public function setDepthTest(depthMask:Bool, ?test:DepthTestCompare):Void

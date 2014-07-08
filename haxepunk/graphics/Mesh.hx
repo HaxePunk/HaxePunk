@@ -2,8 +2,8 @@ package haxepunk.graphics;
 
 import lime.utils.Int16Array;
 import lime.utils.Float32Array;
-import haxepunk.math.Vector3D;
-import haxepunk.math.Matrix3D;
+import haxepunk.math.Vector3;
+import haxepunk.math.Matrix4;
 import haxepunk.scene.Camera;
 import haxepunk.renderers.Renderer;
 
@@ -15,7 +15,7 @@ class Mesh implements Graphic
 	 */
 	public var material:Material;
 
-	public var transform:Matrix3D;
+	public var transform:Matrix4;
 
 	/**
 	 * Create a new mesh
@@ -25,7 +25,7 @@ class Mesh implements Graphic
 	 */
 	public function new(?material:Material)
 	{
-		transform = new Matrix3D();
+		transform = new Matrix4();
 		this.material = (material == null ? new Material() : material);
 
 		// check that the buffers aren't already loaded from a super class
@@ -40,9 +40,9 @@ class Mesh implements Graphic
 	 * @param projectionMatrix The projection matrix to apply
 	 * @param modelViewMatrix The model view matrix to apply
 	 */
-	public function draw(camera:Camera, offset:Vector3D):Void
+	public function draw(camera:Camera, offset:Vector3):Void
 	{
-		transform.translateVector3D(offset);
+		transform.translateVector3(offset);
 
 		HXP.renderer.bindBuffer(_vertexBuffer);
 		material.use(camera.transform, transform);

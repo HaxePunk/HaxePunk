@@ -1,6 +1,6 @@
 package haxepunk.masks;
 
-import haxepunk.math.Vector3D;
+import haxepunk.math.Vector3;
 
 class AABB implements Mask
 {
@@ -8,12 +8,12 @@ class AABB implements Mask
 	/**
 	 * Minimum point of the AABB
 	 */
-	public var min:Vector3D;
+	public var min:Vector3;
 
 	/**
 	 * Maximum point of the AABB
 	 */
-	public var max:Vector3D;
+	public var max:Vector3;
 
 	/**
 	 * X Offset.
@@ -105,8 +105,8 @@ class AABB implements Mask
 	/**
 	 * The center position of the AABB. (WARNING: recalculates value every time this is used)
 	 */
-	public var center(get, never):Vector3D;
-	private function get_center():Vector3D
+	public var center(get, never):Vector3;
+	private function get_center():Vector3
 	{
 		_center.x = width * 0.5 + min.x;
 		_center.y = height * 0.5 + min.y;
@@ -114,11 +114,11 @@ class AABB implements Mask
 		return _center;
 	}
 
-	public function new(?min:Vector3D, ?max:Vector3D)
+	public function new(?min:Vector3, ?max:Vector3)
 	{
-		this.min = (min == null ? new Vector3D() : min);
-		this.max = (max == null ? new Vector3D() : max);
-		_center = new Vector3D();
+		this.min = (min == null ? new Vector3() : min);
+		this.max = (max == null ? new Vector3() : max);
+		_center = new Vector3();
 	}
 
 	public function intersects(other:Mask):Bool
@@ -127,10 +127,10 @@ class AABB implements Mask
 		return false;
 	}
 
-	public function collide(other:Mask):Vector3D
+	public function collide(other:Mask):Vector3
 	{
 		if (Std.is(other, AABB)) return collideAABB(cast other);
-		return Vector3D.ZERO;
+		return Vector3.ZERO;
 	}
 
 	public function intersectsAABB(other:AABB):Bool
@@ -140,9 +140,9 @@ class AABB implements Mask
 			max.z >= other.min.z && min.z <= other.max.z;
 	}
 
-	public function collideAABB(other:AABB):Vector3D
+	public function collideAABB(other:AABB):Vector3
 	{
-		var result = new Vector3D();
+		var result = new Vector3();
 
 		var left = other.min.x - max.x;
 		var right = other.max.x - min.x;
@@ -163,6 +163,6 @@ class AABB implements Mask
 		return result;
 	}
 
-	private var _center:Vector3D;
+	private var _center:Vector3;
 
 }

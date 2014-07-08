@@ -1,6 +1,6 @@
 package haxepunk.masks;
 
-import haxepunk.math.Vector3D;
+import haxepunk.math.Vector3;
 
 class AABBTest extends haxe.unit.TestCase
 {
@@ -14,9 +14,9 @@ class AABBTest extends haxe.unit.TestCase
 
 	public function testCollide()
 	{
-		var a = new AABB(new Vector3D(-1, -1, -1), new Vector3D(1, 1, 1));
-		var b = new AABB(new Vector3D(-1, -1, -1), new Vector3D(2, 2, 2));
-		assertTrue(new Vector3D(-2, -2, -2) == a.collideAABB(b));
+		var a = new AABB(new Vector3(-1, -1, -1), new Vector3(1, 1, 1));
+		var b = new AABB(new Vector3(-1, -1, -1), new Vector3(2, 2, 2));
+		assertTrue(new Vector3(-2, -2, -2) == a.collideAABB(b));
 
 		// touching edges does not count as collision (no penetration)
 		b.min.x = b.min.y = b.min.z = 1;
@@ -25,8 +25,8 @@ class AABBTest extends haxe.unit.TestCase
 
 	public function testIntersection()
 	{
-		var a = new AABB(new Vector3D(-1, -1, -1), new Vector3D(1, 1, 1));
-		var b = new AABB(new Vector3D(-1, -1, -1), new Vector3D(2, 2, 2));
+		var a = new AABB(new Vector3(-1, -1, -1), new Vector3(1, 1, 1));
+		var b = new AABB(new Vector3(-1, -1, -1), new Vector3(2, 2, 2));
 		assertTrue(a.intersectsAABB(b));
 		assertTrue(b.intersectsAABB(a));
 
@@ -36,7 +36,7 @@ class AABBTest extends haxe.unit.TestCase
 
 	public function testProperties()
 	{
-		var aabb = new AABB(new Vector3D(-1, -1, -1), new Vector3D(1, 2, 3));
+		var aabb = new AABB(new Vector3(-1, -1, -1), new Vector3(1, 2, 3));
 		assertEquals(2.0, aabb.width);
 		assertEquals(3.0, aabb.height);
 		assertEquals(4.0, aabb.depth);

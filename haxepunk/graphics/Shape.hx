@@ -1,8 +1,8 @@
 package haxepunk.graphics;
 
 import haxepunk.graphics.Mesh;
-import haxepunk.math.Matrix3D;
-import haxepunk.math.Vector3D;
+import haxepunk.math.Matrix4;
+import haxepunk.math.Vector3;
 import haxepunk.renderers.Renderer;
 
 class Shape extends Mesh

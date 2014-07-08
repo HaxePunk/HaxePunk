@@ -14,10 +14,10 @@ class Point3D
 	}
 }
 
-abstract Vector3D (Point3D)
+abstract Vector3 (Point3D)
 {
 
-	public static var ZERO:Vector3D = new Vector3D(0, 0, 0);
+	public static var ZERO:Vector3 = new Vector3(0, 0, 0);
 
 	public function new(x:Float=0, y:Float=0, z:Float=0)
 	{
@@ -71,7 +71,7 @@ abstract Vector3D (Point3D)
 	 * Distance between two vectors
 	 * @param v Another vector to check distance
 	 */
-	public function distance(v:Vector3D):Float
+	public function distance(v:Vector3):Float
 	{
 		var dx = v.x - x;
 		var dy = v.y - y;
@@ -79,12 +79,12 @@ abstract Vector3D (Point3D)
 		return Math.sqrt(dx * dx + dy * dy + dz * dz);
 	}
 
-	@:op(A + B) private static inline function _add(a:Vector3D, b:Vector3D):Vector3D
+	@:op(A + B) private static inline function _add(a:Vector3, b:Vector3):Vector3
 	{
-		return new Vector3D(a.x + b.x, a.y + b.y, a.z + b.z);
+		return new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
 	}
 
-	@:op(A += B) public static inline function add(a:Vector3D, b:Vector3D):Vector3D
+	@:op(A += B) public static inline function add(a:Vector3, b:Vector3):Vector3
 	{
 		a.x += b.x;
 		a.y += b.y;
@@ -92,12 +92,12 @@ abstract Vector3D (Point3D)
 		return a;
 	}
 
-	@:op(A - B) private static inline function _subtract(a:Vector3D, b:Vector3D):Vector3D
+	@:op(A - B) private static inline function _subtract(a:Vector3, b:Vector3):Vector3
 	{
-		return new Vector3D(a.x - b.x, a.y - b.y, a.z - b.z);
+		return new Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
 	}
 
-	@:op(A -= B) private static inline function subtract(a:Vector3D, b:Vector3D):Vector3D
+	@:op(A -= B) private static inline function subtract(a:Vector3, b:Vector3):Vector3
 	{
 		a.x -= b.x;
 		a.y -= b.y;
@@ -105,12 +105,12 @@ abstract Vector3D (Point3D)
 		return a;
 	}
 
-	@:commutative @:op(A * B) private static inline function _multiplyByScalar(a:Vector3D, b:Float):Vector3D
+	@:commutative @:op(A * B) private static inline function _multiplyByScalar(a:Vector3, b:Float):Vector3
 	{
-		return new Vector3D(a.x * b, a.y * b, a.z * b);
+		return new Vector3(a.x * b, a.y * b, a.z * b);
 	}
 
-	@:op(A *= B) private static inline function _multiplyEquals(a:Vector3D, b:Float):Vector3D
+	@:op(A *= B) private static inline function _multiplyEquals(a:Vector3, b:Float):Vector3
 	{
 		a.x *= b;
 		a.y *= b;
@@ -118,7 +118,7 @@ abstract Vector3D (Point3D)
 		return a;
 	}
 
-	@:op(A *= B) public static inline function multiply(a:Vector3D, b:Vector3D):Vector3D
+	@:op(A *= B) public static inline function multiply(a:Vector3, b:Vector3):Vector3
 	{
 		a.x *= b.x;
 		a.y *= b.y;
@@ -126,13 +126,13 @@ abstract Vector3D (Point3D)
 		return a;
 	}
 
-	@:op(A / B) private static inline function _divideByScalar(a:Vector3D, b:Float):Vector3D
+	@:op(A / B) private static inline function _divideByScalar(a:Vector3, b:Float):Vector3
 	{
 		b = 1 / b;
-		return new Vector3D(a.x * b, a.y * b, a.z * b);
+		return new Vector3(a.x * b, a.y * b, a.z * b);
 	}
 
-	@:op(A /= B) private static inline function _divideEquals(a:Vector3D, b:Float):Vector3D
+	@:op(A /= B) private static inline function _divideEquals(a:Vector3, b:Float):Vector3
 	{
 		b = 1 / b;
 		a.x *= b;
@@ -141,7 +141,7 @@ abstract Vector3D (Point3D)
 		return a;
 	}
 
-	@:op(A /= B) public static inline function divide(a:Vector3D, b:Vector3D):Vector3D
+	@:op(A /= B) public static inline function divide(a:Vector3, b:Vector3):Vector3
 	{
 		a.x /= b.x;
 		a.y /= b.y;
@@ -149,12 +149,12 @@ abstract Vector3D (Point3D)
 		return a;
 	}
 
-	@:op(A % B) public static inline function cross(a:Vector3D, b:Vector3D):Vector3D
+	@:op(A % B) public static inline function cross(a:Vector3, b:Vector3):Vector3
 	{
-		return new Vector3D(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
+		return new Vector3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
 	}
 
-	@:op(A %= B) private static inline function _crossEquals(a:Vector3D, b:Vector3D):Vector3D
+	@:op(A %= B) private static inline function _crossEquals(a:Vector3, b:Vector3):Vector3
 	{
 		var x = a.y * b.z - a.z * b.y;
 		var y = a.z * b.x - a.x * b.z;
@@ -165,42 +165,42 @@ abstract Vector3D (Point3D)
 		return a;
 	}
 
-	@:op(A * B) private static inline function _multiplyMatrix(v:Vector3D, m:Matrix3D):Vector3D
+	@:op(A * B) private static inline function _multiplyMatrix(v:Vector3, m:Matrix4):Vector3
 	{
-		return new Vector3D(
+		return new Vector3(
 			m._11 * v.x + m._12 * v.y + m._13 * v.z + m._41,
 			m._21 * v.x + m._22 * v.y + m._23 * v.z + m._42,
 			m._31 * v.x + m._32 * v.y + m._33 * v.z + m._43
 		);
 	}
 
-	@:op(A * B) private static inline function _multiplyInverseMatrix(m:Matrix3D, v:Vector3D):Vector3D
+	@:op(A * B) private static inline function _multiplyInverseMatrix(m:Matrix4, v:Vector3):Vector3
 	{
-		return new Vector3D(
+		return new Vector3(
 			m._11 * v.x + m._21 * v.y + m._31 * v.z + m._41,
 			m._12 * v.x + m._22 * v.y + m._32 * v.z + m._42,
 			m._13 * v.x + m._23 * v.y + m._33 * v.z + m._43
 		);
 	}
 
-	@:op(A * B) public static inline function dot(a:Vector3D, b:Vector3D):Float
+	@:op(A * B) public static inline function dot(a:Vector3, b:Vector3):Float
 	{
 		return a.x * b.x + a.y * b.y + a.z * b.z;
 	}
 
-	@:op(A == B) private static inline function _equals(a:Vector3D, b:Vector3D):Bool
+	@:op(A == B) private static inline function _equals(a:Vector3, b:Vector3):Bool
 	{
 		return (a == null ? b == null : (b != null && a.x == b.x && a.y == b.y && a.z == b.z));
 	}
 
-	@:op(A != B) private static inline function _notEquals(a:Vector3D, b:Vector3D):Bool
+	@:op(A != B) private static inline function _notEquals(a:Vector3, b:Vector3):Bool
 	{
 		return !_equals(a, b);
 	}
 
-	@:op(-A) private static inline function _negativeVector(a:Vector3D):Vector3D
+	@:op(-A) private static inline function _negativeVector(a:Vector3):Vector3
 	{
-		return new Vector3D(-a.x, -a.y, -a.z);
+		return new Vector3(-a.x, -a.y, -a.z);
 	}
 
 }

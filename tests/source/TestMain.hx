@@ -15,8 +15,8 @@ class TestMain
 
 		// math tests
 		runner.add(new haxepunk.math.MathTest());
-		runner.add(new haxepunk.math.Matrix3DTest());
-		runner.add(new haxepunk.math.Vector3DTest());
+		runner.add(new haxepunk.math.Matrix4Test());
+		runner.add(new haxepunk.math.Vector3Test());
 
 		// input tests
 		runner.add(new haxepunk.input.KeyboardTest());

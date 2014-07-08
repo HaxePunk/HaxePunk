@@ -1,7 +1,7 @@
 package haxepunk;
 
 import haxepunk.math.Math;
-import haxepunk.math.Matrix3D;
+import haxepunk.math.Matrix4;
 import haxepunk.scene.Scene;
 import haxepunk.graphics.Material;
 import haxepunk.input.Input;

@@ -3,7 +3,7 @@ package haxepunk.renderers;
 #if !flash
 
 import haxepunk.graphics.Color;
-import haxepunk.math.Matrix3D;
+import haxepunk.math.Matrix4;
 import haxepunk.renderers.Renderer;
 import lime.graphics.Image;
 import lime.graphics.GL;
@@ -37,6 +37,31 @@ class GLRenderer implements Renderer
 
 	public function present():Void { }
 
+	private inline function getBlendFactor(factor:BlendFactor):Int
+	{
+		return switch (factor) {
+			case ONE: gl.ONE;
+			case ZERO: gl.ZERO;
+			case SOURCE_ALPHA: gl.SRC_ALPHA;
+			case DESTINATION_COLOR: gl.DST_COLOR;
+			case ONE_MINUS_SOURCE_ALPHA: gl.ONE_MINUS_SRC_ALPHA;
+			case ONE_MINUS_SOURCE_COLOR: gl.ONE_MINUS_SRC_COLOR;
+		};
+	}
+
+	public function setBlendMode(source:BlendFactor, destination:BlendFactor):Void
+	{
+		if (source == ONE && destination == ZERO)
+		{
+			gl.disable(gl.BLEND);
+		}
+		else
+		{
+			gl.blendFunc(getBlendFactor(source), getBlendFactor(destination));
+			gl.enable(gl.BLEND);
+		}
+	}
+
 	public function createTexture(image:Image):NativeTexture
 	{
 		image.forcePowerOfTwo();
@@ -52,8 +77,12 @@ class GLRenderer implements Renderer
 
 	public function bindTexture(texture:NativeTexture, sampler:Int):Void
 	{
-		gl.activeTexture(gl.TEXTURE0 + sampler);
-		gl.bindTexture(gl.TEXTURE_2D, texture);
+		if (_activeTexture != texture)
+		{
+			gl.activeTexture(gl.TEXTURE0 + sampler);
+			gl.bindTexture(gl.TEXTURE_2D, texture);
+			_activeTexture = texture;
+		}
 	}
 
 	public function compileShaderProgram(vertex:String, fragment:String):ShaderProgram
@@ -92,7 +121,7 @@ class GLRenderer implements Renderer
 		}
 	}
 
-	public function setMatrix(loc:Location, matrix:Matrix3D):Void
+	public function setMatrix(loc:Location, matrix:Matrix4):Void
 	{
 		gl.uniformMatrix4fv(loc, false, matrix.native);
 	}
@@ -170,6 +199,7 @@ class GLRenderer implements Renderer
 
 	private var gl:GLRenderContext;
 	private static var _activeProgram:ShaderProgram;
+	private static var _activeTexture:NativeTexture;
 
 	// var width = 512, height = 512;
 	// _framebuffer = gl.createFramebuffer();

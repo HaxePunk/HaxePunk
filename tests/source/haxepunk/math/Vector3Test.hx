@@ -1,17 +1,17 @@
 package haxepunk.math;
 
-class Vector3DTest extends haxe.unit.TestCase
+class Vector3Test extends haxe.unit.TestCase
 {
 
 	public function testInitialize()
 	{
-		assertVector(new Vector3D());
+		assertVector(new Vector3());
 	}
 
 	public function testDot()
 	{
-		var a = new Vector3D(1, 2, 3),
-			b = new Vector3D(4, 5, 6);
+		var a = new Vector3(1, 2, 3),
+			b = new Vector3(4, 5, 6);
 
 		assertEquals(32.0, a * b);
 		assertEquals(32.0, a.dot(b));
@@ -21,8 +21,8 @@ class Vector3DTest extends haxe.unit.TestCase
 
 	public function testCross()
 	{
-		var a = new Vector3D(1, 2, 3),
-			b = new Vector3D(4, 5, 6);
+		var a = new Vector3(1, 2, 3),
+			b = new Vector3(4, 5, 6);
 
 		assertVector(a % b, -3, 6, -3);
 		assertVector(a.cross(b), -3, 6, -3);
@@ -37,8 +37,8 @@ class Vector3DTest extends haxe.unit.TestCase
 
 	public function testAdd()
 	{
-		var a = new Vector3D(1, 2, 3),
-			b = new Vector3D(4, 5, 6);
+		var a = new Vector3(1, 2, 3),
+			b = new Vector3(4, 5, 6);
 
 		assertVector(a + b, 5, 7, 9);
 		assertVector(b + a, 5, 7, 9);
@@ -51,8 +51,8 @@ class Vector3DTest extends haxe.unit.TestCase
 
 	public function testSubtract()
 	{
-		var a = new Vector3D(1, 2, 3),
-			b = new Vector3D(4, 5, 6);
+		var a = new Vector3(1, 2, 3),
+			b = new Vector3(4, 5, 6);
 
 		assertVector(a - b, -3, -3, -3);
 		assertVector(b - a, 3, 3, 3);
@@ -65,7 +65,7 @@ class Vector3DTest extends haxe.unit.TestCase
 
 	public function testScalar()
 	{
-		var a = new Vector3D(1, 2, 3);
+		var a = new Vector3(1, 2, 3);
 
 		assertVector(a * 2, 2, 4, 6);
 		assertVector(2 * a, 2, 4, 6);
@@ -89,8 +89,8 @@ class Vector3DTest extends haxe.unit.TestCase
 
 	public function testMultiplyMatrix()
 	{
-		var a = new Vector3D(1, 2, 3);
-		var m = new Matrix3D();
+		var a = new Vector3(1, 2, 3);
+		var m = new Matrix4();
 		assertVector(a * m, 1, 2, 3);
 		assertVector(m * a, 1, 2, 3);
 
@@ -103,8 +103,8 @@ class Vector3DTest extends haxe.unit.TestCase
 
 	public function testEquality()
 	{
-		var a = new Vector3D(1, 2, 3),
-			b = new Vector3D(4, 5, 6);
+		var a = new Vector3(1, 2, 3),
+			b = new Vector3(4, 5, 6);
 
 		assertFalse(a == b);
 		assertTrue(a != b);
@@ -113,8 +113,8 @@ class Vector3DTest extends haxe.unit.TestCase
 
 	public function testDistance()
 	{
-		var a = new Vector3D(1, 2, 3),
-			b = new Vector3D(4, 5, 6);
+		var a = new Vector3(1, 2, 3),
+			b = new Vector3(4, 5, 6);
 
 		assertEquals(0.0, a.distance(a));
 		assertEquals(b.distance(a), a.distance(b));
@@ -122,7 +122,7 @@ class Vector3DTest extends haxe.unit.TestCase
 
 	public function testNormalize()
 	{
-		var a = new Vector3D(1, 2, 3);
+		var a = new Vector3(1, 2, 3);
 
 		assertTrue(a.length > 1.0);
 		a.normalize();
@@ -131,7 +131,7 @@ class Vector3DTest extends haxe.unit.TestCase
 
 	public function testNegate()
 	{
-		var a = new Vector3D(1, 2, 3);
+		var a = new Vector3(1, 2, 3);
 
 		assertVector(-a, -1, -2, -3);
 
@@ -140,7 +140,7 @@ class Vector3DTest extends haxe.unit.TestCase
 		assertVector(a, -1, -2, -3);
 	}
 
-	private function assertVector(v:Vector3D, x:Float=0, y:Float=0, z:Float=0)
+	private function assertVector(v:Vector3, x:Float=0, y:Float=0, z:Float=0)
 	{
 		assertEquals(x, v.x);
 		assertEquals(y, v.y);

@@ -61,17 +61,13 @@ class Texture
 	 */
 	public inline function bind(sampler:Int=0):Void
 	{
-		if (_lastBoundTexture != _texture)
-		{
-			HXP.renderer.bindTexture(_texture, sampler);
-			_lastBoundTexture = _texture;
-		}
+		HXP.renderer.setBlendMode(SOURCE_ALPHA, ONE_MINUS_SOURCE_ALPHA);
+		HXP.renderer.bindTexture(_texture, sampler);
 	}
 
 	public static function clear():Void
 	{
-		_lastBoundTexture = null;
-		HXP.renderer.bindTexture(_lastBoundTexture, 0);
+		HXP.renderer.bindTexture(null, 0);
 	}
 
 	private inline function loadImage(path:String)
@@ -87,6 +83,5 @@ class Texture
 
 	private var _texture:NativeTexture;
 	private static var _textures = new StringMap<Texture>();
-	private static var _lastBoundTexture:NativeTexture;
 
 }

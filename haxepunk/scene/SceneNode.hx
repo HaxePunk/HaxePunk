@@ -1,11 +1,11 @@
 package haxepunk.scene;
 
-import haxepunk.math.Vector3D;
+import haxepunk.math.Vector3;
 
 class SceneNode
 {
 
-	public var position:Vector3D;
+	public var position:Vector3;
 
 	@:allow(haxepunk.scene.Scene)
 	public var scene(default, null):Scene;
@@ -28,7 +28,7 @@ class SceneNode
 
 	public function new(x:Float = 0, y:Float = 0, z:Float = 0)
 	{
-		position = new Vector3D(x, y, z);
+		position = new Vector3(x, y, z);
 	}
 
 }

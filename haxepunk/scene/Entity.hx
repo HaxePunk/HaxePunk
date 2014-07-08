@@ -3,8 +3,8 @@ package haxepunk.scene;
 import haxepunk.graphics.Graphic;
 import haxepunk.masks.Mask;
 import haxepunk.masks.AABB;
-import haxepunk.math.Matrix3D;
-import haxepunk.math.Vector3D;
+import haxepunk.math.Matrix4;
+import haxepunk.math.Vector3;
 
 class Entity extends SceneNode
 {
@@ -101,7 +101,7 @@ class Entity extends SceneNode
 	 * @param	y			Virtual y position to place this Entity.
 	 * @return	The first Entity collided with, or null if none were collided.
 	 */
-	public function collide(type:String, ?offset:Vector3D):Entity
+	public function collide(type:String, ?offset:Vector3):Entity
 	{
 		// check that the entity has been added to a scene
 		if (scene == null) return null;

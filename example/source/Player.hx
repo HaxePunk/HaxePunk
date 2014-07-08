@@ -3,7 +3,7 @@ import haxepunk.scene.Entity;
 import haxepunk.graphics.Spritemap;
 import haxepunk.input.Input;
 import haxepunk.input.Keyboard;
-import haxepunk.math.Vector3D;
+import haxepunk.math.Vector3;
 import haxepunk.math.Math;
 
 class Player extends Entity
@@ -13,8 +13,8 @@ class Player extends Entity
 	{
 		super();
 
-		acceleration = new Vector3D();
-		velocity = new Vector3D();
+		acceleration = new Vector3();
+		velocity = new Vector3();
 
 		sprite = new Spritemap("assets/character.png", 32, 32);
 		sprite.add("idle", [8, 8, 8, 9, 8, 8], 2);
@@ -63,8 +63,8 @@ class Player extends Entity
 	}
 
 	private var sprite:Spritemap;
-	private var acceleration:Vector3D;
-	private var velocity:Vector3D;
+	private var acceleration:Vector3;
+	private var velocity:Vector3;
 	private var drag:Float = 0.9;
 	private var maxVelocity:Float = 10;
 

@@ -1,6 +1,6 @@
 package haxepunk.masks;
 
-import haxepunk.math.Vector3D;
+import haxepunk.math.Vector3;
 
 class Sphere implements Mask
 {
@@ -8,16 +8,16 @@ class Sphere implements Mask
 	/**
 	 * Position of the Sphere.
 	 */
-	public var position:Vector3D;
+	public var position:Vector3;
 
 	/**
 	 * Radius of the Sphere.
 	 */
 	public var radius:Float;
 
-	public function new(?position:Vector3D, radius:Float=0)
+	public function new(?position:Vector3, radius:Float=0)
 	{
-		this.position = (position == null ? new Vector3D() : position);
+		this.position = (position == null ? new Vector3() : position);
 		this.radius = radius;
 	}
 
@@ -27,9 +27,9 @@ class Sphere implements Mask
 		return false;
 	}
 
-	public function collide(other:Mask):Vector3D
+	public function collide(other:Mask):Vector3
 	{
-		return Vector3D.ZERO;
+		return Vector3.ZERO;
 	}
 
 	public function intersectsSphere(other:Sphere):Bool

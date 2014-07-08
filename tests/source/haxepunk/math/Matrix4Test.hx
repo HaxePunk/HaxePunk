@@ -1,18 +1,18 @@
 package haxepunk.math;
 
-class Matrix3DTest extends haxe.unit.TestCase
+class Matrix4Test extends haxe.unit.TestCase
 {
 
 	public function testCreate()
 	{
-		var matrix = new Matrix3D();
+		var matrix = new Matrix4();
 
 		isIdentityMatrix(matrix);
 	}
 
 	public function testIdentity()
 	{
-		var matrix = new Matrix3D();
+		var matrix = new Matrix4();
 		matrix.identity();
 
 		isIdentityMatrix(matrix);
@@ -20,7 +20,7 @@ class Matrix3DTest extends haxe.unit.TestCase
 
 	public function testDeterminant()
 	{
-		var m = new Matrix3D();
+		var m = new Matrix4();
 
 		assertEquals(1.0, m.determinant);
 
@@ -41,7 +41,7 @@ class Matrix3DTest extends haxe.unit.TestCase
 
 	public function testInverse()
 	{
-		var a = new Matrix3D();
+		var a = new Matrix4();
 		a.rotateZ(Math.PI);
 		a.translate(0, 3, 5);
 
@@ -61,7 +61,7 @@ class Matrix3DTest extends haxe.unit.TestCase
 
 	public function testRotateZ()
 	{
-		var matrix = new Matrix3D();
+		var matrix = new Matrix4();
 		matrix.rotateZ(Math.PI);
 
 		assertEquals(-1.0, matrix._11);
@@ -70,7 +70,7 @@ class Matrix3DTest extends haxe.unit.TestCase
 
 	public function testArrayAccess()
 	{
-		var matrix = new Matrix3D();
+		var matrix = new Matrix4();
 
 		matrix[3] = 2;
 
@@ -78,7 +78,7 @@ class Matrix3DTest extends haxe.unit.TestCase
 		assertEquals(2.0, matrix._14);
 	}
 
-	private function isIdentityMatrix(matrix:Matrix3D)
+	private function isIdentityMatrix(matrix:Matrix4)
 	{
 		assertEquals(1.0, matrix._11);
 		assertEquals(0.0, matrix._12);

@@ -1,7 +1,7 @@
 package haxepunk.graphics;
 
-import haxepunk.math.Matrix3D;
-import haxepunk.math.Vector3D;
+import haxepunk.math.Matrix4;
+import haxepunk.math.Vector3;
 import haxepunk.math.Math;
 import haxepunk.renderers.Renderer;
 import haxepunk.scene.Camera;
@@ -396,7 +396,7 @@ class Spritemap extends Image
 		_indexBuffer = HXP.renderer.createIndexBuffer(new Int16Array(cast indices));
 	}
 
-	override public function draw(camera:Camera, offset:Vector3D):Void
+	override public function draw(camera:Camera, offset:Vector3):Void
 	{
 		drawBuffer(camera, offset, _frame);
 	}
