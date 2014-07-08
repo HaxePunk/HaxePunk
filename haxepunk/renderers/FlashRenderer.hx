@@ -97,7 +97,7 @@ class FlashRenderer implements Renderer
 	public function createTexture(image:Image):NativeTexture
 	{
 		var texture = context.createTexture(image.width, image.height, Context3DTextureFormat.BGRA, true);
-		texture.uploadFromBitmapData(image.data);
+		texture.uploadFromBitmapData(image.src);
 		return texture;
 	}
 

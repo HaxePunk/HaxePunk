@@ -8,12 +8,6 @@ import lime.utils.ByteArray;
 import lime.Assets;
 import haxepunk.renderers.Renderer;
 
-#if cpp
-import cpp.vm.Thread;
-#elseif neko
-import neko.vm.Thread;
-#end
-
 class Texture
 {
 

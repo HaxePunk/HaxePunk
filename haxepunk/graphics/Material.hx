@@ -90,18 +90,13 @@ class Material
 
 	private static var _defaultVertexShader:String =
 		#if flash
-			// "mov vt0.w, vc0.x
-			// mov vt0.xyz, va0.xyzx
-			// m44 vt0, vt0, vc1
-			// mov v1, vt0
-			// mov v0, vc0
-			// nrm v0.xyz, va1.xyzx
-			// mov v2, vc0
-			// mov v2.xy, va2.xyxx
-			// m44 op, vt0, vc5"
-			"m44 vt0, va0, vc0
-			m44 op, vt0, vc1
-			mov v0, va1"
+			"m44 vt0, va0, vc0 // position * projection matrix
+			m44 op, vt0, vc1   // position * modelView matrix
+			// dp3 vt0, va2, vc2
+			mov vt1.w, va2.w
+			nrm vt1.xyz, va2   // normalize normal
+			mov v0, va1        // tex coord
+			mov v1, vt1"
 		#else
 			"#ifdef GL_ES
 				precision mediump float;
@@ -129,7 +124,7 @@ class Material
 	private static var _defaultFragmentShader:String =
 		#if flash
 			// "tex oc, v0.xyxx, fs0 <linear mipdisable repeat 2d>"
-			"tex oc, v0, fs0 <linear 2d>"
+			"tex oc, v0.xyxx, fs0 <linear nomip 2d clamp>"
 		#else
 			"#ifdef GL_ES
 				precision mediump float;

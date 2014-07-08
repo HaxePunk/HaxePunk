@@ -5,7 +5,7 @@ class Main extends Engine
 {
 	override public function ready()
 	{
-		var image = new Image("assets/lime.jpg");
+		var image = new Image("assets/lime.png");
 		image.centerOrigin();
 		scene.addGraphic(image);
 

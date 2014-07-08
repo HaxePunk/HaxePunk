@@ -10,12 +10,6 @@ import lime.app.Config;
 import lime.graphics.RenderContext;
 import lime.ui.Window;
 
-#if cpp
-import cpp.vm.Thread;
-#elseif neko
-import neko.vm.Thread;
-#end
-
 class Engine extends Application
 {
 
@@ -71,18 +65,6 @@ class Engine extends Application
 
 	override public function update(deltaTime:Int):Void
 	{
-#if ((neko || cpp) && HXP_BACKGROUND_LOAD)
-		var msg = Thread.readMessage(false);
-		if (msg != null)
-		{
-			switch (msg.type)
-			{
-				case "loadTexture":
-					msg.texture.createTexture(msg.width, msg.height, msg.data);
-			}
-		}
-#end
-
 		scene.update(deltaTime / 1000.0);
 
 		// Update the input system
