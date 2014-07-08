@@ -30,7 +30,7 @@ class FlashRenderer implements Renderer
 		stage3D = context.stage.stage3Ds[0];
 		stage3D.addEventListener(Event.CONTEXT3D_CREATE, function (_) {
 			this.context = stage3D.context3D;
-			this.context.configureBackBuffer(context.stage.stageWidth, context.stage.stageHeight, 0, true);
+			setViewport(context.stage.stageWidth, context.stage.stageHeight);
 			this.context.enableErrorChecking = true;
 			ready();
 		});
@@ -40,6 +40,11 @@ class FlashRenderer implements Renderer
 	public function clear(color:Color):Void
 	{
 		context.clear(color.r, color.g, color.b, color.a);
+	}
+
+	public function setViewport(width:Int, height:Int):Void
+	{
+		context.configureBackBuffer(width, height, 0);
 	}
 
 	public function present()
@@ -115,7 +120,7 @@ class FlashRenderer implements Renderer
 		}
 	}
 
-	public function setDepthTest(depthMask:Bool, test:DepthTestCompare):Void
+	public function setDepthTest(depthMask:Bool, ?test:DepthTestCompare):Void
 	{
 		if (depthMask)
 		{

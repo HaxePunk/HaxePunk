@@ -15,6 +15,7 @@ class Scene
 		_entities = new List<Entity>();
 		_types = new StringMap<List<Entity>>();
 		_entityNames = new StringMap<Entity>();
+		_frameList = new Array<Float>();
 	}
 
 	public function add(e:Entity)
@@ -141,6 +142,12 @@ class Scene
 			entity.draw(camera);
 		}
 		HXP.renderer.present();
+
+		var t = haxe.Timer.stamp() * 1000;
+		_frameListSum += _frameList[_frameList.length] = Std.int(t - _frameLast);
+		if (_frameList.length > 10) _frameListSum -= _frameList.shift();
+		HXP.frameRate = 1000 / (_frameListSum / _frameList.length);
+		_frameLast = t;
 	}
 
 	@:access(haxepunk.scene.Entity)
@@ -153,6 +160,10 @@ class Scene
 		}
 		camera.update();
 	}
+
+	private var _frameLast:Float = 0;
+	private var _frameListSum:Float = 0;
+	private var _frameList:Array<Float>;
 
 	private var _entities:List<Entity>;
 	private var _types:StringMap<List<Entity>>;

@@ -1,7 +1,6 @@
 package haxepunk.scene;
 
 import haxepunk.HXP;
-import lime.graphics.GL;
 import haxepunk.graphics.Color;
 import haxepunk.math.Vector3D;
 import haxepunk.math.Matrix3D;
@@ -49,15 +48,12 @@ class Camera extends SceneNode
 
 	public function beginDraw()
 	{
-#if !neko
-		GL.viewport(0, 0, HXP.window.width, HXP.window.height);
-#end
-		GL.disable(GL.DEPTH_TEST);
-		GL.depthFunc(GL.LEQUAL);
+		HXP.renderer.setViewport(HXP.window.width, HXP.window.height);
+		HXP.renderer.setDepthTest(false);
 
 		// TODO: move this to texture?
-		GL.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
-		GL.enable(GL.BLEND);
+		// GL.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
+		// GL.enable(GL.BLEND);
 	}
 
 	private var _projection:Matrix3D;

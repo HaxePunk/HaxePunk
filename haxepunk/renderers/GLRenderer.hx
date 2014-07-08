@@ -28,6 +28,13 @@ class GLRenderer implements Renderer
 		gl.clear(gl.COLOR_BUFFER_BIT);
 	}
 
+	public function setViewport(width:Int, height:Int)
+	{
+#if !neko
+		GL.viewport(0, 0, HXP.window.width, HXP.window.height);
+#end
+	}
+
 	public function present():Void { }
 
 	public function createTexture(image:Image):NativeTexture
@@ -78,7 +85,11 @@ class GLRenderer implements Renderer
 
 	public function bindProgram(program:ShaderProgram):Void
 	{
-		gl.useProgram(program);
+		if (_activeProgram != program)
+		{
+			gl.useProgram(program);
+			_activeProgram = program;
+		}
 	}
 
 	public function setMatrix(loc:Location, matrix:Matrix3D):Void
@@ -133,7 +144,7 @@ class GLRenderer implements Renderer
 		return shader;
 	}
 
-	public function setDepthTest(depthMask:Bool, test:DepthTestCompare):Void
+	public function setDepthTest(depthMask:Bool, ?test:DepthTestCompare):Void
 	{
 		if (depthMask)
 		{
@@ -158,6 +169,7 @@ class GLRenderer implements Renderer
 
 
 	private var gl:GLRenderContext;
+	private static var _activeProgram:ShaderProgram;
 
 	// var width = 512, height = 512;
 	// _framebuffer = gl.createFramebuffer();

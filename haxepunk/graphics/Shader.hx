@@ -71,20 +71,14 @@ class Shader
 	 */
 	public inline function use()
 	{
-		if (_lastUsedProgram != _program)
-		{
-			HXP.renderer.bindProgram(_program);
-			_lastUsedProgram = _program;
-		}
+		HXP.renderer.bindProgram(_program);
 	}
 
 	public static function clear()
 	{
-		_lastUsedProgram = null;
-		HXP.renderer.bindProgram(_lastUsedProgram);
+		HXP.renderer.bindProgram(null);
 	}
 
 	private var _program:ShaderProgram;
-	private static var _lastUsedProgram:ShaderProgram;
 
 }

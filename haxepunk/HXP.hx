@@ -10,4 +10,7 @@ class HXP
 	public static var window:Window;
 	public static var context:RenderContext;
 	public static var renderer:Renderer;
+
+	@:allow(haxepunk.scene.Scene)
+	public static var frameRate(default, null):Float;
 }

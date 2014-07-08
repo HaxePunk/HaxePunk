@@ -64,10 +64,10 @@ class StressTest extends Engine
 		var material = new Material();
 		material.addTexture(Texture.create("assets/lime.png"));
 		var numCubes = Std.int(Math.random() * 50 + 150);
-		numCubes = 1000;
+		numCubes = 5000;
 
 		var sprite = new Spritemap("assets/character.png", 32, 32);
-		sprite.add("walk", [0, 1, 2, 3, 4, 5, 6, 7], 12);
+		sprite.add("walk", [0, 1, 2, 3, 4, 5, 6, 7], 0.012);
 		sprite.play("walk");
 		sprite.centerOrigin();
 

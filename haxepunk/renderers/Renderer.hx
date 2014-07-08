@@ -56,7 +56,8 @@ interface Renderer
 	public function createTexture(image:Image):NativeTexture;
 	public function bindTexture(texture:NativeTexture, sampler:Int):Void;
 
-	public function setDepthTest(depthMask:Bool, test:DepthTestCompare):Void;
+	public function setDepthTest(depthMask:Bool, ?test:DepthTestCompare):Void;
+	public function setViewport(width:Int, height:Int):Void;
 
 	public function draw(i:IndexBuffer, numTriangles:Int, offset:Int=0):Void;
 }

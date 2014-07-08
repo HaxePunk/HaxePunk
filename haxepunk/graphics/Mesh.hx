@@ -45,7 +45,7 @@ class Mesh implements Graphic
 		transform.translateVector3D(offset);
 
 		HXP.renderer.bindBuffer(_vertexBuffer);
-		material.use(camera.transform.float32Array, transform.float32Array);
+		material.use(camera.transform, transform);
 		HXP.renderer.draw(_indexBuffer, _numTriangles);
 
 		// HXP.renderer.bindIndexBuffer(null);

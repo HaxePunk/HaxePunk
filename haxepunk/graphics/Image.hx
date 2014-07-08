@@ -136,8 +136,7 @@ class Image implements Graphic
 
 		HXP.renderer.bindBuffer(_vertexBuffer);
 		material.use(camera.transform, _matrix);
-		HXP.renderer.draw(_indexBuffer, 2, 0);
-		// HXP.renderer.draw(_indexBuffer, 2, tileOffset << 2);
+		HXP.renderer.draw(_indexBuffer, 2, tileOffset << 2);
 	}
 
 	public function draw(camera:Camera, offset:Vector3D):Void
