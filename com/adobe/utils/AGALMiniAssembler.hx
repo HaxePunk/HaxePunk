@@ -313,14 +313,18 @@ class AGALMiniAssembler
 					reg = ~/[A-Za-z]{1,2}/ig;
 					reg.match(relreg);
 					var relname = reg.matched(0);
-					var regFoundRel:Register = REGMAP.get(relname);
-					if (regFoundRel == null)
+
+					if (REGMAP.exists(relname))
 					{
 						error = "error: bad index register";
 						badreg = true;
 						break;
 					}
-					reltype = regFoundRel.emitCode;
+					else
+					{
+						reltype = REGMAP.get(relname).emitCode;
+					}
+
 					reg = ~/(\.[xyzw]{1,1})/;
 					if (!reg.match(relreg))
 					{
@@ -359,34 +363,34 @@ class AGALMiniAssembler
 					{
 						if (verbose) trace("  emit sampler");
 						var samplerbits:UInt = 5; // type 5
-						var optsLength:UInt = opts == null ? 0 : opts.length;
 						var bias:Float = 0;
-						for (k in 0...optsLength)
+						for (opt in opts)
 						{
 							if (verbose)
 							{
-								trace("    opt: " + opts[k]);
+								trace("    opt: " + opt);
 							}
 
-							var optfound:Sampler = SAMPLEMAP.get(opts[k]);
-							if (optfound == null)
+							if (SAMPLEMAP.exists(opt))
 							{
-								// todo check that it's a number...
-								//trace( "Warning, unknown sampler option: "+opts[k] );
-								bias = Std.parseFloat(opts[k]);
-								if (verbose)
-								{
-									trace("    bias: " + bias);
-								}
-							}
-							else
-							{
+								var optfound:Sampler = SAMPLEMAP.get(opt);
+
 								if (optfound.flag != SAMPLER_SPECIAL_SHIFT)
 								{
 									samplerbits &= ~(0xf << optfound.flag);
 								}
 
 								samplerbits |= optfound.mask << optfound.flag;
+							}
+							else
+							{
+								// todo check that it's a number...
+								//trace( "Warning, unknown sampler option: " + opt );
+								bias = Std.parseFloat(opt);
+								if (verbose)
+								{
+									trace("    bias: " + bias);
+								}
 							}
 						}
 						agalcode.writeShort(regidx);

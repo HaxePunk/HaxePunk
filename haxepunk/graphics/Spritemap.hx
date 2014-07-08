@@ -351,7 +351,7 @@ class Spritemap extends Image
 		frameCount = columns * rows;
 
 		var data = new Array<Float>();
-		data[frameCount*32] = 0;
+		data[frameCount*32-1] = 0;
 
 		var xx = (_spriteWidth / _texture.originalWidth) * (_texture.originalWidth / _texture.width);
 		var yy = (_spriteHeight / _texture.originalHeight) * (_texture.originalHeight / _texture.height);

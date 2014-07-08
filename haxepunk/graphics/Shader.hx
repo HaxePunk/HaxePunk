@@ -1,8 +1,8 @@
 package haxepunk.graphics;
 
 import haxepunk.renderers.Renderer;
+import haxepunk.math.Matrix3D;
 import lime.graphics.GL;
-import lime.graphics.GLUniformLocation;
 
 typedef ShaderSource = {
 	var src:String;
@@ -33,6 +33,9 @@ class Shader
 		#if flash
 		return switch (a)
 		{
+			case "aVertexPosition": 0;
+			case "aTexCoord": 1;
+			case "aNormal": 2;
 			default: -1;
 		}
 		#else
@@ -44,7 +47,7 @@ class Shader
 	 * Return the uniform location in this shader
 	 * @param a  The uniform name to find
 	 */
-	public inline function uniform(u:String):GLUniformLocation
+	public inline function uniform(u:String):Location
 	{
 		#if flash
 		return switch (u)
@@ -56,6 +59,11 @@ class Shader
 		#else
 		return GL.getUniformLocation(_program, u);
 		#end
+	}
+
+	public inline function setMatrix(u:Location, m:Matrix3D):Void
+	{
+		HXP.renderer.setMatrix(u, m);
 	}
 
 	/**

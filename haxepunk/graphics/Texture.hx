@@ -65,11 +65,11 @@ class Texture
 	/**
 	 * Binds the texture for drawing
 	 */
-	public inline function bind():Void
+	public inline function bind(sampler:Int=0):Void
 	{
 		if (_lastBoundTexture != _texture)
 		{
-			HXP.renderer.bindTexture(_texture);
+			HXP.renderer.bindTexture(_texture, sampler);
 			_lastBoundTexture = _texture;
 		}
 	}
@@ -77,7 +77,7 @@ class Texture
 	public static function clear():Void
 	{
 		_lastBoundTexture = null;
-		HXP.renderer.bindTexture(_lastBoundTexture);
+		HXP.renderer.bindTexture(_lastBoundTexture, 0);
 	}
 
 	private inline function loadImage(path:String)

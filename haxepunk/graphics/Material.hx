@@ -1,9 +1,8 @@
 package haxepunk.graphics;
 
-import lime.graphics.GLUniformLocation;
-import lime.Assets;
-import lime.utils.Float32Array;
 import haxepunk.math.Matrix3D;
+import haxepunk.renderers.Renderer;
+import lime.Assets;
 
 class Material
 {
@@ -37,24 +36,22 @@ class Material
 		_textures.push(texture);
 	}
 
-	public function use(projectionMatrix:Float32Array, modelViewMatrix:Float32Array)
+	public function use(projectionMatrix:Matrix3D, modelViewMatrix:Matrix3D)
 	{
 		_shader.use();
+		// assign the projection and modelview matrices
+		_shader.setMatrix(_projectionMatrixUniform, projectionMatrix);
+		_shader.setMatrix(_modelViewMatrixUniform, modelViewMatrix);
+
+		// assign any textures
+		for (i in 0..._textures.length)
+		{
+			_textures[i].bind(i);
+		}
 
 		switch (HXP.context)
 		{
 			case OPENGL(gl):
-				// assign any textures
-				for (i in 0..._textures.length)
-				{
-					gl.activeTexture(gl.TEXTURE0 + i);
-					_textures[i].bind();
-				}
-
-				// assign the projection and modelview matrices
-				gl.uniformMatrix4fv(_projectionMatrixUniform, false, projectionMatrix);
-				gl.uniformMatrix4fv(_modelViewMatrixUniform, false, modelViewMatrix);
-
 				// set the vertices as the first 3 floats in a buffer
 				gl.vertexAttribPointer(_vertexAttribute, 3, gl.FLOAT, false, 8*4, 0);
 				gl.enableVertexAttribArray(_vertexAttribute);
@@ -67,10 +64,6 @@ class Material
 				gl.vertexAttribPointer(_normalAttribute, 3, gl.FLOAT, false, 8*4, 5*4);
 				gl.enableVertexAttribArray(_normalAttribute);
 			default:
-				for (i in 0..._textures.length)
-				{
-					_textures[i].bind();
-				}
 		}
 	}
 
@@ -97,15 +90,18 @@ class Material
 
 	private static var _defaultVertexShader:String =
 		#if flash
-			"mov vt0.w, vc0.x
-			mov vt0.xyz, va0.xyzx
-			m44 vt0, vt0, vc1
-			mov v1, vt0
-			mov v0, vc0
-			nrm v0.xyz, va1.xyzx
-			mov v2, vc0
-			mov v2.xy, va2.xyxx
-			m44 op, vt0, vc5"
+			// "mov vt0.w, vc0.x
+			// mov vt0.xyz, va0.xyzx
+			// m44 vt0, vt0, vc1
+			// mov v1, vt0
+			// mov v0, vc0
+			// nrm v0.xyz, va1.xyzx
+			// mov v2, vc0
+			// mov v2.xy, va2.xyxx
+			// m44 op, vt0, vc5"
+			"m44 vt0, va0, vc0
+			m44 op, vt0, vc1
+			mov v0, va1"
 		#else
 			"#ifdef GL_ES
 				precision mediump float;
@@ -132,7 +128,8 @@ class Material
 		#end;
 	private static var _defaultFragmentShader:String =
 		#if flash
-			"tex oc, v0.xyxx, fs0 <linear mipdisable repeat 2d>"
+			// "tex oc, v0.xyxx, fs0 <linear mipdisable repeat 2d>"
+			"tex oc, v0, fs0 <linear 2d>"
 		#else
 			"#ifdef GL_ES
 				precision mediump float;
@@ -158,8 +155,8 @@ class Material
 		return _defaultShader;
 	}
 
-	private var _modelViewMatrixUniform:GLUniformLocation;
-	private var _projectionMatrixUniform:GLUniformLocation;
+	private var _modelViewMatrixUniform:Location;
+	private var _projectionMatrixUniform:Location;
 
 	private var _texCoordAttribute:Int;
 	private var _vertexAttribute:Int;

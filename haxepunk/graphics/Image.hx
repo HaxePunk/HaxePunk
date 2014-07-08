@@ -93,7 +93,7 @@ class Image implements Graphic
 	{
 		if (_defaultVertexBuffer == null)
 		{
-			var data = [
+			var data:Array<Float> = [
 				/* vertex | tex coord | normal */
 				0, 0, 0, 0.00, 0.00, 0, 0, -1,
 				0, 1, 0, 0.00, 1.00, 0, 0, -1,
@@ -135,8 +135,9 @@ class Image implements Graphic
 		origin /= scale;
 
 		HXP.renderer.bindBuffer(_vertexBuffer);
-		material.use(camera.transform.float32Array, _matrix.float32Array);
-		HXP.renderer.draw(_indexBuffer, 2, tileOffset << 2);
+		material.use(camera.transform, _matrix);
+		HXP.renderer.draw(_indexBuffer, 2, 0);
+		// HXP.renderer.draw(_indexBuffer, 2, tileOffset << 2);
 	}
 
 	public function draw(camera:Camera, offset:Vector3D):Void

@@ -4,12 +4,14 @@ package haxepunk.renderers;
 
 import com.adobe.utils.AGALMiniAssembler;
 import haxepunk.graphics.Color;
+import haxepunk.math.Matrix3D;
 import haxepunk.renderers.Renderer;
 import flash.Lib;
 import flash.display.BitmapData;
 import flash.display.Stage3D;
 import flash.display3D.Context3D;
 import flash.display3D.Context3DBlendFactor;
+// import flash.display3D.Context3DBufferUsage;
 import flash.display3D.Context3DProgramType;
 import flash.display3D.Context3DTextureFormat;
 import flash.display3D.Context3DCompareMode;
@@ -64,17 +66,24 @@ class FlashRenderer implements Renderer
 		context.setProgram(program);
 	}
 
-	public function bindBuffer(v:VertexBuffer):Void
+	public function setMatrix(loc:Location, matrix:Matrix3D):Void
 	{
-		context.setVertexBufferAt(0, v);
-	// 	context.setVertexBufferAt(1, v, 3, FLOAT_2);
-	// 	context.setVertexBufferAt(2, v, 5, FLOAT_3);
+		context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, loc, matrix.native, true);
+	}
+
+	public function bindBuffer(buffer:VertexBuffer):Void
+	{
+		context.setVertexBufferAt(0, buffer, 0, FLOAT_3);
+		context.setVertexBufferAt(1, buffer, 3, FLOAT_2);
+		context.setVertexBufferAt(2, buffer, 5, FLOAT_3);
 	}
 
 	public function createBuffer(data:Float32Array, ?usage:BufferUsage):VertexBuffer
 	{
-		var buffer = context.createVertexBuffer(data.length, 1);
-		buffer.uploadFromByteArray(data.buffer, 0, 0, data.length);
+		var stride = 8;
+		var len:Int = Std.int(data.length / stride);
+		var buffer = context.createVertexBuffer(len, stride);
+		buffer.uploadFromByteArray(data.buffer, 0, 0, len);
 		return buffer;
 	}
 
@@ -92,14 +101,18 @@ class FlashRenderer implements Renderer
 		return texture;
 	}
 
-	public function bindTexture(texture:NativeTexture):Void
+	public function bindTexture(texture:NativeTexture, sampler:Int):Void
 	{
-		context.setTextureAt(0, texture);
+		context.setTextureAt(sampler, texture);
 	}
 
-	public function draw(i:IndexBuffer, numTriangles:Int, offset:Int=0):Void
+	public function draw(buffer:IndexBuffer, numTriangles:Int, offset:Int=0):Void
 	{
-		context.drawTriangles(i, offset, numTriangles);
+		try {
+			context.drawTriangles(buffer, offset, numTriangles);
+		} catch (e:Dynamic) {
+			trace(e);
+		}
 	}
 
 	public function setDepthTest(depthMask:Bool, test:DepthTestCompare):Void

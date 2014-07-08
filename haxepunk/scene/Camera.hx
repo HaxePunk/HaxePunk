@@ -19,7 +19,7 @@ class Camera extends SceneNode
 		super();
 		transform = new Matrix3D();
 		up = new Vector3D();
-		clearColor = new Color(0.7, 0.7, 0.7, 1.0);
+		clearColor = new Color(0.117, 0.117, 0.117, 1.0);
 
 		// make2D(HXP.window.width, HXP.window.height);
 		make2D(800, 600);

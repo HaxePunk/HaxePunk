@@ -3,6 +3,7 @@ package haxepunk.renderers;
 #if !flash
 
 import haxepunk.graphics.Color;
+import haxepunk.math.Matrix3D;
 import haxepunk.renderers.Renderer;
 import lime.graphics.Image;
 import lime.graphics.GL;
@@ -42,8 +43,9 @@ class GLRenderer implements Renderer
 		return texture;
 	}
 
-	public function bindTexture(texture:NativeTexture):Void
+	public function bindTexture(texture:NativeTexture, sampler:Int):Void
 	{
+		gl.activeTexture(gl.TEXTURE0 + sampler);
 		gl.bindTexture(gl.TEXTURE_2D, texture);
 	}
 
@@ -77,6 +79,11 @@ class GLRenderer implements Renderer
 	public function bindProgram(program:ShaderProgram):Void
 	{
 		gl.useProgram(program);
+	}
+
+	public function setMatrix(loc:Location, matrix:Matrix3D):Void
+	{
+		gl.uniformMatrix4fv(loc, false, matrix.native);
 	}
 
 	public function bindBuffer(v:VertexBuffer):Void

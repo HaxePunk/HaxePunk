@@ -1,6 +1,10 @@
 package haxepunk.math;
 
-import lime.utils.Float32Array;
+#if flash
+typedef NativeMatrix3D = flash.geom.Matrix3D;
+#else
+typedef NativeMatrix3D = lime.utils.Float32Array;
+#end
 
 class Matrix3D implements ArrayAccess<Float>
 {
@@ -22,72 +26,75 @@ class Matrix3D implements ArrayAccess<Float>
 	public var _43:Float = 0;
 	public var _44:Float = 1;
 
-	public function new(?data:Float32Array)
+	public function new(?data:NativeMatrix3D)
 	{
 		if (data != null)
 		{
-			_float32Array = data;
+			_native = data;
 			_isDirty = false;
 		}
 	}
 
-	public var float32Array(get, never):Float32Array;
-	private inline function get_float32Array():Float32Array
+	public var native(get, never):NativeMatrix3D;
+	private inline function get_native():NativeMatrix3D
 	{
 		if (_isDirty)
 		{
-			if (_float32Array == null)
+			if (_native == null)
 			{
-				_float32Array = new Float32Array(toArray());
+				_native = new NativeMatrix3D(#if flash flash.Vector.ofArray(toArray()) #else toArray() #end);
 			}
+			else
+			{
+				#if cpp
+				untyped {
+					var bytes = _native.bytes;
+					__global__.__hxcpp_memory_set_float(bytes, 0, _11);
+					__global__.__hxcpp_memory_set_float(bytes, 4, _12);
+					__global__.__hxcpp_memory_set_float(bytes, 8, _13);
+					__global__.__hxcpp_memory_set_float(bytes, 12, _14);
 
-			#if cpp
-			untyped {
-				var bytes = _float32Array.bytes;
-				__global__.__hxcpp_memory_set_float(bytes, 0, _11);
-				__global__.__hxcpp_memory_set_float(bytes, 4, _12);
-				__global__.__hxcpp_memory_set_float(bytes, 8, _13);
-				__global__.__hxcpp_memory_set_float(bytes, 12, _14);
+					__global__.__hxcpp_memory_set_float(bytes, 16, _21);
+					__global__.__hxcpp_memory_set_float(bytes, 20, _22);
+					__global__.__hxcpp_memory_set_float(bytes, 24, _23);
+					__global__.__hxcpp_memory_set_float(bytes, 28, _24);
 
-				__global__.__hxcpp_memory_set_float(bytes, 16, _21);
-				__global__.__hxcpp_memory_set_float(bytes, 20, _22);
-				__global__.__hxcpp_memory_set_float(bytes, 24, _23);
-				__global__.__hxcpp_memory_set_float(bytes, 28, _24);
+					__global__.__hxcpp_memory_set_float(bytes, 32, _31);
+					__global__.__hxcpp_memory_set_float(bytes, 36, _32);
+					__global__.__hxcpp_memory_set_float(bytes, 40, _33);
+					__global__.__hxcpp_memory_set_float(bytes, 44, _34);
 
-				__global__.__hxcpp_memory_set_float(bytes, 32, _31);
-				__global__.__hxcpp_memory_set_float(bytes, 36, _32);
-				__global__.__hxcpp_memory_set_float(bytes, 40, _33);
-				__global__.__hxcpp_memory_set_float(bytes, 44, _34);
+					__global__.__hxcpp_memory_set_float(bytes, 48, _41);
+					__global__.__hxcpp_memory_set_float(bytes, 52, _42);
+					__global__.__hxcpp_memory_set_float(bytes, 56, _43);
+					__global__.__hxcpp_memory_set_float(bytes, 60, _44);
+				}
+				#else
+					var bytes = #if flash _native.rawData #else _native #end;
+					bytes[0] = _11;
+					bytes[1] = _12;
+					bytes[2] = _13;
+					bytes[3] = _14;
 
-				__global__.__hxcpp_memory_set_float(bytes, 48, _41);
-				__global__.__hxcpp_memory_set_float(bytes, 52, _42);
-				__global__.__hxcpp_memory_set_float(bytes, 56, _43);
-				__global__.__hxcpp_memory_set_float(bytes, 60, _44);
+					bytes[4] = _21;
+					bytes[5] = _22;
+					bytes[6] = _23;
+					bytes[7] = _24;
+
+					bytes[8] = _31;
+					bytes[9] = _32;
+					bytes[10] = _33;
+					bytes[11] = _34;
+
+					bytes[12] = _41;
+					bytes[13] = _42;
+					bytes[14] = _43;
+					bytes[15] = _44;
+				#end
 			}
-			#else
-				_float32Array[0] = _11;
-				_float32Array[1] = _12;
-				_float32Array[2] = _13;
-				_float32Array[3] = _14;
-
-				_float32Array[4] = _21;
-				_float32Array[5] = _22;
-				_float32Array[6] = _23;
-				_float32Array[7] = _24;
-
-				_float32Array[8] = _31;
-				_float32Array[9] = _32;
-				_float32Array[10] = _33;
-				_float32Array[11] = _34;
-
-				_float32Array[12] = _41;
-				_float32Array[13] = _42;
-				_float32Array[14] = _43;
-				_float32Array[15] = _44;
-			#end
 			_isDirty = false;
 		}
-		return _float32Array;
+		return _native;
 	}
 
 	public function toArray():Array<Float>
@@ -100,13 +107,6 @@ class Matrix3D implements ArrayAccess<Float>
 		];
 	}
 
-	#if flash
-	public function toFlashMatrix3D():flash.geom.Matrix3D
-	{
-		return new flash.geom.Matrix3D(flash.Vector.ofArray(toArray()));
-	}
-	#end
-
 	public function toString():String
 	{
 		return "<Matrix3D>\n| " +
@@ -118,7 +118,7 @@ class Matrix3D implements ArrayAccess<Float>
 
 	public function clone():Matrix3D
 	{
-		var m = new Matrix3D(_float32Array);
+		var m = new Matrix3D(_native);
 		m._11 = _11; m._21 = _21; m._31 = _31; m._41 = _41;
 		m._12 = _12; m._22 = _22; m._32 = _32; m._42 = _42;
 		m._13 = _13; m._23 = _23; m._33 = _33; m._43 = _43;
@@ -442,7 +442,7 @@ class Matrix3D implements ArrayAccess<Float>
 		}
 	}
 
-	private var _float32Array:Float32Array;
+	private var _native:NativeMatrix3D;
 	private var _isDirty:Bool = true;
 
 }

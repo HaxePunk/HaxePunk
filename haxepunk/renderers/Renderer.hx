@@ -1,6 +1,7 @@
 package haxepunk.renderers;
 
 import haxepunk.graphics.Color;
+import haxepunk.math.Matrix3D;
 import lime.utils.Float32Array;
 import lime.utils.Int16Array;
 import lime.graphics.Image;
@@ -27,6 +28,7 @@ typedef ShaderProgram = flash.display3D.Program3D;
 typedef VertexBuffer = flash.display3D.VertexBuffer3D;
 typedef IndexBuffer = flash.display3D.IndexBuffer3D;
 typedef NativeTexture = flash.display3D.textures.Texture;
+typedef Location = Int;
 
 #else
 
@@ -34,6 +36,7 @@ typedef ShaderProgram = lime.graphics.GLProgram;
 typedef VertexBuffer = lime.graphics.GLBuffer;
 typedef IndexBuffer = lime.graphics.GLBuffer;
 typedef NativeTexture = lime.graphics.GLTexture;
+typedef Location = lime.graphics.GLUniformLocation;
 
 #end
 
@@ -48,8 +51,10 @@ interface Renderer
 	public function createBuffer(data:Float32Array, ?usage:BufferUsage):VertexBuffer;
 	public function bindBuffer(v:VertexBuffer):Void;
 
+	public function setMatrix(loc:Location, matrix:Matrix3D):Void;
+
 	public function createTexture(image:Image):NativeTexture;
-	public function bindTexture(texture:NativeTexture):Void;
+	public function bindTexture(texture:NativeTexture, sampler:Int):Void;
 
 	public function setDepthTest(depthMask:Bool, test:DepthTestCompare):Void;
 
