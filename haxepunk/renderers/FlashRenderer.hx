@@ -82,14 +82,7 @@ class FlashRenderer implements Renderer
 
 	public function setAttribute(a:Int, offset:Int, num:Int, stride:Int):Void
 	{
-		var format = switch (num) {
-			case 1: Context3DVertexBufferFormat.FLOAT_1;
-			case 2: Context3DVertexBufferFormat.FLOAT_2;
-			case 3: Context3DVertexBufferFormat.FLOAT_3;
-			case 4: Context3DVertexBufferFormat.FLOAT_4;
-			default: throw "Invalid number for attribute format (expected 1-4)";
-		}
-		_context.setVertexBufferAt(a, _activeBuffer, offset, format);
+		_context.setVertexBufferAt(a, _activeBuffer, offset, FORMAT[num]);
 	}
 
 	public function bindBuffer(buffer:VertexBuffer):Void
@@ -130,38 +123,16 @@ class FlashRenderer implements Renderer
 		_context.drawTriangles(buffer, offset, numTriangles);
 	}
 
-	private inline function getBlendFactor(factor:BlendFactor):Context3DBlendFactor
-	{
-		return switch (factor) {
-			case ONE: Context3DBlendFactor.ONE;
-			case ZERO: Context3DBlendFactor.ZERO;
-			case SOURCE_ALPHA: Context3DBlendFactor.SOURCE_ALPHA;
-			case DESTINATION_COLOR: Context3DBlendFactor.DESTINATION_COLOR;
-			case ONE_MINUS_SOURCE_ALPHA: Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA;
-			case ONE_MINUS_SOURCE_COLOR: Context3DBlendFactor.ONE_MINUS_SOURCE_COLOR;
-		};
-	}
-
 	public function setBlendMode(source:BlendFactor, destination:BlendFactor):Void
 	{
-		_context.setBlendFactors(getBlendFactor(source), getBlendFactor(destination));
+		_context.setBlendFactors(BLEND[source], BLEND[destination]);
 	}
 
 	public function setDepthTest(depthMask:Bool, ?test:DepthTestCompare):Void
 	{
 		if (depthMask)
 		{
-			switch (test)
-			{
-				case NEVER: _context.setDepthTest(true, Context3DCompareMode.NEVER);
-				case ALWAYS: _context.setDepthTest(true, Context3DCompareMode.ALWAYS);
-				case GREATER: _context.setDepthTest(true, Context3DCompareMode.GREATER);
-				case GREATER_EQUAL: _context.setDepthTest(true, Context3DCompareMode.GREATER_EQUAL);
-				case LESS: _context.setDepthTest(true, Context3DCompareMode.LESS);
-				case LESS_EQUAL: _context.setDepthTest(true, Context3DCompareMode.LESS_EQUAL);
-				case EQUAL: _context.setDepthTest(true, Context3DCompareMode.EQUAL);
-				case NOT_EQUAL: _context.setDepthTest(true, Context3DCompareMode.NOT_EQUAL);
-			}
+			_context.setDepthTest(true, COMPARE[test]);
 		}
 		else
 		{
@@ -171,7 +142,39 @@ class FlashRenderer implements Renderer
 
 	private var _context:Context3D;
 	private var _activeBuffer:VertexBuffer3D;
-	private static var stage3D:Stage3D;
+	private var stage3D:Stage3D;
+
+	private static var BLEND = [
+		Context3DBlendFactor.ZERO,
+		Context3DBlendFactor.ONE,
+		Context3DBlendFactor.SOURCE_ALPHA,
+		Context3DBlendFactor.SOURCE_COLOR,
+		Context3DBlendFactor.DESTINATION_ALPHA,
+		Context3DBlendFactor.DESTINATION_COLOR,
+		Context3DBlendFactor.ONE_MINUS_SOURCE_ALPHA,
+		Context3DBlendFactor.ONE_MINUS_SOURCE_COLOR,
+		Context3DBlendFactor.ONE_MINUS_DESTINATION_ALPHA,
+		Context3DBlendFactor.ONE_MINUS_DESTINATION_COLOR
+	];
+
+	static var COMPARE = [
+		Context3DCompareMode.ALWAYS,
+		Context3DCompareMode.NEVER,
+		Context3DCompareMode.EQUAL,
+		Context3DCompareMode.NOT_EQUAL,
+		Context3DCompareMode.GREATER,
+		Context3DCompareMode.GREATER_EQUAL,
+		Context3DCompareMode.LESS,
+		Context3DCompareMode.LESS_EQUAL,
+	];
+
+	private static var FORMAT = [
+		Context3DVertexBufferFormat.BYTES_4,
+		Context3DVertexBufferFormat.FLOAT_1,
+		Context3DVertexBufferFormat.FLOAT_2,
+		Context3DVertexBufferFormat.FLOAT_3,
+		Context3DVertexBufferFormat.FLOAT_4,
+	];
 
 }
 

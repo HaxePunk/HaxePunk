@@ -35,18 +35,11 @@ class GLRenderer implements Renderer
 #end
 	}
 
-	public function present():Void { }
-
-	private inline function getBlendFactor(factor:BlendFactor):Int
+	public function present():Void
 	{
-		return switch (factor) {
-			case ONE: gl.ONE;
-			case ZERO: gl.ZERO;
-			case SOURCE_ALPHA: gl.SRC_ALPHA;
-			case DESTINATION_COLOR: gl.DST_COLOR;
-			case ONE_MINUS_SOURCE_ALPHA: gl.ONE_MINUS_SRC_ALPHA;
-			case ONE_MINUS_SOURCE_COLOR: gl.ONE_MINUS_SRC_COLOR;
-		};
+		#if js
+		gl.finish();
+		#end
 	}
 
 	public function setBlendMode(source:BlendFactor, destination:BlendFactor):Void
@@ -57,7 +50,7 @@ class GLRenderer implements Renderer
 		}
 		else
 		{
-			gl.blendFunc(getBlendFactor(source), getBlendFactor(destination));
+			gl.blendFunc(BLEND[source], BLEND[destination]);
 			gl.enable(gl.BLEND);
 		}
 	}
@@ -207,53 +200,29 @@ class GLRenderer implements Renderer
 	private static var _activeProgram:ShaderProgram;
 	private static var _activeTexture:NativeTexture;
 
-	// var width = 512, height = 512;
-	// _framebuffer = gl.createFramebuffer();
-	// gl.bindFramebuffer(gl.FRAMEBUFFER, _framebuffer);
+	private static var BLEND = [
+		GL.ZERO,
+		GL.ONE,
+		GL.SRC_ALPHA,
+		GL.SRC_COLOR,
+		GL.DST_ALPHA,
+		GL.DST_COLOR,
+		GL.ONE_MINUS_SRC_ALPHA,
+		GL.ONE_MINUS_SRC_COLOR,
+		GL.ONE_MINUS_DST_ALPHA,
+		GL.ONE_MINUS_DST_COLOR
+	];
 
-	// _renderbuffer = gl.createRenderbuffer();
-	// gl.bindRenderbuffer(gl.RENDERBUFFER, _renderbuffer);
-	// gl.renderbufferStorage(gl.RENDERBUFFER, gl.RGBA, width, height);
-	// gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.RENDERBUFFER, _renderbuffer);
-
-	// var texture = gl.createTexture();
-	// gl.bindTexture(gl.TEXTURE_2D, texture);
-	// gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-	// gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA,  width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-	// gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
-
-
-	// var extensions = gl.getSupportedExtensions();
-	// var pvrtc = false, atc = false, dxtc = false;
-	// for (extension in extensions)
-	// {
-	// 	switch (extension)
-	// 	{
-	// 		case "GL_AMD_compressed_ATC_texture":
-	// 			atc = true;
-	// 		case "GL_ATI_texture_compression_atitc":
-	// 			atc = true;
-	// 		case "GL_IMG_texture_compression_pvrtc":
-	// 			pvrtc = true;
-	// 		case "WEBGL_compressed_texture_s3tc":
-	// 			dxtc = true;
-	// 		case "WEBKIT_WEBGL_compressed_texture_s3tc":
-	// 			dxtc = true;
-	// 		case "GL_OES_texture_compression_S3TC":
-	// 			dxtc = true;
-	// 		case "GL_EXT_texture_compression_s3tc":
-	// 			dxtc = true;
-	// 		case "GL_EXT_texture_compression_dxt1":
-	// 			dxtc = true;
-	// 		case "GL_EXT_texture_compression_dxt3":
-	// 			dxtc = true;
-	// 		case "GL_EXT_texture_compression_dxt5":
-	// 			dxtc = true;
-	// 		default:
-	// 			trace(extension);
-	// 	}
-	// }
-	// trace(pvrtc, atc, dxtc);
+	static var COMPARE = [
+		GL.ALWAYS,
+		GL.NEVER,
+		GL.EQUAL,
+		GL.NOTEQUAL,
+		GL.GREATER,
+		GL.GEQUAL,
+		GL.LESS,
+		GL.LEQUAL,
+	];
 
 }
 

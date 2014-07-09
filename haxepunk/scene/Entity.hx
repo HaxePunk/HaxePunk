@@ -12,6 +12,10 @@ class Entity extends SceneNode
 	public var hitbox:AABB;
 	public var collidable:Bool = true;
 
+	public var layer(get, set):Float;
+	private inline function get_layer():Float { return position.z; }
+	private inline function set_layer(value:Float) { return position.z = value; }
+
 	/**
 	 * The collision type, used for collision checking.
 	 */

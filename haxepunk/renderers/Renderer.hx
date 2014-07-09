@@ -11,24 +11,28 @@ enum BufferUsage {
 	DYNAMIC_DRAW;
 }
 
-enum BlendFactor {
-	ONE;
-	ZERO;
-	SOURCE_ALPHA;
-	DESTINATION_COLOR;
-	ONE_MINUS_SOURCE_ALPHA;
-	ONE_MINUS_SOURCE_COLOR;
+@:enum abstract BlendFactor(Int) to (Int) {
+	var ZERO = 0;
+	var ONE = 1;
+	var SOURCE_ALPHA = 2;
+	var SOURCE_COLOR = 3;
+	var DEST_ALPHA = 4;
+	var DEST_COLOR = 5;
+	var ONE_MINUS_SOURCE_ALPHA = 6;
+	var ONE_MINUS_SOURCE_COLOR = 7;
+	var ONE_MINUS_DEST_ALPHA = 8;
+	var ONE_MINUS_DEST_COLOR = 9;
 }
 
-enum DepthTestCompare {
-	NEVER;
-	ALWAYS;
-	EQUAL;
-	GREATER;
-	GREATER_EQUAL;
-	LESS;
-	LESS_EQUAL;
-	NOT_EQUAL;
+@:enum abstract DepthTestCompare(Int) to (Int) {
+	var ALWAYS = 0;
+	var NEVER = 1;
+	var EQUAL = 2;
+	var NOT_EQUAL = 3;
+	var GREATER = 4;
+	var GREATER_EQUAL = 5;
+	var LESS = 6;
+	var LESS_EQUAL = 7;
 }
 
 #if flash

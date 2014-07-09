@@ -56,6 +56,11 @@ class Texture
 #end
 	}
 
+	public function destroy()
+	{
+		// TODO: destroy the texture
+	}
+
 	/**
 	 * Binds the texture for drawing
 	 */
