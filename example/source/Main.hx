@@ -9,6 +9,6 @@ class Main extends Engine
 		image.centerOrigin();
 		scene.addGraphic(image);
 
-		scene.add(new Player());
+		// scene.add(new Player());
 	}
 }

@@ -24,15 +24,9 @@ class Material
 
 	public function addTexture(texture:Texture, uniformName:String="uImage0")
 	{
-		switch (HXP.context)
-		{
-			case OPENGL(gl):
-				// keep uniform to allow removal of textures?
-				var uniform = _shader.uniform(uniformName);
-				_shader.use();
-				gl.uniform1i(uniform, _textures.length);
-			default:
-		}
+		// keep uniform to allow removal of textures?
+		var uniform = _shader.uniform(uniformName);
+		_shader.use();
 		_textures.push(texture);
 	}
 
@@ -42,47 +36,19 @@ class Material
 		// assign the projection and modelview matrices
 		_shader.setMatrix(_projectionMatrixUniform, projectionMatrix);
 		_shader.setMatrix(_modelViewMatrixUniform, modelViewMatrix);
+		_shader.setAttribute(_vertexAttribute, 0, 3, 8);
+		_shader.setAttribute(_texCoordAttribute, 3, 2, 8);
+		_shader.setAttribute(_normalAttribute, 5, 3, 8);
 
 		// assign any textures
 		for (i in 0..._textures.length)
 		{
 			_textures[i].bind(i);
 		}
-
-		switch (HXP.context)
-		{
-			case OPENGL(gl):
-				// set the vertices as the first 3 floats in a buffer
-				gl.vertexAttribPointer(_vertexAttribute, 3, gl.FLOAT, false, 8*4, 0);
-				gl.enableVertexAttribArray(_vertexAttribute);
-
-				// set the tex coords as the next 2 floats in a buffer
-				gl.vertexAttribPointer(_texCoordAttribute, 2, gl.FLOAT, false, 8*4, 3*4);
-				gl.enableVertexAttribArray(_texCoordAttribute);
-
-				// set the normals as the last 3 floats in a buffer
-				gl.vertexAttribPointer(_normalAttribute, 3, gl.FLOAT, false, 8*4, 5*4);
-				gl.enableVertexAttribArray(_normalAttribute);
-			default:
-		}
 	}
 
 	public inline function disable()
 	{
-		switch (HXP.context)
-		{
-			case OPENGL(gl):
-				gl.disableVertexAttribArray(_vertexAttribute);
-				gl.disableVertexAttribArray(_texCoordAttribute);
-				gl.disableVertexAttribArray(_normalAttribute);
-			default:
-		}
-	}
-
-	public static inline function clear()
-	{
-		Texture.clear();
-		Shader.clear();
 	}
 
 	private var _textures:Array<Texture>;
@@ -91,7 +57,7 @@ class Material
 	private static var _defaultVertexShader:String =
 		#if flash
 			"m44 vt0, va0, vc0 // position * projection matrix
-			m44 op, vt0, vc1   // position * modelView matrix
+			m44 op, vt0, vc4   // position * modelView matrix
 			// dp3 vt0, va2, vc2
 			mov vt1.w, va2.w
 			nrm vt1.xyz, va2   // normalize normal

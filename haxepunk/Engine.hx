@@ -29,12 +29,11 @@ class Engine extends Application
 		super.create(config);
 
 		HXP.window = windows[0];
-		HXP.context = HXP.window.currentRenderer.context;
 
 		// Init the input system
 		Input.init();
 
-		switch (HXP.context)
+		switch (HXP.window.currentRenderer.context)
 		{
 			#if flash
 			case FLASH(stage):
@@ -43,9 +42,13 @@ class Engine extends Application
 			case OPENGL(gl):
 				HXP.renderer = new haxepunk.renderers.GLRenderer(gl);
 				ready();
+			case CANVAS(canvas):
+				HXP.renderer = new haxepunk.renderers.CanvasRenderer(canvas);
+				ready();
 			#end
 			default:
-				throw "Unsupported renderer";
+				HXP.renderer = new haxepunk.renderers.EmptyRenderer();
+				ready();
 		}
 	}
 
@@ -56,19 +59,19 @@ class Engine extends Application
 
 	override public function render(context:RenderContext):Void
 	{
-		// make sure the render context stays updated
-		HXP.context = context;
 		scene.draw();
 
-		Material.clear(); // clear any material
+		// must reset program and texture at end of each frame...
+		HXP.renderer.bindProgram(null);
+		HXP.renderer.bindTexture(null, 0);
 	}
 
 	override public function update(deltaTime:Int):Void
 	{
-		scene.update(deltaTime / 1000.0);
-
 		// Update the input system
 		Input.update();
+
+		scene.update(deltaTime / 1000.0);
 	}
 
 	/**

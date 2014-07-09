@@ -17,6 +17,81 @@ class Color
 	}
 
 	/**
+	 * Hue value from HSV
+	 */
+	public var h(get, never):Float;
+	private function get_h():Float {
+		var max = Math.max(r, Math.max(g, b));
+		var min = Math.min(r, Math.min(g, b));
+
+		var hue = 0.0;
+
+		if (max == min)
+		{
+			hue = 0;
+		}
+		else if (max == r)
+		{
+			hue = (60 * (g - b) / (max - min) + 360) % 360;
+		}
+		else if (max == g)
+		{
+			hue = (60 * (b - r) / (max - min) + 120);
+		}
+		else if (max == b)
+		{
+			hue = (60 * (r - g) / (max - min) + 240);
+		}
+
+		return hue / 360;
+	}
+
+	/**
+	 * Saturation value from HSV
+	 */
+	public var s(get, never):Float;
+	private inline function get_s():Float {
+		var max = Math.max(r, Math.max(g, b));
+		if (max == 0)
+		{
+			return 0;
+		}
+		else
+		{
+			var min = Math.min(r, Math.min(g, b));
+			return (max - min) / max;
+		}
+	}
+
+	/**
+	 * Value from HSV
+	 */
+	public var v(get, never):Float;
+	private inline function get_v():Float {
+		return Math.max(r, Math.max(g, b));
+	}
+
+	/**
+	 * Convert color to an int value
+	 * @param alpha include the alpha value
+	 */
+	public function toInt(alpha:Bool=false):Int
+	{
+		var color = getColorRGB(Std.int(r * 255), Std.int(g * 255), Std.int(b * 255));
+		if (alpha) color = color << 8 | Std.int(a * 255);
+		return color;
+	}
+
+	/**
+	 * Convert color to a web friendly hex string
+	 * @param alpha include the alpha value
+	 */
+	public function toHexCode(alpha:Bool=false):String
+	{
+		return "#" + StringTools.hex(toInt(alpha));
+	}
+
+	/**
 	 * Creates a color value by combining the chosen RGB values.
 	 * @param	R		The red value of the color, from 0 to 255.
 	 * @param	G		The green value of the color, from 0 to 255.

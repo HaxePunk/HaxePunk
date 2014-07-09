@@ -65,11 +65,6 @@ class Texture
 		HXP.renderer.bindTexture(_texture, sampler);
 	}
 
-	public static function clear():Void
-	{
-		HXP.renderer.bindTexture(null, 0);
-	}
-
 	private inline function loadImage(path:String)
 	{
 		var image = Assets.getImage(path);

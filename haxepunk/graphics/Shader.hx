@@ -4,11 +4,6 @@ import haxepunk.renderers.Renderer;
 import haxepunk.math.Matrix4;
 import lime.graphics.GL;
 
-typedef ShaderSource = {
-	var src:String;
-	var fragment:Bool;
-}
-
 /**
  * GLSL Shader object
  */
@@ -53,7 +48,7 @@ class Shader
 		return switch (u)
 		{
 			case "uProjectionMatrix": 0;
-			case "uModelViewMatrix": 1;
+			case "uModelViewMatrix": 4;
 			default: -1;
 		}
 		#else
@@ -66,17 +61,17 @@ class Shader
 		HXP.renderer.setMatrix(u, m);
 	}
 
+	public inline function setAttribute(a:Int, offset:Int, num:Int, stride:Int):Void
+	{
+		HXP.renderer.setAttribute(a, offset, num, stride);
+	}
+
 	/**
 	 * Bind the program for rendering
 	 */
 	public inline function use()
 	{
 		HXP.renderer.bindProgram(_program);
-	}
-
-	public static function clear()
-	{
-		HXP.renderer.bindProgram(null);
 	}
 
 	private var _program:ShaderProgram;

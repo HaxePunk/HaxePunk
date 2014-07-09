@@ -61,13 +61,14 @@ interface Renderer
 	public function bindBuffer(v:VertexBuffer):Void;
 
 	public function setMatrix(loc:Location, matrix:Matrix4):Void;
+	public function setAttribute(a:Int, offset:Int, num:Int, stride:Int):Void;
 	public function setBlendMode(source:BlendFactor, destination:BlendFactor):Void;
 
 	public function createTexture(image:Image):NativeTexture;
 	public function bindTexture(texture:NativeTexture, sampler:Int):Void;
 
 	public function setDepthTest(depthMask:Bool, ?test:DepthTestCompare):Void;
-	public function setViewport(width:Int, height:Int):Void;
+	public function setViewport(x:Int, y:Int, width:Int, height:Int):Void;
 
 	public function draw(i:IndexBuffer, numTriangles:Int, offset:Int=0):Void;
 }

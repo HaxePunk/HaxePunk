@@ -6,6 +6,7 @@ class TestMain
 		var runner = new haxe.unit.TestRunner();
 
 		// graphic tests
+		runner.add(new haxepunk.graphics.ColorTest());
 		runner.add(new haxepunk.graphics.ImageTest());
 		runner.add(new haxepunk.graphics.TextureAtlasTest());
 
@@ -16,6 +17,7 @@ class TestMain
 		// math tests
 		runner.add(new haxepunk.math.MathTest());
 		runner.add(new haxepunk.math.Matrix4Test());
+		runner.add(new haxepunk.math.RectangleTest());
 		runner.add(new haxepunk.math.Vector3Test());
 
 		// input tests

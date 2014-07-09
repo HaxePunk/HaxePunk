@@ -48,7 +48,7 @@ class Camera extends SceneNode
 
 	public function beginDraw()
 	{
-		HXP.renderer.setViewport(HXP.window.width, HXP.window.height);
+		HXP.renderer.setViewport(0, 0, HXP.window.width, HXP.window.height);
 		HXP.renderer.setDepthTest(false);
 	}
 

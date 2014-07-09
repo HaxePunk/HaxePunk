@@ -28,10 +28,10 @@ class GLRenderer implements Renderer
 		gl.clear(gl.COLOR_BUFFER_BIT);
 	}
 
-	public function setViewport(width:Int, height:Int)
+	public function setViewport(x:Int, y:Int, width:Int, height:Int):Void
 	{
 #if !neko
-		GL.viewport(0, 0, HXP.window.width, HXP.window.height);
+		GL.viewport(x, y, HXP.window.width, HXP.window.height);
 #end
 	}
 
@@ -124,6 +124,12 @@ class GLRenderer implements Renderer
 	public function setMatrix(loc:Location, matrix:Matrix4):Void
 	{
 		gl.uniformMatrix4fv(loc, false, matrix.native);
+	}
+
+	public function setAttribute(a:Int, offset:Int, num:Int, stride:Int):Void
+	{
+		gl.vertexAttribPointer(a, num, gl.FLOAT, false, stride*4, offset*4);
+		gl.enableVertexAttribArray(a);
 	}
 
 	public function bindBuffer(v:VertexBuffer):Void
