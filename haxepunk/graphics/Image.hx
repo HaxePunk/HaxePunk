@@ -100,14 +100,14 @@ class Image implements Graphic
 				1, 0, 0, 1.00, 0.00, 0, 0, -1,
 				1, 1, 0, 1.00, 1.00, 0, 0, -1
 			];
-			_defaultVertexBuffer = HXP.renderer.createBuffer(new Float32Array(cast data));
+			_defaultVertexBuffer = Renderer.createBuffer(new Float32Array(cast data));
 		}
 		_vertexBuffer = _defaultVertexBuffer;
 
 		if (_defaultIndexBuffer == null)
 		{
 			var data = [0, 1, 2, 1, 2, 3];
-			_defaultIndexBuffer = HXP.renderer.createIndexBuffer(new Int16Array(cast data));
+			_defaultIndexBuffer = Renderer.createIndexBuffer(new Int16Array(cast data));
 		}
 		_indexBuffer = _defaultIndexBuffer;
 	}
@@ -134,9 +134,9 @@ class Image implements Graphic
 		origin -= offset;
 		origin /= scale;
 
-		HXP.renderer.bindBuffer(_vertexBuffer);
+		Renderer.bindBuffer(_vertexBuffer);
 		material.use(camera.transform, _matrix);
-		HXP.renderer.draw(_indexBuffer, 2, tileOffset << 2);
+		Renderer.draw(_indexBuffer, 2, tileOffset << 2);
 	}
 
 	public function draw(camera:Camera, offset:Vector3):Void

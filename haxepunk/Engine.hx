@@ -4,6 +4,7 @@ import haxepunk.math.Math;
 import haxepunk.math.Matrix4;
 import haxepunk.scene.Scene;
 import haxepunk.graphics.Material;
+import haxepunk.renderers.Renderer;
 import haxepunk.input.Input;
 import lime.app.Application;
 import lime.app.Config;
@@ -37,17 +38,13 @@ class Engine extends Application
 		{
 			#if flash
 			case FLASH(stage):
-				HXP.renderer = new haxepunk.renderers.FlashRenderer(stage, ready);
+				Renderer.init(stage, ready);
 			#else
 			case OPENGL(gl):
-				HXP.renderer = new haxepunk.renderers.GLRenderer(gl);
-				ready();
-			case CANVAS(canvas):
-				HXP.renderer = new haxepunk.renderers.CanvasRenderer(canvas);
+				Renderer.init(gl);
 				ready();
 			#end
 			default:
-				HXP.renderer = new haxepunk.renderers.EmptyRenderer();
 				ready();
 		}
 	}
@@ -55,15 +52,19 @@ class Engine extends Application
 	/**
 	 * This function is called when the engine is ready. All initialization code should go here.
 	 */
-	public function ready() { }
+	public function ready()
+	{
+		Renderer.setViewport(0, 0, HXP.window.width, HXP.window.height);
+	}
 
 	override public function render(context:RenderContext):Void
 	{
 		scene.draw();
 
 		// must reset program and texture at end of each frame...
-		HXP.renderer.bindProgram(null);
-		HXP.renderer.bindTexture(null, 0);
+		Renderer.bindProgram(null);
+		Renderer.bindTexture(null, 0);
+		trace(HXP.frameRate);
 	}
 
 	override public function update(deltaTime:Int):Void

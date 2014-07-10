@@ -18,8 +18,7 @@ class Material
 		_texCoordAttribute = _shader.attribute("aTexCoord");
 		_normalAttribute = _shader.attribute("aNormal");
 
-		_projectionMatrixUniform = _shader.uniform("uProjectionMatrix");
-		_modelViewMatrixUniform = _shader.uniform("uModelViewMatrix");
+		_modelViewMatrixUniform = _shader.uniform("uMatrix");
 	}
 
 	public function addTexture(texture:Texture, uniformName:String="uImage0")
@@ -34,7 +33,7 @@ class Material
 	{
 		_shader.use();
 		// assign the projection and modelview matrices
-		_shader.setMatrix(_projectionMatrixUniform, projectionMatrix);
+		modelViewMatrix.multiply(projectionMatrix);
 		_shader.setMatrix(_modelViewMatrixUniform, modelViewMatrix);
 		_shader.setAttribute(_vertexAttribute, 0, 3, 8);
 		_shader.setAttribute(_texCoordAttribute, 3, 2, 8);
@@ -56,13 +55,9 @@ class Material
 
 	private static var _defaultVertexShader:String =
 		#if flash
-			"m44 vt0, va0, vc0 // position * projection matrix
-			m44 op, vt0, vc4   // position * modelView matrix
-			// dp3 vt0, va2, vc2
-			mov vt1.w, va2.w
-			nrm vt1.xyz, va2   // normalize normal
+			"m44 op, va0, vc0 // position * matrix
 			mov v0, va1        // tex coord
-			mov v1, vt1"
+			mov v1, va2"
 		#else
 			"#ifdef GL_ES
 				precision mediump float;
@@ -76,21 +71,18 @@ class Material
 			varying vec3 vNormal;
 			varying vec4 vPosition;
 
-			uniform mat4 uModelViewMatrix;
-			uniform mat4 uProjectionMatrix;
+			uniform mat4 uMatrix;
 
 			void main(void)
 			{
-				vPosition = uModelViewMatrix * vec4(aVertexPosition, 1.0);
 				vNormal = normalize(aNormal);
 				vTexCoord = aTexCoord;
-				gl_Position = uProjectionMatrix * vPosition;
+				gl_Position = uMatrix * vec4(aVertexPosition, 1.0);
 			}"
 		#end;
 	private static var _defaultFragmentShader:String =
 		#if flash
-			// "tex oc, v0.xyxx, fs0 <linear mipdisable repeat 2d>"
-			"tex oc, v0.xyxx, fs0 <linear nomip 2d clamp>"
+			"tex oc, v0, fs0 <linear nomip 2d clamp>"
 		#else
 			"#ifdef GL_ES
 				precision mediump float;

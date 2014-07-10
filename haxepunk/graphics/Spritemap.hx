@@ -381,7 +381,7 @@ class Spritemap extends Image
 				data[i++] = data[i++] = 0; data[i++] = -1; // normal (0, 0, -1)
 			}
 		}
-		_vertexBuffer = HXP.renderer.createBuffer(new Float32Array(cast data), STATIC_DRAW);
+		_vertexBuffer = Renderer.createBuffer(new Float32Array(cast data), STATIC_DRAW);
 
 		var indices = new Array<Int>();
 		for (frame in 0...frameCount)
@@ -393,7 +393,7 @@ class Spritemap extends Image
 			indices.push(frame * 4 + 2);
 			indices.push(frame * 4 + 3);
 		}
-		_indexBuffer = HXP.renderer.createIndexBuffer(new Int16Array(cast indices));
+		_indexBuffer = Renderer.createIndexBuffer(new Int16Array(cast indices));
 	}
 
 	override public function draw(camera:Camera, offset:Vector3):Void

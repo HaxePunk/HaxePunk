@@ -3,6 +3,7 @@ package haxepunk.scene;
 import haxe.ds.StringMap;
 import haxepunk.graphics.Graphic;
 import haxepunk.math.Matrix4;
+import haxepunk.renderers.Renderer;
 
 class Scene
 {
@@ -135,13 +136,13 @@ class Scene
 
 	public function draw()
 	{
-		HXP.renderer.clear(camera.clearColor);
-		camera.beginDraw();
+		Renderer.clear(camera.clearColor);
+		Renderer.setDepthTest(false);
 		for (entity in _entities)
 		{
 			entity.draw(camera);
 		}
-		HXP.renderer.present();
+		Renderer.present();
 
 		var t = haxe.Timer.stamp() * 1000;
 		_frameListSum += _frameList[_frameList.length] = Std.int(t - _frameLast);

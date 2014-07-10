@@ -16,7 +16,7 @@ class Shader
 	 */
 	public function new(vertex:String, fragment:String)
 	{
-		_program = HXP.renderer.compileShaderProgram(vertex, fragment);
+		_program = Renderer.compileShaderProgram(vertex, fragment);
 	}
 
 	/**
@@ -47,8 +47,7 @@ class Shader
 		#if flash
 		return switch (u)
 		{
-			case "uProjectionMatrix": 0;
-			case "uModelViewMatrix": 4;
+			case "uMatrix": 0;
 			default: -1;
 		}
 		#else
@@ -58,12 +57,12 @@ class Shader
 
 	public inline function setMatrix(u:Location, m:Matrix4):Void
 	{
-		HXP.renderer.setMatrix(u, m);
+		Renderer.setMatrix(u, m);
 	}
 
 	public inline function setAttribute(a:Int, offset:Int, num:Int, stride:Int):Void
 	{
-		HXP.renderer.setAttribute(a, offset, num, stride);
+		Renderer.setAttribute(a, offset, num, stride);
 	}
 
 	/**
@@ -71,7 +70,7 @@ class Shader
 	 */
 	public inline function use()
 	{
-		HXP.renderer.bindProgram(_program);
+		Renderer.bindProgram(_program);
 	}
 
 	private var _program:ShaderProgram;

@@ -46,12 +46,6 @@ class Camera extends SceneNode
 		transform.multiply(_projection);
 	}
 
-	public function beginDraw()
-	{
-		HXP.renderer.setViewport(0, 0, HXP.window.width, HXP.window.height);
-		HXP.renderer.setDepthTest(false);
-	}
-
 	private var _projection:Matrix4;
 
 }

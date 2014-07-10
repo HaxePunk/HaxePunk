@@ -1,5 +1,6 @@
 package haxepunk.renderers;
 
+import haxe.ds.IntMap;
 import haxepunk.graphics.Color;
 import haxepunk.math.Matrix4;
 import lime.utils.Float32Array;
@@ -24,6 +25,13 @@ enum BufferUsage {
 	var ONE_MINUS_DEST_COLOR = 9;
 }
 
+@:enum abstract CullMode(Int) to (Int) {
+	var NONE = 0;
+	var BACK = 1;
+	var FRONT = 2;
+	var FRONT_AND_BACK = 3;
+}
+
 @:enum abstract DepthTestCompare(Int) to (Int) {
 	var ALWAYS = 0;
 	var NEVER = 1;
@@ -35,6 +43,19 @@ enum BufferUsage {
 	var LESS_EQUAL = 7;
 }
 
+class ActiveState
+{
+	public var blendSource:BlendFactor;
+	public var blendDestination:BlendFactor;
+	public var program:ShaderProgram;
+	public var texture:NativeTexture;
+	public var buffer:VertexBuffer;
+	public var depthTest:DepthTestCompare;
+	public var attributes:IntMap<Bool> = new IntMap<Bool>();
+
+	public function new() { }
+}
+
 #if flash
 
 typedef ShaderProgram = flash.display3D.Program3D;
@@ -42,6 +63,8 @@ typedef VertexBuffer = flash.display3D.VertexBuffer3D;
 typedef IndexBuffer = flash.display3D.IndexBuffer3D;
 typedef NativeTexture = flash.display3D.textures.Texture;
 typedef Location = Int;
+
+typedef Renderer = FlashRenderer;
 
 #else
 
@@ -51,28 +74,6 @@ typedef IndexBuffer = lime.graphics.GLBuffer;
 typedef NativeTexture = lime.graphics.GLTexture;
 typedef Location = lime.graphics.GLUniformLocation;
 
+typedef Renderer = GLRenderer;
+
 #end
-
-interface Renderer
-{
-	public function clear(color:Color):Void;
-	public function present():Void;
-	public function compileShaderProgram(vertex:String, fragment:String):ShaderProgram;
-	public function bindProgram(program:ShaderProgram):Void;
-
-	public function createIndexBuffer(data:Int16Array, ?usage:BufferUsage):IndexBuffer;
-	public function createBuffer(data:Float32Array, ?usage:BufferUsage):VertexBuffer;
-	public function bindBuffer(v:VertexBuffer):Void;
-
-	public function setMatrix(loc:Location, matrix:Matrix4):Void;
-	public function setAttribute(a:Int, offset:Int, num:Int, stride:Int):Void;
-	public function setBlendMode(source:BlendFactor, destination:BlendFactor):Void;
-
-	public function createTexture(image:Image):NativeTexture;
-	public function bindTexture(texture:NativeTexture, sampler:Int):Void;
-
-	public function setDepthTest(depthMask:Bool, ?test:DepthTestCompare):Void;
-	public function setViewport(x:Int, y:Int, width:Int, height:Int):Void;
-
-	public function draw(i:IndexBuffer, numTriangles:Int, offset:Int=0):Void;
-}

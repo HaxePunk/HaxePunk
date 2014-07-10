@@ -32,6 +32,8 @@ class EmptyRenderer implements Renderer
 
 	public function setBlendMode(source:BlendFactor, destination:BlendFactor):Void { }
 
+	public function setCullMode(mode:CullMode):Void { }
+
 	public function createTexture(image:Image):NativeTexture { return null; }
 
 	public function bindTexture(texture:NativeTexture, sampler:Int):Void { }

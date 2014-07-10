@@ -66,8 +66,8 @@ class Texture
 	 */
 	public inline function bind(sampler:Int=0):Void
 	{
-		HXP.renderer.setBlendMode(SOURCE_ALPHA, ONE_MINUS_SOURCE_ALPHA);
-		HXP.renderer.bindTexture(_texture, sampler);
+		Renderer.setBlendMode(SOURCE_ALPHA, ONE_MINUS_SOURCE_ALPHA);
+		Renderer.bindTexture(_texture, sampler);
 	}
 
 	private inline function loadImage(path:String)
@@ -76,7 +76,7 @@ class Texture
 		width = originalWidth = image.width;
 		height = originalHeight = image.height;
 
-		_texture = HXP.renderer.createTexture(image);
+		_texture = Renderer.createTexture(image);
 		width = image.width;
 		height = image.height;
 	}

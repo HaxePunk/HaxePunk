@@ -69,6 +69,11 @@ class CanvasRenderer implements Renderer
 
 	}
 
+	public function setCullMode(mode:CullMode):Void
+	{
+
+	}
+
 	public function createTexture(image:Image):NativeTexture
 	{
 		return null;

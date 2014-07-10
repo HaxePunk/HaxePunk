@@ -9,54 +9,52 @@ import haxepunk.renderers.Renderer;
 import flash.Lib;
 import flash.display.BitmapData;
 import flash.display.Stage3D;
-import flash.display3D.Context3D;
-import flash.display3D.Context3DBlendFactor;
-// import flash.display3D.Context3DBufferUsage;
-import flash.display3D.Context3DProgramType;
-import flash.display3D.Context3DTextureFormat;
-import flash.display3D.Context3DCompareMode;
-import flash.display3D.Context3DVertexBufferFormat;
+import flash.display3D.*;
 import flash.display3D.textures.Texture;
-import flash.display3D.VertexBuffer3D;
 import flash.events.Event;
 import lime.graphics.FlashRenderContext;
 import lime.graphics.Image;
 import lime.utils.Float32Array;
 import lime.utils.Int16Array;
 
-class FlashRenderer implements Renderer
+class FlashRenderer
 {
 
-	public function new(context:FlashRenderContext, ready:Void->Void)
+	public static inline function init(context:FlashRenderContext, ready:Void->Void)
 	{
-		stage3D = context.stage.stage3Ds[0];
-		stage3D.addEventListener(Event.CONTEXT3D_CREATE, function (_) {
-			_context = stage3D.context3D;
+		_stage3D = context.stage.stage3Ds[0];
+		_stage3D.addEventListener(Event.CONTEXT3D_CREATE, function (_) {
+			_context = _stage3D.context3D;
 			setViewport(0, 0, context.stage.stageWidth, context.stage.stageHeight);
 			_context.enableErrorChecking = true;
 			ready();
 		});
-		stage3D.requestContext3D();
+		_stage3D.requestContext3D();
 	}
 
-	public function clear(color:Color):Void
+	public static inline function clear(color:Color):Void
 	{
 		_context.clear(color.r, color.g, color.b, color.a);
 	}
 
-	public function setViewport(x:Int, y:Int, width:Int, height:Int):Void
+	public static inline function setCullMode(mode:CullMode):Void
 	{
-		stage3D.x = x;
-		stage3D.y = y;
+		_context.setCulling(CULL[mode]);
+	}
+
+	public static inline function setViewport(x:Int, y:Int, width:Int, height:Int):Void
+	{
+		_stage3D.x = x;
+		_stage3D.y = y;
 		_context.configureBackBuffer(width, height, 0);
 	}
 
-	public function present()
+	public static inline function present()
 	{
 		_context.present();
 	}
 
-	public function compileShaderProgram(vertex:String, fragment:String):ShaderProgram
+	public static inline function compileShaderProgram(vertex:String, fragment:String):ShaderProgram
 	{
 		var vertexAssembly = new AGALMiniAssembler();
 		vertexAssembly.assemble(Context3DProgramType.VERTEX, vertex);
@@ -70,27 +68,27 @@ class FlashRenderer implements Renderer
 		return program;
 	}
 
-	public function bindProgram(program:ShaderProgram):Void
+	public static inline function bindProgram(program:ShaderProgram):Void
 	{
 		_context.setProgram(program);
 	}
 
-	public function setMatrix(loc:Location, matrix:Matrix4):Void
+	public static inline function setMatrix(loc:Location, matrix:Matrix4):Void
 	{
 		_context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, loc, matrix.native, false);
 	}
 
-	public function setAttribute(a:Int, offset:Int, num:Int, stride:Int):Void
+	public static inline function setAttribute(a:Int, offset:Int, num:Int, stride:Int):Void
 	{
 		_context.setVertexBufferAt(a, _activeBuffer, offset, FORMAT[num]);
 	}
 
-	public function bindBuffer(buffer:VertexBuffer):Void
+	public static inline function bindBuffer(buffer:VertexBuffer):Void
 	{
 		_activeBuffer = buffer;
 	}
 
-	public function createBuffer(data:Float32Array, ?usage:BufferUsage):VertexBuffer
+	public static inline function createBuffer(data:Float32Array, ?usage:BufferUsage):VertexBuffer
 	{
 		var stride = 8;
 		var len:Int = Std.int(data.length / stride);
@@ -99,36 +97,37 @@ class FlashRenderer implements Renderer
 		return buffer;
 	}
 
-	public function createIndexBuffer(data:Int16Array, ?usage:BufferUsage):IndexBuffer
+	public static inline function createIndexBuffer(data:Int16Array, ?usage:BufferUsage):IndexBuffer
 	{
 		var buffer = _context.createIndexBuffer(data.length);
 		buffer.uploadFromByteArray(data.buffer, 0, 0, data.length);
 		return buffer;
 	}
 
-	public function createTexture(image:Image):NativeTexture
+	public static inline function createTexture(image:Image):NativeTexture
 	{
 		var texture = _context.createTexture(image.width, image.height, Context3DTextureFormat.BGRA, true);
 		texture.uploadFromBitmapData(image.src);
 		return texture;
 	}
 
-	public function bindTexture(texture:NativeTexture, sampler:Int):Void
+	public static inline function bindTexture(texture:NativeTexture, sampler:Int):Void
 	{
 		_context.setTextureAt(sampler, texture);
 	}
 
-	public function draw(buffer:IndexBuffer, numTriangles:Int, offset:Int=0):Void
+	public static inline function draw(buffer:IndexBuffer, numTriangles:Int, offset:Int=0):Void
 	{
-		_context.drawTriangles(buffer, offset, numTriangles);
+		_context.drawTriangles(buffer);
+		// _context.drawTriangles(buffer, offset, numTriangles);
 	}
 
-	public function setBlendMode(source:BlendFactor, destination:BlendFactor):Void
+	public static inline function setBlendMode(source:BlendFactor, destination:BlendFactor):Void
 	{
 		_context.setBlendFactors(BLEND[source], BLEND[destination]);
 	}
 
-	public function setDepthTest(depthMask:Bool, ?test:DepthTestCompare):Void
+	public static inline function setDepthTest(depthMask:Bool, ?test:DepthTestCompare):Void
 	{
 		if (depthMask)
 		{
@@ -140,9 +139,9 @@ class FlashRenderer implements Renderer
 		}
 	}
 
-	private var _context:Context3D;
-	private var _activeBuffer:VertexBuffer3D;
-	private var stage3D:Stage3D;
+	private static var _context:Context3D;
+	private static var _activeBuffer:VertexBuffer3D;
+	private static var _stage3D:Stage3D;
 
 	private static var BLEND = [
 		Context3DBlendFactor.ZERO,
@@ -174,6 +173,13 @@ class FlashRenderer implements Renderer
 		Context3DVertexBufferFormat.FLOAT_2,
 		Context3DVertexBufferFormat.FLOAT_3,
 		Context3DVertexBufferFormat.FLOAT_4,
+	];
+
+	private static var CULL = [
+		Context3DTriangleFace.NONE,
+		Context3DTriangleFace.BACK,
+		Context3DTriangleFace.FRONT,
+		Context3DTriangleFace.FRONT_AND_BACK,
 	];
 
 }

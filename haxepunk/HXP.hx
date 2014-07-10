@@ -1,13 +1,11 @@
 package haxepunk;
 
-import haxepunk.renderers.Renderer;
 import lime.ui.Window;
 import haxepunk.input.Input;
 
 class HXP
 {
 	public static var window:Window;
-	public static var renderer:Renderer;
 
 	@:allow(haxepunk.scene.Scene)
 	public static var frameRate(default, null):Float;

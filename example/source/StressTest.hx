@@ -4,7 +4,7 @@ import haxepunk.scene.Entity;
 import haxepunk.graphics.*;
 import haxepunk.graphics.Shape;
 import haxepunk.graphics.importer.Wavefront;
-import haxepunk.math.Vector3D;
+import haxepunk.math.Vector3;
 
 class ImageTexture extends Entity
 {
@@ -45,26 +45,27 @@ class CubeEntity extends Entity
 		// cube.scale = Math.random() * 30 + 30;
 		addGraphic(cube);
 
-		rotate = new Vector3D(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
+		rotate = new Vector3(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
 	}
 
 	override public function update(elapsed:Float)
 	{
-		cube.transform.rotateVector3D(rotate);
+		cube.transform.rotateVector3(rotate);
 	}
 
 	private var cube:Shape;
-	private var rotate:Vector3D;
+	private var rotate:Vector3;
 }
 
 class StressTest extends Engine
 {
 	override public function ready()
 	{
+		super.ready();
 		var material = new Material();
 		material.addTexture(Texture.create("assets/lime.png"));
 		var numCubes = Std.int(Math.random() * 50 + 150);
-		numCubes = 5000;
+		numCubes = 2000;
 
 		var sprite = new Spritemap("assets/character.png", 32, 32);
 		sprite.add("walk", [0, 1, 2, 3, 4, 5, 6, 7], 0.012);

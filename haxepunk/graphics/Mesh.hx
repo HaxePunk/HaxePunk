@@ -44,26 +44,26 @@ class Mesh implements Graphic
 	{
 		transform.translateVector3(offset);
 
-		HXP.renderer.bindBuffer(_vertexBuffer);
+		Renderer.bindBuffer(_vertexBuffer);
 		material.use(camera.transform, transform);
-		HXP.renderer.draw(_indexBuffer, _numTriangles);
+		Renderer.draw(_indexBuffer, _numTriangles);
 
-		// HXP.renderer.bindIndexBuffer(null);
+		// Renderer.bindIndexBuffer(null);
 		// material.disable();
-		// HXP.renderer.bindBuffer(null);
+		// Renderer.bindBuffer(null);
 	}
 
 	public function createBuffer(data:Array<Float>):VertexBuffer
 	{
 		if (data == null) throw "Vertex data buffer must not be null";
-		return _vertexBuffer = HXP.renderer.createBuffer(new Float32Array(cast data));
+		return _vertexBuffer = Renderer.createBuffer(new Float32Array(cast data));
 	}
 
 	public function createIndexBuffer(data:Array<Int>):IndexBuffer
 	{
 		if (data == null) throw "Index buffer must not be null";
 		_numTriangles = Std.int(data.length / 3);
-		return _indexBuffer = HXP.renderer.createIndexBuffer(new Int16Array(cast data));
+		return _indexBuffer = Renderer.createIndexBuffer(new Int16Array(cast data));
 	}
 
 	private var _indexBuffer:IndexBuffer;

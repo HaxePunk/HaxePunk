@@ -20,7 +20,7 @@ class TextureAtlas
 		if (_dirty)
 		{
 			// TODO: only set data, don't recreate buffer every time
-			_buffer = HXP.renderer.createBuffer(new Float32Array(cast _texCoords));
+			_buffer = Renderer.createBuffer(new Float32Array(cast _texCoords));
 		}
 	}
 
