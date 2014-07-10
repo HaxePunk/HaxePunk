@@ -13,11 +13,6 @@ class Main extends Engine
 		image.centerOrigin();
 		scene.addGraphic(image);
 
-		// var material = new Material();
-		// material.addTexture(Texture.create("assets/lime.png"));
-		// var cube = Shape.createCube(material);
-		// scene.addGraphic(cube);
-
-		// scene.add(new Player());
+		scene.add(new Player());
 	}
 }

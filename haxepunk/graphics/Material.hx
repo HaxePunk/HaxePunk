@@ -24,8 +24,8 @@ class Material
 	public function addTexture(texture:Texture, uniformName:String="uImage0")
 	{
 		// keep uniform to allow removal of textures?
-		var uniform = _shader.uniform(uniformName);
-		_shader.use();
+		// var uniform = _shader.uniform(uniformName);
+		// _shader.use();
 		_textures.push(texture);
 	}
 
@@ -34,6 +34,9 @@ class Material
 		_shader.use();
 		// assign the projection and modelview matrices
 		modelViewMatrix.multiply(projectionMatrix);
+		#if flash
+		modelViewMatrix.transpose();
+		#end
 		_shader.setMatrix(_modelViewMatrixUniform, modelViewMatrix);
 		_shader.setAttribute(_vertexAttribute, 0, 3, 8);
 		_shader.setAttribute(_texCoordAttribute, 3, 2, 8);
@@ -56,8 +59,8 @@ class Material
 	private static var _defaultVertexShader:String =
 		#if flash
 			"m44 op, va0, vc0 // position * matrix
-			mov v0, va1        // tex coord
-			mov v1, va2"
+			mov vt0, va2      // normal
+			mov v0, va1       // tex coord"
 		#else
 			"#ifdef GL_ES
 				precision mediump float;
@@ -82,7 +85,7 @@ class Material
 		#end;
 	private static var _defaultFragmentShader:String =
 		#if flash
-			"tex oc, v0, fs0 <linear nomip 2d clamp>"
+			"tex oc, v0, fs0 <linear nomip 2d wrap>"
 		#else
 			"#ifdef GL_ES
 				precision mediump float;

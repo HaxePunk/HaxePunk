@@ -46,7 +46,7 @@ class FlashRenderer
 	{
 		_stage3D.x = x;
 		_stage3D.y = y;
-		_context.configureBackBuffer(width, height, 0);
+		_context.configureBackBuffer(width, height, 4, true);
 	}
 
 	public static inline function present()
@@ -56,14 +56,12 @@ class FlashRenderer
 
 	public static inline function compileShaderProgram(vertex:String, fragment:String):ShaderProgram
 	{
-		var vertexAssembly = new AGALMiniAssembler();
-		vertexAssembly.assemble(Context3DProgramType.VERTEX, vertex);
-
-		var fragmentAssembly = new AGALMiniAssembler();
-		fragmentAssembly.assemble(Context3DProgramType.FRAGMENT, fragment);
+		var assembler = new AGALMiniAssembler();
+		var vertexShader = assembler.assemble(Context3DProgramType.VERTEX, vertex);
+		var fragmentShader = assembler.assemble(Context3DProgramType.FRAGMENT, fragment);
 
 		var program = _context.createProgram();
-		program.upload(vertexAssembly.agalcode, fragmentAssembly.agalcode);
+		program.upload(vertexShader, fragmentShader);
 
 		return program;
 	}
@@ -106,8 +104,8 @@ class FlashRenderer
 
 	public static inline function createTexture(image:Image):NativeTexture
 	{
-		var texture = _context.createTexture(image.width, image.height, Context3DTextureFormat.BGRA, true);
-		texture.uploadFromBitmapData(image.src);
+		var texture = _context.createTexture(image.width, image.height, Context3DTextureFormat.BGRA, false);
+		texture.uploadFromBitmapData(image.src, 0);
 		return texture;
 	}
 
@@ -118,8 +116,7 @@ class FlashRenderer
 
 	public static inline function draw(buffer:IndexBuffer, numTriangles:Int, offset:Int=0):Void
 	{
-		_context.drawTriangles(buffer);
-		// _context.drawTriangles(buffer, offset, numTriangles);
+		_context.drawTriangles(buffer, offset, numTriangles);
 	}
 
 	public static inline function setBlendMode(source:BlendFactor, destination:BlendFactor):Void
@@ -135,7 +132,7 @@ class FlashRenderer
 		}
 		else
 		{
-			_context.setDepthTest(false, Context3DCompareMode.NEVER);
+			_context.setDepthTest(false, Context3DCompareMode.ALWAYS);
 		}
 	}
 

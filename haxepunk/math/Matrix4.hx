@@ -345,6 +345,17 @@ class Matrix4 implements ArrayAccess<Float>
 		return _isDirty = true;
 	}
 
+	public function transpose()
+	{
+		var tmp:Float;
+		tmp = _12; _12 = _21; _21 = tmp;
+		tmp = _13; _13 = _31; _31 = tmp;
+		tmp = _14; _14 = _41; _41 = tmp;
+		tmp = _23; _23 = _32; _32 = tmp;
+		tmp = _24; _24 = _42; _42 = tmp;
+		tmp = _34; _34 = _43; _43 = tmp;
+	}
+
 	/**
 	 * Creates a perspective matrix
 	 * @param fov The field of view in radians
