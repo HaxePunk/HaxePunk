@@ -136,7 +136,7 @@ class Image implements Graphic
 
 		Renderer.bindBuffer(_vertexBuffer);
 		material.use(camera.transform, _matrix);
-		Renderer.draw(_indexBuffer, 2, tileOffset << 2);
+		Renderer.draw(_indexBuffer, 2, tileOffset * 3);
 	}
 
 	public function draw(camera:Camera, offset:Vector3):Void

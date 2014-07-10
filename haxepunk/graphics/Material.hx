@@ -34,9 +34,6 @@ class Material
 		_shader.use();
 		// assign the projection and modelview matrices
 		modelViewMatrix.multiply(projectionMatrix);
-		#if flash
-		modelViewMatrix.transpose();
-		#end
 		_shader.setMatrix(_modelViewMatrixUniform, modelViewMatrix);
 		_shader.setAttribute(_vertexAttribute, 0, 3, 8);
 		_shader.setAttribute(_texCoordAttribute, 3, 2, 8);

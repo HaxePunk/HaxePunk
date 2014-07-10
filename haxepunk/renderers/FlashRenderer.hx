@@ -73,6 +73,7 @@ class FlashRenderer
 
 	public static inline function setMatrix(loc:Location, matrix:Matrix4):Void
 	{
+		matrix.transpose(); // Flash requires a transposed matrix
 		_context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, loc, matrix.native, false);
 	}
 

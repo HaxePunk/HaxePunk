@@ -64,7 +64,6 @@ class Engine extends Application
 		// must reset program and texture at end of each frame...
 		Renderer.bindProgram(null);
 		Renderer.bindTexture(null, 0);
-		// trace(HXP.frameRate);
 	}
 
 	override public function update(deltaTime:Int):Void

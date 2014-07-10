@@ -170,7 +170,7 @@ class GLRenderer
 	public static inline function draw(i:IndexBuffer, numTriangles:Int, offset:Int=0):Void
 	{
 		gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, i);
-		gl.drawElements(GL.TRIANGLES, numTriangles * 3, GL.UNSIGNED_SHORT, offset * 3);
+		gl.drawElements(GL.TRIANGLES, numTriangles * 3, GL.UNSIGNED_SHORT, offset << 2);
 	}
 
 	/**
