@@ -9,87 +9,87 @@ import lime.utils.Float32Array;
 import lime.utils.Int16Array;
 import lime.graphics.Image;
 
-class CanvasRenderer implements Renderer
+class CanvasRenderer
 {
 
-	public function new(context:CanvasRenderContext)
+	public static inline function init(context:CanvasRenderContext)
 	{
 		_viewport = new Rectangle();
 		_context = context;
 	}
 
-	public function clear(color:Color):Void
+	public static inline function clear(color:Color):Void
 	{
 		_context.fillStyle = color.toHexCode();
 		_context.fillRect(_viewport.x, _viewport.y, _viewport.width, _viewport.height);
 	}
 
-	public function present():Void
+	public static inline function present():Void
 	{
 
 	}
 
-	public function compileShaderProgram(vertex:String, fragment:String):ShaderProgram
+	public static inline function compileShaderProgram(vertex:String, fragment:String):ShaderProgram
 	{
-		return null;
+		return 0;
 	}
 
-	public function bindProgram(program:ShaderProgram):Void
-	{
-
-	}
-
-	public function createIndexBuffer(data:Int16Array, ?usage:BufferUsage):IndexBuffer
-	{
-		return null;
-	}
-
-	public function createBuffer(data:Float32Array, ?usage:BufferUsage):VertexBuffer
-	{
-		return null;
-	}
-
-	public function bindBuffer(v:VertexBuffer):Void
+	public static inline function bindProgram(program:ShaderProgram):Void
 	{
 
 	}
 
-	public function setMatrix(loc:Location, matrix:Matrix4):Void
+	public static inline function createIndexBuffer(data:Int16Array, ?usage:BufferUsage):IndexBuffer
+	{
+		return 0;
+	}
+
+	public static inline function createBuffer(data:Float32Array, ?usage:BufferUsage):VertexBuffer
+	{
+		return 0;
+	}
+
+	public static inline function bindBuffer(v:VertexBuffer):Void
 	{
 
 	}
 
-	public function setAttribute(a:Int, offset:Int, num:Int, stride:Int):Void
+	public static inline function setMatrix(loc:Location, matrix:Matrix4):Void
 	{
 
 	}
 
-	public function setBlendMode(source:BlendFactor, destination:BlendFactor):Void
+	public static inline function setAttribute(a:Int, offset:Int, num:Int, stride:Int):Void
 	{
 
 	}
 
-	public function setCullMode(mode:CullMode):Void
+	public static inline function setBlendMode(source:BlendFactor, destination:BlendFactor):Void
 	{
 
 	}
 
-	public function createTexture(image:Image):NativeTexture
-	{
-		return null;
-	}
-
-	public function bindTexture(texture:NativeTexture, sampler:Int):Void
+	public static inline function setCullMode(mode:CullMode):Void
 	{
 
 	}
 
-	public function setDepthTest(depthMask:Bool, ?test:DepthTestCompare):Void
+	public static inline function createTexture(image:Image):NativeTexture
+	{
+		return image.src;
+	}
+
+	public static inline function bindTexture(texture:NativeTexture, sampler:Int):Void
 	{
 
 	}
 
-	public function setViewport(x:Int, y:Int, width:Int, height:Int):Void
+	public static inline function setDepthTest(depthMask:Bool, ?test:DepthTestCompare):Void
+	{
+
+	}
+
+	public static inline function setViewport(x:Int, y:Int, width:Int, height:Int):Void
 	{
 		_viewport.x = x;
 		_viewport.y = y;
@@ -97,12 +97,12 @@ class CanvasRenderer implements Renderer
 		_viewport.height = height;
 	}
 
-	public function draw(i:IndexBuffer, numTriangles:Int, offset:Int=0):Void
+	public static inline function draw(i:IndexBuffer, numTriangles:Int, offset:Int=0):Void
 	{
 
 	}
 
-	private var _viewport:Rectangle;
-	private var _context:CanvasRenderContext;
+	private static var _viewport:Rectangle;
+	private static var _context:CanvasRenderContext;
 
 }

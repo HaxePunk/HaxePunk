@@ -58,7 +58,8 @@ class Texture
 
 	public function destroy()
 	{
-		// TODO: destroy the texture
+		Renderer.deleteTexture(_texture);
+		_textures.remove(_path);
 	}
 
 	/**
@@ -72,6 +73,7 @@ class Texture
 
 	private inline function loadImage(path:String)
 	{
+		_path = path;
 		var image = Assets.getImage(path);
 		width = originalWidth = image.width;
 		height = originalHeight = image.height;
@@ -82,6 +84,7 @@ class Texture
 	}
 
 	private var _texture:NativeTexture;
+	private var _path:String;
 	private static var _textures = new StringMap<Texture>();
 
 }

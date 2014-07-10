@@ -33,6 +33,8 @@ class Shader
 			case "aNormal": 2;
 			default: -1;
 		}
+		#elseif (js && canvas)
+		return 0;
 		#else
 		return GL.getAttribLocation(_program, a);
 		#end
@@ -50,6 +52,8 @@ class Shader
 			case "uMatrix": 0;
 			default: -1;
 		}
+		#elseif (js && canvas)
+		return 0;
 		#else
 		return GL.getUniformLocation(_program, u);
 		#end

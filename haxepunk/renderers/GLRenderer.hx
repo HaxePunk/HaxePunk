@@ -80,6 +80,11 @@ class GLRenderer
 		return texture;
 	}
 
+	public static inline function deleteTexture(texture:NativeTexture):Void
+	{
+		gl.deleteTexture(texture);
+	}
+
 	public static inline function bindTexture(texture:NativeTexture, sampler:Int):Void
 	{
 		if (_activeState.texture == texture) return;

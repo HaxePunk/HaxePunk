@@ -110,6 +110,11 @@ class FlashRenderer
 		return texture;
 	}
 
+	public static inline function deleteTexture(texture:NativeTexture):Void
+	{
+		texture.dispose();
+	}
+
 	public static inline function bindTexture(texture:NativeTexture, sampler:Int):Void
 	{
 		_context.setTextureAt(sampler, texture);

@@ -39,6 +39,10 @@ class Engine extends Application
 			#if flash
 			case FLASH(stage):
 				Renderer.init(stage, ready);
+			#elseif (js && canvas)
+			case CANVAS(canvas):
+				Renderer.init(canvas);
+				ready();
 			#else
 			case OPENGL(gl):
 				Renderer.init(gl);
