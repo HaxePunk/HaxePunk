@@ -6,6 +6,7 @@ import haxepunk.scene.Camera;
 import haxepunk.renderers.Renderer;
 import lime.utils.Float32Array;
 import lime.utils.Int16Array;
+import haxepunk.graphics.SpriteBatch;
 
 class Image implements Graphic
 {
@@ -83,6 +84,10 @@ class Image implements Graphic
 		material.addTexture(_texture);
 
 		createBuffer();
+
+		_vertexAttribute = material.shader.attribute("aVertexPosition");
+		_texCoordAttribute = material.shader.attribute("aTexCoord");
+		_modelViewMatrixUniform = material.shader.uniform("uMatrix");
 #end
 	}
 
@@ -95,19 +100,19 @@ class Image implements Graphic
 		{
 			var data:Array<Float> = [
 				/* vertex | tex coord | normal */
-				0, 0, 0, 0.00, 0.00, 0, 0, -1,
-				0, 1, 0, 0.00, 1.00, 0, 0, -1,
-				1, 0, 0, 1.00, 0.00, 0, 0, -1,
-				1, 1, 0, 1.00, 1.00, 0, 0, -1
+				0, 0, 0, 0.00, 0.00,
+				0, 1, 0, 0.00, 1.00,
+				1, 0, 0, 1.00, 0.00,
+				1, 1, 0, 1.00, 1.00
 			];
-			_defaultVertexBuffer = Renderer.createBuffer(new Float32Array(cast data));
+			_defaultVertexBuffer = Renderer.updateBuffer(new Float32Array(cast data));
 		}
 		_vertexBuffer = _defaultVertexBuffer;
 
 		if (_defaultIndexBuffer == null)
 		{
 			var data = [0, 1, 2, 1, 2, 3];
-			_defaultIndexBuffer = Renderer.createIndexBuffer(new Int16Array(cast data));
+			_defaultIndexBuffer = Renderer.updateIndexBuffer(new Int16Array(cast data));
 		}
 		_indexBuffer = _defaultIndexBuffer;
 	}
@@ -134,8 +139,15 @@ class Image implements Graphic
 		origin -= offset;
 		origin /= scale;
 
+		material.use();
+
+		_matrix.multiply(camera.transform);
+		Renderer.setMatrix(_modelViewMatrixUniform, _matrix);
+
 		Renderer.bindBuffer(_vertexBuffer);
-		material.use(camera.transform, _matrix);
+		Renderer.setAttribute(_vertexAttribute, 0, 3, 5);
+		Renderer.setAttribute(_texCoordAttribute, 3, 2, 5);
+
 		Renderer.draw(_indexBuffer, 2, tileOffset * 3);
 	}
 
@@ -143,6 +155,10 @@ class Image implements Graphic
 	{
 		drawBuffer(camera, offset);
 	}
+
+	private var _texCoordAttribute:Int;
+	private var _vertexAttribute:Int;
+	private var _modelViewMatrixUniform:Location;
 
 	private var _matrix:Matrix4;
 	private var _texture:Texture;

@@ -156,17 +156,17 @@ class GLRenderer
 			_activeState.attributes.remove(key);
 	}
 
-	public static inline function createBuffer(data:Float32Array, ?usage:BufferUsage):VertexBuffer
+	public static inline function updateBuffer(data:Float32Array, ?usage:BufferUsage, ?buffer:VertexBuffer):VertexBuffer
 	{
-		var buffer = gl.createBuffer();
+		if (buffer == null) buffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 		gl.bufferData(gl.ARRAY_BUFFER, data, usage == DYNAMIC_DRAW ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW);
 		return buffer;
 	}
 
-	public static inline function createIndexBuffer(data:Int16Array, ?usage:BufferUsage):IndexBuffer
+	public static inline function updateIndexBuffer(data:Int16Array, ?usage:BufferUsage, ?buffer:IndexBuffer):IndexBuffer
 	{
-		var buffer = gl.createBuffer();
+		if (buffer == null) buffer = gl.createBuffer();
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, usage == DYNAMIC_DRAW ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW);
 		return buffer;

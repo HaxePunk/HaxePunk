@@ -28,9 +28,10 @@ class Mesh implements Graphic
 		transform = new Matrix4();
 		this.material = (material == null ? new Material() : material);
 
-		// check that the buffers aren't already loaded from a super class
-		// if (_vertexBuffer == null) createBuffer(data);
-		// if (_indexBuffer == null) createIndexBuffer(indices);
+		var shader = this.material.shader;
+		_vertexAttribute = shader.attribute("aVertexPosition");
+		_texCoordAttribute = shader.attribute("aTexCoord");
+		_normalAttribute = shader.attribute("aNormal");
 	}
 
 	public function update(elapsed:Float):Void {}
@@ -45,7 +46,11 @@ class Mesh implements Graphic
 		transform.translateVector3(offset);
 
 		Renderer.bindBuffer(_vertexBuffer);
-		material.use(camera.transform, transform);
+		Renderer.setAttribute(_vertexAttribute, 0, 3, 8);
+		Renderer.setAttribute(_texCoordAttribute, 3, 2, 8);
+		Renderer.setAttribute(_normalAttribute, 5, 3, 8);
+
+		material.use();
 		Renderer.draw(_indexBuffer, _numTriangles);
 
 		// Renderer.bindIndexBuffer(null);
@@ -56,18 +61,22 @@ class Mesh implements Graphic
 	public function createBuffer(data:Array<Float>):VertexBuffer
 	{
 		if (data == null) throw "Vertex data buffer must not be null";
-		return _vertexBuffer = Renderer.createBuffer(new Float32Array(cast data));
+		return _vertexBuffer = Renderer.updateBuffer(new Float32Array(cast data));
 	}
 
 	public function createIndexBuffer(data:Array<Int>):IndexBuffer
 	{
 		if (data == null) throw "Index buffer must not be null";
 		_numTriangles = Std.int(data.length / 3);
-		return _indexBuffer = Renderer.createIndexBuffer(new Int16Array(cast data));
+		return _indexBuffer = Renderer.updateIndexBuffer(new Int16Array(cast data));
 	}
 
 	private var _indexBuffer:IndexBuffer;
 	private var _vertexBuffer:VertexBuffer;
 	private var _numTriangles:Int = 0;
+
+	private var _texCoordAttribute:Int;
+	private var _vertexAttribute:Int;
+	private var _normalAttribute:Int;
 
 }

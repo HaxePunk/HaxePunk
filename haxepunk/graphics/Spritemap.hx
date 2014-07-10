@@ -351,7 +351,7 @@ class Spritemap extends Image
 		frameCount = columns * rows;
 
 		var data = new Array<Float>();
-		data[frameCount*32-1] = 0;
+		data[frameCount*20-1] = 0; // quick resize
 
 		var xx = (_spriteWidth / _texture.originalWidth) * (_texture.originalWidth / _texture.width);
 		var yy = (_spriteHeight / _texture.originalHeight) * (_texture.originalHeight / _texture.height);
@@ -363,25 +363,21 @@ class Spritemap extends Image
 				data[i++] = data[i++] = data[i++] = 0; // vert (0, 0, 0)
 				data[i++] = x * xx; // tex
 				data[i++] = y * yy;
-				data[i++] = data[i++] = 0; data[i++] = -1; // normal (0, 0, -1)
 
 				data[i++] = 0; data[i++] = 1; data[i++] = 0; // vert (0, 1, 0)
 				data[i++] = x * xx; // tex
 				data[i++] = (y + 1) * yy;
-				data[i++] = data[i++] = 0; data[i++] = -1; // normal (0, 0, -1)
 
 				data[i++] = 1; data[i++] = data[i++] = 0; // vert (1, 0, 0)
 				data[i++] = (x + 1) * xx; // tex
 				data[i++] = y * yy;
-				data[i++] = data[i++] = 0; data[i++] = -1; // normal (0, 0, -1)
 
 				data[i++] = data[i++] = 1; data[i++] = 0; // vert (1, 1, 0)
 				data[i++] = (x + 1) * xx; // tex
 				data[i++] = (y + 1) * yy;
-				data[i++] = data[i++] = 0; data[i++] = -1; // normal (0, 0, -1)
 			}
 		}
-		_vertexBuffer = Renderer.createBuffer(new Float32Array(cast data), STATIC_DRAW);
+		_vertexBuffer = Renderer.updateBuffer(new Float32Array(data));
 
 		var indices = new Array<Int>();
 		for (frame in 0...frameCount)
@@ -393,7 +389,7 @@ class Spritemap extends Image
 			indices.push(frame * 4 + 2);
 			indices.push(frame * 4 + 3);
 		}
-		_indexBuffer = Renderer.createIndexBuffer(new Int16Array(cast indices));
+		_indexBuffer = Renderer.updateIndexBuffer(new Int16Array(indices));
 	}
 
 	override public function draw(camera:Camera, offset:Vector3):Void

@@ -7,37 +7,29 @@ import lime.Assets;
 class Material
 {
 
+	public var shader(default, null):Shader;
+
 	public function new(?shader:Shader)
 	{
 		_textures = new Array<Texture>();
 
 		// set a default shader if none is given
-		_shader = (shader == null ? _defaultShader : shader);
+		this.shader = (shader == null ? _defaultShader : shader);
 
-		_vertexAttribute = _shader.attribute("aVertexPosition");
-		_texCoordAttribute = _shader.attribute("aTexCoord");
-		_normalAttribute = _shader.attribute("aNormal");
-
-		_modelViewMatrixUniform = _shader.uniform("uMatrix");
+		_modelViewMatrixUniform = this.shader.uniform("uMatrix");
 	}
 
 	public function addTexture(texture:Texture, uniformName:String="uImage0")
 	{
 		// keep uniform to allow removal of textures?
-		// var uniform = _shader.uniform(uniformName);
-		// _shader.use();
+		// var uniform = shader.uniform(uniformName);
+		// shader.use();
 		_textures.push(texture);
 	}
 
-	public function use(projectionMatrix:Matrix4, modelViewMatrix:Matrix4)
+	public function use()
 	{
-		_shader.use();
-		// assign the projection and modelview matrices
-		modelViewMatrix.multiply(projectionMatrix);
-		_shader.setMatrix(_modelViewMatrixUniform, modelViewMatrix);
-		_shader.setAttribute(_vertexAttribute, 0, 3, 8);
-		_shader.setAttribute(_texCoordAttribute, 3, 2, 8);
-		_shader.setAttribute(_normalAttribute, 5, 3, 8);
+		shader.use();
 
 		// assign any textures
 		for (i in 0..._textures.length)
@@ -49,9 +41,6 @@ class Material
 	public inline function disable()
 	{
 	}
-
-	private var _textures:Array<Texture>;
-	private var _shader:Shader;
 
 	private static var _defaultVertexShader:String =
 		#if flash
@@ -65,7 +54,6 @@ class Material
 
 			attribute vec3 aVertexPosition;
 			attribute vec2 aTexCoord;
-			attribute vec3 aNormal;
 
 			varying vec2 vTexCoord;
 			varying vec3 vNormal;
@@ -75,7 +63,6 @@ class Material
 
 			void main(void)
 			{
-				vNormal = normalize(aNormal);
 				vTexCoord = aTexCoord;
 				gl_Position = uMatrix * vec4(aVertexPosition, 1.0);
 			}"
@@ -89,7 +76,6 @@ class Material
 			#endif
 
 			varying vec2 vTexCoord;
-			varying vec3 vNormal;
 			varying vec4 vPosition;
 
 			uniform sampler2D uImage0;
@@ -111,8 +97,6 @@ class Material
 	private var _modelViewMatrixUniform:Location;
 	private var _projectionMatrixUniform:Location;
 
-	private var _texCoordAttribute:Int;
-	private var _vertexAttribute:Int;
-	private var _normalAttribute:Int;
+	private var _textures:Array<Texture>;
 
 }

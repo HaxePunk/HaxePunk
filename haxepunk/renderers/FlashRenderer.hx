@@ -87,18 +87,18 @@ class FlashRenderer
 		_activeBuffer = buffer;
 	}
 
-	public static inline function createBuffer(data:Float32Array, ?usage:BufferUsage):VertexBuffer
+	public static inline function updateBuffer(data:Float32Array, ?usage:BufferUsage, ?buffer:VertexBuffer):VertexBuffer
 	{
 		var stride = 8;
 		var len:Int = Std.int(data.length / stride);
-		var buffer = _context.createVertexBuffer(len, stride);
+		if (buffer == null) buffer = _context.createVertexBuffer(len, stride);
 		buffer.uploadFromByteArray(data.buffer, 0, 0, len);
 		return buffer;
 	}
 
-	public static inline function createIndexBuffer(data:Int16Array, ?usage:BufferUsage):IndexBuffer
+	public static inline function updateIndexBuffer(data:Int16Array, ?usage:BufferUsage, ?buffer:IndexBuffer):IndexBuffer
 	{
-		var buffer = _context.createIndexBuffer(data.length);
+		if (buffer == null) buffer = _context.createIndexBuffer(data.length);
 		buffer.uploadFromByteArray(data.buffer, 0, 0, data.length);
 		return buffer;
 	}
