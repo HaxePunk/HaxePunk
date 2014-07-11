@@ -45,7 +45,6 @@ class Material
 	private static var _defaultVertexShader:String =
 		#if flash
 			"m44 op, va0, vc0 // position * matrix
-			mov vt0, va2      // normal
 			mov v0, va1       // tex coord"
 		#else
 			"#ifdef GL_ES
@@ -56,7 +55,6 @@ class Material
 			attribute vec2 aTexCoord;
 
 			varying vec2 vTexCoord;
-			varying vec3 vNormal;
 			varying vec4 vPosition;
 
 			uniform mat4 uMatrix;

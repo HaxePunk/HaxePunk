@@ -137,7 +137,7 @@ class Scene
 	public function draw()
 	{
 		Renderer.clear(camera.clearColor);
-		Renderer.setDepthTest(false);
+		// Renderer.setDepthTest(false);
 		for (entity in _entities)
 		{
 			entity.draw(camera);

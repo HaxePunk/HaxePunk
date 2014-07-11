@@ -89,7 +89,8 @@ class FlashRenderer
 
 	public static inline function updateBuffer(data:Float32Array, ?usage:BufferUsage, ?buffer:VertexBuffer):VertexBuffer
 	{
-		var stride = 8;
+		// TODO: don't hardcode this value
+		var stride = 5;
 		var len:Int = Std.int(data.length / stride);
 		if (buffer == null) buffer = _context.createVertexBuffer(len, stride);
 		buffer.uploadFromByteArray(data.buffer, 0, 0, len);
