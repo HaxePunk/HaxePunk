@@ -105,7 +105,7 @@ class Image implements Graphic
 				1, 0, 0, 1.00, 0.00,
 				1, 1, 0, 1.00, 1.00
 			];
-			_defaultVertexBuffer = Renderer.updateBuffer(new Float32Array(cast data));
+			_defaultVertexBuffer = Renderer.updateBuffer(new Float32Array(cast data), 5);
 		}
 		_vertexBuffer = _defaultVertexBuffer;
 
@@ -145,8 +145,8 @@ class Image implements Graphic
 		Renderer.setMatrix(_modelViewMatrixUniform, _matrix);
 
 		Renderer.bindBuffer(_vertexBuffer);
-		Renderer.setAttribute(_vertexAttribute, 0, 3, 5);
-		Renderer.setAttribute(_texCoordAttribute, 3, 2, 5);
+		Renderer.setAttribute(_vertexAttribute, 0, 3);
+		Renderer.setAttribute(_texCoordAttribute, 3, 2);
 
 		Renderer.draw(_indexBuffer, 2, tileOffset * 3);
 	}

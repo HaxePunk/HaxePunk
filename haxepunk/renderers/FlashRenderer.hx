@@ -77,7 +77,7 @@ class FlashRenderer
 		_context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, loc, matrix.native, false);
 	}
 
-	public static inline function setAttribute(a:Int, offset:Int, num:Int, stride:Int):Void
+	public static inline function setAttribute(a:Int, offset:Int, num:Int):Void
 	{
 		_context.setVertexBufferAt(a, _activeBuffer, offset, FORMAT[num]);
 	}
@@ -87,10 +87,8 @@ class FlashRenderer
 		_activeBuffer = buffer;
 	}
 
-	public static inline function updateBuffer(data:Float32Array, ?usage:BufferUsage, ?buffer:VertexBuffer):VertexBuffer
+	public static inline function updateBuffer(data:Float32Array, stride:Int, ?usage:BufferUsage, ?buffer:VertexBuffer):VertexBuffer
 	{
-		// TODO: don't hardcode this value
-		var stride = 5;
 		var len:Int = Std.int(data.length / stride);
 		if (buffer == null) buffer = _context.createVertexBuffer(len, stride);
 		buffer.uploadFromByteArray(data.buffer, 0, 0, len);

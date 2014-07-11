@@ -46,9 +46,9 @@ class Mesh implements Graphic
 		transform.translateVector3(offset);
 
 		Renderer.bindBuffer(_vertexBuffer);
-		Renderer.setAttribute(_vertexAttribute, 0, 3, 8);
-		Renderer.setAttribute(_texCoordAttribute, 3, 2, 8);
-		Renderer.setAttribute(_normalAttribute, 5, 3, 8);
+		Renderer.setAttribute(_vertexAttribute, 0, 3);
+		Renderer.setAttribute(_texCoordAttribute, 3, 2);
+		Renderer.setAttribute(_normalAttribute, 5, 3);
 
 		material.use();
 		Renderer.draw(_indexBuffer, _numTriangles);
@@ -61,7 +61,7 @@ class Mesh implements Graphic
 	public function createBuffer(data:Array<Float>):VertexBuffer
 	{
 		if (data == null) throw "Vertex data buffer must not be null";
-		return _vertexBuffer = Renderer.updateBuffer(new Float32Array(cast data));
+		return _vertexBuffer = Renderer.updateBuffer(new Float32Array(cast data), 8);
 	}
 
 	public function createIndexBuffer(data:Array<Int>):IndexBuffer

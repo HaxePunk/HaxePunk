@@ -377,7 +377,7 @@ class Spritemap extends Image
 				data[i++] = (y + 1) * yy;
 			}
 		}
-		_vertexBuffer = Renderer.updateBuffer(new Float32Array(data));
+		_vertexBuffer = Renderer.updateBuffer(new Float32Array(data), 5);
 
 		var indices = new Array<Int>();
 		for (frame in 0...frameCount)

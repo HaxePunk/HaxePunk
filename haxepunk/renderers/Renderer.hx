@@ -79,7 +79,10 @@ typedef Renderer = CanvasRenderer;
 #else
 
 typedef ShaderProgram = lime.graphics.GLProgram;
-typedef VertexBuffer = lime.graphics.GLBuffer;
+typedef VertexBuffer = {
+	var stride:Int;
+	var buffer:lime.graphics.GLBuffer;
+}
 typedef IndexBuffer = lime.graphics.GLBuffer;
 typedef NativeTexture = lime.graphics.GLTexture;
 typedef Location = lime.graphics.GLUniformLocation;

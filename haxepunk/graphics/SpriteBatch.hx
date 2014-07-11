@@ -59,22 +59,22 @@ class SpriteBatch
 		{
 			_indexBuffer = Renderer.updateIndexBuffer(_indices);
 
-			_uvBuffer = Renderer.updateBuffer(_uvs);
-			Renderer.setAttribute(_uvAttribute, 0, 2, 2);
+			_uvBuffer = Renderer.updateBuffer(_uvs, 2);
+			Renderer.setAttribute(_uvAttribute, 0, 2);
 
-			_vertexBuffer = Renderer.updateBuffer(_vertices, DYNAMIC_DRAW);
+			_vertexBuffer = Renderer.updateBuffer(_vertices, 3, DYNAMIC_DRAW);
 			_updateVBOs = false;
 		}
 		else
 		{
 			Renderer.bindBuffer(_uvBuffer);
-			Renderer.setAttribute(_uvAttribute, 0, 2, 2);
+			Renderer.setAttribute(_uvAttribute, 0, 2);
 
-			Renderer.updateBuffer(_vertices, _vertexBuffer);
+			Renderer.updateBuffer(_vertices, 3, DYNAMIC_DRAW, _vertexBuffer);
 		}
 
 		// vertex buffer should already be bound
-		Renderer.setAttribute(_vertexAttribute, 0, 3, 3);
+		Renderer.setAttribute(_vertexAttribute, 0, 3);
 
 		Renderer.draw(_indexBuffer, Std.int(_indices.length / 3));
 	}

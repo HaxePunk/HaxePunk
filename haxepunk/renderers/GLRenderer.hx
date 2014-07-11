@@ -135,12 +135,12 @@ class GLRenderer
 		gl.uniformMatrix4fv(loc, false, matrix.native);
 	}
 
-	public static inline function setAttribute(a:Int, offset:Int, num:Int, stride:Int):Void
+	public static inline function setAttribute(a:Int, offset:Int, num:Int):Void
 	{
-		if (_activeState.attributes.exists(a)) return;
+		if (_activeState.attributes.exists(a) || _activeState.buffer == null) return;
 
 		_activeState.attributes.set(a, true);
-		gl.vertexAttribPointer(a, num, gl.FLOAT, false, stride*4, offset*4);
+		gl.vertexAttribPointer(a, num, gl.FLOAT, false, _activeState.buffer.stride, offset << 2);
 		gl.enableVertexAttribArray(a);
 	}
 
@@ -148,7 +148,7 @@ class GLRenderer
 	{
 		if (_activeState.buffer == v) return;
 
-		gl.bindBuffer(GL.ARRAY_BUFFER, v);
+		gl.bindBuffer(GL.ARRAY_BUFFER, v.buffer);
 		_activeState.buffer = v;
 
 		// clear active attributes
@@ -156,10 +156,13 @@ class GLRenderer
 			_activeState.attributes.remove(key);
 	}
 
-	public static inline function updateBuffer(data:Float32Array, ?usage:BufferUsage, ?buffer:VertexBuffer):VertexBuffer
+	public static inline function updateBuffer(data:Float32Array, stride:Int, ?usage:BufferUsage, ?buffer:VertexBuffer):VertexBuffer
 	{
-		if (buffer == null) buffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+		if (buffer == null)
+		{
+			buffer = { buffer:gl.createBuffer(), stride:stride << 2 };
+		}
+		gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
 		gl.bufferData(gl.ARRAY_BUFFER, data, usage == DYNAMIC_DRAW ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW);
 		return buffer;
 	}

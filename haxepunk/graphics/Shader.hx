@@ -59,16 +59,6 @@ class Shader
 		#end
 	}
 
-	public inline function setMatrix(u:Location, m:Matrix4):Void
-	{
-		Renderer.setMatrix(u, m);
-	}
-
-	public inline function setAttribute(a:Int, offset:Int, num:Int, stride:Int):Void
-	{
-		Renderer.setAttribute(a, offset, num, stride);
-	}
-
 	/**
 	 * Bind the program for rendering
 	 */
