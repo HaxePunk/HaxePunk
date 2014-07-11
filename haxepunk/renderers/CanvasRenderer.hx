@@ -39,14 +39,9 @@ class CanvasRenderer
 
 	}
 
-	public static inline function createIndexBuffer(data:Int16Array, ?usage:BufferUsage):IndexBuffer
+	public static inline function setAttribute(a:Int, offset:Int, num:Int):Void
 	{
-		return 0;
-	}
 
-	public static inline function createBuffer(data:Float32Array, ?usage:BufferUsage):VertexBuffer
-	{
-		return 0;
 	}
 
 	public static inline function bindBuffer(v:VertexBuffer):Void
@@ -54,12 +49,17 @@ class CanvasRenderer
 
 	}
 
-	public static inline function setMatrix(loc:Location, matrix:Matrix4):Void
+	public static inline function updateBuffer(data:Float32Array, stride:Int, ?usage:BufferUsage, ?buffer:VertexBuffer):VertexBuffer
 	{
-
+		return 0;
 	}
 
-	public static inline function setAttribute(a:Int, offset:Int, num:Int, stride:Int):Void
+	public static inline function updateIndexBuffer(data:Int16Array, ?usage:BufferUsage, ?buffer:IndexBuffer):IndexBuffer
+	{
+		return 0;
+	}
+
+	public static inline function setMatrix(loc:Location, matrix:Matrix4):Void
 	{
 
 	}

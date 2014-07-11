@@ -24,9 +24,7 @@ class GLRenderer
 
 	public static inline function setViewport(x:Int, y:Int, width:Int, height:Int):Void
 	{
-#if !neko
 		gl.viewport(x, y, width, height);
-#end
 	}
 
 	public static inline function present():Void

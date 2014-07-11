@@ -1,8 +1,5 @@
 import haxepunk.Engine;
 import haxepunk.graphics.Image;
-import haxepunk.graphics.Shape;
-import haxepunk.graphics.Material;
-import haxepunk.graphics.Texture;
 
 class Main extends Engine
 {
