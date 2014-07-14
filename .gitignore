@@ -3,7 +3,11 @@
 *.zip
 *.n
 *.build
+
+# font files
+*.eot
 *.hash
+
 build-test/
 export/
 

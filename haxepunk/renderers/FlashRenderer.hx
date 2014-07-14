@@ -77,6 +77,16 @@ class FlashRenderer
 		_context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, loc, matrix.native, false);
 	}
 
+	public static inline function setColor(loc:Location, color:Color):Void
+	{
+		var vec = new flash.Vector();
+		vec.push(color.r);
+		vec.push(color.g);
+		vec.push(color.b);
+		vec.push(color.a);
+		_context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, loc, vec);
+	}
+
 	public static inline function setAttribute(a:Int, offset:Int, num:Int):Void
 	{
 		_context.setVertexBufferAt(a, _activeBuffer, offset, FORMAT[num]);

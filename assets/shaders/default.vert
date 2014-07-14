@@ -4,19 +4,13 @@
 
 attribute vec3 aVertexPosition;
 attribute vec2 aTexCoord;
-attribute vec3 aNormal;
 
 varying vec2 vTexCoord;
-varying vec3 vNormal;
-varying vec4 vPosition;
 
-uniform mat4 uModelViewMatrix;
-uniform mat4 uProjectionMatrix;
+uniform mat4 uMatrix;
 
 void main(void)
 {
-	vPosition = uModelViewMatrix * vec4(aVertexPosition, 1.0);
-	vNormal = normalize(aNormal);
 	vTexCoord = aTexCoord;
-	gl_Position = uProjectionMatrix * vPosition;
+	gl_Position = uMatrix * vec4(aVertexPosition, 1.0);
 }

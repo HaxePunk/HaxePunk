@@ -72,7 +72,7 @@ class Image implements Graphic
 		return (alpha == value) ? value : alpha = value;
 	}
 
-	public function new(id:String)
+	public function new(?id:String)
 	{
 		scale = new Vector3(1, 1, 1);
 		origin = new Vector3();

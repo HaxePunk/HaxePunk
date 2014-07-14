@@ -3,7 +3,7 @@
 	<!-- <app preloader="com.haxepunk.Preloader" /> -->
 
 	<assets path="assets/graphics" rename="gfx" include="*.png" />
-	<!-- <assets path="assets/font" rename="font" include="*.ttf" /> -->
+	<assets path="assets/font" rename="font" include="*.ttf" />
 	<assets path="assets/shaders" rename="shaders" include="*.frag|*.vert" />
 
 	<haxelib name="lime" />

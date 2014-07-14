@@ -69,9 +69,10 @@ class GLRenderer
 	{
 		image.forcePowerOfTwo();
 
+		var format = image.bpp == 1 ? gl.ALPHA : gl.RGBA;
 		var texture = gl.createTexture();
 		gl.bindTexture(gl.TEXTURE_2D, texture);
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, image.width, image.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, image.data);
+		gl.texImage2D(gl.TEXTURE_2D, 0, format, image.width, image.height, 0, format, gl.UNSIGNED_BYTE, image.data);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
@@ -131,6 +132,11 @@ class GLRenderer
 	public static inline function setMatrix(loc:Location, matrix:Matrix4):Void
 	{
 		gl.uniformMatrix4fv(loc, false, matrix.native);
+	}
+
+	public static inline function setColor(loc:Location, color:Color):Void
+	{
+		gl.uniform4f(loc, color.r, color.g, color.b, color.a);
 	}
 
 	public static inline function setAttribute(a:Int, offset:Int, num:Int):Void
@@ -228,6 +234,13 @@ class GLRenderer
 
 	private static var gl:GLRenderContext;
 	private static var _activeState:ActiveState = new ActiveState();
+
+	private static var FORMAT = [
+		GL.ALPHA,
+		GL.LUMINANCE,
+		GL.RGB,
+		GL.RGBA
+	];
 
 	private static var BLEND = [
 		GL.ZERO,

@@ -25,6 +25,13 @@ enum BufferUsage {
 	var ONE_MINUS_DEST_COLOR = 9;
 }
 
+@:enum abstract ImageFormat(Int) to (Int) {
+	var ALPHA = 0;
+	var LUMINANCE = 1;
+	var RGB = 2;
+	var RGBA = 3;
+}
+
 @:enum abstract CullMode(Int) to (Int) {
 	var NONE = 0;
 	var BACK = 1;

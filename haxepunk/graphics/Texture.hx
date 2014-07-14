@@ -49,10 +49,10 @@ class Texture
 	 * Creates a new Texture
 	 * @param path The path to the texture asset
 	 */
-	private function new(path:String)
+	private function new(?path:String)
 	{
 #if !unit_test
-		loadImage(path);
+		if (path != null) loadImage(path);
 #end
 	}
 
@@ -75,6 +75,8 @@ class Texture
 	{
 		_path = path;
 		var image = Assets.getImage(path);
+		if (image == null) return;
+
 		width = originalWidth = image.width;
 		height = originalHeight = image.height;
 
