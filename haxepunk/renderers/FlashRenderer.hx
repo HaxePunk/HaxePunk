@@ -87,6 +87,13 @@ class FlashRenderer
 		_context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, loc, vec);
 	}
 
+	public static inline function setFloat(loc:Location, value:Float):Void
+	{
+		var vec = new flash.Vector();
+		vec.push(value);
+		_context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, loc, vec);
+	}
+
 	public static inline function setAttribute(a:Int, offset:Int, num:Int):Void
 	{
 		_context.setVertexBufferAt(a, _activeBuffer, offset, FORMAT[num]);

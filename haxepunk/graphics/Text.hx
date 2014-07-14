@@ -14,6 +14,7 @@ class Text implements Graphic
 
 	public var material:Material;
 	public var color:Color;
+	public var size(default, null):Int;
 
 	public function new(text:String, size:Int=16)
 	{
@@ -22,34 +23,41 @@ class Text implements Graphic
 		color = new Color();
 
 		#if (cpp || neko)
-		var font = new Font("../Resources/assets/Watermelon.ttf");
+		var font = new Font("../Resources/font/04B_03__.ttf");
 		#else
 		var font = new Font("Georgia");
 		#end
 
+		this.size = size;
 		var data = font.createImage(size);
 		_glyphs = data.glyphs;
 
 		setTexture(data.image);
-		var shader = new Shader(Assets.getText("shaders/default.vert"), Assets.getText("shaders/text.frag"));
+		#if flash
+		var vert = "m44 op, va0, vc0\nmov v0, va1";
+		var frag = "tex ft0, v0, fs0 <linear nomip 2d wrap>\nmov ft0.xyz, fc1.xyz\nmov oc, ft0";
+		#else
+		var vert = Assets.getText("shaders/default.vert");
+		var frag = Assets.getText("shaders/text.frag");
+		#end
+		var shader = new Shader(vert, frag);
 		material = new Material(shader);
 		material.addTexture(_texture);
 
 		this.text = text;
 
-		_vertexAttribute = material.shader.attribute("aVertexPosition");
-		_texCoordAttribute = material.shader.attribute("aTexCoord");
-		_modelViewMatrixUniform = material.shader.uniform("uMatrix");
-		_colorUniform = material.shader.uniform("uColor");
-		_widthUniform = material.shader.uniform("uWidth");
-		_heightUniform = material.shader.uniform("uHeight");
+		_vertexAttribute = shader.attribute("aVertexPosition");
+		_texCoordAttribute = shader.attribute("aTexCoord");
+
+		_modelViewMatrixUniform = shader.uniform("uMatrix");
+		_colorUniform = shader.uniform("uColor");
 	}
 
 	public var text(default, set):String;
 	private function set_text(value:String):String {
 		if (text != value)
 		{
-			var x = 100.0, y = 150.0;
+			var x = 0.0, y = 0.0;
 			for (i in 0...value.length)
 			{
 				x += writeChar(i, value.charAt(i), x, y);
@@ -75,14 +83,14 @@ class Text implements Graphic
 		var rect = _glyphs.get(c);
 
 		x += rect.xOffset;
-		y -= rect.yOffset;
+		y += size - rect.yOffset;
 
 		var left   = rect.x / _texture.width;
 		var top    = rect.y / _texture.height;
 		var right  = left + rect.width / _texture.width;
 		var bottom = top + rect.height / _texture.height;
-		var index = i * 20;
 
+		var index = i * 20;
 		_vertices[index++] = x;
 		_vertices[index++] = y;
 		_vertices[index++] = 0;
@@ -130,8 +138,6 @@ class Text implements Graphic
 		// _matrix.multiply(camera.transform);
 		Renderer.setMatrix(_modelViewMatrixUniform, camera.transform);
 		Renderer.setColor(_colorUniform, color);
-		Renderer.setFloat(_widthUniform, _texture.width);
-		Renderer.setFloat(_heightUniform, _texture.height);
 
 		Renderer.bindBuffer(_vertexBuffer);
 		Renderer.setAttribute(_vertexAttribute, 0, 3);

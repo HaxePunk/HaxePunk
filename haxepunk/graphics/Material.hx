@@ -42,52 +42,18 @@ class Material
 	{
 	}
 
-	private static var _defaultVertexShader:String =
-		#if flash
-			"m44 op, va0, vc0 // position * matrix
-			mov v0, va1       // tex coord"
-		#else
-			"#ifdef GL_ES
-				precision mediump float;
-			#endif
-
-			attribute vec3 aVertexPosition;
-			attribute vec2 aTexCoord;
-
-			varying vec2 vTexCoord;
-			varying vec4 vPosition;
-
-			uniform mat4 uMatrix;
-
-			void main(void)
-			{
-				vTexCoord = aTexCoord;
-				gl_Position = uMatrix * vec4(aVertexPosition, 1.0);
-			}"
-		#end;
-	private static var _defaultFragmentShader:String =
-		#if flash
-			"tex oc, v0, fs0 <linear nomip 2d wrap>"
-		#else
-			"#ifdef GL_ES
-				precision mediump float;
-			#endif
-
-			varying vec2 vTexCoord;
-			varying vec4 vPosition;
-
-			uniform sampler2D uImage0;
-
-			void main(void)
-			{
-				gl_FragColor = texture2D(uImage0, vTexCoord);
-			}"
-		#end;
 	private static var _defaultShader(get, null):Shader;
 	private static inline function get__defaultShader():Shader {
 		if (_defaultShader == null)
 		{
-			_defaultShader = new Shader(_defaultVertexShader, _defaultFragmentShader);
+			#if flash
+			var vert = "m44 op, va0, vc0\nmov v0, va1";
+			var frag = "tex oc, v0, fs0 <linear nomip 2d wrap>";
+			#else
+			var vert = Assets.getText("shaders/default.vert");
+			var frag = Assets.getText("shaders/default.frag");
+			#end
+			_defaultShader = new Shader(vert, frag);
 		}
 		return _defaultShader;
 	}

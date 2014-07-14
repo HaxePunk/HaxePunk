@@ -1,5 +1,6 @@
 package haxepunk.graphics;
 
+import haxe.ds.StringMap;
 import haxepunk.renderers.Renderer;
 import haxepunk.math.Matrix4;
 import lime.graphics.GL;
@@ -17,6 +18,8 @@ class Shader
 	public function new(vertex:String, fragment:String)
 	{
 		_program = Renderer.compileShaderProgram(vertex, fragment);
+		_uniforms = new StringMap<Location>();
+		_attributes = new StringMap<Int>();
 	}
 
 	/**
@@ -25,19 +28,21 @@ class Shader
 	 */
 	public inline function attribute(a:String):Int
 	{
-		#if flash
-		return switch (a)
+		var attribute:Int;
+		if (_attributes.exists(a))
 		{
-			case "aVertexPosition": 0;
-			case "aTexCoord": 1;
-			case "aNormal": 2;
-			default: -1;
+			attribute = _attributes.get(a);
 		}
-		#elseif (js && canvas)
-		return 0;
-		#else
-		return GL.getAttribLocation(_program, a);
-		#end
+		else
+		{
+			#if (flash || (js && canvas))
+			attribute = _attributeId++;
+			#else
+			attribute = GL.getAttribLocation(_program, a);
+			#end
+			_attributes.set(a, attribute);
+		}
+		return attribute;
 	}
 
 	/**
@@ -46,17 +51,21 @@ class Shader
 	 */
 	public inline function uniform(u:String):Location
 	{
-		#if flash
-		return switch (u)
+		var uniform:Location;
+		if (_uniforms.exists(u))
 		{
-			case "uMatrix": 0;
-			default: -1;
+			uniform = _uniforms.get(u);
 		}
-		#elseif (js && canvas)
-		return 0;
-		#else
-		return GL.getUniformLocation(_program, u);
-		#end
+		else
+		{
+			#if (flash || (js && canvas))
+			uniform = _uniformId++;
+			#else
+			uniform = GL.getUniformLocation(_program, u);
+			#end
+			_uniforms.set(u, uniform);
+		}
+		return uniform;
 	}
 
 	/**
@@ -67,6 +76,10 @@ class Shader
 		Renderer.bindProgram(_program);
 	}
 
+	private var _attributes:StringMap<Int>;
+	private var _attributeId:Int = 0;
+	private var _uniforms:StringMap<Location>;
+	private var _uniformId:Int = 0;
 	private var _program:ShaderProgram;
 
 }
