@@ -41,6 +41,8 @@ class Text implements Graphic
 		_texCoordAttribute = material.shader.attribute("aTexCoord");
 		_modelViewMatrixUniform = material.shader.uniform("uMatrix");
 		_colorUniform = material.shader.uniform("uColor");
+		_widthUniform = material.shader.uniform("uWidth");
+		_heightUniform = material.shader.uniform("uHeight");
 	}
 
 	public var text(default, set):String;
@@ -128,6 +130,8 @@ class Text implements Graphic
 		// _matrix.multiply(camera.transform);
 		Renderer.setMatrix(_modelViewMatrixUniform, camera.transform);
 		Renderer.setColor(_colorUniform, color);
+		Renderer.setFloat(_widthUniform, _texture.width);
+		Renderer.setFloat(_heightUniform, _texture.height);
 
 		Renderer.bindBuffer(_vertexBuffer);
 		Renderer.setAttribute(_vertexAttribute, 0, 3);
@@ -143,6 +147,8 @@ class Text implements Graphic
 	private var _vertexAttribute:Int;
 	private var _modelViewMatrixUniform:Location;
 	private var _colorUniform:Location;
+	private var _widthUniform:Location;
+	private var _heightUniform:Location;
 
 	private var _vertices:Array<Float>;
 	private var _indices:Array<Int>;

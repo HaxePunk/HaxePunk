@@ -139,6 +139,11 @@ class GLRenderer
 		gl.uniform4f(loc, color.r, color.g, color.b, color.a);
 	}
 
+	public static inline function setFloat(loc:Location, value:Float):Void
+	{
+		gl.uniform1f(loc, value);
+	}
+
 	public static inline function setAttribute(a:Int, offset:Int, num:Int):Void
 	{
 		if (_activeState.attributes.exists(a) || _activeState.buffer == null) return;
