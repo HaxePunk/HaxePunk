@@ -2,48 +2,95 @@ package haxepunk.graphics;
 
 import haxepunk.renderers.Renderer;
 import haxepunk.scene.Camera;
+import haxepunk.math.*;
 import lime.utils.*;
+
+interface Sprite
+{
+	public var position:Vector3;
+	public var texRect:Rectangle;
+}
 
 class SpriteBatch
 {
 
-	public function new()
+	public function new(texture:Texture)
 	{
-		_children = new Array<Image>();
-		_indices = new Int16Array(0);
-		_vertices = new Float32Array(0);
-		_uvs = new Float32Array(0);
+		_indices = new Array<Int>();
+		_vertices = new Array<Float>();
+		_texture = texture;
 	}
 
-	public function add(sprite:Image)
+	public function add(sprite:Sprite)
 	{
-		var id = _children.length;
 		_children.push(sprite);
-
-		var index:Int = _vertices.length;
-		var i = _indices.length;
-		_indices[i++] = index;
-		_indices[i++] = index + 1;
-		_indices[i++] = index + 2;
-		_indices[i++] = index + 1;
-		_indices[i++] = index + 2;
-		_indices[i++] = index + 3;
+		updateVertex(sprite);
 
 		_updateVBOs = true;
 	}
 
-	public function remove(sprite:Image)
+	public function remove(sprite:Sprite)
 	{
 		_updateVBOs = true;
+	}
+
+	private function updateVertex(child:Sprite)
+	{
+		var texRect = child.texRect;
+		var pos = child.position;
+
+		var left   = texRect.x / _texture.width;
+		var top    = texRect.y / _texture.height;
+		var right  = left + texRect.width / _texture.width;
+		var bottom = top + texRect.height / _texture.height;
+
+		var index = _numTriangles * 10;
+		_vertices[index++] = pos.x;
+		_vertices[index++] = pos.y;
+		_vertices[index++] = pos.z;
+		_vertices[index++] = left;
+		_vertices[index++] = top;
+
+		_vertices[index++] = pos.x;
+		_vertices[index++] = pos.y + texRect.height;
+		_vertices[index++] = pos.z;
+		_vertices[index++] = left;
+		_vertices[index++] = bottom;
+
+		_vertices[index++] = pos.x + texRect.width;
+		_vertices[index++] = pos.y;
+		_vertices[index++] = pos.z;
+		_vertices[index++] = right;
+		_vertices[index++] = top;
+
+		_vertices[index++] = pos.x + texRect.width;
+		_vertices[index++] = pos.y + texRect.height;
+		_vertices[index++] = pos.z;
+		_vertices[index++] = right;
+		_vertices[index++] = bottom;
+
+		index = _numTriangles * 3;
+		var i:Int = _vertices.length;
+		_indices[index++] = i;
+		_indices[index++] = i + 1;
+		_indices[index++] = i + 2;
+
+		_indices[index++] = i + 1;
+		_indices[index++] = i + 2;
+		_indices[index++] = i + 3;
+
+		_numTriangles += 2;
 	}
 
 	public function update()
 	{
 		if (_children.length == 0) return;
 
+		_numTriangles = 0;
+
 		for (child in _children)
 		{
-			// updateVertexData(child);
+			updateVertex(child);
 		}
 	}
 
@@ -51,48 +98,34 @@ class SpriteBatch
 	{
 		if (_children.length == 0) return;
 
-		_material.use();
-
-		Renderer.setMatrix(_projectionMatrix, camera.transform);
+		Renderer.setMatrix(_matrixUniform, camera.transform);
 
 		if (_updateVBOs)
 		{
-			_indexBuffer = Renderer.updateIndexBuffer(_indices);
-
-			_uvBuffer = Renderer.updateBuffer(_uvs, 2);
-			Renderer.setAttribute(_uvAttribute, 0, 2);
-
-			_vertexBuffer = Renderer.updateBuffer(_vertices, 3, DYNAMIC_DRAW);
+			Renderer.updateIndexBuffer(new Int16Array(_indices), STATIC_DRAW, _indexBuffer);
+			Renderer.updateBuffer(new Float32Array(_vertices), 5, DYNAMIC_DRAW, _vertexBuffer);
 			_updateVBOs = false;
-		}
-		else
-		{
-			Renderer.bindBuffer(_uvBuffer);
-			Renderer.setAttribute(_uvAttribute, 0, 2);
-
-			Renderer.updateBuffer(_vertices, 3, DYNAMIC_DRAW, _vertexBuffer);
 		}
 
 		// vertex buffer should already be bound
 		Renderer.setAttribute(_vertexAttribute, 0, 3);
+		Renderer.setAttribute(_uvAttribute, 3, 2);
 
-		Renderer.draw(_indexBuffer, Std.int(_indices.length / 3));
+		Renderer.draw(_indexBuffer, _numTriangles);
 	}
 
-	private var _indices:Int16Array;
-	private var _vertices:Float32Array;
-	private var _uvs:Float32Array;
-
+	private var _indices:Array<Int>;
+	private var _vertices:Array<Float>;
 	private var _indexBuffer:IndexBuffer;
 	private var _vertexBuffer:VertexBuffer;
-	private var _uvBuffer:VertexBuffer;
 	private var _updateVBOs:Bool = true;
 
-	private var _material:Material;
-	private var _projectionMatrix:Location;
+	private var _texture:Texture;
+	private var _matrixUniform:Location;
 	private var _vertexAttribute:Int;
 	private var _uvAttribute:Int;
+	private var _numTriangles:Int = 0;
 
-	private var _children:Array<Image>;
+	private var _children:Array<Sprite>;
 
 }

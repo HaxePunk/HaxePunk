@@ -62,10 +62,11 @@ class StressTest extends Engine
 	override public function ready()
 	{
 		super.ready();
+
 		var material = new Material();
 		material.addTexture(Texture.create("assets/lime.png"));
 		var numCubes = Std.int(Math.random() * 50 + 150);
-		numCubes = 2000;
+		numCubes = 5000;
 
 		var sprite = new Spritemap("assets/character.png", 32, 32);
 		sprite.add("walk", [0, 1, 2, 3, 4, 5, 6, 7], 0.012);
@@ -81,5 +82,17 @@ class StressTest extends Engine
 				Math.random() * HXP.window.width,
 				Math.random() * HXP.window.height);
 		}
+
+		fps = new Text("", 32);
+		scene.addGraphic(fps);
 	}
+
+	override public function update(deltaTime:Int)
+	{
+		super.update(deltaTime);
+		fps.text = "" + Std.int(HXP.frameRate);
+	}
+
+	private var fps:Text;
+
 }

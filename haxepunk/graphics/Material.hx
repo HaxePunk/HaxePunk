@@ -27,6 +27,11 @@ class Material
 		_textures.push(texture);
 	}
 
+	public function getTexture(index:Int):Texture
+	{
+		return _textures[index];
+	}
+
 	public function use()
 	{
 		shader.use();

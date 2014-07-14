@@ -3,11 +3,14 @@ package haxepunk.graphics;
 import haxe.ds.StringMap;
 import haxepunk.scene.Camera;
 import haxepunk.math.Vector3;
+import haxepunk.math.Matrix4;
 import haxepunk.renderers.Renderer;
 import lime.graphics.Font;
 import lime.utils.Float32Array;
 import lime.utils.Int16Array;
 import lime.Assets;
+
+using StringTools;
 
 class Text implements Graphic
 {
@@ -15,11 +18,13 @@ class Text implements Graphic
 	public var material:Material;
 	public var color:Color;
 	public var size(default, null):Int;
+	public var angle:Float = 0;
 
 	public function new(text:String, size:Int=16)
 	{
 		_vertices = new Array<Float>();
 		_indices = new Array<Int>();
+		_matrix = new Matrix4();
 		color = new Color();
 
 		#if (cpp || neko)
@@ -55,7 +60,7 @@ class Text implements Graphic
 
 	public var text(default, set):String;
 	private function set_text(value:String):String {
-		if (text != value)
+		if (text != value && value.trim() != "")
 		{
 			var x = 0.0, y = 0.0;
 			for (i in 0...value.length)
@@ -64,9 +69,8 @@ class Text implements Graphic
 			}
 			_vertexBuffer = Renderer.updateBuffer(new Float32Array(_vertices), 5, STATIC_DRAW, _vertexBuffer);
 			_indexBuffer = Renderer.updateIndexBuffer(new Int16Array(_indices), STATIC_DRAW, _indexBuffer);
-			text = value;
 		}
-		return value;
+		return text = value;
 	}
 
 	@:access(haxepunk.graphics.Texture)
@@ -135,8 +139,12 @@ class Text implements Graphic
 
 		material.use();
 
-		// _matrix.multiply(camera.transform);
-		Renderer.setMatrix(_modelViewMatrixUniform, camera.transform);
+		_matrix.identity();
+		_matrix.translateVector3(offset);
+		if (angle != 0) _matrix.rotateZ(angle);
+		_matrix.multiply(camera.transform);
+
+		Renderer.setMatrix(_modelViewMatrixUniform, _matrix);
 		Renderer.setColor(_colorUniform, color);
 
 		Renderer.bindBuffer(_vertexBuffer);
@@ -148,6 +156,7 @@ class Text implements Graphic
 
 	private var _glyphs:StringMap<GlyphRect>;
 	private var _texture:Texture;
+	private var _matrix:Matrix4;
 
 	private var _texCoordAttribute:Int;
 	private var _vertexAttribute:Int;

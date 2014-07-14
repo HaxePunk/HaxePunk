@@ -43,10 +43,6 @@ class Engine extends Application
 			case CANVAS(canvas):
 				Renderer.init(canvas);
 				ready();
-			#else
-			case OPENGL(gl):
-				Renderer.init(gl);
-				ready();
 			#end
 			default:
 				ready();

@@ -11,26 +11,21 @@ import lime.utils.*;
 class GLRenderer
 {
 
-	public static inline function init(gl:GLRenderContext)
-	{
-		GLRenderer.gl = gl;
-	}
-
 	public static inline function clear(color:Color):Void
 	{
-		gl.clearColor(color.r, color.g, color.b, color.a);
-		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+		GL.clearColor(color.r, color.g, color.b, color.a);
+		GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
 	}
 
 	public static inline function setViewport(x:Int, y:Int, width:Int, height:Int):Void
 	{
-		gl.viewport(x, y, width, height);
+		GL.viewport(x, y, width, height);
 	}
 
 	public static inline function present():Void
 	{
 		#if js
-		gl.finish();
+		GL.finish();
 		#end
 	}
 
@@ -40,12 +35,12 @@ class GLRenderer
 
 		if (source == ONE && destination == ZERO)
 		{
-			gl.disable(gl.BLEND);
+			GL.disable(GL.BLEND);
 		}
 		else
 		{
-			gl.blendFunc(BLEND[source], BLEND[destination]);
-			gl.enable(gl.BLEND);
+			GL.blendFunc(BLEND[source], BLEND[destination]);
+			GL.enable(GL.BLEND);
 		}
 
 		_activeState.blendSource = source;
@@ -56,12 +51,12 @@ class GLRenderer
 	{
 		if (mode == NONE)
 		{
-			gl.disable(gl.CULL_FACE);
+			GL.disable(GL.CULL_FACE);
 		}
 		else
 		{
-			gl.enable(gl.CULL_FACE);
-			gl.cullFace(CULL[mode]);
+			GL.enable(GL.CULL_FACE);
+			GL.cullFace(CULL[mode]);
 		}
 	}
 
@@ -69,51 +64,51 @@ class GLRenderer
 	{
 		image.forcePowerOfTwo();
 
-		var format = image.bpp == 1 ? gl.ALPHA : gl.RGBA;
-		var texture = gl.createTexture();
-		gl.bindTexture(gl.TEXTURE_2D, texture);
-		gl.texImage2D(gl.TEXTURE_2D, 0, format, image.width, image.height, 0, format, gl.UNSIGNED_BYTE, image.data);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+		var format = image.bpp == 1 ? GL.ALPHA : GL.RGBA;
+		var texture = GL.createTexture();
+		GL.bindTexture(GL.TEXTURE_2D, texture);
+		GL.texImage2D(GL.TEXTURE_2D, 0, format, image.width, image.height, 0, format, GL.UNSIGNED_BYTE, image.data);
+		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
+		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
 
 		return texture;
 	}
 
 	public static inline function deleteTexture(texture:NativeTexture):Void
 	{
-		gl.deleteTexture(texture);
+		GL.deleteTexture(texture);
 	}
 
 	public static inline function bindTexture(texture:NativeTexture, sampler:Int):Void
 	{
 		if (_activeState.texture == texture) return;
 
-		gl.activeTexture(gl.TEXTURE0 + sampler);
-		gl.bindTexture(gl.TEXTURE_2D, texture);
+		GL.activeTexture(GL.TEXTURE0 + sampler);
+		GL.bindTexture(GL.TEXTURE_2D, texture);
 		_activeState.texture = texture;
 	}
 
 	public static inline function compileShaderProgram(vertex:String, fragment:String):ShaderProgram
 	{
-		var program:GLProgram = gl.createProgram();
+		var program:GLProgram = GL.createProgram();
 
-		var shader = compileShader(vertex, gl.VERTEX_SHADER);
+		var shader = compileShader(vertex, GL.VERTEX_SHADER);
 		if (shader == null) return null;
-		gl.attachShader(program, shader);
-		gl.deleteShader(shader);
+		GL.attachShader(program, shader);
+		GL.deleteShader(shader);
 
-		var shader = compileShader(fragment, gl.FRAGMENT_SHADER);
+		var shader = compileShader(fragment, GL.FRAGMENT_SHADER);
 		if (shader == null) return null;
-		gl.attachShader(program, shader);
-		gl.deleteShader(shader);
+		GL.attachShader(program, shader);
+		GL.deleteShader(shader);
 
-		gl.linkProgram(program);
+		GL.linkProgram(program);
 
-		if (gl.getProgramParameter(program, gl.LINK_STATUS) == 0)
+		if (GL.getProgramParameter(program, GL.LINK_STATUS) == 0)
 		{
-			trace(gl.getProgramInfoLog(program));
-			trace("VALIDATE_STATUS: " + gl.getProgramParameter(program, gl.VALIDATE_STATUS));
-			trace("ERROR: " + gl.getError());
+			trace(GL.getProgramInfoLog(program));
+			trace("VALIDATE_STATUS: " + GL.getProgramParameter(program, GL.VALIDATE_STATUS));
+			trace("ERROR: " + GL.getError());
 			return null;
 		}
 
@@ -124,24 +119,24 @@ class GLRenderer
 	{
 		if (_activeState.program != program)
 		{
-			gl.useProgram(program);
+			GL.useProgram(program);
 			_activeState.program = program;
 		}
 	}
 
 	public static inline function setMatrix(loc:Location, matrix:Matrix4):Void
 	{
-		gl.uniformMatrix4fv(loc, false, matrix.native);
+		GL.uniformMatrix4fv(loc, false, matrix.native);
 	}
 
 	public static inline function setColor(loc:Location, color:Color):Void
 	{
-		gl.uniform4f(loc, color.r, color.g, color.b, color.a);
+		GL.uniform4f(loc, color.r, color.g, color.b, color.a);
 	}
 
 	public static inline function setFloat(loc:Location, value:Float):Void
 	{
-		gl.uniform1f(loc, value);
+		GL.uniform1f(loc, value);
 	}
 
 	public static inline function setAttribute(a:Int, offset:Int, num:Int):Void
@@ -149,15 +144,15 @@ class GLRenderer
 		if (_activeState.attributes.exists(a) || _activeState.buffer == null) return;
 
 		_activeState.attributes.set(a, true);
-		gl.vertexAttribPointer(a, num, gl.FLOAT, false, _activeState.buffer.stride, offset << 2);
-		gl.enableVertexAttribArray(a);
+		GL.vertexAttribPointer(a, num, GL.FLOAT, false, _activeState.buffer.stride, offset << 2);
+		GL.enableVertexAttribArray(a);
 	}
 
 	public static inline function bindBuffer(v:VertexBuffer):Void
 	{
 		if (_activeState.buffer == v) return;
 
-		gl.bindBuffer(GL.ARRAY_BUFFER, v.buffer);
+		GL.bindBuffer(GL.ARRAY_BUFFER, v.buffer);
 		_activeState.buffer = v;
 
 		// clear active attributes
@@ -169,25 +164,25 @@ class GLRenderer
 	{
 		if (buffer == null)
 		{
-			buffer = { buffer:gl.createBuffer(), stride:stride << 2 };
+			buffer = { buffer:GL.createBuffer(), stride:stride << 2 };
 		}
-		gl.bindBuffer(gl.ARRAY_BUFFER, buffer.buffer);
-		gl.bufferData(gl.ARRAY_BUFFER, data, usage == DYNAMIC_DRAW ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW);
+		GL.bindBuffer(GL.ARRAY_BUFFER, buffer.buffer);
+		GL.bufferData(GL.ARRAY_BUFFER, data, usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 		return buffer;
 	}
 
 	public static inline function updateIndexBuffer(data:Int16Array, ?usage:BufferUsage, ?buffer:IndexBuffer):IndexBuffer
 	{
-		if (buffer == null) buffer = gl.createBuffer();
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
-		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, usage == DYNAMIC_DRAW ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW);
+		if (buffer == null) buffer = GL.createBuffer();
+		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, buffer);
+		GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, data, usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 		return buffer;
 	}
 
 	public static inline function draw(i:IndexBuffer, numTriangles:Int, offset:Int=0):Void
 	{
-		gl.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, i);
-		gl.drawElements(GL.TRIANGLES, numTriangles * 3, GL.UNSIGNED_SHORT, offset << 2);
+		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, i);
+		GL.drawElements(GL.TRIANGLES, numTriangles * 3, GL.UNSIGNED_SHORT, offset << 2);
 	}
 
 	/**
@@ -197,13 +192,13 @@ class GLRenderer
 	 */
 	private static inline function compileShader(source:String, type:Int):GLShader
 	{
-		var shader = gl.createShader(type);
-		gl.shaderSource(shader, source);
-		gl.compileShader(shader);
+		var shader = GL.createShader(type);
+		GL.shaderSource(shader, source);
+		GL.compileShader(shader);
 
-		if (gl.getShaderParameter(shader, gl.COMPILE_STATUS) == 0)
+		if (GL.getShaderParameter(shader, GL.COMPILE_STATUS) == 0)
 		{
-			trace(gl.getShaderInfoLog(shader));
+			trace(GL.getShaderInfoLog(shader));
 			shader = null;
 		}
 
@@ -216,28 +211,27 @@ class GLRenderer
 
 		if (depthMask)
 		{
-			gl.enable(gl.DEPTH_TEST);
+			GL.enable(GL.DEPTH_TEST);
 			switch (test)
 			{
-				case NEVER: gl.depthFunc(gl.NEVER);
-				case ALWAYS: gl.depthFunc(gl.ALWAYS);
-				case GREATER: gl.depthFunc(gl.GREATER);
-				case GREATER_EQUAL: gl.depthFunc(gl.GEQUAL);
-				case LESS: gl.depthFunc(gl.LESS);
-				case LESS_EQUAL: gl.depthFunc(gl.LEQUAL);
-				case EQUAL: gl.depthFunc(gl.EQUAL);
-				case NOT_EQUAL: gl.depthFunc(gl.NOTEQUAL);
+				case NEVER: GL.depthFunc(GL.NEVER);
+				case ALWAYS: GL.depthFunc(GL.ALWAYS);
+				case GREATER: GL.depthFunc(GL.GREATER);
+				case GREATER_EQUAL: GL.depthFunc(GL.GEQUAL);
+				case LESS: GL.depthFunc(GL.LESS);
+				case LESS_EQUAL: GL.depthFunc(GL.LEQUAL);
+				case EQUAL: GL.depthFunc(GL.EQUAL);
+				case NOT_EQUAL: GL.depthFunc(GL.NOTEQUAL);
 			}
 		}
 		else
 		{
-			gl.disable(gl.DEPTH_TEST);
+			GL.disable(GL.DEPTH_TEST);
 		}
 		_activeState.depthTest = test;
 	}
 
 
-	private static var gl:GLRenderContext;
 	private static var _activeState:ActiveState = new ActiveState();
 
 	private static var FORMAT = [

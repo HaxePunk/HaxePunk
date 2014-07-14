@@ -8,5 +8,5 @@ class HXP
 	public static var window:Window;
 
 	@:allow(haxepunk.scene.Scene)
-	public static var frameRate(default, null):Float;
+	public static var frameRate(default, null):Float = 0;
 }
