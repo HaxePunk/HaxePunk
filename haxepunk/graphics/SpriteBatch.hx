@@ -5,12 +5,6 @@ import haxepunk.scene.Camera;
 import haxepunk.math.*;
 import lime.utils.*;
 
-interface Sprite
-{
-	public var position:Vector3;
-	public var texRect:Rectangle;
-}
-
 class SpriteBatch
 {
 
@@ -21,53 +15,26 @@ class SpriteBatch
 		_texture = texture;
 	}
 
-	public function add(sprite:Sprite)
+	public function begin()
 	{
-		_children.push(sprite);
-		updateVertex(sprite);
 
-		_updateVBOs = true;
 	}
 
-	public function remove(sprite:Sprite)
+	public function add(atlas:TextureAtlas, position:Vector3, id:Int)
 	{
-		_updateVBOs = true;
-	}
-
-	private function updateVertex(child:Sprite)
-	{
-		var texRect = child.texRect;
-		var pos = child.position;
-
-		var left   = texRect.x / _texture.width;
-		var top    = texRect.y / _texture.height;
-		var right  = left + texRect.width / _texture.width;
-		var bottom = top + texRect.height / _texture.height;
+		var region = atlas.getRegion(id);
 
 		var index = _numTriangles * 10;
-		_vertices[index++] = pos.x;
-		_vertices[index++] = pos.y;
-		_vertices[index++] = pos.z;
-		_vertices[index++] = left;
-		_vertices[index++] = top;
-
-		_vertices[index++] = pos.x;
-		_vertices[index++] = pos.y + texRect.height;
-		_vertices[index++] = pos.z;
-		_vertices[index++] = left;
-		_vertices[index++] = bottom;
-
-		_vertices[index++] = pos.x + texRect.width;
-		_vertices[index++] = pos.y;
-		_vertices[index++] = pos.z;
-		_vertices[index++] = right;
-		_vertices[index++] = top;
-
-		_vertices[index++] = pos.x + texRect.width;
-		_vertices[index++] = pos.y + texRect.height;
-		_vertices[index++] = pos.z;
-		_vertices[index++] = right;
-		_vertices[index++] = bottom;
+		for (i in 0...Std.int(region.length/2))
+		{
+			var s = region[i*2];
+			var t = region[i*2+1];
+			_vertices[index++] = position.x + s * atlas.width;
+			_vertices[index++] = position.y + t * atlas.height;
+			_vertices[index++] = position.z;
+			_vertices[index++] = s;
+			_vertices[index++] = t;
+		}
 
 		index = _numTriangles * 3;
 		var i:Int = _vertices.length;
@@ -82,22 +49,8 @@ class SpriteBatch
 		_numTriangles += 2;
 	}
 
-	public function update()
-	{
-		if (_children.length == 0) return;
-
-		_numTriangles = 0;
-
-		for (child in _children)
-		{
-			updateVertex(child);
-		}
-	}
-
 	public function draw(camera:Camera)
 	{
-		if (_children.length == 0) return;
-
 		Renderer.setMatrix(_matrixUniform, camera.transform);
 
 		if (_updateVBOs)
@@ -125,7 +78,5 @@ class SpriteBatch
 	private var _vertexAttribute:Int;
 	private var _uvAttribute:Int;
 	private var _numTriangles:Int = 0;
-
-	private var _children:Array<Sprite>;
 
 }

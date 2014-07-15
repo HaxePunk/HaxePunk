@@ -6,6 +6,12 @@ import haxepunk.renderers.Renderer;
 class TextureAtlas
 {
 
+	public var width(get, null):Int;
+	private inline function get_width():Int { return _texture.originalWidth; }
+
+	public var height(get, null):Int;
+	private inline function get_height():Int { return _texture.originalHeight; }
+
 	public function new(texture:Texture)
 	{
 		_regions = new Array<Array<Int>>();
@@ -22,6 +28,11 @@ class TextureAtlas
 			// TODO: only set data, don't recreate buffer every time
 			_buffer = Renderer.updateBuffer(new Float32Array(cast _texCoords), 2);
 		}
+	}
+
+	public function getRegion(id:Int):Array<Float>
+	{
+		return [];
 	}
 
 	public function addTile(x:Int, y:Int, width:Int, height:Int):Int

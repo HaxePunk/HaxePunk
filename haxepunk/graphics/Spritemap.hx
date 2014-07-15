@@ -350,51 +350,25 @@ class Spritemap extends Image
 		rows = Math.ceil(_texture.originalHeight / _spriteHeight);
 		frameCount = columns * rows;
 
-		var data = new Array<Float>();
-		data[frameCount*20-1] = 0; // quick resize
-
-		var xx = (_spriteWidth / _texture.originalWidth) * (_texture.originalWidth / _texture.width);
-		var yy = (_spriteHeight / _texture.originalHeight) * (_texture.originalHeight / _texture.height);
-		var i = 0;
-		for (y in 0...rows)
+		_atlas = new TextureAtlas(_texture);
+		var x = 0,
+			y = 0,
+			width = Std.int(_spriteWidth),
+			height = Std.int(_spriteHeight);
+		while (y < _atlas.height)
 		{
-			for (x in 0...columns)
+			_atlas.addTile(x, y, width, height);
+			x += width;
+			if (x > _atlas.width)
 			{
-				data[i++] = data[i++] = data[i++] = 0; // vert (0, 0, 0)
-				data[i++] = x * xx; // tex
-				data[i++] = y * yy;
-
-				data[i++] = 0; data[i++] = 1; data[i++] = 0; // vert (0, 1, 0)
-				data[i++] = x * xx; // tex
-				data[i++] = (y + 1) * yy;
-
-				data[i++] = 1; data[i++] = data[i++] = 0; // vert (1, 0, 0)
-				data[i++] = (x + 1) * xx; // tex
-				data[i++] = y * yy;
-
-				data[i++] = data[i++] = 1; data[i++] = 0; // vert (1, 1, 0)
-				data[i++] = (x + 1) * xx; // tex
-				data[i++] = (y + 1) * yy;
+				x = 0;
+				y += height;
 			}
 		}
-		_vertexBuffer = Renderer.updateBuffer(new Float32Array(data), 5);
-
-		var indices = new Array<Int>();
-		for (frame in 0...frameCount)
-		{
-			indices.push(frame * 4 + 0);
-			indices.push(frame * 4 + 1);
-			indices.push(frame * 4 + 2);
-			indices.push(frame * 4 + 1);
-			indices.push(frame * 4 + 2);
-			indices.push(frame * 4 + 3);
-		}
-		_indexBuffer = Renderer.updateIndexBuffer(new Int16Array(indices));
 	}
 
 	override public function draw(camera:Camera, offset:Vector3):Void
 	{
-		drawBuffer(camera, offset, _frame);
 	}
 
 	private var _frame:Int = 0;
@@ -404,5 +378,6 @@ class Spritemap extends Image
 	private var _time:Float = 0;
 	private var _anim:Animation;
 	private var _anims:StringMap<Animation>;
+	private var _atlas:TextureAtlas;
 
 }

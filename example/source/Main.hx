@@ -25,7 +25,7 @@ class Main extends Engine
 		fps = new Text("", 24);
 		scene.addGraphic(fps);
 
-		// scene.add(new Player());
+		scene.add(new Player());
 	}
 
 	override public function update(deltaTime:Int)
