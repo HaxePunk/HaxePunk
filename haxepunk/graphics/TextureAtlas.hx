@@ -3,103 +3,112 @@ package haxepunk.graphics;
 import lime.utils.Float32Array;
 import haxepunk.renderers.Renderer;
 
-class TextureAtlas
+class TextureAtlas extends Texture
 {
 
-	public var width(get, null):Int;
-	private inline function get_width():Int { return _texture.originalWidth; }
-
-	public var height(get, null):Int;
-	private inline function get_height():Int { return _texture.originalHeight; }
-
-	public function new(texture:Texture)
+	public function new(?path:String)
 	{
-		_regions = new Array<Array<Int>>();
-		_texCoords = new Array<Float>();
-		_texture = texture;
+		super(path);
+		_index = new Array<Int>();
+		_uvs = new Array<Float>();
 	}
 
-	public function bind():Void
+	public function copyRegionInto(id:Int, into:Array<Float>, offset:Int=0):Void
 	{
-		_texture.bind();
-		// if (_buffer == null) _buffer = GL.createBuffer();
-		if (_dirty)
+		#if cpp
+		cpp.NativeArray.blit(into, offset * 8, _uvs, id * 8, 8);
+		#else
+		var index = _index[id];
+		var end = index + 8;
+		offset = offset * 8;
+		while (index < end)
 		{
-			// TODO: only set data, don't recreate buffer every time
-			_buffer = Renderer.updateBuffer(new Float32Array(cast _texCoords), 2);
+			into[offset++] = _uvs[index++];
 		}
+		#end
 	}
 
-	public function getRegion(id:Int):Array<Float>
+	public function generateTiles(width:Int, height:Int):Array<Int>
 	{
-		return [];
+		var tiles = new Array<Int>();
+		var x = 0, y = 0;
+		while (y + height <= originalHeight)
+		{
+			if (x + width > originalWidth)
+			{
+				x = 0;
+				y += height;
+				if (y + height > originalHeight)
+				{
+					break;
+				}
+			}
+
+			tiles.push(addTile(x, y, width, height));
+			x += width;
+		}
+		return tiles;
 	}
 
 	public function addTile(x:Int, y:Int, width:Int, height:Int):Int
 	{
-		var id = _regions.length,
-			t = _texCoords.length;
+		var left   = x / originalWidth,
+			top    = y / originalHeight,
+			right  = (x + width) / originalWidth,
+			bottom = (y + height) / originalHeight;
 
-		// indices for quad as a triangle strip (0, 1, 2, 3)
-		var i = Std.int(t / 2);
-		_regions[id] = [i, i+1, i+2, i+3];
-
-		var left   = x / _texture.originalWidth,
-			top    = y / _texture.originalHeight,
-			right  = (x + width) / _texture.originalWidth,
-			bottom = (y + height) / _texture.originalHeight;
-
-		_texCoords[t++] = left;
-		_texCoords[t++] = top;
-		_texCoords[t++] = right;
-		_texCoords[t++] = top;
-		_texCoords[t++] = left;
-		_texCoords[t++] = bottom;
-		_texCoords[t++] = right;
-		_texCoords[t++] = bottom;
-
-		_dirty = true;
-		return id;
+		return insertPoints([left, top, right, top, left, bottom, right, bottom]);
 	}
 
-	public function addRegion(points:Array<Int>):Int
+	public function addQuad(points:Array<Float>):Int
 	{
-		var indexCount:Int = Std.int(points.length / 2);
-		// check for invalid regions
-		if (points.length % 2 == 1 || indexCount < 3)
+		if (points.length != 8) return -1;
+
+		for (i in 0...4)
 		{
-			return -1;
+			points[i*2] /= width;
+			points[i*2+1] /= height;
 		}
 
-		var id = _regions.length,
-			t = _texCoords.length;
+		return insertPoints(points);
+	}
 
-		var index = Std.int(t / 2);
-		var indices = new Array<Int>();
-		for (i in 0...indexCount)
+	private function insertPoints(points:Array<Float>):Int
+	{
+		var u = 0;
+
+		var len = points.length;
+
+		// search for the points in the _uvs array
+		while (u < _uvs.length)
 		{
-			_texCoords[t++] = points[i*2] / _texture.width;
-			_texCoords[t++] = points[i*2+1] / _texture.height;
+			var found = true;
+			for (i in 0...len)
+			{
+				if (_uvs[u + i] != points[i])
+				{
+					found = false;
+				}
+			}
 
-			indices.push(index++);
+			if (found)
+			{
+				return Std.int(u / len);
+			}
+			u += len;
 		}
 
-		_regions[id] = indices;
+		_index.push(u);
 
-		_dirty = true;
-		return id;
+		for (i in 0...len)
+		{
+			_uvs[u++] = points[i];
+		}
+
+		return _index.length - 1;
 	}
 
-	public function draw(region:Int, x:Float, y:Float):Void
-	{
-		if (region >= _regions.length) return;
-		var r = _regions[region];
-	}
-
-	private var _regions:Array<Array<Int>>;
-	private var _texCoords:Array<Float>;
-	private var _dirty:Bool = false;
-	private var _texture:Texture;
-	private var _buffer:VertexBuffer;
+	private var _index:Array<Int>;
+	private var _uvs:Array<Float>;
 
 }

@@ -51,7 +51,7 @@ class MathTest extends haxe.unit.TestCase
 
 	public function testAngle()
 	{
-		assertEquals(45.0, Math.angle(1, 1, 2, 2));
+		assertEquals(315.0, Math.angle(1, 1, 2, 2));
 
 		assertEquals(-50.0, Math.angleDifference(45, 355));
 		assertEquals(45.0, Math.angleDifference(45, 90));

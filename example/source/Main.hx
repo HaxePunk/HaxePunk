@@ -1,7 +1,6 @@
 import haxepunk.Engine;
 import haxepunk.HXP;
 import haxepunk.graphics.Image;
-import haxepunk.graphics.Text;
 import haxepunk.math.Math;
 
 class Main extends Engine
@@ -22,17 +21,7 @@ class Main extends Engine
 		// text.color.b = 0.462;
 		// scene.addGraphic(text, 50, 200);
 
-		fps = new Text("", 24);
-		scene.addGraphic(fps);
-
 		scene.add(new Player());
 	}
 
-	override public function update(deltaTime:Int)
-	{
-		super.update(deltaTime);
-		fps.text = "" + Std.int(HXP.frameRate);
-	}
-
-	private var fps:Text;
 }

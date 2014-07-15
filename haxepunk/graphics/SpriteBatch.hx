@@ -5,78 +5,153 @@ import haxepunk.scene.Camera;
 import haxepunk.math.*;
 import lime.utils.*;
 
-class SpriteBatch
-{
+enum BatchType {
+	TRIANGLE;
+	TRIANGLE_STRIP;
+}
 
-	public function new(texture:Texture)
+private class Batch
+{
+	public var material:Material;
+
+	public function new(material:Material)
 	{
 		_indices = new Array<Int>();
 		_vertices = new Array<Float>();
-		_texture = texture;
-	}
+		_uvs = new Array<Float>();
 
-	public function begin()
-	{
-
-	}
-
-	public function add(atlas:TextureAtlas, position:Vector3, id:Int)
-	{
-		var region = atlas.getRegion(id);
-
-		var index = _numTriangles * 10;
-		for (i in 0...Std.int(region.length/2))
+		if (!Std.is(material.getTexture(0), TextureAtlas))
 		{
-			var s = region[i*2];
-			var t = region[i*2+1];
-			_vertices[index++] = position.x + s * atlas.width;
-			_vertices[index++] = position.y + t * atlas.height;
-			_vertices[index++] = position.z;
-			_vertices[index++] = s;
-			_vertices[index++] = t;
+			throw "Must be a texture atlas!";
 		}
 
-		index = _numTriangles * 3;
-		var i:Int = _vertices.length;
-		_indices[index++] = i;
-		_indices[index++] = i + 1;
-		_indices[index++] = i + 2;
+		this.material = material;
+		_atlas = cast(material.getTexture(0), TextureAtlas);
 
-		_indices[index++] = i + 1;
-		_indices[index++] = i + 2;
-		_indices[index++] = i + 3;
+		_modelViewMatrixUniform = material.shader.uniform("uMatrix");
+		_vertexAttribute = material.shader.attribute("aVertexPosition");
+		_uvAttribute = material.shader.attribute("aTexCoord");
+	}
 
-		_numTriangles += 2;
+	public inline function clear()
+	{
+		_spriteIndex = 0;
+	}
+
+	public function add(position:Vector3, id:Int)
+	{
+		_atlas.copyRegionInto(id, _uvs, _spriteIndex);
+
+		var index = _spriteIndex * 3 * 4;
+		for (i in 0...4)
+		{
+			var u = (_spriteIndex + i) * 2;
+			_vertices[index++] = position.x + _uvs[u] * _atlas.originalWidth;
+			_vertices[index++] = position.y + _uvs[u+1] * _atlas.originalHeight;
+			_vertices[index++] = position.z;
+		}
+
+		#if true
+			index = _spriteIndex * 6;
+			_indices[index++] = _spriteIndex * 4;
+			_indices[index++] = _spriteIndex * 4 + 1;
+			_indices[index++] = _spriteIndex * 4 + 2;
+
+			_indices[index++] = _spriteIndex * 4 + 1;
+			_indices[index++] = _spriteIndex * 4 + 2;
+			_indices[index++] = _spriteIndex * 4 + 3;
+		#else
+			index = _spriteIndex * 4;
+			_indices[index] = index++;
+			_indices[index] = index++;
+			_indices[index] = index++;
+			_indices[index] = index++;
+		#end
+
+		_spriteIndex += 1;
 	}
 
 	public function draw(camera:Camera)
 	{
-		Renderer.setMatrix(_matrixUniform, camera.transform);
+		if (_indices.length == 0 || _uvs.length == 0) return;
+
+		material.use();
+
+		Renderer.setMatrix(_modelViewMatrixUniform, camera.transform);
 
 		if (_updateVBOs)
 		{
-			Renderer.updateIndexBuffer(new Int16Array(_indices), STATIC_DRAW, _indexBuffer);
-			Renderer.updateBuffer(new Float32Array(_vertices), 5, DYNAMIC_DRAW, _vertexBuffer);
+			_indexBuffer = Renderer.updateIndexBuffer(new Int16Array(_indices), STATIC_DRAW, _indexBuffer);
+			_uvBuffer = Renderer.updateBuffer(new Float32Array(_uvs), 2, STATIC_DRAW, _uvBuffer);
+
 			_updateVBOs = false;
 		}
+		Renderer.bindBuffer(_uvBuffer);
+		Renderer.setAttribute(_uvAttribute, 0, 2);
 
-		// vertex buffer should already be bound
+		_vertexBuffer = Renderer.updateBuffer(new Float32Array(_vertices), 3, DYNAMIC_DRAW, _vertexBuffer);
+		Renderer.bindBuffer(_vertexBuffer);
 		Renderer.setAttribute(_vertexAttribute, 0, 3);
-		Renderer.setAttribute(_uvAttribute, 3, 2);
 
-		Renderer.draw(_indexBuffer, _numTriangles);
+		Renderer.draw(_indexBuffer, _spriteIndex * 2);
 	}
 
 	private var _indices:Array<Int>;
 	private var _vertices:Array<Float>;
+	private var _uvs:Array<Float>;
 	private var _indexBuffer:IndexBuffer;
 	private var _vertexBuffer:VertexBuffer;
-	private var _updateVBOs:Bool = true;
+	private var _uvBuffer:VertexBuffer;
+	private var _modelViewMatrixUniform:Location;
 
-	private var _texture:Texture;
-	private var _matrixUniform:Location;
 	private var _vertexAttribute:Int;
 	private var _uvAttribute:Int;
-	private var _numTriangles:Int = 0;
+	private var _updateVBOs:Bool = true;
+	private var _spriteIndex:Int;
+	private var _atlas:TextureAtlas;
+
+}
+
+class SpriteBatch
+{
+
+	public function new()
+	{
+		_batches = new Map<Material, Batch>();
+	}
+
+	public function begin()
+	{
+		for (batch in _batches)
+		{
+			batch.clear();
+		}
+	}
+
+	public function draw(material:Material, position:Vector3, id:Int)
+	{
+		var batch:Batch;
+		if (_batches.exists(material))
+		{
+			batch = _batches.get(material);
+		}
+		else
+		{
+			batch = new Batch(material);
+			_batches.set(material, batch);
+		}
+		batch.add(position, id);
+
+	}
+
+	public function end(camera:Camera)
+	{
+		for (batch in _batches)
+		{
+			batch.draw(camera);
+		}
+	}
+
+	private var _batches:Map<Material, Batch>;
 
 }

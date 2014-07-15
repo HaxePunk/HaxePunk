@@ -30,6 +30,7 @@ class Engine extends Application
 		super.create(config);
 
 		HXP.window = windows[0];
+		HXP.spriteBatch = new haxepunk.graphics.SpriteBatch();
 
 		// Init the input system
 		Input.init();
@@ -59,7 +60,9 @@ class Engine extends Application
 
 	override public function render(context:RenderContext):Void
 	{
+		HXP.spriteBatch.begin();
 		scene.draw();
+		HXP.spriteBatch.end(scene.camera);
 
 		// must reset program and texture at end of each frame...
 		Renderer.bindProgram(null);

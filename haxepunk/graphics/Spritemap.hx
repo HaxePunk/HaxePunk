@@ -115,7 +115,18 @@ class Spritemap extends Image
 		_anims = new StringMap<Animation>();
 		onAnimEnd = new Event<Void->Void>();
 
-		super(path);
+		super();
+
+		var atlas = new TextureAtlas(path);
+		_frames = atlas.generateTiles(Std.int(_spriteWidth), Std.int(_spriteHeight));
+		_texture = atlas;
+		// TODO: don't recreate material
+		material = new Material();
+		material.addTexture(atlas);
+
+		columns = Math.ceil(_texture.originalWidth / _spriteWidth);
+		rows = Math.ceil(_texture.originalHeight / _spriteHeight);
+		frameCount = columns * rows;
 	}
 
 	/**
@@ -346,38 +357,20 @@ class Spritemap extends Image
 
 	override private function createBuffer():Void
 	{
-		columns = Math.ceil(_texture.originalWidth / _spriteWidth);
-		rows = Math.ceil(_texture.originalHeight / _spriteHeight);
-		frameCount = columns * rows;
-
-		_atlas = new TextureAtlas(_texture);
-		var x = 0,
-			y = 0,
-			width = Std.int(_spriteWidth),
-			height = Std.int(_spriteHeight);
-		while (y < _atlas.height)
-		{
-			_atlas.addTile(x, y, width, height);
-			x += width;
-			if (x > _atlas.width)
-			{
-				x = 0;
-				y += height;
-			}
-		}
 	}
 
 	override public function draw(camera:Camera, offset:Vector3):Void
 	{
+		HXP.spriteBatch.draw(material, origin + offset, _frames[_frame]);
 	}
 
 	private var _frame:Int = 0;
+	private var _frames:Array<Int>;
 	private var _index:Int = 0;
 	private var _spriteWidth:Float = 0;
 	private var _spriteHeight:Float = 0;
 	private var _time:Float = 0;
 	private var _anim:Animation;
 	private var _anims:StringMap<Animation>;
-	private var _atlas:TextureAtlas;
 
 }

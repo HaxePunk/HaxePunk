@@ -164,7 +164,7 @@ class GLRenderer
 	{
 		if (buffer == null)
 		{
-			buffer = { buffer:GL.createBuffer(), stride:stride << 2 };
+			buffer = new VertexBuffer(GL.createBuffer(), stride << 2);
 		}
 		GL.bindBuffer(GL.ARRAY_BUFFER, buffer.buffer);
 		GL.bufferData(GL.ARRAY_BUFFER, data, usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);

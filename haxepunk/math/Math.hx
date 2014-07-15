@@ -29,9 +29,9 @@ class Math
 
 	// Used for rad-to-deg and deg-to-rad conversion.
 	public static var DEG(get, never):Float;
-	public static inline function get_DEG(): Float { return 180 / PI; }
+	public static inline function get_DEG(): Float { return -180 / PI; }
 	public static var RAD(get, never):Float;
-	public static inline function get_RAD(): Float { return PI / 180; }
+	public static inline function get_RAD(): Float { return PI / -180; }
 
 	public static var POSITIVE_INFINITY(get, never):Float;
 	private static inline function get_POSITIVE_INFINITY() { return std.Math.POSITIVE_INFINITY; }
