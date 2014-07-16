@@ -12,6 +12,11 @@ class Point3D
 		this.y = y;
 		this.z = z;
 	}
+
+	public function toString():String
+	{
+		return "(" + x + ", " + y + ", " + z + ")";
+	}
 }
 
 abstract Vector3 (Point3D)

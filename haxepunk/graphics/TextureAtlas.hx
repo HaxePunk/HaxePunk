@@ -15,9 +15,9 @@ class TextureAtlas extends Texture
 
 	public function copyRegionInto(id:Int, into:Array<Float>, offset:Int=0):Void
 	{
-		#if cpp
-		cpp.NativeArray.blit(into, offset * 8, _uvs, id * 8, 8);
-		#else
+		// #if cpp
+		// cpp.NativeArray.blit(into, offset * 8, _uvs, id * 8, 8);
+		// #else
 		var index = _index[id];
 		var end = index + 8;
 		offset = offset * 8;
@@ -25,7 +25,7 @@ class TextureAtlas extends Texture
 		{
 			into[offset++] = _uvs[index++];
 		}
-		#end
+		// #end
 	}
 
 	public function generateTiles(width:Int, height:Int):Array<Int>

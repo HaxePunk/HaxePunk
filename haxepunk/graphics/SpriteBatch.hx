@@ -38,18 +38,9 @@ private class Batch
 		_spriteIndex = 0;
 	}
 
-	public function add(position:Vector3, id:Int)
+	public function updateTexCoord(index:Int)
 	{
-		_atlas.copyRegionInto(id, _uvs, _spriteIndex);
-
-		var index = _spriteIndex * 3 * 4;
-		for (i in 0...4)
-		{
-			var u = (_spriteIndex + i) * 2;
-			_vertices[index++] = position.x + _uvs[u] * _atlas.originalWidth;
-			_vertices[index++] = position.y + _uvs[u+1] * _atlas.originalHeight;
-			_vertices[index++] = position.z;
-		}
+		_atlas.copyRegionInto(index, _uvs, _spriteIndex);
 
 		#if true
 			index = _spriteIndex * 6;
@@ -67,6 +58,30 @@ private class Batch
 			_indices[index] = index++;
 			_indices[index] = index++;
 		#end
+
+		_updateVBOs = true;
+	}
+
+	public function updateVertex(position:Vector3)
+	{
+		var index = _spriteIndex * 3 * 4;
+		var width = 32, height = 32;
+
+		_vertices[index++] = position.x;
+		_vertices[index++] = position.y;
+		_vertices[index++] = position.z;
+
+		_vertices[index++] = position.x + width;
+		_vertices[index++] = position.y;
+		_vertices[index++] = position.z;
+
+		_vertices[index++] = position.x;
+		_vertices[index++] = position.y + height;
+		_vertices[index++] = position.z;
+
+		_vertices[index++] = position.x + width;
+		_vertices[index++] = position.y + height;
+		_vertices[index++] = position.z;
 
 		_spriteIndex += 1;
 	}
@@ -128,7 +143,7 @@ class SpriteBatch
 		}
 	}
 
-	public function draw(material:Material, position:Vector3, id:Int)
+	public function draw(material:Material, position:Vector3, id:Int=-1)
 	{
 		var batch:Batch;
 		if (_batches.exists(material))
@@ -140,7 +155,8 @@ class SpriteBatch
 			batch = new Batch(material);
 			_batches.set(material, batch);
 		}
-		batch.add(position, id);
+		if (id != -1) batch.updateTexCoord(id);
+		batch.updateVertex(position);
 
 	}
 

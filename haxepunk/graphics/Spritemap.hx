@@ -361,10 +361,14 @@ class Spritemap extends Image
 
 	override public function draw(camera:Camera, offset:Vector3):Void
 	{
-		HXP.spriteBatch.draw(material, origin + offset, _frames[_frame]);
+		offset += origin;
+		HXP.spriteBatch.draw(material, offset, _lastFrame == _frame ? -1 : _frames[_frame]);
+		offset -= origin;
+		_lastFrame = _frame;
 	}
 
 	private var _frame:Int = 0;
+	private var _lastFrame:Int = -1;
 	private var _frames:Array<Int>;
 	private var _index:Int = 0;
 	private var _spriteWidth:Float = 0;

@@ -69,7 +69,7 @@ class StressTest extends Engine
 		numCubes = 5000;
 
 		var sprite = new Spritemap("assets/character.png", 32, 32);
-		sprite.add("walk", [0, 1, 2, 3, 4, 5, 6, 7], 0.012);
+		sprite.add("walk", [0, 1, 2, 3, 4, 5, 6, 7], 12);
 		sprite.play("walk");
 		sprite.centerOrigin();
 
