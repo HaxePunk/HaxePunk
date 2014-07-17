@@ -53,17 +53,17 @@ class GraphicList implements Graphic
 	/** @private Draws the Graphics in the list. */
 	public function draw(camera:Camera, offset:Vector3):Void
 	{
-		for (graphic in _children)
+		for (i in 0..._children.length)
 		{
-			graphic.draw(camera, offset);
+			_children[i].draw(camera, offset);
 		}
 	}
 
 	public function update(elapsed:Float):Void
 	{
-		for (graphic in _children)
+		for (i in 0..._children.length)
 		{
-			graphic.update(elapsed);
+			_children[i].update(elapsed);
 		}
 	}
 

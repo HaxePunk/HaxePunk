@@ -147,7 +147,9 @@ class Entity extends SceneNode
 	 */
 	public function update(elapsed:Float):Void { }
 
+	@:allow(haxepunk.scene.Scene)
 	private var _graphic:Graphic;
+
 	private var _mask:Mask;
 	private var _type:String = "";
 	private var _name:String = "";

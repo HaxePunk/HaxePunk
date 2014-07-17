@@ -59,11 +59,9 @@ class ActiveState
 	public var buffer:VertexBuffer;
 	public var indexBuffer:IndexBuffer;
 	public var depthTest:DepthTestCompare;
-	public var attributes:Array<Bool>;
 
 	public function new()
 	{
-		attributes = new Array<Bool>();
 	}
 }
 

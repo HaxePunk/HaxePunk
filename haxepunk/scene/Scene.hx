@@ -13,8 +13,8 @@ class Scene
 	public function new()
 	{
 		camera = new Camera();
-		_entities = new List<Entity>();
-		_types = new StringMap<List<Entity>>();
+		_entities = new Array<Entity>();
+		_types = new StringMap<Array<Entity>>();
 		_entityNames = new StringMap<Entity>();
 		_frameList = new Array<Float>();
 	}
@@ -22,7 +22,7 @@ class Scene
 	public function add(e:Entity)
 	{
 		e.scene = this;
-		_entities.add(e);
+		_entities.push(e);
 		if (e.type != "") addType(e);
 		if (e.name != "") registerName(e);
 	}
@@ -47,7 +47,7 @@ class Scene
 	 * @param	type 		The type to check.
 	 * @return 	The Entity list.
 	 */
-	public inline function entitiesForType(type:String):List<Entity>
+	public inline function entitiesForType(type:String):Array<Entity>
 	{
 		return _types.exists(type) ? _types.get(type) : null;
 	}
@@ -93,7 +93,7 @@ class Scene
 	@:allow(haxepunk.scene.Entity)
 	private function addType(e:Entity)
 	{
-		var list:List<Entity>;
+		var list:Array<Entity>;
 		// add to type list
 		if (_types.exists(e.type))
 		{
@@ -101,7 +101,7 @@ class Scene
 		}
 		else
 		{
-			list = new List<Entity>();
+			list = new Array<Entity>();
 			_types.set(e.type, list);
 		}
 		list.push(e);
@@ -138,9 +138,9 @@ class Scene
 	{
 		Renderer.clear(camera.clearColor);
 		// Renderer.setDepthTest(false);
-		for (entity in _entities)
+		for (i in 0..._entities.length)
 		{
-			entity.draw(camera);
+			_entities[i].draw(camera);
 		}
 		Renderer.present();
 
@@ -151,23 +151,24 @@ class Scene
 		_frameLast = t;
 	}
 
-	@:access(haxepunk.scene.Entity)
 	public function update(elapsed:Float)
 	{
-		for (e in _entities)
+		for (i in 0..._entities.length)
 		{
+			var e = _entities[i];
 			e.update(elapsed);
 			if (e._graphic != null) e._graphic.update(elapsed);
 		}
 		camera.update();
+		trace(HXP.frameRate);
 	}
 
 	private var _frameLast:Float = 0;
 	private var _frameListSum:Float = 0;
 	private var _frameList:Array<Float>;
 
-	private var _entities:List<Entity>;
-	private var _types:StringMap<List<Entity>>;
+	private var _entities:Array<Entity>;
+	private var _types:StringMap<Array<Entity>>;
 	private var _entityNames:StringMap<Entity>;
 
 }

@@ -141,9 +141,6 @@ class GLRenderer
 
 	public static inline function setAttribute(a:Int, offset:Int, num:Int):Void
 	{
-		if (_activeState.attributes[a] == true || _activeState.buffer == null) return;
-
-		_activeState.attributes[a] = true;
 		GL.vertexAttribPointer(a, num, GL.FLOAT, false, _activeState.buffer.stride, offset << 2);
 		GL.enableVertexAttribArray(a);
 	}
@@ -154,13 +151,6 @@ class GLRenderer
 
 		GL.bindBuffer(GL.ARRAY_BUFFER, v.buffer);
 		_activeState.buffer = v;
-
-		// clear active attributes
-		#if cpp
-           _activeState.attributes.splice(0,_activeState.attributes.length);
-        #else
-           untyped _activeState.attributes.length = 0;
-        #end
 	}
 
 	public static inline function createBuffer(stride:Int):VertexBuffer

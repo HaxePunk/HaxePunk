@@ -84,11 +84,6 @@ abstract Vector3 (Point3D)
 		return Math.sqrt(dx * dx + dy * dy + dz * dz);
 	}
 
-	@:op(A + B) private static inline function _add(a:Vector3, b:Vector3):Vector3
-	{
-		return new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
-	}
-
 	@:op(A += B) public static inline function add(a:Vector3, b:Vector3):Vector3
 	{
 		a.x += b.x;
@@ -97,9 +92,9 @@ abstract Vector3 (Point3D)
 		return a;
 	}
 
-	@:op(A - B) private static inline function _subtract(a:Vector3, b:Vector3):Vector3
+	@:op(A + B) private static inline function _add(a:Vector3, b:Vector3):Vector3
 	{
-		return new Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
+		return new Vector3(a.x + b.x, a.y + b.y, a.z + b.z);
 	}
 
 	@:op(A -= B) private static inline function subtract(a:Vector3, b:Vector3):Vector3
@@ -108,6 +103,11 @@ abstract Vector3 (Point3D)
 		a.y -= b.y;
 		a.z -= b.z;
 		return a;
+	}
+
+	@:op(A - B) private static inline function _subtract(a:Vector3, b:Vector3):Vector3
+	{
+		return new Vector3(a.x - b.x, a.y - b.y, a.z - b.z);
 	}
 
 	@:commutative @:op(A * B) private static inline function _multiplyByScalar(a:Vector3, b:Float):Vector3
