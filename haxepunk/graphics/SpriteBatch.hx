@@ -20,13 +20,17 @@ private class Batch
 		_vertices = new Array<Float>();
 		_uvs = new Array<Float>();
 
-		if (!Std.is(material.getTexture(0), TextureAtlas))
+		var texture = material.getTexture(0);
+		if (Std.is(texture, TextureAtlas))
 		{
-			throw "Must be a texture atlas!";
+			_atlas = cast texture;
+		}
+		else
+		{
+			updateTexCoord(0);
 		}
 
 		this.material = material;
-		_atlas = cast(material.getTexture(0), TextureAtlas);
 
 		_modelViewMatrixUniform = material.shader.uniform("uMatrix");
 		_vertexAttribute = material.shader.attribute("aVertexPosition");
@@ -34,6 +38,7 @@ private class Batch
 
 		_uvBuffer = Renderer.createBuffer(2);
 		_vertexBuffer = Renderer.createBuffer(3);
+		_position = new Vector3(); // temporary vector for calculating vertex positions
 	}
 
 	public inline function clear()
@@ -43,7 +48,22 @@ private class Batch
 
 	public function updateTexCoord(index:Int)
 	{
-		_atlas.copyRegionInto(index, _uvs, _spriteIndex);
+		if (_atlas == null)
+		{
+			index = _spriteIndex * 8;
+			_uvs[index++] = 0;
+			_uvs[index++] = 0;
+			_uvs[index++] = 1;
+			_uvs[index++] = 0;
+			_uvs[index++] = 0;
+			_uvs[index++] = 1;
+			_uvs[index++] = 1;
+			_uvs[index++] = 1;
+		}
+		else
+		{
+			_atlas.copyRegionInto(index, _uvs, _spriteIndex);
+		}
 
 		#if true
 			index = _spriteIndex * 6;
@@ -67,26 +87,36 @@ private class Batch
 		_updateVBOs = true;
 	}
 
-	public function updateVertex(position:Vector3)
+	public function updateVertex(image:Image, matrix:Matrix4)
 	{
 		var index = _spriteIndex * 3 * 4;
-		var width = 32, height = 32;
 
-		_vertices[index++] = position.x;
-		_vertices[index++] = position.y;
-		_vertices[index++] = position.z;
+		_position.x = _position.y = _position.z = 0;
+		_position *= matrix;
+		_vertices[index++] = _position.x;
+		_vertices[index++] = _position.y;
+		_vertices[index++] = _position.z;
 
-		_vertices[index++] = position.x + width;
-		_vertices[index++] = position.y;
-		_vertices[index++] = position.z;
+		_position.x = 1;
+		_position.z = _position.y = 0;
+		_position *= matrix;
+		_vertices[index++] = _position.x;
+		_vertices[index++] = _position.y;
+		_vertices[index++] = _position.z;
 
-		_vertices[index++] = position.x;
-		_vertices[index++] = position.y + height;
-		_vertices[index++] = position.z;
+		_position.y = 1;
+		_position.z = _position.x = 0;
+		_position *= matrix;
+		_vertices[index++] = _position.x;
+		_vertices[index++] = _position.y;
+		_vertices[index++] = _position.z;
 
-		_vertices[index++] = position.x + width;
-		_vertices[index++] = position.y + height;
-		_vertices[index++] = position.z;
+		_position.x = _position.y = 1;
+		_position.z = 0;
+		_position *= matrix;
+		_vertices[index++] = _position.x;
+		_vertices[index++] = _position.y;
+		_vertices[index++] = _position.z;
 
 		_spriteIndex += 1;
 	}
@@ -135,9 +165,11 @@ private class Batch
 	private var _vertexAttribute:Int;
 	private var _uvAttribute:Int;
 	private var _updateVBOs:Bool = true;
-	private var _spriteIndex:Int;
+	private var _spriteIndex:Int = 0;
 	private var _lastSpriteIndex:Int = 0;
 	private var _atlas:TextureAtlas;
+
+	private var _position:Vector3;
 
 }
 
@@ -157,20 +189,20 @@ class SpriteBatch
 		}
 	}
 
-	public function draw(material:Material, position:Vector3, id:Int=-1)
+	public function draw(image:Image, matrix:Matrix4, id:Int = -1)
 	{
 		var batch:Batch;
-		if (_batches.exists(material))
+		if (_batches.exists(image.material))
 		{
-			batch = _batches.get(material);
+			batch = _batches.get(image.material);
 		}
 		else
 		{
-			batch = new Batch(material);
-			_batches.set(material, batch);
+			batch = new Batch(image.material);
+			_batches.set(image.material, batch);
 		}
 		if (id != -1) batch.updateTexCoord(id);
-		batch.updateVertex(position);
+		batch.updateVertex(image, matrix);
 
 	}
 

@@ -117,6 +117,7 @@ class Spritemap extends Image
 
 		super();
 
+		// TODO: clean this up!!!
 		if (_materials.exists(path))
 		{
 			material = _materials.get(path);
@@ -366,15 +367,10 @@ class Spritemap extends Image
 		}
 	}
 
-	override private function createBuffer():Void
-	{
-	}
-
 	override public function draw(camera:Camera, offset:Vector3):Void
 	{
-		offset += origin;
-		HXP.spriteBatch.draw(material, offset, _lastFrame == _frame ? -1 : _frames[_frame]);
-		offset -= origin;
+		calculateMatrixWithOffset(offset);
+		HXP.spriteBatch.draw(this, _matrix, _lastFrame == _frame ? -1 : _frames[_frame]);
 		_lastFrame = _frame;
 	}
 

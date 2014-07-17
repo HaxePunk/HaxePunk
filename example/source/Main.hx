@@ -9,9 +9,11 @@ class Main extends Engine
 	{
 		super.ready();
 
-		// var image = new Image("assets/lime.jpg");
-		// image.centerOrigin();
-		// scene.addGraphic(image);
+		var image = new Image("assets/lime.jpg");
+		image.centerOrigin();
+		image.scale.x = 0.5;
+		image.scale.y = 0.75;
+		scene.addGraphic(image);
 
 		// scene.camera.clearColor.r = scene.camera.clearColor.g = scene.camera.clearColor.b = 0.6;
 

@@ -1,12 +1,12 @@
 package haxepunk.graphics;
 
+import haxepunk.HXP;
 import haxepunk.math.Vector3;
 import haxepunk.math.Matrix4;
 import haxepunk.scene.Camera;
 import haxepunk.renderers.Renderer;
 import lime.utils.Float32Array;
 import lime.utils.Int16Array;
-import haxepunk.graphics.SpriteBatch;
 
 class Image implements Graphic
 {
@@ -78,46 +78,19 @@ class Image implements Graphic
 		origin = new Vector3();
 		_matrix = new Matrix4();
 
-#if !unit_test
-		_texture = Texture.create(id);
-		material = new Material();
-		material.addTexture(_texture);
+		if (id != null)
+		{
+			_texture = Texture.create(id);
+			material = new Material();
+			material.addTexture(_texture);
 
-		createBuffer();
-
-		_vertexAttribute = material.shader.attribute("aVertexPosition");
-		_texCoordAttribute = material.shader.attribute("aTexCoord");
-		_modelViewMatrixUniform = material.shader.uniform("uMatrix");
-#end
+			_vertexAttribute = material.shader.attribute("aVertexPosition");
+			_texCoordAttribute = material.shader.attribute("aTexCoord");
+			_modelViewMatrixUniform = material.shader.uniform("uMatrix");
+		}
 	}
 
 	public function update(elapsed:Float) {}
-
-	/** @private Creates the buffer. */
-	private function createBuffer():Void
-	{
-		if (_defaultVertexBuffer == null)
-		{
-			var data:Array<Float> = [
-				/* vertex | tex coord | normal */
-				0, 0, 0, 0.00, 0.00,
-				0, 1, 0, 0.00, 1.00,
-				1, 0, 0, 1.00, 0.00,
-				1, 1, 0, 1.00, 1.00
-			];
-			_defaultVertexBuffer = Renderer.createBuffer(5);
-			Renderer.bindBuffer(_defaultVertexBuffer);
-			Renderer.updateBuffer(new Float32Array(cast data));
-		}
-		_vertexBuffer = _defaultVertexBuffer;
-
-		if (_defaultIndexBuffer == null)
-		{
-			var data = [0, 1, 2, 1, 2, 3];
-			_defaultIndexBuffer = Renderer.updateIndexBuffer(new Int16Array(cast data));
-		}
-		_indexBuffer = _defaultIndexBuffer;
-	}
 
 	public function centerOrigin():Void
 	{
@@ -153,9 +126,25 @@ class Image implements Graphic
 		Renderer.draw(_indexBuffer, 2, tileOffset * 3);
 	}
 
+	private function calculateMatrixWithOffset(offset:Vector3)
+	{
+		origin *= scale;
+		origin += offset;
+
+		_matrix.identity();
+		_matrix.scale(width, height, 1);
+		_matrix.translateVector3(origin);
+		_matrix.scaleVector3(scale);
+		// if (angle != 0) _matrix.rotateZ(angle);
+
+		origin -= offset;
+		origin /= scale;
+	}
+
 	public function draw(camera:Camera, offset:Vector3):Void
 	{
-		drawBuffer(camera, offset);
+		calculateMatrixWithOffset(offset);
+		HXP.spriteBatch.draw(this, _matrix);
 	}
 
 	private var _texCoordAttribute:Int;

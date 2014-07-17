@@ -66,7 +66,7 @@ class StressTest extends Engine
 		var material = new Material();
 		material.addTexture(Texture.create("assets/lime.png"));
 		var numCubes = Std.int(Math.random() * 50 + 150);
-		numCubes = 5000;
+		numCubes = 15000;
 
 		for (i in 0...numCubes)
 		{
@@ -91,6 +91,7 @@ class StressTest extends Engine
 	{
 		super.update(deltaTime);
 		fps.text = "" + Std.int(HXP.frameRate);
+		trace(HXP.frameRate);
 	}
 
 	private var fps:Text;

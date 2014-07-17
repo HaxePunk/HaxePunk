@@ -160,7 +160,6 @@ class Scene
 			if (e._graphic != null) e._graphic.update(elapsed);
 		}
 		camera.update();
-		trace(HXP.frameRate);
 	}
 
 	private var _frameLast:Float = 0;

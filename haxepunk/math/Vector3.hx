@@ -170,6 +170,14 @@ abstract Vector3 (Point3D)
 		return a;
 	}
 
+	@:op(A *= B) private static inline function _multiplyEqualsMatrix(v:Vector3, m:Matrix4):Vector3
+	{
+		v.x = m._11 * v.x + m._12 * v.y + m._13 * v.z + m._41;
+		v.y = m._21 * v.x + m._22 * v.y + m._23 * v.z + m._42;
+		v.z = m._31 * v.x + m._32 * v.y + m._33 * v.z + m._43;
+		return v;
+	}
+
 	@:op(A * B) private static inline function _multiplyMatrix(v:Vector3, m:Matrix4):Vector3
 	{
 		return new Vector3(
