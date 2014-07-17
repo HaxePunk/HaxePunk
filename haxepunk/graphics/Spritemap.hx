@@ -117,12 +117,23 @@ class Spritemap extends Image
 
 		super();
 
-		var atlas = new TextureAtlas(path);
-		_frames = atlas.generateTiles(Std.int(_spriteWidth), Std.int(_spriteHeight));
-		_texture = atlas;
-		// TODO: don't recreate material
-		material = new Material();
-		material.addTexture(atlas);
+		if (_materials.exists(path))
+		{
+			material = _materials.get(path);
+			var atlas:TextureAtlas = cast material.getTexture(0);
+			_texture = atlas;
+			_frames = atlas.generateTiles(Std.int(_spriteWidth), Std.int(_spriteHeight));
+		}
+		else
+		{
+			var atlas = new TextureAtlas(path);
+			_frames = atlas.generateTiles(Std.int(_spriteWidth), Std.int(_spriteHeight));
+			_texture = atlas;
+			// TODO: don't recreate material
+			material = new Material();
+			material.addTexture(atlas);
+			_materials.set(path, material);
+		}
 
 		columns = Math.ceil(_texture.originalWidth / _spriteWidth);
 		rows = Math.ceil(_texture.originalHeight / _spriteHeight);
@@ -376,5 +387,6 @@ class Spritemap extends Image
 	private var _time:Float = 0;
 	private var _anim:Animation;
 	private var _anims:StringMap<Animation>;
+	private static var _materials:StringMap<Material> = new StringMap<Material>();
 
 }

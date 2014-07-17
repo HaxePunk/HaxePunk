@@ -68,18 +68,18 @@ class StressTest extends Engine
 		var numCubes = Std.int(Math.random() * 50 + 150);
 		numCubes = 5000;
 
-		var sprite = new Spritemap("assets/character.png", 32, 32);
-		sprite.add("walk", [0, 1, 2, 3, 4, 5, 6, 7], 12);
-		sprite.play("walk");
-		sprite.centerOrigin();
-
 		for (i in 0...numCubes)
 		{
 			// scene.add(new CubeEntity(material));
 
+			var sprite = new Spritemap("assets/character.png", 32, 32);
+			sprite.add("walk", [0, 1, 2, 3, 4, 5, 6, 7], 12);
+			sprite.play("walk");
+			sprite.centerOrigin();
+
 			scene.addGraphic(sprite,
 				Std.int(Math.random() * -50),
-				Math.random() * HXP.window.width,
+				Math.random() * HXP.window.width + 50,
 				Math.random() * HXP.window.height);
 		}
 

@@ -16,9 +16,9 @@ private class Batch
 
 	public function new(material:Material)
 	{
-		_indices = new Array<Int>();
-		_vertices = new Array<Float>();
-		_uvs = new Array<Float>();
+		_indices = new Int16Array(30000);
+		_vertices = new Float32Array(60000);
+		_uvs = new Float32Array(30000);
 
 		if (!Std.is(material.getTexture(0), TextureAtlas))
 		{
@@ -52,11 +52,13 @@ private class Batch
 			_indices[index++] = _spriteIndex * 4 + 2;
 			_indices[index++] = _spriteIndex * 4 + 3;
 		#else
-			index = _spriteIndex * 4;
-			_indices[index] = index++;
-			_indices[index] = index++;
-			_indices[index] = index++;
-			_indices[index] = index++;
+			index = _spriteIndex * 6;
+			_indices[index++] = _spriteIndex * 4;
+			_indices[index++] = _spriteIndex * 4 + 1;
+			_indices[index++] = _spriteIndex * 4 + 2;
+			_indices[index++] = _spriteIndex * 4 + 3;
+			_indices[index++] = _spriteIndex * 4 + 3;
+			_indices[index++] = _spriteIndex * 4 + 4;
 		#end
 
 		_updateVBOs = true;
@@ -96,24 +98,24 @@ private class Batch
 
 		if (_updateVBOs)
 		{
-			_indexBuffer = Renderer.updateIndexBuffer(new Int16Array(_indices), STATIC_DRAW, _indexBuffer);
-			_uvBuffer = Renderer.updateBuffer(new Float32Array(_uvs), 2, STATIC_DRAW, _uvBuffer);
+			_indexBuffer = Renderer.updateIndexBuffer(_indices, STATIC_DRAW, _indexBuffer);
+			_uvBuffer = Renderer.updateBuffer(_uvs, 2, STATIC_DRAW, _uvBuffer);
 
 			_updateVBOs = false;
 		}
 		Renderer.bindBuffer(_uvBuffer);
 		Renderer.setAttribute(_uvAttribute, 0, 2);
 
-		_vertexBuffer = Renderer.updateBuffer(new Float32Array(_vertices), 3, DYNAMIC_DRAW, _vertexBuffer);
+		_vertexBuffer = Renderer.updateBuffer(_vertices, 3, DYNAMIC_DRAW, _vertexBuffer);
 		Renderer.bindBuffer(_vertexBuffer);
 		Renderer.setAttribute(_vertexAttribute, 0, 3);
 
 		Renderer.draw(_indexBuffer, _spriteIndex * 2);
 	}
 
-	private var _indices:Array<Int>;
-	private var _vertices:Array<Float>;
-	private var _uvs:Array<Float>;
+	private var _indices:Int16Array;
+	private var _vertices:Float32Array;
+	private var _uvs:Float32Array;
 	private var _indexBuffer:IndexBuffer;
 	private var _vertexBuffer:VertexBuffer;
 	private var _uvBuffer:VertexBuffer;
