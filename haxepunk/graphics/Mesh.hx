@@ -61,7 +61,10 @@ class Mesh implements Graphic
 	public function createBuffer(data:Array<Float>):VertexBuffer
 	{
 		if (data == null) throw "Vertex data buffer must not be null";
-		return _vertexBuffer = Renderer.updateBuffer(new Float32Array(cast data), 8);
+		_vertexBuffer = Renderer.createBuffer(8);
+		Renderer.bindBuffer(_vertexBuffer);
+		Renderer.updateBuffer(new Float32Array(cast data));
+		return _vertexBuffer;
 	}
 
 	public function createIndexBuffer(data:Array<Int>):IndexBuffer

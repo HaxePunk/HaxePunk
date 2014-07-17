@@ -104,12 +104,15 @@ class FlashRenderer
 		_activeBuffer = buffer;
 	}
 
-	public static inline function updateBuffer(data:Float32Array, stride:Int, ?usage:BufferUsage, ?buffer:VertexBuffer):VertexBuffer
+	public static inline function createBuffer(stride:Int):VertexBuffer
 	{
 		var len:Int = Std.int(data.length / stride);
 		if (buffer == null) buffer = _context.createVertexBuffer(len, stride);
-		buffer.uploadFromByteArray(data.buffer, 0, 0, len);
-		return buffer;
+	}
+
+	public static inline function updateBuffer(data:Float32Array, ?usage:BufferUsage):Void
+	{
+		buffer.uploadFromByteArray(data.buffer, 0, 0, data.buffer.length);
 	}
 
 	public static inline function updateIndexBuffer(data:Int16Array, ?usage:BufferUsage, ?buffer:IndexBuffer):IndexBuffer

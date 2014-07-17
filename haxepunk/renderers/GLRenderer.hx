@@ -141,9 +141,9 @@ class GLRenderer
 
 	public static inline function setAttribute(a:Int, offset:Int, num:Int):Void
 	{
-		if (_activeState.attributes.exists(a) || _activeState.buffer == null) return;
+		if (_activeState.attributes[a] == true || _activeState.buffer == null) return;
 
-		_activeState.attributes.set(a, true);
+		_activeState.attributes[a] = true;
 		GL.vertexAttribPointer(a, num, GL.FLOAT, false, _activeState.buffer.stride, offset << 2);
 		GL.enableVertexAttribArray(a);
 	}
@@ -156,19 +156,21 @@ class GLRenderer
 		_activeState.buffer = v;
 
 		// clear active attributes
-		for (key in _activeState.attributes.keys())
-			_activeState.attributes.remove(key);
+		#if cpp
+           _activeState.attributes.splice(0,_activeState.attributes.length);
+        #else
+           untyped _activeState.attributes.length = 0;
+        #end
 	}
 
-	public static inline function updateBuffer(data:Float32Array, stride:Int, ?usage:BufferUsage, ?buffer:VertexBuffer):VertexBuffer
+	public static inline function createBuffer(stride:Int):VertexBuffer
 	{
-		if (buffer == null)
-		{
-			buffer = new VertexBuffer(GL.createBuffer(), stride << 2);
-		}
-		GL.bindBuffer(GL.ARRAY_BUFFER, buffer.buffer);
+		return new VertexBuffer(GL.createBuffer(), stride << 2);
+	}
+
+	public static inline function updateBuffer(data:Float32Array, ?usage:BufferUsage):Void
+	{
 		GL.bufferData(GL.ARRAY_BUFFER, data, usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
-		return buffer;
 	}
 
 	public static inline function updateIndexBuffer(data:Int16Array, ?usage:BufferUsage, ?buffer:IndexBuffer):IndexBuffer
@@ -176,12 +178,13 @@ class GLRenderer
 		if (buffer == null) buffer = GL.createBuffer();
 		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, buffer);
 		GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, data, usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
+		_activeState.indexBuffer = buffer;
 		return buffer;
 	}
 
-	public static inline function draw(i:IndexBuffer, numTriangles:Int, offset:Int=0):Void
+	public static inline function draw(buffer:IndexBuffer, numTriangles:Int, offset:Int=0):Void
 	{
-		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, i);
+		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, buffer);
 		GL.drawElements(GL.TRIANGLES, numTriangles * 3, GL.UNSIGNED_SHORT, offset << 2);
 	}
 

@@ -67,7 +67,9 @@ class Text implements Graphic
 			{
 				x += writeChar(i, value.charAt(i), x, y);
 			}
-			_vertexBuffer = Renderer.updateBuffer(new Float32Array(_vertices), 5, STATIC_DRAW, _vertexBuffer);
+			if (_vertexBuffer == null) _vertexBuffer = Renderer.createBuffer(5);
+			Renderer.bindBuffer(_vertexBuffer);
+			Renderer.updateBuffer(new Float32Array(_vertices), STATIC_DRAW);
 			_indexBuffer = Renderer.updateIndexBuffer(new Int16Array(_indices), STATIC_DRAW, _indexBuffer);
 		}
 		return text = value;

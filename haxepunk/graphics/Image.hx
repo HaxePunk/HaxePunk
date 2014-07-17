@@ -105,7 +105,9 @@ class Image implements Graphic
 				1, 0, 0, 1.00, 0.00,
 				1, 1, 0, 1.00, 1.00
 			];
-			_defaultVertexBuffer = Renderer.updateBuffer(new Float32Array(cast data), 5);
+			_defaultVertexBuffer = Renderer.createBuffer(5);
+			Renderer.bindBuffer(_defaultVertexBuffer);
+			Renderer.updateBuffer(new Float32Array(cast data));
 		}
 		_vertexBuffer = _defaultVertexBuffer;
 

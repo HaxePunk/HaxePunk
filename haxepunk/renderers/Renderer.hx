@@ -57,10 +57,14 @@ class ActiveState
 	public var program:ShaderProgram;
 	public var texture:NativeTexture;
 	public var buffer:VertexBuffer;
+	public var indexBuffer:IndexBuffer;
 	public var depthTest:DepthTestCompare;
-	public var attributes:IntMap<Bool> = new IntMap<Bool>();
+	public var attributes:Array<Bool>;
 
-	public function new() { }
+	public function new()
+	{
+		attributes = new Array<Bool>();
+	}
 }
 
 #if flash

@@ -31,6 +31,9 @@ private class Batch
 		_modelViewMatrixUniform = material.shader.uniform("uMatrix");
 		_vertexAttribute = material.shader.attribute("aVertexPosition");
 		_uvAttribute = material.shader.attribute("aTexCoord");
+
+		_uvBuffer = Renderer.createBuffer(2);
+		_vertexBuffer = Renderer.createBuffer(3);
 	}
 
 	public inline function clear()
@@ -98,19 +101,27 @@ private class Batch
 
 		if (_updateVBOs)
 		{
-			_indexBuffer = Renderer.updateIndexBuffer(new Int16Array(_indices), STATIC_DRAW, _indexBuffer);
-			_uvBuffer = Renderer.updateBuffer(new Float32Array(_uvs), 2, STATIC_DRAW, _uvBuffer);
+			if (_spriteIndex > _lastSpriteIndex)
+				_indexBuffer = Renderer.updateIndexBuffer(new Int16Array(_indices), STATIC_DRAW, _indexBuffer);
+
+			Renderer.bindBuffer(_uvBuffer);
+			Renderer.setAttribute(_uvAttribute, 0, 2);
+			Renderer.updateBuffer(new Float32Array(_uvs), STATIC_DRAW);
 
 			_updateVBOs = false;
 		}
-		Renderer.bindBuffer(_uvBuffer);
-		Renderer.setAttribute(_uvAttribute, 0, 2);
+		else
+		{
+			Renderer.bindBuffer(_uvBuffer);
+			Renderer.setAttribute(_uvAttribute, 0, 2);
+		}
 
-		_vertexBuffer = Renderer.updateBuffer(new Float32Array(_vertices), 3, DYNAMIC_DRAW, _vertexBuffer);
 		Renderer.bindBuffer(_vertexBuffer);
 		Renderer.setAttribute(_vertexAttribute, 0, 3);
+		Renderer.updateBuffer(new Float32Array(_vertices), DYNAMIC_DRAW);
 
 		Renderer.draw(_indexBuffer, _spriteIndex * 2);
+		_lastSpriteIndex = _spriteIndex;
 	}
 
 	private var _indices:Array<Int>;
@@ -125,6 +136,7 @@ private class Batch
 	private var _uvAttribute:Int;
 	private var _updateVBOs:Bool = true;
 	private var _spriteIndex:Int;
+	private var _lastSpriteIndex:Int = 0;
 	private var _atlas:TextureAtlas;
 
 }
