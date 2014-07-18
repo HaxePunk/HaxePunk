@@ -4,7 +4,6 @@ import haxepunk.HXP;
 import haxepunk.math.Vector3;
 import haxepunk.math.Matrix4;
 import haxepunk.scene.Camera;
-import haxepunk.renderers.Renderer;
 import lime.utils.Float32Array;
 import lime.utils.Int16Array;
 
@@ -83,10 +82,6 @@ class Image implements Graphic
 			_texture = Texture.create(id);
 			material = new Material();
 			material.addTexture(_texture);
-
-			_vertexAttribute = material.shader.attribute("aVertexPosition");
-			_texCoordAttribute = material.shader.attribute("aTexCoord");
-			_modelViewMatrixUniform = material.shader.uniform("uMatrix");
 		}
 	}
 
@@ -96,34 +91,6 @@ class Image implements Graphic
 	{
 		origin.x = -(width / 2);
 		origin.y = -(height / 2);
-	}
-
-	private inline function drawBuffer(camera:Camera, offset:Vector3, tileOffset:Int=0):Void
-	{
-		if (_vertexBuffer == null || _indexBuffer == null) return;
-
-		origin *= scale;
-		origin += offset;
-
-		_matrix.identity();
-		_matrix.scale(width, height, 1);
-		_matrix.translateVector3(origin);
-		_matrix.scaleVector3(scale);
-		if (angle != 0) _matrix.rotateZ(angle);
-
-		origin -= offset;
-		origin /= scale;
-
-		material.use();
-
-		_matrix.multiply(camera.transform);
-		Renderer.setMatrix(_modelViewMatrixUniform, _matrix);
-
-		Renderer.bindBuffer(_vertexBuffer);
-		Renderer.setAttribute(_vertexAttribute, 0, 3);
-		Renderer.setAttribute(_texCoordAttribute, 3, 2);
-
-		Renderer.draw(_indexBuffer, 2, tileOffset * 3);
 	}
 
 	private function calculateMatrixWithOffset(offset:Vector3)
@@ -147,15 +114,7 @@ class Image implements Graphic
 		HXP.spriteBatch.draw(this, _matrix);
 	}
 
-	private var _texCoordAttribute:Int;
-	private var _vertexAttribute:Int;
-	private var _modelViewMatrixUniform:Location;
-
 	private var _matrix:Matrix4;
 	private var _texture:Texture;
-	private var _vertexBuffer:VertexBuffer;
-	private var _indexBuffer:IndexBuffer;
-	private static var _defaultVertexBuffer:VertexBuffer;
-	private static var _defaultIndexBuffer:IndexBuffer;
 
 }

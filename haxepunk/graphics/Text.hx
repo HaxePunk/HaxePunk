@@ -56,6 +56,7 @@ class Text implements Graphic
 
 		_modelViewMatrixUniform = shader.uniform("uMatrix");
 		_colorUniform = shader.uniform("uColor");
+		_vertexBuffer = Renderer.createBuffer(5);
 	}
 
 	public var text(default, set):String;
@@ -67,7 +68,6 @@ class Text implements Graphic
 			{
 				x += writeChar(i, value.charAt(i), x, y);
 			}
-			if (_vertexBuffer == null) _vertexBuffer = Renderer.createBuffer(5);
 			Renderer.bindBuffer(_vertexBuffer);
 			Renderer.updateBuffer(new Float32Array(_vertices), STATIC_DRAW);
 			_indexBuffer = Renderer.updateIndexBuffer(new Int16Array(_indices), STATIC_DRAW, _indexBuffer);

@@ -5,11 +5,6 @@ import haxepunk.scene.Camera;
 import haxepunk.math.*;
 import lime.utils.*;
 
-enum BatchType {
-	TRIANGLE;
-	TRIANGLE_STRIP;
-}
-
 private class Batch
 {
 	public var material:Material;
@@ -137,6 +132,9 @@ private class Batch
 			Renderer.bindBuffer(_uvBuffer);
 			Renderer.setAttribute(_uvAttribute, 0, 2);
 			Renderer.updateBuffer(new Float32Array(_uvs), STATIC_DRAW);
+			#if flash
+			Renderer.setAttribute(_uvAttribute, 0, 2);
+			#end
 
 			_updateVBOs = false;
 		}
@@ -149,6 +147,9 @@ private class Batch
 		Renderer.bindBuffer(_vertexBuffer);
 		Renderer.setAttribute(_vertexAttribute, 0, 3);
 		Renderer.updateBuffer(new Float32Array(_vertices), DYNAMIC_DRAW);
+		#if flash
+		Renderer.setAttribute(_vertexAttribute, 0, 3);
+		#end
 
 		Renderer.draw(_indexBuffer, _spriteIndex * 2);
 		_lastSpriteIndex = _spriteIndex;

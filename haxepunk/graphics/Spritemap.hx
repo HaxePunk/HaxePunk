@@ -3,7 +3,6 @@ package haxepunk.graphics;
 import haxepunk.math.Matrix4;
 import haxepunk.math.Vector3;
 import haxepunk.math.Math;
-import haxepunk.renderers.Renderer;
 import haxepunk.scene.Camera;
 import haxe.ds.StringMap;
 import lime.app.Event;

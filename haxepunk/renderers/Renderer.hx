@@ -67,8 +67,19 @@ class ActiveState
 
 #if flash
 
+class VertexBuffer
+{
+	public var stride:Int;
+	public var buffer:flash.display3D.VertexBuffer3D;
+
+	public function new(buffer:flash.display3D.VertexBuffer3D, stride:Int)
+	{
+		this.buffer = buffer;
+		this.stride = stride;
+	}
+}
+
 typedef ShaderProgram = flash.display3D.Program3D;
-typedef VertexBuffer = flash.display3D.VertexBuffer3D;
 typedef IndexBuffer = flash.display3D.IndexBuffer3D;
 typedef NativeTexture = flash.display3D.textures.Texture;
 typedef Location = Int;

@@ -20,6 +20,8 @@ import lime.utils.Int16Array;
 class FlashRenderer
 {
 
+	public static inline var MAX_BUFFER_SIZE:Int = 65535;
+
 	public static inline function init(context:FlashRenderContext, ready:Void->Void)
 	{
 		_stage3D = context.stage.stage3Ds[0];
@@ -96,28 +98,32 @@ class FlashRenderer
 
 	public static inline function setAttribute(a:Int, offset:Int, num:Int):Void
 	{
-		_context.setVertexBufferAt(a, _activeBuffer, offset, FORMAT[num]);
+		_context.setVertexBufferAt(a, _activeState.buffer.buffer, offset, FORMAT[num]);
 	}
 
 	public static inline function bindBuffer(buffer:VertexBuffer):Void
 	{
-		_activeBuffer = buffer;
+		_activeState.buffer = buffer;
 	}
 
 	public static inline function createBuffer(stride:Int):VertexBuffer
 	{
-		var len:Int = Std.int(data.length / stride);
-		if (buffer == null) buffer = _context.createVertexBuffer(len, stride);
+		return new VertexBuffer(null, stride);
 	}
 
 	public static inline function updateBuffer(data:Float32Array, ?usage:BufferUsage):Void
 	{
-		buffer.uploadFromByteArray(data.buffer, 0, 0, data.buffer.length);
+		var vb:VertexBuffer = _activeState.buffer;
+		var len:Int = Std.int(data.length / vb.stride);
+		if (vb.buffer != null) vb.buffer.dispose();
+		vb.buffer = _context.createVertexBuffer(len, vb.stride);
+		vb.buffer.uploadFromByteArray(data.buffer, 0, 0, len);
 	}
 
 	public static inline function updateIndexBuffer(data:Int16Array, ?usage:BufferUsage, ?buffer:IndexBuffer):IndexBuffer
 	{
-		if (buffer == null) buffer = _context.createIndexBuffer(data.length);
+		if (buffer != null) buffer.dispose();
+		buffer = _context.createIndexBuffer(data.length);
 		buffer.uploadFromByteArray(data.buffer, 0, 0, data.length);
 		return buffer;
 	}
@@ -162,7 +168,7 @@ class FlashRenderer
 	}
 
 	private static var _context:Context3D;
-	private static var _activeBuffer:VertexBuffer3D;
+	private static var _activeState:ActiveState = new ActiveState();
 	private static var _stage3D:Stage3D;
 
 	private static var BLEND = [

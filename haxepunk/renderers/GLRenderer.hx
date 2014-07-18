@@ -11,6 +11,8 @@ import lime.utils.*;
 class GLRenderer
 {
 
+	public static inline var MAX_BUFFER_SIZE:Int = 65535;
+
 	public static inline function clear(color:Color):Void
 	{
 		GL.clearColor(color.r, color.g, color.b, color.a);

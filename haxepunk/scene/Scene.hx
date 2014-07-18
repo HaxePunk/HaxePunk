@@ -4,6 +4,7 @@ import haxe.ds.StringMap;
 import haxepunk.graphics.Graphic;
 import haxepunk.math.Matrix4;
 import haxepunk.renderers.Renderer;
+import haxepunk.graphics.SpriteBatch;
 
 class Scene
 {
@@ -17,6 +18,8 @@ class Scene
 		_types = new StringMap<Array<Entity>>();
 		_entityNames = new StringMap<Entity>();
 		_frameList = new Array<Float>();
+
+		HXP.spriteBatch = _spriteBatch = new SpriteBatch();
 	}
 
 	public function add(e:Entity)
@@ -137,11 +140,13 @@ class Scene
 	public function draw()
 	{
 		Renderer.clear(camera.clearColor);
+		_spriteBatch.begin();
 		// Renderer.setDepthTest(false);
 		for (i in 0..._entities.length)
 		{
 			_entities[i].draw(camera);
 		}
+		_spriteBatch.end(camera);
 		Renderer.present();
 
 		var t = haxe.Timer.stamp() * 1000;
@@ -166,6 +171,7 @@ class Scene
 	private var _frameListSum:Float = 0;
 	private var _frameList:Array<Float>;
 
+	private var _spriteBatch:SpriteBatch;
 	private var _entities:Array<Entity>;
 	private var _types:StringMap<Array<Entity>>;
 	private var _entityNames:StringMap<Entity>;
