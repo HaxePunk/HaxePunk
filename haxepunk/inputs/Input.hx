@@ -1,8 +1,8 @@
-package haxepunk.input;
+package haxepunk.inputs;
 
-import haxepunk.input.Keyboard;
-import haxepunk.input.Mouse;
-import haxepunk.input.InputState;
+import haxepunk.inputs.InputState;
+import haxepunk.inputs.Keyboard;
+import haxepunk.inputs.Mouse;
 
 /**
  * Either enum used by InputType.
@@ -55,6 +55,17 @@ class Input
 	 */
 	public static function define(name:String, inputs:Array<InputType>, merge:Bool=false):Void
 	{
+		for (input in inputs)
+		{
+			switch (input.type)
+			{
+				case String(_):
+					throw "Input.define can't have strings in the [inputs] array.";
+				
+				default:
+			}
+		}
+		
 		if (!merge || !_defines.exists(name))
 		{
 			_defines.set(name, inputs);
@@ -166,8 +177,8 @@ class Input
 
 			case MouseButton(mb):
 				Mouse.value(mb, v);
-			/*
-			case GamepadButton(gb):
+			
+			/*case GamepadButton(gb):
 				Gamepad.value(gb, v);
 
 			case Gesture(g):

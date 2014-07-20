@@ -1,10 +1,10 @@
-package haxepunk.input;
+package haxepunk.inputs;
 
 import haxe.ds.IntMap;
 import lime.ui.MouseEventManager;
 
-import haxepunk.input.Input;
-import haxepunk.input.InputState;
+import haxepunk.inputs.Input;
+import haxepunk.inputs.InputState;
 
 /**
  * The mouse buttons.
@@ -82,7 +82,7 @@ class Mouse
 	/**
 	 * Setup the mouse input support.
 	 */
-	@:allow(haxepunk.input.Input)
+	@:allow(haxepunk.inputs.Input)
 	private static function init():Void
 	{
 		// Register the events from lime
@@ -99,7 +99,7 @@ class Mouse
 	 * @param v The value to get
 	 * @return The value of [v] for [button]
 	 */
-	@:allow(haxepunk.input.Input)
+	@:allow(haxepunk.inputs.Input)
 	private static inline function value(button:MouseButton, v:InputValue):Int
 	{
 		if (button < 0) // Any
@@ -120,7 +120,7 @@ class Mouse
 	/**
 	 * Updates the mouse state.
 	 */
-	@:allow(haxepunk.input.Input)
+	@:allow(haxepunk.inputs.Input)
 	private static function update():Void
 	{
 		// Was On last frame if was on the previous one and there is at least the same amount of Pressed than Released.

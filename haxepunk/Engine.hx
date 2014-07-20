@@ -5,7 +5,7 @@ import haxepunk.math.Matrix4;
 import haxepunk.scene.Scene;
 import haxepunk.graphics.Material;
 import haxepunk.renderers.Renderer;
-import haxepunk.input.Input;
+import haxepunk.inputs.Input;
 import lime.app.Application;
 import lime.app.Config;
 import lime.graphics.RenderContext;
@@ -68,10 +68,10 @@ class Engine extends Application
 
 	override public function update(deltaTime:Int):Void
 	{
+		scene.update(deltaTime / 1000.0);
+		
 		// Update the input system
 		Input.update();
-
-		scene.update(deltaTime / 1000.0);
 	}
 
 	/**

@@ -1,8 +1,8 @@
-package haxepunk.input;
+package haxepunk.inputs;
 
 import haxe.ds.IntMap;
-import haxepunk.input.Input;
-import haxepunk.input.InputState;
+import haxepunk.inputs.Input;
+import haxepunk.inputs.InputState;
 import lime.ui.KeyEventManager;
 
 /**
@@ -31,21 +31,21 @@ class Keyboard
 		{
 			return "";
 		}
-		if (Key.A <= char && Key.Z >= char) // the keys needs to be on the left side of the operator for the operator overloading
+		if (char >= Key.A && char <= Key.Z)
 		{
 			return String.fromCharCode(char);
 		}
-		if (Key.F1 <= char && Key.F15 >= char)
+		if (char >= Key.F1 && char <= Key.F15)
 		{
-			return "F" + Std.string(char - 111);
+			return "F" + Std.string(char - Key.F1 + 1);
 		}
-		if (Key.NUMPAD_0 <= char && Key.NUMPAD_9 >= char)
+		if (char >= Key.NUMPAD_0 && char <= Key.NUMPAD_9)
 		{
-			return "NUMPAD " + Std.string(char - 96);
+			return "NUMPAD " + Std.string(char - Key.NUMPAD_0);
 		}
-		if (Key.DIGIT_0 <= char && Key.DIGIT_9 >= char)
+		if (char >= Key.DIGIT_0 && char <= Key.DIGIT_9)
 		{
-			return Std.string(char - 48);
+			return Std.string(char - Key.DIGIT_0);
 		}
 
 		return switch (key)
@@ -90,7 +90,7 @@ class Keyboard
 	/**
 	 * Setup the keyboard input support.
 	 */
-	@:allow(haxepunk.input.Input)
+	@:allow(haxepunk.inputs.Input)
 	private static function init():Void
 	{
 		// Register the events from lime
@@ -99,9 +99,13 @@ class Keyboard
 	}
 
 	/**
+	 * Return the value for a key.
 	 *
+	 * @param key The key to check
+	 * @param v The value to get
+	 * @return The value of [v] for [key]
 	 */
-	@:allow(haxepunk.input.Input)
+	@:allow(haxepunk.inputs.Input)
 	private static function value(key:Key, v:InputValue):Int
 	{
 		if (key <= -1) // Any
@@ -120,9 +124,9 @@ class Keyboard
 	}
 
 	/**
-	 *
+	 * Updates the keyboard state.
 	 */
-	@:allow(haxepunk.input.Input)
+	@:allow(haxepunk.inputs.Input)
 	private static function update():Void
 	{
 		// Was On last frame if was on the previous one and there is at least the same amount of Pressed than Released.
@@ -280,6 +284,10 @@ abstract Key(Int) to Int
 	var NUMPAD_MULTIPLY = 106;
 	var NUMPAD_SUBTRACT = 109;
 
-	@:op(A<=B) private inline function lessEq (rhs:Int):Bool { return this <= rhs; }
-	@:op(A>=B) private inline function moreEq (rhs:Int):Bool { return this >= rhs; }
+	@:op(A<=B) private static inline function lessEq (lhs:Key, rhs:Int):Bool { return lhs <= rhs; }
+	@:op(A<=B) private static inline function lessEq2 (lhs:Int, rhs:Key):Bool { return lhs <= rhs; }
+	@:op(A>=B) private static inline function moreEq (lhs:Int, rhs:Key):Bool { return lhs >= rhs; }
+	@:op(A>=B) private static inline function moreEq2 (lhs:Int, rhs:Key):Bool { return lhs >= rhs; }
+	@:op(A-B) private static inline function sub (lhs:Key, rhs:Int):Int { return lhs - rhs; }
+	@:op(A-B) private static inline function sub2 (lhs:Int, rhs:Key):Int { return lhs - rhs; }
 }

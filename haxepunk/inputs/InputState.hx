@@ -1,4 +1,4 @@
-package haxepunk.input;
+package haxepunk.inputs;
 
 /**
  * The types of value for an input.
@@ -19,7 +19,7 @@ class InputState
 	public var pressed:Int = 0;
 	public var released:Int = 0;
 
-	@:allow(haxepunk.input)
+	@:allow(haxepunk.inputs)
 	private function new() { }
 
 	public function value(v:InputValue):Int

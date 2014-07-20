@@ -1,7 +1,6 @@
 package haxepunk;
 
 import lime.ui.Window;
-import haxepunk.input.Input;
 import haxepunk.graphics.SpriteBatch;
 
 class HXP
