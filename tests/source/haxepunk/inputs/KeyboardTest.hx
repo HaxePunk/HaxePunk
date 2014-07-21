@@ -1,6 +1,6 @@
-package haxepunk.input;
+package haxepunk.inputs;
 
-@:access(haxepunk.input.Keyboard)
+@:access(haxepunk.inputs.Keyboard)
 class KeyboardTest extends haxe.unit.TestCase
 {
 

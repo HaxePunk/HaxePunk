@@ -21,8 +21,8 @@ class TestMain
 		runner.add(new haxepunk.math.Vector3Test());
 
 		// input tests
-		runner.add(new haxepunk.input.KeyboardTest());
-		runner.add(new haxepunk.input.MouseTest());
+		runner.add(new haxepunk.inputs.KeyboardTest());
+		runner.add(new haxepunk.inputs.MouseTest());
 
 		// mask tests
 		runner.add(new haxepunk.masks.AABBTest());

@@ -1,7 +1,7 @@
-package haxepunk.input;
+package haxepunk.inputs;
 
-@:access(haxepunk.input.Input)
-@:access(haxepunk.input.Mouse)
+@:access(haxepunk.inputs.Input)
+@:access(haxepunk.inputs.Mouse)
 class MouseTest extends haxe.unit.TestCase
 {
 
