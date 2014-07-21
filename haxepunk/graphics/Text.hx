@@ -19,6 +19,7 @@ class Text implements Graphic
 	public var color:Color;
 	public var size(default, null):Int;
 	public var angle:Float = 0;
+	public var width(default, null):Float;
 
 	public function new(text:String, size:Int=16)
 	{
@@ -49,14 +50,14 @@ class Text implements Graphic
 		material = new Material(shader);
 		material.addTexture(_texture);
 
-		this.text = text;
-
 		_vertexAttribute = shader.attribute("aVertexPosition");
 		_texCoordAttribute = shader.attribute("aTexCoord");
 
 		_modelViewMatrixUniform = shader.uniform("uMatrix");
 		_colorUniform = shader.uniform("uColor");
 		_vertexBuffer = Renderer.createBuffer(5);
+
+		this.text = text;
 	}
 
 	public var text(default, set):String;
@@ -68,6 +69,7 @@ class Text implements Graphic
 			{
 				x += writeChar(i, value.charAt(i), x, y);
 			}
+			width = x;
 			Renderer.bindBuffer(_vertexBuffer);
 			Renderer.updateBuffer(new Float32Array(_vertices), STATIC_DRAW);
 			_indexBuffer = Renderer.updateIndexBuffer(new Int16Array(_indices), STATIC_DRAW, _indexBuffer);
@@ -137,7 +139,7 @@ class Text implements Graphic
 
 	public function draw(camera:Camera, offset:Vector3):Void
 	{
-		if (_vertexBuffer == null || _indexBuffer == null) return;
+		if (_indexBuffer == null) return;
 
 		material.use();
 

@@ -71,6 +71,32 @@ class Color
 		return Math.max(r, Math.max(g, b));
 	}
 
+	public function fromRGB(r:Float, g:Float, b:Float, a:Float=1.0)
+	{
+		this.r = r;
+		this.g = g;
+		this.b = b;
+		this.a = a;
+	}
+
+	public function fromInt(value:Int, withAlpha:Bool=false):Void
+	{
+		if (withAlpha)
+		{
+			r = (value >> 24 & 0xFF) / 0xFF;
+			g = (value >> 16 & 0xFF) / 0xFF;
+			b = (value >> 8 & 0xFF) / 0xFF;
+			b = (value & 0xFF) / 0xFF;
+		}
+		else
+		{
+			r = (value >> 16 & 0xFF) / 0xFF;
+			g = (value >> 8 & 0xFF) / 0xFF;
+			b = (value & 0xFF) / 0xFF;
+			a = 1;
+		}
+	}
+
 	/**
 	 * Convert color to an int value
 	 * @param alpha include the alpha value

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+
+	<meta title="HaxePunk" package="com.haxepunk" version="1.0.0" company="Matt Tuttle" />
+	<app main="HelloWorld" path="export" file="HaxePunk" />
+
+	<window width="512" height="288" fps="60" />
+	<window hardware="true" allow-shaders="true" require-shaders="true" depth-buffer="true" stencil-buffer="false" />
+
+	<haxelib name="HaxePunk" />
+
+	<icon path="HaxePunk.svg" />
+
+</project>

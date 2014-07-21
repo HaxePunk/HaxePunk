@@ -19,9 +19,6 @@ class Camera extends SceneNode
 		transform = new Matrix4();
 		up = new Vector3(0, 1, 0);
 		clearColor = new Color(0.117, 0.117, 0.117, 1.0);
-
-		// make2D(HXP.window.width, HXP.window.height);
-		make2D(800, 600);
 	}
 
 	public function make2D(width:Float, height:Float):Void
@@ -41,6 +38,7 @@ class Camera extends SceneNode
 
 	public function update():Void
 	{
+		if (_projection == null) make2D(HXP.window.width, HXP.window.height);
 		transform.identity();
 		transform.translate(-position.x, -position.y, -position.z);
 		transform.multiply(_projection);
