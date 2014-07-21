@@ -107,32 +107,18 @@ class Spritemap extends Image
 	override private function get_width():Float { return _spriteWidth; }
 	override private function get_height():Float { return _spriteHeight; }
 
-	public function new(path:String, width:Int, height:Int)
+	public function new(material:Material, width:Int, height:Int)
 	{
 		_spriteWidth = width;
 		_spriteHeight = height;
 		_anims = new StringMap<Animation>();
 		onAnimEnd = new Event<Void->Void>();
 
-		super();
+		super(material);
 
-		// TODO: clean this up!!!
-		if (_materials.exists(path))
+		if (Std.is(_texture, TextureAtlas))
 		{
-			material = _materials.get(path);
-			var atlas:TextureAtlas = cast material.getTexture(0);
-			_texture = atlas;
-			_frames = atlas.generateTiles(Std.int(_spriteWidth), Std.int(_spriteHeight));
-		}
-		else
-		{
-			var atlas = new TextureAtlas(path);
-			_frames = atlas.generateTiles(Std.int(_spriteWidth), Std.int(_spriteHeight));
-			_texture = atlas;
-			// TODO: don't recreate material
-			material = new Material();
-			material.addTexture(atlas);
-			_materials.set(path, material);
+			_frames = cast(_texture, TextureAtlas).generateTiles(Std.int(_spriteWidth), Std.int(_spriteHeight));
 		}
 
 		columns = Math.ceil(_texture.originalWidth / _spriteWidth);

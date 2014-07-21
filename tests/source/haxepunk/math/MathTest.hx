@@ -70,6 +70,18 @@ class MathTest extends haxe.unit.TestCase
 		assertEquals("hi", Math.swap("hello", "hi", "hello"));
 	}
 
+	public function testUuid()
+	{
+		var uuid = Math.uuid();
+		assertTrue(uuid != Math.uuid());
+		assertEquals(36, uuid.length);
+		assertEquals('4', uuid.charAt(14));
+
+		uuid = Math.uuid(12);
+		assertEquals(-1, uuid.indexOf('-'));
+		assertEquals(12, uuid.length);
+	}
+
 	public function testRand()
 	{
 		var rand = Math.rand(4);

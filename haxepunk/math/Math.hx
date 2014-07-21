@@ -315,6 +315,61 @@ class Math
 		return current == a ? b : a;
 	}
 
+	public static function uuid(?len:Int, ?radix:Int):String
+	{
+		var uuid = "";
+		if (radix == null) radix = UUID_CHARS.length;
+		if (len != null)
+		{
+			// compact form
+			for (i in 0...len) uuid += UUID_CHARS.charAt(Std.int(Math.random() * radix));
+		}
+		else
+		{
+			for (i in 0...36)
+			{
+				if (i == 8 || i == 13 || i == 18 || i == 23)
+				{
+					uuid += '-';
+				}
+				else if (i == 14)
+				{
+					uuid += '4';
+				}
+				else
+				{
+					var r = Std.int(random() * radix);
+					uuid += UUID_CHARS.charAt(i == 19 ? (r & 0x3) | 0x8 : r);
+				}
+			}
+		}
+		return uuid;
+	}
+
+	public static function uuidFast():String
+	{
+		var rnd = 0, r, uuid = "";
+		for (i in 0...36)
+		{
+			if (i == 8 || i == 13 ||  i == 18 || i == 23)
+			{
+				uuid += '-';
+			}
+			else if (i == 14)
+			{
+				uuid += '4';
+			}
+			else
+			{
+				if (rnd <= 0x02) rnd = 0x2000000 + Std.int(Math.random() * 0x1000000);
+				r = rnd & 0xF;
+				rnd = rnd >> 4;
+				uuid += UUID_CHARS.charAt(i == 19 ? (r & 0x3) | 0x8 : r);
+			}
+		}
+		return uuid;
+	}
+
 	/**
 	 * A pseudo-random Float produced using HXP's random seed, where 0 <= Float < 1.
 	 */
@@ -332,5 +387,7 @@ class Math
 	{
 		return Std.random(amount);
 	}
+
+	private static var UUID_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
 }

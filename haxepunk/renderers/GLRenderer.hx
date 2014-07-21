@@ -76,6 +76,16 @@ class GLRenderer
 		return texture;
 	}
 
+	public static inline function createTextureFromBytes(bytes:UInt8Array, width:Int, height:Int):NativeTexture
+	{
+		var texture = GL.createTexture();
+		GL.bindTexture(GL.TEXTURE_2D, texture);
+		GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, bytes);
+		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
+		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
+		return texture;
+	}
+
 	public static inline function deleteTexture(texture:NativeTexture):Void
 	{
 		GL.deleteTexture(texture);

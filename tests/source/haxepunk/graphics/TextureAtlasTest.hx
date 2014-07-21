@@ -7,9 +7,9 @@ class TextureAtlasTest extends haxe.unit.TestCase
 	@:access(haxepunk.graphics.Texture)
 	override public function setup()
 	{
-		_atlas = new TextureAtlas();
-		_atlas.originalWidth  = _atlas.width  = 64;
-		_atlas.originalHeight = _atlas.height = 64;
+		_atlas = new TextureAtlas(null);
+		_atlas.sourceWidth  = _atlas.width  = 64;
+		_atlas.sourceHeight = _atlas.height = 64;
 	}
 
 	public function testAddTile()

@@ -38,7 +38,8 @@ class Text implements Graphic
 		var data = font.createImage(size);
 		_glyphs = data.glyphs;
 
-		setTexture(data.image);
+		_texture = new Texture();
+		_texture.loadFromImage(data.image);
 		#if flash
 		var vert = "m44 op, va0, vc0\nmov v0, va1";
 		var frag = "tex ft0, v0, fs0 <linear nomip 2d wrap>\nmov ft0.xyz, fc1.xyz\nmov oc, ft0";
@@ -75,15 +76,6 @@ class Text implements Graphic
 			_indexBuffer = Renderer.updateIndexBuffer(new Int16Array(_indices), STATIC_DRAW, _indexBuffer);
 		}
 		return text = value;
-	}
-
-	@:access(haxepunk.graphics.Texture)
-	private function setTexture(image:lime.graphics.Image)
-	{
-		_texture = new Texture();
-		_texture._texture = Renderer.createTexture(image);
-		_texture.width = _texture.originalWidth = image.width;
-		_texture.height = _texture.originalHeight = image.height;
 	}
 
 	private inline function writeChar(i:Int, c:String, x:Float = 0, y:Float = 0):Int

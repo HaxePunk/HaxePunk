@@ -14,8 +14,7 @@ import flash.display3D.textures.Texture;
 import flash.events.Event;
 import lime.graphics.FlashRenderContext;
 import lime.graphics.Image;
-import lime.utils.Float32Array;
-import lime.utils.Int16Array;
+import lime.utils.*;
 
 class FlashRenderer
 {
@@ -130,8 +129,16 @@ class FlashRenderer
 
 	public static inline function createTexture(image:Image):NativeTexture
 	{
-		var texture = _context.createTexture(image.width, image.height, Context3DTextureFormat.BGRA, false);
+		var format = image.bpp == 1 ? Context3DTextureFormat.COMPRESSED_ALPHA : Context3DTextureFormat.BGRA;
+		var texture = _context.createTexture(image.width, image.height, format, false);
 		texture.uploadFromBitmapData(image.src, 0);
+		return texture;
+	}
+
+	public static inline function createTextureFromBytes(bytes:UInt8Array, width:Int, height:Int):NativeTexture
+	{
+		var texture = _context.createTexture(width, height, Context3DTextureFormat.BGRA, false);
+		texture.uploadFromByteArray(bytes.buffer, 0);
 		return texture;
 	}
 

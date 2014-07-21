@@ -29,6 +29,7 @@ class Material
 
 	public function getTexture(index:Int):Texture
 	{
+		if (index < 0 || index >= _textures.length) return null;
 		return _textures[index];
 	}
 

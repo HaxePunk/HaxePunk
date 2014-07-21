@@ -6,9 +6,12 @@ import haxepunk.renderers.Renderer;
 class TextureAtlas extends Texture
 {
 
-	public function new(?path:String)
+	public function new(image:lime.graphics.Image)
 	{
-		super(path);
+		super();
+#if !unit_test
+		loadFromImage(image);
+#end
 		_index = new Array<Int>();
 		_uvs = new Array<Float>();
 	}
@@ -32,13 +35,13 @@ class TextureAtlas extends Texture
 	{
 		var tiles = new Array<Int>();
 		var x = 0, y = 0;
-		while (y + height <= originalHeight)
+		while (y + height <= sourceHeight)
 		{
-			if (x + width > originalWidth)
+			if (x + width > sourceWidth)
 			{
 				x = 0;
 				y += height;
-				if (y + height > originalHeight)
+				if (y + height > sourceHeight)
 				{
 					break;
 				}
@@ -52,10 +55,10 @@ class TextureAtlas extends Texture
 
 	public function addTile(x:Int, y:Int, width:Int, height:Int):Int
 	{
-		var left   = x / originalWidth,
-			top    = y / originalHeight,
-			right  = (x + width) / originalWidth,
-			bottom = (y + height) / originalHeight;
+		var left   = x / sourceWidth,
+			top    = y / sourceHeight,
+			right  = (x + width) / sourceWidth,
+			bottom = (y + height) / sourceHeight;
 
 		return insertPoints([left, top, right, top, left, bottom, right, bottom]);
 	}

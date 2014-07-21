@@ -5,7 +5,7 @@ class ImageTest extends haxe.unit.TestCase
 
 	public function testFlipped()
 	{
-		var image = new Image();
+		var image = new Image(null);
 
 		assertFalse(image.flippedX);
 		assertFalse(image.flippedY);

@@ -71,18 +71,17 @@ class Image implements Graphic
 		return (alpha == value) ? value : alpha = value;
 	}
 
-	public function new(?id:String)
+	public function new(material:Material)
 	{
 		scale = new Vector3(1, 1, 1);
 		origin = new Vector3();
 		_matrix = new Matrix4();
 
-		if (id != null)
-		{
-			_texture = Texture.create(id);
-			material = new Material();
-			material.addTexture(_texture);
-		}
+#if !unit_test
+		this.material = material;
+		_texture = material.getTexture(0);
+		if (_texture == null) throw "Must have a texture attached for materials used in Image";
+#end
 	}
 
 	public function update(elapsed:Float) {}
@@ -110,6 +109,7 @@ class Image implements Graphic
 
 	public function draw(camera:Camera, offset:Vector3):Void
 	{
+		if (material == null) return;
 		calculateMatrixWithOffset(offset);
 		HXP.spriteBatch.draw(this, _matrix);
 	}
