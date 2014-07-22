@@ -190,38 +190,36 @@ class Image extends Graphic
 				_point.y = (point.y + y - originY * sy - camera.y * scrollY);
 			}
 
-			if (_flipped) _point.x += _sourceRect.width * sx;
+			if (_flipped)
+			{
+				_point.x += _sourceRect.width * sx;
+			}
 
 			_point.x = _point.x * fsx;
 			_point.y = _point.y * fsy;
 
 			// render without rotation
-			_region.draw(_point.x, _point.y, layer,
-				sx * fsx * (_flipped ? -1 : 1), sy * fsy, angle,
-				_red, _green, _blue, _alpha, smooth);
+			_region.draw(_point.x, _point.y, layer, sx * fsx * (_flipped ? -1 : 1), sy * fsy, angle, _red, _green, _blue, _alpha, smooth);
 		}
 		else
 		{
-			var theta = angle * HXP.RAD;
-			var cos = Math.cos(theta);
-			var sin = Math.sin(theta);
-
-			if (flipped) sx *= -1;
-
-			// optimized matrix math
-			var b = sx * fsx * sin;
-			var a = sx * fsx * cos;
-
-			var d = sy * fsy * cos;
-			var c = sy * fsy * -sin;
-
-			var tx = -originX * sx,
-				ty = -originY * sy;
-			var tx1 = tx * cos - ty * sin;
-			ty = ((tx * sin + ty * cos) + originY + _point.y) * fsy;
-			tx = (tx1 + originX + _point.x) * fsx;
-
-			_region.drawMatrix(tx, ty, a, b, c, d, layer, _red, _green, _blue, _alpha, smooth);
+			if (flipped)
+			{
+				sx *= -1;
+			}
+			
+			_matrix.b = _matrix.c = 0;
+			_matrix.a = sx;
+			_matrix.d = sy;
+			_matrix.tx = _matrix.ty = 0;
+			_matrix.tx = -originX * sx;
+			_matrix.ty = -originY * sy;
+			_matrix.rotate(angle * HXP.RAD);
+			_matrix.tx += originX + _point.x;
+			_matrix.ty += originY + _point.y;
+			_matrix.scale(fsx, fsy);
+			
+			_region.drawMatrix(_matrix.tx, _matrix.ty, _matrix.a, _matrix.b, _matrix.c, _matrix.d, layer, _red, _green, _blue, _alpha, smooth);
 		}
 	}
 
