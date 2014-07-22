@@ -42,7 +42,7 @@ class HaxelibInfoBuilder
 			process.close();
 			output = buffer.getBytes().toString();
 		}
-		catch (e:Dynamic) { }
+		catch (e:Dynamic) { trace(e); }
 
 		var lines = output.split("\n");
 		var result = "";
@@ -58,7 +58,7 @@ class HaxelibInfoBuilder
 		// Read haxelib.json
 		var doc = try {
 			Json.parse(sys.io.File.read(result + "haxelib.json").readAll().toString());
-		} catch (e:Dynamic) { }
+		} catch (e:Dynamic) { trace(e); null; }
 
 		// Construct fields
 		var fields:Array<Field> = Context.getBuildFields();
