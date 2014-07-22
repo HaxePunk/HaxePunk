@@ -425,7 +425,7 @@ class Polygon extends Hitbox
 		minY = _y + projY;
 		maxX = Math.round(minX + _width);
 		maxY = Math.round(minY + _height);
-		
+
 		if (list != null)
 		{
 			// update parent list
@@ -556,7 +556,7 @@ class Polygon extends Hitbox
 	{
 		var i = _axes.length - 1;
 		var j = i - 1;
-		while (i > 0) 
+		while (i > 0)
 		{
 			// if the first vector is equal or similar to the second vector,
 			// remove it from the list. (for example, [1, 1] and [-1, -1]
@@ -567,9 +567,9 @@ class Polygon extends Hitbox
 				_axes.splice(i, 1);
 				i--;
 			}
-			
+
 			j--;
-			if (j < 0) 
+			if (j < 0)
 			{
 				i--;
 				j = i - 1;
@@ -593,7 +593,7 @@ class Polygon extends Hitbox
 	private var _fakeTileHitbox:Hitbox;			// used for Grid collision
 
 	private static var EPSILON = 0.000000001;	// used for axes comparison in removeDuplicateAxes
-	
+
 	private static var firstProj = new Projection();
 	private static var secondProj = new Projection();
 
