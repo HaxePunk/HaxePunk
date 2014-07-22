@@ -6,8 +6,6 @@ import haxepunk.math.Math;
 import haxepunk.scene.Camera;
 import haxe.ds.StringMap;
 import lime.app.Event;
-import lime.utils.Float32Array;
-import lime.utils.Int16Array;
 
 /**
  * Template used by Spritemap to define animations. Don't create

@@ -28,7 +28,7 @@ class Mesh implements Graphic
 		transform = new Matrix4();
 		this.material = (material == null ? new Material() : material);
 
-		var shader = this.material.shader;
+		var shader = this.material.firstPass.shader;
 		_vertexAttribute = shader.attribute("aVertexPosition");
 		_texCoordAttribute = shader.attribute("aTexCoord");
 		_normalAttribute = shader.attribute("aNormal");

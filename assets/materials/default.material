@@ -1,0 +1,10 @@
+material DefaultMaterial
+{
+	technique
+	{
+		pass
+		{
+			program shaders/default.vert shaders/default.frag
+		}
+	}
+}

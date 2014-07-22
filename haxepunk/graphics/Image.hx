@@ -79,7 +79,7 @@ class Image implements Graphic
 
 #if !unit_test
 		this.material = material;
-		_texture = material.getTexture(0);
+		_texture = material.techniques[0].passes[0].getTexture(0);
 		if (_texture == null) throw "Must have a texture attached for materials used in Image";
 #end
 	}

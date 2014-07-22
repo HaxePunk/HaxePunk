@@ -15,7 +15,8 @@ private class Batch
 		_vertices = new Array<Float>();
 		_uvs = new Array<Float>();
 
-		var texture = material.getTexture(0);
+		var pass = material.firstPass;
+		var texture = pass.getTexture(0);
 		if (Std.is(texture, TextureAtlas))
 		{
 			_atlas = cast texture;
@@ -27,9 +28,9 @@ private class Batch
 
 		this.material = material;
 
-		_modelViewMatrixUniform = material.shader.uniform("uMatrix");
-		_vertexAttribute = material.shader.attribute("aVertexPosition");
-		_uvAttribute = material.shader.attribute("aTexCoord");
+		_modelViewMatrixUniform = pass.shader.uniform("uMatrix");
+		_vertexAttribute = pass.shader.attribute("aVertexPosition");
+		_uvAttribute = pass.shader.attribute("aTexCoord");
 
 		_uvBuffer = Renderer.createBuffer(2);
 		_vertexBuffer = Renderer.createBuffer(3);

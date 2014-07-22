@@ -1,0 +1,10 @@
+material TextMaterial
+{
+	technique
+	{
+		pass
+		{
+			program shaders/default.vert shaders/text.frag
+		}
+	}
+}

@@ -141,7 +141,6 @@ class Scene
 	{
 		Renderer.clear(camera.clearColor);
 		_spriteBatch.begin();
-		// Renderer.setDepthTest(false);
 		for (i in 0..._entities.length)
 		{
 			_entities[i].draw(camera);

@@ -48,8 +48,8 @@ class Text implements Graphic
 		var frag = Assets.getText("shaders/text.frag");
 		#end
 		var shader = new Shader(vert, frag);
-		material = new Material(shader);
-		material.addTexture(_texture);
+		material = Material.fromAsset("materials/text.material");
+		material.firstPass.addTexture(_texture);
 
 		_vertexAttribute = shader.attribute("aVertexPosition");
 		_texCoordAttribute = shader.attribute("aTexCoord");
