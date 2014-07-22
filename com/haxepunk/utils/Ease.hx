@@ -1,5 +1,6 @@
 package com.haxepunk.utils;
 
+@:dox(hide)
 typedef EaseFunction = Float -> Float;
 
 /**

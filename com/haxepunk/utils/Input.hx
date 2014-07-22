@@ -18,6 +18,7 @@ import tv.ouya.console.api.OuyaController;
 import openfl.utils.JNI;
 #end
 
+@:dox(hide)
 abstract InputType(Either<String, Int>)
 {
 	public inline function new( e:Either<String, Int> ) this = e;
@@ -27,6 +28,9 @@ abstract InputType(Either<String, Int>)
 	@:from static function fromRight(v:Int) return new InputType(Right(v));
 }
 
+/**
+ * Manage the different inputs.
+ */
 class Input
 {
 
@@ -59,36 +63,44 @@ class Input
 
 #if !js
 	/**
-	 * If the right button mouse is held down
+	 * If the right button mouse is held down.
+	 * Not available in html5.
 	 */
 	public static var rightMouseDown:Bool;
 	/**
-	 * If the right button mouse is up
+	 * If the right button mouse is up.
+	 * Not available in html5.
 	 */
 	public static var rightMouseUp:Bool;
 	/**
-	 * If the right button mouse was recently pressed
+	 * If the right button mouse was recently pressed.
+	 * Not available in html5.
 	 */
 	public static var rightMousePressed:Bool;
 	/**
-	 * If the right button mouse was recently released
+	 * If the right button mouse was recently released.
+	 * Not available in html5.
 	 */
 	public static var rightMouseReleased:Bool;
 
 	/**
-	 * If the middle button mouse is held down
+	 * If the middle button mouse is held down.
+	 * Not available in html5.
 	 */
 	public static var middleMouseDown:Bool;
 	/**
-	 * If the middle button mouse is up
+	 * If the middle button mouse is up.
+	 * Not available in html5.
 	 */
 	public static var middleMouseUp:Bool;
 	/**
-	 * If the middle button mouse was recently pressed
+	 * If the middle button mouse was recently pressed.
+	 * Not available in html5.
 	 */
 	public static var middleMousePressed:Bool;
 	/**
-	 * If the middle button mouse was recently released
+	 * If the middle button mouse was recently released.
+	 * Not available in html5.
 	 */
 	public static var middleMouseReleased:Bool;
 #end
@@ -107,7 +119,7 @@ class Input
 	 * If the mouse wheel was moved this frame, this was the delta.
 	 */
 	public static var mouseWheelDelta(get, never):Int;
-	public static function get_mouseWheelDelta():Int
+	private static function get_mouseWheelDelta():Int
 	{
 		if (mouseWheel)
 		{
@@ -290,6 +302,7 @@ class Input
 	/**
 	 * Enables input handling
 	 */
+	@:dox(hide)
 	public static function enable()
 	{
 		if (!_enabled && HXP.stage != null)
@@ -394,6 +407,7 @@ class Input
 	/**
 	 * Updates the input states
 	 */
+	@:dox(hide)
 	public static function update()
 	{
 		while (_pressNum-- > -1) _press[_pressNum] = -1;
@@ -473,7 +487,7 @@ class Input
 		}
 	}
 
-	public static function keyCode(e:KeyboardEvent) : Int
+	private static function keyCode(e:KeyboardEvent) : Int
 	{
 	#if (flash || js)
 		return e.keyCode;

@@ -65,6 +65,7 @@ class MultiVarTween extends Tween
 	}
 
 	/** @private Updates the Tween. */
+	@:dox(hide)
 	override public function update()
 	{
 		super.update();

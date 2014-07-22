@@ -33,6 +33,7 @@ class Graphiclist extends Graphic
 	}
 
 	/** @private Updates the graphics in the list. */
+	@:dox(hide)
 	override public function update()
 	{
 		for (g in _graphics)
@@ -66,6 +67,7 @@ class Graphiclist extends Graphic
 	}
 
 	/** @private Renders the Graphics in the list. */
+	@:dox(hide)
 	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
 		renderList(function(g:Graphic) {
@@ -74,6 +76,7 @@ class Graphiclist extends Graphic
 	}
 
 	/** @private Renders the Graphics in the list. */
+	@:dox(hide)
 	override public function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
 		renderList(function(g:Graphic) {

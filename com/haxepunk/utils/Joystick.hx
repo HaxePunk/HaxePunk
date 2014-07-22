@@ -3,6 +3,7 @@ package com.haxepunk.utils;
 import flash.geom.Point;
 import com.haxepunk.HXP;
 
+@:dox(hide)
 enum JoyButtonState
 {
 	BUTTON_ON;
@@ -11,6 +12,9 @@ enum JoyButtonState
 	BUTTON_RELEASED;
 }
 
+/**
+ * A joystick.
+ */
 class Joystick
 {
 	/**
@@ -51,6 +55,7 @@ class Joystick
 	/**
 	 * Updates the joystick's state.
 	 */
+	@:dox(hide)
 	public function update()
 	{
 		_timeout -= HXP.elapsed;
@@ -158,6 +163,9 @@ class Joystick
 
 }
 
+/**
+ * Mapping to use an Ouya gamepad with com.haxepunk.utils.Joystick.
+ */
 class OUYA_GAMEPAD
 {
 #if ouya	// ouya console mapping
@@ -227,6 +235,9 @@ class OUYA_GAMEPAD
 #end
 }
 
+/**
+ * Mapping to use a Xbox gamepad with com.haxepunk.utils.Joystick.
+ */
 class XBOX_GAMEPAD
 {
 #if mac
@@ -325,6 +336,9 @@ class XBOX_GAMEPAD
 #end
 }
 
+/**
+ * Mapping to use a PS3 gamepad with com.haxepunk.utils.Joystick.
+ */
 class PS3_GAMEPAD
 {
 	public static inline var TRIANGLE_BUTTON:Int = 12;

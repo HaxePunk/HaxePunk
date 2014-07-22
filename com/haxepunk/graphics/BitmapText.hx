@@ -13,16 +13,21 @@ import com.haxepunk.graphics.Text;
 import com.haxepunk.graphics.atlas.BitmapFontAtlas;
 import com.haxepunk.graphics.atlas.AtlasRegion;
 
-
+@:dox(hide)
 typedef RenderFunction = AtlasRegion -> GlyphData -> Float -> Float -> Void;
 
+/**
+ * Text option including the font, size, color, font format...
+ */
 typedef BitmapTextOptions = {
 	> TextOptions,
 	@:optional var format:BitmapFontFormat;
 	@:optional var extraParams:Dynamic;
 };
 
-
+/**
+ * Used for drawing text using a bitmap fonts.
+ */
 class BitmapText extends Graphic
 {
 	public var width:Float = 0;
@@ -374,6 +379,7 @@ class BitmapText extends Graphic
 		}
 	}
 
+	@:dox(hide)
 	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
 		// determine drawing location
@@ -395,6 +401,7 @@ class BitmapText extends Graphic
 		//target.copyPixels(_buffer, _buffer.rect, _point, null, null, true);
 	}
 
+	@:dox(hide)
 	override public function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
 		// determine drawing location

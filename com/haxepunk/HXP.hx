@@ -28,6 +28,7 @@ import haxe.CallStack;
 import haxe.EnumFlags;
 import haxe.Timer;
 
+@:dox(hide)
 abstract Position ({x:Float, y:Float})
 {
 	private function new(obj:Dynamic) this = obj;
@@ -60,10 +61,10 @@ class HXP
 	 */
 #if flash
 	public static var NUMBER_MAX_VALUE(get_NUMBER_MAX_VALUE,never):Float;
-	public static inline function get_NUMBER_MAX_VALUE():Float { return untyped __global__["Number"].MAX_VALUE; }
+	private static inline function get_NUMBER_MAX_VALUE():Float { return untyped __global__["Number"].MAX_VALUE; }
 #else
 	public static var NUMBER_MAX_VALUE(get_NUMBER_MAX_VALUE,never):Float;
-	public static inline function get_NUMBER_MAX_VALUE():Float { return 179 * Math.pow(10, 306); } // 1.79e+308
+	private static inline function get_NUMBER_MAX_VALUE():Float { return 179 * Math.pow(10, 306); } // 1.79e+308
 #end
 
 	/**
@@ -77,7 +78,7 @@ class HXP
 	public static inline var INT_MAX_VALUE = 2147483647;
 
 	/**
-	 * The color black (as an Int)
+	 * Deprecated, use 0 instead. The color black (as an Int).
 	 */
 	@:deprecated public static inline var blackColor:Int = 0x00000000;
 
@@ -142,13 +143,9 @@ class HXP
 	public static var bounds:Rectangle;
 
 	/**
-	 * The default font file to use
+	 * The default font file to use, by default: font/04B_03__.ttf.
 	 */
-#if openfl
 	public static var defaultFont:String = "font/04B_03__.ttf";
-#else
-	public static var defaultFont:String = "default";
-#end
 
 	/**
 	 * Point used to determine drawing offset in the render loop.
@@ -226,7 +223,7 @@ class HXP
 	});
 
 	/**
-	 * The currently active World object (deprecated)
+	 * The currently active World object (deprecated), use scene instead.
 	 */
 	@:deprecated public static var world(get, set):Scene;
 	private static inline function get_world():Scene { return get_scene(); }
@@ -1205,7 +1202,7 @@ class HXP
 	}
 
 	/**
-	 * Resize the stage.
+	 * Resize the stage, not available on flash or html5.
 	 *
 	 * @param	width	New width.
 	 * @param	height	New height.
@@ -1231,10 +1228,10 @@ class HXP
 
 	// Time information.
 	private static var _time:Float;
-	public static var _updateTime:Float;
-	public static var _renderTime:Float;
-	public static var _gameTime:Float;
-	public static var _systemTime:Float;
+	@:dox(hide) public static var _updateTime:Float;
+	@:dox(hide) public static var _renderTime:Float;
+	@:dox(hide) public static var _gameTime:Float;
+	@:dox(hide) public static var _systemTime:Float;
 
 	// Bitmap storage.
 	private static var _bitmap:Map<String,BitmapData> = new Map<String,BitmapData>();
@@ -1248,21 +1245,25 @@ class HXP
 	private static var _soundTransform:SoundTransform = new SoundTransform();
 
 	// Used for rad-to-deg and deg-to-rad conversion.
+	/** Convert a radian value into a degree value. */
 	public static var DEG(get, never):Float;
-	public static inline function get_DEG(): Float { return -180 / Math.PI; }
+	private static inline function get_DEG(): Float { return -180 / Math.PI; }
+	/** Convert a degree value into a radian value. */
 	public static var RAD(get, never):Float;
-	public static inline function get_RAD(): Float { return Math.PI / -180; }
+	private static inline function get_RAD(): Float { return Math.PI / -180; }
 
 	// Global Flash objects.
+	/** The flash stage. */
 	public static var stage:Stage;
+	/** The Engine instance. */
 	public static var engine:Engine;
 
 	// Global objects used for rendering, collision, etc.
-	public static var point:Point = new Point();
-	public static var point2:Point = new Point();
-	public static var zero:Point = new Point();
-	public static var rect:Rectangle = new Rectangle();
-	public static var matrix:Matrix = new Matrix();
-	public static var sprite:Sprite = new Sprite();
-	public static var entity:Entity;
+	@:dox(hide) public static var point:Point = new Point();
+	@:dox(hide) public static var point2:Point = new Point();
+	@:dox(hide) public static var zero:Point = new Point();
+	@:dox(hide) public static var rect:Rectangle = new Rectangle();
+	@:dox(hide) public static var matrix:Matrix = new Matrix();
+	@:dox(hide) public static var sprite:Sprite = new Sprite();
+	@:dox(hide) public static var entity:Entity;
 }

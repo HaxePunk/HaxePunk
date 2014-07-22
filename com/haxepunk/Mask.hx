@@ -7,10 +7,12 @@ import com.haxepunk.masks.Masklist;
 import flash.display.Graphics;
 import flash.geom.Point;
 
+@:dox(hide)
 typedef MaskCallback = Dynamic -> Bool;
 
 /**
  * Base class for Entity collision masks.
+ * Do not use this directly, instead use the classes in com.haxepunk.masks.*
  */
 class Mask
 {
@@ -37,7 +39,8 @@ class Mask
 	/**
 	 * Constructor.
 	 */
-	public function new()
+	@:allow(com.haxepunk)
+	private function new()
 	{
 		_parent = Entity._EMPTY;
 		_class = Type.getClassName(Type.getClass(this));
@@ -90,6 +93,7 @@ class Mask
 
 	}
 
+	@:dox(hide)
 	public function project(axis:Vector, projection:Projection):Void
 	{
 		var cur:Float,

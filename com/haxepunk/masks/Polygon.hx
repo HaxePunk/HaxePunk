@@ -23,9 +23,13 @@ class Polygon extends Hitbox
 
 
 	// Polygon bounding box.
+	/** Left x bounding box position. */
 	public var minX(default, null):Int = 0;
+	/** Top y bounding box position. */
 	public var minY(default, null):Int = 0;
+	/** Right x bounding box position. */
 	public var maxX(default, null):Int = 0;
+	/** Bottom y bounding box position. */
 	public var maxY(default, null):Int = 0;
 
 	/**
@@ -334,6 +338,7 @@ class Polygon extends Hitbox
 	}
 
 	/** Projects this polygon points on axis and returns min and max values in projection object. */
+	@:dox(hide)
 	override public function project(axis:Vector, projection:Projection):Void
 	{
 		var p:Vector = _points[0];
@@ -359,6 +364,7 @@ class Polygon extends Hitbox
 		projection.max = max;
 	}
 
+	@:dox(hide)
 	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
 	{
 		var	offsetX:Float = _parent.x + _x - HXP.camera.x,
@@ -412,6 +418,7 @@ class Polygon extends Hitbox
 	}
 
 	/** Updates the parent's bounds for this mask. */
+	@:dox(hide)
 	override public function update():Void
 	{
 		project(horizontal, firstProj); // width
@@ -597,6 +604,8 @@ class Polygon extends Hitbox
 	private static var firstProj = new Projection();
 	private static var secondProj = new Projection();
 
+	@:dox(hide)
 	public static var vertical = new Vector(0, 1);
+	@:dox(hide)
 	public static var horizontal = new Vector(1, 0);
 }

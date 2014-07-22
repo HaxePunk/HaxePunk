@@ -4,18 +4,28 @@ import com.haxepunk.utils.Ease;
 import com.haxepunk.tweens.TweenEvent;
 import flash.events.EventDispatcher;
 
+/**
+ * The type of the tween.
+ */
 enum TweenType
 {
+	/** Default type, the tween is still available after it ended. */
 	Persist;
+	
+	/** The tween will loop. */
 	Looping;
+	
+	/** The tween will be removed after it ended. */
 	OneShot;
 }
 
+@:dox(hide)
 typedef CompleteCallback = Dynamic -> Void;
 
 /**
  * Friend class for access to Tween private members
  */
+@:dox(hide)
 typedef FriendTween = {
 	private function finish():Void;
 
@@ -25,8 +35,13 @@ typedef FriendTween = {
 	private var _next:FriendTween;
 }
 
+/**
+ * Base class for tweening helpers.
+ * Do not use this directly, instead use the classes in com.haxepunk.tweens.*
+ */
 class Tween extends EventDispatcher
 {
+	/** If the tween is active. */
 	public var active:Bool;
 
 	/**
@@ -125,6 +140,7 @@ class Tween extends EventDispatcher
 		}
 	}
 
+	/** Progression of the tween, between 0 and 1. */
 	public var percent(get, set):Float;
 	private function get_percent():Float { return _time / _target; }
 	private function set_percent(value:Float):Float { _time = _target * value; return _time; }

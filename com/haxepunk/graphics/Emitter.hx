@@ -83,6 +83,7 @@ class Emitter extends Graphic
 		}
 	}
 
+	@:dox(hide)
 	override public function update()
 	{
 		// quit if there are no particles
@@ -188,6 +189,7 @@ class Emitter extends Graphic
 	}
 
 	/** @private Renders the particles. */
+	@:dox(hide)
 	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
 		var rect:Rectangle;
@@ -231,6 +233,7 @@ class Emitter extends Graphic
 		}, point, camera);
 	}
 
+	@:dox(hide)
 	override public function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
 		var fsx:Float = HXP.screen.fullScaleX,

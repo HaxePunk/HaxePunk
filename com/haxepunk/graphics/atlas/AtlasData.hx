@@ -10,6 +10,7 @@ import flash.geom.Point;
 import flash.geom.Matrix;
 import openfl.display.Tilesheet;
 
+@:dox(hide)
 abstract AtlasDataType(AtlasData)
 {
 	private inline function new(data:AtlasData) this = data;

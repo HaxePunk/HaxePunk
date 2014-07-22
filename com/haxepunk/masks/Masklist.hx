@@ -12,7 +12,7 @@ class Masklist extends Hitbox
 {
 	/**
 	 * Constructor.
-	 * @param	...mask		Masks to add to the list.
+	 * @param	mask	Masks to add to the list.
 	 */
 	public function new(masks:Array<Dynamic>)
 	{
@@ -25,6 +25,7 @@ class Masklist extends Hitbox
 	}
 
 	/** @private Collide against a mask. */
+	@:dox(hide)
 	override public function collide(mask:Mask):Bool
 	{
 		for (m in _masks)
@@ -133,6 +134,7 @@ class Masklist extends Hitbox
 		return _masks[index % _masks.length];
 	}
 
+	@:dox(hide)
 	override public function set_parent(parent:Entity):Entity
 	{
 		for (m in _masks) m.set_parent(parent);
@@ -140,6 +142,7 @@ class Masklist extends Hitbox
 	}
 
 	/** @private Updates the parent's bounds for this mask. */
+	@:dox(hide)
 	override public function update()
 	{
 		// find bounds of the contained masks
@@ -179,6 +182,7 @@ class Masklist extends Hitbox
 		super.update();
 	}
 
+	@:dox(hide)
 	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
 	{
 		for (m in _masks) m.debugDraw(graphics, scaleX, scaleY);

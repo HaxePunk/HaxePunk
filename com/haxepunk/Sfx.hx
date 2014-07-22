@@ -6,6 +6,7 @@ import flash.media.SoundChannel;
 import flash.media.SoundTransform;
 import openfl.Assets;
 
+@:dox(hide)
 typedef AudioCompleteCallback = Void -> Void;
 
 /**

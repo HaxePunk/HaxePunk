@@ -16,21 +16,33 @@ import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
 import com.haxepunk.graphics.atlas.Atlas;
 
+/**
+ * Text option including the font, size, color...
+ */
 typedef TextOptions = {
+	/** Optional. The font to use. Default value is com.haxepunk.HXP.defaultFont. */
 	@:optional var font:String;
-	@:optional var size:Int;
+	/** Optional. The font size. Default value is 16. */
+	@:optional var size:Int;	
+	/** Optional. The aligment of the text. Default value is left. */
 #if (flash || js)
 	@:optional var align:TextFormatAlign;
 #else
 	@:optional var align:String;
 #end
+	/** Optional. Automatic word wrapping. Default value is false. */
 	@:optional var wordWrap:Bool;
+	/** Optional. If the text field can automatically resize if its contents grow. Default value is true. */
 	@:optional var resizable:Bool;
+	/** Optional. The color of the text. Default value is white. */
 	@:optional var color:Int;
+	/** Optional. Vertical space between lines. Default value is 0. */
 	@:optional var leading:Int;
+	/** Optional. If the text field uses a rich text string. */
 	@:optional var richText:Bool;
 };
 
+@:dox(hide)
 abstract StyleType(TextFormat)
 {
 	private function new(format:TextFormat) this = format;

@@ -22,12 +22,25 @@ import haxe.Log;
 import haxe.PosInfos;
 import haxe.ds.IntMap;
 
+/**
+ * If the console should capture the trace() function calls.
+ * 
+ * To be passed to com.haxepunk.debug.Console.enable();
+ */
 enum TraceCapture
 {
+	/** Traces won't be captured. */
 	No;
+	
+	/** The console will capture the traces. */
 	Yes;
 }
 
+/**
+ * Console used for debugging, shows entities and their masks.
+ * 
+ * Use com.haxepunk.HXP.console.enable() to enable it.
+ */
 class Console
 {
 	/**
@@ -35,7 +48,8 @@ class Console
 	 */
 	public var toggleKey:Int;
 
-	public function new()
+	@:allow(com.haxepunk)
+	private function new()
 	{
 		init();
 
@@ -159,7 +173,7 @@ class Console
 	}
 
 	/**
-	 * Show the console.
+	 * Show the console, no effect if the console insn't hidden.
 	 */
 	public function show()
 	{
@@ -171,7 +185,7 @@ class Console
 	}
 
 	/**
-	 * Hide the console.
+	 * Hide the console, no effect if the console isn't visible.
 	 */
 	public function hide()
 	{
@@ -185,8 +199,8 @@ class Console
 	/**
 	 * Enables the console.
 	 *
-	 * @param	trace_capture	Option to capture trace in HaxePunk.
-	 * @param	toggleKey		Key used to toggle the console, tilde (~) by default.
+	 * @param	trace_capture	If the console should capture the trace() function calls.
+	 * @param	toggleKey		Key used to toggle the console, tilde (~) by default, use com.haxepunk.utils.Key.
 	 */
 	public function enable(?trace_capture:TraceCapture, toggleKey=Key.TILDE)
 	{
@@ -372,6 +386,7 @@ class Console
 		if (_enabled && _sprite.visible) updateLog();
 	}
 
+	@:dox(hide)
 	public function onResize(e:Event)
 	{
 		if (_back.bitmapData != null)
@@ -416,6 +431,7 @@ class Console
 	/**
 	 * Console update, called by game loop.
 	 */
+	@:dox(hide)
 	public function update()
 	{
 		// Quit if the console isn't enabled or visible.
@@ -1095,11 +1111,14 @@ class Console
 	}
 
 	/**
-	 * Get the unscaled screen size for the Console.
+	 * Get the unscaled screen width for the Console.
 	 */
 	public var width(get, never):Int;
 	private function get_width():Int { return HXP.windowWidth; }
 
+	/**
+	 * Get the unscaled screen height for the Console.
+	 */
 	public var height(get, never):Int;
 	private function get_height():Int { return HXP.windowHeight; }
 

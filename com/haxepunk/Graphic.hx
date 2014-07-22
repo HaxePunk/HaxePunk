@@ -8,6 +8,7 @@ import com.haxepunk.graphics.atlas.AtlasRegion;
 import flash.display.BitmapData;
 import flash.geom.Point;
 
+@:dox(hide)
 typedef AssignCallback = Void -> Void;
 
 /**
@@ -17,6 +18,7 @@ typedef AssignCallback = Void -> Void;
  * @from BitmapData The raw bitmap of a tiled image
  * @to An enum defining a BitmapData or TileAtlas
  */
+@:dox(hide)
 abstract TileType(Either<BitmapData, TileAtlas>)
 {
 	private inline function new(e:Either<BitmapData, TileAtlas>) this = e;
@@ -38,8 +40,10 @@ abstract TileType(Either<BitmapData, TileAtlas>)
 		else
 			return new TileType(Left(bd));
 	}
+
 }
 
+@:dox(hide)
 abstract ImageType(Either<BitmapData, AtlasRegion>)
 {
 	private inline function new(e:Either<BitmapData, AtlasRegion>) this = e;
@@ -66,6 +70,10 @@ abstract ImageType(Either<BitmapData, AtlasRegion>)
 	}
 }
 
+/**
+ * Base class for graphics type.
+ * Do not use this directly, instead use the classes in com.haxepunk.graphics.*
+ */
 class Graphic
 {
 	/**
@@ -121,7 +129,8 @@ class Graphic
 	/**
 	 * Constructor.
 	 */
-	public function new()
+	@:allow(com.haxepunk)
+	private function new()
 	{
 		active = false;
 		visible = true;

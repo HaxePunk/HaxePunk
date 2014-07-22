@@ -1,5 +1,6 @@
 package com.haxepunk.math;
 
+@:dox(hide)
 class Projection
 {
 

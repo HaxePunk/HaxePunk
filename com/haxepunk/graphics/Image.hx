@@ -137,6 +137,7 @@ class Image extends Graphic
 	}
 
 	/** Renders the image. */
+	@:dox(hide)
 	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
 		var sx = scale * scaleX,
@@ -170,6 +171,7 @@ class Image extends Graphic
 		}
 	}
 
+	@:dox(hide)
 	override public function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
 		var sx = scale * scaleX,
@@ -371,6 +373,7 @@ class Image extends Graphic
 	/**
 	 * Updates the image buffer.
 	 */
+	@:dox(hide)
 	public function updateBuffer(clearBefore:Bool = false)
 	{
 		if (_source == null) return;

@@ -38,6 +38,7 @@ class TiledImage extends Image
 	}
 
 	/** @private Updates the buffer. */
+	@:dox(hide)
 	override public function updateBuffer(clearBefore:Bool = false)
 	{
 		if (blit)
@@ -64,6 +65,7 @@ class TiledImage extends Image
 	}
 
 	/** Renders the image. */
+	@:dox(hide)
 	override public function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
 		// determine drawing location

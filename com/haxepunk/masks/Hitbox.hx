@@ -8,8 +8,9 @@ import flash.geom.Point;
 import com.haxepunk.masks.Polygon;
 
 /** Uses parent's hitbox to determine collision.
- * This class is used * internally by HaxePunk, you don't need to use this class because
- * this is the default behaviour of Entities without a Mask object. */
+ * This class is used internally by HaxePunk, you don't need to use this class because
+ * this is the default behaviour of Entities without a Mask object.
+ */
 class Hitbox extends Mask
 {
 	/**
@@ -116,6 +117,7 @@ class Hitbox extends Mask
 	}
 
 	/** Updates the parent's bounds for this mask. */
+	@:dox(hide)
 	override public function update()
 	{
 		if (parent != null)
@@ -131,6 +133,7 @@ class Hitbox extends Mask
 		}
 	}
 
+	@:dox(hide)
 	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
 	{
 		// draw only if the hitbox is part of a Masklist and has a parent
@@ -140,6 +143,7 @@ class Hitbox extends Mask
 		}
 	}
 	
+	@:dox(hide)
 	override public function project(axis:Vector, projection:Projection):Void
 	{
 		var px = _x;

@@ -87,6 +87,7 @@ class PreRotation extends Image
 	}
 
 	/** Renders the PreRotated graphic. */
+	@:dox(hide)
 	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
 		frameAngle %= 360;
@@ -103,6 +104,7 @@ class PreRotation extends Image
 		super.render(target, point, camera);
 	}
 
+	@:dox(hide)
 	override public function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
 		angle = frameAngle;

@@ -9,6 +9,7 @@ import flash.display.SpreadMethod;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
+@:dox(hide)
 typedef CallbackFunction = Void -> Void;
 
 /**
@@ -85,6 +86,7 @@ class Spritemap extends Image
 	/**
 	 * Updates the spritemap's buffer.
 	 */
+	@:dox(hide)
 	override public function updateBuffer(clearBefore:Bool = false)
 	{
 		if (blit)
@@ -108,6 +110,7 @@ class Spritemap extends Image
 	}
 
 	/** @private Updates the animation. */
+	@:dox(hide)
 	override public function update()
 	{
 		if (_anim != null && !complete)

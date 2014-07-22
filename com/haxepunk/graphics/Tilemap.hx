@@ -8,7 +8,9 @@ import com.haxepunk.HXP;
 import com.haxepunk.graphics.atlas.TileAtlas;
 import com.haxepunk.masks.Grid;
 
-typedef Array2D = Array<Array<Int>>
+@:dox(hide)
+typedef Array2D = Array<Array<Int>>;
+
 /**
  * A canvas to which Tiles can be drawn for fast multiple tile rendering.
  */
@@ -425,6 +427,7 @@ class Tilemap extends Canvas
 		usePositions = u;
 	}
 
+	@:dox(hide)
 	override public function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
 		// determine drawing location

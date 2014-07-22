@@ -13,13 +13,15 @@ import flash.Lib;
 
 /**
  * Container for the main screen buffer. Can be used to transform the screen.
+ * To be used through com.haxepunk.HXP.screen.
  */
 class Screen
 {
 	/**
 	 * Constructor.
 	 */
-	public function new()
+	@:allow(com.haxepunk)
+	private function new()
 	{
 		_sprite = new Sprite();
 		_bitmap = new Array<Bitmap>();
@@ -56,6 +58,7 @@ class Screen
 	/**
 	 * Resizes the screen by recreating the bitmap buffer.
 	 */
+	@:dox(hide)
 	public function resize()
 	{
 		width = HXP.width;
@@ -140,6 +143,7 @@ class Screen
 		_sprite.transform.matrix = _matrix;
 	}
 
+	@:dox(hide)
 	public function update()
 	{
 		// screen shake
@@ -282,6 +286,7 @@ class Screen
 	/**
 	 * True if the scale of the screen has changed.
 	 */
+	@:dox(hide)
 	public var needsResize(default, null):Bool = false;
 
 	/**
@@ -349,6 +354,7 @@ class Screen
 
 	/**
 	 * Captures the current screen as an Image object.
+	 * Will only work in buffer rendermode (flash or html5).
 	 * @return	A new Image object.
 	 */
 	public function capture():Image

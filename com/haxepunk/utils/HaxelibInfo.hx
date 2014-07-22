@@ -9,6 +9,7 @@ import haxe.io.Eof;
 import sys.io.Process;
 #end
 
+@:dox(hide)
 class HaxelibInfoBuilder
 {
 
@@ -113,6 +114,9 @@ class HaxelibInfoBuilder
 }
 
 #if !macro @:build(com.haxepunk.utils.HaxelibInfoBuilder.build()) #end
+/**
+ * Access HaxePunk's haxelib.json from your code.
+ */
 class HaxelibInfo
 {
 }

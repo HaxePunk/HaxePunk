@@ -7,6 +7,7 @@ import com.haxepunk.graphics.Image;
 import com.haxepunk.graphics.Graphiclist;
 import com.haxepunk.ds.Either;
 
+@:dox(hide)
 abstract SolidType(Either<String, Array<String>>)
 {
 	public inline function new( e:Either<String, Array<String>> ) this = e;
@@ -444,7 +445,7 @@ class Entity extends Tweener
 	}
 
 	/**
-	 * The World object is deprecated
+	 * The world object is deprecated, use scene instead.
 	 */
 	@:deprecated public var world(get, never):Scene;
 	private inline function get_world():Scene { return _scene; }
@@ -571,6 +572,9 @@ class Entity extends Tweener
 		return _graphic;
 	}
 
+	/**
+	 * An optional name for the entity.
+	 */
 	public var name(get, set):String;
 	private inline function get_name():String { return _name; }
 	private function set_name(value:String):String

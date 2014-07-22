@@ -18,7 +18,9 @@ import com.haxepunk.utils.Input;
 import com.haxepunk.Tweener;
 
 /**
- * Main game Sprite class, added to the Flash Stage. Manages the game loop.
+ * Main game Sprite class, added to the Flash Stage.
+ * Manages the game loop.
+ * Your main class needs to extends this.
  */
 class Engine extends Sprite
 {

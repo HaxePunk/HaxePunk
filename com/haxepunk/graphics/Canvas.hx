@@ -12,6 +12,7 @@ import com.haxepunk.Graphic;
 
 /**
  * A  multi-purpose drawing canvas, can be sized beyond the normal Flash BitmapData limits.
+ * Works only on flash and html5 targets.
  */
 class Canvas extends Graphic
 {
@@ -89,6 +90,7 @@ class Canvas extends Graphic
 	}
 
 	/** @private Renders the canvas. */
+	@:dox(hide)
 	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
 		var sx = scale * scaleX,

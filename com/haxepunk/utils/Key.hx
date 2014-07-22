@@ -1,5 +1,8 @@
 package com.haxepunk.utils;
 
+/**
+ * List of keys to be used with com.haxepunk.utils.Input.
+ */
 class Key
 {
 	public inline static var ANY = -1;

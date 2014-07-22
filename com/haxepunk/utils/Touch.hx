@@ -61,11 +61,15 @@ class Touch
 	public var pressed(get, never):Bool;
 	private inline function get_pressed():Bool { return time == 0; }
 
+	/**
+	 * Not implemented yet. Always return false.
+	 */
 	public var released:Bool = false;
 
 	/**
 	 * Updates the touch state.
 	 */
+	@:dox(hide)
 	public function update()
 	{
 		time += HXP.elapsed;

@@ -13,6 +13,7 @@ import haxe.ds.IntMap;
 
 import openfl.Assets;
 
+@:dox(hide)
 class VisibleLabel extends Sprite
 {
 
@@ -74,6 +75,7 @@ class VisibleLabel extends Sprite
 
 }
 
+@:dox(hide)
 class MaskLabel extends VisibleLabel
 {
 	public function new(textFormat:TextFormat)
@@ -90,6 +92,7 @@ class MaskLabel extends VisibleLabel
 	}
 }
 
+@:dox(hide)
 class LayerLabel extends VisibleLabel
 {
 
@@ -120,6 +123,7 @@ class LayerLabel extends VisibleLabel
 
 }
 
+@:dox(hide)
 class LayerList extends Sprite
 {
 	public function new(width:Int=250, height:Int=400)

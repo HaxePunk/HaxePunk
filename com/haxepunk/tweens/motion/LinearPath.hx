@@ -84,6 +84,7 @@ class LinearPath extends Motion
 	}
 
 	/** @private Starts the Tween. */
+	@:dox(hide)
 	override public function start()
 	{
 		_index = 0;
@@ -91,6 +92,7 @@ class LinearPath extends Motion
 	}
 
 	/** @private Updates the Tween. */
+	@:dox(hide)
 	override public function update()
 	{
 		super.update();

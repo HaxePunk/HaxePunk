@@ -40,6 +40,7 @@ class TiledSpritemap extends Spritemap
 	}
 
 	/** @private Updates the buffer. */
+	@:dox(hide)
 	override public function updateBuffer(clearBefore:Bool = false)
 	{
 		if (blit)
@@ -78,6 +79,7 @@ class TiledSpritemap extends Spritemap
 	}
 
 	/** Renders the image. */
+	@:dox(hide)
 	override public function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
 		// determine drawing location

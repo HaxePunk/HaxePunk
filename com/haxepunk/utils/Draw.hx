@@ -27,6 +27,7 @@ class Draw
 	 */
 	public static var blend:BlendMode;
 
+	@:dox(hide)
 	public static function init()
 	{
 		if (HXP.renderMode == RenderMode.HARDWARE)
