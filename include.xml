@@ -5,8 +5,6 @@
 	<assets path="assets/graphics" rename="graphics" include="*.png" embed="true" />
 	<assets path="assets/font" rename="font" include="*.ttf" embed="true" />
 
-	<haxelib name="openfl-ouya" if="ouya" version="1.0.2" />
-	<haxelib name="openfl-html5" if="html5" version="1.4.2-beta" />
-	<haxelib name="openfl-native" if="cpp||neko" version="1.4.0" />
-	<haxelib name="openfl" version="1.4.0" />
+	<haxelib name="openfl-ouya" if="ouya" />
+	<haxelib name="openfl" />
 </project>
