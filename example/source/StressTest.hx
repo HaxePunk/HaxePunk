@@ -12,7 +12,9 @@ class ImageTexture extends Entity
 	{
 		super();
 
-		image = new Image(imageName);
+		var material = new Material();
+		material.addTexture(Texture.fromAsset(imageName));
+		image = new Image(material);
 		image.centerOrigin();
 		image.scale.x = 2;
 		image.scale.y = 0.5;
@@ -64,15 +66,18 @@ class StressTest extends Engine
 		super.ready();
 
 		var material = new Material();
-		material.addTexture(Texture.create("assets/lime.png"));
+		material.addTexture(Texture.fromAsset("assets/lime.png"));
 		var numCubes = Std.int(Math.random() * 50 + 150);
 		numCubes = 500;
+
+		var material = new Material();
+		material.addTexture(new TextureAtlas(lime.Assets.getImage("assets/character.png")));
 
 		for (i in 0...numCubes)
 		{
 			// scene.add(new CubeEntity(material));
 
-			var sprite = new Spritemap("assets/character.png", 32, 32);
+			var sprite = new Spritemap(material, 32, 32);
 			sprite.add("walk", [0, 1, 2, 3, 4, 5, 6, 7], 12);
 			sprite.play("walk");
 			sprite.centerOrigin();

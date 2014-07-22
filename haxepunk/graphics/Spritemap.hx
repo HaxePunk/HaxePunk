@@ -121,8 +121,8 @@ class Spritemap extends Image
 			_frames = cast(_texture, TextureAtlas).generateTiles(Std.int(_spriteWidth), Std.int(_spriteHeight));
 		}
 
-		columns = Math.ceil(_texture.originalWidth / _spriteWidth);
-		rows = Math.ceil(_texture.originalHeight / _spriteHeight);
+		columns = Math.ceil(_texture.sourceWidth / _spriteWidth);
+		rows = Math.ceil(_texture.sourceHeight / _spriteHeight);
 		frameCount = columns * rows;
 	}
 
@@ -354,6 +354,7 @@ class Spritemap extends Image
 
 	override public function draw(camera:Camera, offset:Vector3):Void
 	{
+		if (_frames == null) return;
 		calculateMatrixWithOffset(offset);
 		HXP.spriteBatch.draw(this, _matrix, _lastFrame == _frame ? -1 : _frames[_frame]);
 		_lastFrame = _frame;
