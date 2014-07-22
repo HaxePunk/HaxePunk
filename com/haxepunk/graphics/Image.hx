@@ -207,19 +207,18 @@ class Image extends Graphic
 			{
 				sx *= -1;
 			}
-			
-			_matrix.b = _matrix.c = 0;
-			_matrix.a = sx;
-			_matrix.d = sy;
-			_matrix.tx = _matrix.ty = 0;
-			_matrix.tx = -originX * sx;
-			_matrix.ty = -originY * sy;
-			_matrix.rotate(angle * HXP.RAD);
-			_matrix.tx += originX + _point.x;
-			_matrix.ty += originY + _point.y;
-			_matrix.scale(fsx, fsy);
-			
-			_region.drawMatrix(_matrix.tx, _matrix.ty, _matrix.a, _matrix.b, _matrix.c, _matrix.d, layer, _red, _green, _blue, _alpha, smooth);
+
+			var angle = angle * HXP.RAD;
+			var cos = Math.cos(angle);
+			var sin = Math.sin(angle);
+			var a = sx * cos * fsx;
+			var b = sx * sin * fsy;
+			var c = -sy * sin * fsx;
+			var d = sy * cos * fsy;
+			var tx = (-originX * sx * cos + originY * sy * sin + originX + _point.x) * fsx;
+			var ty = (-originX * sx * sin - originY * sy * cos + originY + _point.y) * fsy;
+
+			_region.drawMatrix(tx, ty, a, b, c, d, layer, _red, _green, _blue, _alpha, smooth);
 		}
 	}
 
@@ -300,20 +299,20 @@ class Image extends Graphic
 	{
 		var graphics:Graphics = HXP.sprite.graphics;
 		var points:Array<Vector> = polygon.points;
-		
+
 		var minX:Float;
 		var maxX:Float;
 		var minY:Float;
 		var maxY:Float;
-		
+
 		var p:Point;
 		var originalAngle:Float = polygon.angle;
-		
+
 		polygon.angle = 0;	// set temporarily angle to 0 so we can sync with image angle later
-		
+
 		minX = minY = HXP.NUMBER_MAX_VALUE;
 		maxX = maxY = -HXP.NUMBER_MAX_VALUE;
-		
+
 		// find polygon bounds
 		for (p in points)
 		{
@@ -322,32 +321,32 @@ class Image extends Graphic
 			if (p.y < minY) minY = p.y;
 			if (p.y > maxY) maxY = p.y;
 		}
-		
+
 		var w:Int = Math.ceil(maxX - minX);
 		var h:Int = Math.ceil(maxY - minY);
-		
+
 		if (color > 0xFFFFFF) color = 0xFFFFFF & color;
 		graphics.clear();
-		
+
 		if (fill)
 			graphics.beginFill(color, alpha);
 		else
 			graphics.lineStyle(thick, color, alpha, false, LineScaleMode.NORMAL, null, JointStyle.MITER);
-			
-		
-		graphics.moveTo(points[points.length - 1].x, points[points.length - 1].y);		
+
+
+		graphics.moveTo(points[points.length - 1].x, points[points.length - 1].y);
 		for (p in points)
 		{
 			graphics.lineTo(p.x, p.y);
 		}
 		graphics.endFill();
-		
+
 		HXP.matrix.identity();
 		HXP.matrix.translate( -minX, -minY);
 
 		var data:BitmapData = HXP.createBitmap(w, h, true, 0);
 		data.draw(HXP.sprite, HXP.matrix);
-		
+
 		var image:Image;
 		if (HXP.renderMode == RenderMode.HARDWARE)
 		{
@@ -357,7 +356,7 @@ class Image extends Graphic
 		{
 			image = new Image(data);
 		}
-		
+
 		// adjust position, origin and angle
 		image.x = polygon.x + polygon.origin.x;
 		image.y = polygon.y + polygon.origin.y;
@@ -365,7 +364,7 @@ class Image extends Graphic
 		image.originY = image.y - polygon.minY;
 		image.angle = originalAngle;
 		polygon.angle = originalAngle;
-		
+
 		return image;
 	}
 
