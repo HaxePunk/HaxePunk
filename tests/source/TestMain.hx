@@ -10,6 +10,7 @@ class TestMain
 		runner.add(new haxepunk.graphics.ImageTest());
 		runner.add(new haxepunk.graphics.MaterialTest());
 		runner.add(new haxepunk.graphics.TextureAtlasTest());
+		runner.add(new haxepunk.graphics.TilemapTest());
 
 		// scene tests
 		runner.add(new haxepunk.scene.EntityTest());

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 
-	<meta title="HaxePunk" package="com.haxepunk.helloworld" version="1.0.0" company="Matt Tuttle" />
+	<meta title="Hello World" package="com.haxepunk.helloworld" version="1.0.0" company="" />
 	<app main="HelloWorld" path="export" file="HelloWorld" />
 
 	<window width="512" height="288" fps="60" />

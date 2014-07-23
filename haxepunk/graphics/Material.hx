@@ -21,7 +21,10 @@ class Pass
 		diffuse = new Color(1, 1, 1, 1);
 		specular = new Color(0, 0, 0, 0);
 		emissive = new Color(0, 0, 0, 0);
+
+#if !unit_test
 		shader = _defaultShader;
+#end
 
 		_textures = new Array<Texture>();
 	}
