@@ -59,21 +59,12 @@
 		<exec executable="haxe" dir="doc">
 			<arg line="doc.hxml" />
 		</exec>
-		<exec executable="haxedoc" dir="doc">
-			<arg line="neko.xml" />
-			<arg line="-f flash" />
-			<arg line="-f openfl" />
-			<arg line="-f com" />
-		</exec>
-	</target>
-
-	<target name="docset" depends="doc">
 		<exec executable="haxelib" dir="doc">
-			<arg line="run docset" />
-			<arg line="-i ../template/assets/HaxePunk.svg" />
-			<arg line="-x neko.xml" />
-			<arg line="-t local.xml" />
-			<arg line="HaxePunk" />
+			<arg line="run dox" />
+			<arg line="-i xmls/" />
+			<arg line="-o pages/" />
+			<arg line="-in com" />
+			<arg line='--title "HaxePunk API"' />
 		</exec>
 	</target>
 
