@@ -51,6 +51,7 @@ class Pixelmask extends Hitbox
 		_check.set(Type.getClassName(Mask), collideMask);
 		_check.set(Type.getClassName(Pixelmask), collidePixelmask);
 		_check.set(Type.getClassName(Hitbox), collideHitbox);
+    _check.set(Type.getClassName(Circle), collideCircle);
 	}
 
 	/** @private Collide against an Entity. */
