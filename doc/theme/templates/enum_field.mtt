@@ -1,0 +1,17 @@
+<div class="field">
+	<a name="::ctor.name::" href="#::ctor.name::">
+		<span class="type">::ctor.name::</span>
+		::if ctor.args != null::
+			 (
+			::foreach arg ctor.args::
+				::arg.name:::$$printLinkedType(::arg.t::)
+				::if !repeat.arg.last::, ::end::
+			::end::
+			)
+		::end::
+	</a>
+		
+	<div class="doc" ::cond ctor.doc != null::>
+		::raw ctor.doc::
+	</div>
+</div>

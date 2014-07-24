@@ -1,0 +1,115 @@
+::use 'main.mtt'::
+	<div class="header">
+		<span ::cond api.isDefined("source-path"):: class="viewsource">
+			<a href="::api.getSourceLink(type)::"><span class="icon-code"></span> View source</a>
+		</span>
+		
+		<h4>
+			<small>
+				package ::type.path.split(".").slice(0, -1).join(".")::
+			</small>
+		</h4>
+		
+		<h1>
+			<small>
+				<span class="directive">::if type.isInterface::interface::else::class::end:: </span>
+			</small>
+			
+			<span class="type">::type.path.split(".").pop()::</span>$$printTypeParams(::type.params::)
+		</h1>
+		
+		::if type.superClass != null::
+			<br /><span class="keyword smaller">extends </span>
+			
+			$$printLinkedPath(::type.superClass.path::,::type.superClass.params::)
+		::end::
+		
+		::if type.interfaces.length > 0::
+			<br /><span class="keyword smaller">implements </span>
+			
+			::foreach i type.interfaces::
+				$$printLinkedPath(::i.path::,::i.params::)
+			::end::
+		::end::
+		
+		::if subClasses != null::
+			<br /><span class="keyword smaller">extended by </span>
+			::foreach info subClasses::
+				<a href ="::api.pathToUrl(info.path)::">::api.getPathName(info.path)::</a>
+				::if !repeat.info.last::, ::end::
+			::end::
+		::end::
+		
+		::if implementors != null::
+			<br /><span class="keyword smaller">implemented by </span>
+			::foreach info subClasses::
+				<a href ="::api.pathToUrl(info.path)::">::api.getPathName(info.path)::</a>
+				::if !repeat.info.last::, ::end::
+			::end::
+		::end::
+		
+		$$printModule(::type.module::)
+	</div>
+	<div class="body">		
+		<div class="doc" ::cond type.doc != null::>
+			::raw type.doc::
+		</div>
+		
+		::if type.statics.length > 0::
+			::set hasVarStatic = 0::
+			
+			<div class="fields">			
+				::foreach field type.statics::
+					::switch field.type::
+						::if hasVarStatic == 0::
+							<h3>Static variables</h3>
+							::eval hasVarStatic = 1::
+						::end::
+					::case 4::
+						::if hasVarStatic < 2::
+							<h3>Static functions</h3>
+							::eval hasVarStatic = 2::
+						::end::
+					::end::
+					
+					::set isStatic = true::
+					::use "class_field.mtt"::::end::
+				::end::
+			</div>
+		::end::
+		
+		::foreach field type.fields::
+			::if field.name == "new"::
+				<h3>Constructor</h3>
+				
+				::set isStatic = false::
+				::use "class_field.mtt"::::end::
+			::end::
+		::end::
+		
+		::if type.fields.length > 0::		
+			::set hasVar = 0::
+			
+			<div class="fields">
+				::foreach field type.fields::
+					::switch field.type::
+						::if hasVar == 0::
+							<h3>Variables</h3>
+							::eval hasVar = 1::
+						::end::
+					::case 4::
+						::if hasVar < 2 && field.name != "new"::
+							<h3>Functions</h3>
+							::eval hasVar = 2::
+						::end::
+					::end::
+					
+					::if field.name != "new"::
+						::set isStatic = false::
+						::use "class_field.mtt"::::end::
+					::end::
+				::end::
+			</div>
+		::end::
+	</div>
+::end::

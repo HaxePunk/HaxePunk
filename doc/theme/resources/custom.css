@@ -1,0 +1,262 @@
+html, body {
+	height: 100%;
+	background: #f0f0f0;
+}
+.wrap {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -60px;
+	overflow: auto;
+}
+.push , footer {
+	height: 60px;
+}
+footer {
+	border: 0;
+	line-height: 60px;
+	margin-top: 0 !important;
+	text-align: center;
+	clear: both;
+}
+footer * {
+	line-height: inherit;
+}
+footer p {
+	margin-top: 0;
+}
+footer .ink-navigation ul.menu.horizontal li {
+	margin-right: 2em;
+	line-height: inherit;
+}
+footer .ink-navigation ul.menu.horizontal li a {
+	padding: 0;
+	color: white;
+	text-decoration: underline;
+}
+footer p {
+	color: white;
+}
+footer .ink-navigation ul.menu.horizontal li a:hover {
+	color: #c91111;
+}
+footer .ink-grid {
+	border-top: 1px solid rgb(204, 204, 204);
+}
+.cta {
+	font-size: 1.8em;
+	margin-left: 0;
+}
+.top-menu {
+	border-bottom: 5px solid #333;
+	position: relative;
+}
+.top-menu .ink-navigation {
+	position: absolute;
+	bottom: 0;
+	right: 2em;
+}
+.ink-navigation ul.menu.orange {
+	background: inherit;
+}
+.ink-navigation ul.menu.orange li a:hover {
+	background: #FD8F00;
+	color: white;
+}
+.ink-navigation ul.menu.orange li,
+.ink-navigation ul.menu.orange li a,
+.ink-navigation ul.menu.orange li a:hover {
+	border-radius: 6px 6px 0 0;
+}
+.ink-navigation ul.menu.orange li {
+	margin-top: 4px;
+	margin-left: 4px;
+}
+.ink-navigation ul.menu.orange li a {
+	color: #FD8F00;
+	font-weight: bold;
+}
+.ink-navigation ul.menu.orange li.active,
+.ink-navigation ul.menu.orange li.active a:hover {
+	background: rgb(51, 51, 51);
+}
+.ink-navigation ul.menu.orange li.active a {
+	color: #FFF;
+}
+a.logo {
+	display: inline-block;
+	margin: 0 40px 0 120px;
+	height: 100%;
+	padding: 10px 0 0;
+}
+
+.top-highlight {
+	background: rgb(51, 51, 51);
+	color: white;
+	padding: 20px 0;
+}
+.top-highlight h1 {
+	color: white;
+}
+.top-highlight a {
+	color: #FFF;
+	text-decoration: underline;
+}
+
+.button {
+	text-decoration: none !important;
+    text-align: center;
+    font-weight: bold;
+    padding: 0.8em;
+    display: block;
+    background: #F59C16;
+    background: linear-gradient(to bottom, rgb(254, 165, 53) 0%, rgb(242, 153, 13) 100%) repeat scroll 0% 0% transparent;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    color: #F0F0F0;
+}
+.button:hover {
+	color: #FFF;
+	background: #EFA73A;
+	background: linear-gradient(to bottom, rgb(255, 187, 102) 0%, rgb(235, 161, 46) 100%) repeat scroll 0% 0% transparent;
+}
+
+.ink-gallery .stage {
+    height: 290px;
+}
+.ink-gallery .stage .slider ul li img {
+	box-shadow: 0px 6px 12px 1px rgba(0, 0, 0, 0.2);
+}
+.ink-gallery {
+    margin: 0px auto;
+}
+a {
+	outline: 0px none !important;
+}
+.ink-gallery nav a.next:after, .ink-gallery nav a.previous:after {
+	border: none;
+}
+
+.mainpoints p {
+	text-align: justify;
+}
+.mainpoints h1 {
+	color: rgb(242, 153, 13);
+}
+.push-down {
+	margin-top: 10px;
+	display: inline-block;
+}
+
+.github {
+	height: 125px;
+	width: 149px;
+	overflow:hidden;
+	padding: 0;
+	margin: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.github a {
+	display: block;
+	width: 190px;
+	font-size: 14px;
+	font-family: Frutiger, "Frutiger Linotype", Univers, Calibri, "Gill Sans", "Gill Sans MT",
+		"Myriad Pro", Myriad, "DejaVu Sans Condensed", "Liberation Sans", "Nimbus Sans L", Tahoma,
+		Geneva, "Helvetica Neue", Helvetica, Arial, sans serif;
+	background-color: #FD8F00;
+	color: #FFF;
+	word-spacing: 2px;
+	text-decoration: none;
+	padding: 5px 15px 5px 25px;
+
+	position:relative;
+	left: -28px;
+	top: 110px;
+	text-align: center;
+
+	-moz-transform-origin: 0 0;
+	-moz-transform:rotate(315deg);
+	-moz-box-shadow: 1px 1px 5px 1px #666;
+
+	-webkit-transform-origin: 0 0;
+	-webkit-transform:rotate(315deg);
+	-webkit-box-shadow: 1px 1px 5px 1px #666;
+
+	-ms-transform-origin: 0 0;
+	-ms-transform:rotate(315deg);
+	-ms-box-shadow: 1px 1px 5px 1px #666;
+
+	transform-origin: 0 0;
+	transform:rotate(315deg);
+	box-shadow: 1px 1px 5px 1px #666;
+
+	background-image: linear-gradient(bottom, #FD8F00 3%, #FFD6A1 5%, #FD8F00 7%, #FD8F00 93%, #FFD6A1 95%, #FD8F00 97%);
+	background-image: -o-linear-gradient(bottom, #FD8F00 3%, #FFD6A1 5%, #FD8F00 7%, #FD8F00 93%, #FFD6A1 95%, #FD8F00 97%);
+	background-image: -moz-linear-gradient(bottom, #FD8F00 3%, #FFD6A1 5%, #FD8F00 7%, #FD8F00 93%, #FFD6A1 95%, #FD8F00 97%);
+	background-image: -webkit-linear-gradient(bottom, #FD8F00 3%, #FFD6A1 5%, #FD8F00 7%, #FD8F00 93%, #FFD6A1 95%, #FD8F00 97%);
+	background-image: -ms-linear-gradient(bottom, #FD8F00 3%, #FFD6A1 5%, #FD8F00 7%, #FD8F00 93%, #FFD6A1 95%, #FD8F00 97%);
+
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0.03, #FD8F00),
+		color-stop(0.05, #FFD6A1),
+		color-stop(0.07, #FD8F00),
+		color-stop(0.93, #FD8F00),
+		color-stop(0.95, #FFD6A1),
+		color-stop(0.97, #FD8F00)
+	);
+}
+
+/* API Pages */
+.api { padding: 30px 0; overflow: auto }
+.api h1 { text-align: center; }
+.api .classname { font-size: 1.4em; font-weight: bold; margin-top: 30px }
+.api .extends { margin: 5px 30px 15px; font-size: 0.8em }
+.api .classdoc { color: #888; font-size: 0.9em; font-style: italic }
+.api .kwd { color: #09598A; font-weight: bold }
+.api ul { list-style: none; }
+.api dl { margin-bottom: 30px }
+.api dt { border-top: 1px dotted #BBB; margin-top: 20px; padding-top; 5px }
+.api dd { color: #888; white-space: pre; font-size: 0.9em }
+.api .package { color: #333; }
+.api .package:after { content:"\f105"; font-family: FontAwesome; padding-left: 5px; }
+.api .expand > .package:after { content:"\f107"; }
+
+@media screen and (max-width: 1100px) {
+	a.logo {
+		margin-left: 10px;
+		font-size: 32px;
+	}
+	.github {
+		display: none;
+	}
+}
+
+@media screen and (max-width: 960px) {
+	.top-menu .ink-navigation {
+		position: relative;
+		right: 0;
+	}
+}
+
+@media screen and (max-width: 649px) {
+	.ink-navigation ul.menu.orange li {
+		float: none;
+	}
+	.ink-navigation ul.menu.orange li,
+	.ink-navigation ul.menu.orange li a,
+	.ink-navigation ul.menu.orange li a:hover {
+		border-radius: 0;
+		margin: 0;
+	}
+}
+
+#nav ul {
+	margin-top: 0;
+	line-height: 1;
+}

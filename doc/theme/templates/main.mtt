@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+
+		<title>::api.currentPageName::::if api.config.pageTitle !=null:: - ::api.config.pageTitle::::end::</title>
+
+		<meta name="description" content="HaxePunk is a 2d game engine written in Haxe for cross-platform deployment."/>
+		<meta name="author" content="HaxePunk.com"/>
+		<meta name="HandheldFriendly" content="True"/>
+		<meta name="MobileOptimized" content="320"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+
+		::raw api.config.getHeaderIncludes()::
+
+		<link rel="stylesheet" type="text/css" href="{{site.baseurl}}css/syntax.css"/>
+		
+
+		<script type="text/javascript">
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+			ga('create', 'UA-5069201-6', 'haxepunk.com');
+			ga('send', 'pageview');
+		</script>
+		<script type="text/javascript">
+			var dox = {
+				rootPath: "::api.config.rootPath::",
+				platforms: [
+					::foreach pf api.config.platforms::
+						"::pf::"
+						::if !repeat.pf.last::,::end::
+					::end::
+				]
+			};
+		</script>
+	</head>
+
+	<body>
+		<div class="top-menu">
+			<a href="http://www.haxepunk.com/" class="logo">
+				<image src="::api.config.rootPath::HaxePunk.svg" width="300" height="75" alt="HaxePunk" />
+			</a>
+			<nav class="ink-navigation">
+				<ul class="menu horizontal orange">
+					<li>
+						<a href="http://www.haxepunk.com/">Home</a>
+					</li>
+					<li>
+						<a href="http://www.haxepunk.com/features/">Features</a>
+					</li>
+					<li>
+						<a href="http://www.haxepunk.com/demos/">Demos</a>
+					</li>
+					<li class="active">
+						<a href="http://www.haxepunk.com/documentation/">Documentation</a>
+					</li>
+					<li>
+						<a href="http://www.haxepunk.com/games/">Games</a>
+					</li>
+					<li>
+						<a href="http://forum.haxepunk.com/">Forum</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+
+		<div class="github">
+			<a href="https://github.com/HaxePunk/HaxePunk">Fork me on GitHub</a>
+		</div>
+		
+		<div id="container" class="vspace mainpoints">
+			<div id="nav-container">
+				<form id="searchForm" class="ink-form">
+					<div class="control-group">
+						<div class="control append-symbol">
+							<span>
+								<input id="search" type="text" class="search-query" placeholder="Filter" autocomplete="off"/>
+								<i class="icon-search"></i>
+							</span>
+						</div>
+					</div>
+					
+				</form>
+				<div id="nav"></div>
+			</div>
+			<div id="content">::raw __content__::</div>
+		</div>
+
+
+		<footer>
+		<div class="ink-grid">
+		   <div class="large-100 medium-100 small-100">
+				Copyright &copy; 2011-2014 HaxePunk.com
+				&nbsp;&bull;&nbsp;
+				HaxePunk's <a href="https://github.com/HaxePunk">code</a> is licensed under&nbsp;
+				<a href="http://opensource.org/licenses/MIT">MIT</a>
+				&nbsp;&bull;&nbsp;
+				Follow <a href="https://twitter.com/HaxePunk">@HaxePunk</a>
+				&nbsp;&bull;&nbsp;
+				<a href="https://github.com/HaxePunk/haxepunk.com">Site</a> made with <a href="http://ink.sapo.pt/">Ink</a>&nbsp;
+				Powered by <a href="http://pages.github.com/">GitHub Pages</a>
+			</div>
+		</div>
+		</footer>
+	</body>
+
+</html>

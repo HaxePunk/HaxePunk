@@ -1,0 +1,36 @@
+<table class="related-types toggle" style="margin-top:16px;">
+	<tbody>
+		<tr>
+			<td colspan="2"><strong>::title::</strong></td>
+		</tr>
+		<tr>
+			<td width="12" style="vertical-align:top;">
+				<a href="#" onclick="toggleInherited(this)">
+					<img style="padding-top:4px;" src="::api.config.rootPath::triangle-closed.png"></img>
+				</a>
+			</td>
+			<td class="toggle-hide">
+				::foreach info infos::
+					<a href ="::api.pathToUrl(info.path)::">::api.getPathName(info.path)::</a>
+					::if !repeat.info.last::, ::end::
+				::end::
+			</td>
+			<td class="toggle-show">
+				<table class="table table-condensed">
+					<tbody>
+						::foreach info infos::
+							<tr>
+								<td width="200">
+									<a href ="::api.pathToUrl(info.path)::">::api.getPathName(info.path)::</a>
+								</td>
+								<td>
+									::raw api.getShortDesc(info)::
+								</td>
+							</tr>
+						::end::
+					</tbody>
+				</table>
+			</td>
+		</tr>
+	</tbody>
+</table>

@@ -1,0 +1,40 @@
+<macro name="makeTree(tree,depth)">
+	::switch tree::
+	<li ::attr data_path api.getTreePath(tree)::>
+		<div>
+			<a class="treeLink" href="::api.getTreeUrl(tree)::">
+				<span class="pack">:: api.getTreePack(tree) ::</span>
+				::api.getTreeName(tree)::
+			</a>
+		</div>
+	</li>
+	::case::
+		::set name = args[0]::
+		<li ::cond name.charAt(0) != "_"::
+			::attr class if (name != "com.haxepunk") "expando" else "" +if (depth == 0 && api.isPlatform(name)) " platform platform-" + name else ""::>
+			::if name != "com.haxepunk"::
+				::if name != "ds" && name != "math"::
+					<div>
+						<a href="#" class="treeLink nav-header" onclick="toggleCollapsed(this)">
+							<img src="::api.config.rootPath::triangle-closed.png"/>
+							::api.getTreeName(tree)::
+						</a>
+					</div>
+				::end::
+			::else::				
+				<span class="nav-header">::api.getTreeName(tree)::</span>
+			::end::
+			<ul>
+				::foreach sub args[2]::
+					$$makeTree(::sub::,::depth + 1::)
+				::end::
+			</ul>
+		</li>
+	::end::
+</macro>
+var navContent='<ul>
+::foreach tree root::
+	$$makeTree(::tree::,::0::)
+::end::
+</ul>
+';

@@ -63,8 +63,10 @@
 			<arg line="run dox" />
 			<arg line="-i xmls/" />
 			<arg line="-o pages/" />
+			<arg line="-theme theme/" />
 			<arg line="-in com" />
 			<arg line='--title "HaxePunk API"' />
+			<arg line='-D source-path "https://github.com/HaxePunk/HaxePunk/tree/master"' />
 		</exec>
 	</target>
 
