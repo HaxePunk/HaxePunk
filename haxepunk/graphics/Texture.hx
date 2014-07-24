@@ -177,7 +177,6 @@ class Texture
 	 */
 	public inline function bind(sampler:Int=0):Void
 	{
-		Renderer.setBlendMode(SOURCE_ALPHA, ONE_MINUS_SOURCE_ALPHA);
 		Renderer.bindTexture(_texture, sampler);
 	}
 

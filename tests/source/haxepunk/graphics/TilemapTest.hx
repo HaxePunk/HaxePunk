@@ -23,10 +23,6 @@ class TilemapTest extends haxe.unit.TestCase
 
 		assertEquals(2, _tilemap._columns);
 		assertEquals(2, _tilemap._rows);
-
-		assertEquals(4, _tilemap._setColumns);
-		assertEquals(3, _tilemap._setRows);
-		assertEquals(12, _tilemap._setCount);
 	}
 
 	public function testTileAccessors()
@@ -58,13 +54,6 @@ class TilemapTest extends haxe.unit.TestCase
 	{
 		_tilemap.loadFrom2DArray([[3, 1], [4, 2]]);
 		assertEquals("3,1\n4,2", _tilemap.toString());
-	}
-
-	public function testTileIndex()
-	{
-		assertEquals(11, _tilemap.getIndex(3, 2));
-		assertEquals(5, _tilemap.getIndex(1, 1));
-		assertEquals(6, _tilemap.getIndex(6, 10));
 	}
 
 	public function testStringLoad()

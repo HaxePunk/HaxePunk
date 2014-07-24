@@ -2,9 +2,12 @@ package haxepunk.graphics;
 
 import haxepunk.scene.Camera;
 import haxepunk.math.Vector3;
+import haxepunk.math.Matrix4;
 
 class Tilemap implements Graphic
 {
+
+	public var material(default, null):Material;
 
 	public function new(material:Material, width:Int, height:Int, tileWidth:Int, tileHeight:Int, ?tileSpacingWidth:Int=0, ?tileSpacingHeight:Int=0)
 	{
@@ -19,10 +22,7 @@ class Tilemap implements Graphic
 			_map[i] = -1;
 		}
 
-		var texture = material.firstPass.getTexture(0);
-		_setColumns = Std.int(texture.width / tileWidth);
-		_setRows = Std.int(texture.height / tileHeight);
-		_setCount = _setColumns * _setRows;
+		this.material = material;
 	}
 
 	/**
@@ -89,7 +89,7 @@ class Tilemap implements Graphic
 	 */
 	public inline function setTile(column:Int, row:Int, index:Int = 0)
 	{
-		_map[(row % _rows) * _columns + (column % _columns)] = index % _setCount;
+		_map[(row % _rows) * _columns + (column % _columns)] = index;
 	}
 
 	/**
@@ -158,17 +158,6 @@ class Tilemap implements Graphic
 		}
 	}
 
-	/**
-	 * Gets the index of a tile, based on its column and row in the tileset.
-	 * @param	tilesColumn		Tileset column.
-	 * @param	tilesRow		Tileset row.
-	 * @return	Index of the tile.
-	 */
-	public inline function getIndex(tilesColumn:Int, tilesRow:Int):Int
-	{
-		return (tilesRow % _setRows) * _setColumns + (tilesColumn % _setColumns);
-	}
-
 	public function update(elapsed:Float):Void
 	{
 
@@ -176,27 +165,10 @@ class Tilemap implements Graphic
 
 	public function draw(camera:Camera, offset:Vector3):Void
 	{
-		var startx = 0, starty = 0, destx = _columns, desty = _rows;
-		// for (y in starty...desty)
-		// {
-		// 	wx = sx;
-		// 	// ensure no vertical overlap between this and next tile
-		// 	scy = (Math.floor(wy+stepy) - Math.floor(wy)) / tileHeight;
+		if (material == null) return;
+		material.use();
 
-		// 	for (x in startx...destx)
-		// 	{
-		// 		tile = getTile(x, y);
-		// 		if (tile >= 0)
-		// 		{
-		// 			// ensure no horizontal overlap between this and next tile
-		// 			scx = (Math.floor(wx+stepx) - Math.floor(wx)) / tileWidth;
-
-		// 			// HXP.spriteBatch.draw();
-		// 		}
-		// 		wx += stepx;
-		// 	}
-		// 	wy += stepy;
-		// }
+		// HXP.spriteBatch.draw(this, _matrix);
 	}
 
 	// Tilemap information.
@@ -206,9 +178,6 @@ class Tilemap implements Graphic
 
 	private var _width:Int;
 	private var _height:Int;
-
-	private var _setColumns:Int;
-	private var _setRows:Int;
-	private var _setCount:Int;
+	private var _matrix:Matrix4;
 
 }

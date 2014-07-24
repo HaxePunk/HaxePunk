@@ -47,6 +47,7 @@ class Pass
 	{
 		shader.use();
 		Renderer.setDepthTest(depthCheck);
+		Renderer.setBlendMode(SOURCE_ALPHA, ONE_MINUS_SOURCE_ALPHA);
 
 		// assign any textures
 		for (i in 0..._textures.length)

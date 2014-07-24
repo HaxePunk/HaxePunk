@@ -18,8 +18,11 @@ class Text implements Graphic
 	public var material:Material;
 	public var color:Color;
 	public var size(default, null):Int;
+	public var lineHeight:Int;
+	public var tabWidth:Int = 4;
 	public var angle:Float = 0;
 	public var width(default, null):Float;
+	public var height(default, null):Float;
 
 	public function new(text:String, size:Int=16)
 	{
@@ -29,12 +32,14 @@ class Text implements Graphic
 		color = new Color();
 
 		#if (cpp || neko)
-		var font = new Font("../Resources/font/04B_03__.ttf");
+		var font = new Font(#if mac "../Resources/" + #end "font/SourceCodePro-Regular.otf");
 		#else
 		var font = new Font("Georgia");
 		#end
 
 		this.size = size;
+		this.lineHeight = Std.int(size * 1.4);
+
 		var data = font.createImage(size);
 		_glyphs = data.glyphs;
 
@@ -65,12 +70,28 @@ class Text implements Graphic
 	private function set_text(value:String):String {
 		if (text != value && value.trim() != "")
 		{
+			var spaceAdvance = _glyphs.get(" ").advance;
 			var x = 0.0, y = 0.0;
+			var index = 0;
 			for (i in 0...value.length)
 			{
-				x += writeChar(i, value.charAt(i), x, y);
+				var c = value.charAt(i);
+				switch (c)
+				{
+					case "\r": // does nothing
+					case "\n":
+						x = 0;
+						y += lineHeight;
+					case "\t":
+						x += spaceAdvance * tabWidth;
+					case " ":
+						x += spaceAdvance;
+					default:
+						x += writeChar(index++, c, x, y);
+				}
 			}
 			width = x;
+			height = y + lineHeight;
 			Renderer.bindBuffer(_vertexBuffer);
 			Renderer.updateBuffer(new Float32Array(_vertices), STATIC_DRAW);
 			_indexBuffer = Renderer.updateIndexBuffer(new Int16Array(_indices), STATIC_DRAW, _indexBuffer);

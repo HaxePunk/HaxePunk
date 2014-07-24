@@ -1,6 +1,7 @@
 package haxepunk.scene;
 
 import haxe.ds.StringMap;
+import haxepunk.debug.Console;
 import haxepunk.graphics.Graphic;
 import haxepunk.math.Matrix4;
 import haxepunk.renderers.Renderer;
@@ -146,6 +147,7 @@ class Scene
 			_entities[i].draw(camera);
 		}
 		_spriteBatch.end(camera);
+		if (Console.enabled) Console.instance.draw(camera);
 		Renderer.present();
 
 		var t = haxe.Timer.stamp() * 1000;
@@ -163,6 +165,7 @@ class Scene
 			e.update(elapsed);
 			if (e._graphic != null) e._graphic.update(elapsed);
 		}
+		if (Console.enabled) Console.instance.update(elapsed);
 		camera.update();
 	}
 
