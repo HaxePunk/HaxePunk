@@ -15,7 +15,7 @@ class QuadPath extends Motion
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:CompleteCallback, type:TweenType)
+	public function new(?complete:Dynamic -> Void, type:TweenType)
 	{
 		_points = new Array<Point>();
 		_curve = new Array<Point>();
@@ -33,7 +33,7 @@ class QuadPath extends Motion
 	 * @param	duration	Duration of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotion(duration:Float, ease:EaseFunction = null)
+	public function setMotion(duration:Float, ease:Float -> Float = null)
 	{
 		updatePath();
 		_target = duration;
@@ -47,7 +47,7 @@ class QuadPath extends Motion
 	 * @param	speed		Speed of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotionSpeed(speed:Float, ease:EaseFunction = null)
+	public function setMotionSpeed(speed:Float, ease:Float -> Float = null)
 	{
 		updatePath();
 		_target = _distance / speed;

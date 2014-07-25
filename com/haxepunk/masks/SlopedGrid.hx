@@ -387,6 +387,7 @@ class SlopedGrid extends Hitbox
 		return collideBox(ox, oy, other._width, other._height, x, y);
 	}
 
+	@:dox(hide)
 	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
 	{
 		var cellX:Float, cellY:Float,

@@ -1,8 +1,5 @@
 package com.haxepunk.utils;
 
-@:dox(hide)
-typedef EaseFunction = Float -> Float;
-
 /**
  * Static class with useful easer functions that can be used by Tweens.
  */

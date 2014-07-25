@@ -283,7 +283,7 @@ class Emitter extends Graphic
 	 * @param	backwards		If the motion should be played backwards.
 	 * @return	This ParticleType object.
 	 */
-	public function setMotion(name:String, angle:Float, distance:Float, duration:Float, ?angleRange:Float = 0, ?distanceRange:Float = 0, ?durationRange:Float = 0, ?ease:EaseFunction = null, ?backwards:Bool = false):ParticleType
+	public function setMotion(name:String, angle:Float, distance:Float, duration:Float, ?angleRange:Float = 0, ?distanceRange:Float = 0, ?durationRange:Float = 0, ?ease:Float -> Float = null, ?backwards:Bool = false):ParticleType
 	{
 		var pt:ParticleType = _types.get(name);
 		if (pt == null) return null;
@@ -310,7 +310,7 @@ class Emitter extends Graphic
 	 * @param	ease		Optional easer function.
 	 * @return	This ParticleType object.
 	 */
-	public function setAlpha(name:String, ?start:Float = 1, ?finish:Float = 0, ?ease:EaseFunction = null):ParticleType
+	public function setAlpha(name:String, ?start:Float = 1, ?finish:Float = 0, ?ease:Float -> Float = null):ParticleType
 	{
 		var pt:ParticleType = _types.get(name);
 		if (pt == null) return null;
@@ -325,7 +325,7 @@ class Emitter extends Graphic
 	 * @param	ease		Optional easer function.
 	 * @return	This ParticleType object.
 	 */
-	public function setColor(name:String, ?start:Int = 0xFFFFFF, ?finish:Int = 0, ?ease:EaseFunction = null):ParticleType
+	public function setColor(name:String, ?start:Int = 0xFFFFFF, ?finish:Int = 0, ?ease:Float -> Float = null):ParticleType
 	{
 		var pt:ParticleType = _types.get(name);
 		if (pt == null) return null;

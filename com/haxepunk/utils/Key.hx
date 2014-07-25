@@ -1,7 +1,7 @@
 package com.haxepunk.utils;
 
 /**
- * List of keys to be used with com.haxepunk.utils.Input.
+ * List of keys to be used with `Input`.
  */
 class Key
 {

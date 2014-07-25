@@ -25,7 +25,7 @@ import haxe.ds.IntMap;
 /**
  * If the console should capture the trace() function calls.
  * 
- * To be passed to com.haxepunk.debug.Console.enable();
+ * To be passed to `Console.enable`.
  */
 enum TraceCapture
 {
@@ -39,7 +39,7 @@ enum TraceCapture
 /**
  * Console used for debugging, shows entities and their masks.
  * 
- * Use com.haxepunk.HXP.console.enable() to enable it.
+ * Use `HXP.console`.enable to enable it.
  */
 class Console
 {
@@ -200,7 +200,7 @@ class Console
 	 * Enables the console.
 	 *
 	 * @param	trace_capture	If the console should capture the trace() function calls.
-	 * @param	toggleKey		Key used to toggle the console, tilde (~) by default, use com.haxepunk.utils.Key.
+	 * @param	toggleKey		Key used to toggle the console, `Key.TILDE` (~) by default, use `Key`.
 	 */
 	public function enable(?trace_capture:TraceCapture, toggleKey=Key.TILDE)
 	{

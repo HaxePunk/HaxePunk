@@ -14,7 +14,7 @@ class CubicMotion extends Motion
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:CompleteCallback, type:TweenType)
+	public function new(?complete:Dynamic -> Void, type:TweenType)
 	{
 		_fromX = _fromY = _toX = _toY = 0;
 		_aX = _aY = _bX = _bY = 0;
@@ -34,7 +34,7 @@ class CubicMotion extends Motion
 	 * @param	duration	Duration of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotion(fromX:Float, fromY:Float, aX:Float, aY:Float, bX:Float, bY:Float, toX:Float, toY:Float, duration:Float, ease:EaseFunction = null)
+	public function setMotion(fromX:Float, fromY:Float, aX:Float, aY:Float, bX:Float, bY:Float, toX:Float, toY:Float, duration:Float, ease:Float -> Float = null)
 	{
 		x = _fromX = fromX;
 		y = _fromY = fromY;

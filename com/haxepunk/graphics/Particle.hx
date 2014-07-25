@@ -5,15 +5,16 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 
 /**
- * Used by the Emitter class to track an existing Particle.
+ * Used by the `Emitter` class to track an existing Particle.
  */
+@:dox(hide)
 @:allow(com.haxepunk.graphics.Emitter)
 class Particle
 {
 	/**
 	 * Constructor.
 	 */
-	public function new()
+	private function new()
 	{
 		_time = 0;
 		_duration = 0;

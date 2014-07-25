@@ -7,18 +7,22 @@ import com.haxepunk.graphics.Image;
 import com.haxepunk.graphics.Graphiclist;
 import com.haxepunk.ds.Either;
 
-@:dox(hide)
+/**
+ * Abstract representing either a `String` or a `Array<String>`.
+ * 
+ * Conversion is automatic, no need to use this.
+ */
 abstract SolidType(Either<String, Array<String>>)
 {
-	public inline function new( e:Either<String, Array<String>> ) this = e;
-	public var type(get,never):Either<String, Array<String>>;
+	@:dox(hide) public inline function new( e:Either<String, Array<String>> ) this = e;
+	@:dox(hide) public var type(get,never):Either<String, Array<String>>;
 	@:to inline function get_type() return this;
 	@:from static function fromLeft(v:String) return new SolidType(Left(v));
 	@:from static function fromRight(v:Array<String>) return new SolidType(Right(v));
 }
 
 /**
- * Main game Entity class updated by Scene.
+ * Main game Entity class updated by `Scene`.
  */
 @:allow(com.haxepunk.Mask)
 @:allow(com.haxepunk.Scene)

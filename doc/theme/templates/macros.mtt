@@ -39,7 +39,7 @@
 				$$printLinkedType(::arg.t::) -&gt;
 			::end::
 		::end::
-		$$printLinkedType(::args[1]::)
+		$$printLinkedType(::args[1]::),&nbsp;
 	::case::
 	{
 		::foreach field args[0]::
@@ -52,6 +52,21 @@
 	::end::
 </macro>
 
+<macro name="printLinkedTypeOpt(ctype, isOptional)">
+	::if isOptional::
+		::switch ctype::
+			$$printLinkedType(::ctype::)
+		::case 3::
+			::switch args[1].h[0]::
+			::case 7::
+				$$printLinkedPath(::args[0]::,::[]::)
+			::end::
+		::end::
+	::else::
+		$$printLinkedType(::ctype::)
+	::end::
+</macro>
+
 <macro name="printModule(module)">
 	<p ::cond module != null && module != "StdTypes"::>
 		<span class="directive">defined in</span> <span class="type">::module::</span>;
@@ -59,23 +74,53 @@
 </macro>
 
 <macro name="printFieldSignature(field, isStatic)">
+	::set isOptional = false::
+	::foreach meta field.meta::
+		::if meta.name == ":deprecated"::
+			<span class="ink-label red">deprecated</span>&nbsp;
+		::end::
+		::if meta.name == ":optional"::
+			<span class="ink-label orange">optional</span>&nbsp;
+			::eval isOptional = true::
+		::end::
+	::end::
 	::if isStatic::
 		<span class="ink-label orange">static</span>&nbsp;
 	::end::
 	::switch field.type::
 		::switch field.get::
 		::case 1::
+			<span class="ink-label orange">write only</span>&nbsp;
+		::end::
+		::switch field.set::
+		::case 1::
 			<span class="ink-label orange">read only</span>&nbsp;
 		::end::
-		<a href="#::field.name::"><span class="identifier">::field.name::</span></a>&nbsp;:&nbsp;$$printLinkedType(::field.type::)
+		<a href="#::field.name::"><span class="identifier">::field.name::</span></a>&nbsp;:&nbsp;$$printLinkedTypeOpt(::field.type::,::isOptional::)
 	::case 4::
 		<a href="#::field.name::"><span class="identifier">::field.name::</span></a>
 		$$printTypeParams(::field.params::)
 		&nbsp;(
 		::foreach arg args[0]::
-			::if arg.opt && arg.value == null::?::end::
+			::if arg.opt && arg.value == "null"::
+				?
+			::end::
+			
 			::arg.name:: : $$printLinkedType(::arg.t::)
-			::if arg.value != null:: = ::if arg.value == "16777215"::0xFFFFFF::else::::if arg.value == "-16777216"::0::else::::arg.value::::end::::end::::end::
+			
+			::if arg.value != null && arg.value != "null"::
+				&nbsp;=&nbsp;
+				::if arg.value == "16777215"::
+					0xFFFFFF
+				::else::
+					::if arg.value == "-16777216"::
+						0
+					::else::
+						::arg.value::
+					::end::
+				::end::
+			::end::
+			
 			::if !repeat.arg.last::, ::end::
 		::end::
 		)

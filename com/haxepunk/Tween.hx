@@ -19,9 +19,6 @@ enum TweenType
 	OneShot;
 }
 
-@:dox(hide)
-typedef CompleteCallback = Dynamic -> Void;
-
 /**
  * Friend class for access to Tween private members
  */
@@ -51,7 +48,7 @@ class Tween extends EventDispatcher
 	 * @param	complete		Optional callback for when the Tween completes.
 	 * @param	ease			Optional easer function to apply to the Tweened value.
 	 */
-	public function new(duration:Float, ?type:TweenType, ?complete:CompleteCallback, ?ease:EaseFunction)
+	public function new(duration:Float, ?type:TweenType, ?complete:Dynamic -> Void, ?ease:Float -> Float)
 	{
 		_target = duration;
 		if (type == null) type = TweenType.Persist;
@@ -70,6 +67,7 @@ class Tween extends EventDispatcher
 	/**
 	 * Updates the Tween, called by World.
 	 */
+	@:dox(hide)
 	public function update()
 	{
 		_time += HXP.fixed ? 1 : HXP.elapsed;
@@ -149,13 +147,13 @@ class Tween extends EventDispatcher
 	private function get_scale():Float { return _t; }
 
 	private var _type:TweenType;
-	private var _ease:EaseFunction;
+	private var _ease:Float -> Float;
 	private var _t:Float;
 
 	private var _time:Float;
 	private var _target:Float;
 
-	private var _callback:CompleteCallback;
+	private var _callback:Dynamic -> Void;
 	private var _finish:Bool;
 	private var _parent:Tweener;
 	private var _prev:FriendTween;

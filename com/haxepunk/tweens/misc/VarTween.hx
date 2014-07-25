@@ -13,7 +13,7 @@ class VarTween extends Tween
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:CompleteCallback, ?type:TweenType)
+	public function new(?complete:Dynamic -> Void, ?type:TweenType)
 	{
 		super(0, type, complete);
 	}
@@ -26,7 +26,7 @@ class VarTween extends Tween
 	 * @param	duration	Duration of the tween.
 	 * @param	ease		Optional easer function.
 	 */
-	public function tween(object:Dynamic, property:String, to:Float, duration:Float, ease:EaseFunction = null)
+	public function tween(object:Dynamic, property:String, to:Float, duration:Float, ease:Float -> Float = null)
 	{
 		_object = object;
 		_ease = ease;

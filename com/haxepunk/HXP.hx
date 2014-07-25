@@ -28,7 +28,11 @@ import haxe.CallStack;
 import haxe.EnumFlags;
 import haxe.Timer;
 
-@:dox(hide)
+/**
+ * Represents a position on a two dimensional coordinate system.
+ *
+ * Conversion from a `{ x:Float, y:Float }` or a `Entity` is automatic, no need to use this.
+ */
 abstract Position ({x:Float, y:Float})
 {
 	private function new(obj:Dynamic) this = obj;
@@ -41,8 +45,8 @@ abstract Position ({x:Float, y:Float})
 	private inline function get_y():Float return this.y;
 	private inline function set_y(value:Float):Float return this.y = value;
 
-	@:from public static inline function fromObject(obj:{x:Float, y:Float}) return new Position(obj);
-	@:from public static inline function fromEntity(entity:Entity) return new Position(entity);
+	@:dox(hide) @:from public static inline function fromObject(obj:{x:Float, y:Float}) return new Position(obj);
+	@:dox(hide) @:from public static inline function fromEntity(entity:Entity) return new Position(entity);
 }
 
 /**
@@ -1105,7 +1109,7 @@ class HXP
 	 * 						tweener		The Tweener to add this Tween to.
 	 * @return	The added MultiVarTween object.
 	 *
-	 * Example: HXP.tween(object, { x: 500, y: 350 }, 2.0, { ease: easeFunction, complete: onComplete } );
+	 * Example: HXP.tween(object, { x: 500, y: 350 }, 2.0, { ease: Float -> Float, complete: onComplete } );
 	 */
 	public static function tween(object:Dynamic, values:Dynamic, duration:Float, options:Dynamic = null):MultiVarTween
 	{
@@ -1118,8 +1122,8 @@ class HXP
 		}
 
 		var type:TweenType = TweenType.OneShot,
-			complete:CompleteCallback = null,
-			ease:EaseFunction = null,
+			complete:Dynamic -> Void = null,
+			ease:Float -> Float = null,
 			tweener:Tweener = HXP.tweener;
 		if (Std.is(object, Tweener)) tweener = cast(object, Tweener);
 		if (options != null)
@@ -1145,7 +1149,7 @@ class HXP
 	 *
 	 * Example: HXP.alarm(5.0, callbackFunction, TweenType.Looping); // Calls callbackFunction every 5 seconds
 	 */
-	public static function alarm(delay:Float, complete:CompleteCallback, ?type:TweenType = null, tweener:Tweener = null):Alarm
+	public static function alarm(delay:Float, complete:Dynamic -> Void, ?type:TweenType = null, tweener:Tweener = null):Alarm
 	{
 		if (type == null) type = TweenType.OneShot;
 		if (tweener == null) tweener = HXP.tweener;

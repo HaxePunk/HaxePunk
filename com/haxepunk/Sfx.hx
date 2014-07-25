@@ -6,9 +6,6 @@ import flash.media.SoundChannel;
 import flash.media.SoundTransform;
 import openfl.Assets;
 
-@:dox(hide)
-typedef AudioCompleteCallback = Void -> Void;
-
 /**
  * Sound effect object used to play embedded sounds.
  */
@@ -17,7 +14,8 @@ class Sfx
 	/**
 	 * Optional callback function for when the sound finishes playing.
 	 */
-	public var complete:AudioCompleteCallback;
+	@:dox(hide) // mistaken for a class function
+	public var complete:Void -> Void;
 
 	/**
 	 * Creates a sound effect from an embedded source. Store a reference to
@@ -25,7 +23,7 @@ class Sfx
 	 * @param	source		The embedded sound class to use.
 	 * @param	complete	Optional callback function for when the sound finishes playing.
 	 */
-	public function new(source:Dynamic, complete:AudioCompleteCallback = null)
+	public function new(source:Dynamic, complete:Void -> Void = null)
 	{
 		_transform = new SoundTransform();
 		_volume = 1;

@@ -10,19 +10,23 @@ import flash.geom.Point;
 import flash.geom.Matrix;
 import openfl.display.Tilesheet;
 
-@:dox(hide)
+/**
+ * Abstract representing either a `String`, a `AtlasData` or a `BitmapData`.
+ * 
+ * Conversion is automatic, no need to use this.
+ */
 abstract AtlasDataType(AtlasData)
 {
 	private inline function new(data:AtlasData) this = data;
-	@:to public inline function toAtlasData():AtlasData return this;
+	@:dox(hide) @:to public inline function toAtlasData():AtlasData return this;
 
-	@:from public static inline function fromString(s:String) {
+	@:dox(hide) @:from public static inline function fromString(s:String) {
 		return new AtlasDataType(AtlasData.getAtlasDataByName(s, true));
 	}
-	@:from public static inline function fromBitmapData(bd:BitmapData) {
+	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData) {
 		return new AtlasDataType(new AtlasData(bd));
 	}
-	@:from public static inline function fromAtlasData(data:AtlasData) {
+	@:dox(hide) @:from public static inline function fromAtlasData(data:AtlasData) {
 		return new AtlasDataType(data);
 	}
 }
@@ -46,7 +50,9 @@ class AtlasData
 
 	/**
 	 * Creates a new AtlasData class
-	 * NOTE: Only create one instace of AtlasData per name. An error will be thrown if you try to create a duplicate.
+	 * 
+	 * **NOTE**: Only create one instace of AtlasData per name. An error will be thrown if you try to create a duplicate.
+	 * 
 	 * @param bd     BitmapData image to use for rendering
 	 * @param name   A reference to the image data, used with destroy and for setting rendering flags
 	 */
@@ -363,8 +369,8 @@ class AtlasData
 	}
 
 	/**
-	 * Sets the blend mode for rendering (BLEND_NONE, BLEND_NORMAL, BLEND_ADD)
-	 * Default: BLEND_NORMAL
+	 * Sets the blend mode for rendering (`BLEND_NONE`, `BLEND_NORMAL`, `BLEND_ADD`)
+	 * Default: `BLEND_NORMAL`
 	 */
 	public var blend(get, set):Int;
 	private function get_blend():Int {

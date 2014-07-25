@@ -42,15 +42,19 @@ typedef TextOptions = {
 	@:optional var richText:Bool;
 };
 
-@:dox(hide)
+/**
+ * Abstract representing either a `TextFormat` or a `TextOptions`.
+ * 
+ * Conversion is automatic, no need to use this.
+ */
 abstract StyleType(TextFormat)
 {
 	private function new(format:TextFormat) this = format;
-	@:to public function toTextformat():TextFormat return this;
+	@:dox(hide) @:to public function toTextformat():TextFormat return this;
 
-	@:from public static inline function fromTextFormat(format:TextFormat) return new StyleType(format);
-	@:from public static inline function fromTextOptions(object:TextOptions) return fromDynamic(object);
-	@:from public static inline function fromDynamic(object:Dynamic)
+	@:dox(hide) @:from public static inline function fromTextFormat(format:TextFormat) return new StyleType(format);
+	@:dox(hide) @:from public static inline function fromTextOptions(object:TextOptions) return fromDynamic(object);
+	@:dox(hide) @:from public static inline function fromDynamic(object:Dynamic)
 	{
 		var format = new TextFormat();
 		var fields = Type.getInstanceFields(TextFormat);
@@ -167,10 +171,14 @@ class Text extends Image
 
 	/**
 	 * Add a style for a subset of the text, for use with the richText property.
+	 * 
 	 * Usage:
-	 *    text.addStyle("red", {color: 0xFF0000});
-	 *    text.addStyle("big", {size: text.size * 2, bold: true});
-	 *    text.richText = "<big>Hello</big> <red>world</red>";
+	 * 
+	 * ```
+	 * text.addStyle("red", {color: 0xFF0000});
+	 * text.addStyle("big", {size: text.size * 2, bold: true});
+	 * text.richText = "<big>Hello</big> <red>world</red>";
+	 * ```
 	 */
 	public function addStyle(tagName:String, params:StyleType):Void
 	{
@@ -338,7 +346,8 @@ class Text extends Image
 
 	/**
 	 * Rich-text string with markup.
-	 * Use addStyle() to control the appearance of marked-up text.
+	 * 
+	 * Use `Text.addStyle` to control the appearance of marked-up text.
 	 */
 	public var richText(get, set):String;
 	private function get_richText():String { return (_richText == null ? _text : _richText); }

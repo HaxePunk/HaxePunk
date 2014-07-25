@@ -18,11 +18,15 @@ import tv.ouya.console.api.OuyaController;
 import openfl.utils.JNI;
 #end
 
-@:dox(hide)
+/**
+ * Abstract representing either a `String` or a `Int`.
+ * 
+ * Conversion is automatic, no need to use this.
+ */
 abstract InputType(Either<String, Int>)
 {
-	public inline function new( e:Either<String, Int> ) this = e;
-	public var type(get,never):Either<String, Int>;
+	@:dox(hide) public inline function new( e:Either<String, Int> ) this = e;
+	@:dox(hide) public var type(get,never):Either<String, Int>;
 	@:to inline function get_type() return this;
 	@:from static function fromLeft(v:String) return new InputType(Left(v));
 	@:from static function fromRight(v:Int) return new InputType(Right(v));

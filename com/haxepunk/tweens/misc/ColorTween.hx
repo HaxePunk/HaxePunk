@@ -24,7 +24,7 @@ class ColorTween extends Tween
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:CompleteCallback, type:TweenType)
+	public function new(?complete:Dynamic -> Void, type:TweenType)
 	{
 		alpha = 1;
 		super(0, type, complete);
@@ -39,7 +39,7 @@ class ColorTween extends Tween
 	 * @param	toAlpha			End alpha.
 	 * @param	ease			Optional easer function.
 	 */
-	public function tween(duration:Float, fromColor:Int, toColor:Int, fromAlpha:Float = 1, toAlpha:Float = 1, ease:EaseFunction = null)
+	public function tween(duration:Float, fromColor:Int, toColor:Int, fromAlpha:Float = 1, toAlpha:Float = 1, ease:Float -> Float = null)
 	{
 		fromColor &= 0xFFFFFF;
 		toColor &= 0xFFFFFF;

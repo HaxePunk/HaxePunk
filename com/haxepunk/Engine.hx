@@ -20,7 +20,8 @@ import com.haxepunk.Tweener;
 /**
  * Main game Sprite class, added to the Flash Stage.
  * Manages the game loop.
- * Your main class needs to extends this.
+ * 
+ * Your main class **needs** to extends this.
  */
 class Engine extends Sprite
 {
@@ -134,6 +135,7 @@ class Engine extends Sprite
 	/**
 	 * Renders the game, rendering the Scene and Entities.
 	 */
+	@:dox(hide)
 	public function render()
 	{
 		if (HXP.screen.needsResize) HXP.resize(HXP.windowWidth, HXP.windowHeight);

@@ -1,1 +1,44 @@
-To be done
+::use 'main.mtt'::
+	<div class="header">
+		<span ::cond api.isDefined("source-path"):: class="viewsource">
+			<a href="::api.getSourceLink(type)::"><span class="icon-code"></span> View source</a>
+		</span>
+		
+		<h4>
+			<small>
+				package ::type.path.split(".").slice(0, -1).join(".")::
+			</small>
+		</h4>
+		
+		<h1>
+			<small>
+				<span class="directive">abstract </span>
+			</small>
+			
+			<span class="type">::type.path.split(".").pop()::</span>
+			$$printTypeParams(::type.params::)
+		</h1>
+		
+		$$printModule(::type.module::)
+	</div>
+	<div class="body">
+		<div class="doc" ::cond type.doc != null::>
+			::raw type.doc::
+		</div>
+		::if type.impl != null::
+		
+			<h2 ::cond type.impl.statics.length > 0::>Class Fields</h2>
+			
+			::foreach field type.impl.statics::
+				::use "class_field.mtt"::::end::
+			::end::
+			
+			<h2 ::cond type.impl.fields.length > 0::>Instance Fields</h2>
+			
+			::foreach field type.impl.fields::
+				::use "class_field.mtt"::::end::
+			::end::
+			
+		::end::
+	</div>
+::end::

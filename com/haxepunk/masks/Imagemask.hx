@@ -13,22 +13,24 @@ import com.haxepunk.graphics.Image;
  *
  * Example usage:
  *
+ * ```
  * class Object extends Entity
  * {
- *   public function new()
- *   {
- *     super();
- *     var sprite = new Image("myimage.png", 100, 100);
- *     graphic = sprite;
- *     mask = new Imagemask(sprite);
- *     mask.assignTo(this);
- *   }
+ *     public function new()
+ *     {
+ *         super();
+ *         var sprite = new Image("myimage.png", 100, 100);
+ *         graphic = sprite;
+ *         mask = new Imagemask(sprite);
+ *         mask.assignTo(this);
+ *     }
  * }
+ * ```
  *
  * Remember to call "mask.update()" when you update the image.
  *
- * If you are using HARDWARE mode, Imagemask will still work, but only if your
- * Image source is created with a BitmapData. AtlasData is not currently
+ * If you are using `RenderMode.HARDWARE` mode, Imagemask will still work, but only if your
+ * Image source is created with a BitmapData. `AtlasData` is not currently
  * supported.
  *
  */

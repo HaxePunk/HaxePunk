@@ -14,7 +14,7 @@ class LinearMotion extends Motion
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:CompleteCallback, ?type:TweenType)
+	public function new(?complete:Dynamic -> Void, ?type:TweenType)
 	{
 		_fromX = _fromY = _moveX = _moveY = 0;
 		_distance = -1;
@@ -30,7 +30,7 @@ class LinearMotion extends Motion
 	 * @param	duration	Duration of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotion(fromX:Float, fromY:Float, toX:Float, toY:Float, duration:Float, ease:EaseFunction = null)
+	public function setMotion(fromX:Float, fromY:Float, toX:Float, toY:Float, duration:Float, ease:Float -> Float = null)
 	{
 		_distance = -1;
 		x = _fromX = fromX;
@@ -51,7 +51,7 @@ class LinearMotion extends Motion
 	 * @param	speed		Speed of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotionSpeed(fromX:Float, fromY:Float, toX:Float, toY:Float, speed:Float, ease:EaseFunction = null)
+	public function setMotionSpeed(fromX:Float, fromY:Float, toX:Float, toY:Float, speed:Float, ease:Float -> Float = null)
 	{
 		_distance = -1;
 		x = _fromX = fromX;

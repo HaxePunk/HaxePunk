@@ -8,33 +8,27 @@ import com.haxepunk.graphics.atlas.AtlasRegion;
 import flash.display.BitmapData;
 import flash.geom.Point;
 
-@:dox(hide)
-typedef AssignCallback = Void -> Void;
-
 /**
- * Converts multiple types of image data to a TileType
- * @from String The asset name of a tiled image
- * @from TileAtlas A TileAtlas object
- * @from BitmapData The raw bitmap of a tiled image
- * @to An enum defining a BitmapData or TileAtlas
+ * Abstract representing either a `String`, a `TileAtlas` or a `BitmapData`.
+ * 
+ * Conversion is automatic, no need to use this.
  */
-@:dox(hide)
 abstract TileType(Either<BitmapData, TileAtlas>)
 {
 	private inline function new(e:Either<BitmapData, TileAtlas>) this = e;
-	public var type(get,never):Either<BitmapData, TileAtlas>;
+	@:dox(hide) public var type(get,never):Either<BitmapData, TileAtlas>;
 	@:to inline function get_type() return this;
 
-	@:from public static inline function fromString(tileset:String) {
+	@:dox(hide) @:from public static inline function fromString(tileset:String) {
 		if (HXP.renderMode == RenderMode.HARDWARE)
 			return new TileType(Right(new TileAtlas(tileset)));
 		else
 			return new TileType(Left(HXP.getBitmap(tileset)));
 	}
-	@:from public static inline function fromTileAtlas(atlas:TileAtlas) {
+	@:dox(hide) @:from public static inline function fromTileAtlas(atlas:TileAtlas) {
 		return new TileType(Right(atlas));
 	}
-	@:from public static inline function fromBitmapData(bd:BitmapData) {
+	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData) {
 		if (HXP.renderMode == RenderMode.HARDWARE)
 			return new TileType(Right(new TileAtlas(bd)));
 		else
@@ -43,26 +37,30 @@ abstract TileType(Either<BitmapData, TileAtlas>)
 
 }
 
-@:dox(hide)
+/**
+ * Abstract representing either a `String`, a `TileAtlas`, a `BitmapData` or a `AtlasRegion`.
+ * 
+ * Conversion is automatic, no need to use this.
+ */
 abstract ImageType(Either<BitmapData, AtlasRegion>)
 {
 	private inline function new(e:Either<BitmapData, AtlasRegion>) this = e;
-	public var type(get,never):Either<BitmapData, AtlasRegion>;
+	@:dox(hide) public var type(get,never):Either<BitmapData, AtlasRegion>;
 	@:to inline function get_type() return this;
 
-	@:from public static inline function fromString(s:String) {
+	@:dox(hide) @:from public static inline function fromString(s:String) {
 		if (HXP.renderMode == RenderMode.HARDWARE)
 			return new ImageType(Right(Atlas.loadImageAsRegion(s)));
 		else
 			return new ImageType(Left(HXP.getBitmap(s)));
 	}
-	@:from public static inline function fromTileAtlas(atlas:TileAtlas) {
+	@:dox(hide) @:from public static inline function fromTileAtlas(atlas:TileAtlas) {
 		return new ImageType(Right(atlas.getRegion(0)));
 	}
-	@:from public static inline function fromAtlasRegion(region:AtlasRegion) {
+	@:dox(hide) @:from public static inline function fromAtlasRegion(region:AtlasRegion) {
 		return new ImageType(Right(region));
 	}
-	@:from public static inline function fromBitmapData(bd:BitmapData) {
+	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData) {
 		if (HXP.renderMode == RenderMode.HARDWARE)
 			return new ImageType(Right(Atlas.loadImageAsRegion(bd)));
 		else
@@ -144,6 +142,7 @@ class Graphic
 	/**
 	 * Updates the graphic.
 	 */
+	@:dox(hide)
 	public function update()
 	{
 
@@ -160,6 +159,7 @@ class Graphic
 	 * @param  point      The position to draw the graphic.
 	 * @param  camera     The camera offset.
 	 */
+	@:dox(hide)
 	public function render(target:BitmapData, point:Point, camera:Point) { }
 
 	/**
@@ -168,6 +168,7 @@ class Graphic
 	 * @param  point      The position to draw the graphic.
 	 * @param  camera     The camera offset.
 	 */
+	@:dox(hide)
 	public function renderAtlas(layer:Int, point:Point, camera:Point) { }
 
 	/**

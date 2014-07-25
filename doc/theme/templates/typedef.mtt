@@ -12,6 +12,11 @@
 		
 		<h1>
 			<small>
+				::foreach meta type.meta::
+					::if meta.name == ":deprecated"::
+						<span class="ink-label red">deprecated</span>&nbsp;
+					::end::
+				::end::
 				<span class="directive">typedef </span>
 			</small>
 			

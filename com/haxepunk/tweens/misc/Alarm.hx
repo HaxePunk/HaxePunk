@@ -13,7 +13,7 @@ class Alarm extends Tween
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(duration:Float, ?complete:CompleteCallback, type:TweenType)
+	public function new(duration:Float, ?complete:Dynamic -> Void, type:TweenType)
 	{
 		super(duration, type, complete, null);
 	}

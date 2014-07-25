@@ -7,8 +7,8 @@ import flash.display.BitmapData;
 import flash.geom.Rectangle;
 
 /**
- * Template used to define a particle type used by the Emitter class. Instead
- * of creating this object yourself, fetch one with Emitter's add() function.
+ * Template used to define a particle type used by the `Emitter` class. Instead
+ * of creating this object yourself, fetch one with `Emitter.add` function.
  */
 @:allow(com.haxepunk.graphics.Emitter)
 class ParticleType
@@ -50,7 +50,7 @@ class ParticleType
 	 * @param	backwards		If the motion should be played backwards.
 	 * @return	This ParticleType object.
 	 */
-	public function setMotion(angle:Float, distance:Float, duration:Float, angleRange:Float = 0, distanceRange:Float = 0, durationRange:Float = 0, ease:EaseFunction = null, backwards:Bool = false):ParticleType
+	public function setMotion(angle:Float, distance:Float, duration:Float, angleRange:Float = 0, distanceRange:Float = 0, durationRange:Float = 0, ease:Float -> Float = null, backwards:Bool = false):ParticleType
 	{
 		_angle = angle * HXP.RAD;
 		_distance = distance;
@@ -72,7 +72,7 @@ class ParticleType
 	 * @param	ease			Optional easer function.
 	 * @return	This ParticleType object.
 	 */
-	public function setMotionVector(x:Float, y:Float, duration:Float, durationRange:Float = 0, ease:EaseFunction = null):ParticleType
+	public function setMotionVector(x:Float, y:Float, duration:Float, durationRange:Float = 0, ease:Float -> Float = null):ParticleType
 	{
 		_angle = Math.atan2(y, x);
 		_angleRange = 0;
@@ -104,7 +104,7 @@ class ParticleType
 	 * @param	ease		Optional easer function.
 	 * @return	This ParticleType object.
 	 */
-	public function setAlpha(start:Float = 1, finish:Float = 0, ease:EaseFunction = null):ParticleType
+	public function setAlpha(start:Float = 1, finish:Float = 0, ease:Float -> Float = null):ParticleType
 	{
 		start = start < 0 ? 0 : (start > 1 ? 1 : start);
 		finish = finish < 0 ? 0 : (finish > 1 ? 1 : finish);
@@ -122,7 +122,7 @@ class ParticleType
 	 * @param	ease		Optional easer function.
 	 * @return	This ParticleType object.
 	 */
-	public function setColor(start:Int = 0xFFFFFF, finish:Int = 0, ease:EaseFunction = null):ParticleType
+	public function setColor(start:Int = 0xFFFFFF, finish:Int = 0, ease:Float -> Float = null):ParticleType
 	{
 		start &= 0xFFFFFF;
 		finish &= 0xFFFFFF;
@@ -157,7 +157,7 @@ class ParticleType
 	private var _distanceRange:Float;
 	private var _duration:Float;
 	private var _durationRange:Float;
-	private var _ease:EaseFunction;
+	private var _ease:Float -> Float;
 	private var _backwards:Bool;
 
 	// Gravity information.
@@ -167,7 +167,7 @@ class ParticleType
 	// Alpha information.
 	private var _alpha:Float;
 	private var _alphaRange:Float;
-	private var _alphaEase:EaseFunction;
+	private var _alphaEase:Float -> Float;
 
 	// Color information.
 	private var _red:Float;
@@ -176,7 +176,7 @@ class ParticleType
 	private var _greenRange:Float;
 	private var _blue:Float;
 	private var _blueRange:Float;
-	private var _colorEase:EaseFunction;
+	private var _colorEase:Float -> Float;
 
 	// Buffer information.
 	private var _buffer:BitmapData;

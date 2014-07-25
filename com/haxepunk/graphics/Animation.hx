@@ -1,8 +1,8 @@
 package com.haxepunk.graphics;
 
 /**
- * Template used by Spritemap to define animations. Don't create
- * these yourself, instead you can fetch them with Spritemap's add().
+ * Template used by `Spritemap` to define animations. Don't create
+ * these yourself, instead you can fetch them with `Spritemap.add`.
  */
 class Animation
 {

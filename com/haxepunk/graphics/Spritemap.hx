@@ -9,9 +9,6 @@ import flash.display.SpreadMethod;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 
-@:dox(hide)
-typedef CallbackFunction = Void -> Void;
-
 /**
  * Performance-optimized animated Image. Can have multiple animations,
  * which draw frames from the provided source image to the screen.
@@ -26,7 +23,8 @@ class Spritemap extends Image
 	/**
 	 * Optional callback function for animation end.
 	 */
-	public var callbackFunc:CallbackFunction;
+	@:dox(hide) // mistaken for a class function
+	public var callbackFunc:Void -> Void;
 
 	/**
 	 * Animation speed factor, alter this to speed up/slow down all animations.
@@ -40,7 +38,7 @@ class Spritemap extends Image
 	 * @param	frameHeight		Frame height.
 	 * @param	cbFunc			Optional callback function for animation end.
 	 */
-	public function new(source:TileType, frameWidth:Int = 0, frameHeight:Int = 0, ?cbFunc:CallbackFunction)
+	public function new(source:TileType, frameWidth:Int = 0, frameHeight:Int = 0, ?cbFunc:Void -> Void)
 	{
 		complete = true;
 		rate = 1;

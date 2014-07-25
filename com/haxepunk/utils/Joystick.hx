@@ -3,7 +3,6 @@ package com.haxepunk.utils;
 import flash.geom.Point;
 import com.haxepunk.HXP;
 
-@:dox(hide)
 enum JoyButtonState
 {
 	BUTTON_ON;
@@ -164,7 +163,7 @@ class Joystick
 }
 
 /**
- * Mapping to use an Ouya gamepad with com.haxepunk.utils.Joystick.
+ * Mapping to use an Ouya gamepad with `Joystick`.
  */
 class OUYA_GAMEPAD
 {
@@ -236,7 +235,7 @@ class OUYA_GAMEPAD
 }
 
 /**
- * Mapping to use a Xbox gamepad with com.haxepunk.utils.Joystick.
+ * Mapping to use a Xbox gamepad with `Joystick`.
  */
 class XBOX_GAMEPAD
 {
@@ -337,7 +336,7 @@ class XBOX_GAMEPAD
 }
 
 /**
- * Mapping to use a PS3 gamepad with com.haxepunk.utils.Joystick.
+ * Mapping to use a PS3 gamepad with `Joystick`.
  */
 class PS3_GAMEPAD
 {

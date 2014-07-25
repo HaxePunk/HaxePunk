@@ -1,4 +1,8 @@
 <div ::attr class api.getPlatformClassString(field.platforms) + " field"::>
+	<span ::cond api.isDefined("source-path") && field.line != null:: class="viewsource viewsourceline">
+		<a href="::api.getSourceLink(type)::#L::field.line::"><span class="icon-code"></span> View source</a>
+	</span>
+		
 	<a ::attr name field.name::></a>
 	
 		<p>$$printFieldSignature(::field::,::isStatic::)</p>

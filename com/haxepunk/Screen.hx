@@ -13,7 +13,7 @@ import flash.Lib;
 
 /**
  * Container for the main screen buffer. Can be used to transform the screen.
- * To be used through com.haxepunk.HXP.screen.
+ * To be used through `HXP.screen`.
  */
 class Screen
 {

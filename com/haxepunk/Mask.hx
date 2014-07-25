@@ -7,9 +7,6 @@ import com.haxepunk.masks.Masklist;
 import flash.display.Graphics;
 import flash.geom.Point;
 
-@:dox(hide)
-typedef MaskCallback = Dynamic -> Bool;
-
 /**
  * Base class for Entity collision masks.
  * Do not use this directly, instead use the classes in com.haxepunk.masks.*
@@ -44,7 +41,7 @@ class Mask
 	{
 		_parent = Entity._EMPTY;
 		_class = Type.getClassName(Type.getClass(this));
-		_check = new Map<String,MaskCallback>();
+		_check = new Map<String,Dynamic -> Bool>();
 		_check.set(Type.getClassName(Mask), collideMask);
 		_check.set(Type.getClassName(Masklist), collideMasklist);
 	}
@@ -56,7 +53,7 @@ class Mask
 	 */
 	public function collide(mask:Mask):Bool
 	{
-		var cbFunc:MaskCallback = _check.get(mask._class);
+		var cbFunc:Dynamic -> Bool = _check.get(mask._class);
 		if (cbFunc != null) return cbFunc(mask);
 
 		cbFunc = mask._check.get(_class);
@@ -82,12 +79,14 @@ class Mask
 	/**
 	 * Override this
 	 */
+	@:dox(hide)
 	public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
 	{
 
 	}
 
 	/** Updates the parent's bounds for this mask. */
+	@:dox(hide)
 	public function update()
 	{
 
@@ -130,6 +129,6 @@ class Mask
 
 	// Mask information.
 	private var _class:String;
-	private var _check:Map<String,MaskCallback>;
+	private var _check:Map<String,Dynamic -> Bool>;
 	private var _parent:Entity;
 }

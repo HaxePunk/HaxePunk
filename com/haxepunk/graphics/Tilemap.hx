@@ -8,9 +8,6 @@ import com.haxepunk.HXP;
 import com.haxepunk.graphics.atlas.TileAtlas;
 import com.haxepunk.masks.Grid;
 
-@:dox(hide)
-typedef Array2D = Array<Array<Int>>;
-
 /**
  * A canvas to which Tiles can be drawn for fast multiple tile rendering.
  */
@@ -60,7 +57,7 @@ class Tilemap extends Canvas
 
 		// initialize map
 		_tile = new Rectangle(0, 0, tileWidth, tileHeight);
-		_map = new Array2D();
+		_map = new Array<Array<Int>>();
 		for (y in 0..._rows)
 		{
 			_map[y] = new Array<Int>();
@@ -241,7 +238,7 @@ class Tilemap extends Canvas
 	 *
 	 * @param	array	The array to load from.
 	 */
-	public function loadFrom2DArray(array:Array2D):Void
+	public function loadFrom2DArray(array:Array<Array<Int>>):Void
 	{
 		if (blit)
 		{
@@ -535,7 +532,7 @@ class Tilemap extends Canvas
 	public var smooth:Bool = true;
 
 	// Tilemap information.
-	private var _map:Array2D;
+	private var _map:Array<Array<Int>>;
 	private var _columns:Int;
 	private var _rows:Int;
 

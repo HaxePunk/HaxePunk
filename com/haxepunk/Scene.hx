@@ -9,7 +9,7 @@ import flash.geom.Rectangle;
 import haxe.ds.IntMap;
 
 /**
- * Updated by Engine, main game container that holds all currently active Entities.
+ * Updated by `Engine`, main game container that holds all currently active Entities.
  * Useful for organization, eg. "Menu", "Level1", etc.
  */
 class Scene extends Tweener
