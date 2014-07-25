@@ -9,20 +9,21 @@
 		</div>
 	</li>
 	::case::
-		::set name = args[0]::
+		::set name = args[0]::		
 		<li ::cond name.charAt(0) != "_"::
-			::attr class if (name != "com.haxepunk") "expando" else "" +if (depth == 0 && api.isPlatform(name)) " platform platform-" + name else ""::>
-			::if name != "com.haxepunk"::
+			::attr class if (name != "haxepunk") "expando" else "" +if (depth == 0 && api.isPlatform(name)) " platform platform-" + name else ""::>
+			::if name != "haxepunk"::
 				::if name != "ds" && name != "math"::
 					<div>
 						<a href="#" class="treeLink nav-header" onclick="toggleCollapsed(this)">
 							<img src="::api.config.rootPath::triangle-closed.png"/>
+							
 							::api.getTreeName(tree)::
 						</a>
 					</div>
 				::end::
 			::else::				
-				<span class="nav-header">::api.getTreeName(tree)::</span>
+				<span class="nav-header">com.haxepunk</span>
 			::end::
 			<ul>
 				::foreach sub args[2]::
@@ -32,9 +33,15 @@
 		</li>
 	::end::
 </macro>
+<macro name="fuseTop(tree)">
+	::switch tree::
+	::case::
+		$$makeTree(::args[2][0]::,::0::)
+	::end::
+</macro>
 var navContent='<ul>
 ::foreach tree root::
-	$$makeTree(::tree::,::0::)
+	$$fuseTop(::tree::)
 ::end::
 </ul>
 ';
