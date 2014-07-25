@@ -1,6 +1,8 @@
 import neko.Lib;
 import Terminal;
 import sys.io.Process;
+import haxe.io.BytesOutput;
+import haxe.io.Eof;
 
 import com.haxepunk.utils.HaxelibInfo;
 
@@ -47,6 +49,8 @@ class CLI
 					Setup.setup();
 				case "update":
 					Setup.update();
+				case "doc":
+					openDoc();
 				case "help":
 					usage();
 				default:
@@ -59,6 +63,66 @@ class CLI
 			usage();
 		}
 	}
+	
+	/** From https://github.com/openfl/lime-tools/blob/master/helpers/ProcessHelper.hx */
+	public static function openDoc():Void
+	{
+		// Get HaxePuk path
+		var output = "";
+
+		try
+		{
+			var process = new Process("haxelib", ["path", "HaxePunk"]);
+			var buffer = new BytesOutput();
+
+			var waiting = true;
+			while (waiting)
+			{
+				try
+				{
+					var current = process.stdout.readAll (1024);
+                    buffer.write(current);
+
+                    if (current.length == 0)
+						waiting = false;
+				}
+				catch (e:Eof)
+				{
+					waiting = false;
+				}
+			}
+
+			process.close();
+			output = buffer.getBytes().toString();
+		}
+		catch (e:Dynamic) { trace(e); }
+
+		var lines = output.split("\n");
+		var result = "";
+
+		for (i in 1...lines.length)
+		{
+			if (StringTools.trim(lines[i]) == "-D HaxePunk")
+			{
+				result = StringTools.trim(lines[i - 1]);
+			}
+		}
+		
+		var url = result + "doc/pages/index.html"; 
+		
+		if (Sys.systemName() == "Windows")
+		{
+			Sys.command("start", [ url ]);
+		}
+		else if (Sys.systemName() == "Mac")
+		{
+			Sys.command("/usr/bin/open", [ url ]);
+		}
+		else
+		{
+			Sys.command("/usr/bin/xdg-open", [ url, "&" ]);
+		}
+	}
 
 	public function usage()
 	{
@@ -66,6 +130,7 @@ class CLI
 		var version = HaxelibInfo.version;
 
 		print('/green/bold-- HaxePunk $version --/reset\n');
+		print('/blueUSAGE: /green$tool/reset doc');
 		print('/blueUSAGE: /green$tool/reset setup');
 		print('/blueUSAGE: /green$tool/reset update');
 		print('/blueUSAGE: /green$tool/reset new [options] [PROJECT_NAME]');
