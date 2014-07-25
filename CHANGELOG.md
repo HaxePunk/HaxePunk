@@ -1,5 +1,51 @@
 HaxePunk CHANGELOG
 
+v2.5.3
+------------------------------
+* Update to latest lime, openfl and hxcpp
+* Various internal improvements
+* [MattTuttle] Deprecating HXP.blackColor
+* [MattTuttle] Allow scenes to be pushed and popped
+* [MattTuttle] Allow initializing an Image with a TileAtlas
+* [Nananas] Ouya controller mapping for desktop
+* [azrafe7] Fixes for masklist collisions
+* [ibilon] Fix Text.addStyle on native
+* [ibilon] Fix text and richText color change
+* [ibilon] Fix parent null value in mask calculations
+* [scriptorum] Added Spritemap support for playing adhoc animations
+* [scriptorum] Added reset control to Spritemap.stop() Fixed stop()
+* [ibilon] Fix tween callback
+* [Anheurystics] Fixed Draw.graphic not working for native targets
+* [ibilon] Can disable HaxePunk's preloader with -DnoHaxepunkPreloader
+* [ibilon] Can play spritemap anim in reverse
+* [MattTuttle] Fixing out of bounds error in insertSortedKey
+* [MattTuttle] Fixing crash when type doesn't exist in types map
+* [MattTuttle] Missing types no longer crash collide functions
+* [eliasku] Update Ease.hx
+* [bendmorris] Don't round drawing positions or sizes to integers
+* [bendmorris] Fixing some buffer size and word wrap issues relating to font size and scale
+* [bendmorris] Fix for functions like collidePoint that find elements by type
+* [bendmorris] Adjust scaling of individual tiles to ensure no gaps or overlaps
+* [bendmorris] Draw tilemap tiles starting from integer positions
+* [Marc010] Add stop() function to Spritemap
+* [Marc010] Ported Image.createPolygon() from Flashpunk
+* [azrafe7] Added support to XNA (pixelizer) font to BitmapText
+* [azrafe7] Fixed polygon collision
+* [XXLTomate] Changed default flash background color to 0x00000000 to match native
+* [XXLTomate] Use HXP.stage.color in Screen.hx as default color
+* [Gama11] Joystick: update XBOX_GAMEPAD for OpenFL 1.4.0
+* [azrafe7] BitmapFont: fixed some glyphs in default font
+* [bendmorris] Embed assets by default on all platforms
+* [azrafe7] Fixes and improvements for Polygon.removeDuplicateAxes()
+* [bendmorris] Fixing emitter bugs when frameindex is outside the bounds of frame
+* [bendmorris] Adding screen shake
+* [bendmorris] Adding basic gesture controls for multitouch-enabled devices
+* [bendmorris] Allow mixed rendering of both smoothed and non-smoothed graphics
+* [lived123456] Update ParticleType.hx
+* [zebbedy] Compensate for openfl text color bug on Android
+* [bendmorris, ibilon] Fix image rotation when using uneven screen scalling in hardware rendermode
+* [ibilon] Changed to dox for documentation generation
+
 v2.5.2
 ------------------------------
 * [bendmorris] Adding clear method to Emitter
