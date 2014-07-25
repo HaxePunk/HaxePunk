@@ -7,12 +7,13 @@
 		</exec>
 	</target>
 
-	<target name="haxelib" depends="tools">
+	<target name="haxelib" depends="tools,doc">
 		<zip destfile="template.zip" useLanguageEncodingFlag="UTF-8" basedir="template" />
 		<zip destfile="haxepunk.zip" useLanguageEncodingFlag="UTF-8">
 			<zipfileset dir="" prefix="haxepunk" includes="run.n,haxelib.json,include.xml,template.zip,CHANGELOG,LICENSE" />
 			<zipfileset dir="com" prefix="haxepunk/com" />
 			<zipfileset dir="assets" prefix="haxepunk/assets" />
+			<zipfileset dir="doc/pages" prefix="haxepunk/doc/pages" />
 		</zip>
 		<exec executable="haxelib" dir=".">
 			<arg line="local haxepunk.zip" />
@@ -74,6 +75,7 @@
 		<delete quiet="true">
 			<fileset dir="Example" />
 			<fileset dir="." includes="*.n,*.zip,com.haxepunk.debug.swf" />
+			<fileset dir="doc" includes="xmls/*.xml,pages/*" />
 		</delete>
 	</target>
 
