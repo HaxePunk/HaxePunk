@@ -2,24 +2,21 @@
 	precision mediump float;
 #endif
 
-attribute vec3 aVertexPosition;
+uniform mat4 uMatrix;
+uniform vec3 uLightPos;
+
+attribute vec4 aVertexPosition;
 attribute vec2 aTexCoord;
 attribute vec3 aNormal;
-attribute vec3 aLightPos;
 
 varying vec2 vTexCoord;
 varying vec3 vNormal;
-varying vec4 vPosition;
-varying vec3 vLightPos;
-
-uniform mat4 uModelViewMatrix;
-uniform mat4 uProjectionMatrix;
+varying vec3 vLightDir;
 
 void main(void)
 {
-	vPosition = uModelViewMatrix * vec4(aVertexPosition, 1.0);
-	vNormal = normalize(aNormal);
+	vNormal = normalize(-uMatrix * vec4(aNormal, 0.0)).xyz;
+	vLightDir = normalize(uLightPos);
 	vTexCoord = aTexCoord;
-	vLightPos = aLightPos;
-	gl_Position = uProjectionMatrix * vPosition;
+	gl_Position = uMatrix * aVertexPosition;
 }

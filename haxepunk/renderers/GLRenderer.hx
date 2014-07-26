@@ -3,7 +3,7 @@ package haxepunk.renderers;
 #if !flash
 
 import haxepunk.graphics.Color;
-import haxepunk.math.Matrix4;
+import haxepunk.math.*;
 import haxepunk.renderers.Renderer;
 import lime.graphics.*;
 import lime.utils.*;
@@ -139,6 +139,11 @@ class GLRenderer
 	public static inline function setMatrix(loc:Location, matrix:Matrix4):Void
 	{
 		GL.uniformMatrix4fv(loc, false, matrix.native);
+	}
+
+	public static inline function setVector3(loc:Location, vec:Vector3):Void
+	{
+		GL.uniform3f(loc, vec.x, vec.y, vec.z);
 	}
 
 	public static inline function setColor(loc:Location, color:Color):Void

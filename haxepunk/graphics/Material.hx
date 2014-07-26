@@ -8,16 +8,17 @@ using StringTools;
 
 class Pass
 {
-	public var shader:Shader;
+	public var shader(default, set):Shader;
 	public var ambient:Color;
 	public var diffuse:Color;
 	public var specular:Color;
 	public var emissive:Color;
+	public var shininess:Float = 0;
 	public var depthCheck:Bool = true;
 
 	public function new()
 	{
-		ambient = new Color(1, 1, 1, 1);
+		ambient = new Color(0, 0, 0, 1);
 		diffuse = new Color(1, 1, 1, 1);
 		specular = new Color(0, 0, 0, 0);
 		emissive = new Color(0, 0, 0, 0);
@@ -27,6 +28,16 @@ class Pass
 #end
 
 		_textures = new Array<Texture>();
+	}
+
+	private function set_shader(value:Shader):Shader
+	{
+		_ambientLocation = value.uniform("uAmbientColor");
+		_diffuseLocation = value.uniform("uDiffuseColor");
+		_specularLocation = value.uniform("uSpecularColor");
+		_emissiveLocation = value.uniform("uEmissiveColor");
+		_shininessLocation = value.uniform("uShininess");
+		return shader = value;
 	}
 
 	public function addTexture(texture:Texture, uniformName:String="uImage0")
@@ -46,6 +57,12 @@ class Pass
 	public function use()
 	{
 		shader.use();
+		Renderer.setColor(_ambientLocation, ambient);
+		Renderer.setColor(_diffuseLocation, diffuse);
+		Renderer.setColor(_specularLocation, specular);
+		Renderer.setColor(_emissiveLocation, emissive);
+		Renderer.setFloat(_shininessLocation, shininess);
+
 		Renderer.setDepthTest(depthCheck);
 		Renderer.setBlendMode(SOURCE_ALPHA, ONE_MINUS_SOURCE_ALPHA);
 
@@ -73,6 +90,11 @@ class Pass
 	}
 
 	private var _textures:Array<Texture>;
+	private var _ambientLocation:Location;
+	private var _diffuseLocation:Location;
+	private var _specularLocation:Location;
+	private var _emissiveLocation:Location;
+	private var _shininessLocation:Location;
 
 }
 

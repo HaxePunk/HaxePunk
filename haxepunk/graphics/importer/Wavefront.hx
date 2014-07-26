@@ -9,7 +9,7 @@ using StringTools;
 class Wavefront
 {
 
-	public static function load(path:String):List<Mesh>
+	public static function load(path:String, ?material:Material):List<Mesh>
 	{
 		var vertices = new Array<Float>();
 		var texCoords = new Array<Float>();
@@ -54,7 +54,7 @@ class Wavefront
 						var data = createMeshData(vertices, texCoords, normals, indices);
 						if (data.length > 0)
 						{
-							var mesh = new Mesh();
+							var mesh = new Mesh(material);
 							mesh.createBuffer(data);
 							mesh.createIndexBuffer(faces);
 							meshList.push(mesh);
@@ -65,6 +65,15 @@ class Wavefront
 					if (parts.length > 0)
 						groupName = parts[0];
 				case "f": // face
+					// convert triangle fan to individual triangles
+					var i = 3;
+					while (i < parts.length)
+					{
+						parts.insert(i, parts[0]);
+						parts.insert(i+1, parts[i-1]);
+						i += 3;
+					}
+					// parse indices
 					for (part in parts)
 					{
 						if (indexMap.exists(part))
@@ -92,12 +101,6 @@ class Wavefront
 							indices.push([vv, vt, vn]);
 						}
 					}
-					if (parts.length > 3)
-					{
-						var len = faces.length;
-						faces.push(faces[len - 2]);
-						faces.push(faces[len - 4]);
-					}
 				case "mtllib":
 				case "usemtl":
 			}
@@ -106,7 +109,7 @@ class Wavefront
 		var data = createMeshData(vertices, texCoords, normals, indices);
 		if (data.length > 0)
 		{
-			var mesh = new Mesh();
+			var mesh = new Mesh(material);
 			mesh.createBuffer(data);
 			mesh.createIndexBuffer(faces);
 			meshList.push(mesh);
