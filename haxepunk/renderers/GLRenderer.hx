@@ -8,20 +8,44 @@ import haxepunk.renderers.Renderer;
 import lime.graphics.*;
 import lime.utils.*;
 
+#if cpp
+
+#if mac
+@:buildXml('<target id="haxe"><vflag name="-framework" value="OpenGL" /></target>')
+@:headerCode("#include <OpenGL/gl.h>")
+#elseif windows
+@:buildXml('<target id="haxe"><vflag name="-l" value="opengl32" /></target>')
+@:headerCode("#include <GL\\gl.h>")
+#else
+@:buildXml('<target id="haxe"><vflag name="-l" value="gl" /></target>')
+@:headerCode("#include <GL/gl.h>")
+#end
+
+#end
+
 class GLRenderer
 {
 
 	public static inline var MAX_BUFFER_SIZE:Int = 65535;
 
-	public static inline function clear(color:Color):Void
+	public static function clear(color:Color):Void
 	{
+		#if cpp
+		untyped __cpp__("glClearColor({0}, {1}, {2}, {3})", color.r, color.g, color.b, color.a);
+		untyped __cpp__("glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)");
+		#else
 		GL.clearColor(color.r, color.g, color.b, color.a);
 		GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
+		#end
 	}
 
 	public static inline function setViewport(x:Int, y:Int, width:Int, height:Int):Void
 	{
+		#if cpp
+		untyped __cpp__("glViewport({0}, {1}, {2}, {3})", x, y, width, height);
+		#else
 		GL.viewport(x, y, width, height);
+		#end
 	}
 
 	public static inline function present():Void
@@ -100,20 +124,19 @@ class GLRenderer
 		_activeState.texture = texture;
 	}
 
-	public static inline function compileShaderProgram(vertex:String, fragment:String):ShaderProgram
+	public static function compileShaderProgram(vertex:String, fragment:String):ShaderProgram
 	{
-		var program:GLProgram = GL.createProgram();
+		#if cpp
+		var program:ShaderProgram = untyped __cpp__("glCreateProgram()");
 
-		var shader = compileShader(vertex, GL.VERTEX_SHADER);
-		if (shader == null) return null;
-		GL.attachShader(program, shader);
-		GL.deleteShader(shader);
+		if (compileShader(program, vertex, GL.VERTEX_SHADER) == null) return -1;
+		if (compileShader(program, fragment, GL.FRAGMENT_SHADER) == null) return -1;
+		untyped __cpp__("glLinkProgram({0})", program);
+		#else
+		var program:ShaderProgram = GL.createProgram();
 
-		var shader = compileShader(fragment, GL.FRAGMENT_SHADER);
-		if (shader == null) return null;
-		GL.attachShader(program, shader);
-		GL.deleteShader(shader);
-
+		if (compileShader(program, vertex, GL.VERTEX_SHADER) == null) return null;
+		if (compileShader(program, fragment, GL.FRAGMENT_SHADER) == null) return null;
 		GL.linkProgram(program);
 
 		if (GL.getProgramParameter(program, GL.LINK_STATUS) == 0)
@@ -123,37 +146,58 @@ class GLRenderer
 			trace("ERROR: " + GL.getError());
 			return null;
 		}
+		#end
 
 		return program;
 	}
 
-	public static inline function bindProgram(program:ShaderProgram):Void
+	public static inline function bindProgram(?program:ShaderProgram):Void
 	{
 		if (_activeState.program != program)
 		{
+			#if cpp
+			untyped __cpp__("glUseProgram({0})", program);
+			#else
 			GL.useProgram(program);
+			#end
 			_activeState.program = program;
 		}
 	}
 
 	public static inline function setMatrix(loc:Location, matrix:Matrix4):Void
 	{
+		#if cpp
+		untyped __cpp__("glUniformMatrix4fv({0}, 1, GL_FALSE, {1})", 0, cpp.Pointer.arrayElem(matrix.native, 0).raw);
+		#else
 		GL.uniformMatrix4fv(loc, false, matrix.native);
+		#end
 	}
 
 	public static inline function setVector3(loc:Location, vec:Vector3):Void
 	{
+		#if cpp
+		untyped __cpp__("glUniform3f({0}, {1}, {2}, {3})", loc, vec.x, vec.y, vec.z);
+		#else
 		GL.uniform3f(loc, vec.x, vec.y, vec.z);
+		#end
 	}
 
 	public static inline function setColor(loc:Location, color:Color):Void
 	{
+		#if cpp
+		untyped __cpp__("glUniform4f({0}, {1}, {2}, {3}, {4})", loc, color.r, color.g, color.b, color.a);
+		#else
 		GL.uniform4f(loc, color.r, color.g, color.b, color.a);
+		#end
 	}
 
 	public static inline function setFloat(loc:Location, value:Float):Void
 	{
+		#if cpp
+		untyped __cpp__("glUniform1f({0}, {1})", loc, value);
+		#else
 		GL.uniform1f(loc, value);
+		#end
 	}
 
 	public static inline function setAttribute(a:Int, offset:Int, num:Int):Void
@@ -175,9 +219,13 @@ class GLRenderer
 		return new VertexBuffer(GL.createBuffer(), stride << 2);
 	}
 
-	public static inline function updateBuffer(data:Float32Array, ?usage:BufferUsage):Void
+	public static inline function updateBuffer(data:FloatArray, ?usage:BufferUsage):Void
 	{
-		GL.bufferData(GL.ARRAY_BUFFER, data, usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
+		#if cpp
+		untyped __cpp__("glBufferData(GL_ARRAY_BUFFER, {0}, {1}, {2})", data.length, cpp.Pointer.arrayElem(data, 0).raw, usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
+		#else
+		GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(data), usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
+		#end
 	}
 
 	public static inline function updateIndexBuffer(data:Int16Array, ?usage:BufferUsage, ?buffer:IndexBuffer):IndexBuffer
@@ -200,7 +248,7 @@ class GLRenderer
 	 * @param source  The shader source code
 	 * @param type    The type of shader to compile (fragment, vertex)
 	 */
-	private static inline function compileShader(source:String, type:Int):GLShader
+	private static inline function compileShader(program:ShaderProgram, source:String, type:Int):GLShader
 	{
 		var shader = GL.createShader(type);
 		GL.shaderSource(shader, source);
@@ -211,6 +259,22 @@ class GLRenderer
 			trace(GL.getShaderInfoLog(shader));
 			shader = null;
 		}
+
+		#if cpp
+		if (shader.id >= 0)
+		{
+			untyped {
+				__cpp__("glAttachShader({0}, {1})", program, shader.id);
+				__cpp__("glDeleteShader({0})", shader.id);
+			}
+		}
+		#else
+		if (shader != null)
+		{
+			GL.attachShader(program, shader);
+			GL.deleteShader(shader);
+		}
+		#end
 
 		return shader;
 	}

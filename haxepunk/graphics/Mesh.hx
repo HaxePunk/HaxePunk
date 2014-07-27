@@ -48,7 +48,6 @@ class Mesh implements Graphic
 	 */
 	public function draw(camera:Camera, offset:Vector3):Void
 	{
-		Renderer.setDepthTest(true);
 		transform.translateVector3(offset);
 
 		Renderer.bindBuffer(_vertexBuffer);
@@ -71,12 +70,12 @@ class Mesh implements Graphic
 		// Renderer.bindBuffer(null);
 	}
 
-	public function createBuffer(data:Array<Float>):VertexBuffer
+	public function createBuffer(data:FloatArray):VertexBuffer
 	{
 		if (data == null) throw "Vertex data buffer must not be null";
 		_vertexBuffer = Renderer.createBuffer(8);
 		Renderer.bindBuffer(_vertexBuffer);
-		Renderer.updateBuffer(new Float32Array(cast data));
+		Renderer.updateBuffer(data);
 		return _vertexBuffer;
 	}
 

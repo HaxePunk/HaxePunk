@@ -62,14 +62,14 @@ class Engine extends Application
 		scene.draw();
 
 		// must reset program and texture at end of each frame...
-		Renderer.bindProgram(null);
+		Renderer.bindProgram();
 		Renderer.bindTexture(null, 0);
 	}
 
 	override public function update(deltaTime:Int):Void
 	{
 		scene.update(deltaTime / 1000.0);
-		
+
 		// Update the input system
 		Input.update();
 	}

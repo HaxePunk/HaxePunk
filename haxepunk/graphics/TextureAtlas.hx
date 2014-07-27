@@ -13,10 +13,10 @@ class TextureAtlas extends Texture
 		loadFromImage(image);
 #end
 		_index = new Array<Int>();
-		_uvs = new Array<Float>();
+		_uvs = new FloatArray();
 	}
 
-	public function copyRegionInto(id:Int, into:Array<Float>, offset:Int=0):Void
+	public function copyRegionInto(id:Int, into:FloatArray, offset:Int=0):Void
 	{
 		// #if cpp
 		// cpp.NativeArray.blit(into, offset * 8, _uvs, id * 8, 8);
@@ -112,6 +112,6 @@ class TextureAtlas extends Texture
 	}
 
 	private var _index:Array<Int>;
-	private var _uvs:Array<Float>;
+	private var _uvs:FloatArray;
 
 }

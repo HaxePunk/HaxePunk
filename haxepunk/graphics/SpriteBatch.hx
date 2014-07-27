@@ -12,8 +12,8 @@ private class Batch
 	public function new(material:Material)
 	{
 		_indices = new Array<Int>();
-		_vertices = new Array<Float>();
-		_uvs = new Array<Float>();
+		_vertices = new FloatArray();
+		_uvs = new FloatArray();
 
 		var pass = material.firstPass;
 		var texture = pass.getTexture(0);
@@ -132,7 +132,7 @@ private class Batch
 
 			Renderer.bindBuffer(_uvBuffer);
 			Renderer.setAttribute(_uvAttribute, 0, 2);
-			Renderer.updateBuffer(new Float32Array(_uvs), STATIC_DRAW);
+			Renderer.updateBuffer(_uvs, STATIC_DRAW);
 			#if flash
 			Renderer.setAttribute(_uvAttribute, 0, 2);
 			#end
@@ -147,7 +147,7 @@ private class Batch
 
 		Renderer.bindBuffer(_vertexBuffer);
 		Renderer.setAttribute(_vertexAttribute, 0, 3);
-		Renderer.updateBuffer(new Float32Array(_vertices), DYNAMIC_DRAW);
+		Renderer.updateBuffer(_vertices, DYNAMIC_DRAW);
 		#if flash
 		Renderer.setAttribute(_vertexAttribute, 0, 3);
 		#end
@@ -157,8 +157,8 @@ private class Batch
 	}
 
 	private var _indices:Array<Int>;
-	private var _vertices:Array<Float>;
-	private var _uvs:Array<Float>;
+	private var _vertices:FloatArray;
+	private var _uvs:FloatArray;
 	private var _indexBuffer:IndexBuffer;
 	private var _vertexBuffer:VertexBuffer;
 	private var _uvBuffer:VertexBuffer;

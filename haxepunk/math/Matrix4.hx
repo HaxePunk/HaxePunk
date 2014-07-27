@@ -2,29 +2,37 @@ package haxepunk.math;
 
 #if flash
 typedef NativeMatrix4 = flash.geom.Matrix3D;
+#elseif cpp
+typedef NativeMatrix4 = Array<cpp.Float32>;
 #else
 typedef NativeMatrix4 = lime.utils.Float32Array;
 #end
 
-class Matrix4 implements ArrayAccess<Float>
+#if cpp
+typedef MatrixValue = cpp.Float32;
+#else
+typedef MatrixValue = Float;
+#end
+
+class Matrix4 implements ArrayAccess<MatrixValue>
 {
 
-	public var _11:Float = 1;
-	public var _12:Float = 0;
-	public var _13:Float = 0;
-	public var _14:Float = 0;
-	public var _21:Float = 0;
-	public var _22:Float = 1;
-	public var _23:Float = 0;
-	public var _24:Float = 0;
-	public var _31:Float = 0;
-	public var _32:Float = 0;
-	public var _33:Float = 1;
-	public var _34:Float = 0;
-	public var _41:Float = 0;
-	public var _42:Float = 0;
-	public var _43:Float = 0;
-	public var _44:Float = 1;
+	public var _11:MatrixValue = 1;
+	public var _12:MatrixValue = 0;
+	public var _13:MatrixValue = 0;
+	public var _14:MatrixValue = 0;
+	public var _21:MatrixValue = 0;
+	public var _22:MatrixValue = 1;
+	public var _23:MatrixValue = 0;
+	public var _24:MatrixValue = 0;
+	public var _31:MatrixValue = 0;
+	public var _32:MatrixValue = 0;
+	public var _33:MatrixValue = 1;
+	public var _34:MatrixValue = 0;
+	public var _41:MatrixValue = 0;
+	public var _42:MatrixValue = 0;
+	public var _43:MatrixValue = 0;
+	public var _44:MatrixValue = 1;
 
 	public function new(?data:NativeMatrix4)
 	{
@@ -42,33 +50,36 @@ class Matrix4 implements ArrayAccess<Float>
 		{
 			if (_native == null)
 			{
-				_native = new NativeMatrix4(#if flash flash.Vector.ofArray(toArray()) #else toArray() #end);
+				#if flash
+				_native = new NativeMatrix4(flash.Vector.ofArray(toArray()));
+				#elseif cpp
+				_native = toArray();
+				#else
+				_native = new NativeMatrix4(toArray());
+				#end
 			}
 			else
 			{
 				#if cpp
-				untyped {
-					var bytes = _native.bytes;
-					__global__.__hxcpp_memory_set_float(bytes, 0, _11);
-					__global__.__hxcpp_memory_set_float(bytes, 4, _12);
-					__global__.__hxcpp_memory_set_float(bytes, 8, _13);
-					__global__.__hxcpp_memory_set_float(bytes, 12, _14);
+					cpp.NativeArray.unsafeSet(_native, 0, _11);
+					cpp.NativeArray.unsafeSet(_native, 1, _12);
+					cpp.NativeArray.unsafeSet(_native, 2, _13);
+					cpp.NativeArray.unsafeSet(_native, 3, _14);
 
-					__global__.__hxcpp_memory_set_float(bytes, 16, _21);
-					__global__.__hxcpp_memory_set_float(bytes, 20, _22);
-					__global__.__hxcpp_memory_set_float(bytes, 24, _23);
-					__global__.__hxcpp_memory_set_float(bytes, 28, _24);
+					cpp.NativeArray.unsafeSet(_native, 4, _21);
+					cpp.NativeArray.unsafeSet(_native, 5, _22);
+					cpp.NativeArray.unsafeSet(_native, 6, _23);
+					cpp.NativeArray.unsafeSet(_native, 7, _24);
 
-					__global__.__hxcpp_memory_set_float(bytes, 32, _31);
-					__global__.__hxcpp_memory_set_float(bytes, 36, _32);
-					__global__.__hxcpp_memory_set_float(bytes, 40, _33);
-					__global__.__hxcpp_memory_set_float(bytes, 44, _34);
+					cpp.NativeArray.unsafeSet(_native, 8, _31);
+					cpp.NativeArray.unsafeSet(_native, 9, _32);
+					cpp.NativeArray.unsafeSet(_native, 10, _33);
+					cpp.NativeArray.unsafeSet(_native, 11, _34);
 
-					__global__.__hxcpp_memory_set_float(bytes, 48, _41);
-					__global__.__hxcpp_memory_set_float(bytes, 52, _42);
-					__global__.__hxcpp_memory_set_float(bytes, 56, _43);
-					__global__.__hxcpp_memory_set_float(bytes, 60, _44);
-				}
+					cpp.NativeArray.unsafeSet(_native, 12, _41);
+					cpp.NativeArray.unsafeSet(_native, 13, _42);
+					cpp.NativeArray.unsafeSet(_native, 14, _43);
+					cpp.NativeArray.unsafeSet(_native, 15, _44);
 				#else
 					var bytes = #if flash _native.rawData #else _native #end;
 					bytes[0] = _11;
@@ -97,7 +108,7 @@ class Matrix4 implements ArrayAccess<Float>
 		return _native;
 	}
 
-	public function toArray():Array<Float>
+	public function toArray():Array<MatrixValue>
 	{
 		return [
 			_11, _12, _13, _14,
@@ -159,7 +170,7 @@ class Matrix4 implements ArrayAccess<Float>
 		translate(v.x, v.y, v.z);
 	}
 
-	public function translate(x:Float, y:Float, z:Float):Void
+	public function translate(x:MatrixValue, y:MatrixValue, z:MatrixValue):Void
 	{
 		_41 = x;
 		_42 = y;
@@ -172,7 +183,7 @@ class Matrix4 implements ArrayAccess<Float>
 		scale(v.x, v.y, v.z);
 	}
 
-	public function scale(x:Float, y:Float, z:Float):Void
+	public function scale(x:MatrixValue, y:MatrixValue, z:MatrixValue):Void
 	{
 		// not using *= because it compiles better in c++
 		_11 = _11 * x;
@@ -197,7 +208,7 @@ class Matrix4 implements ArrayAccess<Float>
 		rotateZ(v.z);
 	}
 
-	public function rotateX(angle:Float):Void
+	public function rotateX(angle:MatrixValue):Void
 	{
 		var cos = Math.cos(angle);
 		var sin = Math.sin(angle);
@@ -221,7 +232,7 @@ class Matrix4 implements ArrayAccess<Float>
 		_isDirty = true;
 	}
 
-	public function rotateY(angle:Float):Void
+	public function rotateY(angle:MatrixValue):Void
 	{
 		var cos = Math.cos(angle);
 		var sin = Math.sin(angle);
@@ -245,7 +256,7 @@ class Matrix4 implements ArrayAccess<Float>
 		_isDirty = true;
 	}
 
-	public function rotateZ(angle:Float):Void
+	public function rotateZ(angle:MatrixValue):Void
 	{
 		var cos = Math.cos(angle);
 		var sin = Math.sin(angle);
@@ -301,8 +312,8 @@ class Matrix4 implements ArrayAccess<Float>
 		return this;
 	}
 
-	public var determinant(get, never):Float;
-	private function get_determinant():Float
+	public var determinant(get, never):MatrixValue;
+	private function get_determinant():MatrixValue
 	{
 		return ((_11 * _22 - _12 * _21) * (_33 * _44 - _34 * _43)
 			- (_11 * _23 - _13 * _21) * (_32 * _44 - _34 * _42)
@@ -318,10 +329,10 @@ class Matrix4 implements ArrayAccess<Float>
 
 		if (d == 0) return false;
 
-		var m11:Float = _11; var m21:Float = _21; var m31:Float = _31; var m41:Float = _41;
-		var m12:Float = _12; var m22:Float = _22; var m32:Float = _32; var m42:Float = _42;
-		var m13:Float = _13; var m23:Float = _23; var m33:Float = _33; var m43:Float = _43;
-		var m14:Float = _14; var m24:Float = _24; var m34:Float = _34; var m44:Float = _44;
+		var m11:MatrixValue = _11; var m21:MatrixValue = _21; var m31:MatrixValue = _31; var m41:MatrixValue = _41;
+		var m12:MatrixValue = _12; var m22:MatrixValue = _22; var m32:MatrixValue = _32; var m42:MatrixValue = _42;
+		var m13:MatrixValue = _13; var m23:MatrixValue = _23; var m33:MatrixValue = _33; var m43:MatrixValue = _43;
+		var m14:MatrixValue = _14; var m24:MatrixValue = _24; var m34:MatrixValue = _34; var m44:MatrixValue = _44;
 
 		d = 1 / d;
 
@@ -347,7 +358,7 @@ class Matrix4 implements ArrayAccess<Float>
 
 	public function transpose()
 	{
-		var tmp:Float;
+		var tmp:MatrixValue;
 		tmp = _12; _12 = _21; _21 = tmp;
 		tmp = _13; _13 = _31; _31 = tmp;
 		tmp = _14; _14 = _41; _41 = tmp;
@@ -363,7 +374,7 @@ class Matrix4 implements ArrayAccess<Float>
 	 * @param near The z-axis nearest value
 	 * @param far The z-axis farthest value
 	 */
-	public static inline function createPerspective(fov:Float, aspect:Float, near:Float, far:Float):Matrix4
+	public static inline function createPerspective(fov:MatrixValue, aspect:MatrixValue, near:MatrixValue, far:MatrixValue):Matrix4
 	{
 		var m = new Matrix4();
 		if (fov <= 0 || aspect == 0)
@@ -385,7 +396,7 @@ class Matrix4 implements ArrayAccess<Float>
 		return m;
 	}
 
-	public static inline function createOrtho(left:Float, right:Float,  top:Float, bottom:Float, near:Float, far:Float):Matrix4
+	public static inline function createOrtho(left:MatrixValue, right:MatrixValue,  top:MatrixValue, bottom:MatrixValue, near:MatrixValue, far:MatrixValue):Matrix4
 	{
 		var m = new Matrix4();
 		var sx = 1.0 / (right - left);
@@ -404,7 +415,7 @@ class Matrix4 implements ArrayAccess<Float>
 		return m;
 	}
 
-	private function __get(index:Int):Float
+	private function __get(index:Int):MatrixValue
 	{
 		return switch (index)
 		{
@@ -428,7 +439,7 @@ class Matrix4 implements ArrayAccess<Float>
 		}
 	}
 
-	private function __set(index:Int, value:Float):Float
+	private function __set(index:Int, value:MatrixValue):MatrixValue
 	{
 		_isDirty = true;
 		return switch (index)

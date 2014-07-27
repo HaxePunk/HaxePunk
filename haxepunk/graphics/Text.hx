@@ -26,7 +26,7 @@ class Text implements Graphic
 
 	public function new(text:String, size:Int=16)
 	{
-		_vertices = new Array<Float>();
+		_vertices = new FloatArray();
 		_indices = new Array<Int>();
 		_matrix = new Matrix4();
 		color = new Color();
@@ -93,7 +93,7 @@ class Text implements Graphic
 			width = x;
 			height = y + lineHeight;
 			Renderer.bindBuffer(_vertexBuffer);
-			Renderer.updateBuffer(new Float32Array(_vertices), STATIC_DRAW);
+			Renderer.updateBuffer(_vertices, STATIC_DRAW);
 			_indexBuffer = Renderer.updateIndexBuffer(new Int16Array(_indices), STATIC_DRAW, _indexBuffer);
 		}
 		return text = value;
@@ -152,7 +152,7 @@ class Text implements Graphic
 
 	public function draw(camera:Camera, offset:Vector3):Void
 	{
-		if (_indexBuffer == null) return;
+		if (_indexBuffer == null || _vertexBuffer == null) return;
 
 		material.use();
 
@@ -182,7 +182,7 @@ class Text implements Graphic
 	private var _widthUniform:Location;
 	private var _heightUniform:Location;
 
-	private var _vertices:Array<Float>;
+	private var _vertices:FloatArray;
 	private var _indices:Array<Int>;
 	private var _vertexBuffer:VertexBuffer;
 	private var _indexBuffer:IndexBuffer;

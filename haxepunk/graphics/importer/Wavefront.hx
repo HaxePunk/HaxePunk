@@ -3,6 +3,7 @@ package haxepunk.graphics.importer;
 import haxe.ds.StringMap;
 import lime.Assets;
 import haxepunk.graphics.Mesh;
+import haxepunk.renderers.Renderer;
 
 using StringTools;
 
@@ -11,9 +12,9 @@ class Wavefront
 
 	public static function load(path:String, ?material:Material):List<Mesh>
 	{
-		var vertices = new Array<Float>();
-		var texCoords = new Array<Float>();
-		var normals = new Array<Float>();
+		var vertices = new FloatArray();
+		var texCoords = new FloatArray();
+		var normals = new FloatArray();
 
 		var faces = new Array<Int>();
 
@@ -118,9 +119,9 @@ class Wavefront
 		return meshList;
 	}
 
-	private static function createMeshData(vertices:Array<Float>, texCoords:Array<Float>, normals:Array<Float>, indices:Array<Array<Int>>):Array<Float>
+	private static function createMeshData(vertices:FloatArray, texCoords:FloatArray, normals:FloatArray, indices:Array<Array<Int>>):FloatArray
 	{
-		var data = new Array<Float>();
+		var data = new FloatArray();
 		data[indices.length * 8 - 1] = 0.0;
 		var d = 0;
 		for (index in indices)

@@ -14,7 +14,7 @@ class Pass
 	public var specular:Color;
 	public var emissive:Color;
 	public var shininess:Float = 0;
-	public var depthCheck:Bool = true;
+	public var depthCheck:Bool = false;
 
 	public function new()
 	{

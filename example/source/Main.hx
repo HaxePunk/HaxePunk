@@ -1,7 +1,7 @@
 import haxepunk.Engine;
 import haxepunk.HXP;
-import haxepunk.graphics.Image;
-import haxepunk.math.Math;
+import haxepunk.graphics.*;
+import haxepunk.math.*;
 
 class Main extends Engine
 {
@@ -9,11 +9,11 @@ class Main extends Engine
 	{
 		super.ready();
 
-		var image = new Image("assets/lime.jpg");
-		image.centerOrigin();
-		image.scale.x = 0.5;
-		image.scale.y = 0.75;
-		scene.addGraphic(image);
+		// var image = new Image("assets/lime.jpg");
+		// image.centerOrigin();
+		// image.scale.x = 0.5;
+		// image.scale.y = 0.75;
+		// scene.addGraphic(image);
 
 		// scene.camera.clearColor.r = scene.camera.clearColor.g = scene.camera.clearColor.b = 0.6;
 
@@ -23,7 +23,33 @@ class Main extends Engine
 		// text.color.b = 0.462;
 		// scene.addGraphic(text, 50, 200);
 
-		scene.add(new Player());
+		// scene.add(new Player());
+
+		scene.camera.x = -(HXP.window.width / 2);
+		scene.camera.y = -(HXP.window.height / 2);
+		var material = new Material();
+		var pass = material.firstPass;
+		pass.depthCheck = true;
+		pass.shader = new Shader(lime.Assets.getText("shaders/lighting.vert"), lime.Assets.getText("shaders/lighting.frag"));
+
+		var group = haxepunk.graphics.importer.Wavefront.load("assets/minicooper.obj", material);
+		var e = new haxepunk.scene.Entity();
+		for (mesh in group)
+		{
+			e.addGraphic(mesh);
+		}
+		scene.add(e);
+
+		fps = new Text("", 32);
+		scene.addGraphic(fps, scene.camera.x, scene.camera.y);
 	}
+
+	override public function update(deltaTime:Int)
+	{
+		super.update(deltaTime);
+		fps.text = "" + Std.int(HXP.frameRate);
+	}
+
+	private var fps:Text;
 
 }
