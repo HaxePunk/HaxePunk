@@ -10,16 +10,16 @@ import lime.utils.*;
 
 #if cpp
 
-#if mac
-@:buildXml('<target id="haxe"><vflag name="-framework" value="OpenGL" /></target>')
-@:headerCode("#include <OpenGL/gl.h>")
-#elseif windows
-@:buildXml('<target id="haxe"><vflag name="-l" value="opengl32" /></target>')
-@:headerCode("#include <GL\\gl.h>")
-#else
-@:buildXml('<target id="haxe"><vflag name="-l" value="gl" /></target>')
-@:headerCode("#include <GL/gl.h>")
-#end
+	#if mac
+		@:buildXml('<target id="haxe"><vflag name="-framework" value="OpenGL" /></target>')
+		@:headerCode("#include <OpenGL/gl.h>")
+	#elseif windows
+		@:buildXml('<target id="haxe"><lib name="opengl32.lib" /></target>')
+		@:headerCode("#include <windows.h>\n#include <GL/gl.h>")
+	#else
+		@:buildXml('<target id="haxe"><lib name="-lgl" /></target>')
+		@:headerCode("#include <GL/gl.h>")
+	#end
 
 #end
 
@@ -119,8 +119,13 @@ class GLRenderer
 	{
 		if (_activeState.texture == texture) return;
 
+		#if cpp
+		untyped __cpp__("glActiveTexture(GL_TEXTURE0 + {0})", sampler);
+		untyped __cpp__("glBindTexture(GL_TEXTURE_2D, {0})", texture.id);
+		#else
 		GL.activeTexture(GL.TEXTURE0 + sampler);
 		GL.bindTexture(GL.TEXTURE_2D, texture);
+		#end
 		_activeState.texture = texture;
 	}
 
@@ -167,7 +172,7 @@ class GLRenderer
 	public static inline function setMatrix(loc:Location, matrix:Matrix4):Void
 	{
 		#if cpp
-		untyped __cpp__("glUniformMatrix4fv({0}, 1, GL_FALSE, {1})", 0, cpp.Pointer.arrayElem(matrix.native, 0).raw);
+		untyped __cpp__("glUniformMatrix4fv({0}, 1, GL_FALSE, {1})", loc, cpp.Pointer.arrayElem(matrix.native, 0).raw);
 		#else
 		GL.uniformMatrix4fv(loc, false, matrix.native);
 		#end
@@ -202,15 +207,24 @@ class GLRenderer
 
 	public static inline function setAttribute(a:Int, offset:Int, num:Int):Void
 	{
+		#if cpp
+		untyped __cpp__("glVertexAttribPointer({0}, {1}, GL_FLOAT, false, {2}, (const GLvoid *){3})", a, num, _activeState.buffer.stride, offset << 2);
+		untyped __cpp__("glEnableVertexAttribArray({0})", a);
+		#else
 		GL.vertexAttribPointer(a, num, GL.FLOAT, false, _activeState.buffer.stride, offset << 2);
 		GL.enableVertexAttribArray(a);
+		#end
 	}
 
 	public static inline function bindBuffer(v:VertexBuffer):Void
 	{
 		if (_activeState.buffer == v) return;
 
+		#if cpp
+		untyped __cpp__("glBindBuffer(GL_ARRAY_BUFFER, {0})", v.buffer.id);
+		#else
 		GL.bindBuffer(GL.ARRAY_BUFFER, v.buffer);
+		#end
 		_activeState.buffer = v;
 	}
 
@@ -222,25 +236,35 @@ class GLRenderer
 	public static inline function updateBuffer(data:FloatArray, ?usage:BufferUsage):Void
 	{
 		#if cpp
-		untyped __cpp__("glBufferData(GL_ARRAY_BUFFER, {0}, {1}, {2})", data.length, cpp.Pointer.arrayElem(data, 0).raw, usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
+		untyped __cpp__("glBufferData(GL_ARRAY_BUFFER, {0}, {1}, {2})", data.length << 2, cpp.Pointer.arrayElem(data, 0).raw, usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 		#else
 		GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(data), usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 		#end
 	}
 
-	public static inline function updateIndexBuffer(data:Int16Array, ?usage:BufferUsage, ?buffer:IndexBuffer):IndexBuffer
+	public static inline function updateIndexBuffer(data:IntArray, ?usage:BufferUsage, ?buffer:IndexBuffer):IndexBuffer
 	{
 		if (buffer == null) buffer = GL.createBuffer();
+		#if cpp
+		untyped __cpp__("glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, {0})", buffer.id);
+		untyped __cpp__("glBufferData(GL_ELEMENT_ARRAY_BUFFER, {0}, {1}, {2})", data.length << 1, cpp.Pointer.arrayElem(data, 0).raw, usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
+		#else
 		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, buffer);
-		GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, data, usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
+		GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, new Int16Array(data), usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
+		#end
 		_activeState.indexBuffer = buffer;
 		return buffer;
 	}
 
 	public static inline function draw(buffer:IndexBuffer, numTriangles:Int, offset:Int=0):Void
 	{
+		#if cpp
+		untyped __cpp__("glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, {0})", buffer.id);
+		untyped __cpp__("glDrawElements(GL_TRIANGLES, {0}, GL_UNSIGNED_SHORT, (const GLvoid *){1})", numTriangles * 3, offset << 2);
+		#else
 		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, buffer);
 		GL.drawElements(GL.TRIANGLES, numTriangles * 3, GL.UNSIGNED_SHORT, offset << 2);
+		#end
 	}
 
 	/**

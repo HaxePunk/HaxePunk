@@ -32,13 +32,8 @@ class Main extends Engine
 		pass.depthCheck = true;
 		pass.shader = new Shader(lime.Assets.getText("shaders/lighting.vert"), lime.Assets.getText("shaders/lighting.frag"));
 
-		var group = haxepunk.graphics.importer.Wavefront.load("assets/minicooper.obj", material);
-		var e = new haxepunk.scene.Entity();
-		for (mesh in group)
-		{
-			e.addGraphic(mesh);
-		}
-		scene.add(e);
+		var mesh = haxepunk.graphics.importer.Wavefront.load("assets/minicooper.obj", material);
+		scene.addGraphic(mesh);
 
 		fps = new Text("", 32);
 		scene.addGraphic(fps, scene.camera.x, scene.camera.y);

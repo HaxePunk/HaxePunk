@@ -11,7 +11,7 @@ private class Batch
 
 	public function new(material:Material)
 	{
-		_indices = new Array<Int>();
+		_indices = new IntArray();
 		_vertices = new FloatArray();
 		_uvs = new FloatArray();
 
@@ -128,7 +128,7 @@ private class Batch
 		if (_updateVBOs)
 		{
 			if (_spriteIndex > _lastSpriteIndex)
-				_indexBuffer = Renderer.updateIndexBuffer(new Int16Array(_indices), STATIC_DRAW, _indexBuffer);
+				_indexBuffer = Renderer.updateIndexBuffer(_indices, STATIC_DRAW, _indexBuffer);
 
 			Renderer.bindBuffer(_uvBuffer);
 			Renderer.setAttribute(_uvAttribute, 0, 2);
@@ -156,7 +156,7 @@ private class Batch
 		_lastSpriteIndex = _spriteIndex;
 	}
 
-	private var _indices:Array<Int>;
+	private var _indices:IntArray;
 	private var _vertices:FloatArray;
 	private var _uvs:FloatArray;
 	private var _indexBuffer:IndexBuffer;

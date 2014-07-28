@@ -1,9 +1,6 @@
 package haxepunk.graphics;
 
-import lime.utils.Int16Array;
-import lime.utils.Float32Array;
-import haxepunk.math.Vector3;
-import haxepunk.math.Matrix4;
+import haxepunk.math.*;
 import haxepunk.scene.Camera;
 import haxepunk.renderers.Renderer;
 
@@ -60,6 +57,9 @@ class Mesh implements Graphic
 		material.use();
 		transform.identity();
 		transform.translateVector3(offset);
+		// transform.scale(30, 30, 30);
+		// transform.rotateX(90 * Math.RAD);
+		transform.rotateY(rot); rot += 0.01;
 		transform.multiply(camera.transform);
 		Renderer.setMatrix(_modelViewMatrixUniform, transform);
 
@@ -69,6 +69,7 @@ class Mesh implements Graphic
 		// material.disable();
 		// Renderer.bindBuffer(null);
 	}
+	private var rot:Float = 0;
 
 	public function createBuffer(data:FloatArray):VertexBuffer
 	{
@@ -79,11 +80,11 @@ class Mesh implements Graphic
 		return _vertexBuffer;
 	}
 
-	public function createIndexBuffer(data:Array<Int>):IndexBuffer
+	public function createIndexBuffer(data:IntArray):IndexBuffer
 	{
 		if (data == null) throw "Index buffer must not be null";
 		_numTriangles = Std.int(data.length / 3);
-		return _indexBuffer = Renderer.updateIndexBuffer(new Int16Array(cast data));
+		return _indexBuffer = Renderer.updateIndexBuffer(data);
 	}
 
 	private var _indexBuffer:IndexBuffer;

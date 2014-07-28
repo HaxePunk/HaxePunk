@@ -6,8 +6,6 @@ import haxepunk.math.Vector3;
 import haxepunk.math.Matrix4;
 import haxepunk.renderers.Renderer;
 import lime.graphics.Font;
-import lime.utils.Float32Array;
-import lime.utils.Int16Array;
 import lime.Assets;
 
 using StringTools;
@@ -27,7 +25,7 @@ class Text implements Graphic
 	public function new(text:String, size:Int=16)
 	{
 		_vertices = new FloatArray();
-		_indices = new Array<Int>();
+		_indices = new IntArray();
 		_matrix = new Matrix4();
 		color = new Color();
 
@@ -94,7 +92,7 @@ class Text implements Graphic
 			height = y + lineHeight;
 			Renderer.bindBuffer(_vertexBuffer);
 			Renderer.updateBuffer(_vertices, STATIC_DRAW);
-			_indexBuffer = Renderer.updateIndexBuffer(new Int16Array(_indices), STATIC_DRAW, _indexBuffer);
+			_indexBuffer = Renderer.updateIndexBuffer(_indices, STATIC_DRAW, _indexBuffer);
 		}
 		return text = value;
 	}
@@ -183,7 +181,7 @@ class Text implements Graphic
 	private var _heightUniform:Location;
 
 	private var _vertices:FloatArray;
-	private var _indices:Array<Int>;
+	private var _indices:IntArray;
 	private var _vertexBuffer:VertexBuffer;
 	private var _indexBuffer:IndexBuffer;
 

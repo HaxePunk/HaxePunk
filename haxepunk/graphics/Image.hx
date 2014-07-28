@@ -4,8 +4,6 @@ import haxepunk.HXP;
 import haxepunk.math.Vector3;
 import haxepunk.math.Matrix4;
 import haxepunk.scene.Camera;
-import lime.utils.Float32Array;
-import lime.utils.Int16Array;
 
 class Image implements Graphic
 {

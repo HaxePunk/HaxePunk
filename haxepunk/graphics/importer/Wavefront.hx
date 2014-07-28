@@ -10,18 +10,16 @@ using StringTools;
 class Wavefront
 {
 
-	public static function load(path:String, ?material:Material):List<Mesh>
+	public static function load(path:String, ?material:Material):Mesh
 	{
 		var vertices = new FloatArray();
 		var texCoords = new FloatArray();
 		var normals = new FloatArray();
+		var data = new FloatArray();
 
-		var faces = new Array<Int>();
+		var tris = new IntArray();
 
-		var indices = new Array<Array<Int>>();
 		var indexMap = new StringMap<Int>();
-
-		var meshList = new List<Mesh>();
 
 		var lines = Assets.getText(path).split("\n");
 		var v = 0, t = 0, n = 0;
@@ -35,6 +33,7 @@ class Wavefront
 			for (part in parts) if (part.trim() == "") parts.remove(part);
 			if (parts.length == 0) continue;
 
+			var processFace = false;
 			switch (parts.shift())
 			{
 				case "v": // vertex
@@ -50,22 +49,10 @@ class Wavefront
 					normals[n++] = Std.parseFloat(parts[2]);
 				case "s": // smooth shading
 				case "g": // group
-					if (groupName != null)
-					{
-						var data = createMeshData(vertices, texCoords, normals, indices);
-						if (data.length > 0)
-						{
-							var mesh = new Mesh(material);
-							mesh.createBuffer(data);
-							mesh.createIndexBuffer(faces);
-							meshList.push(mesh);
-						}
-						// t = n = v = 0;
-						groupName = null;
-					}
 					if (parts.length > 0)
-						groupName = parts[0];
+						groupName = parts.shift();
 				case "f": // face
+					processFace = true;
 					// convert triangle fan to individual triangles
 					var i = 3;
 					while (i < parts.length)
@@ -79,27 +66,49 @@ class Wavefront
 					{
 						if (indexMap.exists(part))
 						{
-							faces.push(indexMap.get(part));
+							tris.push(indexMap.get(part));
 						}
 						else
 						{
-							var i = indices.length;
-							faces.push(i);
+							var i = Std.int(data.length / 8);
+							tris.push(i);
 							indexMap.set(part, i);
 
 							var p = part.split("/");
-							var vv = parseInt(p[0]),
-								vt = vv,
-								vn = vv;
+							var index = parseInt(p[0]) * 3;
+							data.push(vertices[index]);
+							data.push(vertices[index+1]);
+							data.push(vertices[index+2]);
+
 							if (p.length > 1)
 							{
-								vt = parseInt(p[1]);
+								index = parseInt(p[1]) * 2;
+								data.push(texCoords[index]);
+								data.push(texCoords[index+1]);
+
 								if (p.length > 2)
 								{
-									vn = parseInt(p[2]);
+									index = parseInt(p[2]) * 3;
+									data.push(normals[index]);
+									data.push(normals[index+1]);
+									data.push(normals[index+2]);
+								}
+								else
+								{
+									data.push(0);
+									data.push(0);
+									data.push(0);
 								}
 							}
-							indices.push([vv, vt, vn]);
+							else
+							{
+								data.push(0);
+								data.push(0);
+
+								data.push(0);
+								data.push(0);
+								data.push(0);
+							}
 						}
 					}
 				case "mtllib":
@@ -107,54 +116,10 @@ class Wavefront
 			}
 		}
 
-		var data = createMeshData(vertices, texCoords, normals, indices);
-		if (data.length > 0)
-		{
-			var mesh = new Mesh(material);
-			mesh.createBuffer(data);
-			mesh.createIndexBuffer(faces);
-			meshList.push(mesh);
-		}
-
-		return meshList;
-	}
-
-	private static function createMeshData(vertices:FloatArray, texCoords:FloatArray, normals:FloatArray, indices:Array<Array<Int>>):FloatArray
-	{
-		var data = new FloatArray();
-		data[indices.length * 8 - 1] = 0.0;
-		var d = 0;
-		for (index in indices)
-		{
-			var i = index[0] * 3;
-			data[d++] = vertices[i];
-			data[d++] = vertices[i + 1];
-			data[d++] = vertices[i + 2];
-
-			i = index[1] * 2;
-			if (i < texCoords.length)
-			{
-				data[d++] = texCoords[i];
-				data[d++] = texCoords[i + 1];
-			}
-			else
-			{
-				data[d++] = data[d++] = 0;
-			}
-
-			i = index[2] * 3;
-			if (i < normals.length)
-			{
-				data[d++] = normals[i];
-				data[d++] = normals[i + 1];
-				data[d++] = normals[i + 2];
-			}
-			else
-			{
-				data[d++] = data[d++] = data[d++] = 0;
-			}
-		}
-		return data;
+		var mesh = new Mesh(material);
+		mesh.createBuffer(data);
+		mesh.createIndexBuffer(tris);
+		return mesh;
 	}
 
 	private static inline function parseInt(str:String):Int

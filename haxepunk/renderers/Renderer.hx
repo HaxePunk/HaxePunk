@@ -67,8 +67,10 @@ class ActiveState
 
 #if cpp
 typedef FloatArray = Array<cpp.Float32>;
+typedef IntArray = Array<cpp.UInt16>;
 #else
 typedef FloatArray = Array<Float>;
+typedef IntArray = Array<Int>;
 #end
 
 #if flash
@@ -104,6 +106,14 @@ typedef Renderer = CanvasRenderer;
 
 #else
 
+#if cpp
+typedef ShaderProgram = Int;
+typedef Location = Int;
+#else
+typedef ShaderProgram = lime.graphics.GLProgram;
+typedef Location = lime.graphics.GLUniformLocation;
+#end
+
 class VertexBuffer
 {
 	public var stride:Int;
@@ -116,16 +126,8 @@ class VertexBuffer
 	}
 }
 
-#if cpp
-typedef ShaderProgram = Int;
-typedef Location = Int;
-#else
-typedef ShaderProgram = lime.graphics.GLProgram;
-typedef Location = lime.graphics.GLUniformLocation;
-#end
 typedef IndexBuffer = lime.graphics.GLBuffer;
 typedef NativeTexture = lime.graphics.GLTexture;
-
 typedef Renderer = GLRenderer;
 
 #end

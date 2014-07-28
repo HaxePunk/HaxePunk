@@ -1,17 +1,17 @@
 package haxepunk.math;
 
-#if flash
-typedef NativeMatrix4 = flash.geom.Matrix3D;
-#elseif cpp
-typedef NativeMatrix4 = Array<cpp.Float32>;
-#else
-typedef NativeMatrix4 = lime.utils.Float32Array;
-#end
-
 #if cpp
 typedef MatrixValue = cpp.Float32;
 #else
 typedef MatrixValue = Float;
+#end
+
+#if flash
+typedef NativeMatrix4 = flash.geom.Matrix3D;
+#elseif cpp
+typedef NativeMatrix4 = Array<MatrixValue>;
+#else
+typedef NativeMatrix4 = lime.utils.Float32Array;
 #end
 
 class Matrix4 implements ArrayAccess<MatrixValue>
