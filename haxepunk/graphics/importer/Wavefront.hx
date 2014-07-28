@@ -2,7 +2,7 @@ package haxepunk.graphics.importer;
 
 import haxe.ds.StringMap;
 import lime.Assets;
-import haxepunk.graphics.Mesh;
+import haxepunk.graphics.Model;
 import haxepunk.renderers.Renderer;
 
 using StringTools;
@@ -10,7 +10,7 @@ using StringTools;
 class Wavefront
 {
 
-	public static function load(path:String, ?material:Material):Mesh
+	public static function load(path:String, ?material:Material):Model
 	{
 		var vertices = new FloatArray();
 		var texCoords = new FloatArray();
@@ -20,6 +20,7 @@ class Wavefront
 		var tris = new IntArray();
 
 		var indexMap = new StringMap<Int>();
+		var model = new Model(material);
 
 		var lines = Assets.getText(path).split("\n");
 		var v = 0, t = 0, n = 0;
@@ -49,6 +50,16 @@ class Wavefront
 					normals[n++] = Std.parseFloat(parts[2]);
 				case "s": // smooth shading
 				case "g": // group
+					if (data.length > 0)
+					{
+						var mesh = new Mesh();
+						mesh.createBuffer(data);
+						mesh.createIndexBuffer(tris);
+						model.addMesh(mesh);
+
+						data.splice(0, data.length);
+						tris.splice(0, tris.length);
+					}
 					if (parts.length > 0)
 						groupName = parts.shift();
 				case "f": // face
@@ -62,8 +73,9 @@ class Wavefront
 						i += 3;
 					}
 					// parse indices
-					for (part in parts)
+					for (i in 0...parts.length)
 					{
+						var part = parts[i];
 						if (indexMap.exists(part))
 						{
 							tris.push(indexMap.get(part));
@@ -116,10 +128,15 @@ class Wavefront
 			}
 		}
 
-		var mesh = new Mesh(material);
-		mesh.createBuffer(data);
-		mesh.createIndexBuffer(tris);
-		return mesh;
+		if (data.length > 0)
+		{
+			var mesh = new Mesh();
+			mesh.createBuffer(data);
+			mesh.createIndexBuffer(tris);
+			model.addMesh(mesh);
+		}
+
+		return model;
 	}
 
 	private static inline function parseInt(str:String):Int

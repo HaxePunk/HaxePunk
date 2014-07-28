@@ -63,7 +63,7 @@ class Pass
 		Renderer.setColor(_emissiveLocation, emissive);
 		Renderer.setFloat(_shininessLocation, shininess);
 
-		Renderer.setDepthTest(depthCheck);
+		Renderer.setDepthTest(depthCheck, LESS_EQUAL);
 		Renderer.setBlendMode(SOURCE_ALPHA, ONE_MINUS_SOURCE_ALPHA);
 
 		// assign any textures

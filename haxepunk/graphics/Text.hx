@@ -52,7 +52,9 @@ class Text implements Graphic
 		#end
 		var shader = new Shader(vert, frag);
 		material = Material.fromAsset("materials/text.material");
-		material.firstPass.addTexture(_texture);
+		var pass = material.firstPass;
+		pass.shader = shader;
+		pass.addTexture(_texture);
 
 		_vertexAttribute = shader.attribute("aVertexPosition");
 		_texCoordAttribute = shader.attribute("aTexCoord");

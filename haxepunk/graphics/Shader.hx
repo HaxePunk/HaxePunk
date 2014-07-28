@@ -26,8 +26,9 @@ class Shader
 	 * Return the attribute location in this shader
 	 * @param a  The attribute name to find
 	 */
-	public inline function attribute(a:String):Int
+	public function attribute(a:String):Int
 	{
+		use();
 		var attribute:Int;
 		if (_attributes.exists(a))
 		{
@@ -51,8 +52,9 @@ class Shader
 	 * Return the uniform location in this shader
 	 * @param a  The uniform name to find
 	 */
-	public inline function uniform(u:String):Location
+	public function uniform(u:String):Location
 	{
+		use();
 		var uniform:Location;
 		if (_uniforms.exists(u))
 		{
