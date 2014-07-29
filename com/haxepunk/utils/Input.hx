@@ -44,6 +44,11 @@ class Input
 	public static var keyString:String = "";
 
 	/**
+	 * Determines whether Input.keyString will also contain last pressed non-alphanumeric keys
+	 */
+	public static var alphaNumericOnly: Bool = false;
+	
+	/**
 	 * Holds the last key pressed
 	 */
 	public static var lastKey:Int;
@@ -457,10 +462,10 @@ class Input
 		lastKey = code;
 
 		if (code == Key.BACKSPACE) keyString = keyString.substr(0, keyString.length - 1);
-		else if ((code > 47 && code < 58) || (code > 64 && code < 91) || code == 32)
+		else if ((code > 47 && code < 58) || (code > 64 && code < 91) || code == 32 || !alphaNumericOnly)
 		{
 			if (keyString.length > kKeyStringMax) keyString = keyString.substr(1);
-			var char:String = String.fromCharCode(code);
+			var char:String = String.fromCharCode(e.charCode);
 
 			if (e.shiftKey != #if flash Keyboard.capsLock #else check(Key.CAPS_LOCK) #end)
 				char = char.toUpperCase();
