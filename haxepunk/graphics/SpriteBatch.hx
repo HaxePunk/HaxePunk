@@ -3,7 +3,6 @@ package haxepunk.graphics;
 import haxepunk.renderers.Renderer;
 import haxepunk.scene.Camera;
 import haxepunk.math.*;
-import lime.utils.*;
 
 private class Batch
 {

@@ -3,7 +3,7 @@ package haxepunk.graphics;
 import haxe.ds.StringMap;
 import haxepunk.renderers.Renderer;
 import haxepunk.math.Matrix4;
-import lime.graphics.GL;
+import lime.graphics.opengl.GL;
 
 /**
  * GLSL Shader object

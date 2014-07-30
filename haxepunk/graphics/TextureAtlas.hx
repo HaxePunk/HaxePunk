@@ -6,7 +6,7 @@ import haxepunk.renderers.Renderer;
 class TextureAtlas extends Texture
 {
 
-	public function new(image:lime.graphics.Image)
+	public function new(image:lime.media.Image)
 	{
 		super();
 #if !unit_test

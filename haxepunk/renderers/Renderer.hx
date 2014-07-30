@@ -5,7 +5,7 @@ import haxepunk.graphics.Color;
 import haxepunk.math.Matrix4;
 import lime.utils.Float32Array;
 import lime.utils.Int16Array;
-import lime.graphics.Image;
+import lime.media.Image;
 
 enum BufferUsage {
 	STATIC_DRAW;
@@ -110,24 +110,24 @@ typedef Renderer = CanvasRenderer;
 typedef ShaderProgram = Int;
 typedef Location = Int;
 #else
-typedef ShaderProgram = lime.graphics.GLProgram;
-typedef Location = lime.graphics.GLUniformLocation;
+typedef ShaderProgram = lime.graphics.opengl.GLProgram;
+typedef Location = lime.graphics.opengl.GLUniformLocation;
 #end
 
 class VertexBuffer
 {
 	public var stride:Int;
-	public var buffer:lime.graphics.GLBuffer;
+	public var buffer:lime.graphics.opengl.GLBuffer;
 
-	public function new(buffer:lime.graphics.GLBuffer, stride:Int)
+	public function new(buffer:lime.graphics.opengl.GLBuffer, stride:Int)
 	{
 		this.buffer = buffer;
 		this.stride = stride;
 	}
 }
 
-typedef IndexBuffer = lime.graphics.GLBuffer;
-typedef NativeTexture = lime.graphics.GLTexture;
+typedef IndexBuffer = lime.graphics.opengl.GLBuffer;
+typedef NativeTexture = lime.graphics.opengl.GLTexture;
 typedef Renderer = GLRenderer;
 
 #end

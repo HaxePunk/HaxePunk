@@ -5,8 +5,11 @@ package haxepunk.renderers;
 import haxepunk.graphics.Color;
 import haxepunk.math.*;
 import haxepunk.renderers.Renderer;
-import lime.graphics.*;
-import lime.utils.*;
+import lime.media.*;
+import lime.graphics.opengl.*;
+import lime.utils.Float32Array;
+import lime.utils.Int16Array;
+import lime.utils.UInt8Array;
 
 #if cpp
 
