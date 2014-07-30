@@ -70,7 +70,7 @@ typedef FloatArray = Array<cpp.Float32>;
 typedef IntArray = Array<cpp.UInt16>;
 #else
 typedef FloatArray = Array<Float>;
-typedef IntArray = Array<Int>;
+typedef IntArray = Array<UInt>;
 #end
 
 #if flash

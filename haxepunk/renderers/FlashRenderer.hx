@@ -4,7 +4,7 @@ package haxepunk.renderers;
 
 import com.adobe.utils.AGALMiniAssembler;
 import haxepunk.graphics.Color;
-import haxepunk.math.Matrix4;
+import haxepunk.math.*;
 import haxepunk.renderers.Renderer;
 import flash.Lib;
 import flash.display.BitmapData;
@@ -13,8 +13,10 @@ import flash.display3D.*;
 import flash.display3D.textures.Texture;
 import flash.events.Event;
 import lime.graphics.FlashRenderContext;
-import lime.graphics.Image;
-import lime.utils.*;
+import lime.media.Image;
+import lime.utils.Int16Array;
+import lime.utils.Float32Array;
+import lime.utils.UInt8Array;
 
 class FlashRenderer
 {
@@ -67,7 +69,7 @@ class FlashRenderer
 		return program;
 	}
 
-	public static inline function bindProgram(program:ShaderProgram):Void
+	public static inline function bindProgram(?program:ShaderProgram):Void
 	{
 		_context.setProgram(program);
 	}
@@ -76,6 +78,15 @@ class FlashRenderer
 	{
 		matrix.transpose(); // Flash requires a transposed matrix
 		_context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, loc, matrix.native, false);
+	}
+	
+	public static inline function setVector3(loc:Location, vec:Vector3):Void
+	{
+		var uvec = new flash.Vector();
+		uvec.push(vec.x);
+		uvec.push(vec.y);
+		uvec.push(vec.z);
+		_context.setProgramConstantsFromVector(Context3DProgramType.FRAGMENT, loc, uvec);
 	}
 
 	public static inline function setColor(loc:Location, color:Color):Void
@@ -110,20 +121,20 @@ class FlashRenderer
 		return new VertexBuffer(null, stride);
 	}
 
-	public static inline function updateBuffer(data:Float32Array, ?usage:BufferUsage):Void
+	public static inline function updateBuffer(data:FloatArray, ?usage:BufferUsage):Void
 	{
 		var vb:VertexBuffer = _activeState.buffer;
 		var len:Int = Std.int(data.length / vb.stride);
 		if (vb.buffer != null) vb.buffer.dispose();
 		vb.buffer = _context.createVertexBuffer(len, vb.stride);
-		vb.buffer.uploadFromByteArray(data.buffer, 0, 0, len);
+		vb.buffer.uploadFromVector(flash.Vector.ofArray(data), 0, len);
 	}
 
-	public static inline function updateIndexBuffer(data:Int16Array, ?usage:BufferUsage, ?buffer:IndexBuffer):IndexBuffer
+	public static inline function updateIndexBuffer(data:IntArray, ?usage:BufferUsage, ?buffer:IndexBuffer):IndexBuffer
 	{
 		if (buffer != null) buffer.dispose();
 		buffer = _context.createIndexBuffer(data.length);
-		buffer.uploadFromByteArray(data.buffer, 0, 0, data.length);
+		buffer.uploadFromVector(flash.Vector.ofArray(data), 0, data.length);
 		return buffer;
 	}
 
