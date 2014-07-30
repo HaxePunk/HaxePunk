@@ -4,6 +4,7 @@ import haxe.ds.IntMap;
 import haxepunk.inputs.Input;
 import haxepunk.inputs.InputState;
 import lime.ui.KeyEventManager;
+import lime.ui.KeyCode;
 
 /**
  * Get information on the keyboard input.
@@ -26,6 +27,7 @@ class Keyboard
 	public static function nameOf(key:Key):String
 	{
 		var char:Int = cast key;
+		//~ trace(char, Key.NUMPAD_0, Key.NUMPAD_9);
 
 		if (char == -1)
 		{
@@ -33,15 +35,15 @@ class Keyboard
 		}
 		if (char >= Key.A && char <= Key.Z)
 		{
-			return String.fromCharCode(char);
+			return String.fromCharCode(char - Key.A + 65);
 		}
-		if (char >= Key.F1 && char <= Key.F15)
+		if (char >= Key.F1 && char <= Key.F12)
 		{
 			return "F" + Std.string(char - Key.F1 + 1);
 		}
-		if (char >= Key.NUMPAD_0 && char <= Key.NUMPAD_9)
+		if (char >= Key.NUMPAD_1 && char <= Key.NUMPAD_0)
 		{
-			return "NUMPAD " + Std.string(char - Key.NUMPAD_0);
+			return "NUMPAD " + Std.string((char - Key.NUMPAD_1 + 1)%10);
 		}
 		if (char >= Key.DIGIT_0 && char <= Key.DIGIT_9)
 		{
@@ -57,7 +59,7 @@ class Keyboard
 
 			case LEFT_SQUARE_BRACKET: "[";
 			case RIGHT_SQUARE_BRACKET: "]";
-			case TILDE: "~";
+			//~ case TILDE: "~";
 
 			case ENTER: "ENTER";
 			case CONTROL: "CONTROL";
@@ -189,100 +191,97 @@ abstract Key(Int) to Int
 {
 	var ANY = -1;
 
-	var LEFT = 37;
-	var UP = 38;
-	var RIGHT = 39;
-	var DOWN = 40;
+	var LEFT = 0x40000050;
+	var UP = 0x40000052;
+	var RIGHT = 0x4000004F;
+	var DOWN = 0x40000051;
 
-	var ENTER = 13;
-	var COMMAND = 15;
-	var CONTROL = 17;
-	var SPACE = 32;
-	var SHIFT = 16;
-	var BACKSPACE = 8;
-	var CAPS_LOCK = 20;
-	var DELETE = 46;
-	var END = 35;
-	var ESCAPE = 27;
-	var HOME = 36;
-	var INSERT = 45;
-	var TAB = 9;
-	var PAGE_DOWN = 34;
-	var PAGE_UP = 33;
-	var LEFT_SQUARE_BRACKET = 219;
-	var RIGHT_SQUARE_BRACKET = 221;
-	var TILDE = 192;
+	var ENTER = 0x0D;
+	//~ var COMMAND = cast KeyCode.COMMAND;
+	var CONTROL = 0x400000E0; // LEFT_CTRL
+	var SPACE = 0x20;
+	var SHIFT = 0x400000E1; // LEFT_SHIFT
+	var BACKSPACE = 0x08;
+	var CAPS_LOCK = 0x40000039;
+	var DELETE = 0x7F;
+	var END = 0x4000004D;
+	var ESCAPE = 0x1B;
+	var HOME = 0x4000004A;
+	var INSERT = 0x40000049;
+	var TAB = 0x09;
+	var PAGE_DOWN = 0x4000004E;
+	var PAGE_UP = 0x4000004B;
+	var LEFT_SQUARE_BRACKET = 0x5B;
+	var RIGHT_SQUARE_BRACKET = 0x5D;
+	//~ var TILDE = 192;
 
-	var A = 65;
-	var B = 66;
-	var C = 67;
-	var D = 68;
-	var E = 69;
-	var F = 70;
-	var G = 71;
-	var H = 72;
-	var I = 73;
-	var J = 74;
-	var K = 75;
-	var L = 76;
-	var M = 77;
-	var N = 78;
-	var O = 79;
-	var P = 80;
-	var Q = 81;
-	var R = 82;
-	var S = 83;
-	var T = 84;
-	var U = 85;
-	var V = 86;
-	var W = 87;
-	var X = 88;
-	var Y = 89;
-	var Z = 90;
+	var A = 0x61;
+	var B = 0x62;
+	var C = 0x63;
+	var D = 0x64;
+	var E = 0x65;
+	var F = 0x66;
+	var G = 0x67;
+	var H = 0x68;
+	var I = 0x69;
+	var J = 0x6A;
+	var K = 0x6B;
+	var L = 0x6C;
+	var M = 0x6D;
+	var N = 0x6E;
+	var O = 0x6F;
+	var P = 0x70;
+	var Q = 0x71;
+	var R = 0x72;
+	var S = 0x73;
+	var T = 0x74;
+	var U = 0x75;
+	var V = 0x76;
+	var W = 0x77;
+	var X = 0x78;
+	var Y = 0x79;
+	var Z = 0x7A;
 
-	var F1 = 112;
-	var F2 = 113;
-	var F3 = 114;
-	var F4 = 115;
-	var F5 = 116;
-	var F6 = 117;
-	var F7 = 118;
-	var F8 = 119;
-	var F9 = 120;
-	var F10 = 121;
-	var F11 = 122;
-	var F12 = 123;
-	var F13 = 124;
-	var F14 = 125;
-	var F15 = 126;
+	var F1 = 0x4000003A;
+	var F2 = 0x4000003B;
+	var F3 = 0x4000003C;
+	var F4 = 0x4000003D;
+	var F5 = 0x4000003E;
+	var F6 = 0x4000003F;
+	var F7 = 0x40000040;
+	var F8 = 0x40000041;
+	var F9 = 0x40000042;
+	var F10 = 0x40000043;
+	var F11 = 0x40000044;
+	var F12 = 0x40000045;
 
-	var DIGIT_0 = 48;
-	var DIGIT_1 = 49;
-	var DIGIT_2 = 50;
-	var DIGIT_3 = 51;
-	var DIGIT_4 = 52;
-	var DIGIT_5 = 53;
-	var DIGIT_6 = 54;
-	var DIGIT_7 = 55;
-	var DIGIT_8 = 56;
-	var DIGIT_9 = 57;
+	var DIGIT_0 = 0x30;
+	var DIGIT_1 = 0x31;
+	var DIGIT_2 = 0x32;
+	var DIGIT_3 = 0x33;
+	var DIGIT_4 = 0x34;
+	var DIGIT_5 = 0x35;
+	var DIGIT_6 = 0x36;
+	var DIGIT_7 = 0x37;
+	var DIGIT_8 = 0x38;
+	var DIGIT_9 = 0x39;
 
-	var NUMPAD_0 = 96;
-	var NUMPAD_1 = 97;
-	var NUMPAD_2 = 98;
-	var NUMPAD_3 = 99;
-	var NUMPAD_4 = 100;
-	var NUMPAD_5 = 101;
-	var NUMPAD_6 = 102;
-	var NUMPAD_7 = 103;
-	var NUMPAD_8 = 104;
-	var NUMPAD_9 = 105;
-	var NUMPAD_ADD = 107;
-	var NUMPAD_DECIMAL = 110;
-	var NUMPAD_DIVIDE = 111;
-	var NUMPAD_ENTER = 108;
-	var NUMPAD_MULTIPLY = 106;
-	var NUMPAD_SUBTRACT = 109;
+	var NUMPAD_0 = 0x40000062;
+	var NUMPAD_1 = 0x40000059;
+	var NUMPAD_2 = 0x4000005A;
+	var NUMPAD_3 = 0x4000005B;
+	var NUMPAD_4 = 0x4000005C;
+	var NUMPAD_5 = 0x4000005D;
+	var NUMPAD_6 = 0x4000005E;
+	var NUMPAD_7 = 0x4000005F;
+	var NUMPAD_8 = 0x40000060;
+	var NUMPAD_9 = 0x40000061;
+	var NUMPAD_ADD = 0x40000057;
+	var NUMPAD_DECIMAL = 0x40000063;
+	var NUMPAD_DIVIDE = 0x40000054;
+	var NUMPAD_ENTER = 0x40000058;
+	var NUMPAD_MULTIPLY = 0x40000055;
+	var NUMPAD_SUBTRACT = 0x40000056;
 
 	@:op(A<=B) private static inline function lessEq (lhs:Key, rhs:Int):Bool { return lhs <= rhs; }
 	@:op(A<=B) private static inline function lessEq2 (lhs:Int, rhs:Key):Bool { return lhs <= rhs; }
