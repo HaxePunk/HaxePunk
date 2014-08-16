@@ -13,6 +13,10 @@ enum JoyButtonState
 
 /**
  * A joystick.
+ * 
+ * Get one using `Input.joystick`.
+ * 
+ * Currently doesn't work with flash and html5 targets.
  */
 class Joystick
 {
@@ -41,6 +45,7 @@ class Joystick
 	/**
 	 * Creates and initializes a new Joystick.
 	 */
+	@:dox(hide)
 	public function new()
 	{
 		buttons = new Map<Int,JoyButtonState>();
