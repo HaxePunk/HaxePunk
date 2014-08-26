@@ -486,11 +486,15 @@ class Tilemap extends Canvas
 	/**
 	 * Create a Grid object from this tilemap.
 	 * @param solidTiles	Array of tile indexes that should be solid.
+	 * @param grid			A grid to use instead of creating a new one, the function won't check if the grid is of correct dimension.
 	 * @return The grid with a tile solid if the tile index is in [solidTiles].
 	*/
-	public function createGrid(solidTiles:Array<Int>)
+	public function createGrid(solidTiles:Array<Int>, ?grid:Grid)
 	{
-		var g = new Grid(width, height, Std.int(_tile.width), Std.int(_tile.height));
+		if (grid == null)
+		{
+			grid = new Grid(width, height, Std.int(_tile.width), Std.int(_tile.height));
+		}
 		
 		for (y in 0..._rows)
 		{
@@ -498,12 +502,12 @@ class Tilemap extends Canvas
 			{
 				if (solidTiles.indexOf(getTile(x, y)) != -1)
 				{
-					g.setTile(x, y, true);
+					grid.setTile(x, y, true);
 				}
 			}
 		}
 		
-		return g;
+		return grid;
 	}
 
 	/** @private Used by shiftTiles to update a tile from the tilemap. */
