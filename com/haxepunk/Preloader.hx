@@ -2,11 +2,6 @@ package com.haxepunk;
 
 #if doc
 
-#elseif js
-
-// html5 doesn't support drawTiles
-class Preloader extends NMEPreloader { }
-
 #else
 
 import flash.display.Bitmap;
@@ -48,7 +43,7 @@ class Preloader extends NMEPreloader
 		var height = 340;
 
 		// update bar position
-		var color = 0xCB6325;
+		var color = 0xFFCB6325;
 		var padding = 5;
 
 		super();
@@ -56,6 +51,14 @@ class Preloader extends NMEPreloader
 		outline.x = (getWidth() - width) / 2;
 		outline.y = (getHeight() - height) / 2;
 		outline.graphics.clear();
+
+		var complete = new Sprite ();
+		complete.x = outline.x + width / 2;
+		complete.y = outline.y + 60;
+		complete.graphics.lineStyle(1, 0xFFFFFFFF);
+		complete.graphics.moveTo(-width / 2 + padding, 0);
+		complete.graphics.lineTo(width / 2 - padding, 0);
+		addChildAt(complete, 0);
 
 		progress.y = outline.y + 60;
 		progress.x = outline.x + width / 2;
