@@ -5,7 +5,7 @@ import haxepunk.graphics.Color;
 import haxepunk.math.Matrix4;
 import lime.utils.Float32Array;
 import lime.utils.Int16Array;
-import lime.media.Image;
+import lime.graphics.Image;
 
 enum BufferUsage {
 	STATIC_DRAW;

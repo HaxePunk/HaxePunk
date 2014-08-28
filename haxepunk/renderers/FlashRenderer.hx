@@ -13,7 +13,7 @@ import flash.display3D.*;
 import flash.display3D.textures.Texture;
 import flash.events.Event;
 import lime.graphics.FlashRenderContext;
-import lime.media.Image;
+import lime.graphics.Image;
 import lime.utils.Int16Array;
 import lime.utils.Float32Array;
 import lime.utils.UInt8Array;
@@ -79,7 +79,7 @@ class FlashRenderer
 		matrix.transpose(); // Flash requires a transposed matrix
 		_context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, loc, matrix.native, false);
 	}
-	
+
 	public static inline function setVector3(loc:Location, vec:Vector3):Void
 	{
 		var uvec = new flash.Vector();

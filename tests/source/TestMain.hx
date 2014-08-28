@@ -6,11 +6,11 @@ class TestMain
 		var runner = new haxe.unit.TestRunner();
 
 		// graphic tests
-		runner.add(new haxepunk.graphics.ColorTest());
-		runner.add(new haxepunk.graphics.ImageTest());
-		runner.add(new haxepunk.graphics.MaterialTest());
-		runner.add(new haxepunk.graphics.TextureAtlasTest());
-		runner.add(new haxepunk.graphics.TilemapTest());
+		// runner.add(new haxepunk.graphics.ColorTest());
+		// runner.add(new haxepunk.graphics.ImageTest());
+		// runner.add(new haxepunk.graphics.MaterialTest());
+		// runner.add(new haxepunk.graphics.TextureAtlasTest());
+		// runner.add(new haxepunk.graphics.TilemapTest());
 
 		// scene tests
 		runner.add(new haxepunk.scene.EntityTest());

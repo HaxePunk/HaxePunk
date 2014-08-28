@@ -1,6 +1,6 @@
 package haxepunk.graphics;
 
-import haxe.ds.StringMap;
+import haxe.ds.IntMap;
 import haxepunk.scene.Camera;
 import haxepunk.math.Vector3;
 import haxepunk.math.Matrix4;
@@ -38,11 +38,12 @@ class Text implements Graphic
 		this.size = size;
 		this.lineHeight = Std.int(size * 1.4);
 
-		var data = font.createImage(size);
-		_glyphs = data.glyphs;
+		font.loadGlyphs(size);
+		var image = font.createImage();
+		_glyphs = font.glyphs.get(size);
 
 		_texture = new Texture();
-		_texture.loadFromImage(data.image);
+		_texture.loadFromImage(new lime.graphics.Image(image));
 		#if flash
 		var vert = "m44 op, va0, vc0\nmov v0, va1";
 		var frag = "tex ft0, v0, fs0 <linear nomip 2d wrap>\nmov ft0.xyz, fc1.xyz\nmov oc, ft0";
@@ -70,21 +71,21 @@ class Text implements Graphic
 	private function set_text(value:String):String {
 		if (text != value && value.trim() != "")
 		{
-			var spaceAdvance = _glyphs.get(" ").advance;
+			var spaceAdvance = _glyphs.get(" ".code).xOffset;
 			var x = 0.0, y = 0.0;
 			var index = 0;
 			for (i in 0...value.length)
 			{
-				var c = value.charAt(i);
+				var c = value.charCodeAt(i);
 				switch (c)
 				{
-					case "\r": // does nothing
-					case "\n":
+					case "\r".code: // does nothing
+					case "\n".code:
 						x = 0;
 						y += lineHeight;
-					case "\t":
+					case "\t".code:
 						x += spaceAdvance * tabWidth;
-					case " ":
+					case " ".code:
 						x += spaceAdvance;
 					default:
 						x += writeChar(index++, c, x, y);
@@ -99,7 +100,7 @@ class Text implements Graphic
 		return text = value;
 	}
 
-	private inline function writeChar(i:Int, c:String, x:Float = 0, y:Float = 0):Int
+	private inline function writeChar(i:Int, c:Int, x:Float = 0, y:Float = 0):Int
 	{
 		var rect = _glyphs.get(c);
 
@@ -145,7 +146,7 @@ class Text implements Graphic
 		_indices[index++] = i*4+2;
 		_indices[index++] = i*4+3;
 
-		return rect.advance;
+		return rect.xOffset;
 	}
 
 	public function update(elapsed:Float) {}
@@ -171,7 +172,7 @@ class Text implements Graphic
 		Renderer.draw(_indexBuffer, text.length * 2, 0);
 	}
 
-	private var _glyphs:StringMap<GlyphRect>;
+	private var _glyphs:IntMap<GlyphRect>;
 	private var _texture:Texture;
 	private var _matrix:Matrix4;
 
