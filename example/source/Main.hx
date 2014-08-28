@@ -32,17 +32,17 @@ class Main extends Engine
 		pass.depthCheck = true;
 		pass.shader = new Shader(lime.Assets.getText("shaders/lighting.vert"), lime.Assets.getText("shaders/lighting.frag"));
 
-		var mesh = haxepunk.graphics.importer.Wavefront.load("assets/project.obj", material);
-		scene.addGraphic(mesh);
+		// var mesh = haxepunk.graphics.importer.Wavefront.load("assets/project.obj", material);
+		// scene.addGraphic(mesh);
 
-		fps = new Text("", 32);
+		fps = new Text("Hello world", 32);
 		scene.addGraphic(fps, scene.camera.x, scene.camera.y);
 	}
 
 	override public function update(deltaTime:Int)
 	{
 		super.update(deltaTime);
-		fps.text = "" + Std.int(HXP.frameRate);
+		// fps.text = "" + Std.int(HXP.frameRate);
 	}
 
 	private var fps:Text;

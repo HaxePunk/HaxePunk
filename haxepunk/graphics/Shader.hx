@@ -38,8 +38,6 @@ class Shader
 		{
 			#if (flash || (js && canvas))
 			attribute = _attributeId++;
-			#elseif cpp
-			attribute = untyped __cpp__("glGetAttribLocation({0}, {1})", _program, a);
 			#else
 			attribute = GL.getAttribLocation(_program, a);
 			#end
@@ -64,8 +62,6 @@ class Shader
 		{
 			#if (flash || (js && canvas))
 			uniform = _uniformId++;
-			#elseif cpp
-			uniform = untyped __cpp__("glGetUniformLocation({0}, {1})", _program, u);
 			#else
 			uniform = GL.getUniformLocation(_program, u);
 			#end

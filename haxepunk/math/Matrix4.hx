@@ -8,8 +8,6 @@ typedef MatrixValue = Float;
 
 #if flash
 typedef NativeMatrix4 = flash.geom.Matrix3D;
-#elseif cpp
-typedef NativeMatrix4 = Array<MatrixValue>;
 #else
 typedef NativeMatrix4 = lime.utils.Float32Array;
 #end
@@ -52,56 +50,32 @@ class Matrix4 implements ArrayAccess<MatrixValue>
 			{
 				#if flash
 				_native = new NativeMatrix4(flash.Vector.ofArray(toArray()));
-				#elseif cpp
-				_native = toArray();
 				#else
 				_native = new NativeMatrix4(toArray());
 				#end
 			}
 			else
 			{
-				#if cpp
-					cpp.NativeArray.unsafeSet(_native, 0, _11);
-					cpp.NativeArray.unsafeSet(_native, 1, _12);
-					cpp.NativeArray.unsafeSet(_native, 2, _13);
-					cpp.NativeArray.unsafeSet(_native, 3, _14);
+				var bytes = #if flash _native.rawData #else _native #end;
+				bytes[0] = _11;
+				bytes[1] = _12;
+				bytes[2] = _13;
+				bytes[3] = _14;
 
-					cpp.NativeArray.unsafeSet(_native, 4, _21);
-					cpp.NativeArray.unsafeSet(_native, 5, _22);
-					cpp.NativeArray.unsafeSet(_native, 6, _23);
-					cpp.NativeArray.unsafeSet(_native, 7, _24);
+				bytes[4] = _21;
+				bytes[5] = _22;
+				bytes[6] = _23;
+				bytes[7] = _24;
 
-					cpp.NativeArray.unsafeSet(_native, 8, _31);
-					cpp.NativeArray.unsafeSet(_native, 9, _32);
-					cpp.NativeArray.unsafeSet(_native, 10, _33);
-					cpp.NativeArray.unsafeSet(_native, 11, _34);
+				bytes[8] = _31;
+				bytes[9] = _32;
+				bytes[10] = _33;
+				bytes[11] = _34;
 
-					cpp.NativeArray.unsafeSet(_native, 12, _41);
-					cpp.NativeArray.unsafeSet(_native, 13, _42);
-					cpp.NativeArray.unsafeSet(_native, 14, _43);
-					cpp.NativeArray.unsafeSet(_native, 15, _44);
-				#else
-					var bytes = #if flash _native.rawData #else _native #end;
-					bytes[0] = _11;
-					bytes[1] = _12;
-					bytes[2] = _13;
-					bytes[3] = _14;
-
-					bytes[4] = _21;
-					bytes[5] = _22;
-					bytes[6] = _23;
-					bytes[7] = _24;
-
-					bytes[8] = _31;
-					bytes[9] = _32;
-					bytes[10] = _33;
-					bytes[11] = _34;
-
-					bytes[12] = _41;
-					bytes[13] = _42;
-					bytes[14] = _43;
-					bytes[15] = _44;
-				#end
+				bytes[12] = _41;
+				bytes[13] = _42;
+				bytes[14] = _43;
+				bytes[15] = _44;
 			}
 			_isDirty = false;
 		}

@@ -65,13 +65,8 @@ class ActiveState
 	}
 }
 
-#if cpp
-typedef FloatArray = Array<cpp.Float32>;
-typedef IntArray = Array<cpp.UInt16>;
-#else
 typedef FloatArray = Array<Float>;
 typedef IntArray = Array<UInt>;
-#end
 
 #if flash
 
@@ -106,13 +101,8 @@ typedef Renderer = CanvasRenderer;
 
 #else
 
-#if cpp
-typedef ShaderProgram = Int;
-typedef Location = Int;
-#else
 typedef ShaderProgram = lime.graphics.opengl.GLProgram;
 typedef Location = lime.graphics.opengl.GLUniformLocation;
-#end
 
 class VertexBuffer
 {

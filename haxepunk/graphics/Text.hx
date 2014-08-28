@@ -6,6 +6,7 @@ import haxepunk.math.Vector3;
 import haxepunk.math.Matrix4;
 import haxepunk.renderers.Renderer;
 import lime.graphics.Font;
+import lime.graphics.TextFormat;
 import lime.Assets;
 
 using StringTools;
@@ -30,17 +31,18 @@ class Text implements Graphic
 		color = new Color();
 
 		#if (cpp || neko)
-		var font = new Font(#if mac "../Resources/" + #end "font/SourceCodePro-Regular.otf");
+		_font = new Font(#if mac "../Resources/" + #end "font/SourceCodePro-Regular.otf");
 		#else
-		var font = new Font("Georgia");
+		_font = new Font("Georgia");
 		#end
 
 		this.size = size;
 		this.lineHeight = Std.int(size * 1.4);
 
-		font.loadGlyphs(size);
-		var image = font.createImage();
-		_glyphs = font.glyphs.get(size);
+		_font.loadGlyphs(size);
+		var image = _font.createImage();
+		_glyphs = _font.glyphs.get(size);
+		_textFormat = new TextFormat(LeftToRight, ScriptLatin, "en");
 
 		_texture = new Texture();
 		_texture.loadFromImage(new lime.graphics.Image(image));
@@ -62,7 +64,7 @@ class Text implements Graphic
 
 		_modelViewMatrixUniform = shader.uniform("uMatrix");
 		_colorUniform = shader.uniform("uColor");
-		_vertexBuffer = Renderer.createBuffer(5);
+		_vertexBuffer = Renderer.createBuffer(4);
 
 		this.text = text;
 	}
@@ -72,24 +74,15 @@ class Text implements Graphic
 		if (text != value && value.trim() != "")
 		{
 			var spaceAdvance = _glyphs.get(" ".code).xOffset;
-			var x = 0.0, y = 0.0;
+			var x = 0.0, y = 30.0;
 			var index = 0;
-			for (i in 0...value.length)
+			var points = _textFormat.fromString(_font, size, value);
+			for (p in points)
 			{
-				var c = value.charCodeAt(i);
-				switch (c)
-				{
-					case "\r".code: // does nothing
-					case "\n".code:
-						x = 0;
-						y += lineHeight;
-					case "\t".code:
-						x += spaceAdvance * tabWidth;
-					case " ".code:
-						x += spaceAdvance;
-					default:
-						x += writeChar(index++, c, x, y);
-				}
+				if (!_glyphs.exists(p.codepoint)) continue;
+				writeChar(index++, p, x, y);
+				x += p.advance.x;
+				y -= p.advance.y;
 			}
 			width = x;
 			height = y + lineHeight;
@@ -100,40 +93,38 @@ class Text implements Graphic
 		return text = value;
 	}
 
-	private inline function writeChar(i:Int, c:Int, x:Float = 0, y:Float = 0):Int
+	private function writeChar(i:Int, p:PosInfo, x:Float = 0, y:Float = 0):Void
 	{
-		var rect = _glyphs.get(c);
-
-		x += rect.xOffset;
-		y += size - rect.yOffset;
+		var rect = _glyphs.get(p.codepoint);
 
 		var left   = rect.x / _texture.width;
 		var top    = rect.y / _texture.height;
 		var right  = left + rect.width / _texture.width;
 		var bottom = top + rect.height / _texture.height;
 
+		var pointLeft = x + p.offset.x + rect.xOffset;
+		var pointTop = y + p.offset.y - rect.yOffset;
+		var pointRight = pointLeft + rect.width;
+		var pointBottom = pointTop + rect.height;
+
 		var index = i * 20;
-		_vertices[index++] = x;
-		_vertices[index++] = y;
-		_vertices[index++] = 0;
+		_vertices[index++] = pointRight;
+		_vertices[index++] = pointBottom;
 		_vertices[index++] = left;
 		_vertices[index++] = top;
 
-		_vertices[index++] = x;
-		_vertices[index++] = y + rect.height;
-		_vertices[index++] = 0;
+		_vertices[index++] = pointLeft;
+		_vertices[index++] = pointBottom;
 		_vertices[index++] = left;
 		_vertices[index++] = bottom;
 
-		_vertices[index++] = x + rect.width;
-		_vertices[index++] = y;
-		_vertices[index++] = 0;
+		_vertices[index++] = pointRight;
+		_vertices[index++] = pointTop;
 		_vertices[index++] = right;
 		_vertices[index++] = top;
 
-		_vertices[index++] = x + rect.width;
-		_vertices[index++] = y + rect.height;
-		_vertices[index++] = 0;
+		_vertices[index++] = pointLeft;
+		_vertices[index++] = pointTop;
 		_vertices[index++] = right;
 		_vertices[index++] = bottom;
 
@@ -145,8 +136,6 @@ class Text implements Graphic
 		_indices[index++] = i*4+1;
 		_indices[index++] = i*4+2;
 		_indices[index++] = i*4+3;
-
-		return rect.xOffset;
 	}
 
 	public function update(elapsed:Float) {}
@@ -166,13 +155,15 @@ class Text implements Graphic
 		Renderer.setColor(_colorUniform, color);
 
 		Renderer.bindBuffer(_vertexBuffer);
-		Renderer.setAttribute(_vertexAttribute, 0, 3);
-		Renderer.setAttribute(_texCoordAttribute, 3, 2);
+		Renderer.setAttribute(_vertexAttribute, 0, 2);
+		Renderer.setAttribute(_texCoordAttribute, 2, 2);
 
 		Renderer.draw(_indexBuffer, text.length * 2, 0);
 	}
 
 	private var _glyphs:IntMap<GlyphRect>;
+	private var _textFormat:TextFormat;
+	private var _font:Font;
 	private var _texture:Texture;
 	private var _matrix:Matrix4;
 
