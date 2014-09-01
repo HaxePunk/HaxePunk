@@ -762,7 +762,7 @@ class HXP
 		if (loop)
 			return options[(indexOf(options, current) + 1) % options.length];
 		else
-			return options[Std.int(Math.max(indexOf(options, current) + 1, options.length - 1))];
+			return options[Std.int(Math.min(indexOf(options, current) + 1, options.length - 1))];
 	}
 
 	/**
