@@ -1,0 +1,38 @@
+{
+    "folders":
+    [
+        {
+            "path": "src",
+            "name": "{{PROJECT_NAME}} Source Code",
+            "follow_symlinks": true
+        },
+        {
+            "path": "assets",
+            "name": "{{PROJECT_NAME}} Assets",
+            "file_exclude_patterns": ["*.css"]
+        }
+    ],
+    "settings":
+    {
+        "tab_size": 4
+    },
+    "build_systems":
+    [
+        {
+            "name": "Test (Neko)",
+            "shell_cmd": "lime test neko"
+        },
+        {
+        	"name": "Test (Flash)",
+        	"shell_cmd": "lime test flash"
+        },
+        {
+        	"name":"Debug (Neko)",
+        	"shell_cmd": "lime test neko -debug"
+        },
+        {
+        	"name":"Debug (Flash)",
+        	"shell_cmd": "lime test flash -debug"
+        }
+    ]
+}
