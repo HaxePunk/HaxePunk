@@ -396,7 +396,7 @@ class Image extends Graphic
 	{
 		if (_alpha == 1)
 		{
-			if (_tintFactor == 0 || (_tintMode == TINTING_MULTIPLY && _color = 0xFFFFFF))
+			if (_tintFactor == 0 || (_tintMode == TINTING_MULTIPLY && _color == 0xFFFFFF))
 			{
 				_tint = null;
 				return updateBuffer();
