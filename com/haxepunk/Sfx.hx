@@ -170,7 +170,7 @@ class Sfx
 	private function set_volume(value:Float):Float
 	{
 		if (value < 0) value = 0;
-		if (_channel == null || _volume == value) return value;
+		if (_channel == null) return value;
 		_volume = value;
 		var filteredVol:Float = value * getVolume(_type);
 		if (filteredVol < 0) filteredVol = 0;
