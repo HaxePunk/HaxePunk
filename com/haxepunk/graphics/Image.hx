@@ -66,6 +66,16 @@ class Image extends Graphic
 	 * Use constants from the flash.display.BlendMode class.
 	 */
 	public var blend:BlendMode;
+	
+	/**
+	 * tintMode value to tint in multiply mode.
+	 */
+	public static inline var TINTING_MULTIPLY:Float = 0.0;
+	
+	/**
+	 * tintMode value to tint in colorize mode.
+	 */
+	public static inline var TINTING_COLORIZE:Float = 1.0;
 
 	/**
 	 * Constructor.
@@ -384,18 +394,26 @@ class Image extends Graphic
 
 	private function updateColorTransform()
 	{
-		if (_alpha == 1 && _color == 0xFFFFFF)
+		if (_alpha == 1)
 		{
-			_tint = null;
+			if (_tintFactor == 0 || (_tintMode == TINTING_MULTIPLY && _color == 0xFFFFFF))
+			{
+				_tint = null;
+				return updateBuffer();
+			}
 		}
-		else
-		{
-			_tint = _colorTransform;
-			_tint.redMultiplier = _red;
-			_tint.greenMultiplier = _green;
-			_tint.blueMultiplier = _blue;
-			_tint.alphaMultiplier = _alpha;
-		}
+		
+		_tint = _colorTransform;
+		
+		_tint.redMultiplier		= _tintMode * (1.0 - _tintFactor) + (1 - _tintMode) * (_tintFactor * ((_color >> 16 & 0xFF) / 255 - 1) + 1);
+		_tint.greenMultiplier	= _tintMode * (1.0 - _tintFactor) + (1 - _tintMode) * (_tintFactor * ((_color >>  8 & 0xFF) / 255 - 1) + 1);
+		_tint.blueMultiplier	= _tintMode * (1.0 - _tintFactor) + (1 - _tintMode) * (_tintFactor * ((_color		& 0xFF) / 255 - 1) + 1);
+		
+		_tint.redOffset		= (_color >> 16 & 0xFF) * _tintFactor * _tintMode;
+		_tint.greenOffset	= (_color >>  8 & 0xFF) * _tintFactor * _tintMode;
+		_tint.blueOffset	= (_color		& 0xFF) * _tintFactor * _tintMode;
+		
+		_tint.alphaMultiplier = _alpha;
 		updateBuffer();
 	}
 
@@ -438,6 +456,45 @@ class Image extends Graphic
 		_blue = HXP.getBlue(_color) / 255;
 		if (blit) updateColorTransform();
 		return _color;
+	}
+	
+	/**
+	 * The amount the image will be tinted, suggested values from
+	 * 0 to 1. 0 Means no change, 1 is full color tint.
+	 * 
+	 * <p>Only works with blit mode.</p>
+	 * 
+	 * <p>You can get cool, weird effects if setting this value outside the 0-1 value range.</p>
+	 * 
+	 * @default 1.
+	 */
+	public var tinting(get, set):Float;
+	inline function get_tinting():Float { return _tintFactor; }
+	function set_tinting(value:Float):Float
+	{
+		if (_tintFactor == value || !blit) return value;
+		_tintFactor = value;
+		updateColorTransform();
+		return _tintFactor;
+	}
+	
+	/**
+	 * The tint mode - multiply or colorize.
+	 * 
+	 * <p>Only works with blit mode.</p>
+	 * 
+	 * <p>You can get cool, weird effects if this value is not either 0 or 1.</p>
+	 * 
+	 * @default Image.TINTING_MULTIPLY
+	 */
+	public var tintMode(get, set):Float;
+	inline function get_tintMode():Float { return _tintMode; }
+	function set_tintMode(value:Float):Float
+	{
+		if (_tintMode == value || !blit) return value;
+		_tintMode = value;
+		updateColorTransform();
+		return _tintMode;
 	}
 
 	/**
@@ -560,6 +617,8 @@ class Image extends Graphic
 	// Color and alpha information.
 	private var _alpha:Float;
 	private var _color:Int;
+	private var _tintFactor:Float = 1.0;
+	private var _tintMode:Float = TINTING_MULTIPLY;
 	private var _tint:ColorTransform;
 	private var _colorTransform:ColorTransform;
 	private var _matrix:Matrix;
