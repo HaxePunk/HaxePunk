@@ -49,6 +49,8 @@ class Tweener
 
 		if (start)
 			_tween.start();
+		else
+			_tween.active = false;
 
 		return t;
 	}
