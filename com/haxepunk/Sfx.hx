@@ -188,7 +188,7 @@ class Sfx
 	private function set_pan(value:Float):Float
 	{
 		value = HXP.clamp(value, -1, 1);
-		if (_channel == null || _pan == value) return value;
+		if (_channel == null) return value;
 		var filteredPan:Float = HXP.clamp(value + getPan(_type), -1, 1);
 		if (_filteredPan == filteredPan) return value;
 		_pan = value;
