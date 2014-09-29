@@ -506,7 +506,7 @@ class Image extends Graphic
 	private function set_flipped(value:Bool):Bool
 	{
 		if (_flipped == value) return value;
-
+		_flipped = value;
 		if (blit)
 		{
 			var temp:BitmapData = _source;
@@ -530,7 +530,7 @@ class Image extends Graphic
 			_flip = temp;
 			updateBuffer();
 		}
-		_flipped = value;
+		
 		return _flipped;
 	}
 
