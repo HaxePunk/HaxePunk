@@ -92,9 +92,8 @@ class Spritemap extends Image
 			// get position of the current frame
 			if (_width > 0 && _height > 0)
 			{
-				_rect.x = _rect.width * _frame;
-				_rect.y = Std.int(_rect.x / _width) * _rect.height;
-				_rect.x = _rect.x % _width;
+				_rect.x = _rect.width * (_frame % _columns);
+				_rect.y = _rect.height * Std.int(_frame / _columns);
 				if (_flipped) _rect.x = (_width - _rect.width) - _rect.x;
 			}
 
