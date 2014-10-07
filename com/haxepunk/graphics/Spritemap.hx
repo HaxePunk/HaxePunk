@@ -52,7 +52,7 @@ class Spritemap extends Image
 				super(bd, _rect);
 			case Right(atlas):
 				_atlas = atlas;
-				_atlas.prepare(frameWidth, frameHeight);
+				_atlas.prepare(frameWidth == 0 ? Std.int(_atlas.width) : frameWidth, frameHeight == 0 ? Std.int(_atlas.height) : frameHeight);
 				super(atlas.getRegion(_frame), _rect);
 		}
 
