@@ -26,6 +26,11 @@ class TileAtlas extends Atlas
 	 */
 	public function getRegion(index:Int):AtlasRegion
 	{
+		if (index >= _regions.length)
+		{
+			throw 'Atlas doesn\'t have a region number "$index"';
+		}
+		
 		return _regions[index];
 	}
 	
