@@ -42,7 +42,8 @@ class Sfx
 		else
 		{
 			var className:String = Type.getClassName(Type.getClass(source));
-			if ( className == "flash.media.Sound" )
+			
+			if (StringTools.endsWith(className, "media.Sound"))
 			{
 				// used for loading sound runtime (data-driven for test and debug)
 				var __sound:Sound = cast source;
