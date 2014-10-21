@@ -29,8 +29,8 @@
 		</exec>
 	</target>
 
-	<target name="unit-travis" depends="haxelib" failonerror="true">
-		<exec executable="sh" dir="tests">
+	<target name="unit-travis" depends="haxelib">
+		<exec executable="sh" dir="tests" failonerror="true">
 			<arg line="travis.sh" />
 		</exec>
 	</target>
