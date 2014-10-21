@@ -63,7 +63,7 @@ class CLI
 			usage();
 		}
 	}
-	
+
 	/** From https://github.com/openfl/lime-tools/blob/master/helpers/ProcessHelper.hx */
 	public static function openDoc():Void
 	{
@@ -107,9 +107,9 @@ class CLI
 				result = StringTools.trim(lines[i - 1]);
 			}
 		}
-		
-		var url = result + "doc/pages/index.html"; 
-		
+
+		var url = result + "doc/pages/index.html";
+
 		if (Sys.systemName() == "Windows")
 		{
 			Sys.command("start", [ url ]);
@@ -133,11 +133,14 @@ class CLI
 		print('/blueUSAGE: /green$tool/reset doc');
 		print('/blueUSAGE: /green$tool/reset setup');
 		print('/blueUSAGE: /green$tool/reset update');
+		print("");
 		print('/blueUSAGE: /green$tool/reset new [options] [PROJECT_NAME]');
 		print("Options:
   /yellow-s/reset <width>x<height> : Set default size of window (default: 640x480)
   /yellow-r/reset <framerate>      : Set target frame rate (default: 60)
-  /yellow-c/reset <class>          : Set name of main class (default: Main)");
+  /yellow-c/reset <class>          : Set name of main class (default: Main)
+  /yellow--flashdevelop/reset	  : Add a FlashDevelop project file
+  /yellow--sublimetext/reset	  : Add a SublimeText project file");
 	}
 
 	public static function print(line:String)
