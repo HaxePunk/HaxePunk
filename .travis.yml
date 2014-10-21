@@ -28,3 +28,6 @@ before_install:
 
 script:
   - ant clean build unit-travis
+
+notifications:
+  slack: openfl:sBwVO0kgB7EuWLYzZzUezVIz#haxepunk 
