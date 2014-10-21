@@ -22,6 +22,7 @@ before_install:
   - haxelib dev HaxePunk $TRAVIS_BUILD_DIR
   - haxelib install lime > /dev/null
   - haxelib install openfl > /dev/null
+  - haxelib install dox > /dev/null
   - ant tools
   - echo "y" | haxelib run HaxePunk setup
 
