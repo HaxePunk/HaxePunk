@@ -31,39 +31,61 @@ class Project
 
 		var path = args.pop();
 		var project = new Project();
+		var whiteList = new Array<String>();
 
 		// parse command line arguments
 		var length = args.length;
 		var i = 0;
 		while (i < length)
 		{
-			switch (args[i])
+			var arg = args[i];
+
+			if (StringTools.startsWith(arg, "-"))
 			{
-				case '-s':
-					i += 1;
-					var size = args[i].split('x');
-					project.width = size[0];
-					project.height = size[1];
+				switch (arg)
+				{
+					// Project configuration
 
-				case '-r':
-					i += 1;
-					project.frameRate = args[i];
+					case "-s":
+						i += 1;
+						var size = args[i].split("x");
+						project.width = size[0];
+						project.height = size[1];
 
-				case '-c':
-					project.projectClass = args[i].charAt(0).toUpperCase() + args[i].substr(1).toLowerCase();
+					case "-r":
+						i += 1;
+						project.frameRate = args[i];
 
-				default:
-					var name = args[i];
-					project.projectName = name;
-					path += name + '/';
+					case "-c":
+						i += 1;
+						project.projectClass = args[i].charAt(0).toUpperCase() + args[i].substr(1).toLowerCase();
+
+					// IDEs
+
+					case "--flashdevelop":
+						whiteList.push("_{{PROJECT_NAME}}.hxproj");
+
+					case "--sublimetext":
+						whiteList.push("_{{PROJECT_NAME}}.sublime-project");
+
+					default:
+						CLI.print('Unknown option "$arg"');
+				}
 			}
+			else
+			{
+				var name = arg;
+				project.projectName = name;
+				path += '$name/';
+			}
+
 			i += 1;
 		}
 
-		project.make(path);
+		project.make(path, whiteList);
 	}
 
-	private function make(path:String)
+	private function make(path:String, whiteList:Array<String>)
 	{
 		path = createDirectory(path);
 
@@ -78,6 +100,12 @@ class Project
 			for (entry in entries)
 			{
 				var filename:String = entry.fileName;
+
+				// Ignore files and folders starting with an underscore '_' not in the white list
+				if (StringTools.startsWith(filename, "_") && whiteList.indexOf(filename) == -1)
+				{
+					continue;
+				}
 
 				// check if it's a folder
 				if (StringTools.endsWith(filename, "/") || StringTools.endsWith(filename, "\\"))
@@ -98,13 +126,14 @@ class Project
 						text = replaceTemplateVars(text);
 
 						bytes = Bytes.ofString(text);
-
-						filename = replaceTemplateVars(filename);
 					}
-					
-					if (StringTools.endsWith(filename, ".hxproj"))
+
+					filename = replaceTemplateVars(filename);
+
+					// White list file
+					if (StringTools.startsWith(filename, "_"))
 					{
-						filename = StringTools.replace(filename, "{{PROJECT_NAME}}", projectName);
+						filename = filename.substr(1);
 					}
 
 					CLI.print(filename);

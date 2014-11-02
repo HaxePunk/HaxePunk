@@ -341,9 +341,9 @@ class Image extends Graphic
 		graphics.clear();
 
 		if (fill)
-			graphics.beginFill(color, alpha);
+			graphics.beginFill(0xFFFFFF);
 		else
-			graphics.lineStyle(thick, color, alpha, false, LineScaleMode.NORMAL, null, JointStyle.MITER);
+			graphics.lineStyle(thick, 0xFFFFFF, 1, false, LineScaleMode.NORMAL, null, JointStyle.MITER);
 
 
 		graphics.moveTo(points[points.length - 1].x, points[points.length - 1].y);
@@ -376,6 +376,9 @@ class Image extends Graphic
 		image.originY = image.y - polygon.minY;
 		image.angle = originalAngle;
 		polygon.angle = originalAngle;
+
+        image.color = color;
+        image.alpha = alpha;
 
 		return image;
 	}

@@ -1,11 +1,11 @@
 --no-output
--lib openfl
 --remap flash:openfl
+-lib lime
+-lib openfl
 -D doc
 -D doc-gen
 -cp ..
 
---macro openfl.Lib.includeBackend("flash")
 -swf haxedoc.swf
 -swf-version 11.2
 -xml xmls/haxepunk.xml

@@ -1,0 +1,62 @@
+{
+    "folders":
+    [
+        {
+            "path": "src",
+            "name": "{{PROJECT_NAME}} Source Code",
+            "follow_symlinks": true
+        },
+        {
+            "path": "assets",
+            "name": "{{PROJECT_NAME}} Assets",
+            "file_exclude_patterns": ["*.css"]
+        }
+    ],
+    "settings":
+    {
+        "tab_size": 4
+    },
+    "build_systems":
+    [
+        {
+            "name": "Test (Neko)",
+            "shell_cmd": "lime test neko"
+        },
+        {
+        	"name": "Test (Flash)",
+        	"shell_cmd": "lime test flash"
+        },
+        {
+            "name": "Test (Windows)",
+            "shell_cmd": "lime test windows"
+        },
+        {
+        	"name": "Test (Linux)",
+        	"shell_cmd": "lime test linux"
+        },
+        {
+        	"name": "Test (Mac)",
+        	"shell_cmd": "lime test mac"
+        },
+        {
+        	"name":"Debug (Neko)",
+        	"shell_cmd": "lime test neko -debug"
+        },
+        {
+        	"name":"Debug (Flash)",
+        	"shell_cmd": "lime test flash -debug"
+        },
+        {
+            "name": "Debug (Windows)",
+            "shell_cmd": "lime test windows -debug"
+        },
+        {
+        	"name": "Debug (Linux)",
+        	"shell_cmd": "lime test linux -debug"
+        },
+        {
+        	"name": "Debug (Mac)",
+        	"shell_cmd": "lime test mac -debug"
+        }
+    ]
+}
