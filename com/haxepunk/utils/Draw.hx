@@ -209,7 +209,7 @@ class Draw
 			_graphics.lineStyle(thick, color, alpha, false, LineScaleMode.NONE);
 			_graphics.moveTo(x1 - _camera.x, y1 - _camera.y);
 			_graphics.lineTo(x2 - _camera.x, y2 - _camera.y);
-			_graphics.lineStyle(0);
+			_graphics.lineStyle();
 		}
 	}
 
@@ -278,7 +278,7 @@ class Draw
 		_graphics.drawRect(x - _camera.x, y - _camera.y, width, height);
 		_graphics.endFill();
 		
-		HXP.renderMode == RenderMode.BUFFER ? drawToScreen() : _graphics.lineStyle(0);
+		HXP.renderMode == RenderMode.BUFFER ? drawToScreen() : _graphics.lineStyle();
 	}
 		
 	/**
@@ -371,7 +371,7 @@ class Draw
 			{
 				_graphics.lineStyle(thick, color & 0xFFFFFF, alpha);
 				_graphics.drawCircle(x - _camera.x, y - _camera.y, radius);
-				_graphics.lineStyle(0);
+				_graphics.lineStyle();
 			}
 		}
 	}
@@ -458,7 +458,7 @@ class Draw
 			_graphics.lineStyle(thick, color, alpha);
 			_graphics.moveTo(x1 - _camera.x, y1 - _camera.y);
 			_graphics.curveTo(x2 - _camera.x, y2 - _camera.y, x3 - _camera.x, y3 - _camera.y);
-			_graphics.lineStyle(0);
+			_graphics.lineStyle();
 		}
 	}
 
