@@ -187,13 +187,20 @@ class AtlasData
 	 *
 	 * @return The new AtlasRegion object.
 	 */
-	public inline function createRegion(rect:Rectangle, ?center:Point):AtlasRegion
-	{
-		var r = rect.clone();
-		_rects.push(r);
-		var tileIndex = _tilesheet.addTileRect(r, null);
-		return new AtlasRegion(this, tileIndex, r);
-	}
+    private var _regionHash:Map<String,AtlasRegion> = new Map<String,AtlasRegion>();
+    public inline function createRegion(rect:Rectangle, ?center:Point):AtlasRegion
+    {
+        var r = rect.clone();
+        var rectAsStr:String = Std.string(r);
+        if(_regionHash.exists(rectAsStr))
+            return _regionHash.get(rectAsStr);
+
+        _rects.push(r);
+        var tileIndex = _tilesheet.addTileRect(r, null);
+        var region = new AtlasRegion(this, tileIndex, r);
+        _regionHash.set(rectAsStr, region); 
+        return region;
+    }
 
 	/**
 	 * Flushes the renderable data array
