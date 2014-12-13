@@ -58,17 +58,7 @@ class Backdrop extends Canvas
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;
 
-		if (_repeatX)
-		{
-			_point.x %= _textWidth;
-			if (_point.x > 0) _point.x -= _textWidth;
-		}
-
-		if (_repeatY)
-		{
-			_point.y %= _textHeight;
-			if (_point.y > 0) _point.y -= _textHeight;
-		}
+		tileBackdrop();
 
 		_x = x; _y = y;
 		x = y = 0;
@@ -82,17 +72,7 @@ class Backdrop extends Canvas
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;
 
-		if (_repeatX)
-		{
-			_point.x %= _textWidth;
-			if (_point.x > 0) _point.x -= _textWidth;
-		}
-
-		if (_repeatY)
-		{
-			_point.y %= _textHeight;
-			if (_point.y > 0) _point.y -= _textHeight;
-		}
+		tileBackdrop();
 
 		var sx = scale * scaleX,
 			sy = scale * scaleY,
@@ -110,6 +90,26 @@ class Backdrop extends Canvas
 				x += Std.int(_textWidth * fsx);
 			}
 			y += Std.int(_textHeight * fsy);
+		}
+	}
+
+	/**
+	 * Tiles the Backdrop
+	 */
+	private function tileBackdrop()
+	{
+		if (_repeatX)
+		{
+			var widthScale = scale * scaleX;
+			_point.x %= _textWidth * widthScale;
+			if (_point.x > 0) _point.x -= _textWidth * widthScale;
+		}
+
+		if (_repeatY)
+		{
+			var heightScale = scale * scaleY;
+			_point.y %= _textHeight * heightScale;
+			if (_point.y > 0) _point.y -= _textHeight * heightScale;
 		}
 	}
 
