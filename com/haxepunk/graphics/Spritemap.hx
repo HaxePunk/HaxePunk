@@ -261,11 +261,10 @@ class Spritemap extends Image
 	 */
 	public function stop(reset:Bool = false)
 	{
-		_anim = null;
-		
 		if(reset)
 			_frame = _index = reverse ? _anim.frames.length - 1 : 0;
 		
+		_anim = null;
 		complete = true;
 		updateBuffer();
 	}
