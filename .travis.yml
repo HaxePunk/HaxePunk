@@ -20,6 +20,7 @@ before_script:
 
 script:
   # haxe test.hxml
+  - echo "disabled"
 
 notifications:
   slack: openfl:sBwVO0kgB7EuWLYzZzUezVIz#haxepunk 
