@@ -1,43 +1,27 @@
 # HaxePunk
 
-A Haxe port of the [FlashPunk](http://useflashpunk.net) AS3 library. There are a few additions/differences from the original.
+A Haxe game engine, inspired by the [FlashPunk](http://useflashpunk.net) AS3 library.
 
-* Builds for Flash, Windows, Mac, Linux, iOS, Android, and Ouya
-* Circle/Polygon masks
-* Hardware acceleration for native targets
-* Joystick and multi-touch input
-* Texture atlases for native targets (supports TexturePacker xml)
+This is the development branch for the 3.0 version, therefor it isn't stable, the api might change without notice
+and it may not even build.
 
-[![Build Status](https://travis-ci.org/HaxePunk/HaxePunk.png?branch=master)](https://travis-ci.org/HaxePunk/HaxePunk)
-
-## Release build
-
-First, make sure you have [Haxe](http://haxe.org) 3.0 or higher, we recommend you to update to Haxe 3.1 if you haven't already. Then execute the following commands below to get started with your first HaxePunk project.
-If you are using Haxe 2 the last version supporting it was [v2.3.0](https://github.com/HaxePunk/HaxePunk/releases/tag/v2.3.0) `haxelib install HaxePunk 2.3.0`.
-
-```bash
-haxelib install HaxePunk
-haxelib run HaxePunk setup
-haxelib run HaxePunk new MyProject # creates a new project
-```
+[![Build Status](https://travis-ci.org/HaxePunk/HaxePunk.png?branch=release-3.0.0)](https://travis-ci.org/HaxePunk/HaxePunk)
 
 ## Development build
 
-You need to have ant installed to build a development version of HaxePunk. Make sure you set a default program for swf files to view the debug output. You will also need a C++ compiler for native builds (Xcode, Visual Studio, g++).
+Make sure you set a default program for swf files to view the debug output. You will also need a C++ compiler for native builds (Xcode, Visual Studio, g++).
 
 ```bash
-git clone https://github.com/HaxePunk/HaxePunk.git
-ant
+git clone https://github.com/HaxePunk/HaxePunk.git -b release-3.0.0
+haxelib dev HaxePunk HaxePunk
 ```
 
-This will install a dev version of HaxePunk through haxelib, run unit tests, and build an example project for flash/neko/native. If you fix an issue, feel free to create a pull request.
+This will download this dev version of HaxePunk and install it through haxelib,
+~~run unit tests, and build an example project for flash/neko/native~~.
+If you fix an issue, feel free to create a pull request.
 
-Generating documentation is just as simple. Run the commands below to create a new set of docs with haxedoc
-The documentation will be located in doc/docs/, simply open doc/docs/index.html with your web browser to see the doc.
-
-```bash
-ant doc
-```
+~~Generating documentation is just as simple. Run the commands below to create a new set of docs with haxedoc
+The documentation will be located in doc/docs/, simply open doc/docs/index.html with your web browser to see the doc.~~
 
 ## Have questions or looking to get involved?
 

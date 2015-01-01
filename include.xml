@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
+
 	<!-- <app preloader="com.haxepunk.Preloader" /> -->
 
-	<assets path="assets/graphics" rename="graphics" include="*.png" />
-	<assets path="assets/font" rename="font" include="*.ttf|*.otf" />
-	<assets path="assets/shaders" rename="shaders" include="*.frag|*.vert" />
-	<assets path="assets/materials" rename="materials" include="*.material" />
+	<assets path="assets/graphics" rename="graphics" include="*.png" embed="true" />
+	<assets path="assets/font" rename="font" include="*.ttf|*.otf" embed="true" />
+	<assets path="assets/shaders" rename="shaders" include="*.frag|*.vert" embed="true" />
+	<assets path="assets/materials" rename="materials" include="*.material" embed="true" />
 
 	<library type="material" handler="HaxePunk" />
 
 	<haxelib name="lime" />
 	<haxelib name="format" />
+	
+	<section if="compat2X">
+		
+		<app preloader="com.haxepunk.Preloader" unless="noHaxepunkPreloader" />
+		<source path="compat2X" />
+		<haxelib name="openfl" />
+		
+	</section>
+	
 </project>

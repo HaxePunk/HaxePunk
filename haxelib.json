@@ -3,10 +3,10 @@
 	"url" : "http://haxepunk.com",
 	"license": "MIT",
 	"tags": ["game", "cpp", "html5", "lime"],
-	"description": "A Haxe port of the FlashPunk AS3 engine.",
+	"description": "A Haxe game engine inspired by the FlashPunk AS3 engine.",
 	"version": "3.0.0",
 	"releasenote": "See CHANGELOG",
-	"contributors": ["heardtheword", "ibilon"],
+	"contributors": ["heardtheword", "_ibilon"],
 	"dependencies": {
 		"lime": ""
 	}
