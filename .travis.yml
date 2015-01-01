@@ -5,23 +5,13 @@ before_install:
   - sudo apt-get update
 
 install:
-  # Install haxe
   - sudo apt-get install haxe -y --force-yes
   - mkdir -p ~/haxelib
   - haxelib setup ~/haxelib
-  # Compile lime and aether
-  - sudo apt-get install mesa-common-dev libgl1-mesa-dev libglu1-mesa-dev -y
-  - sudo apt-get install g++-multilib gcc-multilib
-  - sudo apt-get install libgc-dev
+  - haxelib install lime
   - haxelib install hxcpp
   - haxelib install format
   - haxelib install svg
-  - git clone https://github.com/openfl/aether.git ~/aether --depth 1
-  - haxelib dev aether ~/aether
-  - git clone https://github.com/openfl/lime.git ~/lime -b next --recursive --depth 1
-  - haxelib dev lime ~/lime
-  - haxelib run lime rebuild linux -64
-  - haxelib run lime rebuild tools
   - echo "y" | haxelib run lime setup
   - haxelib dev HaxePunk $TRAVIS_BUILD_DIR
 
@@ -29,4 +19,7 @@ before_script:
   - cd $TRAVIS_BUILD_DIR/tests
 
 script:
-  - haxe test.hxml
+  # haxe test.hxml
+
+notifications:
+  slack: openfl:sBwVO0kgB7EuWLYzZzUezVIz#haxepunk 
