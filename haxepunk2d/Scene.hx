@@ -132,6 +132,11 @@ class Scene
 	public function getByName(name:String):Entity;
 
 	/**
+	 * Returns whether an entity with the name [name] exists.
+	 */
+	public function exists(name:String):Bool;
+
+	/**
 	 * Adds the Entity to the Scene at the end of the frame.
 	 */
 	public function add<E:Entity> (e:E) : E;

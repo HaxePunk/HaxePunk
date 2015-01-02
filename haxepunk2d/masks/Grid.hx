@@ -39,12 +39,12 @@ class Grid extends Mask
 	public function new(width:Int, height:Int, tileWidth:Int, tileHeight:Int, ?config:{ offset:Point, anchor:Point, angle:Angle, active:Bool });
 
 	/**
-	 * Return the tile located a [column]-[row].
+	 * Return the tile located at [column]-[row].
 	 */
 	public function getTile(column:Int, row:Int) : Tile;
 
 	/**
-	 * Sets the value of a tile.
+	 * Sets the value of the tile located at [column]-[row].
 	 * Omitted config values will use the following defaults:
 	 * { yOffset: 0, slope: 0, group: [] }.
 	 */
@@ -97,6 +97,13 @@ class Grid extends Mask
 	 * at [column]-[row] of size [width] by [height], making them empty.
 	 */
 	public function clearRectangleOutline(column:Int, row:Int, width:Int, height:Int, outlineThickness:Int) : Void;
+
+	/**
+	 * Shift all the tiles in the grid by [columns] columns
+	 * and [rows] rows. Will wrap if [wrap] otherwise the new
+	 * tiles will be empty.
+	 */
+	public function shift(columns:Int, rows:Int, wrap:Bool);
 }
 
 /**

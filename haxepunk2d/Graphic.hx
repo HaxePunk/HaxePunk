@@ -1,12 +1,30 @@
 package haxepunk2d;
 
+typedef GraphicConfig = {
+	smoothing : Bool,
+	layer : Int,
+	scrollX : Float,
+	scrollY : Float,
+	visible : Bool,
+	filters : Array<Filter>,
+	blendMode : BlendMode,
+	active : Bool,
+	offset : Point,
+	anchor : Point,
+	angle : Angle,
+	alpha : Float,
+	flippedHorizontally : Bool,
+	flippedVertically : Bool,
+	scale : Scale
+};
+
 /**
  * Base class for the graphic types. Do not use this directly, instead use the classes in `haxepunk2d.graphics`.
  */
 class Graphic
 {
 	/** Default `smoothing` value for newly created graphics. */
-	static var smooth : Bool.
+	public static var smooth : Bool.
 
 	/** The layer on which to draw this graphic. */
 	public var layer : Int;
@@ -51,8 +69,32 @@ class Graphic
 	/** The angle of the graphic. */
 	public var angle:Angle;
 
+	/** Change the opacity of the graphic, a value from 0 to 1. */
+	public var alpha : Float;
+
+	/** If you want to draw the graphic horizontally flipped. */
+	public var flippedHorizontally : Bool;
+
+	/** If you want to draw the graphic vertically flipped. */
+	public var flippedVertically : Bool;
+
+	/** Scale of the graphic. */
+	public var scale : Scale;
+
+	/** The width of the graphic. */
+	public var width : Float;
+
+	/** The height of the graphic. */
+	public var height : Float;
+
+	/** Half the width of the graphic. */
+	public var halfWidth(default, never) : Float;
+
+	/** Half the height of the graphic. */
+	public var halfHeight(default, never) : Float;
+
 	/**
 	 * Rotates the graphic by a certain angle.
 	 */
-	function rotateBy (angle:Angle) : Void;
+	public function rotateBy (angle:Angle) : Void;
 }

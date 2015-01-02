@@ -1,8 +1,8 @@
 package haxepunk2d.graphics;
 
 /**
- *
+ * 
  */
-class ParticleEmitter extends Graphics
+class Light extends Graphics
 {
 }

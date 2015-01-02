@@ -1,5 +1,12 @@
 package haxepunk2d;
 
+typedef MaskConfig = {
+	offset:Point,
+	anchor:Point,
+	angle:Angle,
+	active:Bool
+};
+
 /**
  * Base class for the mask types. Do not use this directly, instead use the classes in `haxepunk2d.masks`.
  */

@@ -12,11 +12,21 @@ class Polygon extends Mask
 	 */
 	public static function createRegularPolygon(sides:Int, radius:Float, ?config:{ offset:Point, anchor:Point, angle:Angle, active:Bool }):Polygon
 
+	/**
+	 * Create a polygon mask from a polygon shape.
+	 */
+	public static function fromShape(polygon:shapes.Polygon):Polygon;
+
 	/** The points representing the polygon. */
 	public var points : Array<Point>;
 
 	/**
 	 * Creates a polygon from an array of points.
 	 */
-	public function new(points:Array<Point>, ?config:{ offset:Point, anchor:Point, angle:Angle, active:Bool });
+	public function new(points:Array<Point>, ?config:MaskConfig);
+
+	/**
+	 * Create a polygon shape defined by this polygon mask.
+	 */
+	public function toShape():shapes.Polygon;
 }
