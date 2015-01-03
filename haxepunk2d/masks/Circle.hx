@@ -10,11 +10,6 @@ class Circle extends Mask
 	 */
 	public static function fromGraphic(g:Graphic):Circle;
 
-	/**
-	 * Create a circle mask from a circle shape.
-	 */
-	public static function fromShape(circle:shapes.Circle):Circle;
-
 	/** The radius of the circle mask. */
 	public var radius : Int;
 
@@ -26,9 +21,4 @@ class Circle extends Mask
 	 * Ommited config values will use the default values: { offset: (0,0), anchor: (0,0), angle: 0, active: true }.
 	 */
 	public function new(radius:Int, ?config:MaskConfig);
-
-	/**
-	 * Create a circle shape defined by this circle mask.
-	 */
-	public function toShape():shapes.Circle;
 }

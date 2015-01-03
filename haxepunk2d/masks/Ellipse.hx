@@ -5,11 +5,6 @@ package haxepunk2d.masks;
  */
 class Ellipse extends Mask
 {
-	/**
-	 * Create an ellipse mask from an ellipse shape.
-	 */
-	public static function fromShape(ellipse:shapes.Ellipse):Ellipse;
-
 	/** The radius of the ellipse mask on the x axis. */
 	public var xRadius : Int;
 
@@ -28,9 +23,4 @@ class Ellipse extends Mask
 	 * Ommited config values will use the default values: { offset: (0,0), anchor: (0,0), angle: 0, active: true }.
 	 */
 	public function new(xRadius:Int, yRadius:Int, ?config:MaskConfig);
-
-	/**
-	 * Create an ellipse shape defined by this ellipse mask.
-	 */
-	public function toShape():shapes.Ellipse;
 }

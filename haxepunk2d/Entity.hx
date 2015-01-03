@@ -76,6 +76,7 @@ class Entity
 	/**
 	 * Adds the Entity as a child at the end of the frame.
 	 */
+	@:generic
 	public function add<E:Entity> (e:E) : E;
 
 	/**
@@ -86,6 +87,7 @@ class Entity
 	/**
 	 * Removes the Entity from this entity's children at the end of the frame.
 	 */
+	@:generic
 	public function remove<E:Entity> (e:E) : E;
 
 	/**

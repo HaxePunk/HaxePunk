@@ -12,8 +12,23 @@ typedef ImageConfig = {
  */
 class Image extends Graphics
 {
-	/** Creates an image from a shape. */
-	public static function fromShape(shape:Shape, ?config:ImageConfig);
+	/** Creates an image from a mask. */
+	public static function fromMask(mask:Mask, ?config:ImageConfig):Image;
+
+	/** Creates a new image of a circle. */
+	public static function createCircle(radius:Int, ?config:ImageConfig):Image;
+
+	/** Creates a new image of a rectangle. */
+	public static function createRectangle(width:Int, height:Int, ?shapeAngle:Angle, ?config:ImageConfig):Image;
+
+	/** Creates a new image of an ellipse. */
+	public static function createEllipse(radiusX:Int, radiusY:Int, ?shapeAngle:Angle, ?config:ImageConfig):Image;
+
+	/** Creates a new image of a polygon. */
+	public static function createPolygon(points:Array<Point>, ?shapeAngle:Angle, ?config:ImageConfig):Image;
+
+	/** Creates a new image of a regular polygon. */
+	public static function createRegularPolygon(sides:Int, radius:Int, ?shapeAngle:Angle, ?config:ImageConfig):Image;
 
 	/** Original width of the texture used for the image. */
 	public var textureWidth : Int;
@@ -23,10 +38,10 @@ class Image extends Graphics
 
 	/** Clipping rectangle for the image. */
 	public var clip : Rectangle;
-	
+
 	/** Scale mode used when the source size isn't equal to the image size. */
 	public var scaleMode : ScaleMode = ExactFit;
-	
+
 	/** Position of the texture inside the image when the source size isn't equal to the image size. */
 	public var position : Position = CENTER_CENTER;
 

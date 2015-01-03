@@ -139,6 +139,7 @@ class Scene
 	/**
 	 * Adds the Entity to the Scene at the end of the frame.
 	 */
+	@:generic
 	public function add<E:Entity> (e:E) : E;
 
 	/**
@@ -161,6 +162,7 @@ class Scene
 	/**
 	 * Removes the Entity from the Scene at the end of the frame.
 	 */
+	@:generic
 	public function remove<E:Entity> (e:E) : E;
 
 	/**

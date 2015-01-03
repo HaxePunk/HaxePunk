@@ -25,7 +25,7 @@ class TileMap extends Graphic
 	public var rows:Int;
 
 	/** The grid data. */
-	public var data : Array<Array<Int>>;
+	public var data : Array<Array<Tile>>;
 
 	/** How many tiles the tilemap has. */
 	public var tileCount : Int;
@@ -41,18 +41,23 @@ class TileMap extends Graphic
 	 * the tileset [tileset] which has tiles of size [tileWidth]
 	 * by [tileHeight].
 	 */
-	public function new(tileset:String, width:Int, height:Int, tileWidth:Int, tileHeight:Int, :Int=0, :Int=0, ?config:TileMapConfig);
+	public function new(tileset:String, width:Int, height:Int, tileWidth:Int, tileHeight:Int, ?config:TileMapConfig);
 
 	/**
 	 * Return the index of the tile located at [column]-[row].
 	 * An index of -1 indicate an empty tile.
 	 */
-	public function getTile(column:Int, row:Int) : Int;
+	public function getTile(column:Int, row:Int) : Tile;
 
 	/**
 	 * Sets the index value of the tile located at [colum]-[row].
 	 */
 	public function setTile(column:Int, row:Int, index:Int) : Void;
+
+	/**
+	 * Sets the index sequence of the animated tile located at [colum]-[row].
+	 */
+	public function setTileAnimation(column:Int, row:Int, frames:Either<Array<Int>, Array<Point>>, frameRate:Float) : Void;
 
 	/**
 	 * Clear the tile located a [column]-[row], making it empty.
@@ -64,13 +69,19 @@ class TileMap extends Graphic
 	 * Return the collection of tiles located in the rectangle starting
 	 * at [column]-[row] of size [width] by [height].
 	 */
-	public function getRectangle(column:Int, row:Int, width:Int, height:Int) : Array<Array<Int>>;
+	public function getRectangle(column:Int, row:Int, width:Int, height:Int) : Array<Array<Tile>>;
 
 	/**
 	 * Sets the index value of a collection of tiles located in the rectangle starting
 	 * at [column]-[row] of size [width] by [height].
 	 */
 	public function setRectangle(column:Int, row:Int, width:Int, height:Int, index:Int) : Void;
+
+	/**
+	 * Sets the index sequence of a collection of animated tiles located
+	 * in the rectangle starting at [column]-[row] of size [width] by [height].
+	 */
+	public function setRectangleAnimation(column:Int, row:Int, width:Int, height:Int, frames:Either<Array<Int>, Array<Point>>, frameRate:Float) : Void;
 
 	/**
 	 * Clear the collection of tiles located in the rectangle starting
@@ -83,7 +94,7 @@ class TileMap extends Graphic
 	 * thickness [outlineThickness] of the rectangle starting
 	 * at [column]-[row] of size [width] by [height].
 	 */
-	public function getRectangleOutline(column:Int, row:Int, width:Int, height:Int, outlineThickness:Int) : Array<Array<Int>>;
+	public function getRectangleOutline(column:Int, row:Int, width:Int, height:Int, outlineThickness:Int) : Array<Array<Tile>>;
 
 	/**
 	 * Sets the index value of a collection of tiles located in the outline of
@@ -91,6 +102,13 @@ class TileMap extends Graphic
 	 * at [column]-[row] of size [width] by [height].
 	 */
 	public function setRectangleOutline(column:Int, row:Int, width:Int, height:Int, outlineThickness:Int, index:Int) : Void;
+
+	/**
+	 * Sets the index sequence of a collection of animated tiles located
+	 * in the outline of thickness [outlineThickness] of the rectangle
+	 * starting at [column]-[row] of size [width] by [height].
+	 */
+	public function setRectangleOutlineAnimation(column:Int, row:Int, width:Int, height:Int, outlineThickness:Int, frames:Either<Array<Int>, Array<Point>>, frameRate:Float) : Void;
 
 	/**
 	 * Clear the collection of tiles located in the outline of
@@ -105,4 +123,11 @@ class TileMap extends Graphic
 	 * tiles will be empty.
 	 */
 	public function shift(columns:Int, rows:Int, wrap:Bool);
+}
+
+enum Tile
+{
+	Empty;
+	Static(index:Int);
+	Animated(frames:Array<Int>, frameRate:Float);
 }

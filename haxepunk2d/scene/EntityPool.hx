@@ -11,6 +11,7 @@ class EntityPool
 	/**
 	 * Clears stored reycled Entities of the Class type.
 	 */
+	@:generic
 	function clear<C:Entity> (type:Class<C>) : Int;
 
 	/**
@@ -21,10 +22,12 @@ class EntityPool
 	/**
 	 * Returns a new Entity, or a stored recycled Entity if one exists.
 	 */
+	@:generic
 	function create<C:Entity> (type:Class<C>, addToScene:Bool=true) : C;
 
 	/**
 	 * Removes the Entity from the Scene at the end of the frame and recycles it. The recycled Entity can then be fetched again by calling the create() function.
 	 */
+	@:generic
 	function recycle<E:Entity> (e:E) : E;
 }

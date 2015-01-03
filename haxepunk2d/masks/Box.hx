@@ -10,11 +10,6 @@ class Box extends Mask
 	 */
 	public static function fromGraphic(g:Graphic):Box;
 
-	/**
-	 * Create a box mask from a box shape.
-	 */
-	public static function fromShape(box:shapes.Box):Box;
-
 	/** The width of the box mask. */
 	var width : Float;
 
@@ -32,9 +27,4 @@ class Box extends Mask
 	 * Ommited config values will use the default values: { offset: (0,0), anchor: (0,0), angle: 0, active: true }.
 	 */
 	public function new(width:Int, height:Int, ?config:MaskConfig);
-
-	/**
-	 * Create a box shape defined by this box mask.
-	 */
-	public function toShape():shapes.Box;
 }

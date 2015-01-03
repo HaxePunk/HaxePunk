@@ -72,11 +72,11 @@ class Graphic
 	/** Change the opacity of the graphic, a value from 0 to 1. */
 	public var alpha : Float;
 
-	/** If you want to draw the graphic horizontally flipped. */
-	public var flippedHorizontally : Bool;
+	/** If you want to draw the graphic horizontally (on the x-axis) flipped. */
+	public var flippedX : Bool;
 
-	/** If you want to draw the graphic vertically flipped. */
-	public var flippedVertically : Bool;
+	/** If you want to draw the graphic vertically (on the y-axis) flipped. */
+	public var flippedY : Bool;
 
 	/** Scale of the graphic. */
 	public var scale : Scale;
