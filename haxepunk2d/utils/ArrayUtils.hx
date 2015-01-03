@@ -16,4 +16,16 @@ class ArrayUtils // to be used with "using"
 	 */
 	@:generic
 	static function next<T> (array:Array<T>, current:T, loop:Bool = true):T;
+	
+	/**
+	 * Empties an array.
+	 */
+	@:generic
+	static function clear<T>(array:Array<T>):T;
+	
+	/**
+	 * Checks if the array contains the specified element using standard equality.
+	 */
+	@:generic
+	static function contains<T>(array:Array<T>, element:T):Bool;
 }

@@ -1,5 +1,6 @@
 *.swf
 *.sublime*
+*.hxproj
 *.zip
 *.n
 *.build
@@ -10,6 +11,7 @@
 
 build-test/
 export/
+bin/
 
 # OS specific files
 .DS_Store
