@@ -58,7 +58,6 @@ class AtlasData
 	 */
 	public function new(bd:BitmapData, ?name:String, ?flags:Int)
 	{
-		_rects = new Array<Rectangle>();
 		_data = new Array<Float>();
 		_smoothData = new Array<Float>();
 		_dataIndex = _smoothDataIndex = 0;
@@ -80,7 +79,7 @@ class AtlasData
 			_dataPool.set(_name, this);
 		}
 
-		_renderFlags = Tilesheet.TILE_TRANS_2x2 | Tilesheet.TILE_ALPHA | Tilesheet.TILE_BLEND_NORMAL | Tilesheet.TILE_RGB;
+		_renderFlags = Tilesheet.TILE_TRANS_2x2 | Tilesheet.TILE_ALPHA | Tilesheet.TILE_BLEND_NORMAL | Tilesheet.TILE_RGB | Tilesheet.TILE_RECT;
 		_flagAlpha = true;
 		_flagRGB = true;
 
@@ -126,12 +125,6 @@ class AtlasData
 	public function reload(bd:BitmapData):Void
 	{
 		HXP.overwriteBitmapCache(_name, bd);
-		_tilesheet = new Tilesheet(bd);
-		// recreate tile indexes
-		for (r in _rects)
-		{
-			_tilesheet.addTileRect(r);
-		}
 	}
 
 	/**
@@ -187,20 +180,10 @@ class AtlasData
 	 *
 	 * @return The new AtlasRegion object.
 	 */
-    private var _regionHash:Map<String,AtlasRegion> = new Map<String,AtlasRegion>();
-    public inline function createRegion(rect:Rectangle, ?center:Point):AtlasRegion
-    {
-        var r = rect.clone();
-        var rectAsStr:String = Std.string(r);
-        if(_regionHash.exists(rectAsStr))
-            return _regionHash.get(rectAsStr);
-
-        _rects.push(r);
-        var tileIndex = _tilesheet.addTileRect(r, null);
-        var region = new AtlasRegion(this, tileIndex, r);
-        _regionHash.set(rectAsStr, region); 
-        return region;
-    }
+	public inline function createRegion(rect:Rectangle, ?center:Point):AtlasRegion
+	{
+		return new AtlasRegion(this, rect.clone());
+	}
 
 	/**
 	 * Flushes the renderable data array
@@ -222,7 +205,7 @@ class AtlasData
 
 	/**
 	 * Prepares a tile to be drawn using a matrix
-	 * @param  tile  The tile index to draw
+	 * @param  rect   The source rectangle to draw
 	 * @param  layer The layer to draw on
 	 * @param  tx    X-Axis translation
 	 * @param  ty    Y-Axis translation
@@ -235,7 +218,7 @@ class AtlasData
 	 * @param  blue  Blue color value
 	 * @param  alpha Alpha value
 	 */
-	public inline function prepareTileMatrix(tile:Int, layer:Int,
+	public inline function prepareTileMatrix(rect:Rectangle, layer:Int,
 		tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
 		red:Float, green:Float, blue:Float, alpha:Float, ?smooth:Bool)
 	{
@@ -246,9 +229,15 @@ class AtlasData
 		var _data = smooth ? _smoothData : _data;
 		var _dataIndex = smooth ? _smoothDataIndex : _dataIndex;
 
+		// Destination point
 		_data[_dataIndex++] = tx;
 		_data[_dataIndex++] = ty;
-		_data[_dataIndex++] = tile;
+
+		// Source rectangle
+		_data[_dataIndex++] = rect.x;
+		_data[_dataIndex++] = rect.y;
+		_data[_dataIndex++] = rect.width;
+		_data[_dataIndex++] = rect.height;
 
 		// matrix transformation
 		_data[_dataIndex++] = a; // m00
@@ -280,7 +269,7 @@ class AtlasData
 
 	/**
 	 * Prepares a tile to be drawn
-	 * @param  tile   The tile index to draw
+	 * @param  rect   The source rectangle to draw
 	 * @param  x      The x-axis value
 	 * @param  y      The y-axis value
 	 * @param  layer  The layer to draw on
@@ -292,7 +281,7 @@ class AtlasData
 	 * @param  blue   Blue color value
 	 * @param  alpha  Alpha value
 	 */
-	public inline function prepareTile(tile:Int, x:Float, y:Float, layer:Int,
+	public inline function prepareTile(rect:Rectangle, x:Float, y:Float, layer:Int,
 		scaleX:Float, scaleY:Float, angle:Float,
 		red:Float, green:Float, blue:Float, alpha:Float, ?smooth:Bool)
 	{
@@ -303,9 +292,15 @@ class AtlasData
 		var _data = smooth ? _smoothData : _data;
 		var _dataIndex = smooth ? _smoothDataIndex : _dataIndex;
 
+		// Destination point
 		_data[_dataIndex++] = x;
 		_data[_dataIndex++] = y;
-		_data[_dataIndex++] = tile;
+
+		// Source rectangle
+		_data[_dataIndex++] = rect.x;
+		_data[_dataIndex++] = rect.y;
+		_data[_dataIndex++] = rect.width;
+		_data[_dataIndex++] = rect.height;
 
 		// matrix transformation
 		if (angle == 0)
@@ -426,7 +421,6 @@ class AtlasData
 	private var _dataIndex:Int;
 	private var _smoothData:Array<Float>;
 	private var _smoothDataIndex:Int;
-	private var _rects:Array<Rectangle>;
 
 	private static var _scene:Scene;
 	private static var _dataPool:Map<String, AtlasData> = new Map<String, AtlasData>();

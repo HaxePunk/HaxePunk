@@ -114,8 +114,7 @@ class Tilemap extends Canvas
 		_map[row][column] = index;
 		if (blit)
 		{
-			_tile.x = (index % _setColumns) * (_tile.width + tileSpacingWidth);
-			_tile.y = Std.int(index / _setColumns) * (_tile.height + tileSpacingHeight);
+			updateTileRect(index);
 			draw(column * _tile.width, row * _tile.height, _set, _tile);
 		}
 	}
@@ -475,12 +474,20 @@ class Tilemap extends Canvas
 					// ensure no horizontal overlap between this and next tile
 					scx = (Math.floor(wx+stepx) - Math.floor(wx)) / tileWidth;
 
-					_atlas.prepareTile(tile, Math.floor(wx), Math.floor(wy), layer, scx, scy, 0, _red, _green, _blue, alpha, smooth);
+					updateTileRect(tile);
+					_atlas.prepareTile(_tile, Math.floor(wx), Math.floor(wy), layer, scx, scy, 0, _red, _green, _blue, alpha, smooth);
 				}
 				wx += stepx;
 			}
 			wy += stepy;
 		}
+	}
+
+	/** @private Sets the _tile convenience rect to the x/y position of the supplied tile. Assumes _tile has the correct tile width/height set. Respects tile spacing. */
+	private inline function updateTileRect(tile:Int)
+	{
+		_tile.x = (tile % _setColumns) * (_tile.width + tileSpacingWidth);
+		_tile.y = Std.int(tile / _setColumns) * (_tile.height + tileSpacingHeight);
 	}
 
 	/** @private Used by shiftTiles to update a tile from the tilemap. */
