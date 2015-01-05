@@ -201,7 +201,13 @@ class HXP
 	/**
 	 * The choose function randomly chooses and returns one of the provided values.
 	 */
-	public static var choose = Reflect.makeVarArgs(function(objs:Array<Dynamic>) {
+	public static var choose(get, null):Dynamic;
+	private static function get_choose():Dynamic
+	{
+		return Reflect.makeVarArgs(_choose);
+	}
+	private static inline function _choose(objs:Array<Dynamic>):Dynamic
+	{
 		if (objs == null || objs.length == 0)
 		{
 			throw "Can't choose a random element on an empty array";
@@ -224,7 +230,7 @@ class HXP
 		{
 			return objs[rand(objs.length)];
 		}
-	});
+	}
 
 	/**
 	 * The currently active World object (deprecated), use scene instead.
@@ -762,7 +768,7 @@ class HXP
 		if (loop)
 			return options[(indexOf(options, current) + 1) % options.length];
 		else
-			return options[Std.int(Math.max(indexOf(options, current) + 1, options.length - 1))];
+			return options[Std.int(Math.min(indexOf(options, current) + 1, options.length - 1))];
 	}
 
 	/**

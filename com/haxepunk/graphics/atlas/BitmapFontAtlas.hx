@@ -128,21 +128,24 @@ class BitmapFontAtlas extends TextureAtlas
 		var atlas = new BitmapFontAtlas(asset);
 		var bmd:BitmapData = null;
 		
-		try {
-	#if flash
-		bmd = atlas._data._tilesheet.nmeBitmap;
-	#else
-		bmd = atlas._data._tilesheet.__bitmap;
-	#end
-		} catch (err:Dynamic) {}
+		try
+		{
+			bmd = atlas._data._tilesheet.__bitmap;
+		}
+		catch (_:Dynamic) { }
 	
-		if (bmd == null) throw 'Invalid XNA font asset "$asset": no BitmapData found.';
+		if (bmd == null)
+			throw 'Invalid XNA font asset "$asset": no BitmapData found.';
 		
-		if (options == null) options = {};
+		if (options == null)
+			options = {};
 
 		// defaults
-		if (!Reflect.hasField(options, "letters"))      options.letters = _DEFAULT_GLYPHS;
-		if (!Reflect.hasField(options, "glyphBGColor")) options.glyphBGColor = 0xFF202020;
+		if (!Reflect.hasField(options, "letters"))
+			options.letters = _DEFAULT_GLYPHS;
+
+		if (!Reflect.hasField(options, "glyphBGColor"))
+			options.glyphBGColor = 0xFF202020;
 		
 		var glyphString:String = options.letters;
 		var globalBGColor:Int = bmd.getPixel(0, 0);

@@ -52,7 +52,13 @@ class Spritemap extends Image
 				super(bd, _rect);
 			case Right(atlas):
 				_atlas = atlas;
-				_atlas.prepare(frameWidth, frameHeight);
+
+				if (frameWidth > _atlas.width || frameHeight > _atlas.height)
+				{
+					throw "Frame width and height can't be bigger than the source image dimension.";
+				}
+
+				_atlas.prepare(frameWidth == 0 ? Std.int(_atlas.width) : frameWidth, frameHeight == 0 ? Std.int(_atlas.height) : frameHeight);
 				super(atlas.getRegion(_frame), _rect);
 		}
 
@@ -92,9 +98,8 @@ class Spritemap extends Image
 			// get position of the current frame
 			if (_width > 0 && _height > 0)
 			{
-				_rect.x = _rect.width * _frame;
-				_rect.y = Std.int(_rect.x / _width) * _rect.height;
-				_rect.x = _rect.x % _width;
+				_rect.x = _rect.width * (_frame % _columns);
+				_rect.y = _rect.height * Std.int(_frame / _columns);
 				if (_flipped) _rect.x = (_width - _rect.width) - _rect.x;
 			}
 
@@ -256,11 +261,10 @@ class Spritemap extends Image
 	 */
 	public function stop(reset:Bool = false)
 	{
-		_anim = null;
-		
 		if(reset)
 			_frame = _index = reverse ? _anim.frames.length - 1 : 0;
 		
+		_anim = null;
 		complete = true;
 		updateBuffer();
 	}

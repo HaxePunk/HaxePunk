@@ -1,6 +1,6 @@
 -main TestMain
 -neko unit.n
--lib openfl
---macro openfl.Lib.includeBackend("native")
 --remap flash:openfl
+-lib lime
+-lib openfl
 -lib HaxePunk

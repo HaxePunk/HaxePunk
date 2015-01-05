@@ -482,6 +482,33 @@ class Tilemap extends Canvas
 			wy += stepy;
 		}
 	}
+	
+	/**
+	 * Create a Grid object from this tilemap.
+	 * @param solidTiles	Array of tile indexes that should be solid.
+	 * @param grid			A grid to use instead of creating a new one, the function won't check if the grid is of correct dimension.
+	 * @return The grid with a tile solid if the tile index is in [solidTiles].
+	*/
+	public function createGrid(solidTiles:Array<Int>, ?grid:Grid)
+	{
+		if (grid == null)
+		{
+			grid = new Grid(width, height, Std.int(_tile.width), Std.int(_tile.height));
+		}
+		
+		for (y in 0..._rows)
+		{
+			for (x in 0..._columns)
+			{
+				if (solidTiles.indexOf(getTile(x, y)) != -1)
+				{
+					grid.setTile(x, y, true);
+				}
+			}
+		}
+		
+		return grid;
+	}
 
 	/** @private Sets the _tile convenience rect to the x/y position of the supplied tile. Assumes _tile has the correct tile width/height set. Respects tile spacing. */
 	private inline function updateTileRect(tile:Int)

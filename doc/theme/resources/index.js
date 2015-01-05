@@ -151,7 +151,10 @@ function searchQuery(query) {
 	$("#nav li").each(function(index, element){
 		var e = $(element);
 		if (!e.hasClass("expando")) {
-			var content = e.attr("data_path").toLowerCase();
+			var content = e.attr("data_path");
+			if (!content)
+				return
+			content = content.toLowerCase();
 			var match = searchMatch(content, query);
 			if (match && !searchSet) {
 				var url = dox.rootPath + "/" + e.attr("data_path").split(".").join("/") + ".html";

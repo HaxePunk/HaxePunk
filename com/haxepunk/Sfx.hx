@@ -42,11 +42,26 @@ class Sfx
 		else
 		{
 			var className:String = Type.getClassName(Type.getClass(source));
-			_sound = _sounds.get(className);
-			if (_sound == null)
+			
+			if (StringTools.endsWith(className, "media.Sound"))
 			{
-				_sound = source;
-				_sounds.set(className, source);
+				// used for loading sound runtime (data-driven for test and debug)
+				var __sound:Sound = cast source;
+				_sound = _sounds.get(__sound.url);
+				if ( _sound == null )
+				{
+					_sound = source;
+					_sounds.set(__sound.url, source);
+				}
+			}
+			else
+			{
+				_sound = _sounds.get(className);
+				if (_sound == null)
+				{
+					_sound = source;
+					_sounds.set(className, source);
+				}
 			}
 		}
 
@@ -170,7 +185,7 @@ class Sfx
 	private function set_volume(value:Float):Float
 	{
 		if (value < 0) value = 0;
-		if (_channel == null || _volume == value) return value;
+		if (_channel == null) return value;
 		_volume = value;
 		var filteredVol:Float = value * getVolume(_type);
 		if (filteredVol < 0) filteredVol = 0;
@@ -188,7 +203,7 @@ class Sfx
 	private function set_pan(value:Float):Float
 	{
 		value = HXP.clamp(value, -1, 1);
-		if (_channel == null || _pan == value) return value;
+		if (_channel == null) return value;
 		var filteredPan:Float = HXP.clamp(value + getPan(_type), -1, 1);
 		if (_filteredPan == filteredPan) return value;
 		_pan = value;
