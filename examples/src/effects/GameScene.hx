@@ -13,7 +13,10 @@ class GameScene extends DemoScene
 	public function new()
 	{
 		super();
+	}
 
+	public override function begin()
+	{
 #if !flash
 		atlas = TextureAtlas.loadTexturePacker("atlas/assets.xml");
 #end
@@ -21,10 +24,7 @@ class GameScene extends DemoScene
 		backdrop = new Backdrop(#if flash "gfx/tile.png" #else atlas.getRegion("tile.png") #end, true, true);
 		backdrop.color = 0x555555;
 		addGraphic(backdrop);
-	}
 
-	public override function begin()
-	{
 		smoke = new Emitter(#if flash "gfx/smoke.png" #else atlas.getRegion("smoke.png") #end, 16, 16);
 		smoke.newType("exhaust", [0]);
 		smoke.setMotion("exhaust", 90, 30, 0.5, 360, 10, 0.5);

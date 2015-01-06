@@ -32,16 +32,16 @@ class GameScene extends DemoScene
 	public function new()
 	{
 		super();
+	}
 
+	public override function begin()
+	{
 #if !flash
 		atlas = TextureAtlas.loadTexturePacker("atlas/assets.xml");
 #end
 		backdrop = new Backdrop(#if flash "gfx/tile.png" #else atlas.getRegion("tile.png") #end, true, true);
 		addGraphic(backdrop, 20);
-	}
 
-	public override function begin()
-	{
 		player = new Player(10 * 32, 11 * 32);
 		add(player);
 
