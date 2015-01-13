@@ -1,3 +1,5 @@
+[![Build Status](https://img.shields.io/travis/HaxePunk/HaxePunk/dev.svg?style=flat)](https://travis-ci.org/HaxePunk/HaxePunk) [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE) [![Haxelib](https://img.shields.io/github/tag/haxepunk/haxepunk.svg?style=flat&label=haxelib)](http://lib.haxe.org/p/haxepunk)
+
 # HaxePunk
 
 A Haxe port of the [FlashPunk](http://useflashpunk.net) AS3 library. There are a few additions/differences from the original.
@@ -7,8 +9,6 @@ A Haxe port of the [FlashPunk](http://useflashpunk.net) AS3 library. There are a
 * Hardware acceleration for native targets
 * Joystick and multi-touch input
 * Texture atlases for native targets (supports TexturePacker xml)
-
-[![Build Status](https://travis-ci.org/HaxePunk/HaxePunk.png?branch=dev)](https://travis-ci.org/HaxePunk/HaxePunk)
 
 ## Release build
 
@@ -55,7 +55,7 @@ There are a few ways you can get involved with HaxePunk.
 
 ## MIT License
 
-Copyright (C) 2012-2014 Matt Tuttle
+Copyright (C) 2012-2015 Matt Tuttle
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
