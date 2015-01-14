@@ -17,14 +17,14 @@ class Box extends Mask
 	var height : Float;
 
 	/** Half the width of the box mask. */
-	var halfWidth(default, never) : Float;
+	var halfWidth(default, null) : Float;
 
 	/** Half the height of the box mask. */
-	var halfHeight(default, never) : Float;
+	var halfHeight(default, null) : Float;
 
 	/**
 	 * Create a new box mask [width] by [height].
-	 * Ommited config values will use the default values: { offset: (0,0), anchor: (0,0), angle: 0, active: true }.
+	 * Ommited config values will use the defaults from `defaultConfig`.
 	 */
 	public function new(width:Int, height:Int, ?config:MaskConfig);
 }

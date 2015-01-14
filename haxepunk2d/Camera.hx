@@ -56,6 +56,21 @@ class Camera
 	 * Center the camera either on a point, a rectangle, a circle, an entity, a graphic or a mask.
 	 */
 	public function centerOn(e:Either<Point, Rectangle, Circle, Entity, Graphic, Mask>):Void;
+
+	/**
+	 * Cause the camera to shake for a specified length of time.
+	 */
+	public function shake(magnitude:Int, duration:Float):Void;
+
+	/**
+	 * Stop the camera from shaking immediately.
+	 */
+	public function stopShake():Void;
+
+	/**
+	 * Captures the current camera view as an Image object.
+	 */
+	public function capture () : Image;
 }
 
 /**

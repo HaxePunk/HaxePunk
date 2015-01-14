@@ -46,20 +46,6 @@ class Mouse
 	/** Position of the mouse on the screen. */
 	public static var position:Point = new Point(0,0);
 
-	/** X position of the mouse on the screen */
-	public static var x(get, never):Float;
-	private static function get_x():Float
-	{
-		return position.x;
-	}
-
-	/** Y position of the mouse on the screen */
-	public static var y(get, never):Float;
-	private static function get_y():Float
-	{
-		return position.y;
-	}
-
 	/**
 	 * Returns the name of the mouse button.
 	 *

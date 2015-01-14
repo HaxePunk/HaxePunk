@@ -36,7 +36,7 @@ class Window
 	public var backgroundColor : Color = BLACK;
 
 	/** If the window is fullscreen. */
-	public static var fullscreen : Bool;
+	public static var fullscreen(default, set) : Bool;
 
 	/** If the window can go into fullscreen. */ // Added it because it was on my list, but not sure when you can't go fullscreen
 	public static var canFullscreen(default, null) : Bool;

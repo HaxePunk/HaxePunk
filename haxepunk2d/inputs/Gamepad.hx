@@ -9,7 +9,7 @@ class Gamepad
 	public static var available(default, null) : Bool;
 
 	/** */
-	static var numberConnected:Int;
+	static var numberConnected(default, null):Int;
 
 	/** Determines the joystick's deadZone. Anything under this value will be considered 0 to prevent jitter. */
 	var deadZone : Float;
@@ -18,13 +18,13 @@ class Gamepad
 	public static var last(default, null):GamepadButton = NONE;
 
 	/** Each axis contained in an array. */
-	var axis : Array<Float>;
+	var axis(default, null) : Array<Float>;
 
 	/** If the gamepad is connected. */
-	var connected : Bool;
+	var connected(default, null) : Bool;
 
-	/** A Point containing the gamepad's hat value. */
-	var hat : Point;
+	/** An array of Point containing the gamepad's hats values. */
+	var hats(default, null) : Array<Point>;
 
 	/**
 	 * Returns the name of the gamepad button.

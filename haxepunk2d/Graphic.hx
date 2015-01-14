@@ -1,30 +1,37 @@
 package haxepunk2d;
 
 typedef GraphicConfig = {
-	smoothing : Bool,
-	layer : Int,
-	scrollX : Float,
-	scrollY : Float,
-	visible : Bool,
-	filters : Array<Filter>,
-	blendMode : BlendMode,
-	active : Bool,
-	offset : Point,
-	anchor : Point,
-	angle : Angle,
-	alpha : Float,
-	flippedHorizontally : Bool,
-	flippedVertically : Bool,
-	scale : Scale
+	@:optional smoothing : Bool,
+	@:optional layer : Int,
+	@:optional scrollX : Float,
+	@:optional scrollY : Float,
+	@:optional visible : Bool,
+	@:optional filters : Array<Filter>,
+	@:optional blendMode : BlendMode,
+	@:optional active : Bool,
+	@:optional offset : Point,
+	@:optional anchor : Point,
+	@:optional angle : Angle,
+	@:optional alpha : Float,
+	@:optional flippedHorizontally : Bool,
+	@:optional flippedVertically : Bool,
+	@:optional scale : Scale
 };
+
+enum ImageFormat
+{
+	BMP;
+	JPG;
+	PNG;
+}
 
 /**
  * Base class for the graphic types. Do not use this directly, instead use the classes in `haxepunk2d.graphics`.
  */
 class Graphic
 {
-	/** Default `smoothing` value for newly created graphics. */
-	public static var smooth : Bool.
+	/** Default values for newly created graphics when config options are ommited. */
+	public static var defaultConfig : GraphicConfig;
 
 	/** The layer on which to draw this graphic. */
 	public var layer : Int;
@@ -57,8 +64,8 @@ class Graphic
 	 */
 	public function resume():Void;
 
-	/** If this graphic should be smoothed. Use `smooth` as default value when a graphic is created. */
-	public var smoothing:Bool;
+	/** If this graphic should be smoothed. */
+	public var smooth:Bool;
 
 	/** Positon offset relative to the entity the graphic is attached to. */
 	public var offset : Point;
@@ -97,4 +104,11 @@ class Graphic
 	 * Rotates the graphic by a certain angle.
 	 */
 	public function rotateBy (angle:Angle) : Void;
+
+	/**
+	 * Save the graphic to the disk.
+	 * Only available on target with filesystem access.
+	 * If [format] isn't specified it will be inferred from the extension in [fileName].
+	 */
+	public function saveToDisk(fileName:String, ?format:ImageFormat):Void;
 }

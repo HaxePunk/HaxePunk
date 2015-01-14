@@ -6,10 +6,10 @@ package haxepunk2d.utils;
 class Angle
 {
 	/** Convert a radian value into a degree value. */
-	static var RAD2DEG : Float;
+	static var RAD2DEG(default, null) : Float;
 
 	/** Convert a degree value into a radian value. */
-	static var DEG2RAD : Float;
+	static var DEG2RAD(default, null) : Float;
 
 	/**
 	 * Finds the angle (in degrees) from point [p1] to point [p2].

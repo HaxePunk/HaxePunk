@@ -18,7 +18,7 @@ class Circle extends Mask
 
 	/**
 	 * Create a new circle mask of radius [radius].
-	 * Ommited config values will use the default values: { offset: (0,0), anchor: (0,0), angle: 0, active: true }.
+	 * Ommited config values will use the defaults from `defaultConfig`.
 	 */
 	public function new(radius:Int, ?config:MaskConfig);
 }

@@ -6,15 +6,15 @@ package haxepunk2d.utils;
 class Time
 {
 	/** Total time elasped in miliseconds since the game started. */
-	static var totalElapsed : Float;
+	static var totalElapsed(default, null) : Float;
 
 	/** Total time elasped in miliseconds since the last frame. */
-	static var elapsed : Float;
+	static var elapsed(default, null) : Float;
 	
 	/** The amount of update frames since the game started */
 	
 	/** The current time in miliseconds. */
-	static var current:Float;
+	static var current(default, null):Float;
 	
 	/** The timescale applied to Time.elapsed. */
 	static var scale:Float;

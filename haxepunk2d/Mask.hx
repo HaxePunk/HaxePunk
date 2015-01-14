@@ -1,10 +1,10 @@
 package haxepunk2d;
 
 typedef MaskConfig = {
-	offset:Point,
-	anchor:Point,
-	angle:Angle,
-	active:Bool
+	@:optional offset:Point,
+	@:optional anchor:Point,
+	@:optional angle:Angle,
+	@:optional active:Bool
 };
 
 /**
@@ -12,6 +12,9 @@ typedef MaskConfig = {
  */
 class Mask
 {
+	/** Default values for newly created masks when config options are ommited. */
+	public static var defaultConfig : MaskConfig;
+
 	/** The top left position of the mask. */
 	public var topLeft(default, never) : Point;
 

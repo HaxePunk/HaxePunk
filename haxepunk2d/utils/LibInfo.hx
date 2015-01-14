@@ -25,29 +25,29 @@ class Version
 class LibInfo
 {
 	/** An array of user names which identify contributors to the library, ie. people who can push to haxelib. */
-	static var contributors : Array<String>;
+	static var contributors(default, null) : Array<String>;
 
 	/** An array of object composed of a library name and optional version. */
-	static var dependencies : Array<{name:String, version:Version}>;
+	static var dependencies(default, null) : Array<{name:String, version:Version}>;
 
 	/** The description of what the library is doing. */
-	static var description : String;
+	static var description(default, null) : String;
 
 	/** The license under which the library is released. Can be GPL, LGPL, BSD, Public (for Public Domain) or MIT. */
-	static var license : String;
+	static var license (default, null): String;
 
 	/** The name of the library. */
-	static var name : String;
+	static var name(default, null) : String;
 
 	/** The release notes of the current version. */
-	static var releaseNotes : String;
+	static var releaseNotes(default, null) : String;
 
 	/** An array of tag-strings which are used on the repository website to sort libraries. */
-	static var tags : Array<String>;
+	static var tags(default, null) : Array<String>;
 
 	/** The URL of the library, i.e. where more information can be found. */
-	static var url : String;
+	static var url(default, null) : String;
 
 	/** The version of the library.*/
-	static var version : Version;
+	static var version(default, null) : Version;
 }

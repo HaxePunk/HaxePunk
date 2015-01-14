@@ -2,8 +2,8 @@ package haxepunk2d.graphics;
 
 typedef AnimationConfig = {
 	> GraphicConfig,
-	onCompleted:Sequence->Void,
-	onLoop:Sequence->Void
+	@:optional onCompleted:Sequence->Void,
+	@:optional onLoop:Sequence->Void
 };
 
 /**
@@ -13,14 +13,17 @@ typedef AnimationConfig = {
  */
 class Animation extends Graphics
 {
+	/** Default values for newly created animations when config options are ommited. Config options inherited from GraphicConfig may be left null to use the values from Graphic's defaultConfig. */
+	public static var defaultConfig : AnimationConfig;
+
 	/** The number of columns the animation has. */
-	public var columns:Int;
+	public var columns(default, null):Int;
 
 	/** The number of rows the animation has. */
-	public var rows:Int;
+	public var rows(default, null):Int;
 
 	/** If a sequence is currently running. */
-	public var playing : Bool;
+	public var playing(default, null) : Bool;
 
 	/** Function to call when a sequence ends. Isn't called when looping. */
 	public var onCompleted:Sequence->Void;
@@ -29,19 +32,21 @@ class Animation extends Graphics
 	public var onLoop:Sequence->Void;
 
 	/** The sequence currently running, null if no sequence is running. */
-	public var sequence : Sequence;
+	public var sequence(default, set) : Sequence;
 
 	/** Animation speed factor, alter this to speed up/slow down all sequences. */
 	public var speedFactor : Float;
 
 	/**
 	 * Create a new animation.
+	 * Ommited config values will use the defaults from `defaultConfig`.
 	 */
 	public function new(source:String, frameWidth:Int, frameHeight:Int, ?config:AnimationConfig);
 
 	/**
 	 * Register a sequence, if a sequence already exists with
 	 * this name it will overwrite the old one.
+	 * Ommited config values will use the defaults from `Sequence.defaultConfig`.
 	 */
 	public function add(name:String, frames:Either<Array<Int>, Array<Point>>, frameRate:Float, ?config:SequenceConfig);
 
@@ -49,6 +54,8 @@ class Animation extends Graphics
 	 * Play the sequence.
 	 * If a name is provided but no such sequence exists
 	 * then the currently running sequence is stoped.
+	 * Omitted configurations values will use the following defaults:
+	 * { reset: false, reverse: false }.
 	 */
 	public function play(e:Either<String, Sequence>, ?config:{ reset:Bool, reverse:Bool });
 
@@ -126,14 +133,17 @@ class Animation extends Graphics
 }
 
 typedef SequenceConfig = {
-	reverse:Bool,
-	loop:Bool,
-	onCompleted:Sequence->Void,
-	onLoop:Sequence->Void
+	@:optional reverse:Bool,
+	@:optional loop:Bool,
+	@:optional onCompleted:Sequence->Void,
+	@:optional onLoop:Sequence->Void
 };
 
 class Sequence
 {
+	/** Default values for newly created sequences when config options are ommited. */
+	public static var defaultConfig : SequenceConfig;
+
 	/** The sequence's name. */
 	public var name:String;
 
@@ -162,7 +172,7 @@ class Sequence
 	public var loop : Bool;
 
 	/** The parent Animation this sequence was defined in. */
-	public var parent : Animation.
+	public var parent(default, null) : Animation.
 
 	/** Function to call when the sequence ends instead of the one in the animation. Isn't called when looping. */
 	public var onCompleted:Sequence->Void;

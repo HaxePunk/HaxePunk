@@ -81,7 +81,7 @@ class Scene
 	public var hasTween(get, never):Bool;
 
 	/** The number of tween in the scene. */
-	public var tweenCount:Int;
+	public var tweenCount(get, never):Int;
 
 	/** If the tweens should be updated. */
 	public var tweening:Bool;

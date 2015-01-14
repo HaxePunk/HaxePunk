@@ -26,10 +26,10 @@ class Engine
 	public function new (?config : { width:Int, height:Int, frameRate:Int, fixedFrameRate:Bool, backgroundColor: Color, fullscreen:Bool, smoothing: false });
 
 	/** The width of the game. */
-	public static var width(default, null) : Int;
+	public static var width : Int;
 
 	/** The height of the game. */
-	public static var height(default, null) : Int;
+	public static var height : Int;
 
 	/** Half the width of the game. */
 	public static var halfWidth(default, null) : Float;
@@ -59,7 +59,7 @@ class Engine
 	public static var backgroundColor : Color;
 
 	/** If the game has focus. */
-	public static var hasFocus : Bool;
+	public static var hasFocus(default, null) : Bool;
 
 	// Fixed frame rate
 	/** If fixed frame rate is used. */
@@ -86,12 +86,12 @@ class Engine
 	/**
 	 * Cause the game to shake for a specified length of time.
 	 */
-	public static function screenShake(magnitude:Int, duration:Float):Void;
+	public static function shake(magnitude:Int, duration:Float):Void;
 
 	/**
 	 * Stop the game from shaking immediately.
 	 */
-	public static function stopScreenShake():Void;
+	public static function stopShake():Void;
 
 	/**
 	 * Captures the current game view as an Image object.

@@ -1,10 +1,24 @@
 package haxepunk2d;
 
+typedef SoundConfig = {
+	@:optional onCompleted:Void->Void,
+	@:optional onLoop:Void->Void,
+	@:optional pan:Float,
+	@:optional volume:Float,
+	@:optional playing:Bool,
+	@:optional position:Float,
+	@:optional groups:Array<String>,
+	@:optional loop:Bool
+};
+
 /**
  * Sound effect object used to play embedded sounds.
  */
 class Sound // previously Sfx
 {
+	/** Default values for newly created sounds when config options are ommited. */
+	public static var defaultConfig : SoundConfig;
+
 	/** Global pan factor for all sounds, a value from -1 to 1. */
 	public static var pan : Float;
 
@@ -32,9 +46,11 @@ class Sound // previously Sfx
 	public static function setVolume (groups:Either<String,Array<String>>, volume:Float) : Float;
 
 	/**
-	 * Creates a sound effect from an embedded source. Store a reference to this object so that you can play the sound using `play`.
+	 * Creates a sound effect from an embedded source.
+	 * Store a reference to this object so that you can play the sound using `play`.
+	 * Ommited config values will use the defaults from `defaultConfig`.
 	 */
-	public function new (source:String, ?config:{onCompleted:Void->Void, onLoop:Void->Void, pan:Float, volume:Float, playing:Bool, position:Float, groups:Array<String>, loop:Bool});
+	public function new (source:String, ?config:SoundConfig);
 
 	/** Length of the sound, in seconds. */
 	public var length(default, null) : Float;

@@ -2,9 +2,9 @@ package haxepunk2d.graphics;
 
 typedef ImageConfig = {
 	> GraphicConfig,
-	clip:Rectangle,
-	scaleMode:ScaleMode,
-	position:Position
+	@:optional clip:Rectangle,
+	@:optional scaleMode:ScaleMode,
+	@:optional position:Position
 };
 
 /**
@@ -12,29 +12,50 @@ typedef ImageConfig = {
  */
 class Image extends Graphics
 {
-	/** Creates an image from a mask. */
+	/**
+	 * Creates an image from a mask.
+	 * Ommited config values will use the defaults from `defaultConfig`.
+	 */
 	public static function fromMask(mask:Mask, ?config:ImageConfig):Image;
 
-	/** Creates a new image of a circle. */
+	/**
+	 * Creates a new image of a circle.
+	 * Ommited config values will use the defaults from `defaultConfig`.
+	 */
 	public static function createCircle(radius:Int, ?config:ImageConfig):Image;
 
-	/** Creates a new image of a rectangle. */
+	/**
+	 * Creates a new image of a rectangle.
+	 * Ommited config values will use the defaults from `defaultConfig`.
+	 */
 	public static function createRectangle(width:Int, height:Int, ?shapeAngle:Angle, ?config:ImageConfig):Image;
 
-	/** Creates a new image of an ellipse. */
+	/**
+	 * Creates a new image of an ellipse.
+	 * Ommited config values will use the defaults from `defaultConfig`.
+	 */
 	public static function createEllipse(radiusX:Int, radiusY:Int, ?shapeAngle:Angle, ?config:ImageConfig):Image;
 
-	/** Creates a new image of a polygon. */
+	/**
+	 * Creates a new image of a polygon.
+	 * Ommited config values will use the defaults from `defaultConfig`.
+	 */
 	public static function createPolygon(points:Array<Point>, ?shapeAngle:Angle, ?config:ImageConfig):Image;
 
-	/** Creates a new image of a regular polygon. */
+	/**
+	 * Creates a new image of a regular polygon.
+	 * Ommited config values will use the defaults from `defaultConfig`.
+	 */
 	public static function createRegularPolygon(sides:Int, radius:Int, ?shapeAngle:Angle, ?config:ImageConfig):Image;
 
+	/** Default values for newly created images when config options are ommited. Config options inherited from GraphicConfig may be left null to use the values from Graphic's defaultConfig. */
+	public static var defaultConfig : ImageConfig;
+
 	/** Original width of the texture used for the image. */
-	public var textureWidth : Int;
+	public var textureWidth(default, null) : Int;
 
 	/** Original height of the texture used for the image. */
-	public var textureHeight : Int;
+	public var textureHeight(default, null) : Int;
 
 	/** Clipping rectangle for the image. */
 	public var clip : Rectangle;
@@ -47,6 +68,7 @@ class Image extends Graphics
 
 	/**
 	 * Create a new image from [source].
+	 * Ommited config values will use the defaults from `defaultConfig`.
 	 */
 	public function new(source:String, ?config:ImageConfig);
 }

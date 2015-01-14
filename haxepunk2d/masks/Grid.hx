@@ -6,16 +6,16 @@ package haxepunk2d.masks;
 class Grid extends Mask
 {
 	/** The tile width. */
-	public var tileWidth:Int;
+	public var tileWidth(default, null):Int;
 
 	/** The tile height. */
-	public var tileHeight:Int;
+	public var tileHeight(default, null):Int;
 
 	/** The number of columns the grid has. */
-	public var columns:Int;
+	public var columns(default, null):Int;
 
 	/** The number of rows the grid has. */
-	public var rows:Int;
+	public var rows(default, null):Int;
 
 	/** The grid data. */
 	public var data : Array<Array<Tile>>;
@@ -34,9 +34,9 @@ class Grid extends Mask
 
 	/**
 	 * Create a new grid mask [width] by [height] with tiles [tileWidth] by [tileHeight].
-	 * Ommited config values will use the default values: { offset: (0,0), anchor: (0,0), angle: 0, active: true }.
+	 * Ommited config values will use the defaults from `defaultConfig`.
 	 */
-	public function new(width:Int, height:Int, tileWidth:Int, tileHeight:Int, ?config:{ offset:Point, anchor:Point, angle:Angle, active:Bool });
+	public function new(width:Int, height:Int, tileWidth:Int, tileHeight:Int, ?config:MaskConfig);
 
 	/**
 	 * Return the tile located at [column]-[row].
@@ -45,10 +45,9 @@ class Grid extends Mask
 
 	/**
 	 * Sets the value of the tile located at [column]-[row].
-	 * Omitted config values will use the following defaults:
-	 * { yOffset: 0, slope: 0, group: [] }.
+	 * Ommited config values will use the defaults from `Tile.defaultConfig`.
 	 */
-	public function setTile(column:Int, row:Int, tileType:TileType, ?config:{ yOffset: Float, slope: Float, groups:Either<String, Array<String>> }) : Void;
+	public function setTile(column:Int, row:Int, tileType:TileType, ?config:TileConfig) : Void;
 
 	/**
 	 * Clear the tile located a [column]-[row], making it empty.
@@ -64,10 +63,9 @@ class Grid extends Mask
 	/**
 	 * Sets the value of a collection of tiles located in the rectangle starting
 	 * at [column]-[row] of size [width] by [height].
-	 * Omitted config values will use the following defaults:
-	 * { yOffset: 0, slope: 0, group: [] }.
+	 * Ommited config values will use the defaults from `Tile.defaultConfig`.
 	 */
-	public function setRectangle(column:Int, row:Int, width:Int, height:Int, tileType:TileType, ?config:{ yOffset: Float, slope: Float, groups:Either<String, Array<String>> }) : Void;
+	public function setRectangle(column:Int, row:Int, width:Int, height:Int, tileType:TileType, ?config:TileConfig) : Void;
 
 	/**
 	 * Clear the collection of tiles located in the rectangle starting
@@ -86,10 +84,9 @@ class Grid extends Mask
 	 * Sets the value of a collection of tiles located in the outline of
 	 * thickness [outlineThickness] of the rectangle starting
 	 * at [column]-[row] of size [width] by [height].
-	 * Omitted config values will use the following defaults:
-	 * { yOffset: 0, slope: 0, group: [] }.
+	 * Ommited config values will use the defaults from `Tile.defaultConfig`.
 	 */
-	public function setRectangleOutline(column:Int, row:Int, width:Int, height:Int, outlineThickness:Int, tileType:TileType, ?config:{ yOffset: Float, slope: Float, groups:Either<String, Array<String>> }) : Void;
+	public function setRectangleOutline(column:Int, row:Int, width:Int, height:Int, outlineThickness:Int, tileType:TileType, ?config:TileConfig) : Void;
 
 	/**
 	 * Clear the collection of tiles located in the outline of
@@ -106,11 +103,20 @@ class Grid extends Mask
 	public function shift(columns:Int, rows:Int, wrap:Bool);
 }
 
+typedef TileConfig = {
+	 @:optional yOffset: Float,
+	 @:optional slope: Float,
+	 @:optional groups:Either<String, Array<String>>
+};
+
 /**
  *
  */
 class Tile
 {
+	/** Default values for newly created tiles when config options are ommited. */
+	public static var defaultConfig : TileConfig;
+
 	/**  */
 	public var yOffset : Float;
 

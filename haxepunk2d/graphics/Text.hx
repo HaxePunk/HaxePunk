@@ -2,16 +2,16 @@ package haxepunk2d.graphics;
 
 typedef TextConfig = {
 	> GraphicConfig,
-	wordWrap : Bool,
-	size:Int,
-	resizable:Resizable,
-	leading:Int,
-	indent:Int,
-	format:TextFormat,
-	color:Color,
-	align:TextAlign,
-	font:String,
-	thickness:Int
+	@:optional wordWrap : Bool,
+	@:optional size:Int,
+	@:optional resizable:Resizable,
+	@:optional leading:Int,
+	@:optional indent:Int,
+	@:optional format:TextFormat,
+	@:optional color:Color,
+	@:optional align:TextAlign,
+	@:optional font:String,
+	@:optional thickness:Int
 };
 
 /**
@@ -19,8 +19,8 @@ typedef TextConfig = {
  */
 class Text extends Graphic
 {
-	/** Default values used when creating a new Text graphic with omitted configuration values. */
-	public static var defaults : { font:String, size:Int, color:Color };
+	/** Default values for newly created texts when config options are ommited. Config options inherited from GraphicConfig may be left null to use the values from Graphic's defaultConfig. */
+	public static var defaultConfig : TextConfig;
 
 	/** Automatic word wrapping. */
 	public var wordWrap : Bool;
@@ -53,16 +53,17 @@ class Text extends Graphic
 	public var thickness:Int;
 
 	/** The actual height of the text not the text graphic. */
-	public var textHeight : Int;
+	public var textHeight(default, null) : Int;
 
 	/** The actual height of the text not the text graphic. */
-	public var textWidth : Int;
+	public var textWidth(default, null) : Int;
 
 	/** The text content. */
 	public var text:String;
 
 	/**
 	 * Create a new text.
+	 * Ommited config values will use the defaults from `defaultConfig`.
 	 */
 	public function new(text:String, ?config:TextConfig);
 

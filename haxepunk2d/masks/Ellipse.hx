@@ -20,7 +20,7 @@ class Ellipse extends Mask
 	/**
 	 * Create a new ellipse mask of radius [xRadius] on the
 	 * x axis and [yRadius] on the y axis.
-	 * Ommited config values will use the default values: { offset: (0,0), anchor: (0,0), angle: 0, active: true }.
+	 * Ommited config values will use the defaults from `defaultConfig`.
 	 */
 	public function new(xRadius:Int, yRadius:Int, ?config:MaskConfig);
 }

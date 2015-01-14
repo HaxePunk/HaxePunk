@@ -37,12 +37,6 @@ class Entity
 	/** The position of the center of the entity. */
 	var position : Point;
 
-	/** The x position of the center of the entity. */
-	var x { return position.x; }
-
-	/** The y position of the center of the entity. */
-	var y { return position.y; }
-
 	/** Graphical component to render to the screen. */
 	var graphic : GraphicList;
 
