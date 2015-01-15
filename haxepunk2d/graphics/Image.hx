@@ -75,10 +75,10 @@ class Image extends Graphics
 
 enum ScaleMode
 {
-	Strecht;
+	Stretch;
 	NoScale;
 	ExactFit;
-	NearestIntergerScale;
+	NearestIntegerScale;
 	RepeatX;
 	RepeatY;
 	RepeatXY;

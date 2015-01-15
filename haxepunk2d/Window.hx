@@ -50,10 +50,10 @@ class Window
 
 enum ScaleMode
 {
-	Strecht;
+	Stretch;
 	NoScale;
 	ExactFit;
-	NearestIntergerScale;
+	NearestIntegerScale;
 }
 
 enum Orientation
