@@ -5,6 +5,19 @@ import haxepunk.math.Vector3;
 import haxepunk.math.Matrix4;
 import haxepunk.scene.Camera;
 
+abstract ImageSource(Material) to Material from Material
+{
+	public function new(material:Material) { this = material; }
+
+	@:from
+	static inline private function fromAsset(asset:String):ImageSource
+	{
+		var material = new Material();
+		material.firstPass.addTexture(Texture.fromAsset(asset));
+		return new ImageSource(material);
+	}
+}
+
 class Image implements Graphic
 {
 
@@ -69,15 +82,15 @@ class Image implements Graphic
 		return (alpha == value) ? value : alpha = value;
 	}
 
-	public function new(material:Material)
+	public function new(source:ImageSource)
 	{
 		scale = new Vector3(1, 1, 1);
 		origin = new Vector3();
 		_matrix = new Matrix4();
 
 #if !unit_test
-		this.material = material;
-		_texture = material.techniques[0].passes[0].getTexture(0);
+		this.material = source;
+		_texture = this.material.firstPass.getTexture(0);
 		if (_texture == null) throw "Must have a texture attached for materials used in Image";
 #end
 	}

@@ -140,7 +140,7 @@ class FlashRenderer
 
 	public static inline function createTexture(image:Image):NativeTexture
 	{
-		var format = image.bpp == 1 ? Context3DTextureFormat.COMPRESSED_ALPHA : Context3DTextureFormat.BGRA;
+		var format = image.buffer.bitsPerPixel == 1 ? Context3DTextureFormat.COMPRESSED_ALPHA : Context3DTextureFormat.BGRA;
 		var texture = _context.createTexture(image.width, image.height, format, false);
 		texture.uploadFromBitmapData(image.src, 0);
 		return texture;

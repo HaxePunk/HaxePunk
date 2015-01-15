@@ -105,14 +105,14 @@ class Spritemap extends Image
 	override private function get_width():Float { return _spriteWidth; }
 	override private function get_height():Float { return _spriteHeight; }
 
-	public function new(material:Material, width:Int, height:Int)
+	public function new(source:ImageSource, width:Int, height:Int)
 	{
 		_spriteWidth = width;
 		_spriteHeight = height;
 		_anims = new StringMap<Animation>();
 		onAnimEnd = new Event<Void->Void>();
 
-		super(material);
+		super(source);
 
 		if (Std.is(_texture, TextureAtlas))
 		{

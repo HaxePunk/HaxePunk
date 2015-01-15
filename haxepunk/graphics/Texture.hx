@@ -158,6 +158,7 @@ class Texture
 	@:allow(haxepunk.graphics)
 	private function loadFromImage(image:lime.graphics.Image)
 	{
+		if (image == null) return;
 		sourceWidth = image.width;
 		sourceHeight = image.height;
 
