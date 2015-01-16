@@ -32,10 +32,16 @@ class TextureAtlas extends Atlas
 			HXP.rect.x = Std.parseInt(sprite.get("x"));
 			HXP.rect.y = Std.parseInt(sprite.get("y"));
 			if (sprite.exists("w")) HXP.rect.width = Std.parseInt(sprite.get("w"));
+			else if (sprite.exists("width")) HXP.rect.width = Std.parseInt(sprite.get("width"));
 			if (sprite.exists("h")) HXP.rect.height = Std.parseInt(sprite.get("h"));
+			else if (sprite.exists("height")) HXP.rect.height = Std.parseInt(sprite.get("height"));
 
 			// set the defined region
-			var region = atlas.defineRegion(sprite.get("n"), HXP.rect);
+			var name = if (sprite.exists("n")) sprite.get("n")
+						else if (sprite.exists("name")) sprite.get("name")
+						else throw("Unable to find the region's name.");
+
+			var region = atlas.defineRegion(name, HXP.rect);
 
 			if (sprite.exists("r") && sprite.get("r") == "y") region.rotated = true;
 		}
