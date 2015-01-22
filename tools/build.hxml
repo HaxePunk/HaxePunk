@@ -1,0 +1,4 @@
+-main tools.HaxelibTool
+-neko run.n
+-lib lime
+# -cmd haxelib run HaxePunk --no-colors
