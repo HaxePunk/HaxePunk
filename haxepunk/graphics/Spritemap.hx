@@ -355,7 +355,7 @@ class Spritemap extends Image
 	{
 		if (_frames == null) return;
 		calculateMatrixWithOffset(offset);
-		HXP.spriteBatch.draw(this, _matrix, _lastFrame == _frame ? -1 : _frames[_frame]);
+		HXP.spriteBatch.draw(material, _matrix, _lastFrame == _frame ? -1 : _frames[_frame]);
 		_lastFrame = _frame;
 	}
 

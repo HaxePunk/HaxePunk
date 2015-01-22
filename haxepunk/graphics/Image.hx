@@ -122,7 +122,7 @@ class Image implements Graphic
 	{
 		if (material == null) return;
 		calculateMatrixWithOffset(offset);
-		HXP.spriteBatch.draw(this, _matrix);
+		HXP.spriteBatch.draw(material, _matrix);
 	}
 
 	private var _matrix:Matrix4;

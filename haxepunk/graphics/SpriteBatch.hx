@@ -82,7 +82,7 @@ private class Batch
 		_updateVBOs = true;
 	}
 
-	public function updateVertex(image:Image, matrix:Matrix4)
+	public function updateVertex(matrix:Matrix4)
 	{
 		var index = _spriteIndex * 3 * 4;
 
@@ -190,20 +190,20 @@ class SpriteBatch
 		}
 	}
 
-	public function draw(image:Image, matrix:Matrix4, id:Int = -1)
+	public function draw(material:Material, matrix:Matrix4, id:Int = -1)
 	{
 		var batch:Batch;
-		if (_batches.exists(image.material))
+		if (_batches.exists(material))
 		{
-			batch = _batches.get(image.material);
+			batch = _batches.get(material);
 		}
 		else
 		{
-			batch = new Batch(image.material);
-			_batches.set(image.material, batch);
+			batch = new Batch(material);
+			_batches.set(material, batch);
 		}
 		if (id != -1) batch.updateTexCoord(id);
-		batch.updateVertex(image, matrix);
+		batch.updateVertex(matrix);
 
 	}
 
