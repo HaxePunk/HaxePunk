@@ -23,7 +23,8 @@ class Main extends Engine
 		// text.color.b = 0.462;
 		// scene.addGraphic(text, 50, 200);
 
-		scene.add(new Player());
+		// scene.add(new Player());
+		scene.addGraphic(new ParticleEmitter("graphics/lime.png"));
 
 		scene.camera.x = -(HXP.window.width / 2);
 		scene.camera.y = -(HXP.window.height / 2);

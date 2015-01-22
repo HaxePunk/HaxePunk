@@ -48,7 +48,6 @@ class Texture
 		{
 			texture = new Texture(id);
 			texture.loadFromImage(Assets.getImage(id));
-			_textures.set(id, texture);
 		}
 		return texture;
 	}
@@ -126,6 +125,13 @@ class Texture
 		return texture;
 	}
 
+	public function toTextureAtlas():TextureAtlas
+	{
+		var atlas = new TextureAtlas(_id);
+		atlas._texture = _texture;
+		return atlas;
+	}
+
 	/**
 	 * Creates a new Texture
 	 * @param path The path to the texture asset
@@ -136,8 +142,8 @@ class Texture
 		if (_id == null)
 		{
 			_id = Math.uuid();
-			_textures.set(_id, this);
 		}
+		_textures.set(_id, this);
 	}
 
 	private function loadFromBytes(bytes:UInt8Array, stride:Int)

@@ -4,11 +4,68 @@ import haxepunk.math.Matrix4;
 import haxepunk.math.Vector3;
 import haxepunk.scene.Camera;
 
-interface Graphic
+class Graphic
 {
 
-	public function update(elapsed:Float):Void;
-	public function draw(camera:Camera, offset:Vector3):Void;
+	public var material:Material;
+
+	/**
+	 * Rotation of the image, in degrees.
+	 */
+	public var angle:Float = 0;
+
+	/**
+	 * Scale of the image.
+	 */
+	public var scale:Vector3;
+
+	/**
+	 * Origin of the image.
+	 */
+	public var origin:Vector3;
+
+	/**
+	 * Width of the image.
+	 */
+	public var width(default, null):Float;
+
+	/**
+	 * Height of the image.
+	 */
+	public var height(default, null):Float;
+
+	public function new()
+	{
+		_matrix = new Matrix4();
+		scale = new Vector3(1, 1, 1);
+		origin = new Vector3();
+	}
+
+	private function calculateMatrixWithOffset(offset:Vector3)
+	{
+		origin *= scale;
+		origin += offset;
+
+		_matrix.identity();
+		_matrix.scale(width, height, 1);
+		_matrix.translateVector3(origin);
+		_matrix.scaleVector3(scale);
+		// if (angle != 0) _matrix.rotateZ(angle);
+
+		origin -= offset;
+		origin /= scale;
+	}
+
+	public function draw(camera:Camera, offset:Vector3):Void
+	{
+		if (material == null) return;
+		calculateMatrixWithOffset(offset);
+		HXP.spriteBatch.draw(material, _matrix);
+	}
+
+	public function update(elapsed:Float) {}
+
+	private var _matrix:Matrix4;
 
 }
 
@@ -16,7 +73,7 @@ interface Graphic
  * A Graphic that can contain multiple Graphics of one or various types.
  * Useful for drawing sprites with multiple different parts, etc.
  */
-class GraphicList implements Graphic
+class GraphicList extends Graphic
 {
 
 	/**
@@ -25,6 +82,7 @@ class GraphicList implements Graphic
 	 */
 	public function new(?graphics:Array<Graphic>)
 	{
+		super();
 		_children = (graphics == null) ? new Array<Graphic>() : graphics;
 	}
 
@@ -51,7 +109,7 @@ class GraphicList implements Graphic
 	}
 
 	/** @private Draws the Graphics in the list. */
-	public function draw(camera:Camera, offset:Vector3):Void
+	override public function draw(camera:Camera, offset:Vector3):Void
 	{
 		for (i in 0..._children.length)
 		{
@@ -59,7 +117,7 @@ class GraphicList implements Graphic
 		}
 	}
 
-	public function update(elapsed:Float):Void
+	override public function update(elapsed:Float):Void
 	{
 		for (i in 0..._children.length)
 		{

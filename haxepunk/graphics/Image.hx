@@ -18,25 +18,8 @@ abstract ImageSource(Material) to Material from Material
 	}
 }
 
-class Image implements Graphic
+class Image extends Graphic
 {
-
-	public var material:Material;
-
-	/**
-	 * Rotation of the image, in degrees.
-	 */
-	public var angle:Float = 0;
-
-	/**
-	 * Scale of the image.
-	 */
-	public var scale:Vector3;
-
-	/**
-	 * Origin of the image.
-	 */
-	public var origin:Vector3;
 
 	/**
 	 * Flip image on the x-axis
@@ -61,18 +44,6 @@ class Image implements Graphic
 	}
 
 	/**
-	 * Width of the image.
-	 */
-	public var width(get, never):Float;
-	private function get_width():Float { return _texture.width; }
-
-	/**
-	 * Height of the image.
-	 */
-	public var height(get, never):Float;
-	private function get_height():Float { return _texture.height; }
-
-	/**
 	 * Change the opacity of the Image, a value from 0 to 1.
 	 */
 	public var alpha(default, set):Float;
@@ -84,48 +55,21 @@ class Image implements Graphic
 
 	public function new(source:ImageSource)
 	{
-		scale = new Vector3(1, 1, 1);
-		origin = new Vector3();
-		_matrix = new Matrix4();
+		super();
 
 #if !unit_test
 		this.material = source;
-		_texture = this.material.firstPass.getTexture(0);
-		if (_texture == null) throw "Must have a texture attached for materials used in Image";
+		var texture = this.material.firstPass.getTexture(0);
+		if (texture == null) throw "Must have a texture attached for materials used in Image";
+		width = texture.width;
+		height = texture.height;
 #end
 	}
-
-	public function update(elapsed:Float) {}
 
 	public function centerOrigin():Void
 	{
 		origin.x = -(width / 2);
 		origin.y = -(height / 2);
 	}
-
-	private function calculateMatrixWithOffset(offset:Vector3)
-	{
-		origin *= scale;
-		origin += offset;
-
-		_matrix.identity();
-		_matrix.scale(width, height, 1);
-		_matrix.translateVector3(origin);
-		_matrix.scaleVector3(scale);
-		// if (angle != 0) _matrix.rotateZ(angle);
-
-		origin -= offset;
-		origin /= scale;
-	}
-
-	public function draw(camera:Camera, offset:Vector3):Void
-	{
-		if (material == null) return;
-		calculateMatrixWithOffset(offset);
-		HXP.spriteBatch.draw(material, _matrix);
-	}
-
-	private var _matrix:Matrix4;
-	private var _texture:Texture;
 
 }

@@ -102,26 +102,24 @@ class Spritemap extends Image
 	private inline function get_currentAnimName():String { return (_anim == null ? "" : _anim.name); }
 	private inline function set_currentAnimName(value:String):String { return play(value).name; }
 
-	// override width/height for sprite size
-	override private function get_width():Float { return _spriteWidth; }
-	override private function get_height():Float { return _spriteHeight; }
-
 	public function new(source:ImageSource, width:Int, height:Int)
 	{
-		_spriteWidth = width;
-		_spriteHeight = height;
 		_anims = new StringMap<Animation>();
 		onAnimEnd = new Event<Void->Void>();
 
 		super(source);
 
-		if (Std.is(_texture, TextureAtlas))
+		this.width = width;
+		this.height = height;
+
+		var texture = material.firstPass.getTexture(0);
+		if (Std.is(texture, TextureAtlas))
 		{
-			_frames = cast(_texture, TextureAtlas).generateTiles(Std.int(_spriteWidth), Std.int(_spriteHeight));
+			_frames = cast(texture, TextureAtlas).generateTiles(width, height);
 		}
 
-		columns = Math.ceil(_texture.sourceWidth / _spriteWidth);
-		rows = Math.ceil(_texture.sourceHeight / _spriteHeight);
+		columns = Math.ceil(texture.sourceWidth / width);
+		rows = Math.ceil(texture.sourceHeight / height);
 		frameCount = columns * rows;
 	}
 
@@ -363,8 +361,6 @@ class Spritemap extends Image
 	private var _lastFrame:Int = -1;
 	private var _frames:Array<Int>;
 	private var _index:Int = 0;
-	private var _spriteWidth:Float = 0;
-	private var _spriteHeight:Float = 0;
 	private var _time:Float = 0;
 	private var _anim:Animation;
 	private var _anims:StringMap<Animation>;

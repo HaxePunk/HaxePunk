@@ -11,23 +11,19 @@ import lime.Assets;
 
 using StringTools;
 
-class Text implements Graphic
+class Text extends Graphic
 {
 
-	public var material:Material;
 	public var color:Color;
 	public var size(default, null):Int;
 	public var lineHeight:Int;
 	public var tabWidth:Int = 4;
-	public var angle:Float = 0;
-	public var width(default, null):Float;
-	public var height(default, null):Float;
 
 	public function new(text:String, size:Int=16)
 	{
+		super();
 		_vertices = new FloatArray();
 		_indices = new IntArray();
-		_matrix = new Matrix4();
 		color = new Color();
 
 		#if (cpp || neko)
@@ -138,9 +134,7 @@ class Text implements Graphic
 		_indices[index++] = i*4+3;
 	}
 
-	public function update(elapsed:Float) {}
-
-	public function draw(camera:Camera, offset:Vector3):Void
+	override public function draw(camera:Camera, offset:Vector3):Void
 	{
 		if (_indexBuffer == null || _vertexBuffer == null) return;
 
@@ -165,7 +159,6 @@ class Text implements Graphic
 	private var _textFormat:TextFormat;
 	private var _font:Font;
 	private var _texture:Texture;
-	private var _matrix:Matrix4;
 
 	private var _texCoordAttribute:Int;
 	private var _vertexAttribute:Int;
