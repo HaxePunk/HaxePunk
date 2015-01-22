@@ -32,9 +32,10 @@ class LibInfoBuilder
 		var result = "";
 		var lines = output.split("\n");
 
+		var libraryDefine = new EReg('-D $library', 'i');
 		for (i in 1...lines.length)
 		{
-			if (lines[i].trim() == '-D $library')
+			if (libraryDefine.match(lines[i]) && i > 0)
 			{
 				result = lines[i - 1].trim();
 			}

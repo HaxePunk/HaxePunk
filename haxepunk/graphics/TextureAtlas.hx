@@ -6,12 +6,25 @@ import haxepunk.renderers.Renderer;
 class TextureAtlas extends Texture
 {
 
-	public function new(image:lime.graphics.Image)
+	public static function fromAsset(id:String):Texture
 	{
-		super();
-#if !unit_test
-		loadFromImage(image);
-#end
+		var texture:Texture = null;
+		if (Texture._textures.exists(id))
+		{
+			texture = Texture._textures.get(id);
+		}
+		else
+		{
+			texture = new TextureAtlas(id);
+			texture.loadFromImage(lime.Assets.getImage(id));
+			Texture._textures.set(id, texture);
+		}
+		return texture;
+	}
+
+	private function new(?id:String)
+	{
+		super(id);
 		_index = new Array<Int>();
 		_uvs = new FloatArray();
 	}

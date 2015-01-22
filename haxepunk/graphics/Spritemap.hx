@@ -1,5 +1,6 @@
 package haxepunk.graphics;
 
+import haxepunk.graphics.Image;
 import haxepunk.math.Matrix4;
 import haxepunk.math.Vector3;
 import haxepunk.math.Math;

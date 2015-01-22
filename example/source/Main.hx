@@ -23,7 +23,7 @@ class Main extends Engine
 		// text.color.b = 0.462;
 		// scene.addGraphic(text, 50, 200);
 
-		// scene.add(new Player());
+		scene.add(new Player());
 
 		scene.camera.x = -(HXP.window.width / 2);
 		scene.camera.y = -(HXP.window.height / 2);
@@ -35,8 +35,8 @@ class Main extends Engine
 		// var mesh = haxepunk.graphics.importer.Wavefront.load("assets/project.obj", material);
 		// scene.addGraphic(mesh);
 
-		fps = new Text("Hello world", 32);
-		scene.addGraphic(fps, scene.camera.x, scene.camera.y);
+		// fps = new Text("Hello world", 32);
+		// scene.addGraphic(fps, scene.camera.x, scene.camera.y);
 	}
 
 	override public function update(deltaTime:Int)

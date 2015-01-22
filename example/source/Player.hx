@@ -1,8 +1,8 @@
 import haxepunk.HXP;
 import haxepunk.scene.Entity;
 import haxepunk.graphics.Spritemap;
-import haxepunk.input.Input;
-import haxepunk.input.Keyboard;
+import haxepunk.inputs.Input;
+import haxepunk.inputs.Keyboard;
 import haxepunk.math.Vector3;
 import haxepunk.math.Math;
 

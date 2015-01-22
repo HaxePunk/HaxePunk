@@ -13,7 +13,7 @@ abstract ImageSource(Material) to Material from Material
 	static inline private function fromAsset(asset:String):ImageSource
 	{
 		var material = new Material();
-		material.firstPass.addTexture(Texture.fromAsset(asset));
+		material.firstPass.addTexture(TextureAtlas.fromAsset(asset));
 		return new ImageSource(material);
 	}
 }

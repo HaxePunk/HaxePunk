@@ -11,6 +11,7 @@
 
 build-test/
 export/
+libs/
 bin/
 
 # OS specific files
