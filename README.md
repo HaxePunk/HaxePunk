@@ -1,11 +1,11 @@
+[![Build Status](https://img.shields.io/travis/HaxePunk/HaxePunk/release-3.0.0.svg?style=flat)](https://travis-ci.org/HaxePunk/HaxePunk) [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE) [![Haxelib](https://img.shields.io/github/tag/haxepunk/haxepunk.svg?style=flat&label=haxelib)](http://lib.haxe.org/p/haxepunk)
+
 # HaxePunk
 
 A Haxe game engine, inspired by the [FlashPunk](http://useflashpunk.net) AS3 library.
 
 This is the development branch for the 3.0 version, therefor it isn't stable, the api might change without notice
 and it may not even build.
-
-[![Build Status](https://travis-ci.org/HaxePunk/HaxePunk.png?branch=release-3.0.0)](https://travis-ci.org/HaxePunk/HaxePunk)
 
 ## Development build
 
