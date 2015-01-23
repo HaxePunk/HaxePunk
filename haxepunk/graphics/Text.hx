@@ -66,8 +66,6 @@ class Text extends Graphic
 		{
 			var points = _textFormat.fromString(_font, size, value);
 			var glyphs = _font.glyphs.get(size);
-			var x = 0.0, y = 30.0;
-			var index = 0;
 
 			var writeChar = function(i:Int, p:PosInfo, x:Float = 0, y:Float = 0):Void {
 				var glyph = glyphs.get(p.codepoint);
@@ -113,10 +111,13 @@ class Text extends Graphic
 				_indices[index++] = i*4+3;
 			};
 
-			for (p in points)
+			var x:Float = 0.0,
+				y:Float = size;
+			for (i in 0...points.length)
 			{
+				var p = points[i];
 				if (!glyphs.exists(p.codepoint)) continue;
-				writeChar(index++, p, x, y);
+				writeChar(i, p, x, y);
 				x += p.advance.x;
 				y -= p.advance.y;
 			}
