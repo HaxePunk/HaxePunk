@@ -24,7 +24,7 @@ class Main extends Engine
 		// scene.addGraphic(text, 50, 200);
 
 		// scene.add(new Player());
-		scene.addGraphic(new ParticleEmitter("graphics/lime.png"));
+		scene.addGraphic(new ParticleEmitter("assets/lime.png"));
 
 		scene.camera.x = -(HXP.window.width / 2);
 		scene.camera.y = -(HXP.window.height / 2);
@@ -36,14 +36,14 @@ class Main extends Engine
 		// var mesh = haxepunk.graphics.importer.Wavefront.load("assets/project.obj", material);
 		// scene.addGraphic(mesh);
 
-		// fps = new Text("Hello world", 32);
-		// scene.addGraphic(fps, scene.camera.x, scene.camera.y);
+		fps = new Text("", 32);
+		scene.addGraphic(fps, scene.camera.x, scene.camera.y);
 	}
 
 	override public function update(deltaTime:Int)
 	{
 		super.update(deltaTime);
-		// fps.text = "" + Std.int(HXP.frameRate);
+		fps.text = "" + Std.int(HXP.frameRate);
 	}
 
 	private var fps:Text;

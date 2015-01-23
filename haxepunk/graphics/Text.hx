@@ -26,18 +26,13 @@ class Text extends Graphic
 		_indices = new IntArray();
 		color = new Color();
 
-		#if (cpp || neko)
-		_font = new Font(#if mac "../Resources/" + #end "font/SourceCodePro-Regular.otf");
-		#else
-		_font = new Font("Georgia");
-		#end
+		_font = Font.fromFile("font/SourceCodePro-Regular.otf");
 
 		this.size = size;
 		this.lineHeight = Std.int(size * 1.4);
 
 		_font.loadGlyphs(size);
 		var image = _font.createImage();
-		_glyphs = _font.glyphs.get(size);
 		_textFormat = new TextFormat(LeftToRight, ScriptLatin, "en");
 
 		_texture = new Texture();
@@ -69,13 +64,58 @@ class Text extends Graphic
 	private function set_text(value:String):String {
 		if (text != value && value.trim() != "")
 		{
-			var spaceAdvance = _glyphs.get(" ".code).xOffset;
+			var points = _textFormat.fromString(_font, size, value);
+			var glyphs = _font.glyphs.get(size);
 			var x = 0.0, y = 30.0;
 			var index = 0;
-			var points = _textFormat.fromString(_font, size, value);
+
+			var writeChar = function(i:Int, p:PosInfo, x:Float = 0, y:Float = 0):Void {
+				var glyph = glyphs.get(p.codepoint);
+
+				var left   = glyph.x / _texture.width;
+				var top    = glyph.y / _texture.height;
+				var right  = left + glyph.width / _texture.width;
+				var bottom = top + glyph.height / _texture.height;
+
+				var pointLeft = x + p.offset.x + glyph.xOffset;
+				var pointTop = y + p.offset.y - glyph.yOffset;
+				var pointRight = pointLeft + glyph.width;
+				var pointBottom = pointTop + glyph.height;
+
+				var index = i * 16;
+				_vertices[index++] = pointRight;
+				_vertices[index++] = pointBottom;
+				_vertices[index++] = right;
+				_vertices[index++] = bottom;
+
+				_vertices[index++] = pointLeft;
+				_vertices[index++] = pointBottom;
+				_vertices[index++] = left;
+				_vertices[index++] = bottom;
+
+				_vertices[index++] = pointRight;
+				_vertices[index++] = pointTop;
+				_vertices[index++] = right;
+				_vertices[index++] = top;
+
+				_vertices[index++] = pointLeft;
+				_vertices[index++] = pointTop;
+				_vertices[index++] = left;
+				_vertices[index++] = top;
+
+				index = i * 6;
+				_indices[index++] = i*4;
+				_indices[index++] = i*4+1;
+				_indices[index++] = i*4+2;
+
+				_indices[index++] = i*4+1;
+				_indices[index++] = i*4+2;
+				_indices[index++] = i*4+3;
+			};
+
 			for (p in points)
 			{
-				if (!_glyphs.exists(p.codepoint)) continue;
+				if (!glyphs.exists(p.codepoint)) continue;
 				writeChar(index++, p, x, y);
 				x += p.advance.x;
 				y -= p.advance.y;
@@ -87,51 +127,6 @@ class Text extends Graphic
 			_indexBuffer = Renderer.updateIndexBuffer(_indices, STATIC_DRAW, _indexBuffer);
 		}
 		return text = value;
-	}
-
-	private function writeChar(i:Int, p:PosInfo, x:Float = 0, y:Float = 0):Void
-	{
-		var rect = _glyphs.get(p.codepoint);
-
-		var left   = rect.x / _texture.width;
-		var top    = rect.y / _texture.height;
-		var right  = left + rect.width / _texture.width;
-		var bottom = top + rect.height / _texture.height;
-
-		var pointLeft = x + p.offset.x + rect.xOffset;
-		var pointTop = y + p.offset.y - rect.yOffset;
-		var pointRight = pointLeft + rect.width;
-		var pointBottom = pointTop + rect.height;
-
-		var index = i * 20;
-		_vertices[index++] = pointRight;
-		_vertices[index++] = pointBottom;
-		_vertices[index++] = left;
-		_vertices[index++] = top;
-
-		_vertices[index++] = pointLeft;
-		_vertices[index++] = pointBottom;
-		_vertices[index++] = left;
-		_vertices[index++] = bottom;
-
-		_vertices[index++] = pointRight;
-		_vertices[index++] = pointTop;
-		_vertices[index++] = right;
-		_vertices[index++] = top;
-
-		_vertices[index++] = pointLeft;
-		_vertices[index++] = pointTop;
-		_vertices[index++] = right;
-		_vertices[index++] = bottom;
-
-		index = i * 6;
-		_indices[index++] = i*4;
-		_indices[index++] = i*4+1;
-		_indices[index++] = i*4+2;
-
-		_indices[index++] = i*4+1;
-		_indices[index++] = i*4+2;
-		_indices[index++] = i*4+3;
 	}
 
 	override public function draw(camera:Camera, offset:Vector3):Void
@@ -155,7 +150,6 @@ class Text extends Graphic
 		Renderer.draw(_indexBuffer, text.length * 2, 0);
 	}
 
-	private var _glyphs:IntMap<GlyphRect>;
 	private var _textFormat:TextFormat;
 	private var _font:Font;
 	private var _texture:Texture;
