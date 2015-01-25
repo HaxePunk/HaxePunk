@@ -12,6 +12,7 @@ class Time
 	static var elapsed(default, null) : Float;
 	
 	/** The amount of update frames since the game started */
+	static var frames:Int;
 	
 	/** The current time in miliseconds. */
 	static var current(default, null):Float;

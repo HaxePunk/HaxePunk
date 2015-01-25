@@ -10,17 +10,8 @@ class Box extends Mask
 	 */
 	public static function fromGraphic(g:Graphic):Box;
 
-	/** The width of the box mask. */
-	var width : Float;
-
-	/** The height of the box mask. */
-	var height : Float;
-
-	/** Half the width of the box mask. */
-	var halfWidth(default, null) : Float;
-
-	/** Half the height of the box mask. */
-	var halfHeight(default, null) : Float;
+	/** The size of the box mask. */
+	var size:Size;
 
 	/**
 	 * Create a new box mask [width] by [height].
