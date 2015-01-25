@@ -160,7 +160,7 @@ class Entity
 	/**
 	 * Override this, called when a collision occur.
 	 */
-	function collided (info:CollisionInfo) : Bool;
+	function collided (info:Collision) : Bool;
 
 	/**
 	 * Override this, called at the beginning of the frame, before rendering.

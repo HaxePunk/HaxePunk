@@ -10,6 +10,12 @@ class Size
 
 	/**  */
 	public var height : Float;
+	
+	/** Half the width. */
+	var halfWidth(default, null) : Float;
+
+	/** Half the height. */
+	var halfHeight(default, null) : Float;
 
 	/**
 	 *

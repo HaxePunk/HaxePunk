@@ -19,18 +19,9 @@ class Grid extends Mask
 
 	/** The grid data. */
 	public var data : Array<Array<Tile>>;
-
-	/** The width of the grid mask. */
-	var width : Float;
-
-	/** The height of the grid mask. */
-	var height : Float;
-
-	/** Half the width of the grid mask. */
-	var halfWidth(default, never) : Float;
-
-	/** Half the height of the grid mask. */
-	var halfHeight(default, never) : Float;
+	
+	/** The size of the grid mask. */
+	var size:Size;
 
 	/**
 	 * Create a new grid mask [width] by [height] with tiles [tileWidth] by [tileHeight].
