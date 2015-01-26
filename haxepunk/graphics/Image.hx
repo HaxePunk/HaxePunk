@@ -66,10 +66,4 @@ class Image extends Graphic
 #end
 	}
 
-	public function centerOrigin():Void
-	{
-		origin.x = -(width / 2);
-		origin.y = -(height / 2);
-	}
-
 }

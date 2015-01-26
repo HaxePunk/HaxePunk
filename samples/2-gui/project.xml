@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+
+	<meta title="Gui" package="com.haxepunk.gui" version="1.0.0" company="" />
+	<app main="Gui" path="export" file="gui" />
+
+	<window width="512" height="288" fps="60" />
+	<window hardware="true" allow-shaders="true" require-shaders="true" depth-buffer="true" stencil-buffer="false" />
+
+	<haxelib name="HaxePunk" />
+
+	<icon path="../assets/HaxePunk.svg" />
+
+</project>

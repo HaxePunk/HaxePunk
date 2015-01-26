@@ -41,6 +41,12 @@ class Graphic
 		origin = new Vector3();
 	}
 
+	public function centerOrigin():Void
+	{
+		origin.x = -(width / 2);
+		origin.y = -(height / 2);
+	}
+
 	private function calculateMatrixWithOffset(offset:Vector3)
 	{
 		origin *= scale;

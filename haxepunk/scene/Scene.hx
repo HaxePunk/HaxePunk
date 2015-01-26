@@ -141,12 +141,11 @@ class Scene
 	public function draw()
 	{
 		Renderer.clear(camera.clearColor);
-		_spriteBatch.begin();
 		for (i in 0..._entities.length)
 		{
 			_entities[i].draw(camera);
 		}
-		_spriteBatch.end(camera);
+		_spriteBatch.flush(camera);
 		if (Console.enabled) Console.instance.draw(camera);
 		Renderer.present();
 

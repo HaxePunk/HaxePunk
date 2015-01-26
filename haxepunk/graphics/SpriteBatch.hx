@@ -177,44 +177,43 @@ private class Batch
 class SpriteBatch
 {
 
+	public var drawCount(default, null) = 0;
+
 	public function new()
 	{
-		_batches = new Map<Material, Batch>();
-	}
-
-	public function begin()
-	{
-		for (batch in _batches)
-		{
-			batch.clear();
-		}
+		_drawList = new Array<Batch>();
 	}
 
 	public function draw(material:Material, matrix:Matrix4, id:Int = -1)
 	{
 		var batch:Batch;
-		if (_batches.exists(material))
+		if (drawCount > 0)
 		{
-			batch = _batches.get(material);
+			batch = _drawList[drawCount - 1];
+			if (batch.material != material)
+			{
+				batch = new Batch(material);
+				_drawList[drawCount++] = batch;
+			}
 		}
 		else
 		{
 			batch = new Batch(material);
-			_batches.set(material, batch);
+			_drawList[drawCount++] = batch;
 		}
 		if (id != -1) batch.updateTexCoord(id);
 		batch.updateVertex(matrix);
-
 	}
 
-	public function end(camera:Camera)
+	public function flush(camera:Camera)
 	{
-		for (batch in _batches)
+		for (i in 0...drawCount)
 		{
-			batch.draw(camera);
+			_drawList[i].draw(camera);
 		}
+		drawCount = 0;
 	}
 
-	private var _batches:Map<Material, Batch>;
+	private var _drawList:Array<Batch>;
 
 }

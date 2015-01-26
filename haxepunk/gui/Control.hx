@@ -19,7 +19,7 @@ class Control extends Entity
 
 	override public function update(elapsed:Float):Void
 	{
-		if (scene != null && collidePoint(scene.camera.x + Mouse.x, scene.camera.y + Mouse.y))
+		// if (scene != null && collidePoint(scene.camera.x + Mouse.x, scene.camera.y + Mouse.y))
 		{
 			// trace("hover", Type.getClass(this));
 		}

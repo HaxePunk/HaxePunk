@@ -15,9 +15,18 @@ class TextureAtlas extends Texture
 		}
 		else
 		{
-			texture = new TextureAtlas(id);
-			texture.loadFromImage(lime.Assets.getImage(id));
-			Texture._textures.set(id, texture);
+			if (lime.Assets.exists(id))
+			{
+				texture = new TextureAtlas(id);
+				texture.loadFromImage(lime.Assets.getImage(id));
+				Texture._textures.set(id, texture);
+			}
+			#if debug
+			else
+			{
+				trace("Missing asset " + id);
+			}
+			#end
 		}
 		return texture;
 	}
@@ -66,7 +75,7 @@ class TextureAtlas extends Texture
 		return tiles;
 	}
 
-	public function addTile(x:Int, y:Int, width:Int, height:Int):Int
+	public function addTile(x:Float, y:Float, width:Float, height:Float):Int
 	{
 		var left   = x / sourceWidth,
 			top    = y / sourceHeight,

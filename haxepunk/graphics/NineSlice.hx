@@ -1,19 +1,20 @@
 package haxepunk.graphics;
 
+import haxepunk.graphics.Image;
 import haxepunk.math.*;
 import haxepunk.scene.Camera;
 
 class NineSlice extends Image
 {
 
-	public function new(asset:GraphicAsset, ?clipRect:Rectangle)
+	public function new(asset:ImageSource, ?clipRect:Rectangle)
 	{
 		super(asset);
 
-		if (clipRect == null) clipRect = new Rectangle(0, 0, 1, 1);
-		_clipRect = clipRect;
-
 		var texture = material.firstPass.getTexture(0);
+
+		_clipRect = clipRect == null ? new Rectangle(0, 0, texture.width / 3, texture.height / 3) : clipRect;
+
 		if (Std.is(texture, TextureAtlas))
 		{
 			var atlas = cast(texture, TextureAtlas);
@@ -31,6 +32,12 @@ class NineSlice extends Image
 		{
 			throw "Must pass a TextureAtlas instance as first texture in material";
 		}
+	}
+
+	public function setSize(width:Float, height:Float)
+	{
+		this.width = width;
+		this.height = height;
 	}
 
 	override public function draw(camera:Camera, offset:Vector3):Void

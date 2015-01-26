@@ -27,6 +27,6 @@ abstract GraphicAsset(Material)
 	@:from
 	static public function fromString(asset:String):GraphicAsset
 	{
-		return fromTexture(new TextureAtlas(Texture.fromAsset(asset)));
+		return fromTexture(TextureAtlas.fromAsset(asset));
 	}
 }

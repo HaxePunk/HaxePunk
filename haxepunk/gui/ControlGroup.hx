@@ -12,15 +12,6 @@ class ControlGroup extends Control
 		_children = new Array<Control>();
 	}
 
-	override private function set_scene(value:Scene):Scene
-	{
-		for (i in 0..._children.length)
-		{
-			_children[i].scene = value;
-		}
-		return super.set_scene(value);
-	}
-
 	public function add(child:Control):Void
 	{
 		child.scene = scene;
