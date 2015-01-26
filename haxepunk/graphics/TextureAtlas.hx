@@ -15,9 +15,9 @@ class TextureAtlas extends Texture
 		}
 		else
 		{
+			texture = new TextureAtlas(id);
 			if (lime.Assets.exists(id))
 			{
-				texture = new TextureAtlas(id);
 				texture.loadFromImage(lime.Assets.getImage(id));
 				Texture._textures.set(id, texture);
 			}

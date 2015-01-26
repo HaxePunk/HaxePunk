@@ -26,24 +26,23 @@ class Text extends Graphic
 		_indices = new IntArray();
 		color = new Color();
 
-		_font = Font.fromFile("font/SourceCodePro-Regular.otf");
-
 		this.size = size;
 		this.lineHeight = size;
 
+		#if flash
+		var vert = "m44 op, va0, vc0\nmov v0, va1";
+		var frag = "tex ft0, v0, fs0 <linear nomip 2d wrap>\nmov ft0.xyz, fc1.xyz\nmov oc, ft0";
+		#else
+		_font = Font.fromFile("font/SourceCodePro-Regular.otf");
 		_font.loadGlyphs(size);
 		var image = _font.createImage();
 		_textFormat = new TextFormat(LeftToRight, ScriptLatin, "en");
 
 		_texture = new Texture();
 		_texture.loadFromImage(new lime.graphics.Image(image));
-		#if flash
-		var vert = "m44 op, va0, vc0\nmov v0, va1";
-		var frag = "tex ft0, v0, fs0 <linear nomip 2d wrap>\nmov ft0.xyz, fc1.xyz\nmov oc, ft0";
-		#else
 		var vert = Assets.getText("shaders/default.vert");
 		var frag = Assets.getText("shaders/text.frag");
-		#end
+
 		var shader = new Shader(vert, frag);
 		material = Material.fromAsset("materials/text.material");
 		var pass = material.firstPass;
@@ -56,12 +55,14 @@ class Text extends Graphic
 		_modelViewMatrixUniform = shader.uniform("uMatrix");
 		_colorUniform = shader.uniform("uColor");
 		_vertexBuffer = Renderer.createBuffer(4);
+		#end
 
 		this.text = text;
 	}
 
 	public var text(default, set):String;
 	private function set_text(value:String):String {
+		#if !flash
 		if (text != value && value.trim() != "")
 		{
 			var glyphs = _font.glyphs.get(size);
@@ -131,11 +132,13 @@ class Text extends Graphic
 			Renderer.updateBuffer(_vertices, STATIC_DRAW);
 			_indexBuffer = Renderer.updateIndexBuffer(_indices, STATIC_DRAW, _indexBuffer);
 		}
+		#end
 		return text = value;
 	}
 
 	override public function draw(camera:Camera, offset:Vector3):Void
 	{
+		#if !flash
 		if (_indexBuffer == null || _vertexBuffer == null) return;
 
 		// finish drawing whatever came before the text area
@@ -163,6 +166,7 @@ class Text extends Graphic
 		Renderer.setAttribute(_texCoordAttribute, 2, 2);
 
 		Renderer.draw(_indexBuffer, text.length * 2, 0);
+		#end
 	}
 
 	private var _textFormat:TextFormat;
