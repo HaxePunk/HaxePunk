@@ -25,8 +25,8 @@ class Scene
 
 	public function add(e:Entity)
 	{
-		e.scene = this;
 		_entities.push(e);
+		e.scene = this;
 		if (e.type != "") addType(e);
 		if (e.name != "") registerName(e);
 	}

@@ -133,6 +133,13 @@ class AABB implements Mask
 		return Vector3.ZERO;
 	}
 
+	public function intersectsPoint(vec:Vector3):Bool
+	{
+		return vec.x >= min.x && vec.x <= max.x &&
+			vec.y >= min.y && vec.y <= max.y &&
+			vec.z >= min.z && vec.z <= max.z;
+	}
+
 	public function intersectsAABB(other:AABB):Bool
 	{
 		return max.x >= other.min.x && min.x <= other.max.x &&

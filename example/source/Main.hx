@@ -37,7 +37,7 @@ class Main extends Engine
 		// scene.addGraphic(mesh);
 
 		fps = new Text("", 32);
-		scene.addGraphic(fps, scene.camera.x, scene.camera.y);
+		scene.addGraphic(fps, 50, 50);//scene.camera.x, scene.camera.y);
 	}
 
 	override public function update(deltaTime:Int)

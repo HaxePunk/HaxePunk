@@ -69,6 +69,7 @@ class Text extends Graphic
 
 			var x:Float, y:Float;
 			var lines = value.split("\n");
+			var numTiles = 0;
 			for (i in 0...lines.length)
 			{
 				var line = lines[i];
@@ -91,7 +92,7 @@ class Text extends Graphic
 					var pointRight = pointLeft + glyph.width;
 					var pointBottom = pointTop + glyph.height;
 
-					var index = _vertices.length;
+					var index = numTiles * 16;
 					_vertices[index++] = pointRight;
 					_vertices[index++] = pointBottom;
 					_vertices[index++] = right;
@@ -112,7 +113,7 @@ class Text extends Graphic
 					_vertices[index++] = left;
 					_vertices[index++] = top;
 
-					index = _indices.length;
+					index = numTiles * 6;
 					var j = Std.int(index / 6) * 4;
 					_indices[index++] = j;
 					_indices[index++] = j+1;
@@ -121,9 +122,10 @@ class Text extends Graphic
 					_indices[index++] = j+1;
 					_indices[index++] = j+2;
 					_indices[index++] = j+3;
-					
+
 					x += p.advance.x;
 					y -= p.advance.y;
+					numTiles += 1;
 				}
 				if (x > width) width = x;
 			}

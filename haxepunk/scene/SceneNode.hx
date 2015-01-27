@@ -8,7 +8,8 @@ class SceneNode
 	public var position:Vector3;
 
 	@:allow(haxepunk.scene.Scene)
-	public var scene(default, null):Scene;
+	public var scene(default, set):Scene;
+	private function set_scene(value:Scene):Scene { return scene = value; }
 
 	public var x(get, set):Float;
 	private inline function get_x():Float { return position.x; }

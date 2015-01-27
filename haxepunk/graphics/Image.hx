@@ -3,6 +3,7 @@ package haxepunk.graphics;
 import haxepunk.HXP;
 import haxepunk.math.Vector3;
 import haxepunk.math.Matrix4;
+import haxepunk.math.Rectangle;
 import haxepunk.scene.Camera;
 
 abstract ImageSource(Material) to Material from Material
@@ -53,7 +54,7 @@ class Image extends Graphic
 		return (alpha == value) ? value : alpha = value;
 	}
 
-	public function new(source:ImageSource)
+	public function new(source:ImageSource, ?clipRect:Rectangle)
 	{
 		super();
 
@@ -61,9 +62,29 @@ class Image extends Graphic
 		this.material = source;
 		var texture = this.material.firstPass.getTexture(0);
 		if (texture == null) throw "Must have a texture attached for materials used in Image";
-		width = texture.width;
-		height = texture.height;
+
+		if (clipRect == null)
+		{
+			width = texture.width;
+			height = texture.height;
+		}
+		else
+		{
+			var atlas = cast(texture, TextureAtlas);
+			_tileIndex = atlas.addTile(clipRect.x, clipRect.y, clipRect.width, clipRect.height);
+			width = clipRect.width;
+			height = clipRect.height;
+		}
 #end
 	}
+
+	override public function draw(camera:Camera, offset:Vector3):Void
+	{
+		if (material == null) return;
+		calculateMatrixWithOffset(offset);
+		HXP.spriteBatch.draw(material, _matrix, _tileIndex);
+	}
+
+	private var _tileIndex = 0;
 
 }

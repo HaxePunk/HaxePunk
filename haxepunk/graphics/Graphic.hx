@@ -62,13 +62,7 @@ class Graphic
 		origin /= scale;
 	}
 
-	public function draw(camera:Camera, offset:Vector3):Void
-	{
-		if (material == null) return;
-		calculateMatrixWithOffset(offset);
-		HXP.spriteBatch.draw(material, _matrix);
-	}
-
+	public function draw(camera:Camera, offset:Vector3):Void {}
 	public function update(elapsed:Float) {}
 
 	private var _matrix:Matrix4;

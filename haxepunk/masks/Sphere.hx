@@ -32,6 +32,14 @@ class Sphere implements Mask
 		return Vector3.ZERO;
 	}
 
+	public function intersectsPoint(vec:Vector3):Bool
+	{
+		var dx:Float = position.x - vec.x;
+		var dy:Float = position.y - vec.y;
+		var dz:Float = position.z - vec.z;
+		return (dx * dx + dy * dy + dz * dz) < Math.pow(radius, 2);
+	}
+
 	public function intersectsSphere(other:Sphere):Bool
 	{
 		var dx:Float = position.x - other.position.x;

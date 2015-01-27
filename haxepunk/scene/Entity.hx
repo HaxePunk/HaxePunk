@@ -65,7 +65,7 @@ class Entity extends SceneNode
 	public function new(x:Float = 0, y:Float = 0, z:Float = 0)
 	{
 		super(x, y, z);
-		hitbox = new AABB();
+		_mask = hitbox = new AABB();
 	}
 
 	public function toString():String
@@ -96,6 +96,18 @@ class Entity extends SceneNode
 		{
 			_graphic.draw(camera, position);
 		}
+	}
+
+	/**
+	 * TODO: change to 3d?
+	 */
+	public function collidePoint(x1:Float, y1:Float, x2:Float, y2:Float):Bool
+	{
+		hitbox.x += x1; hitbox.y += y1;
+		var vec = new Vector3(x2, y2);
+		var result = hitbox.intersectsPoint(vec);
+		hitbox.x -= x1; hitbox.y -= y1;
+		return result;
 	}
 
 	/**

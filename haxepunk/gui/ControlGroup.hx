@@ -8,7 +8,7 @@ class ControlGroup extends Control
 
 	public function new(x:Float=0, y:Float=0, width:Float=1, height:Float=1)
 	{
-		super(x, y, width, height);
+		super(x, y);
 		_children = new Array<Control>();
 	}
 
