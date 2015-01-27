@@ -20,24 +20,7 @@ class TextArea extends Control
 		super.update(elapsed);
 		label.x = x + padding;
 		label.y = y + padding;
-		if (Input.pressed(Keyboard.last) > 0)
-		{
-			var last:Int = Keyboard.last;
-			switch (Keyboard.last)
-			{
-				case Key.SPACE:
-					label.text += " ";
-				case Key.BACKSPACE:
-					label.text = label.text.substr(0, -1);
-				case Key.ENTER:
-					label.text += "\n";
-				default:
-					if (last < 127)
-					{
-						label.text += Keyboard.nameOf(Keyboard.last);
-					}
-			}
-		}
+		label.text = Keyboard.buffer;
 	}
 
 	private var _area:NineSlice;

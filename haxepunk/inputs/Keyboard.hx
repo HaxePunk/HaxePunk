@@ -4,6 +4,7 @@ import haxe.ds.IntMap;
 import haxepunk.inputs.Input;
 import haxepunk.inputs.InputState;
 import lime.ui.KeyEventManager;
+import lime.ui.TextEventManager;
 import lime.ui.KeyCode;
 
 /**
@@ -13,7 +14,7 @@ class Keyboard
 {
 
 	/** Contains the string of the last keys pressed */
-	public static var keyString(default, null):String = "";
+	public static var buffer(default, null):String = "";
 
 	/** Holds the last key detected */
 	public static var last(default, null):Key = Key.ANY;
@@ -62,11 +63,8 @@ class Keyboard
 			//~ case TILDE: "~";
 
 			case ENTER: "ENTER";
-			case CONTROL: "CONTROL";
 			case SPACE: "SPACE";
-			case SHIFT: "SHIFT";
 			case BACKSPACE: "BACKSPACE";
-			case CAPS_LOCK: "CAPS LOCK";
 			case DELETE: "DELETE";
 			case END: "END";
 			case ESCAPE: "ESCAPE";
@@ -98,6 +96,7 @@ class Keyboard
 		// Register the events from lime
 		KeyEventManager.onKeyDown.add(onKeyDown);
 		KeyEventManager.onKeyUp.add(onKeyUp);
+		TextEventManager.onTextInput.add(onTextInput);
 	}
 
 	/**
@@ -148,6 +147,13 @@ class Keyboard
 	{
 		getInputState(keycode).pressed += 1;
 		last = cast keycode;
+		switch (keycode)
+		{
+			case Key.ENTER:
+				buffer += "\n";
+			case Key.BACKSPACE:
+				buffer = buffer.substr(0, -1);
+		}
 	}
 
 	/**
@@ -157,6 +163,14 @@ class Keyboard
 	{
 		getInputState(keycode).released += 1;
 		last = cast keycode;
+	}
+
+	/**
+	 * Lime onTextInput event.
+	 */
+	private static function onTextInput(text:String):Void
+	{
+		buffer += text;
 	}
 
 	/**
@@ -182,6 +196,26 @@ class Keyboard
 }
 
 
+@:enum
+abstract Modifer(Int) to Int
+{
+	var LEFT_SHIFT  = 0x0001;
+	var RIGHT_SHIFT = 0x0002;
+	var SHIFT       = 0x0003;
+	var LEFT_CTRL   = 0x0040;
+	var RIGHT_CTRL  = 0x0080;
+	var CTRL        = 0x00C0;
+	var LEFT_ALT    = 0x0100;
+	var RIGHT_ALT   = 0x0200;
+	var ALT         = 0x0300;
+	var LEFT_META   = 0x0400;
+	var RIGHT_META  = 0x0800;
+	var META        = 0x0C00;
+	var NUM_LOCK    = 0x1000;
+	var CAPS_LOCK   = 0x2000;
+	var MODE        = 0x4000;
+}
+
 
 /**
  * The keyboard keys.
@@ -198,11 +232,8 @@ abstract Key(Int) to Int
 
 	var ENTER = 0x0D;
 	//~ var COMMAND = cast KeyCode.COMMAND;
-	var CONTROL = 0x400000E0; // LEFT_CTRL
 	var SPACE = 0x20;
-	var SHIFT = 0x400000E1; // LEFT_SHIFT
 	var BACKSPACE = 0x08;
-	var CAPS_LOCK = 0x40000039;
 	var DELETE = 0x7F;
 	var END = 0x4000004D;
 	var ESCAPE = 0x1B;

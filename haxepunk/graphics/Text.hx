@@ -63,76 +63,86 @@ class Text extends Graphic
 	public var text(default, set):String;
 	private function set_text(value:String):String {
 		#if !flash
-		if (text != value && value.trim() != "")
+		if (text != value)
 		{
-			var glyphs = _font.glyphs.get(size);
-
-			var x:Float, y:Float;
-			var lines = value.split("\n");
-			var numTiles = 0;
-			for (i in 0...lines.length)
+			if (value.trim() == "")
 			{
-				var line = lines[i];
-				// TODO: remove magic number (lineHeight * 0.8)
-				y = lineHeight * i + lineHeight * 0.8;
-				var points = _textFormat.fromString(_font, size, line);
-				x = 0.0;
-				for (p in points)
-				{
-					if (!glyphs.exists(p.codepoint)) continue;
-					var glyph = glyphs.get(p.codepoint);
-
-					var left   = glyph.x / _texture.width;
-					var top    = glyph.y / _texture.height;
-					var right  = left + glyph.width / _texture.width;
-					var bottom = top + glyph.height / _texture.height;
-
-					var pointLeft = x + p.offset.x + glyph.xOffset;
-					var pointTop = y + p.offset.y - glyph.yOffset;
-					var pointRight = pointLeft + glyph.width;
-					var pointBottom = pointTop + glyph.height;
-
-					var index = numTiles * 16;
-					_vertices[index++] = pointRight;
-					_vertices[index++] = pointBottom;
-					_vertices[index++] = right;
-					_vertices[index++] = bottom;
-
-					_vertices[index++] = pointLeft;
-					_vertices[index++] = pointBottom;
-					_vertices[index++] = left;
-					_vertices[index++] = bottom;
-
-					_vertices[index++] = pointRight;
-					_vertices[index++] = pointTop;
-					_vertices[index++] = right;
-					_vertices[index++] = top;
-
-					_vertices[index++] = pointLeft;
-					_vertices[index++] = pointTop;
-					_vertices[index++] = left;
-					_vertices[index++] = top;
-
-					index = numTiles * 6;
-					var j = Std.int(index / 6) * 4;
-					_indices[index++] = j;
-					_indices[index++] = j+1;
-					_indices[index++] = j+2;
-
-					_indices[index++] = j+1;
-					_indices[index++] = j+2;
-					_indices[index++] = j+3;
-
-					x += p.advance.x;
-					y -= p.advance.y;
-					numTiles += 1;
-				}
-				if (x > width) width = x;
+				_numTriangles = 0;
 			}
-			height = lineHeight * lines.length;
-			Renderer.bindBuffer(_vertexBuffer);
-			Renderer.updateBuffer(_vertices, STATIC_DRAW);
-			_indexBuffer = Renderer.updateIndexBuffer(_indices, STATIC_DRAW, _indexBuffer);
+			else if (text.startsWith(value))
+			{
+				// don't recreate the buffer if it's the same
+				_numTriangles = value.replace("\n", "").length * 2;
+			}
+			else
+			{
+				var glyphs = _font.glyphs.get(size);
+
+				var x:Float, y:Float;
+				var lines = value.split("\n");
+				var vertIndex = 0, indIndex = 0;
+				for (i in 0...lines.length)
+				{
+					var line = lines[i];
+					// TODO: remove magic number (lineHeight * 0.8)
+					y = lineHeight * i + lineHeight * 0.8;
+					var points = _textFormat.fromString(_font, size, line);
+					x = 0.0;
+					for (p in points)
+					{
+						if (!glyphs.exists(p.codepoint)) continue;
+						var glyph = glyphs.get(p.codepoint);
+
+						var left   = glyph.x / _texture.width;
+						var top    = glyph.y / _texture.height;
+						var right  = left + glyph.width / _texture.width;
+						var bottom = top + glyph.height / _texture.height;
+
+						var pointLeft = x + p.offset.x + glyph.xOffset;
+						var pointTop = y + p.offset.y - glyph.yOffset;
+						var pointRight = pointLeft + glyph.width;
+						var pointBottom = pointTop + glyph.height;
+
+						_vertices[vertIndex++] = pointRight;
+						_vertices[vertIndex++] = pointBottom;
+						_vertices[vertIndex++] = right;
+						_vertices[vertIndex++] = bottom;
+
+						_vertices[vertIndex++] = pointLeft;
+						_vertices[vertIndex++] = pointBottom;
+						_vertices[vertIndex++] = left;
+						_vertices[vertIndex++] = bottom;
+
+						_vertices[vertIndex++] = pointRight;
+						_vertices[vertIndex++] = pointTop;
+						_vertices[vertIndex++] = right;
+						_vertices[vertIndex++] = top;
+
+						_vertices[vertIndex++] = pointLeft;
+						_vertices[vertIndex++] = pointTop;
+						_vertices[vertIndex++] = left;
+						_vertices[vertIndex++] = top;
+
+						var j = Std.int(indIndex / 6) * 4;
+						_indices[indIndex++] = j;
+						_indices[indIndex++] = j+1;
+						_indices[indIndex++] = j+2;
+
+						_indices[indIndex++] = j+1;
+						_indices[indIndex++] = j+2;
+						_indices[indIndex++] = j+3;
+
+						x += p.advance.x;
+						y -= p.advance.y;
+					}
+					if (x > width) width = x;
+				}
+				_numTriangles = Math.floor(indIndex / 3);
+				height = lineHeight * lines.length;
+				Renderer.bindBuffer(_vertexBuffer);
+				Renderer.updateBuffer(_vertices, STATIC_DRAW);
+				_indexBuffer = Renderer.updateIndexBuffer(_indices, STATIC_DRAW, _indexBuffer);
+			}
 		}
 		#end
 		return text = value;
@@ -141,12 +151,13 @@ class Text extends Graphic
 	override public function draw(camera:Camera, offset:Vector3):Void
 	{
 		#if !flash
-		if (_indexBuffer == null || _vertexBuffer == null) return;
+		if (_numTriangles <= 0 || _indexBuffer == null || _vertexBuffer == null) return;
+
+		// TODO: batch this process
 
 		// finish drawing whatever came before the text area
 		HXP.spriteBatch.flush(camera);
 
-		// TODO: batch this process
 		material.use();
 
 		origin *= scale;
@@ -167,7 +178,7 @@ class Text extends Graphic
 		Renderer.setAttribute(_vertexAttribute, 0, 2);
 		Renderer.setAttribute(_texCoordAttribute, 2, 2);
 
-		Renderer.draw(_indexBuffer, text.length * 2, 0);
+		Renderer.draw(_indexBuffer, _numTriangles, 0);
 		#end
 	}
 
@@ -186,5 +197,6 @@ class Text extends Graphic
 	private var _indices:IntArray;
 	private var _vertexBuffer:VertexBuffer;
 	private var _indexBuffer:IndexBuffer;
+	private var _numTriangles:Int = 0;
 
 }
