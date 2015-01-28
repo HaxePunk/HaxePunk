@@ -127,7 +127,9 @@ private class Batch
 		if (_updateVBOs)
 		{
 			if (_spriteIndex > _lastSpriteIndex)
+			{
 				_indexBuffer = Renderer.updateIndexBuffer(_indices, STATIC_DRAW, _indexBuffer);
+			}
 
 			Renderer.bindBuffer(_uvBuffer);
 			Renderer.setAttribute(_uvAttribute, 0, 2);
@@ -184,6 +186,22 @@ class SpriteBatch
 		_drawList = new Array<Batch>();
 	}
 
+	private function getBatch(material:Material):Batch
+	{
+		var batch:Batch;
+		if (drawCount >= _drawList.length)
+		{
+			batch = new Batch(material);
+			_drawList[drawCount++] = batch;
+		}
+		else
+		{
+			batch = _drawList[drawCount++];
+			batch.clear();
+		}
+		return batch;
+	}
+
 	public function draw(material:Material, matrix:Matrix4, id:Int = -1)
 	{
 		var batch:Batch;
@@ -192,14 +210,12 @@ class SpriteBatch
 			batch = _drawList[drawCount - 1];
 			if (batch.material != material)
 			{
-				batch = new Batch(material);
-				_drawList[drawCount++] = batch;
+				batch = getBatch(material);
 			}
 		}
 		else
 		{
-			batch = new Batch(material);
-			_drawList[drawCount++] = batch;
+			batch = getBatch(material);
 		}
 		if (id != -1) batch.updateTexCoord(id);
 		batch.updateVertex(matrix);
