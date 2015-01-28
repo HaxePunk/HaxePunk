@@ -27,8 +27,9 @@ class Tilemap extends Canvas
 	 * @param	tileHeight			Tile height.
 	 * @param	tileSpacingWidth	Tile horizontal spacing.
 	 * @param	tileSpacingHeight	Tile vertical spacing.
+	 * @param	opaqueTiles			Indicates if this tileset contains only opaque tiles (defaults to true). Only used in Flash .
 	 */
-	public function new(tileset:TileType, width:Int, height:Int, tileWidth:Int, tileHeight:Int, ?tileSpacingWidth:Int=0, ?tileSpacingHeight:Int=0)
+	public function new(tileset:TileType, width:Int, height:Int, tileWidth:Int, tileHeight:Int, ?tileSpacingWidth:Int=0, ?tileSpacingHeight:Int=0, ?opaqueTiles:Bool=true)
 	{
 		_rect = HXP.rect;
 
@@ -37,6 +38,7 @@ class Tilemap extends Canvas
 		_height = height - (height % tileHeight);
 		_columns = Std.int(_width / tileWidth);
 		_rows = Std.int(_height / tileHeight);
+		_opaqueTiles = opaqueTiles;
 
 		this.tileSpacingWidth = tileSpacingWidth;
 		this.tileSpacingHeight = tileSpacingHeight;
@@ -99,7 +101,7 @@ class Tilemap extends Canvas
 	 * Sets the index of the tile at the position.
 	 * @param	column		Tile column.
 	 * @param	row			Tile row.
-	 * @param	index		Tile index.
+	 * @param	index		Tile index from the tileset to show. (Or -1 to show the tile as blank.)
 	 */
 	public function setTile(column:Int, row:Int, index:Int = 0)
 	{
@@ -112,10 +114,20 @@ class Tilemap extends Canvas
 		column %= _columns;
 		row %= _rows;
 		_map[row][column] = index;
+
 		if (blit)
 		{
-			updateTileRect(index);
-			draw(column * _tile.width, row * _tile.height, _set, _tile);
+			if(_opaqueTiles == false || index < 0)
+			{
+				_tile.x = column * _tile.width;
+				_tile.y = row * _tile.height;
+				fill(_tile, 0, 0); // erase tile
+			}
+			if(index >= 0)
+			{
+				updateTileRect(index);
+				draw(column * _tile.width, row * _tile.height, _set, _tile); // draw tile				
+			}
 		}
 	}
 
@@ -126,20 +138,7 @@ class Tilemap extends Canvas
 	 */
 	public function clearTile(column:Int, row:Int)
 	{
-		if (usePositions)
-		{
-			column = Std.int(column / _tile.width);
-			row = Std.int(row / _tile.height);
-		}
-		column %= _columns;
-		row %= _rows;
-		_map[row][column] = -1;
-		if (blit)
-		{
-			_tile.x = column * _tile.width;
-			_tile.y = row * _tile.height;
-			fill(_tile, 0, 0);
-		}
+		setTile(column, row, -1);
 	}
 
 	/**
@@ -239,17 +238,13 @@ class Tilemap extends Canvas
 	 */
 	public function loadFrom2DArray(array:Array<Array<Int>>):Void
 	{
-		if (blit)
-		{
-			for (y in 0...array.length)
-			 {
-				for (x in 0...array[0].length)
-				{
-					setTile(x, y, array[y][x]);
-				}
-			 }
-		}
-		_map = array;
+		for (y in 0...array.length)
+		 {
+			for (x in 0...array[y].length)
+			{
+				setTile(x, y, array[y][x]);
+			}
+		 }
 	}
 
 	/**
@@ -271,11 +266,10 @@ class Tilemap extends Canvas
 			cols = col.length;
 			for (x in 0...cols)
 			{
-				if (col[x] == '') continue;
-
-				if (blit)
+				if (col[x] != '')
+				{
 					setTile(x, y, Std.parseInt(col[x]));
-				_map[y][x] = Std.parseInt(col[x]);
+				}
 			}
 		}
 	}
@@ -304,7 +298,7 @@ class Tilemap extends Canvas
 	}
 
 	/**
-	 * Gets the index of a tile, based on its column and row in the tileset.
+	 * Calculates the index of a tile, based on its column and row in the tileset.
 	 * @param	tilesColumn		Tileset column.
 	 * @param	tilesRow		Tileset row.
 	 * @return	Index of the tile.
@@ -312,6 +306,26 @@ class Tilemap extends Canvas
 	public inline function getIndex(tilesColumn:Int, tilesRow:Int):Int
 	{
 		return (tilesRow % _setRows) * _setColumns + (tilesColumn % _setColumns);
+	}
+
+	/**
+	 * Calculates the column of a tile, based on its index in the tileset.
+	 * @param	index		Index of the tile.
+	 * @return	Column (x) of the tile.
+	 */
+	public inline function getX(index:Int):Int
+	{
+		return index % _setColumns;
+	}
+
+	/**
+	 * Calculates the row of a tile, based on its index in the tileset.
+	 * @param	index		Index of the tile.
+	 * @return	Row (y) of the tile.
+	 */
+	public inline function getY(index:Int):Int
+	{
+		return Std.int(index / _setColumns);
 	}
 
 	/**
@@ -511,10 +525,10 @@ class Tilemap extends Canvas
 	}
 
 	/** @private Sets the _tile convenience rect to the x/y position of the supplied tile. Assumes _tile has the correct tile width/height set. Respects tile spacing. */
-	private inline function updateTileRect(tile:Int)
+	private inline function updateTileRect(index:Int)
 	{
-		_tile.x = (tile % _setColumns) * (_tile.width + tileSpacingWidth);
-		_tile.y = Std.int(tile / _setColumns) * (_tile.height + tileSpacingHeight);
+		_tile.x = getX(index) * (_tile.width + tileSpacingWidth);
+		_tile.y = getY(index) * (_tile.height + tileSpacingHeight);
 	}
 
 	/** @private Used by shiftTiles to update a tile from the tilemap. */
@@ -563,6 +577,13 @@ class Tilemap extends Canvas
 	public var rows(get, null):Int;
 	private inline function get_rows():Int { return _rows; }
 
+	/**
+	 * If false, whenever you call setTile or one of the load methods, clears the affected Tilemap areas before redrawing.
+	 * Only used on Flash targets and with tilesets that contain transparency. 
+	 */
+	public var opaqueTiles(get, null):Bool;
+	private inline function get_opaqueTiles():Bool { return _opaqueTiles; }
+
 	public var smooth:Bool = true;
 
 	// Tilemap information.
@@ -571,6 +592,7 @@ class Tilemap extends Canvas
 	private var _rows:Int;
 
 	// Tileset information.
+	private var _opaqueTiles:Bool;
 	private var _set:BitmapData;
 	private var _atlas:TileAtlas;
 	private var _setColumns:Int;
