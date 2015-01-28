@@ -78,6 +78,21 @@ class Image extends Graphic
 #end
 	}
 
+	private function calculateMatrixWithOffset(offset:Vector3)
+	{
+		origin *= scale;
+		origin += offset;
+
+		_matrix.identity();
+		_matrix.scale(width, height, 1);
+		_matrix.translateVector3(origin);
+		_matrix.scaleVector3(scale);
+		// if (angle != 0) _matrix.rotateZ(angle);
+
+		origin -= offset;
+		origin /= scale;
+	}
+
 	override public function draw(camera:Camera, offset:Vector3):Void
 	{
 		if (material == null) return;
@@ -85,6 +100,6 @@ class Image extends Graphic
 		HXP.spriteBatch.draw(material, _matrix, _tileIndex);
 	}
 
-	private var _tileIndex = 0;
+	private var _tileIndex = -1;
 
 }

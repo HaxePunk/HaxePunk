@@ -352,18 +352,16 @@ class Spritemap extends Image
 	override public function draw(camera:Camera, offset:Vector3):Void
 	{
 		if (_frames == null) return;
-		_tileIndex = _lastFrame == _frame ? -1 : _frames[_frame]);
-		_lastFrame = _frame;
+		_tileIndex = _tileIndex == _frame ? -1 : _frames[_frame];
 		super.draw(camera, offset);
+		_tileIndex = _frame;
 	}
 
 	private var _frame:Int = 0;
-	private var _lastFrame:Int = -1;
 	private var _frames:Array<Int>;
 	private var _index:Int = 0;
 	private var _time:Float = 0;
 	private var _anim:Animation;
 	private var _anims:StringMap<Animation>;
-	private static var _materials:StringMap<Material> = new StringMap<Material>();
 
 }

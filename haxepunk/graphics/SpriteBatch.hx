@@ -14,36 +14,40 @@ private class Batch
 		_vertices = new FloatArray();
 		_uvs = new FloatArray();
 
-		var pass = material.firstPass;
-		var texture = pass.getTexture(0);
-		if (Std.is(texture, TextureAtlas))
-		{
-			_atlas = cast texture;
-		}
-		else
-		{
-			updateTexCoord(0);
-		}
-
-		this.material = material;
-
-		_modelViewMatrixUniform = pass.shader.uniform("uMatrix");
-		_vertexAttribute = pass.shader.attribute("aVertexPosition");
-		_uvAttribute = pass.shader.attribute("aTexCoord");
-
 		_uvBuffer = Renderer.createBuffer(2);
 		_vertexBuffer = Renderer.createBuffer(3);
 		_position = new Vector3(); // temporary vector for calculating vertex positions
+
+		reset(material);
 	}
 
-	public inline function clear()
+	public inline function reset(material:Material)
 	{
 		_spriteIndex = 0;
+		if (this.material != material)
+		{
+			var pass = material.firstPass;
+			var texture = pass.getTexture(0);
+			if (Std.is(texture, TextureAtlas))
+			{
+				_atlas = cast texture;
+			}
+			else
+			{
+				updateTexCoord(0);
+			}
+
+			this.material = material;
+
+			_modelViewMatrixUniform = pass.shader.uniform("uMatrix");
+			_vertexAttribute = pass.shader.attribute("aVertexPosition");
+			_uvAttribute = pass.shader.attribute("aTexCoord");
+		}
 	}
 
 	public function updateTexCoord(index:Int)
 	{
-		if (_atlas == null)
+		if (_atlas == null || index == -1)
 		{
 			index = _spriteIndex * 8;
 			_uvs[index++] = 0;
@@ -60,24 +64,14 @@ private class Batch
 			_atlas.copyRegionInto(index, _uvs, _spriteIndex);
 		}
 
-		#if true
-			index = _spriteIndex * 6;
-			_indices[index++] = _spriteIndex * 4;
-			_indices[index++] = _spriteIndex * 4 + 1;
-			_indices[index++] = _spriteIndex * 4 + 2;
+		index = _spriteIndex * 6;
+		_indices[index++] = _spriteIndex * 4;
+		_indices[index++] = _spriteIndex * 4 + 1;
+		_indices[index++] = _spriteIndex * 4 + 2;
 
-			_indices[index++] = _spriteIndex * 4 + 1;
-			_indices[index++] = _spriteIndex * 4 + 2;
-			_indices[index++] = _spriteIndex * 4 + 3;
-		#else
-			index = _spriteIndex * 6;
-			_indices[index++] = _spriteIndex * 4;
-			_indices[index++] = _spriteIndex * 4 + 1;
-			_indices[index++] = _spriteIndex * 4 + 2;
-			_indices[index++] = _spriteIndex * 4 + 3;
-			_indices[index++] = _spriteIndex * 4 + 3;
-			_indices[index++] = _spriteIndex * 4 + 4;
-		#end
+		_indices[index++] = _spriteIndex * 4 + 1;
+		_indices[index++] = _spriteIndex * 4 + 2;
+		_indices[index++] = _spriteIndex * 4 + 3;
 
 		_updateVBOs = true;
 	}
@@ -186,18 +180,18 @@ class SpriteBatch
 		_drawList = new Array<Batch>();
 	}
 
-	private function getBatch(material:Material):Batch
+	private function nextBatch(material:Material):Batch
 	{
 		var batch:Batch;
 		if (drawCount >= _drawList.length)
 		{
 			batch = new Batch(material);
-			_drawList[drawCount++] = batch;
+			_drawList.push(batch);
 		}
 		else
 		{
 			batch = _drawList[drawCount++];
-			batch.clear();
+			batch.reset(material);
 		}
 		return batch;
 	}
@@ -210,14 +204,14 @@ class SpriteBatch
 			batch = _drawList[drawCount - 1];
 			if (batch.material != material)
 			{
-				batch = getBatch(material);
+				batch = nextBatch(material);
 			}
 		}
 		else
 		{
-			batch = getBatch(material);
+			batch = nextBatch(material);
 		}
-		if (id != -1) batch.updateTexCoord(id);
+		batch.updateTexCoord(id);
 		batch.updateVertex(matrix);
 	}
 

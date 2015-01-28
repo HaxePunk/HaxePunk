@@ -7,26 +7,26 @@ import haxepunk.scene.Camera;
 class NineSlice extends Image
 {
 
-	public function new(asset:ImageSource, ?clipRect:Rectangle)
+	public function new(source:ImageSource, ?clipRect:Rectangle)
 	{
-		super(asset);
+		super(source);
 
 		var texture = material.firstPass.getTexture(0);
 
-		_clipRect = clipRect == null ? new Rectangle(0, 0, texture.width / 3, texture.height / 3) : clipRect;
+		_clipRect = (clipRect == null ? new Rectangle(0, 0, texture.width / 3, texture.height / 3) : clipRect);
 
 		if (Std.is(texture, TextureAtlas))
 		{
 			var atlas = cast(texture, TextureAtlas);
-			_topLeft      = atlas.addTile(clipRect.x, clipRect.y, clipRect.width, clipRect.height);
-			_topCenter    = atlas.addTile(clipRect.right, clipRect.y, clipRect.width, clipRect.height);
-			_topRight     = atlas.addTile(clipRect.x + clipRect.width * 2, clipRect.y, clipRect.width, clipRect.height);
-			_centerLeft   = atlas.addTile(clipRect.x, clipRect.bottom, clipRect.width, clipRect.height);
-			_centerCenter = atlas.addTile(clipRect.x + clipRect.width, clipRect.y + clipRect.height, clipRect.width, clipRect.height);
-			_centerRight  = atlas.addTile(clipRect.x + clipRect.width * 2, clipRect.bottom, clipRect.width, clipRect.height);
-			_bottomLeft   = atlas.addTile(clipRect.x, clipRect.y + clipRect.height * 2, clipRect.width, clipRect.height);
-			_bottomCenter = atlas.addTile(clipRect.right, clipRect.y + clipRect.height * 2, clipRect.width, clipRect.height);
-			_bottomRight  = atlas.addTile(clipRect.x + clipRect.width * 2, clipRect.y + clipRect.height * 2, clipRect.width, clipRect.height);
+			_topLeft      = atlas.addTile(_clipRect.x, _clipRect.y, _clipRect.width, _clipRect.height);
+			_topCenter    = atlas.addTile(_clipRect.right, _clipRect.y, _clipRect.width, _clipRect.height);
+			_topRight     = atlas.addTile(_clipRect.x + _clipRect.width * 2, _clipRect.y, _clipRect.width, _clipRect.height);
+			_centerLeft   = atlas.addTile(_clipRect.x, _clipRect.bottom, _clipRect.width, _clipRect.height);
+			_centerCenter = atlas.addTile(_clipRect.x + _clipRect.width, _clipRect.y + _clipRect.height, _clipRect.width, _clipRect.height);
+			_centerRight  = atlas.addTile(_clipRect.x + _clipRect.width * 2, _clipRect.bottom, _clipRect.width, _clipRect.height);
+			_bottomLeft   = atlas.addTile(_clipRect.x, _clipRect.y + _clipRect.height * 2, _clipRect.width, _clipRect.height);
+			_bottomCenter = atlas.addTile(_clipRect.right, _clipRect.y + _clipRect.height * 2, _clipRect.width, _clipRect.height);
+			_bottomRight  = atlas.addTile(_clipRect.x + _clipRect.width * 2, _clipRect.y + _clipRect.height * 2, _clipRect.width, _clipRect.height);
 		}
 		else
 		{
