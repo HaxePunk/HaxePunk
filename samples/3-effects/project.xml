@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+
+	<meta title="Effects" package="com.haxepunk.effects" version="1.0.0" company="" />
+	<app main="Effects" path="export" file="Effects" />
+
+	<window width="512" height="288" fps="60" />
+	<window hardware="true" allow-shaders="true" require-shaders="true" depth-buffer="true" stencil-buffer="false" />
+
+	<haxelib name="HaxePunk" />
+
+	<assets path="assets" />
+	<icon path="../assets/HaxePunk.svg" />
+
+</project>

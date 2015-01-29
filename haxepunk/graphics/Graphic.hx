@@ -47,6 +47,21 @@ class Graphic
 		origin.y = -(height / 2);
 	}
 
+	private function calculateMatrixWithOffset(offset:Vector3)
+	{
+		origin *= scale;
+		origin += offset;
+
+		_matrix.identity();
+		_matrix.scale(width, height, 1);
+		// if (angle != 0) _matrix.rotateZ(angle);
+		_matrix.translateVector3(origin);
+		_matrix.scaleVector3(scale);
+
+		origin -= offset;
+		origin /= scale;
+	}
+
 	public function draw(camera:Camera, offset:Vector3):Void {}
 	public function update(elapsed:Float) {}
 
