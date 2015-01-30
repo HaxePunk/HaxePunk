@@ -3,6 +3,7 @@ package haxepunk.scene;
 import haxe.ds.StringMap;
 import haxepunk.debug.Console;
 import haxepunk.graphics.Graphic;
+import haxepunk.graphics.Draw;
 import haxepunk.math.Matrix4;
 import haxepunk.renderers.Renderer;
 import haxepunk.graphics.SpriteBatch;
@@ -145,8 +146,9 @@ class Scene
 		{
 			_entities[i].draw();
 		}
-		_spriteBatch.flush();
 		if (Console.enabled) Console.instance.draw();
+		_spriteBatch.flush();
+		Draw.flush();
 		Renderer.present();
 
 		var t = haxe.Timer.stamp() * 1000;

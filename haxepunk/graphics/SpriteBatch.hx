@@ -141,15 +141,9 @@ class SpriteBatch
 			_vertexBuffer = Renderer.createBuffer(4);
 		}
 		Renderer.bindBuffer(_vertexBuffer);
-		#if !flash
-		Renderer.setAttribute(pass.shader.attribute("aVertexPosition"), 0, 2);
-		Renderer.setAttribute(pass.shader.attribute("aTexCoord"), 2, 2);
-		#end
 		Renderer.updateBuffer(_vertices, STATIC_DRAW);
-		#if flash
 		Renderer.setAttribute(pass.shader.attribute("aVertexPosition"), 0, 2);
 		Renderer.setAttribute(pass.shader.attribute("aTexCoord"), 2, 2);
-		#end
 
 		_indexBuffer = Renderer.updateIndexBuffer(_indices, STATIC_DRAW, _indexBuffer);
 
