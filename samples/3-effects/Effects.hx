@@ -1,23 +1,31 @@
+import haxepunk.HXP;
 import haxepunk.graphics.*;
 
 class Effects extends haxepunk.Engine
 {
 	override public function ready()
 	{
-		sprite = new Spritemap("assets/character.png", 32, 32);
-		sprite.add("norm_idle", [8, 8, 8, 9], 3, true);
-		sprite.add("norm_walk", [0, 1, 2, 3, 4, 5, 6, 7], 19, true);
-		sprite.add("norm_jump", [10]);
-		sprite.play("norm_walk");
-		sprite.centerOrigin();
-		scene.addGraphic(sprite, 0, 50, 50);
+		emitter = new ParticleEmitter("assets/particle.png");
+		emitter.acceleration.y = 0.05;
+		emitter.randomVelocity.x = 1;
+		emitter.velocity.y = -0.3;
+		emitter.angularVelocity = 0.01;
+		emitter.randomAngularVelocity = 0.1;
+		emitter.growth.x = emitter.growth.y = 0.05;
+		emitter.centerOrigin();
+		scene.addGraphic(emitter, 0, HXP.window.width / 2, 25);
+
+		particleCount = new haxepunk.graphics.Text("");
+		scene.addGraphic(particleCount, 0, 0, 15);
 	}
 
 	override public function update(deltaTime:Int)
 	{
+		emitter.emit(5);
+		particleCount.text = "Particles " + emitter.count + "\nFPS " + Std.int(HXP.frameRate);
 		super.update(deltaTime);
-		sprite.angle += 0.02;
 	}
 
-	private var sprite:Spritemap;
+	private var particleCount:Text;
+	private var emitter:ParticleEmitter;
 }

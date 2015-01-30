@@ -50,6 +50,11 @@ abstract Vector3 (Point3D)
 		return Math.sqrt(x * x + y * y + z * z);
 	}
 
+	public function clone():Vector3
+	{
+		return new Vector3(x, y, z);
+	}
+
 	/**
 	 * Normalizes the vector
 	 */
