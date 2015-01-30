@@ -16,7 +16,7 @@ class SpriteBatch
 	}
 
 	public function draw(material:Material, x:Float, y:Float, width:Float, height:Float,
-		texX:Float, texY:Float, texWidth:Float, texHeight:Float,
+		texX:Float, texY:Float, texWidth:Float, texHeight:Float, flipX:Bool=false, flipY:Bool=false,
 		originX:Float=0, originY:Float=0, scaleX:Float=1, scaleY:Float=1, angle:Float=0)
 	{
 		if (material != _material)
@@ -75,10 +75,29 @@ class SpriteBatch
 		x3 += worldOriginX; y3 += worldOriginY;
 		x4 += worldOriginX; y4 += worldOriginY;
 
-		var u1 = texX * _invTexWidth;
-		var v1 = (texY + texHeight) * _invTexHeight;
-		var u2 = (texX + texWidth) * _invTexWidth;
-		var v2 = texY * _invTexHeight;
+		var u1, u2;
+		if (flipX)
+		{
+			u1 = (texX + texWidth) * _invTexWidth;
+			u2 = texX * _invTexWidth;
+		}
+		else
+		{
+			u1 = texX * _invTexWidth;
+			u2 = (texX + texWidth) * _invTexWidth;
+		}
+
+		var v1, v2;
+		if (flipY)
+		{
+			v1 = (texY + texHeight) * _invTexHeight;
+			v2 = texY * _invTexHeight;
+		}
+		else
+		{
+			v1 = texY * _invTexHeight;
+			v2 = (texY + texHeight) * _invTexHeight;
+		}
 
 		var index = Std.int(_index / 20);
 

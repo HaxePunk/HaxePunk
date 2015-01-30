@@ -24,25 +24,13 @@ class Image extends Graphic
 
 	/**
 	 * Flip image on the x-axis
-	 * NOTE: This changes the image's scale value. By modifying scale.x you may unintentionally update flippedX.
 	 */
-	public var flippedX(get, set):Bool;
-	private inline function get_flippedX():Bool { return scale.x < 0; }
-	private function set_flippedX(value:Bool):Bool {
-		scale.x = Math.abs(scale.x) * (value ? -1 : 1);
-		return value;
-	}
+	public var flipX:Bool = false;
 
 	/**
 	 * Flip image on the y-axis
-	 * NOTE: This changes the image's scale value. By modifying scale.y you may unintentionally update flippedY.
 	 */
-	public var flippedY(get, set):Bool;
-	private inline function get_flippedY():Bool { return scale.y < 0; }
-	private function set_flippedY(value:Bool):Bool {
-		scale.y = Math.abs(scale.y) * (value ? -1 : 1);
-		return value;
-	}
+	public var flipY:Bool = false;
 
 	/**
 	 * Change the opacity of the Image, a value from 0 to 1.
@@ -80,7 +68,7 @@ class Image extends Graphic
 	{
 		HXP.spriteBatch.draw(material, offset.x, offset.y, width, height,
 			_clipRect.x, _clipRect.y, _clipRect.width, _clipRect.height,
-			origin.x, origin.y, scale.x, scale.y, angle);
+			flipX, flipY, origin.x, origin.y, scale.x, scale.y, angle);
 	}
 
 	private var _clipRect:Rectangle;
