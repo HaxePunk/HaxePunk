@@ -20,7 +20,7 @@ class Scene
 		_entityNames = new StringMap<Entity>();
 		_frameList = new Array<Float>();
 
-		HXP.spriteBatch = _spriteBatch = new SpriteBatch(this);
+		HXP.spriteBatch = _spriteBatch = new SpriteBatch();
 	}
 
 	public function add(e:Entity)

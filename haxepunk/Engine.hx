@@ -82,7 +82,7 @@ class Engine extends Application
 	{
 		_scenes.pop();
 		_scenes.push(scene);
-		return scene;
+		return HXP.scene = scene;
 	}
 
 	/**
@@ -91,7 +91,7 @@ class Engine extends Application
 	public function popScene():Scene
 	{
 		// should always have at least one scene
-		return (_scenes.length > 1 ? _scenes.pop() : _scenes.first());
+		return HXP.scene = (_scenes.length > 1 ? _scenes.pop() : _scenes.first());
 	}
 
 	/**
@@ -101,7 +101,7 @@ class Engine extends Application
 	public function pushScene(scene:Scene):Scene
 	{
 		_scenes.push(scene);
-		return scene;
+		return HXP.scene = scene;
 	}
 
 	private var _scenes:List<Scene>;

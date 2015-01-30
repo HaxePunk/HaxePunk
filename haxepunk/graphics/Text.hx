@@ -166,7 +166,7 @@ class Text extends Graphic
 		_matrix.identity();
 		_matrix.translateVector3(origin);
 		if (angle != 0) _matrix.rotateZ(angle);
-		// _matrix.multiply(camera.transform);
+		_matrix.multiply(HXP.scene.camera.transform);
 
 		origin -= offset;
 		origin /= scale;

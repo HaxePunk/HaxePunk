@@ -6,13 +6,10 @@ import haxepunk.scene.Scene;
 class SpriteBatch
 {
 
-	public function new(scene:Scene)
+	public function new()
 	{
 		_vertices = new FloatArray();
 		_indices = new IntArray();
-
-		// TODO: pull scene from HXP?
-		_scene = scene;
 	}
 
 	public function draw(material:Material, x:Float, y:Float, width:Float, height:Float,
@@ -137,7 +134,7 @@ class SpriteBatch
 		_material.use();
 
 		var pass = _material.firstPass;
-		Renderer.setMatrix(pass.shader.uniform("uMatrix"), _scene.camera.transform);
+		Renderer.setMatrix(pass.shader.uniform("uMatrix"), HXP.scene.camera.transform);
 
 		if (_vertexBuffer == null)
 		{
@@ -166,6 +163,5 @@ class SpriteBatch
 	private var _invTexWidth:Float = 0;
 	private var _invTexHeight:Float = 0;
 	private var _material:Material;
-	private var _scene:Scene;
 
 }
