@@ -24,14 +24,14 @@ class ControlGroup extends Control
 		_children.remove(child);
 	}
 
-	override public function draw(camera:Camera):Void
+	override public function draw():Void
 	{
-		super.draw(camera);
+		super.draw();
 		for (i in 0..._children.length)
 		{
 			var child = _children[i];
 			child.position += position;
-			child.draw(camera);
+			child.draw();
 			child.position -= position;
 		}
 	}

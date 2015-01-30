@@ -99,41 +99,39 @@ class SpriteBatch
 			v2 = (texY + texHeight) * _invTexHeight;
 		}
 
-		var index = Std.int(_index / 20);
+		var index = Std.int(_indexIndex / 6) * 4;
+		_indices[_indexIndex++] = index;
+		_indices[_indexIndex++] = index+1;
+		_indices[_indexIndex++] = index+2;
 
-		_vertices[_index++] = x1;
-		_vertices[_index++] = y1;
-		_vertices[_index++] = u1;
-		_vertices[_index++] = v1;
+		_indices[_indexIndex++] = index;
+		_indices[_indexIndex++] = index+2;
+		_indices[_indexIndex++] = index+3;
 
-		_vertices[_index++] = x2;
-		_vertices[_index++] = y2;
-		_vertices[_index++] = u1;
-		_vertices[_index++] = v2;
+		_vertices[_vertexIndex++] = x1;
+		_vertices[_vertexIndex++] = y1;
+		_vertices[_vertexIndex++] = u1;
+		_vertices[_vertexIndex++] = v1;
 
-		_vertices[_index++] = x3;
-		_vertices[_index++] = y3;
-		_vertices[_index++] = u2;
-		_vertices[_index++] = v2;
+		_vertices[_vertexIndex++] = x2;
+		_vertices[_vertexIndex++] = y2;
+		_vertices[_vertexIndex++] = u1;
+		_vertices[_vertexIndex++] = v2;
 
-		_vertices[_index++] = x4;
-		_vertices[_index++] = y4;
-		_vertices[_index++] = u2;
-		_vertices[_index++] = v1;
+		_vertices[_vertexIndex++] = x3;
+		_vertices[_vertexIndex++] = y3;
+		_vertices[_vertexIndex++] = u2;
+		_vertices[_vertexIndex++] = v2;
 
-		var i = index * 4;
-		_indices[index++] = i;
-		_indices[index++] = i+1;
-		_indices[index++] = i+2;
-
-		_indices[index++] = i;
-		_indices[index++] = i+2;
-		_indices[index++] = i+3;
+		_vertices[_vertexIndex++] = x4;
+		_vertices[_vertexIndex++] = y4;
+		_vertices[_vertexIndex++] = u2;
+		_vertices[_vertexIndex++] = v1;
 	}
 
 	public function flush()
 	{
-		if (_index == 0) return;
+		if (_vertexIndex == 0) return;
 		_renderCalls++;
 
 		_material.use();
@@ -152,12 +150,14 @@ class SpriteBatch
 
 		_indexBuffer = Renderer.updateIndexBuffer(_indices, STATIC_DRAW, _indexBuffer);
 
-		Renderer.draw(_indexBuffer, Std.int(_index / 8));
+		Renderer.draw(_indexBuffer, Std.int(_indexIndex / 3));
 
-		_index = 0;
+		_vertexIndex = _indexIndex = 0;
 	}
 
-	private var _index:Int = 0;
+	private var _indexIndex:Int = 0;
+	private var _vertexIndex:Int = 0;
+
 	private var _vertices:FloatArray;
 	private var _indices:IntArray;
 	private var _vertexBuffer:VertexBuffer;

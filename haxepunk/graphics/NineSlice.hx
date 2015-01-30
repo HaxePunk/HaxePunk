@@ -15,23 +15,15 @@ class NineSlice extends Image
 
 		_clipRect = (clipRect == null ? new Rectangle(0, 0, texture.width / 3, texture.height / 3) : clipRect);
 
-		if (Std.is(texture, TextureAtlas))
-		{
-			var atlas = cast(texture, TextureAtlas);
-			_topLeft      = atlas.addTile(_clipRect.x, _clipRect.y, _clipRect.width, _clipRect.height);
-			_topCenter    = atlas.addTile(_clipRect.right, _clipRect.y, _clipRect.width, _clipRect.height);
-			_topRight     = atlas.addTile(_clipRect.x + _clipRect.width * 2, _clipRect.y, _clipRect.width, _clipRect.height);
-			_centerLeft   = atlas.addTile(_clipRect.x, _clipRect.bottom, _clipRect.width, _clipRect.height);
-			_centerCenter = atlas.addTile(_clipRect.x + _clipRect.width, _clipRect.y + _clipRect.height, _clipRect.width, _clipRect.height);
-			_centerRight  = atlas.addTile(_clipRect.x + _clipRect.width * 2, _clipRect.bottom, _clipRect.width, _clipRect.height);
-			_bottomLeft   = atlas.addTile(_clipRect.x, _clipRect.y + _clipRect.height * 2, _clipRect.width, _clipRect.height);
-			_bottomCenter = atlas.addTile(_clipRect.right, _clipRect.y + _clipRect.height * 2, _clipRect.width, _clipRect.height);
-			_bottomRight  = atlas.addTile(_clipRect.x + _clipRect.width * 2, _clipRect.y + _clipRect.height * 2, _clipRect.width, _clipRect.height);
-		}
-		else
-		{
-			throw "Must pass a TextureAtlas instance as first texture in material";
-		}
+		_topLeft      = _clipRect;
+		_topCenter    = new Rectangle(_clipRect.right, _clipRect.y, _clipRect.width, _clipRect.height);
+		_topRight     = new Rectangle(_clipRect.x + _clipRect.width * 2, _clipRect.y, _clipRect.width, _clipRect.height);
+		_centerLeft   = new Rectangle(_clipRect.x, _clipRect.bottom, _clipRect.width, _clipRect.height);
+		_centerCenter = new Rectangle(_clipRect.x + _clipRect.width, _clipRect.y + _clipRect.height, _clipRect.width, _clipRect.height);
+		_centerRight  = new Rectangle(_clipRect.x + _clipRect.width * 2, _clipRect.bottom, _clipRect.width, _clipRect.height);
+		_bottomLeft   = new Rectangle(_clipRect.x, _clipRect.y + _clipRect.height * 2, _clipRect.width, _clipRect.height);
+		_bottomCenter = new Rectangle(_clipRect.right, _clipRect.y + _clipRect.height * 2, _clipRect.width, _clipRect.height);
+		_bottomRight  = new Rectangle(_clipRect.x + _clipRect.width * 2, _clipRect.y + _clipRect.height * 2, _clipRect.width, _clipRect.height);
 	}
 
 	public function setSize(width:Float, height:Float)
@@ -40,70 +32,56 @@ class NineSlice extends Image
 		this.height = height;
 	}
 
-	override public function draw(camera:Camera, offset:Vector3):Void
+	override public function draw(offset:Vector3):Void
 	{
-		var xScale = (width - _clipRect.width * 2) / _clipRect.width;
-		var yScale = (height - _clipRect.height * 2) / _clipRect.height;
+		var stretchWidth = width - _clipRect.width * 2;
+		var stretchHeight = height - _clipRect.height * 2;
 
-		origin *= scale;
-		origin += offset;
+		var x1 = offset.x + _clipRect.width;
+		var x2 = offset.x + width - _clipRect.width;
 
-		_matrix.identity();
-		_matrix.scale(_clipRect.width, _clipRect.height, 1);
-		_matrix.translateVector3(origin);
-		_matrix.scaleVector3(scale);
+		var y = offset.y;
+		HXP.spriteBatch.draw(material, offset.x, y, _topLeft.width, _topLeft.height,
+			_topLeft.x, _topLeft.y, _topLeft.width, _topLeft.height, false, false,
+			origin.x, origin.y, scale.x, scale.y);
+		HXP.spriteBatch.draw(material, x1, y, stretchWidth, _topCenter.height,
+			_topCenter.x, _topCenter.y, _topCenter.width, _topCenter.height, false, false,
+			origin.x, origin.y, scale.x, scale.y);
+		HXP.spriteBatch.draw(material, x2, y, _topRight.width, _topRight.height,
+			_topRight.x, _topRight.y, _topRight.width, _topRight.height, false, false,
+			origin.x, origin.y, scale.x, scale.y);
 
-		HXP.spriteBatch.draw(material, _matrix, _topLeft);
-		_matrix._41 = origin.x + width - _clipRect.width;
-		HXP.spriteBatch.draw(material, _matrix, _topRight);
+		y = offset.y + _clipRect.height;
+		HXP.spriteBatch.draw(material, offset.x, y, _centerLeft.width, stretchHeight,
+			_centerLeft.x, _centerLeft.y, _centerLeft.width, _centerLeft.height, false, false,
+			origin.x, origin.y, scale.x, scale.y);
+		HXP.spriteBatch.draw(material, x1, y, stretchWidth, stretchHeight,
+			_centerCenter.x, _centerCenter.y, _centerCenter.width, _centerCenter.height, false, false,
+			origin.x, origin.y, scale.x, scale.y);
+		HXP.spriteBatch.draw(material, x2, y, _centerRight.width, stretchHeight,
+			_centerRight.x, _centerRight.y, _centerRight.width, _centerRight.height, false, false,
+			origin.x, origin.y, scale.x, scale.y);
 
-		_matrix._41 = origin.x;
-		_matrix._42 = origin.y + height - _clipRect.height;
-		HXP.spriteBatch.draw(material, _matrix, _bottomLeft);
-		_matrix._41 = origin.x + width - _clipRect.width;
-		HXP.spriteBatch.draw(material, _matrix, _bottomRight);
-
-		_matrix._11 *= xScale;
-		_matrix._21 *= xScale;
-		_matrix._31 *= xScale;
-
-		_matrix._41 = origin.x + _clipRect.width;
-		_matrix._42 = origin.y;
-		HXP.spriteBatch.draw(material, _matrix, _topCenter);
-		_matrix._42 = origin.y + height - _clipRect.height;
-		HXP.spriteBatch.draw(material, _matrix, _bottomCenter);
-
-		_matrix._12 *= yScale;
-		_matrix._22 *= yScale;
-		_matrix._32 *= yScale;
-
-		_matrix._42 = origin.y + _clipRect.height;
-		HXP.spriteBatch.draw(material, _matrix, _centerCenter);
-
-		// reset width scale (maybe save the values and reset?)
-		_matrix._11 /= xScale;
-		_matrix._21 /= xScale;
-		_matrix._31 /= xScale;
-
-		_matrix._41 = origin.x;
-		_matrix._42 = origin.y + _clipRect.height;
-		HXP.spriteBatch.draw(material, _matrix, _centerLeft);
-		_matrix._41 = origin.x + width - _clipRect.width;
-		HXP.spriteBatch.draw(material, _matrix, _centerRight);
-
-		origin -= offset;
-		origin /= scale;
+		y = offset.y + height - _clipRect.height;
+		HXP.spriteBatch.draw(material, offset.x, y, _bottomLeft.width, _bottomLeft.height,
+			_bottomLeft.x, _bottomLeft.y, _bottomLeft.width, _bottomLeft.height, false, false,
+			origin.x, origin.y, scale.x, scale.y);
+		HXP.spriteBatch.draw(material, x1, y, stretchWidth, _bottomCenter.height,
+			_bottomCenter.x, _bottomCenter.y, _bottomCenter.width, _bottomCenter.height, false, false,
+			origin.x, origin.y, scale.x, scale.y);
+		HXP.spriteBatch.draw(material, x2, y, _bottomRight.width, _bottomRight.height,
+			_bottomRight.x, _bottomRight.y, _bottomRight.width, _bottomRight.height, false, false,
+			origin.x, origin.y, scale.x, scale.y);
 	}
 
-	private var _topLeft:Int;
-	private var _topCenter:Int;
-	private var _topRight:Int;
-	private var _centerLeft:Int;
-	private var _centerCenter:Int;
-	private var _centerRight:Int;
-	private var _bottomLeft:Int;
-	private var _bottomCenter:Int;
-	private var _bottomRight:Int;
-	private var _clipRect:Rectangle;
+	private var _topLeft:Rectangle;
+	private var _topCenter:Rectangle;
+	private var _topRight:Rectangle;
+	private var _centerLeft:Rectangle;
+	private var _centerCenter:Rectangle;
+	private var _centerRight:Rectangle;
+	private var _bottomLeft:Rectangle;
+	private var _bottomCenter:Rectangle;
+	private var _bottomRight:Rectangle;
 
 }
