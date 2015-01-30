@@ -19,7 +19,7 @@ class Text extends Graphic
 	public var lineHeight:Float;
 	public var tabWidth:Int = 4;
 
-	public function new(text:String, size:Int=16)
+	public function new(text:String, size:Int=14)
 	{
 		super();
 		_vertices = new FloatArray();
@@ -148,7 +148,7 @@ class Text extends Graphic
 		return text = value;
 	}
 
-	override public function draw(camera:Camera, offset:Vector3):Void
+	override public function draw(offset:Vector3):Void
 	{
 		#if !flash
 		if (_numTriangles <= 0 || _indexBuffer == null || _vertexBuffer == null) return;
@@ -156,7 +156,7 @@ class Text extends Graphic
 		// TODO: batch this process
 
 		// finish drawing whatever came before the text area
-		HXP.spriteBatch.flush(camera);
+		HXP.spriteBatch.flush();
 
 		material.use();
 
@@ -166,7 +166,7 @@ class Text extends Graphic
 		_matrix.identity();
 		_matrix.translateVector3(origin);
 		if (angle != 0) _matrix.rotateZ(angle);
-		_matrix.multiply(camera.transform);
+		// _matrix.multiply(camera.transform);
 
 		origin -= offset;
 		origin /= scale;

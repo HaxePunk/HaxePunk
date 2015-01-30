@@ -20,7 +20,7 @@ class Scene
 		_entityNames = new StringMap<Entity>();
 		_frameList = new Array<Float>();
 
-		HXP.spriteBatch = _spriteBatch = new SpriteBatch();
+		HXP.spriteBatch = _spriteBatch = new SpriteBatch(this);
 	}
 
 	public function add(e:Entity)
@@ -143,10 +143,10 @@ class Scene
 		Renderer.clear(camera.clearColor);
 		for (i in 0..._entities.length)
 		{
-			_entities[i].draw(camera);
+			_entities[i].draw();
 		}
-		_spriteBatch.flush(camera);
-		if (Console.enabled) Console.instance.draw(camera);
+		_spriteBatch.flush();
+		if (Console.enabled) Console.instance.draw();
 		Renderer.present();
 
 		var t = haxe.Timer.stamp() * 1000;

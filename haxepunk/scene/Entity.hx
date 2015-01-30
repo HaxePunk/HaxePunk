@@ -90,11 +90,11 @@ class Entity extends SceneNode
 		return _graphic;
 	}
 
-	public function draw(camera:Camera)
+	public function draw()
 	{
 		if (_graphic != null)
 		{
-			_graphic.draw(camera, position);
+			_graphic.draw(position);
 		}
 	}
 

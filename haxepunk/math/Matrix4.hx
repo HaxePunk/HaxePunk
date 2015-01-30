@@ -188,20 +188,20 @@ class Matrix4 implements ArrayAccess<MatrixValue>
 		var sin = Math.sin(angle);
 
 		var tmp = _12;
-		_12 = tmp * cos + _13 * -sin;
-		_13 = tmp * sin + _13 * cos;
+		_12 = tmp * cos + _13 * sin;
+		_13 = tmp * -sin + _13 * cos;
 
 		tmp = _22;
-		_22 = tmp * cos + _23 * -sin;
-		_23 = tmp * sin + _23 * cos;
+		_22 = tmp * cos + _23 * sin;
+		_23 = tmp * -sin + _23 * cos;
 
 		tmp = _32;
-		_32 = tmp * cos + _33 * -sin;
-		_33 = tmp * sin + _33 * cos;
+		_32 = tmp * cos + _33 * sin;
+		_33 = tmp * -sin + _33 * cos;
 
 		tmp = _42;
-		_42 = tmp * cos + _43 * -sin;
-		_43 = tmp * sin + _43 * cos;
+		_42 = tmp * cos + _43 * sin;
+		_43 = tmp * -sin + _43 * cos;
 
 		_isDirty = true;
 	}
@@ -236,20 +236,26 @@ class Matrix4 implements ArrayAccess<MatrixValue>
 		var sin = Math.sin(angle);
 
 		var tmp = _11;
-		_11 = tmp * cos + _12 * -sin;
-		_12 = tmp * sin + _12 * cos;
+		_11 = tmp * cos + _12 * sin;
+		_12 = _12 * cos - tmp * sin;
 
 		tmp = _21;
-		_21 = tmp * cos + _22 * -sin;
-		_22 = tmp * sin + _22 * cos;
+		_21 = tmp * cos + _22 * sin;
+		_22 = _22 * cos - tmp * sin;
 
 		tmp = _31;
-		_31 = tmp * cos + _32 * -sin;
-		_32 = tmp * sin + _32 * cos;
+		_31 = tmp * cos + _32 * sin;
+		_32 = _32 * cos - tmp * sin;
 
 		tmp = _41;
-		_41 = tmp * cos + _42 * -sin;
-		_42 = tmp * sin + _42 * cos;
+		_41 = _11 + (_31 - _21);
+		_42 = _12 + (_32 - _22);
+
+		// var m = new Matrix4();
+		// m._11 = m._22 = Math.cos(angle);
+		// m._21 = Math.sin(angle);
+		// m._12 = -m._21;
+		// multiply(m);
 
 		_isDirty = true;
 	}

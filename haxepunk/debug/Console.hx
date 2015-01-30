@@ -29,11 +29,11 @@ class Console
 		text.text = lines.join("\n") + "\n> " + input;
 	}
 
-	public function draw(camera:Camera):Void
+	public function draw():Void
 	{
 		origin.y = HXP.window.height - text.height;
 		// TODO: only use projection and not worldview matrix
-		text.draw(camera, origin);
+		text.draw(origin);
 	}
 
 	@:allow(haxepunk.scene.Scene)

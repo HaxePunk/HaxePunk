@@ -14,7 +14,7 @@ abstract ImageSource(Material) to Material from Material
 	static inline private function fromAsset(asset:String):ImageSource
 	{
 		var material = new Material();
-		material.firstPass.addTexture(TextureAtlas.fromAsset(asset));
+		material.firstPass.addTexture(Texture.fromAsset(asset));
 		return new ImageSource(material);
 	}
 }
@@ -65,26 +65,24 @@ class Image extends Graphic
 
 		if (clipRect == null)
 		{
-			width = texture.width;
-			height = texture.height;
+			_clipRect = new Rectangle(0, 0, texture.width, texture.height);
 		}
 		else
 		{
-			var atlas = cast(texture, TextureAtlas);
-			_tileIndex = atlas.addTile(clipRect.x, clipRect.y, clipRect.width, clipRect.height);
-			width = clipRect.width;
-			height = clipRect.height;
+			_clipRect = clipRect;
 		}
+		width = _clipRect.width;
+		height = _clipRect.height;
 #end
 	}
 
-	override public function draw(camera:Camera, offset:Vector3):Void
+	override public function draw(offset:Vector3):Void
 	{
-		if (material == null) return;
-		calculateMatrixWithOffset(offset);
-		HXP.spriteBatch.draw(material, _matrix, _tileIndex);
+		HXP.spriteBatch.draw(material, offset.x, offset.y, width, height,
+			_clipRect.x, _clipRect.y, _clipRect.width, _clipRect.height,
+			origin.x, origin.y, scale.x, scale.y, angle);
 	}
 
-	private var _tileIndex = -1;
+	private var _clipRect:Rectangle;
 
 }

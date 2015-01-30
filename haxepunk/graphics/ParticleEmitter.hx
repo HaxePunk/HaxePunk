@@ -45,7 +45,7 @@ class ParticleEmitter extends Graphic
 		{
 			// p.position.x = Math.random() * 10 - 5;
 			// p.position.y = Math.random() * 10 - 5;
-			p.angle = 12 * Math.PI / 180;
+			p.angle = 12 * (Math.PI / 180);
 		}
 	}
 
@@ -54,11 +54,7 @@ class ParticleEmitter extends Graphic
 		if (material == null) return;
 		for (p in particles)
 		{
-			offset += p.position;
-			angle = p.angle;
-			calculateMatrixWithOffset(offset);
-			offset -= p.position;
-			HXP.spriteBatch.draw(material, _matrix);
+			HXP.spriteBatch.draw(material, offset.x, offset.y, width, height);
 		}
 	}
 

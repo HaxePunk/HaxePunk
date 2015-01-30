@@ -62,10 +62,20 @@ class Matrix4Test extends haxe.unit.TestCase
 	public function testRotateZ()
 	{
 		var matrix = new Matrix4();
-		matrix.rotateZ(Math.PI);
+		matrix.rotateZ(270 * Math.PI / 180);
 
+		assertTrue(matrix._11 < 0.0000000001);
+		assertEquals(1.0, matrix._12);
+		assertTrue(matrix._22 < 0.0000000001);
+		assertEquals(-1.0, matrix._21);
+
+		matrix.identity();
+		matrix.rotateZ(Math.PI);
+		assertTrue(matrix._12 < 0.0000000001);
 		assertEquals(-1.0, matrix._11);
-		assertEquals(0.0, matrix._31);
+		assertTrue(matrix._21 < 0.0000000001);
+		assertEquals(-1.0, matrix._22);
+		assertEquals(1.0, matrix._33);
 	}
 
 	public function testArrayAccess()

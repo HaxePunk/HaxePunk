@@ -1,229 +1,152 @@
 package haxepunk.graphics;
 
 import haxepunk.renderers.Renderer;
-import haxepunk.scene.Camera;
-import haxepunk.math.*;
-
-private class Batch
-{
-	public var material:Material;
-
-	public function new(material:Material)
-	{
-		_indices = new IntArray();
-		_vertices = new FloatArray();
-		_uvs = new FloatArray();
-
-		_uvBuffer = Renderer.createBuffer(2);
-		_vertexBuffer = Renderer.createBuffer(3);
-		_position = new Vector3(); // temporary vector for calculating vertex positions
-
-		reset(material);
-	}
-
-	public inline function reset(material:Material)
-	{
-		_spriteIndex = 0;
-		if (this.material != material)
-		{
-			var pass = material.firstPass;
-			var texture = pass.getTexture(0);
-			if (Std.is(texture, TextureAtlas))
-			{
-				_atlas = cast texture;
-			}
-			else
-			{
-				updateTexCoord(0);
-			}
-
-			this.material = material;
-
-			_modelViewMatrixUniform = pass.shader.uniform("uMatrix");
-			_vertexAttribute = pass.shader.attribute("aVertexPosition");
-			_uvAttribute = pass.shader.attribute("aTexCoord");
-		}
-	}
-
-	public function updateTexCoord(index:Int)
-	{
-		if (_atlas == null || index == -1)
-		{
-			index = _spriteIndex * 8;
-			_uvs[index++] = 0;
-			_uvs[index++] = 0;
-			_uvs[index++] = 1;
-			_uvs[index++] = 0;
-			_uvs[index++] = 0;
-			_uvs[index++] = 1;
-			_uvs[index++] = 1;
-			_uvs[index++] = 1;
-		}
-		else
-		{
-			_atlas.copyRegionInto(index, _uvs, _spriteIndex);
-		}
-
-		index = _spriteIndex * 6;
-		_indices[index++] = _spriteIndex * 4;
-		_indices[index++] = _spriteIndex * 4 + 1;
-		_indices[index++] = _spriteIndex * 4 + 2;
-
-		_indices[index++] = _spriteIndex * 4 + 1;
-		_indices[index++] = _spriteIndex * 4 + 2;
-		_indices[index++] = _spriteIndex * 4 + 3;
-
-		_updateVBOs = true;
-	}
-
-	public function updateVertex(matrix:Matrix4)
-	{
-		var index = _spriteIndex * 3 * 4;
-
-		_position.x = _position.y = _position.z = 0;
-		_position *= matrix;
-		_vertices[index++] = _position.x;
-		_vertices[index++] = _position.y;
-		_vertices[index++] = _position.z;
-
-		_position.x = 1;
-		_position.z = _position.y = 0;
-		_position *= matrix;
-		_vertices[index++] = _position.x;
-		_vertices[index++] = _position.y;
-		_vertices[index++] = _position.z;
-
-		_position.y = 1;
-		_position.z = _position.x = 0;
-		_position *= matrix;
-		_vertices[index++] = _position.x;
-		_vertices[index++] = _position.y;
-		_vertices[index++] = _position.z;
-
-		_position.x = _position.y = 1;
-		_position.z = 0;
-		_position *= matrix;
-		_vertices[index++] = _position.x;
-		_vertices[index++] = _position.y;
-		_vertices[index++] = _position.z;
-
-		_spriteIndex += 1;
-	}
-
-	public function draw(camera:Camera)
-	{
-		if (_indices.length == 0 || _uvs.length == 0) return;
-
-		material.use();
-
-		Renderer.setMatrix(_modelViewMatrixUniform, camera.transform);
-
-		if (_updateVBOs)
-		{
-			if (_spriteIndex > _lastSpriteIndex)
-			{
-				_indexBuffer = Renderer.updateIndexBuffer(_indices, STATIC_DRAW, _indexBuffer);
-			}
-
-			Renderer.bindBuffer(_uvBuffer);
-			Renderer.setAttribute(_uvAttribute, 0, 2);
-			Renderer.updateBuffer(_uvs, STATIC_DRAW);
-			#if flash
-			Renderer.setAttribute(_uvAttribute, 0, 2);
-			#end
-
-			_updateVBOs = false;
-		}
-		else
-		{
-			Renderer.bindBuffer(_uvBuffer);
-			Renderer.setAttribute(_uvAttribute, 0, 2);
-		}
-
-		Renderer.bindBuffer(_vertexBuffer);
-		Renderer.setAttribute(_vertexAttribute, 0, 3);
-		Renderer.updateBuffer(_vertices, DYNAMIC_DRAW);
-		#if flash
-		Renderer.setAttribute(_vertexAttribute, 0, 3);
-		#end
-
-		Renderer.draw(_indexBuffer, _spriteIndex * 2);
-		_lastSpriteIndex = _spriteIndex;
-	}
-
-	private var _indices:IntArray;
-	private var _vertices:FloatArray;
-	private var _uvs:FloatArray;
-	private var _indexBuffer:IndexBuffer;
-	private var _vertexBuffer:VertexBuffer;
-	private var _uvBuffer:VertexBuffer;
-	private var _modelViewMatrixUniform:Location;
-
-	private var _vertexAttribute:Int;
-	private var _uvAttribute:Int;
-	private var _updateVBOs:Bool = true;
-	private var _spriteIndex:Int = 0;
-	private var _lastSpriteIndex:Int = 0;
-	private var _atlas:TextureAtlas;
-
-	private var _position:Vector3;
-
-}
+import haxepunk.scene.Scene;
 
 class SpriteBatch
 {
 
-	public var drawCount(default, null) = 0;
-
-	public function new()
+	public function new(scene:Scene)
 	{
-		_drawList = new Array<Batch>();
+		_vertices = new FloatArray();
+		_indices = new IntArray();
+
+		// TODO: pull scene from HXP?
+		_scene = scene;
 	}
 
-	private function nextBatch(material:Material):Batch
+	public function draw(material:Material, x:Float, y:Float, width:Float, height:Float,
+		texX:Float, texY:Float, texWidth:Float, texHeight:Float,
+		originX:Float=0, originY:Float=0, scaleX:Float=1, scaleY:Float=1, angle:Float=0)
 	{
-		var batch:Batch;
-		if (drawCount >= _drawList.length)
+		if (material != _material)
 		{
-			batch = new Batch(material);
-			_drawList.push(batch);
+			flush();
+			_material = material;
+			var tex = material.firstPass.getTexture(0);
+			_invTexWidth = 1 / tex.width;
+			_invTexHeight = 1 / tex.height;
 		}
-		else
+
+		var worldOriginX = x + originX;
+		var worldOriginY = y + originY;
+
+		var fx1 = -originX;
+		var fy1 = -originY;
+		var fx2 = width - originX;
+		var fy2 = height - originY;
+
+		if (scaleX != 1 || scaleY != 1)
 		{
-			batch = _drawList[drawCount++];
-			batch.reset(material);
+			fx1 *= scaleX;
+			fy1 *= scaleY;
+			fx2 *= scaleX;
+			fy2 *= scaleY;
 		}
-		return batch;
+
+		var x1 = fx1, y1 = fy1,
+			x2 = fx1, y2 = fy2,
+			x3 = fx2, y3 = fy2,
+			x4 = fx2, y4 = fy1;
+
+		if (angle != 0)
+		{
+			var cos = Math.cos(angle);
+			var sin = Math.sin(angle);
+
+			var tmp = x1;
+			x1 = cos * tmp - sin * y1;
+			y1 = sin * tmp + cos * y1;
+
+			tmp = x2;
+			x2 = cos * tmp - sin * y2;
+			y2 = sin * tmp + cos * y2;
+
+			tmp = x3;
+			x3 = cos * tmp - sin * y3;
+			y3 = sin * tmp + cos * y3;
+
+			x4 = x1 + (x3 - x2);
+			y4 = y3 - (y2 - y1);
+		}
+
+		x1 += worldOriginX; y1 += worldOriginY;
+		x2 += worldOriginX; y2 += worldOriginY;
+		x3 += worldOriginX; y3 += worldOriginY;
+		x4 += worldOriginX; y4 += worldOriginY;
+
+		var u1 = texX * _invTexWidth;
+		var v1 = (texY + texHeight) * _invTexHeight;
+		var u2 = (texX + texWidth) * _invTexWidth;
+		var v2 = texY * _invTexHeight;
+
+		var index = Std.int(_index / 20);
+
+		_vertices[_index++] = x1;
+		_vertices[_index++] = y1;
+		_vertices[_index++] = u1;
+		_vertices[_index++] = v1;
+
+		_vertices[_index++] = x2;
+		_vertices[_index++] = y2;
+		_vertices[_index++] = u1;
+		_vertices[_index++] = v2;
+
+		_vertices[_index++] = x3;
+		_vertices[_index++] = y3;
+		_vertices[_index++] = u2;
+		_vertices[_index++] = v2;
+
+		_vertices[_index++] = x4;
+		_vertices[_index++] = y4;
+		_vertices[_index++] = u2;
+		_vertices[_index++] = v1;
+
+		var i = index * 4;
+		_indices[index++] = i;
+		_indices[index++] = i+1;
+		_indices[index++] = i+2;
+
+		_indices[index++] = i;
+		_indices[index++] = i+2;
+		_indices[index++] = i+3;
 	}
 
-	public function draw(material:Material, matrix:Matrix4, id:Int = -1)
+	public function flush()
 	{
-		var batch:Batch;
-		if (drawCount > 0)
+		if (_index == 0) return;
+		_renderCalls++;
+
+		_material.use();
+
+		var pass = _material.firstPass;
+		Renderer.setMatrix(pass.shader.uniform("uMatrix"), _scene.camera.transform);
+
+		if (_vertexBuffer == null)
 		{
-			batch = _drawList[drawCount - 1];
-			if (batch.material != material)
-			{
-				batch = nextBatch(material);
-			}
+			_vertexBuffer = Renderer.createBuffer(4);
 		}
-		else
-		{
-			batch = nextBatch(material);
-		}
-		batch.updateTexCoord(id);
-		batch.updateVertex(matrix);
+		Renderer.bindBuffer(_vertexBuffer);
+		Renderer.setAttribute(pass.shader.attribute("aVertexPosition"), 0, 2);
+		Renderer.setAttribute(pass.shader.attribute("aTexCoord"), 2, 2);
+		Renderer.updateBuffer(_vertices, STATIC_DRAW);
+
+		_indexBuffer = Renderer.updateIndexBuffer(_indices, STATIC_DRAW, _indexBuffer);
+
+		Renderer.draw(_indexBuffer, Std.int(_index / 8));
+
+		_index = 0;
 	}
 
-	public function flush(camera:Camera)
-	{
-		for (i in 0...drawCount)
-		{
-			_drawList[i].draw(camera);
-		}
-		drawCount = 0;
-	}
-
-	private var _drawList:Array<Batch>;
+	private var _index:Int = 0;
+	private var _vertices:FloatArray;
+	private var _indices:IntArray;
+	private var _vertexBuffer:VertexBuffer;
+	private var _indexBuffer:IndexBuffer;
+	private var _renderCalls:Float = 0;
+	private var _invTexWidth:Float = 0;
+	private var _invTexHeight:Float = 0;
+	private var _material:Material;
+	private var _scene:Scene;
 
 }

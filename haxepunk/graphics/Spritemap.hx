@@ -109,17 +109,12 @@ class Spritemap extends Image
 
 		super(source);
 
+		columns = Math.ceil(this.width / width);
+		rows = Math.ceil(this.height / height);
+
 		this.width = width;
 		this.height = height;
 
-		var texture = material.firstPass.getTexture(0);
-		if (Std.is(texture, TextureAtlas))
-		{
-			_frames = cast(texture, TextureAtlas).generateTiles(width, height);
-		}
-
-		columns = Math.ceil(texture.sourceWidth / width);
-		rows = Math.ceil(texture.sourceHeight / height);
 		frameCount = columns * rows;
 	}
 
@@ -349,15 +344,22 @@ class Spritemap extends Image
 		}
 	}
 
-	override public function draw(camera:Camera, offset:Vector3):Void
+	override public function draw(offset:Vector3):Void
 	{
-		if (_frames == null) return;
-		_tileIndex = _tileIndex == _frame ? -1 : _frames[_frame];
-		super.draw(camera, offset);
-		_tileIndex = _frame;
+		if (_lastFrame != _frame)
+		{
+			_clipRect.x = _frame % columns * width;
+			_clipRect.y = Std.int(_frame / columns) * height;
+			_clipRect.width = width;
+			_clipRect.height = height;
+			trace(_clipRect.x, _clipRect.y);
+			_lastFrame = _frame;
+		}
+		super.draw(offset);
 	}
 
 	private var _frame:Int = 0;
+	private var _lastFrame:Int = 0;
 	private var _frames:Array<Int>;
 	private var _index:Int = 0;
 	private var _time:Float = 0;

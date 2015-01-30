@@ -125,13 +125,6 @@ class Texture
 		return texture;
 	}
 
-	public function toTextureAtlas():TextureAtlas
-	{
-		var atlas = new TextureAtlas(_id);
-		atlas._texture = _texture;
-		return atlas;
-	}
-
 	/**
 	 * Creates a new Texture
 	 * @param path The path to the texture asset
