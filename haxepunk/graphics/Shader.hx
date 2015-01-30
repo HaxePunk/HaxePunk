@@ -50,7 +50,7 @@ class Shader
 	 * Return the uniform location in this shader
 	 * @param a  The uniform name to find
 	 */
-	public function uniform(u:String):Location
+	public function uniform(u:String, slot:Int=0):Location
 	{
 		use();
 		var uniform:Location;

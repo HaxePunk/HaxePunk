@@ -32,6 +32,9 @@ class Pass
 
 	private function set_shader(value:Shader):Shader
 	{
+		// must grab the matrix uniform first to set it as 0
+		value.uniform("uMatrix");
+
 		_ambientLocation = value.uniform("uAmbientColor");
 		_diffuseLocation = value.uniform("uDiffuseColor");
 		_specularLocation = value.uniform("uSpecularColor");
