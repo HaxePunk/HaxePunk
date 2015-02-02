@@ -16,4 +16,9 @@ class HXP
 
 	@:allow(haxepunk.scene.Scene)
 	public static var frameRate(default, null):Float = 0;
+
+	@:allow(haxepunk.Engine)
+	public static var updateTime(default, null):Float = 0;
+	@:allow(haxepunk.Engine)
+	public static var renderTime(default, null):Float = 0;
 }

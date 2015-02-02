@@ -59,7 +59,9 @@ class Engine extends Application
 
 	override public function render(context:RenderContext):Void
 	{
+		var time = haxe.Timer.stamp();
 		scene.draw();
+		HXP.renderTime = time - haxe.Timer.stamp();
 
 		// must reset program and texture at end of each frame...
 		Renderer.bindProgram();
@@ -68,10 +70,12 @@ class Engine extends Application
 
 	override public function update(deltaTime:Int):Void
 	{
+		var time = haxe.Timer.stamp();
 		scene.update(deltaTime / 1000.0);
 
 		// Update the input system
 		Input.update();
+		HXP.updateTime = time - haxe.Timer.stamp();
 	}
 
 	/**
