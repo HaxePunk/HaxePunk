@@ -1,0 +1,4 @@
+class MoveTool implements Tool
+{
+
+}

@@ -48,4 +48,8 @@ class Sphere implements Mask
 		return (dx * dx + dy * dy + dz * dz) < Math.pow(radius + other.radius, 2);
 	}
 
+	private function debugDraw():Void
+	{
+	}
+
 }

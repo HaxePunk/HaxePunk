@@ -1,4 +1,4 @@
-package haxepunk.graphics.importer;
+package haxepunk.graphics3d.importer;
 
 import haxe.ds.StringMap;
 import lime.Assets;

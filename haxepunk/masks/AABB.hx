@@ -170,6 +170,11 @@ class AABB implements Mask
 		return result;
 	}
 
+	private function debugDraw():Void
+	{
+		haxepunk.graphics.Draw.rect(left, top, width, height, HXP.maskColor);
+	}
+
 	private var _center:Vector3;
 
 }

@@ -47,6 +47,15 @@ class Scene
 		add(e);
 	}
 
+	public var count(get, never):Int;
+	private inline function get_count():Int { return _entities.length; }
+
+	public var entities(get, never):Iterator<Entity>;
+	private inline function get_entities():Iterator<Entity>
+	{
+		return _entities.iterator();
+	}
+
 	/**
 	 * A list of Entity objects of the type.
 	 * @param	type 		The type to check.
@@ -146,7 +155,7 @@ class Scene
 		{
 			_entities[i].draw();
 		}
-		if (Console.enabled) Console.instance.draw();
+		if (Console.enabled) Console.instance.draw(this);
 		_spriteBatch.flush();
 		Draw.flush();
 		Renderer.present();
@@ -166,7 +175,7 @@ class Scene
 			e.update(elapsed);
 			if (e._graphic != null) e._graphic.update(elapsed);
 		}
-		if (Console.enabled) Console.instance.update(elapsed);
+		if (Console.enabled) Console.instance.update(this, elapsed);
 		camera.update();
 	}
 

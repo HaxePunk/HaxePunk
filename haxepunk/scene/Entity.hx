@@ -9,7 +9,8 @@ import haxepunk.math.Vector3;
 class Entity extends SceneNode
 {
 
-	public var hitbox:AABB;
+	public var hitbox(default, null):AABB;
+	public var mask(default, null):Mask;
 	public var collidable:Bool = true;
 
 	public var layer(get, set):Float;
@@ -65,7 +66,7 @@ class Entity extends SceneNode
 	public function new(x:Float = 0, y:Float = 0, z:Float = 0)
 	{
 		super(x, y, z);
-		_mask = hitbox = new AABB();
+		mask = hitbox = new AABB();
 	}
 
 	public function toString():String
@@ -140,7 +141,7 @@ class Entity extends SceneNode
 				e.hitbox.min -= e.position;
 				e.hitbox.max -= e.position;
 
-				if (result && (_mask == null || e._mask != null && _mask.intersects(e._mask)))
+				if (result && (mask == null || e.mask != null && mask.intersects(e.mask)))
 				{
 					hitbox.min -= offset;
 					hitbox.max -= offset;
@@ -162,7 +163,6 @@ class Entity extends SceneNode
 	@:allow(haxepunk.scene.Scene)
 	private var _graphic:Graphic;
 
-	private var _mask:Mask;
 	private var _type:String = "";
 	private var _name:String = "";
 

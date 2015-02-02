@@ -9,4 +9,7 @@ interface Mask
 	public function collide(other:Mask):Vector3;
 	public function intersectsPoint(vec:Vector3):Bool;
 
+	@:allow(haxepunk.debug.Console)
+	private function debugDraw():Void;
+
 }

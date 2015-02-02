@@ -42,6 +42,7 @@ class Text extends Graphic
 		_texture.loadFromImage(new lime.graphics.Image(image));
 		var vert = Assets.getText("shaders/default.vert");
 		var frag = Assets.getText("shaders/text.frag");
+		#end
 
 		var shader = new Shader(vert, frag);
 		material = Material.fromAsset("materials/text.material");
@@ -55,7 +56,6 @@ class Text extends Graphic
 		_modelViewMatrixUniform = shader.uniform("uMatrix");
 		_colorUniform = shader.uniform("uColor");
 		_vertexBuffer = Renderer.createBuffer(4);
-		#end
 
 		this.text = text;
 	}

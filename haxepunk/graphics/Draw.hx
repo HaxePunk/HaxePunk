@@ -6,13 +6,13 @@ import lime.graphics.opengl.*;
 class Draw
 {
 
-	public static function pixel(x:Float, y:Float, color:Color, size:Float=1)
+	public static function pixel(x:Float, y:Float, color:Color, size:Float=1):Void
 	{
 		var hs = size / 2;
-		fillRect(x - hs, y - hs, hs, hs, color);
+		fillRect(x - hs, y - hs, size, size, color);
 	}
 
-	public static function rect(x:Float, y:Float, width:Float, height:Float, color:Color, thickness:Float=1)
+	public static function rect(x:Float, y:Float, width:Float, height:Float, color:Color, thickness:Float=1):Void
 	{
 		var ht = thickness / 2,
 			x2 = x + width,
@@ -24,7 +24,7 @@ class Draw
 		line(x + ht, y2, x + ht, y, color, thickness);
 	}
 
-	public static function fillRect(x:Float, y:Float, width:Float, height:Float, color:Color)
+	public static function fillRect(x:Float, y:Float, width:Float, height:Float, color:Color):Void
 	{
 		var r = color.r,
 			g = color.g,
@@ -57,13 +57,13 @@ class Draw
 		addRectIndices();
 	}
 
-	public static function line(x1:Float, y1:Float, x2:Float, y2:Float, color:Color, thickness:Float=1)
+	public static function line(x1:Float, y1:Float, x2:Float, y2:Float, color:Color, thickness:Float=1):Void
 	{
 		// create perpendicular delta vector
 		var dx = -(x2 - x1);
 		var dy = y2 - y1;
 		var len = Math.sqrt(dx * dx + dy * dy);
-		if (len == 0) throw "Line length is zero!";
+		if (len == 0) return;
 		// normalize line and set delta to half thickness
 		var ht = thickness / 2;
 		var tx = dx;

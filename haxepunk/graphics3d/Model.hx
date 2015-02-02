@@ -1,4 +1,4 @@
-package haxepunk.graphics;
+package haxepunk.graphics3d;
 
 import haxepunk.math.*;
 import haxepunk.scene.Camera;

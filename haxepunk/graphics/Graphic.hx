@@ -20,7 +20,7 @@ class Graphic
 	public var scale:Vector3;
 
 	/**
-	 * Origin of the image.
+	 * Origin of the image. Rotations will be anchored around this point
 	 */
 	public var origin:Vector3;
 
