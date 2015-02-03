@@ -144,6 +144,11 @@ class Matrix4 implements ArrayAccess<MatrixValue>
 		translate(v.x, v.y, v.z);
 	}
 
+	public inline function translateVector2(v:Vector2):Void
+	{
+		translate(v.x, v.y, 0);
+	}
+
 	public function translate(x:MatrixValue, y:MatrixValue, z:MatrixValue):Void
 	{
 		_41 = x;

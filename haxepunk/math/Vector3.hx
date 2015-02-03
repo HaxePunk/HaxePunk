@@ -1,24 +1,5 @@
 package haxepunk.math;
 
-class Point3D
-{
-	public var x:Float;
-	public var y:Float;
-	public var z:Float;
-
-	public function new(x:Float=0, y:Float=0, z:Float=0)
-	{
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
-
-	public function toString():String
-	{
-		return "(" + x + ", " + y + ", " + z + ")";
-	}
-}
-
 abstract Vector3 (Point3D)
 {
 
@@ -40,6 +21,12 @@ abstract Vector3 (Point3D)
 	public var z(get, set):Float;
 	private inline function get_z():Float return this.z;
 	private inline function set_z(value:Float):Float return this.z = value;
+
+	@:to
+	public inline function toVector2():Vector2
+	{
+		return new Vector2(this.x, this.y);
+	}
 
 	/**
 	 * Length of the vector
