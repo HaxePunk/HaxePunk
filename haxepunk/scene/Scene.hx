@@ -20,8 +20,6 @@ class Scene
 		_types = new StringMap<Array<Entity>>();
 		_entityNames = new StringMap<Entity>();
 		_frameList = new Array<Float>();
-
-		HXP.spriteBatch = _spriteBatch = new SpriteBatch();
 	}
 
 	public function add(e:Entity)
@@ -156,8 +154,7 @@ class Scene
 			_entities[i].draw();
 		}
 		if (Console.enabled) Console.instance.draw(this);
-		_spriteBatch.flush();
-		Draw.flush();
+		SpriteBatch.flush();
 		Renderer.present();
 
 		var t = haxe.Timer.stamp() * 1000;
@@ -183,7 +180,6 @@ class Scene
 	private var _frameListSum:Float = 0;
 	private var _frameList:Array<Float>;
 
-	private var _spriteBatch:SpriteBatch;
 	private var _entities:Array<Entity>;
 	private var _types:StringMap<Array<Entity>>;
 	private var _entityNames:StringMap<Entity>;

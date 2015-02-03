@@ -69,7 +69,7 @@ class Text extends Graphic
 			{
 				_numTriangles = 0;
 			}
-			else if (text.startsWith(value))
+			else if (text != null && text.startsWith(value))
 			{
 				// don't recreate the buffer if it's the same
 				_numTriangles = value.replace("\n", "").length * 2;
@@ -156,7 +156,7 @@ class Text extends Graphic
 		// TODO: batch this process
 
 		// finish drawing whatever came before the text area
-		HXP.spriteBatch.flush();
+		SpriteBatch.flush();
 
 		material.use();
 

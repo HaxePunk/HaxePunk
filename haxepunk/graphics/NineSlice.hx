@@ -41,35 +41,35 @@ class NineSlice extends Image
 		var x2 = offset.x + width - _clipRect.width;
 
 		var y = offset.y;
-		HXP.spriteBatch.draw(material, offset.x, y, _topLeft.width, _topLeft.height,
+		SpriteBatch.draw(material, offset.x, y, _topLeft.width, _topLeft.height,
 			_topLeft.x, _topLeft.y, _topLeft.width, _topLeft.height, false, false,
 			origin.x, origin.y, scale.x, scale.y);
-		HXP.spriteBatch.draw(material, x1, y, stretchWidth, _topCenter.height,
+		SpriteBatch.draw(material, x1, y, stretchWidth, _topCenter.height,
 			_topCenter.x, _topCenter.y, _topCenter.width, _topCenter.height, false, false,
 			origin.x, origin.y, scale.x, scale.y);
-		HXP.spriteBatch.draw(material, x2, y, _topRight.width, _topRight.height,
+		SpriteBatch.draw(material, x2, y, _topRight.width, _topRight.height,
 			_topRight.x, _topRight.y, _topRight.width, _topRight.height, false, false,
 			origin.x, origin.y, scale.x, scale.y);
 
 		y = offset.y + _clipRect.height;
-		HXP.spriteBatch.draw(material, offset.x, y, _centerLeft.width, stretchHeight,
+		SpriteBatch.draw(material, offset.x, y, _centerLeft.width, stretchHeight,
 			_centerLeft.x, _centerLeft.y, _centerLeft.width, _centerLeft.height, false, false,
 			origin.x, origin.y, scale.x, scale.y);
-		HXP.spriteBatch.draw(material, x1, y, stretchWidth, stretchHeight,
+		SpriteBatch.draw(material, x1, y, stretchWidth, stretchHeight,
 			_centerCenter.x, _centerCenter.y, _centerCenter.width, _centerCenter.height, false, false,
 			origin.x, origin.y, scale.x, scale.y);
-		HXP.spriteBatch.draw(material, x2, y, _centerRight.width, stretchHeight,
+		SpriteBatch.draw(material, x2, y, _centerRight.width, stretchHeight,
 			_centerRight.x, _centerRight.y, _centerRight.width, _centerRight.height, false, false,
 			origin.x, origin.y, scale.x, scale.y);
 
 		y = offset.y + height - _clipRect.height;
-		HXP.spriteBatch.draw(material, offset.x, y, _bottomLeft.width, _bottomLeft.height,
+		SpriteBatch.draw(material, offset.x, y, _bottomLeft.width, _bottomLeft.height,
 			_bottomLeft.x, _bottomLeft.y, _bottomLeft.width, _bottomLeft.height, false, false,
 			origin.x, origin.y, scale.x, scale.y);
-		HXP.spriteBatch.draw(material, x1, y, stretchWidth, _bottomCenter.height,
+		SpriteBatch.draw(material, x1, y, stretchWidth, _bottomCenter.height,
 			_bottomCenter.x, _bottomCenter.y, _bottomCenter.width, _bottomCenter.height, false, false,
 			origin.x, origin.y, scale.x, scale.y);
-		HXP.spriteBatch.draw(material, x2, y, _bottomRight.width, _bottomRight.height,
+		SpriteBatch.draw(material, x2, y, _bottomRight.width, _bottomRight.height,
 			_bottomRight.x, _bottomRight.y, _bottomRight.width, _bottomRight.height, false, false,
 			origin.x, origin.y, scale.x, scale.y);
 	}

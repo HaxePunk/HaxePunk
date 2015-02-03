@@ -29,6 +29,8 @@ class GLRenderer
 
 	public static inline function present():Void
 	{
+		_totalRenderCalls += _renderCalls;
+		_renderCalls = 0;
 		#if js
 		GL.finish();
 		#end
@@ -186,6 +188,7 @@ class GLRenderer
 
 	public static inline function draw(buffer:IndexBuffer, numTriangles:Int, offset:Int=0):Void
 	{
+		_renderCalls++;
 		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, buffer);
 		GL.drawElements(GL.TRIANGLES, numTriangles * 3, GL.UNSIGNED_SHORT, offset << 2);
 	}
@@ -243,6 +246,8 @@ class GLRenderer
 	}
 
 
+	private static var _renderCalls:Float = 0;
+	private static var _totalRenderCalls:Float = 0;
 	private static var _activeState:ActiveState = new ActiveState();
 
 	private static var FORMAT = [

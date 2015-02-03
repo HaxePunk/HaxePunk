@@ -66,7 +66,7 @@ class Image extends Graphic
 
 	override public function draw(offset:Vector3):Void
 	{
-		HXP.spriteBatch.draw(material, offset.x, offset.y, width, height,
+		SpriteBatch.draw(material, offset.x, offset.y, width, height,
 			_clipRect.x, _clipRect.y, _clipRect.width, _clipRect.height,
 			flipX, flipY, origin.x, origin.y, scale.x, scale.y, angle);
 	}

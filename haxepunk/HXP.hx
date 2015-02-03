@@ -13,8 +13,6 @@ class HXP
 	@:allow(haxepunk.Engine)
 	public static var scene(default, null):Scene;
 
-	public static var spriteBatch:SpriteBatch;
-
 	@:allow(haxepunk.scene.Scene)
 	public static var frameRate(default, null):Float = 0;
 

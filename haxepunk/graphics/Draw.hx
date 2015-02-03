@@ -1,8 +1,8 @@
 package haxepunk.graphics;
 
 import haxepunk.renderers.Renderer;
-import lime.graphics.opengl.*;
 
+@:access(haxepunk.graphics.SpriteBatch)
 class Draw
 {
 
@@ -30,31 +30,11 @@ class Draw
 			g = color.g,
 			b = color.b;
 
-		_vertices[_vIndex++] = x;
-		_vertices[_vIndex++] = y;
-		_vertices[_vIndex++] = r;
-		_vertices[_vIndex++] = g;
-		_vertices[_vIndex++] = b;
-
-		_vertices[_vIndex++] = x + width;
-		_vertices[_vIndex++] = y;
-		_vertices[_vIndex++] = r;
-		_vertices[_vIndex++] = g;
-		_vertices[_vIndex++] = b;
-
-		_vertices[_vIndex++] = x + width;
-		_vertices[_vIndex++] = y + height;
-		_vertices[_vIndex++] = r;
-		_vertices[_vIndex++] = g;
-		_vertices[_vIndex++] = b;
-
-		_vertices[_vIndex++] = x;
-		_vertices[_vIndex++] = y + height;
-		_vertices[_vIndex++] = r;
-		_vertices[_vIndex++] = g;
-		_vertices[_vIndex++] = b;
-
-		addRectIndices();
+		SpriteBatch.addVertex(x, y, 0, 0, r, g, b);
+		SpriteBatch.addVertex(x + width, y, 0, 0, r, g, b);
+		SpriteBatch.addVertex(x + width, y + height, 0, 0, r, g, b);
+		SpriteBatch.addVertex(x, y + height, 0, 0, r, g, b);
+		SpriteBatch.addRectIndices();
 	}
 
 	public static function line(x1:Float, y1:Float, x2:Float, y2:Float, color:Color, thickness:Float=1):Void
@@ -74,85 +54,11 @@ class Draw
 			g = color.g,
 			b = color.b;
 
-		_vertices[_vIndex++] = x1 + dx;
-		_vertices[_vIndex++] = y1 + dy;
-		_vertices[_vIndex++] = r;
-		_vertices[_vIndex++] = g;
-		_vertices[_vIndex++] = b;
-
-		_vertices[_vIndex++] = x1 - dx;
-		_vertices[_vIndex++] = y1 - dy;
-		_vertices[_vIndex++] = r;
-		_vertices[_vIndex++] = g;
-		_vertices[_vIndex++] = b;
-
-		_vertices[_vIndex++] = x2 - dx;
-		_vertices[_vIndex++] = y2 - dy;
-		_vertices[_vIndex++] = r;
-		_vertices[_vIndex++] = g;
-		_vertices[_vIndex++] = b;
-
-		_vertices[_vIndex++] = x2 + dx;
-		_vertices[_vIndex++] = y2 + dy;
-		_vertices[_vIndex++] = r;
-		_vertices[_vIndex++] = g;
-		_vertices[_vIndex++] = b;
-
-		addRectIndices();
-	}
-
-	inline private static function addRectIndices()
-	{
-		_indices[_iIndex++] = _index;
-		_indices[_iIndex++] = _index+1;
-		_indices[_iIndex++] = _index+2;
-
-		_indices[_iIndex++] = _index;
-		_indices[_iIndex++] = _index+2;
-		_indices[_iIndex++] = _index+3;
-		_index += 4;
-	}
-
-	public static function flush()
-	{
-		if (_index <= 0) return;
-		if (_shader == null)
-		{
-			#if flash
-			_shader = new Shader("m44 op, va0, vc0\nmov v0, va1", "mov oc, v0n");
-			#else
-			_shader = new Shader("attribute vec2 aVertexPosition;
-attribute vec3 aColor;
-
-varying vec3 vColor;
-uniform mat4 uMatrix;
-
-void main(void)
-{
-	vColor = aColor;
-	gl_Position = uMatrix * vec4(aVertexPosition, 0.0, 1.0);
-}", "varying vec3 vColor;
-
-void main(void)
-{
-	gl_FragColor = vec4(vColor, 1.0);
-}");
-			#end
-		}
-		if (_vertexBuffer == null)
-		{
-			_vertexBuffer = Renderer.createBuffer(5);
-		}
-		Renderer.setMatrix(_shader.uniform("uMatrix"), HXP.scene.camera.transform);
-		Renderer.bindBuffer(_vertexBuffer);
-		Renderer.updateBuffer(_vertices, STATIC_DRAW);
-		Renderer.setAttribute(_shader.attribute("aVertexPosition"), 0, 2);
-		Renderer.setAttribute(_shader.attribute("aColor"), 2, 3);
-
-		_indexBuffer = Renderer.updateIndexBuffer(_indices, STATIC_DRAW, _indexBuffer);
-
-		Renderer.draw(_indexBuffer, Std.int(_iIndex / 3));
-		_iIndex = _vIndex = _index = 0;
+		SpriteBatch.addVertex(x1 + dx, y1 + dy, 0, 0, r, g, b);
+		SpriteBatch.addVertex(x1 - dx, y1 - dy, 0, 0, r, g, b);
+		SpriteBatch.addVertex(x2 - dx, y2 - dy, 0, 0, r, g, b);
+		SpriteBatch.addVertex(x2 + dx, y2 + dy, 0, 0, r, g, b);
+		SpriteBatch.addRectIndices();
 	}
 
 	private static var _vIndex:Int = 0;
@@ -163,4 +69,5 @@ void main(void)
 	private static var _vertexBuffer:VertexBuffer;
 	private static var _indexBuffer:IndexBuffer;
 	private static var _shader:Shader;
+
 }

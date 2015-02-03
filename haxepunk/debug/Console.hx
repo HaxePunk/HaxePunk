@@ -60,6 +60,7 @@ class Console
 		_fpsText.draw(pos);
 
 		_entityText.origin.x = HXP.window.width - _entityText.width;
+		Draw.fillRect(_entityText.origin.x + pos.x, _entityText.origin.y + pos.y, _entityText.width, _entityText.height, HXP.entityColor);
 		_entityText.draw(pos);
 
 		if (_frameInfos.length > 1)

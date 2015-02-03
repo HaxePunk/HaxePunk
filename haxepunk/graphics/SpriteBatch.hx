@@ -6,15 +6,9 @@ import haxepunk.scene.Scene;
 class SpriteBatch
 {
 
-	public function new()
-	{
-		_vertices = new FloatArray();
-		_indices = new IntArray();
-	}
-
-	public function draw(material:Material, x:Float, y:Float, width:Float, height:Float,
+	public static function draw(material:Material, x:Float, y:Float, width:Float, height:Float,
 		texX:Float, texY:Float, texWidth:Float, texHeight:Float, flipX:Bool=false, flipY:Bool=false,
-		originX:Float=0, originY:Float=0, scaleX:Float=1, scaleY:Float=1, angle:Float=0)
+		originX:Float=0, originY:Float=0, scaleX:Float=1, scaleY:Float=1, angle:Float=0, ?tint:Color)
 	{
 		if (material != _material)
 		{
@@ -96,72 +90,97 @@ class SpriteBatch
 			v2 = (texY + texHeight) * _invTexHeight;
 		}
 
-		var index = Std.int(_indexIndex / 6) * 4;
-		_indices[_indexIndex++] = index;
-		_indices[_indexIndex++] = index+1;
-		_indices[_indexIndex++] = index+2;
+		var r, g, b, a;
+		if (tint != null)
+		{
+			r = tint.r;
+			g = tint.g;
+			b = tint.b;
+			a = tint.a;
+		}
+		else
+		{
+			r = g = b = a = 1;
+		}
 
-		_indices[_indexIndex++] = index;
-		_indices[_indexIndex++] = index+2;
-		_indices[_indexIndex++] = index+3;
-
-		_vertices[_vertexIndex++] = x1;
-		_vertices[_vertexIndex++] = y1;
-		_vertices[_vertexIndex++] = u1;
-		_vertices[_vertexIndex++] = v1;
-
-		_vertices[_vertexIndex++] = x2;
-		_vertices[_vertexIndex++] = y2;
-		_vertices[_vertexIndex++] = u1;
-		_vertices[_vertexIndex++] = v2;
-
-		_vertices[_vertexIndex++] = x3;
-		_vertices[_vertexIndex++] = y3;
-		_vertices[_vertexIndex++] = u2;
-		_vertices[_vertexIndex++] = v2;
-
-		_vertices[_vertexIndex++] = x4;
-		_vertices[_vertexIndex++] = y4;
-		_vertices[_vertexIndex++] = u2;
-		_vertices[_vertexIndex++] = v1;
+		addRectIndices();
+		addVertex(x1, y1, u1, v1, r, g, b, a);
+		addVertex(x2, y2, u1, v2, r, g, b, a);
+		addVertex(x3, y3, u2, v2, r, g, b, a);
+		addVertex(x4, y4, u2, v1, r, g, b, a);
 	}
 
-	public function flush()
+	inline private static function addRectIndices()
 	{
-		if (_vertexIndex == 0) return;
-		_renderCalls++;
+		_indices[_iIndex++] = _index;
+		_indices[_iIndex++] = _index+1;
+		_indices[_iIndex++] = _index+2;
+
+		_indices[_iIndex++] = _index;
+		_indices[_iIndex++] = _index+2;
+		_indices[_iIndex++] = _index+3;
+		_index += 4;
+	}
+
+	inline private static function addVertex(x:Float=0, y:Float=0, u:Float=0, v:Float=0, r:Float=1, g:Float=1, b:Float=1, a:Float=1):Void
+	{
+		_vertices[_vIndex++] = x;
+		_vertices[_vIndex++] = y;
+		_vertices[_vIndex++] = u;
+		_vertices[_vIndex++] = v;
+		_vertices[_vIndex++] = r;
+		_vertices[_vIndex++] = g;
+		_vertices[_vIndex++] = b;
+		_vertices[_vIndex++] = a;
+	}
+
+	public static function flush()
+	{
+		if (_index == 0) return;
+
+		if (_material == null)
+		{
+			_material = new Material();
+			_material.firstPass;
+		}
 
 		_material.use();
 
-		var pass = _material.firstPass;
-		Renderer.setMatrix(pass.shader.uniform("uMatrix"), HXP.scene.camera.transform);
-
-		if (_vertexBuffer == null)
+		for (technique in _material.techniques)
 		{
-			_vertexBuffer = Renderer.createBuffer(4);
+			for (pass in technique.passes)
+			{
+				Renderer.setMatrix(pass.shader.uniform("uMatrix"), HXP.scene.camera.transform);
+
+				if (_vertexBuffer == null)
+				{
+					_vertexBuffer = Renderer.createBuffer(8);
+				}
+				Renderer.bindBuffer(_vertexBuffer);
+				Renderer.updateBuffer(_vertices, STATIC_DRAW);
+				Renderer.setAttribute(pass.shader.attribute("aVertexPosition"), 0, 2);
+				Renderer.setAttribute(pass.shader.attribute("aTexCoord"), 2, 2);
+				Renderer.setAttribute(pass.shader.attribute("aColor"), 4, 4);
+
+				_indexBuffer = Renderer.updateIndexBuffer(_indices, STATIC_DRAW, _indexBuffer);
+
+				Renderer.draw(_indexBuffer, Std.int(_iIndex / 3));
+			}
 		}
-		Renderer.bindBuffer(_vertexBuffer);
-		Renderer.updateBuffer(_vertices, STATIC_DRAW);
-		Renderer.setAttribute(pass.shader.attribute("aVertexPosition"), 0, 2);
-		Renderer.setAttribute(pass.shader.attribute("aTexCoord"), 2, 2);
 
-		_indexBuffer = Renderer.updateIndexBuffer(_indices, STATIC_DRAW, _indexBuffer);
-
-		Renderer.draw(_indexBuffer, Std.int(_indexIndex / 3));
-
-		_vertexIndex = _indexIndex = 0;
+		_vIndex = _iIndex = _index = 0;
 	}
 
-	private var _indexIndex:Int = 0;
-	private var _vertexIndex:Int = 0;
+	private static var _index:Int = 0;
+	private static var _iIndex:Int = 0;
+	private static var _vIndex:Int = 0;
 
-	private var _vertices:FloatArray;
-	private var _indices:IntArray;
-	private var _vertexBuffer:VertexBuffer;
-	private var _indexBuffer:IndexBuffer;
-	private var _renderCalls:Float = 0;
-	private var _invTexWidth:Float = 0;
-	private var _invTexHeight:Float = 0;
-	private var _material:Material;
+	private static var _vertices:FloatArray = new FloatArray();
+	private static var _indices:IntArray = new IntArray();
+	private static var _vertexBuffer:VertexBuffer;
+	private static var _indexBuffer:IndexBuffer;
+	private static var _invTexWidth:Float = 0;
+	private static var _invTexHeight:Float = 0;
+	private static var _material:Material;
 
 }
