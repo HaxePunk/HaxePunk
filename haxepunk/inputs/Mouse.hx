@@ -1,7 +1,7 @@
 package haxepunk.inputs;
 
 import haxe.ds.IntMap;
-import lime.ui.MouseEventManager;
+import lime.ui.Window;
 
 import haxepunk.inputs.Input;
 import haxepunk.inputs.InputState;
@@ -83,13 +83,13 @@ class Mouse
 	 * Setup the mouse input support.
 	 */
 	@:allow(haxepunk.inputs.Input)
-	private static function init():Void
+	private static function init(window:Window):Void
 	{
 		// Register the events from lime
-		MouseEventManager.onMouseMove.add(onMouseMove);
-		MouseEventManager.onMouseDown.add(onMouseDown);
-		MouseEventManager.onMouseUp.add(onMouseUp);
-		MouseEventManager.onMouseWheel.add(onMouseWheel);
+		window.onMouseMove.add(onMouseMove);
+		window.onMouseDown.add(onMouseDown);
+		window.onMouseUp.add(onMouseUp);
+		window.onMouseWheel.add(onMouseWheel);
 	}
 
 	/**

@@ -3,8 +3,7 @@ package haxepunk.inputs;
 import haxe.ds.IntMap;
 import haxepunk.inputs.Input;
 import haxepunk.inputs.InputState;
-import lime.ui.KeyEventManager;
-import lime.ui.TextEventManager;
+import lime.ui.Window;
 import lime.ui.KeyCode;
 
 /**
@@ -91,12 +90,12 @@ class Keyboard
 	 * Setup the keyboard input support.
 	 */
 	@:allow(haxepunk.inputs.Input)
-	private static function init():Void
+	private static function init(window:Window):Void
 	{
 		// Register the events from lime
-		KeyEventManager.onKeyDown.add(onKeyDown);
-		KeyEventManager.onKeyUp.add(onKeyUp);
-		TextEventManager.onTextInput.add(onTextInput);
+		window.onKeyDown.add(onKeyDown);
+		window.onKeyUp.add(onKeyUp);
+		window.onTextInput.add(onTextInput);
 	}
 
 	/**

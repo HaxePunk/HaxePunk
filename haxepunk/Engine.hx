@@ -32,7 +32,7 @@ class Engine extends Application
 		HXP.window = windows[0];
 
 		// Init the input system
-		Input.init();
+		Input.init(HXP.window);
 
 		switch (HXP.window.currentRenderer.context)
 		{

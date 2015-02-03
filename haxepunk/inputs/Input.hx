@@ -3,6 +3,7 @@ package haxepunk.inputs;
 import haxepunk.inputs.InputState;
 import haxepunk.inputs.Keyboard;
 import haxepunk.inputs.Mouse;
+import lime.ui.Window;
 
 /**
  * Either enum used by InputType.
@@ -61,11 +62,11 @@ class Input
 			{
 				case String(_):
 					throw "Input.define can't have strings in the [inputs] array.";
-				
+
 				default:
 			}
 		}
-		
+
 		if (!merge || !_defines.exists(name))
 		{
 			_defines.set(name, inputs);
@@ -114,10 +115,10 @@ class Input
 	 * Init the input systems.
 	 */
 	@:allow(haxepunk.Engine)
-	private static function init()
+	private static function init(window:Window)
 	{
-		Keyboard.init();
-		Mouse.init();
+		Keyboard.init(window);
+		Mouse.init(window);
 		//Gamepad.init();
 		//Touch.init();
 	}
@@ -177,7 +178,7 @@ class Input
 
 			case MouseButton(mb):
 				Mouse.value(mb, v);
-			
+
 			/*case GamepadButton(gb):
 				Gamepad.value(gb, v);
 
