@@ -1,6 +1,7 @@
 package haxepunk.masks;
 
 import haxepunk.math.Vector3;
+import haxepunk.scene.Entity;
 
 class AABB implements Mask
 {
@@ -170,9 +171,9 @@ class AABB implements Mask
 		return result;
 	}
 
-	private function debugDraw():Void
+	private function debugDraw(parent:Entity):Void
 	{
-		haxepunk.graphics.Draw.rect(left, top, width, height, HXP.maskColor);
+		haxepunk.graphics.Draw.rect(parent.x + left, parent.y + top, width, height, HXP.maskColor);
 	}
 
 	private var _center:Vector3;

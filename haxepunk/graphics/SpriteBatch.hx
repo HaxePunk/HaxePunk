@@ -100,7 +100,7 @@ class SpriteBatch
 		}
 		else
 		{
-			r = g = b = a = 1;
+			r = g = b = a = 0;
 		}
 
 		addRectIndices();

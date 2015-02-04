@@ -85,7 +85,7 @@ class Console
 		{
 			if (entity.mask != null)
 			{
-				entity.mask.debugDraw();
+				entity.mask.debugDraw(entity);
 			}
 			Draw.pixel(entity.x, entity.y, HXP.entityColor, 4);
 		}

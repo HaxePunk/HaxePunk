@@ -13,6 +13,8 @@ class TextArea extends Control
 
 		_graphic = _area = new NineSlice(Control.defaultSkin, new Rectangle(0, 0, 8, 8));
 		label.color.fromInt(0x000000);
+		width = _area.width;
+		height = _area.height;
 	}
 
 	override public function update(elapsed:Float)

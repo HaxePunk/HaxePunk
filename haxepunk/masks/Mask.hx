@@ -1,6 +1,7 @@
 package haxepunk.masks;
 
 import haxepunk.math.Vector3;
+import haxepunk.scene.Entity;
 
 interface Mask
 {
@@ -10,6 +11,6 @@ interface Mask
 	public function intersectsPoint(vec:Vector3):Bool;
 
 	@:allow(haxepunk.debug.Console)
-	private function debugDraw():Void;
+	private function debugDraw(parent:Entity):Void;
 
 }
