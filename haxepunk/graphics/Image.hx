@@ -8,7 +8,7 @@ import haxepunk.scene.Camera;
 
 abstract ImageSource(Material) to Material from Material
 {
-	public function new(material:Material) { this = material; }
+	private function new(material:Material) { this = material; }
 
 	@:from
 	static inline private function fromAsset(asset:String):ImageSource

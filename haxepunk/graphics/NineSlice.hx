@@ -29,7 +29,8 @@ class NineSlice extends Image
 
 	/**
 	 * Sets the size of the nine slice object
-	 * @param width the
+	 * @param width the width of the final image
+	 * @param height the height of the final image
 	 */
 	public function setSize(width:Float, height:Float)
 	{
@@ -37,6 +38,10 @@ class NineSlice extends Image
 		this.height = height;
 	}
 
+	/**
+	 * Draws the final nine slices
+	 * @param offset the offset vector of the graphic usually passed from an Entity object
+	 */
 	override public function draw(offset:Vector3):Void
 	{
 		var stretchWidth = width - clipRect.width * 2;

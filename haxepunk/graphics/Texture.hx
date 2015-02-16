@@ -30,6 +30,11 @@ class Texture
 	 */
 	public var sourceHeight(default, null):Int = 0;
 
+	/**
+	 * Create a texture from RGBA data.
+	 * @param data the RGBA texture data. Must be 4 Int values per pixel.
+	 * @param stride the byte width of the texture.
+	 */
 	public static function fromRGBA(data:Array<Int>, stride:Int):Texture
 	{
 		var texture = new Texture();
@@ -37,6 +42,10 @@ class Texture
 		return texture;
 	}
 
+	/**
+	 * Create a texture from an asset
+	 * @param id the asset id to find
+	 */
 	public static function fromAsset(id:String):Texture
 	{
 		var texture:Texture = null;
@@ -52,6 +61,10 @@ class Texture
 		return texture;
 	}
 
+	/**
+	 * Creates texture from XPM data. http://en.wikipedia.org/wiki/X_PixMap
+	 * @param xpm a string of xpm data
+	 */
 	public static function fromXPM(xpm:String):Texture
 	{
 		var lines = xpm.split("\n");
@@ -125,10 +138,6 @@ class Texture
 		return texture;
 	}
 
-	/**
-	 * Creates a new Texture
-	 * @param path The path to the texture asset
-	 */
 	@:allow(haxepunk.graphics)
 	private function new(?id:String)
 	{
@@ -166,6 +175,9 @@ class Texture
 		height = image.height;
 	}
 
+	/**
+	 * Removes a texture from the renderer.
+	 */
 	public function destroy()
 	{
 		Renderer.deleteTexture(_texture);
@@ -174,6 +186,7 @@ class Texture
 
 	/**
 	 * Binds the texture for drawing
+	 * @param sampler the id of the sampler to use
 	 */
 	public inline function bind(sampler:Int=0):Void
 	{

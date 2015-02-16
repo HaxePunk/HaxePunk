@@ -104,63 +104,84 @@ class Pass
 class Technique
 {
 
-	public var passes:Array<Pass>;
+	public var passes:List<Pass>;
+	public var valid:Bool = true;
 
 	public function new()
 	{
-		passes = new Array<Pass>();
+		passes = new List<Pass>();
 	}
 
 	public function use():Bool
 	{
-		for (i in 0...passes.length)
+		for (pass in passes)
 		{
-			passes[i].use();
+			pass.use();
 		}
 		return true;
 	}
 }
 
+/**
+ * Contains techniques and passes for rendering graphics.
+ */
 class Material
 {
 
+	/**
+	 * The material name.
+	 */
 	public var name:String;
-	public var techniques:Array<Technique>;
+	/**
+	 * A list of the material's techniques.
+	 */
+	public var techniques:List<Technique>;
 
 	public function new()
 	{
-		techniques = new Array<Technique>();
+		techniques = new List<Technique>();
 	}
 
+	/**
+	 * Generate a material from data
+	 * @param text the material data to use
+	 */
 	public static function fromText(text:String):Material
 	{
 		var data = new MaterialData(text);
 		return data.materials[0];
 	}
 
+	/**
+	 * Generate a material from an asset string
+	 * @id the asset id
+	 */
 	public static inline function fromAsset(id:String):Material
 	{
 		return fromText(Assets.getText(id));
 	}
 
+	/**
+	 * Gets or creates the first pass object of the Material
+	 */
 	public var firstPass(get, never):Pass;
 	private inline function get_firstPass():Pass
 	{
-		if (techniques.length < 1) techniques.push(new Technique());
-		if (techniques[0].passes.length < 1) techniques[0].passes.push(new Pass());
-		return techniques[0].passes[0];
+		if (techniques.length < 1) techniques.add(new Technique());
+		var technique = techniques.first();
+		if (technique.passes.length < 1) technique.passes.add(new Pass());
+		return technique.passes.first();
 	}
 
-	public function use()
+	/**
+	 * Binds the material for use in rendering
+	 */
+	public function use():Void
 	{
-		for (i in 0...techniques.length)
+		for (technique in techniques)
 		{
-			if (techniques[i].use()) break;
+			if (technique.valid && technique.use()) break;
 		}
-	}
-
-	public inline function disable()
-	{
 	}
 
 }

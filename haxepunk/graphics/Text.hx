@@ -14,11 +14,31 @@ using StringTools;
 class Text extends Graphic
 {
 
+	/**
+	 * The font color of the Text
+	 */
 	public var color:Color;
+
+	/**
+	 * The font size of the Text
+	 */
 	public var size(default, null):Int;
+
+	/**
+	 * The pixel height of each line of text
+	 */
 	public var lineHeight:Float;
+
+	/**
+	 * The number of spaces for tab characters
+	 */
 	public var tabWidth:Int = 4;
 
+	/**
+	 * Create a new Text graphic
+	 * @param text the default text to render
+	 * @param size the font size of the text
+	 */
 	public function new(text:String, size:Int=14)
 	{
 		super();
@@ -60,6 +80,9 @@ class Text extends Graphic
 		this.text = text;
 	}
 
+	/**
+	 * The text value to render. Regenerates a list of glyphs to draw.
+	 */
 	public var text(default, set):String;
 	private function set_text(value:String):String {
 		#if !flash
@@ -148,6 +171,10 @@ class Text extends Graphic
 		return text = value;
 	}
 
+	/**
+	 * Draw the Text object to the screen
+	 * @param offset the offset of the Text object usually set from and Entity
+	 */
 	override public function draw(offset:Vector3):Void
 	{
 		#if !flash

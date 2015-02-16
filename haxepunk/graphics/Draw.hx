@@ -2,16 +2,35 @@ package haxepunk.graphics;
 
 import haxepunk.renderers.Renderer;
 
+/**
+ * Draws colored primitives to the screen.
+ */
 @:access(haxepunk.graphics.SpriteBatch)
 class Draw
 {
 
+	/**
+	 * Draws a single pixel to the screen
+	 * @param x the x-axis value of the pixel
+	 * @param y the y-axis value of the pixel
+	 * @param color the color of the pixel
+	 * @param size the overall size of the pixel square
+	 */
 	public static function pixel(x:Float, y:Float, color:Color, size:Float=1):Void
 	{
 		var hs = size / 2;
 		fillRect(x - hs, y - hs, size, size, color);
 	}
 
+	/**
+	 * Draws a non-filled rectangle to the screen
+	 * @param x the x-axis value of the rectangle
+	 * @param y the y-axis value of the rectangle
+	 * @param width the width of the rectangle
+	 * @param height the height of the rectangle
+	 * @param color the color of the rectangle
+	 * @param thickness the line thickness of the rectangle
+	 */
 	public static function rect(x:Float, y:Float, width:Float, height:Float, color:Color, thickness:Float=1):Void
 	{
 		var ht = thickness / 2,
@@ -24,6 +43,14 @@ class Draw
 		line(x + ht, y2, x + ht, y, color, thickness);
 	}
 
+	/**
+	 * Draws a filled rectangle to the screen
+	 * @param x the x-axis value of the rectangle
+	 * @param y the y-axis value of the rectangle
+	 * @param width the width of the rectangle
+	 * @param height the height of the rectangle
+	 * @param color the color of the rectangle
+	 */
 	public static function fillRect(x:Float, y:Float, width:Float, height:Float, color:Color):Void
 	{
 		var r = color.r,
@@ -37,6 +64,15 @@ class Draw
 		SpriteBatch.addRectIndices();
 	}
 
+	/**
+	 * Draws a line to the screen
+	 * @param x1 the first x-axis value of the line
+	 * @param y1 the first y-axis value of the line
+	 * @param x2 the second x-axis value of the line
+	 * @param y2 the second y-axis value of the line
+	 * @param color the color of the line
+	 * @param thickness the thickness of the line
+	 */
 	public static function line(x1:Float, y1:Float, x2:Float, y2:Float, color:Color, thickness:Float=1):Void
 	{
 		// create perpendicular delta vector

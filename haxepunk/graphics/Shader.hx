@@ -6,7 +6,7 @@ import haxepunk.math.Matrix4;
 import lime.graphics.opengl.GL;
 
 /**
- * GLSL Shader object
+ * Shader object for GLSL and AGAL
  */
 class Shader
 {
@@ -25,6 +25,7 @@ class Shader
 	/**
 	 * Return the attribute location in this shader
 	 * @param a  The attribute name to find
+	 * @return the attribute location for binding
 	 */
 	public function attribute(a:String):Int
 	{
@@ -48,9 +49,10 @@ class Shader
 
 	/**
 	 * Return the uniform location in this shader
-	 * @param a  The uniform name to find
+	 * @param u  The uniform name to find
+	 * @return the uniform location for binding
 	 */
-	public function uniform(u:String, slot:Int=0):Location
+	public function uniform(u:String):Location
 	{
 		use();
 		var uniform:Location;
@@ -73,7 +75,7 @@ class Shader
 	/**
 	 * Bind the program for rendering
 	 */
-	public inline function use()
+	public inline function use():Void
 	{
 		Renderer.bindProgram(_program);
 	}
