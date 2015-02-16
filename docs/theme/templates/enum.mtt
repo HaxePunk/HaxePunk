@@ -1,0 +1,37 @@
+::use 'main.mtt'::
+	<div class="header">
+		<span ::cond api.isDefined("source-path"):: class="viewsource">
+			<a href="::api.getSourceLink(type)::"><span class="icon-code"></span> View source</a>
+		</span>
+		
+		<h4>
+			<small>
+				package ::type.path.split(".").slice(0, -1).join(".")::
+			</small>
+		</h4>
+		
+		<h1>
+			<small>
+				<span class="directive">enum </span>
+			</small>
+			
+			<span class="type">::type.path.split(".").pop()::</span>$$printTypeParams(::type.params::)
+		</h1>
+		
+		$$printModule(::type.module::)
+	</div>
+	<div class="body">
+		<div class="doc" ::cond type.doc != null::>
+			::raw type.doc::
+		</div>
+		::if type.constructors.length > 0::
+			<h3>Values</h3>
+			
+			<div class="fields">
+				::foreach ctor type.constructors::
+					::use "enum_field.mtt"::::end::
+				::end::
+			</div>
+		::end::
+	</div>
+::end::

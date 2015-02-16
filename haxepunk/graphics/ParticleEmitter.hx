@@ -117,7 +117,7 @@ class ParticleEmitter extends Graphic
 		{
 			if (p.alive)
 			{
-				HXP.spriteBatch.draw(material, offset.x + p.position.x, offset.y + p.position.y, width, height,
+				SpriteBatch.draw(material, offset.x + p.position.x, offset.y + p.position.y, width, height,
 					0, 0, width, height, false, false,
 					origin.x, origin.y, scale.x * p.scale.x, scale.y * p.scale.y, angle + p.angle);
 			}

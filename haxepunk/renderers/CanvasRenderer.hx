@@ -9,6 +9,8 @@ import lime.utils.Float32Array;
 import lime.utils.Int16Array;
 import lime.graphics.Image;
 
+#if !doc-gen
+
 class CanvasRenderer
 {
 
@@ -106,3 +108,5 @@ class CanvasRenderer
 	private static var _context:CanvasRenderContext;
 
 }
+
+#end

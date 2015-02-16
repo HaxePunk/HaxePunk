@@ -3,6 +3,8 @@ package haxepunk.graphics3d;
 import haxepunk.math.*;
 import haxepunk.scene.Camera;
 import haxepunk.renderers.Renderer;
+import haxepunk.graphics.Graphic;
+import haxepunk.graphics.Material;
 
 class Mesh
 {
@@ -56,19 +58,15 @@ class Mesh
 
 }
 
-class Model implements Graphic
+class Model extends Graphic
 {
-
-	/**
-	 * The mesh's material
-	 */
-	public var material:Material;
 
 	public var transform:Matrix4;
 	public var lightPos:Vector3;
 
 	public function new(?material:Material)
 	{
+		super();
 		this.material = (material == null ? new Material() : material);
 
 		var shader = material.firstPass.shader;
@@ -89,23 +87,21 @@ class Model implements Graphic
 		_meshes.push(mesh);
 	}
 
-	public function update(elapsed:Float):Void { }
-
-	public function draw(camera:Camera, offset:Vector3):Void
+	override public function draw(offset:Vector3):Void
 	{
-		material.use();
+		// material.use();
 
-		Renderer.setVector3(_lightUniform, lightPos);
+		// Renderer.setVector3(_lightUniform, lightPos);
 
-		transform.identity();
-		transform.translateVector3(offset);
-		transform.multiply(camera.transform);
-		Renderer.setMatrix(_modelViewMatrixUniform, transform);
+		// transform.identity();
+		// transform.translateVector3(offset);
+		// transform.multiply(camera.transform);
+		// Renderer.setMatrix(_modelViewMatrixUniform, transform);
 
-		for (i in 0..._meshes.length)
-		{
-			_meshes[i].draw(_vertexAttribute, _texCoordAttribute, _normalAttribute);
-		}
+		// for (i in 0..._meshes.length)
+		// {
+		// 	_meshes[i].draw(_vertexAttribute, _texCoordAttribute, _normalAttribute);
+		// }
 	}
 
 	private var _meshes:Array<Mesh>;

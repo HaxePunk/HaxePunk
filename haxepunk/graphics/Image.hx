@@ -19,6 +19,9 @@ abstract ImageSource(Material) to Material from Material
 	}
 }
 
+/**
+ * A basic Image. Supports a clipping rectangle and flipping on the x and y axis.
+ */
 class Image extends Graphic
 {
 
@@ -33,7 +36,20 @@ class Image extends Graphic
 	public var flipY:Bool = false;
 
 	/**
-	 * Change the opacity of the Image, a value from 0 to 1.
+	 * Clipping rectangle used to only render a portion of the full texture.
+	 * The rectangle should be set in pixel values and not uv values.
+	 * Also sets the width/height values when changed.
+	 */
+	public var clipRect(default, set):Rectangle;
+	private inline function set_clipRect(value:Rectangle):Rectangle
+	{
+		width = value.width;
+		height = value.height;
+		return clipRect = value;
+	}
+
+	/**
+	 * Changes the opacity of the Image, a value from 0 to 1.
 	 */
 	public var alpha(default, set):Float;
 	private function set_alpha(value:Float):Float
@@ -42,6 +58,11 @@ class Image extends Graphic
 		return (alpha == value) ? value : alpha = value;
 	}
 
+	/**
+	 * Creates a new Image graphic.
+	 * @param source The source image which can be an asset string or a Material object
+	 * @param clipRect the default clipping rectangle
+	 */
 	public function new(source:ImageSource, ?clipRect:Rectangle)
 	{
 		super();
@@ -51,26 +72,19 @@ class Image extends Graphic
 		var texture = this.material.firstPass.getTexture(0);
 		if (texture == null) throw "Must have a texture attached for materials used in Image";
 
-		if (clipRect == null)
-		{
-			_clipRect = new Rectangle(0, 0, texture.width, texture.height);
-		}
-		else
-		{
-			_clipRect = clipRect;
-		}
-		width = _clipRect.width;
-		height = _clipRect.height;
+		this.clipRect = (clipRect == null ? new Rectangle(0, 0, texture.width, texture.height) : clipRect);
 #end
 	}
 
+	/**
+	 * Renders the image using sprite batching
+	 * @param offset the image offset value typically passed from an Entity object
+	 */
 	override public function draw(offset:Vector3):Void
 	{
 		SpriteBatch.draw(material, offset.x, offset.y, width, height,
-			_clipRect.x, _clipRect.y, _clipRect.width, _clipRect.height,
+			clipRect.x, clipRect.y, clipRect.width, clipRect.height,
 			flipX, flipY, origin.x, origin.y, scale.x, scale.y, angle);
 	}
-
-	private var _clipRect:Rectangle;
 
 }

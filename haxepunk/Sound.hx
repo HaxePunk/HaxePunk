@@ -2,12 +2,14 @@ package haxepunk;
 
 import lime.Assets;
 
+#if !doc-gen
+
 class Sound
 {
 
 	public function new(path:String)
 	{
-		_sound = Assets.getSound(path);
+		_sound = Assets.getAudioBuffer(path);
 	}
 
 	/**
@@ -65,6 +67,8 @@ class Sound
 	public var position(get, never):Float;
 	private inline function get_position():Float { return _sound.position; }
 
-	private var _sound:lime.Sound;
+	private var _sound:lime.audio.AudioBuffer;
 
 }
+
+#end

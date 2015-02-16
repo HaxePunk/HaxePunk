@@ -112,8 +112,8 @@ class Spritemap extends Image
 		columns = Math.ceil(this.width / width);
 		rows = Math.ceil(this.height / height);
 
-		_clipRect.width = this.width = width;
-		_clipRect.height = this.height = height;
+		clipRect.width = this.width = width;
+		clipRect.height = this.height = height;
 
 		frameCount = columns * rows;
 	}
@@ -348,8 +348,8 @@ class Spritemap extends Image
 	{
 		if (_lastFrame != _frame)
 		{
-			_clipRect.x = _frame % columns * width;
-			_clipRect.y = Std.int(_frame / columns) * height;
+			clipRect.x = _frame % columns * width;
+			clipRect.y = Std.int(_frame / columns) * height;
 			_lastFrame = _frame;
 		}
 		super.draw(offset);

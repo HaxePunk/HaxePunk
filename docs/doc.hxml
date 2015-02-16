@@ -1,0 +1,12 @@
+--no-output
+--remap flash:openfl
+-lib lime
+-lib openfl
+-D doc
+-D doc-gen
+-cp ..
+
+-swf haxedoc.swf
+-swf-version 11.2
+-xml xmls/haxepunk.xml
+--macro include('haxepunk')

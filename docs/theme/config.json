@@ -1,0 +1,5 @@
+{
+	"name": "HaxePunk's theme",
+	"author": "Valentin Lemière",
+	"headerIncludes": ["ink-min.css", "custom.css", "jquery-1.9.1.min.js", "styles.css", "favicon.ico", "nav.js", "index.js"]
+}

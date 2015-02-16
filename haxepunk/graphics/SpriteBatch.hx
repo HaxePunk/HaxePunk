@@ -6,9 +6,29 @@ import haxepunk.scene.Scene;
 class SpriteBatch
 {
 
+	/**
+	 * Adds a sprite to be drawn. Sprites are batched by material to reduce the number of draw calls.
+	 * @param material the Material to be used (includes shader and texture passes)
+	 * @param x the sprite's x-axis value
+	 * @param y the sprite's y-axis value
+	 * @param width the sprite's width
+	 * @param height the sprite's height
+	 * @param texX the sprite's uv rect x value
+	 * @param texY the sprite's uv rect y value
+	 * @param texWidth the sprite's uv rect width value
+	 * @param texHeight the sprite's uv rect height value
+	 * @param flipX flips sprite's uv coordinates on x-axis
+	 * @param flipY flips sprite's uv coordinates on y-axis
+	 * @param originX the sprite's x-axis anchor point for rotation
+	 * @param originY the sprite's y-axis anchor point for rotation
+	 * @param scaleX the sprite's x-axis scale value
+	 * @param scaleY the sprite's y-axis scale value
+	 * @param angle the sprite's rotation in radians
+	 * @param tint the sprite's tint color
+	 */
 	public static function draw(material:Material, x:Float, y:Float, width:Float, height:Float,
 		texX:Float, texY:Float, texWidth:Float, texHeight:Float, flipX:Bool=false, flipY:Bool=false,
-		originX:Float=0, originY:Float=0, scaleX:Float=1, scaleY:Float=1, angle:Float=0, ?tint:Color)
+		originX:Float=0, originY:Float=0, scaleX:Float=1, scaleY:Float=1, angle:Float=0, ?tint:Color):Void
 	{
 		if (material != _material)
 		{
@@ -134,7 +154,10 @@ class SpriteBatch
 		_vertices[_vIndex++] = a;
 	}
 
-	public static function flush()
+	/**
+	 * Flushes the last batch of sprites.
+	 */
+	public static function flush():Void
 	{
 		if (_index == 0) return;
 

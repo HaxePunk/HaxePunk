@@ -4,36 +4,45 @@ import haxepunk.math.Matrix4;
 import haxepunk.math.Vector3;
 import haxepunk.scene.Camera;
 
+/**
+ * The base Graphic class. All graphics are derived from this class and support scaling, rotation, and an origin point.
+ */
 class Graphic
 {
 
+	/**
+	 * Material used for this graphic.
+	 */
 	public var material:Material;
 
 	/**
-	 * Rotation of the image, in degrees.
+	 * Rotation of the graphic, in degrees.
 	 */
 	public var angle:Float = 0;
 
 	/**
-	 * Scale of the image.
+	 * Scale of the graphic.
 	 */
 	public var scale:Vector3;
 
 	/**
-	 * Origin of the image. Rotations will be anchored around this point
+	 * Origin of the graphic. Rotations will be anchored around this point
 	 */
 	public var origin:Vector3;
 
 	/**
-	 * Width of the image.
+	 * Width of the graphic.
 	 */
 	public var width(default, null):Float;
 
 	/**
-	 * Height of the image.
+	 * Height of the graphic.
 	 */
 	public var height(default, null):Float;
 
+	/**
+	 * Create a new graphic and initialize the matrix, scale and origin
+	 */
 	public function new()
 	{
 		_matrix = new Matrix4();
@@ -41,14 +50,26 @@ class Graphic
 		origin = new Vector3();
 	}
 
+	/**
+	 * Centers the graphic's origin based on the width and height values.
+	 */
 	public function centerOrigin():Void
 	{
 		origin.x = width / 2;
 		origin.y = height / 2;
 	}
 
+	/**
+	 * Graphic rendering method
+	 * @param offset an offset given to the graphic. Usually from an Entity object.
+	 */
 	public function draw(offset:Vector3):Void {}
-	public function update(elapsed:Float) {}
+
+	/**
+	 * Graphic update method, fired every frame
+	 * @param elapsed the time elapsed in seconds since the last frame
+	 */
+	public function update(elapsed:Float):Void {}
 
 	private var _matrix:Matrix4;
 
@@ -56,14 +77,14 @@ class Graphic
 
 /**
  * A Graphic that can contain multiple Graphics of one or various types.
- * Useful for drawing sprites with multiple different parts, etc.
+ * Useful for drawing sprites with multiple parts, etc...
  */
 class GraphicList extends Graphic
 {
 
 	/**
-	 * Constructor.
-	 * @param	...graphics		Graphic objects to add to the list.
+	 * Creates a new list of Graphic objects
+	 * @param graphics An optional list of Graphic objects to add to the list
 	 */
 	public function new(?graphics:Array<Graphic>)
 	{
@@ -93,7 +114,9 @@ class GraphicList extends Graphic
 		return graphic;
 	}
 
-	/** @private Draws the Graphics in the list. */
+	/**
+	 * Renders all of the Graphic objects in the list
+	 */
 	override public function draw(offset:Vector3):Void
 	{
 		for (i in 0..._children.length)
@@ -102,6 +125,9 @@ class GraphicList extends Graphic
 		}
 	}
 
+	/**
+	 * Updates all of the Graphic objects in the list
+	 */
 	override public function update(elapsed:Float):Void
 	{
 		for (i in 0..._children.length)
@@ -111,4 +137,5 @@ class GraphicList extends Graphic
 	}
 
 	private var _children:Array<Graphic>;
+
 }

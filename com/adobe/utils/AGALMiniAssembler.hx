@@ -359,66 +359,63 @@ class AGALMiniAssembler
 					agalcode.writeByte(regFound.emitCode);
 					pad -= 32;
 				}
-				else
+				else if (isSampler)
 				{
-					if (isSampler)
+					if (verbose) trace("  emit sampler");
+					var samplerbits:UInt = 5; // type 5
+					var bias:Float = 0;
+					for (opt in opts)
 					{
-						if (verbose) trace("  emit sampler");
-						var samplerbits:UInt = 5; // type 5
-						var bias:Float = 0;
-						for (opt in opts)
+						if (verbose)
 						{
+							trace("    opt: " + opt);
+						}
+
+						if (SAMPLEMAP.exists(opt))
+						{
+							var optfound:Sampler = SAMPLEMAP.get(opt);
+
+							if (optfound.flag != SAMPLER_SPECIAL_SHIFT)
+							{
+								samplerbits &= ~(0xf << optfound.flag);
+							}
+
+							samplerbits |= optfound.mask << optfound.flag;
+						}
+						else
+						{
+							// todo check that it's a number...
+							//trace( "Warning, unknown sampler option: " + opt );
+							bias = Std.parseFloat(opt);
 							if (verbose)
 							{
-								trace("    opt: " + opt);
-							}
-
-							if (SAMPLEMAP.exists(opt))
-							{
-								var optfound:Sampler = SAMPLEMAP.get(opt);
-
-								if (optfound.flag != SAMPLER_SPECIAL_SHIFT)
-								{
-									samplerbits &= ~(0xf << optfound.flag);
-								}
-
-								samplerbits |= optfound.mask << optfound.flag;
-							}
-							else
-							{
-								// todo check that it's a number...
-								//trace( "Warning, unknown sampler option: " + opt );
-								bias = Std.parseFloat(opt);
-								if (verbose)
-								{
-									trace("    bias: " + bias);
-								}
+								trace("    bias: " + bias);
 							}
 						}
-						agalcode.writeShort(regidx);
-						agalcode.writeByte(Std.int(bias * 8.0));
-						agalcode.writeByte(0);
-						agalcode.writeUnsignedInt(samplerbits);
-
-						if (verbose) trace("    bits: " + ( samplerbits - 5 ));
-						pad -= 64;
 					}
-					else
+					agalcode.writeShort(regidx);
+					agalcode.writeByte(Std.int(bias * 8.0));
+					agalcode.writeByte(0);
+					agalcode.writeUnsignedInt(samplerbits);
+
+					if (verbose) trace("    bits: " + ( samplerbits - 5 ));
+					pad -= 64;
+				}
+				else
+				{
+					if (j == 0)
 					{
-						if (j == 0)
-						{
-							agalcode.writeUnsignedInt(0);
-							pad -= 32;
-						}
-						agalcode.writeShort(regidx);
-						agalcode.writeByte(reloffset);
-						agalcode.writeByte(regmask);
-						agalcode.writeByte(regFound.emitCode);
-						agalcode.writeByte(reltype);
-						agalcode.writeShort(isRelative ? ( relsel | ( 1 << 15 ) ):0);
-
-						pad -= 64;
+						agalcode.writeUnsignedInt(0);
+						pad -= 32;
 					}
+					agalcode.writeShort(regidx);
+					agalcode.writeByte(reloffset);
+					agalcode.writeByte(regmask);
+					agalcode.writeByte(regFound.emitCode);
+					agalcode.writeByte(reltype);
+					agalcode.writeShort(isRelative ? ( relsel | ( 1 << 15 ) ):0);
+
+					pad -= 64;
 				}
 			}
 

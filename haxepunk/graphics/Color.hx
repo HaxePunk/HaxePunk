@@ -8,6 +8,13 @@ class Color
 	public var b:Float;
 	public var a:Float;
 
+	/**
+	 * Creates a new Color object, defaults to white
+	 * @param r the red value (0-1)
+	 * @param g the green value (0-1)
+	 * @param b the blue value (0-1)
+	 * @param a the alpha value (0-1)
+	 */
 	public function new(r:Float=1, g:Float=1, b:Float=1, a:Float=1)
 	{
 		this.r = r;

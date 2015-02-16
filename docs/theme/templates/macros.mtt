@@ -1,0 +1,129 @@
+<macro name="printTypeParams(params)">
+	::if params.length > 0::
+		&lt;
+		::foreach param params::
+			<span class="type">::param::</span>
+			::if !repeat.param.last::, ::end::
+		::end::
+		&gt;
+	::end::
+</macro>
+
+<macro name="printLinkedPath(path, params)">
+	::if api.isKnownType(path)::
+		<a class="type" ::attr href api.pathToUrl(path)::>::api.getPathName(path)::</a>
+	::else::
+		<span class="type">::api.getPathName(path)::</span>
+	::end::
+	::if params.length > 0::
+		&lt;
+		::foreach param params::
+			$$printLinkedType(::param::)
+			::if !repeat.param.last::, ::end::
+		::end::
+		&gt;
+	::end::
+</macro>
+
+<macro name="printLinkedType(ctype)">
+	::switch ctype::
+	::case::Unknown
+	::case::$$printLinkedPath(::args[0]::,::args[1]::)
+	::case::$$printLinkedPath(::args[0]::,::args[1]::)
+	::case::$$printLinkedPath(::args[0]::,::args[1]::)
+	::case::
+		::if args[0].length == 0::
+			$$printLinkedPath(::"Void"::,::[]::) -&gt;
+		::else::
+			::foreach arg args[0]::
+				$$printLinkedType(::arg.t::) -&gt;
+			::end::
+		::end::
+		$$printLinkedType(::args[1]::),&nbsp;
+	::case::
+	{
+		::foreach field args[0]::
+			::field.name:::$$printLinkedType(::field.type::)
+			::if !repeat.field.last::, ::end::
+		::end::
+	}
+	::case::$$printLinkedPath(::"Dynamic"::,::[]::)::if args[0] != null::$$printLinkedType(::args[0]::)::end::
+	::case::$$printLinkedPath(::args[0]::,::args[1]::)
+	::end::
+</macro>
+
+<macro name="printLinkedTypeOpt(ctype, isOptional)">
+	::if isOptional::
+		::switch ctype::
+			$$printLinkedType(::ctype::)
+		::case 3::
+			::switch args[1].h[0]::
+			::case 7::
+				$$printLinkedPath(::args[0]::,::[]::)
+			::end::
+		::end::
+	::else::
+		$$printLinkedType(::ctype::)
+	::end::
+</macro>
+
+<macro name="printModule(module)">
+	<p ::cond module != null && module != "StdTypes"::>
+		<span class="directive">defined in</span> <span class="type">::module::</span>;
+	</p>
+</macro>
+
+<macro name="printFieldSignature(field, isStatic)">
+	::set isOptional = false::
+	::foreach meta field.meta::
+		::if meta.name == ":deprecated"::
+			<span class="ink-label red">deprecated</span>&nbsp;
+		::end::
+		::if meta.name == ":optional"::
+			<span class="ink-label orange">optional</span>&nbsp;
+			::eval isOptional = true::
+		::end::
+	::end::
+	::if isStatic::
+		<span class="ink-label orange">static</span>&nbsp;
+	::end::
+	::switch field.type::
+		::switch field.get::
+		::case 1::
+			<span class="ink-label orange">write only</span>&nbsp;
+		::end::
+		::switch field.set::
+		::case 1::
+			<span class="ink-label orange">read only</span>&nbsp;
+		::end::
+		<a href="#::field.name::"><span class="identifier">::field.name::</span></a>&nbsp;:&nbsp;$$printLinkedTypeOpt(::field.type::,::isOptional::)
+	::case 4::
+		<a href="#::field.name::"><span class="identifier">::field.name::</span></a>
+		$$printTypeParams(::field.params::)
+		&nbsp;(
+		::foreach arg args[0]::
+			::if arg.opt && arg.value == "null"::
+				?
+			::end::
+			
+			::arg.name:: : $$printLinkedType(::arg.t::)
+			
+			::if arg.value != null && arg.value != "null"::
+				&nbsp;=&nbsp;
+				::if arg.value == "16777215"::
+					0xFFFFFF
+				::else::
+					::if arg.value == "-16777216"::
+						0
+					::else::
+						::arg.value::
+					::end::
+				::end::
+			::end::
+			
+			::if !repeat.arg.last::, ::end::
+		::end::
+		)
+		&nbsp;:&nbsp;$$printLinkedType(::args[1]::)
+	::end::
+</macro>

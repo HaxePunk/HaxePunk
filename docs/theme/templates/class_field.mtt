@@ -1,0 +1,18 @@
+<div ::attr class api.getPlatformClassString(field.platforms) + " field"::>
+	<span ::cond api.isDefined("source-path") && field.line != null:: class="viewsource viewsourceline">
+		<a href="::api.getSourceLink(type)::#L::field.line::"><span class="icon-code"></span> View source</a>
+	</span>
+		
+	<a ::attr name field.name::></a>
+	
+		<p>$$printFieldSignature(::field::,::isStatic::)</p>
+		::if field.overloads != null::
+			::foreach field field.overloads::
+				<p><code>$$printFieldSignature(::field::,::isStatic::)</code></p>
+			::end::
+		::end::
+	
+	::if field.doc != null::
+		::raw field.doc::
+	::end::
+</div>

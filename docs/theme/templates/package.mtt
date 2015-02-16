@@ -1,0 +1,17 @@
+::use 'main.mtt'::
+	::if full == ""::
+		<h1>HaxePunk API</h1>
+		
+		<p>
+			Use the navigation on the left to go through the documentation.
+		</p>
+		<p>
+			You can also find the documentation for offline use in the <code>/doc/pages/</code> folder
+			 of your installation of HaxePunk.
+			
+			<br />
+			
+			Alternatively you can use <code>haxelib run HaxePunk doc</code> to open the offline documentation.
+		</p>
+	::end::
+::end::

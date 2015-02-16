@@ -4,13 +4,12 @@ import haxepunk.scene.Camera;
 import haxepunk.math.Vector3;
 import haxepunk.math.Matrix4;
 
-class Tilemap implements Graphic
+class Tilemap extends Graphic
 {
-
-	public var material(default, null):Material;
 
 	public function new(material:Material, width:Int, height:Int, tileWidth:Int, tileHeight:Int, ?tileSpacingWidth:Int=0, ?tileSpacingHeight:Int=0)
 	{
+		super();
 		_width = width - (width % tileWidth);
 		_height = height - (height % tileHeight);
 		_columns = Std.int(_width / tileWidth);
@@ -158,17 +157,9 @@ class Tilemap implements Graphic
 		}
 	}
 
-	public function update(elapsed:Float):Void
+	override public function draw(offset:Vector3):Void
 	{
-
-	}
-
-	public function draw(camera:Camera, offset:Vector3):Void
-	{
-		if (material == null) return;
-		material.use();
-
-		// HXP.spriteBatch.draw(this, _matrix);
+		// SpriteBatch.draw(material, _matrix);
 	}
 
 	// Tilemap information.
@@ -178,6 +169,5 @@ class Tilemap implements Graphic
 
 	private var _width:Int;
 	private var _height:Int;
-	private var _matrix:Matrix4;
 
 }

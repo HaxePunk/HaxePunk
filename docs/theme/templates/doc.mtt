@@ -1,0 +1,54 @@
+::if info.deprecated != null::
+    <div class="alert inline-content">
+        <strong>Deprecated</strong>: ::raw info.deprecated.doc::
+    </div>
+::end::
+
+::raw info.doc::
+
+::if info.params.length > 0::
+    <br />
+    <em>Parameters:</em>
+
+    <table style="margin-left: 30px;">
+        ::foreach param info.params::
+            <tr>
+                <td>
+                    <strong>::raw param.value::</strong>
+                </td>
+                <td>&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                    ::raw param.doc::
+                </td>
+            </tr>
+        ::end::
+    </table>
+::end::
+
+::if info.defaultValue != null::
+default value ::raw info.defaultValue.doc::
+::end::
+
+::if info.returns != null::
+    <br />
+    <em>Returns:</em>
+
+    <div style="margin-left: 30px;">
+        ::raw info.returns.doc::
+    </div>
+::end::
+
+::if info.throws.length > 0::
+    <p class="javadoc">Throws:</p>
+    ::foreach throws info.throws::
+        <div class="indent inline-content">
+            <code>::throws.value::</code> ::raw throws.doc::
+        </div>
+    ::end::
+::end::
+
+::if info.since != null::
+    <div class="javadoc inline-content">
+        Available since ::raw info.since.doc::.
+    </div>
+::end::
