@@ -22,7 +22,6 @@ import com.haxepunk.graphics.Image;
  *         var sprite = new Image("myimage.png", 100, 100);
  *         graphic = sprite;
  *         mask = new Imagemask(sprite);
- *         mask.assignTo(this);
  *     }
  * }
  * ```
