@@ -50,7 +50,7 @@ class HaxelibInfoBuilder
 
 		for (i in 1...lines.length)
 		{
-			if (StringTools.trim(lines[i]) == "-D HaxePunk")
+			if (StringTools.startsWith(lines[i], "-D HaxePunk"))
 			{
 				result = StringTools.trim(lines[i - 1]);
 			}
