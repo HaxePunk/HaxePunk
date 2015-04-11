@@ -25,7 +25,7 @@ typedef TextOptions = {
 	/** Optional. The font size. Default value is 16. */
 	@:optional var size:Int;	
 	/** Optional. The aligment of the text. Default value is left. */
-#if (flash || js)
+#if (flash || js || !openfl_legacy)
 	@:optional var align:TextFormatAlign;
 #else
 	@:optional var align:String;
@@ -447,7 +447,7 @@ class Text extends Image
 	/**
 	 * Font alignment.
 	 */
-#if (flash || js)
+#if (flash || js || !openfl_legacy)
 	public var align(default, set):TextFormatAlign;
 	private function set_align(value:TextFormatAlign):TextFormatAlign
 #else
