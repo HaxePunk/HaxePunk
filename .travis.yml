@@ -1,5 +1,5 @@
 language: haxe
-haxe: "3.2.0-rc.2"
+haxe: "3.2.0-rc2"
 neko: "2.0.0"
 
 env: LD_LIBRARY_PATH=/usr/lib/neko
