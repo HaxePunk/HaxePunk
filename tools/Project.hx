@@ -27,6 +27,7 @@ class Project
 
 	public static function create(args:Array<String>)
 	{
+	CLI.print("Hi there! ARGS:" + args);
         var slash:String = "";
 
 		var path = args.pop();
