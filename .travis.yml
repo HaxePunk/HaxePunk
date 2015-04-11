@@ -1,12 +1,10 @@
-language: java
+language: haxe
+haxe: "3.2.0-rc.2"
+neko: "2.0.0"
 
 env: LD_LIBRARY_PATH=/usr/lib/neko
 
 before_install:
-  # Install haxe
-  - sudo add-apt-repository ppa:eyecreate/haxe -y
-  - sudo apt-get update
-  - sudo apt-get install haxe -y --force-yes
   # Setup haxelib
   - mkdir -p ~/haxelib
   - haxelib setup ~/haxelib
