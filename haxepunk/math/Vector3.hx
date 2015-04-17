@@ -146,9 +146,14 @@ abstract Vector3 (Point3D)
 		return a;
 	}
 
-	@:op(A % B) public static inline function cross(a:Vector3, b:Vector3):Vector3
+	public inline function cross(v:Vector3):Vector3
 	{
-		return new Vector3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
+		return new Vector3(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
+	}
+
+	@:op(A % B) private static inline function _cross(a:Vector3, b:Vector3):Vector3
+	{
+		return a.cross(b);
 	}
 
 	@:op(A %= B) private static inline function _crossEquals(a:Vector3, b:Vector3):Vector3
@@ -188,9 +193,14 @@ abstract Vector3 (Point3D)
 		);
 	}
 
-	@:op(A * B) public static inline function dot(a:Vector3, b:Vector3):Float
+	public inline function dot(v:Vector3):Float
 	{
-		return a.x * b.x + a.y * b.y + a.z * b.z;
+		return x * v.x + y * v.y + z * v.z;
+	}
+
+	@:op(A * B) private static inline function _dot(a:Vector3, b:Vector3):Float
+	{
+		return a.dot(b);
 	}
 
 	@:op(A == B) private static inline function _equals(a:Vector3, b:Vector3):Bool

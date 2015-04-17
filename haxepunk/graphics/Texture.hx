@@ -56,7 +56,7 @@ class Texture
 		else
 		{
 			texture = new Texture(id);
-			texture.loadFromImage(Assets.getImage(id));
+			texture.loadFromImage(Assets.getImage(id).buffer);
 		}
 		return texture;
 	}
@@ -164,7 +164,7 @@ class Texture
 	}
 
 	@:allow(haxepunk.graphics)
-	private function loadFromImage(image:lime.graphics.Image)
+	private function loadFromImage(image:lime.graphics.ImageBuffer)
 	{
 		if (image == null) return;
 		sourceWidth = image.width;

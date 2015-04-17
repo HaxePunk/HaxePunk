@@ -67,11 +67,9 @@ class GLRenderer
 		}
 	}
 
-	public static inline function createTexture(image:Image):NativeTexture
+	public static inline function createTexture(image:ImageBuffer):NativeTexture
 	{
-		image.powerOfTwo = true;
-
-		var format = image.buffer.bitsPerPixel == 1 ? GL.ALPHA : GL.RGBA;
+		var format = image.bitsPerPixel == 1 ? GL.ALPHA : GL.RGBA;
 		var texture = GL.createTexture();
 		GL.bindTexture(GL.TEXTURE_2D, texture);
 		GL.texImage2D(GL.TEXTURE_2D, 0, format, image.width, image.height, 0, format, GL.UNSIGNED_BYTE, image.data);

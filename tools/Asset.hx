@@ -1,6 +1,6 @@
 package tools;
 
-import lime.graphics.Font;
+import lime.text.Font;
 import sys.io.*;
 
 class Asset

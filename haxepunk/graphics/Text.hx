@@ -55,10 +55,15 @@ class Text extends Graphic
 		#else
 		_font = Font.fromFile("font/SourceCodePro-Regular.otf");
 		_textLayout = new TextLayout("", _font, size, LEFT_TO_RIGHT, LATIN, "en");
-		var image = _font.renderGlyphs(_font.getGlyphs(), size);
-
 		_texture = new Texture();
-		_texture.loadFromImage(image);
+		_images = _font.renderGlyphs(_font.getGlyphs(), size);
+		for (image in _images)
+		{
+			_texture.loadFromImage(image.buffer);
+			break;
+		}
+		trace(_texture.width, _texture.height);
+
 		var vert = Assets.getText("shaders/default.vert");
 		var frag = Assets.getText("shaders/text.frag");
 		#end
@@ -110,47 +115,51 @@ class Text extends Graphic
 					x = 0.0;
 					for (p in _textLayout.positions)
 					{
-						var metrics = _font.getGlyphMetrics(p.glyph);
-						trace(metrics);
+						var image = _images.get(p.glyph);
+						if (image != null)
+						{
+							// uv
+							var ratio  = 1 / _texture.width;
+							var left   = image.offsetX * ratio;
+							var right  = left + image.width * ratio;
+							ratio      = 1 / _texture.height;
+							var top    = image.offsetY * ratio;
+							var bottom = top + image.height * ratio;
 
-						var left   = metrics.advance.x / _texture.width;
-						var top    = metrics.advance.y / _texture.height;
-						var right  = left + metrics.width / _texture.width;
-						var bottom = top + metrics.height / _texture.height;
+							var pointLeft = x + p.offset.x + image.x;
+							var pointTop = y + p.offset.y - image.y;
+							var pointRight = pointLeft + image.width;
+							var pointBottom = pointTop + image.height;
 
-						var pointLeft = x + p.offset.x + metrics.xOffset;
-						var pointTop = y + p.offset.y - metrics.yOffset;
-						var pointRight = pointLeft + metrics.width;
-						var pointBottom = pointTop + metrics.height;
+							_vertices[vertIndex++] = pointRight;
+							_vertices[vertIndex++] = pointBottom;
+							_vertices[vertIndex++] = right;
+							_vertices[vertIndex++] = bottom;
 
-						_vertices[vertIndex++] = pointRight;
-						_vertices[vertIndex++] = pointBottom;
-						_vertices[vertIndex++] = right;
-						_vertices[vertIndex++] = bottom;
+							_vertices[vertIndex++] = pointLeft;
+							_vertices[vertIndex++] = pointBottom;
+							_vertices[vertIndex++] = left;
+							_vertices[vertIndex++] = bottom;
 
-						_vertices[vertIndex++] = pointLeft;
-						_vertices[vertIndex++] = pointBottom;
-						_vertices[vertIndex++] = left;
-						_vertices[vertIndex++] = bottom;
+							_vertices[vertIndex++] = pointRight;
+							_vertices[vertIndex++] = pointTop;
+							_vertices[vertIndex++] = right;
+							_vertices[vertIndex++] = top;
 
-						_vertices[vertIndex++] = pointRight;
-						_vertices[vertIndex++] = pointTop;
-						_vertices[vertIndex++] = right;
-						_vertices[vertIndex++] = top;
+							_vertices[vertIndex++] = pointLeft;
+							_vertices[vertIndex++] = pointTop;
+							_vertices[vertIndex++] = left;
+							_vertices[vertIndex++] = top;
 
-						_vertices[vertIndex++] = pointLeft;
-						_vertices[vertIndex++] = pointTop;
-						_vertices[vertIndex++] = left;
-						_vertices[vertIndex++] = top;
+							var j = Std.int(indIndex / 6) * 4;
+							_indices[indIndex++] = j;
+							_indices[indIndex++] = j+1;
+							_indices[indIndex++] = j+2;
 
-						var j = Std.int(indIndex / 6) * 4;
-						_indices[indIndex++] = j;
-						_indices[indIndex++] = j+1;
-						_indices[indIndex++] = j+2;
-
-						_indices[indIndex++] = j+1;
-						_indices[indIndex++] = j+2;
-						_indices[indIndex++] = j+3;
+							_indices[indIndex++] = j+1;
+							_indices[indIndex++] = j+2;
+							_indices[indIndex++] = j+3;
+						}
 
 						x += p.advance.x;
 						y -= p.advance.y;
@@ -217,6 +226,7 @@ class Text extends Graphic
 	private var _widthUniform:Location;
 	private var _heightUniform:Location;
 
+	private var _images:Map<lime.text.Glyph, lime.graphics.Image>;
 	private var _vertices:FloatArray;
 	private var _indices:IntArray;
 	private var _vertexBuffer:VertexBuffer;
