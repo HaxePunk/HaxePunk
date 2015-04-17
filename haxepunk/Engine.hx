@@ -25,10 +25,8 @@ class Engine extends Application
 		pushScene(scene == null ? new Scene() : scene);
 	}
 
-	override public function create(config:Config):Void
+	override public function exec():Int
 	{
-		super.create(config);
-
 		HXP.window = windows[0];
 
 		// Init the input system
@@ -47,6 +45,8 @@ class Engine extends Application
 			default:
 				ready();
 		}
+
+		return super.exec();
 	}
 
 	/**

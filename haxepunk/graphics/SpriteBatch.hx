@@ -167,28 +167,29 @@ class SpriteBatch
 			_material.firstPass;
 		}
 
-		_material.use();
-
-		for (technique in _material.techniques)
+		// update buffers
+		if (_vertexBuffer == null)
 		{
-			for (pass in technique.passes)
-			{
-				Renderer.setMatrix(pass.shader.uniform("uMatrix"), HXP.scene.camera.transform);
+			_vertexBuffer = Renderer.createBuffer(8);
+		}
+		Renderer.bindBuffer(_vertexBuffer);
+		Renderer.updateBuffer(_vertices, STATIC_DRAW);
 
-				if (_vertexBuffer == null)
-				{
-					_vertexBuffer = Renderer.createBuffer(8);
-				}
-				Renderer.bindBuffer(_vertexBuffer);
-				Renderer.updateBuffer(_vertices, STATIC_DRAW);
-				Renderer.setAttribute(pass.shader.attribute("aVertexPosition"), 0, 2);
-				Renderer.setAttribute(pass.shader.attribute("aTexCoord"), 2, 2);
-				Renderer.setAttribute(pass.shader.attribute("aColor"), 4, 4);
+		_indexBuffer = Renderer.updateIndexBuffer(_indices, STATIC_DRAW, _indexBuffer);
 
-				_indexBuffer = Renderer.updateIndexBuffer(_indices, STATIC_DRAW, _indexBuffer);
+		// grab the camera transform
+		var cameraTransform = HXP.scene.camera.transform;
+		var numIndices = Std.int(_iIndex / 3);
 
-				Renderer.draw(_indexBuffer, Std.int(_iIndex / 3));
-			}
+		// loop material passes
+		for (pass in _material.passes)
+		{
+			pass.use();
+			Renderer.setMatrix(pass.shader.uniform("uMatrix"), cameraTransform);
+			Renderer.setAttribute(pass.shader.attribute("aVertexPosition"), 0, 2);
+			Renderer.setAttribute(pass.shader.attribute("aTexCoord"), 2, 2);
+			Renderer.setAttribute(pass.shader.attribute("aColor"), 4, 4);
+			Renderer.draw(_indexBuffer, numIndices);
 		}
 
 		_vIndex = _iIndex = _index = 0;

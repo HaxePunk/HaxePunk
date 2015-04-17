@@ -20,11 +20,6 @@ class Text extends Graphic
 	public var color:Color;
 
 	/**
-	 * The font size of the Text
-	 */
-	public var size(default, null):Int;
-
-	/**
 	 * The pixel height of each line of text
 	 */
 	public var lineHeight:Float;
@@ -35,53 +30,23 @@ class Text extends Graphic
 	public var tabWidth:Int = 4;
 
 	/**
-	 * Create a new Text graphic
-	 * @param text the default text to render
-	 * @param size the font size of the text
+	 * The font size of the Text
 	 */
-	public function new(text:String, size:Int=14)
-	{
-		super();
-		_vertices = new FloatArray();
-		_indices = new IntArray();
-		color = new Color();
-
-		this.size = size;
-		this.lineHeight = size;
-
-		#if flash
-		var vert = "m44 op, va0, vc0\nmov v0, va1";
-		var frag = "tex ft0, v0, fs0 <linear nomip 2d wrap>\nmov ft0.xyz, fc1.xyz\nmov oc, ft0";
-		#else
-		_font = Font.fromFile("font/SourceCodePro-Regular.otf");
-		_textLayout = new TextLayout("", _font, size, LEFT_TO_RIGHT, LATIN, "en");
-		_texture = new Texture();
-		_images = _font.renderGlyphs(_font.getGlyphs(), size);
-		for (image in _images)
+	public var size(default, set):Int;
+	private function set_size(value:Int):Int {
+		if (size != value)
 		{
-			_texture.loadFromImage(image.buffer);
-			break;
+			_images = _font.renderGlyphs(_font.getGlyphs(), value);
+			if (_images != null)
+			{
+				var it = _images.iterator();
+				if (it.hasNext())
+				{
+					_texture.loadFromImage(it.next().buffer);
+				}
+			}
 		}
-		trace(_texture.width, _texture.height);
-
-		var vert = Assets.getText("shaders/default.vert");
-		var frag = Assets.getText("shaders/text.frag");
-		#end
-
-		var shader = new Shader(vert, frag);
-		material = Material.fromAsset("materials/text.material");
-		var pass = material.firstPass;
-		pass.shader = shader;
-		pass.addTexture(_texture);
-
-		_vertexAttribute = shader.attribute("aVertexPosition");
-		_texCoordAttribute = shader.attribute("aTexCoord");
-
-		_modelViewMatrixUniform = shader.uniform("uMatrix");
-		_colorUniform = shader.uniform("uColor");
-		_vertexBuffer = Renderer.createBuffer(4);
-
-		this.text = text;
+		return size = value;
 	}
 
 	/**
@@ -178,6 +143,44 @@ class Text extends Graphic
 	}
 
 	/**
+	 * Create a new Text graphic
+	 * @param text the default text to render
+	 * @param size the font size of the text
+	 */
+	public function new(text:String, size:Int=14)
+	{
+		super();
+		_vertices = new FloatArray();
+		_indices = new IntArray();
+		_texture = new Texture();
+		color = new Color();
+
+		#if flash
+		var vert = "m44 op, va0, vc0\nmov v0, va1";
+		var frag = "tex ft0, v0, fs0 <linear nomip 2d wrap>\nmov ft0.xyz, fc1.xyz\nmov oc, ft0";
+		#else
+		_font = Font.fromFile("hxp/font/SourceCodePro-Regular.otf");
+		_textLayout = new TextLayout("", _font, size, LEFT_TO_RIGHT, LATIN, "en");
+
+		// MUST be set after the texture is created
+		this.lineHeight = this.size = size;
+
+		var vert = Assets.getText("hxp/shaders/default.vert");
+		var frag = Assets.getText("hxp/shaders/text.frag");
+		#end
+
+		var shader = new Shader(vert, frag);
+		material = Material.fromAsset("hxp/materials/text.material");
+		var pass = material.firstPass;
+		pass.shader = shader;
+		pass.addTexture(_texture);
+
+		_vertexBuffer = Renderer.createBuffer(4);
+
+		this.text = text;
+	}
+
+	/**
 	 * Draw the Text object to the screen
 	 * @param offset the offset of the Text object usually set from and Entity
 	 */
@@ -186,12 +189,9 @@ class Text extends Graphic
 		#if !flash
 		if (_numTriangles <= 0 || _indexBuffer == null || _vertexBuffer == null) return;
 
-		// TODO: batch this process
-
+		// TODO: batch this process?
 		// finish drawing whatever came before the text area
 		SpriteBatch.flush();
-
-		material.use();
 
 		origin *= scale;
 		origin += offset;
@@ -204,27 +204,23 @@ class Text extends Graphic
 		origin -= offset;
 		origin /= scale;
 
-		Renderer.setMatrix(_modelViewMatrixUniform, _matrix);
-		Renderer.setColor(_colorUniform, color);
-
 		Renderer.bindBuffer(_vertexBuffer);
-		Renderer.setAttribute(_vertexAttribute, 0, 2);
-		Renderer.setAttribute(_texCoordAttribute, 2, 2);
+		for (pass in material.passes)
+		{
+			pass.use();
+			Renderer.setMatrix(pass.shader.uniform("uMatrix"), _matrix);
+			Renderer.setColor(pass.shader.uniform("uColor"), color);
+			Renderer.setAttribute(pass.shader.attribute("aVertexPosition"), 0, 2);
+			Renderer.setAttribute(pass.shader.attribute("aTexCoord"), 2, 2);
+			Renderer.draw(_indexBuffer, _numTriangles, 0);
+		}
 
-		Renderer.draw(_indexBuffer, _numTriangles, 0);
 		#end
 	}
 
 	private var _textLayout:TextLayout;
 	private var _font:Font;
 	private var _texture:Texture;
-
-	private var _texCoordAttribute:Int;
-	private var _vertexAttribute:Int;
-	private var _modelViewMatrixUniform:Location;
-	private var _colorUniform:Location;
-	private var _widthUniform:Location;
-	private var _heightUniform:Location;
 
 	private var _images:Map<lime.text.Glyph, lime.graphics.Image>;
 	private var _vertices:FloatArray;

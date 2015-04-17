@@ -6,7 +6,7 @@ import haxepunk.scene.Scene;
 
 class Control extends Entity
 {
-	public static var defaultSkin:String = "graphics/gui/defaultSkin.png";
+	public static var defaultSkin:String = "hxp/graphics/gui/defaultSkin.png";
 
 	public var width(get, set):Float;
 	private inline function get_width():Float { return hitbox.width; }

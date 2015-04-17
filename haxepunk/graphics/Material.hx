@@ -84,8 +84,8 @@ class Pass
 			var vert = "m44 op, va0, vc0\nmov v0, va1";
 			var frag = "tex oc, v0, fs0 <linear nomip 2d wrap>";
 			#else
-			var vert = Assets.getText("shaders/default.vert");
-			var frag = Assets.getText("shaders/default.frag");
+			var vert = Assets.getText("hxp/shaders/default.vert");
+			var frag = Assets.getText("hxp/shaders/default.frag");
 			#end
 			_defaultShader = new Shader(vert, frag);
 		}
@@ -101,29 +101,8 @@ class Pass
 
 }
 
-class Technique
-{
-
-	public var passes:List<Pass>;
-	public var valid:Bool = true;
-
-	public function new()
-	{
-		passes = new List<Pass>();
-	}
-
-	public function use():Bool
-	{
-		for (pass in passes)
-		{
-			pass.use();
-		}
-		return true;
-	}
-}
-
 /**
- * Contains techniques and passes for rendering graphics.
+ * Contains passes for rendering graphics.
  */
 class Material
 {
@@ -133,13 +112,13 @@ class Material
 	 */
 	public var name:String;
 	/**
-	 * A list of the material's techniques.
+	 * A list of the material's passes.
 	 */
-	public var techniques:List<Technique>;
+	public var passes:List<Pass>;
 
 	public function new()
 	{
-		techniques = new List<Technique>();
+		passes = new List<Pass>();
 	}
 
 	/**
@@ -167,21 +146,8 @@ class Material
 	public var firstPass(get, never):Pass;
 	private inline function get_firstPass():Pass
 	{
-		if (techniques.length < 1) techniques.add(new Technique());
-		var technique = techniques.first();
-		if (technique.passes.length < 1) technique.passes.add(new Pass());
-		return technique.passes.first();
-	}
-
-	/**
-	 * Binds the material for use in rendering
-	 */
-	public function use():Void
-	{
-		for (technique in techniques)
-		{
-			if (technique.valid && technique.use()) break;
-		}
+		if (passes.length < 1) passes.add(new Pass());
+		return passes.first();
 	}
 
 }
@@ -254,7 +220,11 @@ class Material
 		expected("{");
 		while (scan() == "technique")
 		{
-			material.techniques.push(technique(material));
+			// TODO: check if technique fails and load fallback instead of loading all passes
+			for (pass in technique(material))
+			{
+				material.passes.add(pass);
+			}
 		}
 		expected("}");
 		return material;
@@ -282,7 +252,7 @@ class Material
 		color.b = float();
 	}
 
-	private function pass(technique:Technique)
+	private function pass():Pass
 	{
 		expected("pass");
 		expected("{");
@@ -312,7 +282,7 @@ class Material
 			}
 		}
 		expected("}");
-		technique.passes.push(pass);
+		return pass;
 	}
 
 	private function textureUnit()
@@ -337,17 +307,17 @@ class Material
 		}
 	}
 
-	private function technique(material:Material):Technique
+	private function technique(material:Material):Array<Pass>
 	{
 		expected("technique");
 		expected("{");
-		var technique = new Technique();
+		var passes = [];
 		while (scan() == "pass")
 		{
-			pass(technique);
+			passes.push(pass());
 		}
 		expected("}");
-		return technique;
+		return passes;
 	}
 
 	private inline function expected(expected:String):String

@@ -1,6 +1,6 @@
 package haxepunk.debug;
 
-class HistoryQueue<T> implements ArrayAccess<T>
+class HistoryQueue<T>
 {
 
 	public var length(get, never):Int;
@@ -31,12 +31,7 @@ class HistoryQueue<T> implements ArrayAccess<T>
 		return _queue.toString();
 	}
 
-	public function __set(index:Int, value:T):Void
-	{
-		throw "HistoryQueue does not allow values to be directly set using brackets []";
-	}
-
-	public function __get(index:Int):T
+	public function get(index:Int):T
 	{
 		return _queue[index];
 	}

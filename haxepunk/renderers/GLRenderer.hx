@@ -27,6 +27,16 @@ class GLRenderer
 		GL.viewport(x, y, width, height);
 	}
 
+	public static inline function attribute(program:ShaderProgram, a:String):Int
+	{
+		return GL.getAttribLocation(program, a);
+	}
+
+	public static inline function uniform(program:ShaderProgram, u:String):Location
+	{
+		return GL.getUniformLocation(program, u);
+	}
+
 	public static inline function present():Void
 	{
 		_totalRenderCalls += _renderCalls;
