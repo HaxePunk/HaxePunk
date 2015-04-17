@@ -33,21 +33,21 @@ class Keyboard
 		{
 			return "";
 		}
-		if (char >= Key.A && char <= Key.Z)
+		if (char >= Std.int(Key.A) && char <= Std.int(Key.Z))
 		{
-			return String.fromCharCode(char - Key.A + 65);
+			return String.fromCharCode(char - Std.int(Key.A) + 65);
 		}
-		if (char >= Key.F1 && char <= Key.F12)
+		if (char >= Std.int(Key.F1) && char <= Std.int(Key.F12))
 		{
-			return "F" + Std.string(char - Key.F1 + 1);
+			return "F" + Std.string(char - Std.int(Key.F1) + 1);
 		}
-		if (char >= Key.NUMPAD_1 && char <= Key.NUMPAD_0)
+		if (char >= Std.int(Key.NUMPAD_1) && char <= Std.int(Key.NUMPAD_0))
 		{
-			return "NUMPAD " + Std.string((char - Key.NUMPAD_1 + 1)%10);
+			return "NUMPAD " + Std.string((char - Std.int(Key.NUMPAD_1) + 1)%10);
 		}
-		if (char >= Key.DIGIT_0 && char <= Key.DIGIT_9)
+		if (char >= Std.int(Key.DIGIT_0) && char <= Std.int(Key.DIGIT_9))
 		{
-			return Std.string(char - Key.DIGIT_0);
+			return Std.string(char - Std.int(Key.DIGIT_0));
 		}
 
 		return switch (key)
@@ -95,7 +95,7 @@ class Keyboard
 		// Register the events from lime
 		window.onKeyDown.add(onKeyDown);
 		window.onKeyUp.add(onKeyUp);
-		window.onTextInput.add(onTextInput);
+		// window.onTextInput.add(onTextInput);
 	}
 
 	/**
@@ -108,7 +108,7 @@ class Keyboard
 	@:allow(haxepunk.inputs.Input)
 	private static function value(key:Key, v:InputValue):Int
 	{
-		if (key <= -1) // Any
+		if (Std.int(key) <= -1) // Any
 		{
 			var result = 0;
 			for (state in _states)
@@ -313,10 +313,4 @@ abstract Key(Int) to Int
 	var NUMPAD_MULTIPLY = 0x40000055;
 	var NUMPAD_SUBTRACT = 0x40000056;
 
-	@:op(A<=B) private static inline function lessEq (lhs:Key, rhs:Int):Bool { return lhs <= rhs; }
-	@:op(A<=B) private static inline function lessEq2 (lhs:Int, rhs:Key):Bool { return lhs <= rhs; }
-	@:op(A>=B) private static inline function moreEq (lhs:Int, rhs:Key):Bool { return lhs >= rhs; }
-	@:op(A>=B) private static inline function moreEq2 (lhs:Int, rhs:Key):Bool { return lhs >= rhs; }
-	@:op(A-B) private static inline function sub (lhs:Key, rhs:Int):Int { return lhs - rhs; }
-	@:op(A-B) private static inline function sub2 (lhs:Int, rhs:Key):Int { return lhs - rhs; }
 }

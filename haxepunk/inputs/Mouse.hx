@@ -139,7 +139,7 @@ class Mouse
 	/**
 	 * Lime onMouseMove event.
 	 */
-	private static inline function onMouseMove(x:Float, y:Float, button:Int):Void
+	private static inline function onMouseMove(x:Float, y:Float):Void
 	{
 		Mouse.x = x;
 		Mouse.y = y;
@@ -150,7 +150,7 @@ class Mouse
 	 */
 	private static function onMouseDown(x:Float, y:Float, button:Int):Void
 	{
-		onMouseMove(x, y, button);
+		onMouseMove(x, y);
 
 		getInputState(button).pressed += 1;
 		last = cast button;
@@ -161,7 +161,7 @@ class Mouse
 	 */
 	private static function onMouseUp(x:Float, y:Float, button:Int):Void
 	{
-		onMouseMove(x, y, button);
+		onMouseMove(x, y);
 
 		getInputState(button).released += 1;
 		last = cast button;

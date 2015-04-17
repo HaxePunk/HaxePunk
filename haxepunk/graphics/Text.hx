@@ -5,8 +5,8 @@ import haxepunk.scene.Camera;
 import haxepunk.math.Vector3;
 import haxepunk.math.Matrix4;
 import haxepunk.renderers.Renderer;
-import lime.graphics.Font;
-import lime.graphics.TextFormat;
+import lime.text.Font;
+import lime.text.TextLayout;
 import lime.Assets;
 
 using StringTools;
@@ -54,12 +54,11 @@ class Text extends Graphic
 		var frag = "tex ft0, v0, fs0 <linear nomip 2d wrap>\nmov ft0.xyz, fc1.xyz\nmov oc, ft0";
 		#else
 		_font = Font.fromFile("font/SourceCodePro-Regular.otf");
-		_font.loadGlyphs(size);
-		var image = _font.createImage();
-		_textFormat = new TextFormat(LeftToRight, ScriptLatin, "en");
+		_textLayout = new TextLayout("", _font, size, LEFT_TO_RIGHT, LATIN, "en");
+		var image = _font.renderGlyphs(_font.getGlyphs(), size);
 
 		_texture = new Texture();
-		_texture.loadFromImage(new lime.graphics.Image(image));
+		_texture.loadFromImage(image);
 		var vert = Assets.getText("shaders/default.vert");
 		var frag = Assets.getText("shaders/text.frag");
 		#end
@@ -99,8 +98,7 @@ class Text extends Graphic
 			}
 			else
 			{
-				var glyphs = _font.glyphs.get(size);
-
+				_textLayout.text = value;
 				var x:Float, y:Float;
 				var lines = value.split("\n");
 				var vertIndex = 0, indIndex = 0;
@@ -109,22 +107,21 @@ class Text extends Graphic
 					var line = lines[i];
 					// TODO: remove magic number (lineHeight * 0.8)
 					y = lineHeight * i + lineHeight * 0.8;
-					var points = _textFormat.fromString(_font, size, line);
 					x = 0.0;
-					for (p in points)
+					for (p in _textLayout.positions)
 					{
-						if (!glyphs.exists(p.codepoint)) continue;
-						var glyph = glyphs.get(p.codepoint);
+						var metrics = _font.getGlyphMetrics(p.glyph);
+						trace(metrics);
 
-						var left   = glyph.x / _texture.width;
-						var top    = glyph.y / _texture.height;
-						var right  = left + glyph.width / _texture.width;
-						var bottom = top + glyph.height / _texture.height;
+						var left   = metrics.advance.x / _texture.width;
+						var top    = metrics.advance.y / _texture.height;
+						var right  = left + metrics.width / _texture.width;
+						var bottom = top + metrics.height / _texture.height;
 
-						var pointLeft = x + p.offset.x + glyph.xOffset;
-						var pointTop = y + p.offset.y - glyph.yOffset;
-						var pointRight = pointLeft + glyph.width;
-						var pointBottom = pointTop + glyph.height;
+						var pointLeft = x + p.offset.x + metrics.xOffset;
+						var pointTop = y + p.offset.y - metrics.yOffset;
+						var pointRight = pointLeft + metrics.width;
+						var pointBottom = pointTop + metrics.height;
 
 						_vertices[vertIndex++] = pointRight;
 						_vertices[vertIndex++] = pointBottom;
@@ -209,7 +206,7 @@ class Text extends Graphic
 		#end
 	}
 
-	private var _textFormat:TextFormat;
+	private var _textLayout:TextLayout;
 	private var _font:Font;
 	private var _texture:Texture;
 
