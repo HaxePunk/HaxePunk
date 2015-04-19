@@ -1,23 +1,39 @@
+git:
+  depth: 1
+
 language: haxe
-haxe: "3.2.0-rc2"
+
+haxe:
+  - "3.2.0-rc.2"
+  - development
+
+matrix:
+  allow_failures:
+    - haxe: "3.2.0-rc.2"
+
 neko: "2.0.0"
 
-env: LD_LIBRARY_PATH=/usr/lib/neko
-
-before_install:
-  # Setup haxelib
-  - mkdir -p ~/haxelib
-  - haxelib setup ~/haxelib
-  # Download dependencies
+install:
   - haxelib dev HaxePunk $TRAVIS_BUILD_DIR
   - haxelib install lime > /dev/null
   - haxelib install openfl > /dev/null
   - haxelib install dox > /dev/null
+  - haxelib list
+
+before_script:
   - ant tools
   - echo "y" | haxelib run HaxePunk setup
 
 script:
   - ant clean build unit-travis
 
+cache:
+  directories:
+    - $HOME/haxe/lib
+
 notifications:
-  slack: openfl:sBwVO0kgB7EuWLYzZzUezVIz#haxepunk 
+  slack:
+    on_success: never
+    on_failure: always
+    rooms:
+      - openfl:sBwVO0kgB7EuWLYzZzUezVIz#haxepunk
