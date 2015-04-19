@@ -39,12 +39,18 @@
 		<exec executable="haxelib" dir="." failonerror="true">
 			<arg line="run HaxePunk new build-test" />
 		</exec>
+
+		<echo message="Building for flash..." />
 		<exec executable="lime" dir="build-test" failonerror="true">
 			<arg line="build flash" />
 		</exec>
+
+		<echo message="Building for neko..." />
 		<exec executable="lime" dir="build-test" failonerror="true">
 			<arg line="build neko" />
 		</exec>
+
+		<echo message="Building for html5..." />
 		<exec executable="lime" dir="build-test" failonerror="true">
 			<arg line="build html5" />
 		</exec>

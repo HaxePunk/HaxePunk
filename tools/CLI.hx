@@ -102,7 +102,7 @@ class CLI
 
 		for (i in 1...lines.length)
 		{
-			if (StringTools.trim(lines[i]) == "-D HaxePunk")
+			if (StringTools.startsWith(lines[i], "-D HaxePunk"))
 			{
 				result = StringTools.trim(lines[i - 1]);
 			}
@@ -120,7 +120,7 @@ class CLI
 		}
 		else
 		{
-			Sys.command("/usr/bin/xdg-open", [ url, "&" ]);
+			Sys.command("/usr/bin/xdg-open", [ url ]);
 		}
 	}
 
