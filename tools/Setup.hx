@@ -10,7 +10,7 @@ class Setup
 
 	public static function update()
 	{
-		Sys.command("haxelib" ["update", "HaxePunk"]);
+		Sys.command("haxelib", ["update", "HaxePunk"]);
 		installDependencies();
 	}
 
@@ -18,7 +18,7 @@ class Setup
 	{
 		for (field in Reflect.fields(HaxelibInfo.install))
 		{
-			Sys.command("haxelib" ["install", field, Reflect.field(HaxelibInfo.install, field)]);
+			Sys.command("haxelib", ["install", field, Reflect.field(HaxelibInfo.install, field)]);
 		}
 	}
 
