@@ -5,6 +5,8 @@
 -lib openfl
 -lib HaxePunk
 -D lime-legacy
+-D openfl-legacy
+-D legacy
 -D native
 -D openfl-native
 -D lime-native
