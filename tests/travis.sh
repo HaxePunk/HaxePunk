@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cp ~/haxelib/lime/`cat ~/haxelib/lime/.current | sed -e 's/\./,/g'`/legacy/ndll/Linux64/* .
+cp $HOME/haxe/lib/lime/`cat $HOME/haxe/lib/lime/.current | sed -e 's/\./,/g'`/legacy/ndll/Linux64/* .
 
 haxe compile.hxml
 
