@@ -1,6 +1,3 @@
-git:
-  depth: 1
-
 language: haxe
 
 haxe:
