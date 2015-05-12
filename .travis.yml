@@ -4,12 +4,12 @@ git:
 language: haxe
 
 haxe:
-  - "3.2.0-rc.2"
+  - "3.2.0"
   - development
 
 matrix:
   allow_failures:
-    - haxe: "3.2.0-rc.2"
+    - haxe: development
 
 neko: "2.0.0"
 
