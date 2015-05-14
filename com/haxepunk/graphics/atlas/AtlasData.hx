@@ -63,20 +63,18 @@ class AtlasData
 		_dataIndex = _smoothDataIndex = 0;
 
 		_tilesheet = new Tilesheet(bd);
-		// create a unique name if one is not specified
-		if (name == null)
-		{
-			name = "bitmapData_" + (_uniqueId++);
-		}
 		_name = name;
 
-		if (_dataPool.exists(_name))
+		if(_name != null)
 		{
-			throw "There should never be a duplicate AtlasData instance!";
-		}
-		else
-		{
-			_dataPool.set(_name, this);
+			if (_dataPool.exists(_name))
+			{
+				throw 'Cannot cache duplicate AtlasData with the name "$_name"';
+			}
+			else
+			{
+				_dataPool.set(_name, this);
+			}
 		}
 
 		_renderFlags = Tilesheet.TILE_TRANS_2x2 | Tilesheet.TILE_ALPHA | Tilesheet.TILE_BLEND_NORMAL | Tilesheet.TILE_RGB | Tilesheet.TILE_RECT;
@@ -116,15 +114,17 @@ class AtlasData
 	 */
 	public function toString():String
 	{
-		return _name;
+		return (_name == null ? "AtlasData" : _name); 
 	}
 
 	/**
 	 * Reloads the image for a particular atlas object
 	 */
-	public function reload(bd:BitmapData):Void
+	public function reload(bd:BitmapData):Bool
 	{
-		HXP.overwriteBitmapCache(_name, bd);
+		if(_name != null)
+			return HXP.overwriteBitmapCache(_name, bd);
+		return false;
 	}
 
 	/**

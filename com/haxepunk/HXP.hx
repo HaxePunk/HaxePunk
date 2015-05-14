@@ -999,11 +999,12 @@ class HXP
 	 * Overwrites the image cache for a given name
 	 * @param name  The name of the BitmapData to overwrite.
 	 * @param data  The BitmapData object.
+	 * @return True if the prior bitmap was removed.
 	 */
-	public static function overwriteBitmapCache(name:String, data:BitmapData):Void
+	public static function overwriteBitmapCache(name:String, data:BitmapData):Bool
 	{
-		removeBitmap(name);
 		_bitmap.set(name, data);
+		return removeBitmap(name);
 	}
 
 	/**
