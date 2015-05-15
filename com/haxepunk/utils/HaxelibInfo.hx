@@ -4,8 +4,7 @@ package com.haxepunk.utils;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.Json;
-import haxe.io.BytesOutput;
-import haxe.io.Eof;
+import haxe.io.Path;
 import sys.io.Process;
 #end
 
@@ -15,50 +14,12 @@ class HaxelibInfoBuilder
 
 	macro public static function build():Array<Field>
 	{
-		// Get HaxePuk path
-		var output = "";
-
-		try
-		{
-			var process = new Process("haxelib", ["path", "HaxePunk"]);
-			var buffer = new BytesOutput();
-
-			var waiting = true;
-			while (waiting)
-			{
-				try
-				{
-					var current = process.stdout.readAll (1024);
-                    buffer.write(current);
-
-                    if (current.length == 0)
-						waiting = false;
-				}
-				catch (e:Eof)
-				{
-					waiting = false;
-				}
-			}
-
-			process.close();
-			output = buffer.getBytes().toString();
-		}
-		catch (e:Dynamic) { trace(e); }
-
-		var lines = output.split("\n");
-		var result = "";
-
-		for (i in 1...lines.length)
-		{
-			if (StringTools.startsWith(lines[i], "-D HaxePunk"))
-			{
-				result = StringTools.trim(lines[i - 1]);
-			}
-		}
+		var path = haxe.macro.Context.resolvePath("com/haxepunk/utils/HaxelibInfo.hx");
+		path = Path.normalize(Path.directory(path) + "/../../../haxelib.json");
 
 		// Read haxelib.json
 		var doc = try {
-			Json.parse(sys.io.File.read(result + "haxelib.json").readAll().toString());
+			Json.parse(sys.io.File.read(path).readAll().toString());
 		} catch (e:Dynamic) { trace(e); null; }
 
 		// Construct fields
