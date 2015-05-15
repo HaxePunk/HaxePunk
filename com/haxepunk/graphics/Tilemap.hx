@@ -95,6 +95,8 @@ class Tilemap extends Canvas
 			_setRows = Std.int(_atlas.height / tileHeight);
 		}
 		_setCount = _setColumns * _setRows;
+
+		smooth = (HXP.stage.quality != LOW);
 	}
 
 	/**
@@ -126,7 +128,7 @@ class Tilemap extends Canvas
 			if(index >= 0)
 			{
 				updateTileRect(index);
-				draw(column * _tile.width, row * _tile.height, _set, _tile); // draw tile				
+				draw(column * _tile.width, row * _tile.height, _set, _tile); // draw tile
 			}
 		}
 	}
@@ -496,7 +498,7 @@ class Tilemap extends Canvas
 			wy += stepy;
 		}
 	}
-	
+
 	/**
 	 * Create a Grid object from this tilemap.
 	 * @param solidTiles	Array of tile indexes that should be solid.
@@ -509,7 +511,7 @@ class Tilemap extends Canvas
 		{
 			grid = new Grid(width, height, Std.int(_tile.width), Std.int(_tile.height));
 		}
-		
+
 		for (y in 0..._rows)
 		{
 			for (x in 0..._columns)
@@ -520,7 +522,7 @@ class Tilemap extends Canvas
 				}
 			}
 		}
-		
+
 		return grid;
 	}
 
@@ -579,12 +581,13 @@ class Tilemap extends Canvas
 
 	/**
 	 * If false, whenever you call setTile or one of the load methods, clears the affected Tilemap areas before redrawing.
-	 * Only used on Flash targets and with tilesets that contain transparency. 
+	 * Only used on Flash targets and with tilesets that contain transparency.
 	 */
 	public var opaqueTiles(get, null):Bool;
 	private inline function get_opaqueTiles():Bool { return _opaqueTiles; }
 
-	public var smooth:Bool = true;
+	/** Default value: false if HXP.stage.quality is LOW, true otherwise. */
+	public var smooth:Bool;
 
 	// Tilemap information.
 	private var _map:Array<Array<Int>>;

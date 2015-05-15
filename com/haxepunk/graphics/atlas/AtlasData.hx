@@ -158,8 +158,11 @@ class AtlasData
 	 */
 	public function destroy():Void
 	{
-		HXP.removeBitmap(_name);
-		_dataPool.remove(_name);
+		if (_name != null)
+		{
+			HXP.removeBitmap(_name);
+			_dataPool.remove(_name);
+		}
 	}
 
 	/**

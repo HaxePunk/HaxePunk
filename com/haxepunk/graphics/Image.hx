@@ -122,6 +122,8 @@ class Image extends Graphic
 			createBuffer();
 			updateBuffer();
 		}
+
+		smooth = (HXP.stage.quality != LOW);
 	}
 
 	/** @private Initialize variables */
@@ -562,6 +564,8 @@ class Image extends Graphic
 	/**
 	 * If the image should be drawn transformed with pixel smoothing.
 	 * This will affect drawing performance, but look less pixelly.
+	 *
+	 * Default value: false if HXP.stage.quality is LOW, true otherwise.
 	 */
 	#if flash
 	public var smooth(get_smooth, set_smooth):Bool;
@@ -570,7 +574,7 @@ class Image extends Graphic
 		return _bitmap.smoothing = s;
 	}
 	#else
-	public var smooth:Bool = true;
+	public var smooth:Bool;
 	#end
 
 	/**

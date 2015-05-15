@@ -107,6 +107,8 @@ class BitmapText extends Graphic
 		this.color = options.color;
 		updateColor();
 		this.text = text != null ? text : "";
+
+		smooth = (HXP.stage.quality != LOW);
 	}
 
 	private var _red:Float;
@@ -422,7 +424,8 @@ class BitmapText extends Graphic
 		});
 	}
 
-	public var smooth:Bool = true;
+	/** Default value: false if HXP.stage.quality is LOW, true otherwise. */
+	public var smooth:Bool;
 
 	private var _buffer:BitmapData;
 	private var _set:BitmapData;

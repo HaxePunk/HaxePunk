@@ -36,6 +36,8 @@ class Emitter extends Graphic
 		setSource(source, frameWidth, frameHeight);
 		active = true;
 		particleCount = 0;
+
+		smooth = (HXP.stage.quality != LOW);
 	}
 
 	/**
@@ -414,7 +416,8 @@ class Emitter extends Graphic
 	 */
 	public var particleCount(default, null):Int;
 
-	public var smooth:Bool = true;
+	/** Default value: false if HXP.stage.quality is LOW, true otherwise. */
+	public var smooth:Bool;
 
 	// Particle information.
 	private var _types:Map<String,ParticleType>;
