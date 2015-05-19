@@ -1,5 +1,35 @@
 HaxePunk CHANGELOG
 
+v2.5.4
+------------------------------
+* Fixes for latest lime and openfl as well as Haxe 3.2
+* [ibilon] Add Tilemap.createGrid
+* [ibilon] Add Preloader progress bar container and allow preloader on html5
+* [Anheurystics] Fixed HXP.next()
+* [AbelToy] Added advanced tinting
+* [ibilon] Allow setting type volume and pan during play
+* [Oggzie] Fix addTween's start
+* [VoEC] Fixing issues when flipping spritemaps
+* [curlybrace1] Fixed error in Hitbox/Hitbox collision
+* [gsarwohadi] Allow the use of runtime sound in Sfx
+* [ibilon] Fix atlas creation when using default value for frame dimension in Spritemap
+* [ibilon] Throw an exception instead of failling silently when asking for an invalid region (Atlas)
+* [ibilon] Add error to Spritemap when frame dimensions are bigger than the image's dimensions
+* [webninjasi] Fix searching on API docs
+* [ibilon] Project creator now creates ide specific file as an option (FlashDevelop and Sublime)
+* [jahndis] Fixed Image.createPolygon() to properly color the created Image
+* [scriptorum] Fixed AtlasData memory leak
+* [ibilon] Fixed Spritmap.stop when reset
+* [ibilon] Do not apply gravity to particles when emitter isn't active
+* [scriptorum] Fixed scene-changing
+* [ibilon] Improve TextureAtlas load
+* [scriptorum] Fixed tilemap.loadFrom2DArray, add ability to display transparent Tilemaps
+* [ibilon] Fixed command call in setup tool
+* [ibilon] Made lime-hybrid as default for now, fix tool documentation opening
+* [scriptorum] Fixed Image.drawPolygon memory leak
+* [ibilon] Replaced haxelib call to find haxelib.json with maco.Context.resolvePath
+* [ibilon] Default smooth value of graphics classes if now set to false if stage quality is low, true otherwise
+
 v2.5.3
 ------------------------------
 * Update to latest lime, openfl and hxcpp
