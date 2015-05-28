@@ -152,7 +152,7 @@ class Sfx
 		if (complete != null) complete();
 	}
 
-	/** @private Add the sound to the global list. */
+	/** @private Add the sound to a list of those currently playing. */
 	private function addPlaying()
 	{
 		var list:Array<Sfx>;
@@ -168,7 +168,7 @@ class Sfx
 		list.push(this);
 	}
 
-	/** @private Remove the sound from the global list. */
+	/** @private Removes the sound from the list of those currently playing. */
 	private function removePlaying()
 	{
 		if (_typePlaying.exists(_type))
@@ -197,6 +197,7 @@ class Sfx
 
 	/**
 	 * Alter the panning factor (a value from -1 to 1) of the sound during playback.
+	 * Panning only applies to mono sounds. It is ignored on stereo.
 	 */
 	public var pan(get, set):Float;
 	private function get_pan():Float { return _pan; }
@@ -226,7 +227,7 @@ class Sfx
 			removePlaying();
 			_type = value;
 			addPlaying();
-			// reset, in case type has different global settings
+			// reset, in case sound type has different settings
 			pan = pan;
 			volume = volume;
 		}
@@ -256,41 +257,55 @@ class Sfx
 	private function get_length():Float { return _sound.length / 1000; }
 
 	/**
-	 * Return the global pan for a type.
+	 * Return a sound type's pan setting. 
+	 * On non-flash targets, this factors in global panning. See `HXP.pan`.
 	 *
 	 * @param	type	The type to get the pan from.
 	 *
-	 * @return	The global pan for the type.
+	 * @return	The pan for the type.
 	 */
 	static public function getPan(type:String):Float
 	{
+		var result:Float = 0;
 		if (_typeTransforms.exists(type))
 		{
 			var transform = _typeTransforms.get(type);
-			return transform != null ? transform.pan : 0;
+			if(transform != null)
+			result = transform.pan;
 		}
-		return 0;
+		#if flash
+		return result;
+		#else
+		return result + HXP.pan;
+		#end
 	}
 
 	/**
-	 * Return the global volume for a type.
+	 * Return a sound type's volume setting.
+	 * On non-flash targets, this factors in global volume. See `HXP.volume`.
 	 *
 	 * @param	type	The type to get the volume from.
 	 *
-	 * @return	The global volume for the type.
+	 * @return	The volume for the type.
 	 */
 	static public function getVolume(type:String):Float
 	{
+		var result:Float = 1;
 		if (_typeTransforms.exists(type))
 		{
 			var transform = _typeTransforms.get(type);
-			return transform != null ? transform.volume : 1;
+			if(transform != null)
+				result = transform.volume;
 		}
-		return 1;
+		#if flash
+		return result;
+		#else
+		return result * HXP.volume;
+		#end
 	}
 
 	/**
-	 * Set the global pan for a type. Sfx instances of this type will add
+	 * Set a sound type's pan. Sfx instances of this type will add
 	 * this pan to their own.
 	 *
 	 * @param	type	The type to set.
@@ -316,7 +331,7 @@ class Sfx
 	}
 
 	/**
-	 * Set the global volume for a type. Sfx instances of this type will
+	 * Set a sound type's volume. Sfx instances of this type will
 	 * multiply their volume by this value.
 	 *
 	 * @param	type	The type to set.
@@ -337,6 +352,31 @@ class Sfx
 			for (sfx in _typePlaying.get(type))
 			{
 				sfx.volume = sfx.volume;
+			}
+		}
+	}
+
+	/**
+	 * Called by `HXP` when global volume or panning are changed
+	 * on native targets. Updates all sounds to the correct volume
+	 * or pan, depending on the updatePan setting.
+	 *
+	 * @param	updatePan	True indicates pan changed, false indicates volume changed.
+	 */
+	static public function onGlobalUpdated(updatePan:Bool)
+	{
+		for(type in _typePlaying.keys())
+		{
+			for (sfx in _typePlaying.get(type))
+			{
+				if(updatePan)
+				{
+					sfx.pan = sfx.pan;
+				}
+				else
+				{
+					sfx.volume = sfx.volume;
+				}
 			}
 		}
 	}

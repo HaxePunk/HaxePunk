@@ -319,15 +319,19 @@ class HXP
 	{
 		if (value < 0) value = 0;
 		if (_volume == value) return value;
-		_soundTransform.volume = _volume = value;
+		_volume = value;
 		#if flash
+		_soundTransform.volume = value;
 		SoundMixer.soundTransform = _soundTransform;
+		#else
+		Sfx.onGlobalUpdated(false);
 		#end
 		return _volume;
 	}
 
 	/**
 	 * Global panning factor for all sounds, a value from -1 to 1.
+	 * Panning only applies to mono sounds. It is ignored on stereo.
 	 */
 	public static var pan(get, set):Float;
 	private static inline function get_pan():Float { return _pan; }
@@ -336,9 +340,12 @@ class HXP
 		if (value < -1) value = -1;
 		if (value > 1) value = 1;
 		if (_pan == value) return value;
-		_soundTransform.pan = _pan = value;
+		_pan = value;
 		#if flash
+		_soundTransform.pan = value;
 		SoundMixer.soundTransform = _soundTransform;
+		#else
+		Sfx.onGlobalUpdated(true);
 		#end
 		return _pan;
 	}
@@ -1257,7 +1264,9 @@ class HXP
 	// Volume control.
 	private static var _volume:Float = 1;
 	private static var _pan:Float = 0;
+	#if flash
 	private static var _soundTransform:SoundTransform = new SoundTransform();
+	#end
 
 	// Used for rad-to-deg and deg-to-rad conversion.
 	/** Convert a radian value into a degree value. */
