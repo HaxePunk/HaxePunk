@@ -491,6 +491,14 @@ class Text extends Image
 		return value;
 	}
 
+	public function setWidth(value:Int)
+	{	
+		_width = value;
+	}
+	public function setHeight(value:Int)
+	{	
+		_height = value;
+	}
 	override private function get_width():Int { return Std.int(_width); }
 	override private function get_height():Int { return Std.int(_height); }
 
