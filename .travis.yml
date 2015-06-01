@@ -18,11 +18,11 @@ install:
   - haxelib list
 
 before_script:
-  - ant tools
+  - make tools
   - echo "y" | haxelib run HaxePunk setup
 
 script:
-  - ant clean build unit-travis
+  - make clean build unit-travis
 
 cache:
   directories:
