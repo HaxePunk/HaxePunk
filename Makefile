@@ -31,7 +31,7 @@ unit: haxelib
 	@echo "Running unit tests"
 	@cd tests && haxe compile.hxml && neko unit.n
 
-unit-travis: haxelib
+unit-travis:
 	# copy ndll to base path
 	@cp $(LIME_PATH)/`cat $(LIME_PATH)/.current | sed -e 's/\./,/g'`/legacy/ndll/Linux64/* .
 	@make unit # run unit tests
