@@ -2,7 +2,7 @@ LIME_PATH="$(HOME)/haxe/lib/lime"
 
 .PHONY: all doc haxelib examples unit unit-travis build clean
 
-all: clean unit-travis
+all: clean unit build examples
 
 run.n:
 	@echo "Compiling run.n"
@@ -34,7 +34,7 @@ unit: haxelib
 unit-travis: haxelib
 	# copy ndll to base path
 	@cp $(LIME_PATH)/`cat $(LIME_PATH)/.current | sed -e 's/\./,/g'`/legacy/ndll/Linux64/* .
-	@make test # run unit tests
+	@make unit # run unit tests
 
 build: haxelib
 	@echo "Testing builds on multiple platforms"
