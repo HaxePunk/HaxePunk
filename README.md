@@ -27,17 +27,19 @@ You need to have ant installed to build a development version of HaxePunk. Make 
 
 ```bash
 git clone https://github.com/HaxePunk/HaxePunk.git
-ant
+make
 ```
 
-This will install a dev version of HaxePunk through haxelib, run unit tests, and build an example project for flash/neko/native. If you fix an issue, feel free to create a pull request.
+This will install a dev version of HaxePunk through haxelib, build documentation, run unit tests, and run the example project. If you fix an issue, feel free to create a pull request.
 
-Generating documentation is just as simple. Run the commands below to create a new set of docs with haxedoc
-The documentation will be located in doc/docs/, simply open doc/docs/index.html with your web browser to see the doc.
+If you are looking to just use the latest version from GitHub there is an alternative way. Run the following commands instead which will setup your local folder as the development directory in haxelib.
 
 ```bash
-ant doc
+git clone https://github.com/HaxePunk/HaxePunk.git
+haxelib dev HaxePunk HaxePunk/
 ```
+
+To disable the dev directory for HaxePunk simply run the command `haxelib dev HaxePunk`. Notice there is no third argument passed.
 
 ## Have questions or looking to get involved?
 

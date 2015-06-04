@@ -1,5 +1,11 @@
 HaxePunk CHANGELOG
 
+v2.5.5
+------------------------------
+* Adding README.md to zip for haxelib
+* [Anheurystics] Fixed screen not clearing on HTML5
+* [scriptorum] Added global volume/pan on native
+
 v2.5.4
 ------------------------------
 * Fixes for latest lime and openfl as well as Haxe 3.2
@@ -95,7 +101,7 @@ v2.5.2
 * [azrafe7] HXP.INT_MIN/MAX_VALUE
 * [azrafe7] Small fix for seed clamping
 * [azrafe7] Inited min/max in Mask.project() with non-arbitrary values
-* [azrafe7] Added rectPlus() to Draw 
+* [azrafe7] Added rectPlus() to Draw
 * [ibilon] Add flashdevelop project file to the new project template
 * [ibilon] Use Array.indexOf if Haxe 3.1
 * [azrafe7] Small fix for circle vs hitbox collision
