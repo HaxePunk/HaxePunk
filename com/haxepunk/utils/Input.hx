@@ -414,10 +414,9 @@ class Input
 	@:dox(hide)
 	public static function update()
 	{
-		while (_pressNum-- > -1) _press[_pressNum] = -1;
-		_pressNum = 0;
-		while (_releaseNum-- > -1) _release[_releaseNum] = -1;
-		_releaseNum = 0;
+		while (_pressNum > 0) _press[--_pressNum] = -1;
+		while (_releaseNum > 0) _release[--_releaseNum] = -1;
+		
 		if (mousePressed) mousePressed = false;
 		if (mouseReleased) mouseReleased = false;
 
