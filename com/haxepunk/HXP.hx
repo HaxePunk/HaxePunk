@@ -138,6 +138,7 @@ class HXP
 
 	/**
 	 * The current screen buffer, drawn to in the render loop.
+	 * Only available for flash, html5 and buffer rendermode, null otherwise.
 	 */
 	public static var buffer:BitmapData;
 
