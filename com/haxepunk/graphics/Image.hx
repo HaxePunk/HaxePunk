@@ -190,11 +190,11 @@ class Image extends Graphic
 			sy = scale * scaleY,
 			fsx = HXP.screen.fullScaleX,
 			fsy = HXP.screen.fullScaleY;
-
+			
 		// determine drawing location
 		_point.x = point.x + x - originX - camera.x * scrollX;
 		_point.y = point.y + y - originY - camera.y * scrollY;
-
+		
 		if (angle == 0)
 		{
 			// UGH... recalculation of _point for scaled origins

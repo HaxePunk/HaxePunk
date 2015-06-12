@@ -36,6 +36,9 @@ class AtlasData
 
 	public var width(default, null):Int;
 	public var height(default, null):Int;
+	
+	public var isRGB:Bool;
+	public var isAlpha:Bool;
 
 	public static inline var BLEND_NONE:Int = 0;
 	public static inline var BLEND_ADD:Int = Tilesheet.TILE_BLEND_ADD;
@@ -58,10 +61,6 @@ class AtlasData
 	 */
 	public function new(bd:BitmapData, ?name:String, ?flags:Int)
 	{
-		_data = new Array<Float>();
-		_smoothData = new Array<Float>();
-		_dataIndex = _smoothDataIndex = 0;
-
 		_tilesheet = new Tilesheet(bd);
 		_name = name;
 
@@ -77,9 +76,8 @@ class AtlasData
 			}
 		}
 
-		_renderFlags = Tilesheet.TILE_TRANS_2x2 | Tilesheet.TILE_ALPHA | Tilesheet.TILE_BLEND_NORMAL | Tilesheet.TILE_RGB | Tilesheet.TILE_RECT;
-		_flagAlpha = true;
-		_flagRGB = true;
+		isAlpha = true;
+		isRGB = true;
 
 		width = bd.width;
 		height = bd.height;
@@ -137,20 +135,11 @@ class AtlasData
 		_scene = scene;
 		_scene.sprite.graphics.clear();
 	}
-
-	/**
-	 * The active atlas data object
-	 */
-	public static var active(default, set):AtlasData;
-	private static inline function set_active(?value:AtlasData):AtlasData
+	
+	@:allow(com.haxepunk.Scene)
+	private static inline function drawScene(scene:Scene):Void
 	{
-		if (active != value)
-		{
-			if (active != null)
-				active.flush();
-			active = value;
-		}
-		return value;
+		DrawState.drawStates(scene);
 	}
 
 	/**
@@ -189,24 +178,6 @@ class AtlasData
 	}
 
 	/**
-	 * Flushes the renderable data array
-	 */
-	public inline function flush():Void
-	{
-		if (_dataIndex != 0)
-		{
-			_tilesheet.drawTiles(_scene.sprite.graphics, _data, false, _renderFlags, _dataIndex);
-			_dataIndex = 0;
-		}
-
-		if (_smoothDataIndex != 0)
-		{
-			_tilesheet.drawTiles(_scene.sprite.graphics, _smoothData, true, _renderFlags, _smoothDataIndex);
-			_smoothDataIndex = 0;
-		}
-	}
-
-	/**
 	 * Prepares a tile to be drawn using a matrix
 	 * @param  rect   The source rectangle to draw
 	 * @param  layer The layer to draw on
@@ -225,49 +196,41 @@ class AtlasData
 		tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
 		red:Float, green:Float, blue:Float, alpha:Float, ?smooth:Bool)
 	{
-		active = this;
-
 		if (smooth == null) smooth = Atlas.smooth;
-
-		var _data = smooth ? _smoothData : _data;
-		var _dataIndex = smooth ? _smoothDataIndex : _dataIndex;
-
+		
+		var state:DrawState = DrawState.getDrawState(_tilesheet, isRGB, isAlpha, smooth, blend);
+		var data:Array<Float> = state.data;
+		var dataIndex:Int = state.dataIndex;
+		
 		// Destination point
-		_data[_dataIndex++] = tx;
-		_data[_dataIndex++] = ty;
+		data[dataIndex++] = tx;
+		data[dataIndex++] = ty;
 
 		// Source rectangle
-		_data[_dataIndex++] = rect.x;
-		_data[_dataIndex++] = rect.y;
-		_data[_dataIndex++] = rect.width;
-		_data[_dataIndex++] = rect.height;
+		data[dataIndex++] = rect.x;
+		data[dataIndex++] = rect.y;
+		data[dataIndex++] = rect.width;
+		data[dataIndex++] = rect.height;
 
 		// matrix transformation
-		_data[_dataIndex++] = a; // m00
-		_data[_dataIndex++] = b; // m10
-		_data[_dataIndex++] = c; // m01
-		_data[_dataIndex++] = d; // m11
+		data[dataIndex++] = a; // m00
+		data[dataIndex++] = b; // m10
+		data[dataIndex++] = c; // m01
+		data[dataIndex++] = d; // m11
 
 		// color
-		if (_flagRGB)
+		if (isRGB)
 		{
-			_data[_dataIndex++] = red;
-			_data[_dataIndex++] = green;
-			_data[_dataIndex++] = blue;
+			data[dataIndex++] = red;
+			data[dataIndex++] = green;
+			data[dataIndex++] = blue;
 		}
-		if (_flagAlpha)
+		if (isAlpha)
 		{
-			_data[_dataIndex++] = alpha;
+			data[dataIndex++] = alpha;
 		}
-
-		if (smooth)
-		{
-			this._smoothDataIndex = _dataIndex;
-		}
-		else
-		{
-			this._dataIndex = _dataIndex;
-		}
+		
+		state.dataIndex = dataIndex;
 	}
 
 	/**
@@ -288,115 +251,63 @@ class AtlasData
 		scaleX:Float, scaleY:Float, angle:Float,
 		red:Float, green:Float, blue:Float, alpha:Float, ?smooth:Bool)
 	{
-		active = this;
-
 		if (smooth == null) smooth = Atlas.smooth;
 
-		var _data = smooth ? _smoothData : _data;
-		var _dataIndex = smooth ? _smoothDataIndex : _dataIndex;
-
+		var state:DrawState = DrawState.getDrawState(_tilesheet, isRGB, isAlpha, smooth, blend);
+		var data:Array<Float> = state.data;
+		var dataIndex:Int = state.dataIndex;
+		
 		// Destination point
-		_data[_dataIndex++] = x;
-		_data[_dataIndex++] = y;
+		data[dataIndex++] = x;
+		data[dataIndex++] = y;
 
 		// Source rectangle
-		_data[_dataIndex++] = rect.x;
-		_data[_dataIndex++] = rect.y;
-		_data[_dataIndex++] = rect.width;
-		_data[_dataIndex++] = rect.height;
+		data[dataIndex++] = rect.x;
+		data[dataIndex++] = rect.y;
+		data[dataIndex++] = rect.width;
+		data[dataIndex++] = rect.height;
 
 		// matrix transformation
 		if (angle == 0)
 		{
 			// fast defaults for non-rotated tiles (cos=1, sin=0)
-			_data[_dataIndex++] = scaleX; // m00
-			_data[_dataIndex++] = 0; // m01
-			_data[_dataIndex++] = 0; // m10
-			_data[_dataIndex++] = scaleY; // m11
+			data[dataIndex++] = scaleX; // m00
+			data[dataIndex++] = 0; // m01
+			data[dataIndex++] = 0; // m10
+			data[dataIndex++] = scaleY; // m11
 		}
 		else
 		{
-			var cos = Math.cos(-angle * HXP.RAD);
-			var sin = Math.sin(-angle * HXP.RAD);
-			_data[_dataIndex++] = cos * scaleX; // m00
-			_data[_dataIndex++] = -sin * scaleY; // m10
-			_data[_dataIndex++] = sin * scaleX; // m01
-			_data[_dataIndex++] = cos * scaleY; // m11
+			var rad = -angle * HXP.RAD;
+			var cos = Math.cos(rad);
+			var sin = Math.sin(rad);
+			data[dataIndex++] = cos * scaleX; // m00
+			data[dataIndex++] = -sin * scaleY; // m10
+			data[dataIndex++] = sin * scaleX; // m01
+			data[dataIndex++] = cos * scaleY; // m11
 		}
 
-		if (_flagRGB)
+		if (isRGB)
 		{
-			_data[_dataIndex++] = red;
-			_data[_dataIndex++] = green;
-			_data[_dataIndex++] = blue;
+			data[dataIndex++] = red;
+			data[dataIndex++] = green;
+			data[dataIndex++] = blue;
 		}
-		if (_flagAlpha)
+		if (isAlpha)
 		{
-			_data[_dataIndex++] = alpha;
+			data[dataIndex++] = alpha;
 		}
-
-		if (smooth)
-		{
-			this._smoothDataIndex = _dataIndex;
-		}
-		else
-		{
-			this._dataIndex = _dataIndex;
-		}
-	}
-
-	/**
-	 * Sets the render flag to enable/disable alpha
-	 * Default: true
-	 */
-	public var alpha(get, set):Bool;
-	private function get_alpha():Bool { return (_renderFlags & Tilesheet.TILE_ALPHA != 0); }
-	private function set_alpha(value:Bool):Bool
-	{
-		if (value) _renderFlags |= Tilesheet.TILE_ALPHA;
-		else _renderFlags &= ~Tilesheet.TILE_ALPHA;
-		_flagAlpha = value;
-		return value;
-	}
-
-	/**
-	 * Sets the render flag to enable/disable rgb tinting
-	 * Default: true
-	 */
-	public var rgb(get, set):Bool;
-	private function get_rgb():Bool { return (_renderFlags & Tilesheet.TILE_RGB != 0); }
-	private function set_rgb(value:Bool)
-	{
-		if (value) _renderFlags |= Tilesheet.TILE_RGB;
-		else _renderFlags &= ~Tilesheet.TILE_RGB;
-		_flagRGB = value;
-		return value;
+		
+		state.dataIndex = dataIndex;
 	}
 
 	/**
 	 * Sets the blend mode for rendering (`BLEND_NONE`, `BLEND_NORMAL`, `BLEND_ADD`)
 	 * Default: `BLEND_NORMAL`
 	 */
-	public var blend(get, set):Int;
-	private function get_blend():Int {
-		if (_renderFlags & Tilesheet.TILE_BLEND_NORMAL != 0)
-			return BLEND_NORMAL;
-		else if (_renderFlags & Tilesheet.TILE_BLEND_ADD != 0)
-			return BLEND_ADD;
-#if !flash
-		else if (_renderFlags & Tilesheet.TILE_BLEND_MULTIPLY != 0)
-			return BLEND_MULTIPLY;
-		else if (_renderFlags & Tilesheet.TILE_BLEND_SCREEN != 0)
-			return BLEND_SCREEN;
-#end
-		else
-			return BLEND_NONE;
-	}
+	public var blend(default, set):Int = 0;
 	private function set_blend(value:Int):Int
 	{
-		// unset blend flags
-		_renderFlags &= ~(BLEND_ADD | BLEND_SCREEN | BLEND_MULTIPLY | BLEND_NORMAL);
-
 		// check that value is actually a blend flag
 		if (value == BLEND_ADD ||
 			value == BLEND_MULTIPLY ||
@@ -404,26 +315,18 @@ class AtlasData
 			value == BLEND_NORMAL)
 		{
 			// set the blend flag
-			_renderFlags |= value;
-			return value;
+			blend = value;
 		}
-		return BLEND_NONE;
+		
+		return blend;
 	}
-
+	
 	// used for pooling
 	private var _name:String;
 
 	private var _layerIndex:Int = 0;
 
-	private var _renderFlags:Int;
-	private var _flagRGB:Bool;
-	private var _flagAlpha:Bool;
-
 	private var _tilesheet:Tilesheet;
-	private var _data:Array<Float>;
-	private var _dataIndex:Int;
-	private var _smoothData:Array<Float>;
-	private var _smoothDataIndex:Int;
 
 	private static var _scene:Scene;
 	private static var _dataPool:Map<String, AtlasData> = new Map<String, AtlasData>();

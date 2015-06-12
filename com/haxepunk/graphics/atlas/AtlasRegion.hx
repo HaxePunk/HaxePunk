@@ -100,10 +100,10 @@ class AtlasRegion
 		layer:Int, red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1, ?smooth:Bool)
 	{
 		if (smooth == null) smooth = Atlas.smooth;
-
+		
 		if (rotated)
 		{
-			var matrix = new Matrix(a, b, c, d, tx, ty);
+			matrix.setTo(a, b, c, d, tx, ty);
 			matrix.rotate(90 * HXP.RAD);
 			_parent.prepareTileMatrix(_rect, layer,
 				matrix.tx, matrix.ty, matrix.a, matrix.b, matrix.c, matrix.d,
@@ -131,7 +131,7 @@ class AtlasRegion
 	 */
 	public function toString():String
 	{
-		return "[AtlasRegion " + _rect + "]";
+		return "[AtlasRegion " + _rect + "; " + rotated + "]";
 	}
 
 	private inline function get_width():Float { return _rect.width; }
@@ -139,4 +139,6 @@ class AtlasRegion
 
 	private var _rect:Rectangle;
 	private var _parent:AtlasData;
+	
+	private static var matrix:Matrix;
 }
