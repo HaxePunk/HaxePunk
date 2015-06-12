@@ -4,8 +4,7 @@ import openfl.display.Tilesheet;
 
 class DrawState
 {
-	private static var poolHead:DrawState;
-	private static var poolTail:DrawState;
+	private static var pool:DrawState;
 	
 	private static var drawHead:DrawState;
 	private static var drawTail:DrawState;
@@ -14,15 +13,11 @@ class DrawState
 	{
 		var state:DrawState = null;
 		
-		if (poolHead != null)
+		if (pool != null)
 		{
-			state = poolHead;
-			poolHead = state.next;
-			
-			if (poolHead == null)
-			{
-				poolTail = null;
-			}
+			state = pool;
+			pool = state.next;
+			state.next = null;
 		}
 		else
 		{
@@ -35,14 +30,14 @@ class DrawState
 	
 	private static function putState(state:DrawState):Void
 	{
-		if (poolTail != null)
+		if (pool != null)
 		{
-			poolTail.next = state;
-			poolTail = state;
+			state.next = pool;
+			pool = state;
 		}
 		else
 		{
-			poolHead = poolTail = state;
+			pool = state;
 		}
 	}
 	
@@ -58,7 +53,7 @@ class DrawState
 			state.render(scene);
 			state.reset();
 		}
-		
+    
 		drawHead = null;
 		drawTail = null;
 	}
@@ -84,7 +79,7 @@ class DrawState
 			state = getState(tilesheet, rgb, alpha, smooth, blend);
 			drawTail = drawHead = state;
 		}
-		
+    
 		return state;
 	}
 	
@@ -108,7 +103,6 @@ class DrawState
 		dataIndex = 0;
 		tilesheet = null;
 		next = null;
-		
 		DrawState.putState(this);
 	}
 	
@@ -127,7 +121,7 @@ class DrawState
 		if (rgb) flags |= Tilesheet.TILE_RGB;
 		if (alpha) flags |= Tilesheet.TILE_ALPHA;
 		
-		tilesheet.drawTiles(scene.sprite.graphics, data, smooth, flags, dataIndex);
+		if (dataIndex > 0)	tilesheet.drawTiles(scene.sprite.graphics, data, smooth, flags, dataIndex); 
 		dataIndex = 0;
 	}
 }
