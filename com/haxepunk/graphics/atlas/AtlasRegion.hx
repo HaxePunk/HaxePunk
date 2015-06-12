@@ -140,5 +140,5 @@ class AtlasRegion
 	private var _rect:Rectangle;
 	private var _parent:AtlasData;
 	
-	private static var matrix:Matrix;
+	private static var matrix:Matrix = new Matrix();
 }
