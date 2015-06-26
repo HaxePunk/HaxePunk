@@ -572,9 +572,13 @@ class Input
 
 	private static function onTouchMove(e:TouchEvent)
 	{
-		var point = _touches.get(e.touchPointID);
-		point.x = e.stageX / HXP.screen.fullScaleX;
-		point.y = e.stageY / HXP.screen.fullScaleY;
+		// maybe we missed the begin event sometimes?
+		if (_touches.exists(e.touchPointID))
+		{
+			var point = _touches.get(e.touchPointID);
+			point.x = e.stageX / HXP.screen.fullScaleX;
+			point.y = e.stageY / HXP.screen.fullScaleY;
+		}
 	}
 
 	private static function onTouchEnd(e:TouchEvent)
