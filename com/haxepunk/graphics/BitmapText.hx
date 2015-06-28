@@ -26,7 +26,7 @@ typedef BitmapTextOptions = {
 };
 
 /**
- * Used for drawing text using a bitmap fonts.
+ * An object for drawing text using a bitmap font.
  */
 class BitmapText extends Graphic
 {
@@ -35,6 +35,12 @@ class BitmapText extends Graphic
 	public var textWidth:Int = 0;
 	public var textHeight:Int = 0;
 	public var autoWidth:Bool = false;
+        
+	/**
+	 * Whether or not to automatically figure out the height 
+	 * and width of the / 
+	 * @default False.
+	 */
 	public var autoHeight:Bool = false;
 	public var size:Int = 0;
 	public var wrap:Bool = false;
@@ -176,7 +182,7 @@ class BitmapText extends Graphic
 		return text;
 	}
 
-	/*
+	/**
 	 * Automatically wraps text by figuring out how many words can fit on a
 	 * single line, and splitting the remainder onto a new line.
 	 */
@@ -251,7 +257,7 @@ class BitmapText extends Graphic
 		lines = newLines;
 	}
 
-	/*
+	/**
 	 * Run through the render loop without actually drawing anything. This
 	 * will compute the textWidth and textHeight attributes.
 	 */
@@ -260,7 +266,7 @@ class BitmapText extends Graphic
 		renderFont();
 	}
 
-	/*
+	/**
 	 * Update the drawing buffer on software rendering mode. For efficiency, if
 	 * any lines were unchanged from previously rendered text, they will not be
 	 * re-drawn.
