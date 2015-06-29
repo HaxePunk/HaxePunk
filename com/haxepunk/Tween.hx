@@ -9,7 +9,8 @@ import flash.events.EventDispatcher;
  */
 enum TweenType
 {
-	/** Default type, the tween is still available after it ended. */
+	/** Default type, the tween is still available after it ended and can
+	  * be started again with the restart() method. */
 	Persist;
 	
 	/** The tween will loop. */
@@ -33,8 +34,15 @@ typedef FriendTween = {
 }
 
 /**
+ * <p>
  * Base class for tweening helpers.
+ * A Tween is any object that interpolates something be<i>tween</i> two
+ * values.  It does not have to be a linear path, for instance a circular
+ * motion.
+ * </p>
+ * <p>
  * Do not use this directly, instead use the classes in com.haxepunk.tweens.*
+ * </p>
  */
 class Tween extends EventDispatcher
 {

@@ -8,7 +8,7 @@ import flash.geom.Rectangle;
 
 /**
  * Template used to define a particle type used by the `Emitter` class. Instead
- * of creating this object yourself, fetch one with `Emitter.add` function.
+ * of creating this object yourself, fetch one with `Emitter.newType` function.
  */
 @:allow(com.haxepunk.graphics.Emitter)
 class ParticleType
