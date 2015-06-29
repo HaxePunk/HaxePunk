@@ -38,7 +38,7 @@ class BitmapText extends Graphic
         
 	/**
 	 * Whether or not to automatically figure out the height 
-	 * and width of the / 
+	 * and width of the text. 
 	 * @default False.
 	 */
 	public var autoHeight:Bool = false;
