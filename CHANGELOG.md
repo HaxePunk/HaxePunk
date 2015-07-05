@@ -1,5 +1,11 @@
 HaxePunk CHANGELOG
 
+v2.5.6
+------------------------------
+* [ibilon] Fix input update
+* [ibilon] Guard onTouchMove against null object exception
+* [icefoxen, ibilon] Update documentation
+
 v2.5.5
 ------------------------------
 * Adding README.md to zip for haxelib
