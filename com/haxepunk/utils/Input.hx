@@ -583,7 +583,10 @@ class Input
 
 	private static function onTouchEnd(e:TouchEvent)
 	{
-		_touches.get(e.touchPointID).released = true;
+		if (_touches.exists(e.touchPointID))
+		{
+			_touches.get(e.touchPointID).released = true;
+		}
 	}
 
 #if (openfl && (cpp || neko))
