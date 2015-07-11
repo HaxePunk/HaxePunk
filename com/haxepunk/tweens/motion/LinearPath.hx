@@ -119,9 +119,9 @@ class LinearPath extends Motion
 			return;
 
 		// evaluate t for each point
-		var i:Int = 0;
-		while (i < _points.length)
-			_pointT[i] = _pointD[i ++] / distance;
+		var i:Int = -1;
+		while (++i < _points.length)
+			_pointT[i] = _pointD[i] / distance;
 	}
 
 	/**
