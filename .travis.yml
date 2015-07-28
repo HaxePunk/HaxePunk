@@ -10,11 +10,13 @@ matrix:
 
 neko: "2.0.0"
 
+sudo: false
+
 install:
   - haxelib dev HaxePunk $TRAVIS_BUILD_DIR
-  - haxelib install lime > /dev/null
-  - haxelib install openfl > /dev/null
-  - haxelib install dox > /dev/null
+  - haxelib install lime > log.txt || cat log.txt
+  - haxelib install openfl > log.txt || cat log.txt
+  - haxelib install dox > log.txt || cat log.txt
   - haxelib list
 
 before_script:
