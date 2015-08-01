@@ -29,7 +29,7 @@ class Project
 	{
         var slash:String = "";
 
-		var path = args.pop();
+		var path = "";
 		var project = new Project();
 		var whiteList = new Array<String>();
 
@@ -89,10 +89,12 @@ class Project
 	{
 		path = createDirectory(path);
 
+		var template = Path.normalize(Path.join([ Path.directory(neko.vm.Module.local().name), "template.zip" ]));
+
 		if (FileSystem.isDirectory(path))
 		{
 			// read the template zip file
-			var templateZip = File.read("template.zip", true);
+			var templateZip = File.read(template, true);
 			var entries = Reader.readZip(templateZip);
 			templateZip.close();
 

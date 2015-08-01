@@ -1,4 +1,0 @@
--main CLI
--neko ../run.n
--cp ..
--cmd haxelib run HaxePunk --no-colors

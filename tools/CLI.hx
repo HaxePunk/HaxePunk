@@ -19,7 +19,7 @@ class CLI
 			colorize = false;
 		}
 
-		if (args.length < 2)
+		if (args.length == 0)
 		{
 			usage();
 			return;
@@ -33,12 +33,6 @@ class CLI
 			{
 				colorize = false;
 				command = args.shift();
-			}
-
-			if (args.length < 1)
-			{
-				usage();
-				return;
 			}
 
 			switch (command)
