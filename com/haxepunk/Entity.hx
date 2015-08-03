@@ -840,7 +840,10 @@ class Entity extends Tweener
 	}
 
 	/**
-	 * When you collide with an Entity on the x-axis with moveTo() or moveBy().
+	 * When you collide with an Entity on the x-axis with moveTo() or moveBy()
+	 * the engine call this function. Override it to detect and change the
+	 * behaviour of collisions.
+	 *
 	 * @param	e		The Entity you collided with.
 	 *
 	 * @return	If there was a collision.
@@ -851,7 +854,10 @@ class Entity extends Tweener
 	}
 
 	/**
-	 * When you collide with an Entity on the y-axis with moveTo() or moveBy().
+	 * When you collide with an Entity on the y-axis with moveTo() or moveBy()
+	 * the engine call this function. Override it to detect and change the
+	 * behaviour of collisions.
+	 *
 	 * @param	e		The Entity you collided with.
 	 *
 	 * @return	If there was a collision.
