@@ -40,13 +40,12 @@ unit-travis:
 build: haxelib
 	@echo "Testing builds on multiple platforms"
 	@neko tool.n new build-test > log.txt || cat log.txt
-	@cd build-test
 	@echo "Flash..."
-	@haxelib run lime build flash
+	@haxelib run lime build build-test flash
 	@echo "Neko..."
-	@haxelib run lime build neko
+	@haxelib run lime build build-test neko
 	@echo "Html5..."
-	@haxelib run lime build html5
+	@haxelib run lime build build-test html5
 	@rm -rf build-test
 
 examples: haxelib
