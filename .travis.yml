@@ -22,7 +22,6 @@ install:
 before_script:
   - make tools
   - echo "n" | haxelib run HaxePunk setup
-  - alias lime="haxelib run lime"
 
 script:
   - make clean build unit-travis

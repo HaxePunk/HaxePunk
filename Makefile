@@ -17,6 +17,7 @@ doc/pages/index.html:
 			-D source-path "https://github.com/HaxePunk/HaxePunk/tree/master" > log.txt || cat log.txt
 
 template.zip:
+	@echo "Generating template.zip"
 	@cd template && zip -rqX ../template.zip . -x *.DS_Store*
 
 haxepunk.zip: doc/pages/index.html tool.n template.zip
@@ -38,16 +39,19 @@ unit-travis:
 
 build: haxelib
 	@echo "Testing builds on multiple platforms"
-	@haxelib run HaxePunk new build-test > /dev/null
-	@cd build-test && \
-		lime build flash && \
-		lime build neko && \
-		lime build html5
+	@neko tool.n new build-test > log.txt || cat log.txt
+	@cd build-test
+	@echo "Flash..."
+	@haxelib run lime build flash
+	@echo "Neko..."
+	@haxelib run lime build neko
+	@echo "Html5..."
+	@haxelib run lime build html5
 	@rm -rf build-test
 
 examples: haxelib
 	@echo "Running example application"
-	@cd examples && lime test neko -debug
+	@cd examples && haxelib run lime test neko -debug
 
 clean:
 	@echo "Cleaning up old files"
