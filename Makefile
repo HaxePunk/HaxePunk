@@ -4,9 +4,9 @@ LIME_PATH="$(HOME)/haxe/lib/lime"
 
 all: clean unit build examples
 
-run.n:
-	@echo "Compiling run.n"
-	@cd tools && haxe build.hxml > /dev/null
+tool.n:
+	@echo "Compiling tool.n"
+	@cd tools && haxe tool.hxml
 
 doc/pages/index.html:
 	@echo "Generating documentation"
@@ -14,18 +14,18 @@ doc/pages/index.html:
 		haxe doc.hxml && \
 		haxelib run dox -i xmls/ -o pages/ -theme theme/ \
 			-in com --title "HaxePunk API" \
-			-D source-path "https://github.com/HaxePunk/HaxePunk/tree/master" > /dev/null
+			-D source-path "https://github.com/HaxePunk/HaxePunk/tree/master" > log.txt || cat log.txt
 
 template.zip:
 	@cd template && zip -rqX ../template.zip . -x *.DS_Store*
 
-haxepunk.zip: doc/pages/index.html run.n template.zip
+haxepunk.zip: doc/pages/index.html tool.n template.zip
 	@echo "Building haxelib project"
-	@zip -q haxepunk.zip run.n haxelib.json README.md include.xml template.zip
+	@zip -q haxepunk.zip run.n tool.n haxelib.json README.md include.xml template.zip
 	@zip -rq haxepunk.zip com assets doc/pages -x *.DS_Store*
 
 haxelib: haxepunk.zip
-	@haxelib local haxepunk.zip > /dev/null
+	@haxelib local haxepunk.zip > log.txt || cat log.txt
 
 unit: haxelib
 	@echo "Running unit tests"
@@ -51,5 +51,5 @@ examples: haxelib
 
 clean:
 	@echo "Cleaning up old files"
-	@rm -f run.n haxepunk.zip template.zip doc/xmls/*.xml
+	@rm -f tool.n haxepunk.zip template.zip doc/xmls/*.xml
 	@rm -rf doc/pages/*
