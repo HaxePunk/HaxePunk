@@ -58,16 +58,19 @@ class Backdrop extends Canvas
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;
 
+		var sx = scale * scaleX * HXP.screen.fullScaleX,
+			sy = scale * scaleY * HXP.screen.fullScaleY;
+
 		if (_repeatX)
 		{
-			_point.x %= _textWidth;
-			if (_point.x > 0) _point.x -= _textWidth;
+			_point.x %= _textWidth * sx;
+			if (_point.x > 0) _point.x -= _textWidth * sx;
 		}
 
 		if (_repeatY)
 		{
-			_point.y %= _textHeight;
-			if (_point.y > 0) _point.y -= _textHeight;
+			_point.y %= _textHeight * sy;
+			if (_point.y > 0) _point.y -= _textHeight * sy;
 		}
 
 		_x = x; _y = y;
@@ -82,23 +85,24 @@ class Backdrop extends Canvas
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;
 
+		var sx = scale * scaleX,
+			sy = scale * scaleY,
+			fsx = HXP.screen.fullScaleX,
+			fsy = HXP.screen.fullScaleY;
+
 		if (_repeatX)
 		{
-			_point.x %= _textWidth;
-			if (_point.x > 0) _point.x -= _textWidth;
+			_point.x %= _textWidth * sx * fsx;
+			if (_point.x > 0) _point.x -= _textWidth * sx * fsx;
 		}
 
 		if (_repeatY)
 		{
-			_point.y %= _textHeight;
-			if (_point.y > 0) _point.y -= _textHeight;
+			_point.y %= _textHeight * sy * fsy;
+			if (_point.y > 0) _point.y -= _textHeight * sy * fsy;
 		}
 
-		var sx = scale * scaleX,
-			sy = scale * scaleY,
-			fsx = HXP.screen.fullScaleX,
-			fsy = HXP.screen.fullScaleY,
-			px:Int = Std.int(_point.x * fsx), py:Int = Std.int(_point.y * fsy);
+		var px:Int = Std.int(_point.x * fsx), py:Int = Std.int(_point.y * fsy);
 
 		var y:Int = 0;
 		while (y < _height * sy * fsy)
@@ -107,9 +111,9 @@ class Backdrop extends Canvas
 			while (x < _width * sx * fsx)
 			{
 				_region.draw(px + x, py + y, layer, sx * fsx, sy * fsy, 0, _red, _green, _blue, _alpha);
-				x += Std.int(_textWidth * fsx);
+				x += Std.int(_textWidth * sx * fsx);
 			}
-			y += Std.int(_textHeight * fsy);
+			y += Std.int(_textHeight * sy * fsy);
 		}
 	}
 
