@@ -48,17 +48,24 @@ class Texture
 	 */
 	public static function fromAsset(id:String):Texture
 	{
-		var texture:Texture = null;
 		if (_textures.exists(id))
 		{
-			texture = _textures.get(id);
+			return _textures.get(id);
 		}
 		else
 		{
-			texture = new Texture(id);
-			texture.loadFromImage(Assets.getImage(id));
+			var texture = new Texture(id);
+			if (Assets.exists(id))
+			{
+				texture.loadFromImage(Assets.getImage(id).buffer);
+				_textures.set(id, texture);
+			}
+			else
+			{
+				trace('No texture named $id');
+			}
+			return texture;
 		}
-		return texture;
 	}
 
 	/**
@@ -164,7 +171,7 @@ class Texture
 	}
 
 	@:allow(haxepunk.graphics)
-	private function loadFromImage(image:lime.graphics.Image)
+	private function loadFromImage(image:lime.graphics.ImageBuffer)
 	{
 		if (image == null) return;
 		sourceWidth = image.width;

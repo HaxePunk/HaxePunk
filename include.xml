@@ -3,10 +3,10 @@
 
 	<!-- <app preloader="com.haxepunk.Preloader" /> -->
 
-	<assets path="assets/graphics" rename="graphics" include="*.png" />
-	<assets path="assets/font" rename="font" include="*.ttf|*.otf" />
-	<assets path="assets/shaders" rename="shaders" include="*.frag|*.vert" />
-	<assets path="assets/materials" rename="materials" include="*.material" />
+	<assets path="assets/graphics" rename="hxp/graphics" include="*.png" />
+	<assets path="assets/font" rename="hxp/font" include="*.ttf|*.otf" />
+	<assets path="assets/shaders" rename="hxp/shaders" include="*.frag|*.vert" />
+	<assets path="assets/materials" rename="hxp/materials" include="*.material" />
 
 	<library type="material" handler="HaxePunk" />
 

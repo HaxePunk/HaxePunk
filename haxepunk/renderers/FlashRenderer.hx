@@ -40,6 +40,16 @@ class FlashRenderer
 		_context.clear(color.r, color.g, color.b, color.a);
 	}
 
+	public static inline function attribute(program:ShaderProgram, a:String):Int
+	{
+		return _attributeId++; // TODO: come up with better solution...
+	}
+
+	public static inline function uniform(program:ShaderProgram, u:String):Location
+	{
+		return _uniformId++; // TODO: come up with better solution...
+	}
+
 	public static inline function setCullMode(mode:CullMode):Void
 	{
 		_context.setCulling(CULL[mode]);
@@ -185,6 +195,8 @@ class FlashRenderer
 		}
 	}
 
+	private static var _attributeId:Int = 0;
+	private static var _uniformId:Int = 0;
 	private static var _context:Context3D;
 	private static var _activeState:ActiveState = new ActiveState();
 	private static var _stage3D:Stage3D;

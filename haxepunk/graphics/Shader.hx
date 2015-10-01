@@ -3,7 +3,6 @@ package haxepunk.graphics;
 import haxe.ds.StringMap;
 import haxepunk.renderers.Renderer;
 import haxepunk.math.Matrix4;
-import lime.graphics.opengl.GL;
 
 /**
  * Shader object for GLSL and AGAL
@@ -29,22 +28,11 @@ class Shader
 	 */
 	public function attribute(a:String):Int
 	{
-		use();
-		var attribute:Int;
-		if (_attributes.exists(a))
+		if (!_attributes.exists(a))
 		{
-			attribute = _attributes.get(a);
+			_attributes.set(a, Renderer.attribute(_program, a));
 		}
-		else
-		{
-			#if (flash || (js && canvas))
-			attribute = _attributeId++;
-			#else
-			attribute = GL.getAttribLocation(_program, a);
-			#end
-			_attributes.set(a, attribute);
-		}
-		return attribute;
+		return _attributes.get(a);
 	}
 
 	/**
@@ -54,22 +42,11 @@ class Shader
 	 */
 	public function uniform(u:String):Location
 	{
-		use();
-		var uniform:Location;
-		if (_uniforms.exists(u))
+		if (!_uniforms.exists(u))
 		{
-			uniform = _uniforms.get(u);
+			_uniforms.set(u, Renderer.uniform(_program, u));
 		}
-		else
-		{
-			#if (flash || (js && canvas))
-			uniform = _uniformId++;
-			#else
-			uniform = GL.getUniformLocation(_program, u);
-			#end
-			_uniforms.set(u, uniform);
-		}
-		return uniform;
+		return _uniforms.get(u);
 	}
 
 	/**
@@ -81,9 +58,7 @@ class Shader
 	}
 
 	private var _attributes:StringMap<Int>;
-	private var _attributeId:Int = 0;
 	private var _uniforms:StringMap<Location>;
-	private var _uniformId:Int = 0;
 	private var _program:ShaderProgram;
 
 }
