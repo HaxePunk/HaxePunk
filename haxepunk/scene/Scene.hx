@@ -153,9 +153,16 @@ class Scene
 		_entityNames.remove(e.name);
 	}
 
+	private function sortByLayer(a:Entity, b:Entity):Int
+	{
+		return Std.int(a.layer - b.layer);
+	}
+
 	public function draw()
 	{
 		Renderer.clear(camera.clearColor);
+		// TODO: find a faster way to sort entities without coupling...
+		_entities.sort(sortByLayer);
 		for (i in 0..._entities.length)
 		{
 			_entities[i].draw();
