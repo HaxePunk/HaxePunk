@@ -35,6 +35,8 @@ class Image extends Graphic
 	 */
 	public var flipY:Bool = false;
 
+	public var tint:Color;
+
 	/**
 	 * Clipping rectangle used to only render a portion of the full texture.
 	 * The rectangle should be set in pixel values and not uv values.
@@ -67,6 +69,8 @@ class Image extends Graphic
 	{
 		super();
 
+		tint = new Color(1, 1, 1, 1);
+
 #if !unit_test
 		this.material = source;
 		var texture = this.material.firstPass.getTexture(0);
@@ -82,9 +86,9 @@ class Image extends Graphic
 	 */
 	override public function draw(offset:Vector3):Void
 	{
-		SpriteBatch.draw(material, offset.x, offset.y, width, height,
+		SpriteBatch.draw(material, offset.x - origin.x, offset.y - origin.y, width, height,
 			clipRect.x, clipRect.y, clipRect.width, clipRect.height,
-			flipX, flipY, origin.x, origin.y, scale.x, scale.y, angle);
+			flipX, flipY, origin.x, origin.y, scale.x, scale.y, angle, tint);
 	}
 
 }

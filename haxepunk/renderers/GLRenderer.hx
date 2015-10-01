@@ -69,7 +69,7 @@ class GLRenderer
 
 	public static inline function createTexture(image:Image):NativeTexture
 	{
-		image.powerOfTwo = true;
+		// image.powerOfTwo = true;
 
 		var format = image.buffer.bitsPerPixel == 1 ? GL.ALPHA : GL.RGBA;
 		var texture = GL.createTexture();

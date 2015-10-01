@@ -58,7 +58,7 @@ class Text extends Graphic
 		var image = _font.renderGlyphs(_font.getGlyphs(), size);
 
 		_texture = new Texture();
-		_texture.loadFromImage(image);
+		_texture.loadFromImage(image[0]);
 		var vert = Assets.getText("shaders/default.vert");
 		var frag = Assets.getText("shaders/text.frag");
 		#end
@@ -113,15 +113,15 @@ class Text extends Graphic
 						var metrics = _font.getGlyphMetrics(p.glyph);
 						trace(metrics);
 
-						var left   = metrics.advance.x / _texture.width;
-						var top    = metrics.advance.y / _texture.height;
-						var right  = left + metrics.width / _texture.width;
-						var bottom = top + metrics.height / _texture.height;
+						var left  = _texture.width;
+						var top   = _texture.height;
+						var right  = left / _texture.width;
+						var bottom = top / _texture.height;
 
-						var pointLeft = x + p.offset.x + metrics.xOffset;
-						var pointTop = y + p.offset.y - metrics.yOffset;
-						var pointRight = pointLeft + metrics.width;
-						var pointBottom = pointTop + metrics.height;
+						var pointLeft = x + p.offset.x;
+						var pointTop = y + p.offset.y;
+						var pointRight = pointLeft;
+						var pointBottom = pointTop;
 
 						_vertices[vertIndex++] = pointRight;
 						_vertices[vertIndex++] = pointBottom;
