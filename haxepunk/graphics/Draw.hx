@@ -1,6 +1,7 @@
 package haxepunk.graphics;
 
 import haxepunk.renderers.Renderer;
+import lime.Assets;
 
 /**
  * Draws colored primitives to the screen.
@@ -8,6 +9,23 @@ import haxepunk.renderers.Renderer;
 @:access(haxepunk.graphics.SpriteBatch)
 class Draw
 {
+
+	private static var _defaultMaterial:Material;
+
+	/**
+	 * Resets SpriteBatch to be able to draw solid colors
+	 */
+	public static inline function begin()
+	{
+		if (_defaultMaterial == null)
+		{
+			_defaultMaterial = new Material();
+			var vert = Assets.getText("hxp/shaders/default.vert");
+			var frag = Assets.getText("hxp/shaders/color.frag");
+			_defaultMaterial.firstPass.shader = new Shader(vert, frag);
+		}
+		SpriteBatch.material = _defaultMaterial;
+	}
 
 	/**
 	 * Draws a single pixel to the screen

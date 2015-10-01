@@ -6,6 +6,35 @@ import haxepunk.scene.Scene;
 class SpriteBatch
 {
 
+	public static var material(get, set):Material;
+	private static function get_material():Material
+	{
+		// always make sure we return a valid material
+		if (_material == null)
+		{
+			_material = new Material();
+			_material.firstPass;
+		}
+		return _material;
+	}
+	private static function set_material(value:Material):Material
+	{
+		if (value != _material)
+		{
+			flush();
+			if (value != null)
+			{
+				var tex = value.firstPass.getTexture(0);
+				if (tex != null)
+				{
+					_invTexWidth = 1 / tex.width;
+					_invTexHeight = 1 / tex.height;
+				}
+			}
+		}
+		return _material = value;
+	}
+
 	/**
 	 * Adds a sprite to be drawn. Sprites are batched by material to reduce the number of draw calls.
 	 * @param material the Material to be used (includes shader and texture passes)
@@ -30,14 +59,7 @@ class SpriteBatch
 		texX:Float, texY:Float, texWidth:Float, texHeight:Float, flipX:Bool=false, flipY:Bool=false,
 		originX:Float=0, originY:Float=0, scaleX:Float=1, scaleY:Float=1, angle:Float=0, ?tint:Color):Void
 	{
-		if (material != _material)
-		{
-			flush();
-			_material = material;
-			var tex = material.firstPass.getTexture(0);
-			_invTexWidth = 1 / tex.width;
-			_invTexHeight = 1 / tex.height;
-		}
+		SpriteBatch.material = material;
 
 		var worldOriginX = x + originX;
 		var worldOriginY = y + originY;
@@ -161,12 +183,6 @@ class SpriteBatch
 	{
 		if (_index == 0) return;
 
-		if (_material == null)
-		{
-			_material = new Material();
-			_material.firstPass;
-		}
-
 		// update buffers
 		if (_vertexBuffer == null)
 		{
@@ -182,7 +198,7 @@ class SpriteBatch
 		var numIndices = Std.int(_iIndex / 3);
 
 		// loop material passes
-		for (pass in _material.passes)
+		for (pass in material.passes)
 		{
 			pass.use();
 			Renderer.setMatrix(pass.shader.uniform("uMatrix"), cameraTransform);
