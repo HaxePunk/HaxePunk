@@ -2,7 +2,6 @@ package haxepunk.graphics;
 
 import haxepunk.math.Matrix4;
 import haxepunk.renderers.Renderer;
-import lime.Assets;
 
 using StringTools;
 

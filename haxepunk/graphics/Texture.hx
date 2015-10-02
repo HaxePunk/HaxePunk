@@ -43,32 +43,6 @@ class Texture
 	}
 
 	/**
-	 * Create a texture from an asset
-	 * @param id the asset id to find
-	 */
-	public static function fromAsset(id:String):Texture
-	{
-		if (_textures.exists(id))
-		{
-			return _textures.get(id);
-		}
-		else
-		{
-			var texture = new Texture(id);
-			if (Assets.exists(id))
-			{
-				texture.loadFromImage(Assets.getImage(id).buffer);
-				_textures.set(id, texture);
-			}
-			else
-			{
-				trace('No texture named $id');
-			}
-			return texture;
-		}
-	}
-
-	/**
 	 * Creates texture from XPM data. http://en.wikipedia.org/wiki/X_PixMap
 	 * @param xpm a string of xpm data
 	 */
@@ -145,7 +119,7 @@ class Texture
 		return texture;
 	}
 
-	@:allow(haxepunk.graphics)
+	@:allow(haxepunk.graphics, haxepunk.Assets)
 	private function new(?id:String)
 	{
 		if (_id == null)
@@ -170,7 +144,7 @@ class Texture
 		_texture = Renderer.createTextureFromBytes(bytes, width, height);
 	}
 
-	@:allow(haxepunk.graphics)
+	@:allow(haxepunk.graphics, haxepunk.Assets)
 	private function loadFromImage(image:lime.graphics.ImageBuffer)
 	{
 		if (image == null) return;
@@ -202,6 +176,8 @@ class Texture
 
 	private var _texture:NativeTexture;
 	private var _id:String;
+
+	@:allow(haxepunk.Assets)
 	private static var _textures = new StringMap<Texture>();
 
 }

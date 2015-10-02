@@ -7,7 +7,6 @@ import haxepunk.math.Matrix4;
 import haxepunk.renderers.Renderer;
 import lime.text.Font;
 import lime.text.TextLayout;
-import lime.Assets;
 
 using StringTools;
 

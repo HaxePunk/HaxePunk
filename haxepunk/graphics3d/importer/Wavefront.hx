@@ -1,7 +1,6 @@
 package haxepunk.graphics3d.importer;
 
 import haxe.ds.StringMap;
-import lime.Assets;
 import haxepunk.graphics3d.Model;
 import haxepunk.renderers.Renderer;
 import haxepunk.graphics.Material;

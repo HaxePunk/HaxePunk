@@ -1,7 +1,6 @@
 package haxepunk.graphics;
 
 import haxepunk.renderers.Renderer;
-import lime.Assets;
 
 /**
  * Draws colored primitives to the screen.

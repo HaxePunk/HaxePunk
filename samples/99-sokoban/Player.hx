@@ -2,6 +2,7 @@ import haxepunk.scene.Entity;
 import haxepunk.inputs.Input;
 import haxepunk.inputs.Keyboard;
 import haxepunk.graphics.*;
+import haxepunk.Assets;
 
 class Player extends Entity
 {
@@ -14,7 +15,7 @@ class Player extends Entity
 		Input.define("right", [Key.RIGHT, Key.D]);
 
 		var material = new Material();
-		material.firstPass.addTexture(Texture.fromXPM(lime.Assets.getText("assets/player.xpm")));
+		material.firstPass.addTexture(Texture.fromXPM(Assets.getText("assets/player.xpm")));
 		addGraphic(new Image(material));
 	}
 
