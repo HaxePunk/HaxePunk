@@ -1,6 +1,6 @@
 package haxepunk.graphics;
 
-import haxepunk.HXP;
+import haxepunk.*;
 import haxepunk.math.Vector3;
 import haxepunk.math.Matrix4;
 import haxepunk.math.Rectangle;
@@ -14,7 +14,7 @@ abstract ImageSource(Material) to Material from Material
 	static inline private function fromAsset(asset:String):ImageSource
 	{
 		var material = new Material();
-		material.firstPass.addTexture(Texture.fromAsset(asset));
+		material.firstPass.addTexture(Assets.getTexture(asset));
 		return new ImageSource(material);
 	}
 }

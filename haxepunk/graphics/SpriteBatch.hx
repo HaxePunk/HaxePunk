@@ -2,6 +2,7 @@ package haxepunk.graphics;
 
 import haxepunk.renderers.Renderer;
 import haxepunk.scene.Scene;
+import haxepunk.math.Vector2;
 
 class SpriteBatch
 {
@@ -145,23 +146,61 @@ class SpriteBatch
 			r = g = b = a = 0;
 		}
 
-		addRectIndices();
+		addTriFan(2);
 		addVertex(x1, y1, u1, v1, r, g, b, a);
 		addVertex(x2, y2, u1, v2, r, g, b, a);
 		addVertex(x3, y3, u2, v2, r, g, b, a);
 		addVertex(x4, y4, u2, v1, r, g, b, a);
 	}
 
-	inline private static function addRectIndices()
+	public static function drawTriangles(material:Material, verts:Array<Vector2>, uvs:Array<Vector2>, ?tint:Color)
 	{
-		_indices[_iIndex++] = _index;
-		_indices[_iIndex++] = _index+1;
-		_indices[_iIndex++] = _index+2;
+		var r, g, b, a;
+		if (tint != null)
+		{
+			r = tint.r;
+			g = tint.g;
+			b = tint.b;
+			a = tint.a;
+		}
+		else
+		{
+			r = g = b = a = 0;
+		}
 
-		_indices[_iIndex++] = _index;
-		_indices[_iIndex++] = _index+2;
-		_indices[_iIndex++] = _index+3;
-		_index += 4;
+		SpriteBatch.material = material;
+        addTriFan(verts.length - 2);
+        for (i in 0...verts.length)
+        {
+			var vert = verts[i],
+				uv = uvs[i];
+            addVertex(vert.x, vert.y, uv.x, uv.y, r, g, b, a);
+        }
+	}
+
+	inline private static function addTriStrip(verts:Int)
+	{
+		for (i in 2...verts)
+		{
+			_indices[_iIndex++] = _index;
+			_indices[_iIndex++] = _index+1;
+			_indices[_iIndex++] = _index+2;
+			_index += 1;
+		}
+		_index += 2;
+	}
+
+	inline private static function addTriFan(tris:Int)
+	{
+		var first = _index++;
+		for (i in 0...tris)
+		{
+			_indices[_iIndex++] = first;
+			_indices[_iIndex++] = _index;
+			_indices[_iIndex++] = _index+1;
+			_index += 1;
+		}
+		_index += 1;
 	}
 
 	inline private static function addVertex(x:Float=0, y:Float=0, u:Float=0, v:Float=0, r:Float=1, g:Float=1, b:Float=1, a:Float=1):Void
