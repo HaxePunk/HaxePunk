@@ -42,44 +42,104 @@ class AnimatedTilemap extends Tilemap
 	override public function update()
 	{
 		
-		if (_anims != null)
+		//go through each animation in _anims array
+		for (a in 0..._anims.length)
 		{
-			var a:Int;
-			//go through each animation in _anims array
-			for (a in 0..._anims.length)
+			
+			_anims[a]._timer += (HXP.fixed ? _anims[a]._frameRate / HXP.assignedFrameRate : _anims[a]._frameRate * HXP.elapsed) * rate;
+			
+			if (_anims[a]._timer >= 1)
 			{
-				
-				_anims[a]._timer += (HXP.fixed ? _anims[a]._frameRate / HXP.assignedFrameRate : _anims[a]._frameRate * HXP.elapsed) * rate;
-				
-				if (_anims[a]._timer >= 1)
+				while (_anims[a]._timer >= 1)
 				{
-					while (_anims[a]._timer >= 1)
+					_anims[a]._timer -= 1;
+					_anims[a]._index += 1; //increase frame index
+					
+					//if last index -> go back to first frame (loop)
+					if (_anims[a]._index == _anims[a]._frames.length)
 					{
-						_anims[a]._timer -= 1;
-						_anims[a]._index += 1; //increase frame index
-						
-						//if last index -> go back to first frame (loop)
-						if (_anims[a]._index == _anims[a]._frames.length)
-						{
-							_anims[a]._index = 0;
-						}
+						_anims[a]._index = 0;
 					}
-					
-					var b:Int;
-					//for each tile that needs to be animated
-					for (b in 0..._anims[a]._tiles.length)
-					{
-						setTile(Std.int(_anims[a]._tiles[b] % columns), Std.int(_anims[a]._tiles[b] / columns), _anims[a]._frames[_anims[a]._index]);
-						//I don't even...	
-					}
-					
-					
 				}
+				
+				//for each tile that needs to be animated
+				for (b in 0..._anims[a]._tiles.length)
+				{
+					super.setTile(Std.int(_anims[a]._tiles[b] % columns), Std.int(_anims[a]._tiles[b] / columns), _anims[a]._frames[_anims[a]._index]);
+					//I don't even...	
+				}
+				
+				
 			}
 		}
 		
 		super.update();
 		
+	}
+	
+	/**
+	 * Sets the index of the tile at the position.
+	 * @param	column		Tile column.
+	 * @param	row			Tile row.
+	 * @param	index		Tile index from the tileset to show. (Or -1 to show the tile as blank.)
+	 */
+	override public function setTile(column:Int, row:Int, index:Int = 0)
+	{
+		
+		//Overriding setTile() function to check if any added tiles should be animated when adding them after using animate()
+		//Also checking if any already animated tiles have been replaced
+		
+		super.setTile(column, row, index);
+		
+		column %= _columns;
+		row %= _rows;
+		
+		var a:Int = 0;   
+		var b:Int = 0;   
+		
+		//go through each animation in _anims array
+		while (a < _anims.length)
+		{
+			
+			//check each tile for matches
+			while (b < _anims[a]._tiles.length)
+			{
+				
+				if (_anims[a]._tiles[b] == column + (row * columns))
+				{
+					//remove them from array -> animated tile has been replaced!
+					_anims[a]._tiles.splice(b, 1);
+				}
+				else
+				{
+					b++;
+				}
+				
+			}
+			
+			b = 0;
+			
+			if (_anims[a]._tiles.length == 0)
+			{
+				//remove _anims array if all animations have been removed
+				_anims.splice(a, 1);
+			}
+			else if (_anims[a]._frames[0] == index)
+			{
+				//add tile to array -> new tile is part of an animation!
+				_anims[a]._tiles.insert(0, (column + (row * columns)));
+				
+				//set tile to correct frame
+				super.setTile(column, row, _anims[a]._frames[_anims[a]._index]);
+				
+				a++;
+			}
+			else
+			{
+				a++;
+			}
+			
+		}	
 		
 	}
 	
@@ -92,7 +152,6 @@ class AnimatedTilemap extends Tilemap
 	{
 		
 		// Search through tilemap for all tiles that need to be animated and mark them down in array
-		var x:Int; var y:Int;
 		var tiles:Array<Int> = new Array();
 		for (y in 0...rows)
 		{
@@ -110,7 +169,6 @@ class AnimatedTilemap extends Tilemap
 	
 	//Create an array to hold all the animations
 	private var _anims:Array<Animation> = new Array();
-	
 	
 }
 
