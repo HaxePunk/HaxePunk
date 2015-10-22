@@ -1,7 +1,7 @@
-package haxepunk.masks;
+package haxepunk.masks3d;
 
+import haxepunk.masks.Mask;
 import haxepunk.math.Vector3;
-import haxepunk.scene.Entity;
 
 class Sphere implements Mask
 {
@@ -49,7 +49,7 @@ class Sphere implements Mask
 		return (dx * dx + dy * dy + dz * dz) < Math.pow(radius + other.radius, 2);
 	}
 
-	private function debugDraw(parent:Entity):Void
+	private function debugDraw(offset:Vector3):Void
 	{
 	}
 

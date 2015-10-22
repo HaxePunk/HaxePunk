@@ -41,12 +41,12 @@ abstract Vector2 (Point3D)
 	/**
 	 * Normalizes the vector
 	 */
-	public function normalize():Void
+	public function normalize(amount:Float=1):Void
 	{
 		var len = length;
 		if (len > 0)
 		{
-			len = 1 / len;
+			len = (1 / len) * amount;
 			x *= len;
 			y *= len;
 		}

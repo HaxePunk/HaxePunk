@@ -1,4 +1,4 @@
-package haxepunk.masks;
+package haxepunk.masks3d;
 
 import haxepunk.math.Vector3;
 

@@ -1,15 +1,13 @@
 package haxepunk.scene;
 
 import haxepunk.graphics.Graphic;
-import haxepunk.masks.Mask;
-import haxepunk.masks.AABB;
-import haxepunk.math.Matrix4;
-import haxepunk.math.Vector3;
+import haxepunk.masks.*;
+import haxepunk.math.*;
 
 class Entity extends SceneNode
 {
 
-	public var hitbox(default, null):AABB;
+	public var hitbox(default, null):Hitbox;
 	public var mask(default, null):Mask;
 	public var collidable:Bool = true;
 
@@ -66,7 +64,7 @@ class Entity extends SceneNode
 	public function new(x:Float = 0, y:Float = 0, z:Float = 0)
 	{
 		super(x, y, z);
-		mask = hitbox = new AABB();
+		mask = hitbox = new Hitbox();
 	}
 
 	public function toString():String
@@ -97,6 +95,53 @@ class Entity extends SceneNode
 		{
 			_graphic.draw(position);
 		}
+	}
+
+	/**
+	 * Moves the Entity by the amount given.
+	 * @param	point		Offset vector.
+	 */
+	public function moveBy(point:Vector2):Void
+	{
+		position += point;
+	}
+
+	/**
+	 * Moves the Entity to the position.
+	 * @param	point		destination.
+	 */
+	public function moveTo(point:Vector2):Void
+	{
+		moveBy(position - point);
+	}
+
+	/**
+	 * Moves towards the target position.
+	 * @param	point		target position.
+	 * @param	amount		Amount to move.
+	 */
+	public function moveTowards(point:Vector2, amount:Float):Void
+	{
+		var delta:Vector2 = position - point;
+		if (delta.length > amount)
+		{
+			// TODO: don't calculate length twice?
+			delta.normalize(amount);
+		}
+		moveBy(delta);
+	}
+
+	/**
+	 * Moves at an angle by a certain amount, retaining integer values for its x and y.
+	 * @param	angle		Angle to move at in degrees.
+	 * @param	amount		Amount to move.
+	 */
+	public inline function moveAtAngle(angle:Float, amount:Float):Void
+	{
+		angle *= Math.RAD;
+		var direction = new Vector2(Math.cos(angle), Math.sin(angle));
+		direction *= amount;
+		moveBy(direction);
 	}
 
 	/**
@@ -137,7 +182,7 @@ class Entity extends SceneNode
 			{
 				e.hitbox.min += e.position;
 				e.hitbox.max += e.position;
-				var result = e.hitbox.intersectsAABB(hitbox);
+				var result = e.hitbox.intersects(hitbox);
 				e.hitbox.min -= e.position;
 				e.hitbox.max -= e.position;
 
