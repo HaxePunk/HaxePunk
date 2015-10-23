@@ -28,17 +28,17 @@ class Sphere implements Mask
 		return false;
 	}
 
-	public function collide(other:Mask):Vector3
+	public function overlap(other:Mask):Vector3
 	{
-		return Vector3.ZERO;
+		return null;
 	}
 
-	public function intersectsPoint(vec:Vector3):Bool
+	public function containsPoint(vec:Vector3):Bool
 	{
 		var dx:Float = position.x - vec.x;
 		var dy:Float = position.y - vec.y;
 		var dz:Float = position.z - vec.z;
-		return (dx * dx + dy * dy + dz * dz) < Math.pow(radius, 2);
+		return (dx * dx + dy * dy + dz * dz) <= radius * radius;
 	}
 
 	public function intersectsSphere(other:Sphere):Bool

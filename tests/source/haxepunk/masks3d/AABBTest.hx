@@ -9,18 +9,18 @@ class AABBTest extends haxe.unit.TestCase
 	{
 		var a = new AABB();
 		var b = new AABB();
-		assertEquals(null, a.collideAABB(b));
+		assertEquals(null, a.overlapAABB(b));
 	}
 
-	public function testCollide()
+	public function testOverlap()
 	{
 		var a = new AABB(new Vector3(-1, -1, -1), new Vector3(1, 1, 1));
 		var b = new AABB(new Vector3(-1, -1, -1), new Vector3(2, 2, 2));
-		assertTrue(new Vector3(-2, -2, -2) == a.collideAABB(b));
+		assertTrue(new Vector3(-2, -2, -2) == a.overlapAABB(b));
 
 		// touching edges does not count as collision (no penetration)
 		b.min.x = b.min.y = b.min.z = 1;
-		assertEquals(null, a.collideAABB(b));
+		assertEquals(null, a.overlap(b));
 	}
 
 	public function testIntersection()

@@ -151,7 +151,7 @@ class Entity extends SceneNode
 	{
 		hitbox.x += x1; hitbox.y += y1;
 		var vec = new Vector3(x2, y2);
-		var result = hitbox.intersectsPoint(vec);
+		var result = hitbox.containsPoint(vec);
 		hitbox.x -= x1; hitbox.y -= y1;
 		return result;
 	}
