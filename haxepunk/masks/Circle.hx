@@ -36,6 +36,7 @@ class Circle implements Mask
 	public function overlap(other:Mask):Vector3
 	{
 		if (Std.is(other, Circle)) return overlapCircle(cast other);
+		if (Std.is(other, Hitbox)) return overlapHitbox(cast other);
 		return null;
 	}
 
@@ -55,24 +56,17 @@ class Circle implements Mask
 
 	public function intersectsHitbox(other:Hitbox):Bool
 	{
-		var halfWidth:Float = other.width * 0.5;
-		var halfHeight:Float = other.height * 0.5;
+		var halfWidth = other.width * 0.5;
+		var halfHeight = other.height * 0.5;
 
-		var distanceX:Float = Math.abs(x - other.x - halfWidth),
-			distanceY:Float = Math.abs(y - other.y - halfHeight);
+		var distanceX = Math.abs(x - other.x - halfWidth),
+			distanceY = Math.abs(y - other.y - halfHeight);
 
-		if (distanceX > halfWidth + radius || distanceY > halfHeight + radius)
-		{
-			return false;	// the hitbox is too far away so return false
-		}
-		if (distanceX <= halfWidth || distanceY <= halfHeight)
-		{
-			return true;
-		}
-		var distanceToCorner:Float = (distanceX - halfWidth) * (distanceX - halfWidth)
-			+ (distanceY - halfHeight) * (distanceY - halfHeight);
+		// the hitbox is too far away so return false
+		if (distanceX > halfWidth + radius || distanceY > halfHeight + radius) return false;
+		if (distanceX <= halfWidth || distanceY <= halfHeight) return true;
 
-		return distanceToCorner <= radius * radius;
+		return Math.pow(distanceX - halfWidth, 2) + Math.pow(distanceY - halfHeight, 2) <= radius * radius;
 	}
 
 	public function containsPoint(point:Vector3):Bool
@@ -81,8 +75,15 @@ class Circle implements Mask
 		 	point.y >= y - radius && point.y <= y + radius;
 	}
 
+	public function overlapHitbox(other:Hitbox):Vector3
+	{
+		// TODO: finish this function
+		return null;
+	}
+
 	public function overlapCircle(other:Circle):Vector3
 	{
+		// TODO: finish this function
 		return null;
 	}
 

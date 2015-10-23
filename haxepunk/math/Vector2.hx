@@ -40,13 +40,14 @@ abstract Vector2 (Point3D)
 
 	/**
 	 * Normalizes the vector
+	 * @param length The length of the resulting vector
 	 */
-	public function normalize(amount:Float=1):Void
+	public function normalize(length:Float=1):Void
 	{
-		var len = length;
+		var len = get_length();
 		if (len > 0)
 		{
-			len = (1 / len) * amount;
+			len = (1 / len) * length;
 			x *= len;
 			y *= len;
 		}

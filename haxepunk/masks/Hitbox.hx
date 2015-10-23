@@ -43,6 +43,7 @@ class Hitbox extends Rectangle implements Mask
 	public function overlap(other:Mask):Vector3
 	{
 		if (Std.is(other, Hitbox)) return overlapHitbox(cast other);
+		if (Std.is(other, Circle)) return cast(other, Circle).overlapHitbox(this);
 		return null;
 	}
 
