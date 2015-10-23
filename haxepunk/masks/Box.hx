@@ -2,7 +2,7 @@ package haxepunk.masks;
 
 import haxepunk.math.*;
 
-class Hitbox extends Rectangle implements Mask
+class Box extends Rectangle implements Mask
 {
 
 	/**
@@ -42,20 +42,20 @@ class Hitbox extends Rectangle implements Mask
 
 	public function overlap(other:Mask):Vector3
 	{
-		if (Std.is(other, Hitbox)) return overlapHitbox(cast other);
-		if (Std.is(other, Circle)) return cast(other, Circle).overlapHitbox(this);
+		if (Std.is(other, Box)) return overlapBox(cast other);
+		if (Std.is(other, Circle)) return cast(other, Circle).overlapBox(this);
 		return null;
 	}
 
 	/** @private Collides against an Entity. */
 	public function intersects(other:Mask):Bool
 	{
-		if (Std.is(other, Hitbox)) return intersectsHitbox(cast other);
-		if (Std.is(other, Circle)) return cast(other, Circle).intersectsHitbox(this);
+		if (Std.is(other, Box)) return intersectsBox(cast other);
+		if (Std.is(other, Circle)) return cast(other, Circle).intersectsBox(this);
 		return false;
 	}
 
-	public function intersectsHitbox(other:Hitbox):Bool
+	public function intersectsBox(other:Box):Bool
 	{
 		return right >= other.left && left <= other.right &&
 			bottom >= other.top && top <= other.bottom;
@@ -66,7 +66,7 @@ class Hitbox extends Rectangle implements Mask
 		return point.x >= left && point.x <= right && point.y >= top && point.y <= bottom;
 	}
 
-	public function overlapHitbox(other:Hitbox):Vector3
+	public function overlapBox(other:Box):Vector3
 	{
 		var left = other.left - this.right;
 		var right = other.right - this.left;

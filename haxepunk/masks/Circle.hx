@@ -36,14 +36,14 @@ class Circle implements Mask
 	public function overlap(other:Mask):Vector3
 	{
 		if (Std.is(other, Circle)) return overlapCircle(cast other);
-		if (Std.is(other, Hitbox)) return overlapHitbox(cast other);
+		if (Std.is(other, Box)) return overlapBox(cast other);
 		return null;
 	}
 
 	public function intersects(other:Mask):Bool
 	{
 		if (Std.is(other, Circle)) return intersectsCircle(cast other);
-		if (Std.is(other, Hitbox)) return intersectsHitbox(cast other);
+		if (Std.is(other, Box)) return intersectsBox(cast other);
 		return false;
 	}
 
@@ -54,7 +54,7 @@ class Circle implements Mask
 		return (dx * dx + dy * dy) <= Math.pow(radius + other.radius, 2);
 	}
 
-	public function intersectsHitbox(other:Hitbox):Bool
+	public function intersectsBox(other:Box):Bool
 	{
 		var halfWidth = other.width * 0.5;
 		var halfHeight = other.height * 0.5;
@@ -75,7 +75,7 @@ class Circle implements Mask
 		 	point.y >= y - radius && point.y <= y + radius;
 	}
 
-	public function overlapHitbox(other:Hitbox):Vector3
+	public function overlapBox(other:Box):Vector3
 	{
 		// TODO: finish this function
 		return null;

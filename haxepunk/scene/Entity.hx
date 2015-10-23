@@ -7,7 +7,7 @@ import haxepunk.math.*;
 class Entity extends SceneNode
 {
 
-	public var hitbox(default, null):Hitbox;
+	public var hitbox(default, null):Box;
 	public var mask(default, null):Mask;
 	public var collidable:Bool = true;
 
@@ -64,7 +64,7 @@ class Entity extends SceneNode
 	public function new(x:Float = 0, y:Float = 0, z:Float = 0)
 	{
 		super(x, y, z);
-		mask = hitbox = new Hitbox();
+		mask = hitbox = new Box();
 	}
 
 	public function toString():String
