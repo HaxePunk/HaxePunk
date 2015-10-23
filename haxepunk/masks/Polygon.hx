@@ -22,6 +22,35 @@ class Polygon implements Mask
     }
 
 	/**
+	 * Creates a regular polygon (edges of same length).
+	 * @param	sides	The number of sides in the polygon.
+	 * @param	radius	The distance that the vertices are at.
+	 * @return	The polygon
+	 */
+	public static function createRegular(sides:Int = 3, radius:Float = 100):Polygon
+	{
+		if (sides < 3) throw "Polygon requires at least 3 sides.";
+
+		// figure out the angle required for each step
+		var rotationAngle = (Math.PI * 2) / sides;
+
+		// loop through and generate each point
+		var points = new Array<Vector3>();
+
+		for (i in 0...sides)
+		{
+			var tempAngle = Math.PI + i * rotationAngle;
+			points.push(new Vector3(
+				Math.cos(tempAngle) * radius,
+				Math.sin(tempAngle) * radius
+			));
+		}
+
+		// return the polygon
+		return new Polygon(points);
+	}
+
+	/**
 	 * The angle of the polygon in radians
 	 */
 	public var angle(get, set):Float;
