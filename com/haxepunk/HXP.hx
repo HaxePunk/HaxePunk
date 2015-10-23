@@ -1150,7 +1150,7 @@ class HXP
 		}
 		var tween:MultiVarTween = new MultiVarTween(complete, type);
 		tween.tween(object, values, duration, ease);
-		tweener.addTween(tween);
+		tweener.addTween(tween, true);
 		return tween;
 	}
 
