@@ -1,5 +1,6 @@
 package haxepunk.scene;
 
+@:access(haxepunk.scene.Scene)
 class EntityTest extends haxe.unit.TestCase
 {
 
@@ -15,6 +16,7 @@ class EntityTest extends haxe.unit.TestCase
 		var scene = new Scene();
 		var e = new Entity();
 		scene.add(e);
+		scene.updateEntities();
 		assertEquals(scene, e.scene);
 	}
 
@@ -23,10 +25,10 @@ class EntityTest extends haxe.unit.TestCase
 		var scene = new Scene();
 
 		var a = new Entity(50, 50);
-		a.hitbox.min.x = -50;
-		a.hitbox.min.y = -50;
-		a.hitbox.max.x = 50;
-		a.hitbox.max.y = 50;
+		a.hitbox.left = -50;
+		a.hitbox.top = -50;
+		a.hitbox.right = 50;
+		a.hitbox.bottom = 50;
 		scene.add(a);
 
 		var b = new Entity(-25, -25);
@@ -34,6 +36,8 @@ class EntityTest extends haxe.unit.TestCase
 		b.hitbox.height = 50;
 		b.type = "player";
 		scene.add(b);
+
+		scene.updateEntities();
 
 		assertEquals(b, a.collide("player"));
 	}

@@ -180,6 +180,16 @@ class Scene
 
 	public function update(elapsed:Float)
 	{
+		updateEntities(elapsed);
+		if (Console.enabled) Console.instance.update(this, elapsed);
+		camera.update();
+	}
+
+	/**
+	 * Adds, updates, and removes entities from the scene
+	 */
+	private inline function updateEntities(elapsed:Float=0)
+	{
 		var removed = new Array<Entity>(),
 			e:Entity;
 
@@ -215,9 +225,6 @@ class Scene
 			if (e.type != "") removeType(e);
 			if (e.name != "") unregisterName(e);
 		}
-
-		if (Console.enabled) Console.instance.update(this, elapsed);
-		camera.update();
 	}
 
 	private var _frameLast:Float = 0;
