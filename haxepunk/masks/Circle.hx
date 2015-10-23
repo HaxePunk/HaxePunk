@@ -8,6 +8,8 @@ class Circle implements Mask
     public var x:Float;
     public var y:Float;
     public var radius:Float;
+    public var diameter(get, never):Float;
+    private inline function get_diameter():Float { return radius * 2; }
 
     /**
 	 * Constructor.
