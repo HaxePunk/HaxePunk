@@ -80,22 +80,16 @@ class GLRenderer
 	public static inline function createTexture(image:ImageBuffer):NativeTexture
 	{
 		var format = image.bitsPerPixel == 1 ? GL.ALPHA : GL.RGBA;
-		var texture = GL.createTexture();
-		GL.bindTexture(GL.TEXTURE_2D, texture);
-		GL.texImage2D(GL.TEXTURE_2D, 0, format, image.width, image.height, 0, format, GL.UNSIGNED_BYTE, image.data);
-		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
-		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
-
-		return texture;
+		return createTextureFromBytes(image.data, image.width, image.height, format);
 	}
 
-	public static inline function createTextureFromBytes(bytes:UInt8Array, width:Int, height:Int):NativeTexture
+	public static inline function createTextureFromBytes(bytes:UInt8Array, width:Int, height:Int, format:Int=GL.RGBA):NativeTexture
 	{
 		var texture = GL.createTexture();
 		GL.bindTexture(GL.TEXTURE_2D, texture);
-		GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, bytes);
 		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
 		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
+		GL.texImage2D(GL.TEXTURE_2D, 0, format, width, height, 0, format, GL.UNSIGNED_BYTE, bytes);
 		return texture;
 	}
 
