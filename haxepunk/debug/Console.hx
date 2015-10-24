@@ -54,6 +54,8 @@ class Console
 	{
 		var pos = scene.camera.position;
 
+		Draw.begin();
+
 		_logText.origin.y = HXP.window.height - _logText.height;
 		_logText.draw(pos);
 
@@ -88,7 +90,7 @@ class Console
 		{
 			if (entity.mask != null)
 			{
-				entity.mask.debugDraw(entity.position);
+				entity.mask.debugDraw(entity.position, HXP.maskColor);
 			}
 			Draw.pixel(entity.x, entity.y, HXP.entityColor, 4);
 		}

@@ -4,6 +4,7 @@ import haxe.ds.StringMap;
 import haxepunk.debug.Console;
 import haxepunk.graphics.Graphic;
 import haxepunk.graphics.Draw;
+import haxepunk.masks.Mask;
 import haxepunk.math.Matrix4;
 import haxepunk.renderers.Renderer;
 import haxepunk.graphics.SpriteBatch;
@@ -42,6 +43,14 @@ class Scene
 		{
 			_entities[i].remove = true;
 		}
+	}
+
+	public function addMask(mask:Mask, layer:Int=0, x:Float=0, y:Float=0):Entity
+	{
+		var e = new Entity(x, y, layer);
+		e.addMask(mask);
+		add(e);
+		return e;
 	}
 
 	public function addGraphic(graphic:Graphic, layer:Int=0, x:Float=0, y:Float=0):Entity

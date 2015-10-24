@@ -33,12 +33,12 @@ class Graphic
 	/**
 	 * Width of the graphic.
 	 */
-	public var width:Float;
+	public var width:Float = 0;
 
 	/**
 	 * Height of the graphic.
 	 */
-	public var height:Float;
+	public var height:Float = 0;
 
 	/**
 	 * Create a new graphic and initialize the matrix, scale and origin

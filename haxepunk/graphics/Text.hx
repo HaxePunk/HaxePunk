@@ -158,7 +158,7 @@ class Text extends Graphic
 		var vert = "m44 op, va0, vc0\nmov v0, va1";
 		var frag = "tex ft0, v0, fs0 <linear nomip 2d wrap>\nmov ft0.xyz, fc1.xyz\nmov oc, ft0";
 		#else
-		_font = Font.fromFile("hxp/font/SourceCodePro-Regular.otf");
+		_font = Font.fromFile("hxp/font/OpenSans-Regular.ttf");
 		_textLayout = new TextLayout("", _font, size, LEFT_TO_RIGHT, LATIN, "en");
 
 		// MUST be set after the texture is created

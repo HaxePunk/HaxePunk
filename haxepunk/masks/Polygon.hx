@@ -31,19 +31,18 @@ class Polygon implements Mask
 	{
 		if (sides < 3) throw "Polygon requires at least 3 sides.";
 
-		// figure out the angle required for each step
-		var rotationAngle = (Math.PI * 2) / sides;
+		var angle = 0.0;
+		var angleStep = (Math.PI * 2) / sides;
 
 		// loop through and generate each point
 		var points = new Array<Vector3>();
-
 		for (i in 0...sides)
 		{
-			var tempAngle = Math.PI + i * rotationAngle;
 			points.push(new Vector3(
-				Math.cos(tempAngle) * radius,
-				Math.sin(tempAngle) * radius
+				Math.cos(angle) * radius,
+				Math.sin(angle) * radius
 			));
+			angle += angleStep;
 		}
 
 		// return the polygon
@@ -107,14 +106,18 @@ class Polygon implements Mask
 		max = new Vector3(h.max, v.max);
 	}
 
-    public function debugDraw(offset:Vector3):Void
+    public function debugDraw(offset:Vector3, color:haxepunk.graphics.Color):Void
 	{
-		var lastPoint = _points[0] + offset;
+		var pos = new Vector3(x, y);
+		pos += offset;
+		var firstPoint = _points[0] + pos,
+			lastPoint = firstPoint;
 		for (i in 1..._points.length) {
-			var point = _points[i] + offset;
-			haxepunk.graphics.Draw.line(lastPoint.x, lastPoint.y, point.x, point.y, HXP.maskColor);
+			var point = _points[i] + pos;
+			haxepunk.graphics.Draw.line(lastPoint.x, lastPoint.y, point.x, point.y, color);
 			lastPoint = point;
 		}
+		haxepunk.graphics.Draw.line(lastPoint.x, lastPoint.y, firstPoint.x, firstPoint.y, color);
 	}
 
 	public function overlap(other:Mask):Vector3
@@ -236,7 +239,7 @@ class Polygon implements Mask
 		return new Projection(min, max);
 	}
 
-	private var _angle:Float;
+	private var _angle:Float = 0;
 	private var _axes:Array<Vector3>;
 	private var _points:Array<Vector3>;
 

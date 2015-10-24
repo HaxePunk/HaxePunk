@@ -30,9 +30,26 @@ class Circle implements Mask
 	public var max(get, never):Vector3;
 	private inline function get_max():Vector3 { return new Vector3(x+radius, y+radius); }
 
-    public function debugDraw(offset:Vector3):Void
+    public function debugDraw(offset:Vector3, color:haxepunk.graphics.Color):Void
 	{
-		//haxepunk.graphics.Draw.circle(offset.x + x, offset.y + y, radius, HXP.maskColor);
+		var sides = 24,
+			angle = 0.0,
+			angleStep = (Math.PI * 2) / sides,
+			posX = x + offset.x,
+			posY = y + offset.y,
+			lastX = posX + Math.cos(angle) * radius,
+			lastY = posX + Math.sin(angle) * radius,
+			pointX:Float,
+			pointY:Float;
+		for (i in 0...sides)
+		{
+			angle += angleStep;
+			pointX = posX + Math.cos(angle) * radius;
+			pointY = posY + Math.sin(angle) * radius;
+			haxepunk.graphics.Draw.line(lastX, lastY, pointX, pointY, color);
+			lastX = pointX;
+			lastY = pointY;
+		}
 	}
 
 	public function overlap(other:Mask):Vector3

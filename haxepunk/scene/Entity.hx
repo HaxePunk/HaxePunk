@@ -72,6 +72,11 @@ class Entity extends SceneNode
 		return _name;
 	}
 
+	public function addMask(mask:Mask):Mask
+	{
+		return this.mask = mask;
+	}
+
 	public function addGraphic(graphic:Graphic):Graphic
 	{
 		if (_graphic == null)

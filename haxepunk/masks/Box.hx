@@ -35,9 +35,9 @@ class Box extends Rectangle implements Mask
 		return value;
 	}
 
-	public function debugDraw(offset:Vector3):Void
+	public function debugDraw(offset:Vector3, color:haxepunk.graphics.Color):Void
 	{
-		haxepunk.graphics.Draw.rect(offset.x + x, offset.y + y, width, height, HXP.maskColor);
+		haxepunk.graphics.Draw.rect(offset.x + x, offset.y + y, width, height, color);
 	}
 
 	public function overlap(other:Mask):Vector3
