@@ -127,7 +127,7 @@ class Entity extends SceneNode
 	 */
 	public function moveTowards(point:Vector2, amount:Float):Void
 	{
-		var delta:Vector2 = position - point;
+		var delta:Vector2 = point - position;
 		if (delta.length > amount)
 		{
 			// TODO: don't calculate length twice?
