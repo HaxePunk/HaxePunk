@@ -11,8 +11,17 @@ import lime.app.Config;
 import lime.graphics.RenderContext;
 import lime.ui.Window;
 
+enum ScaleMode
+{
+	NoScale;
+	Stretch;
+	LetterBox;
+}
+
 class Engine extends Application
 {
+
+	public var scaleMode:ScaleMode = LetterBox;
 
 	public var scene(get, set):Scene;
 	private inline function get_scene():Scene { return _scenes.first(); }
@@ -52,13 +61,36 @@ class Engine extends Application
 	/**
 	 * This function is called when the engine is ready. All initialization code should go here.
 	 */
-	public function ready()
+	public function ready() { }
+
+	private function setViewport()
 	{
-		Renderer.setViewport(0, 0, HXP.window.width, HXP.window.height);
+		var x = 0, y = 0,
+			width = scene.width == 0 ? HXP.window.width : scene.width,
+			height = scene.height == 0 ? HXP.window.height : scene.height;
+		switch (scaleMode)
+		{
+		case NoScale:
+			x = Std.int((HXP.window.width - width) / 2);
+			y = Std.int((HXP.window.height - height) / 2);
+		case LetterBox:
+			var scale = HXP.window.width / width;
+			if (scale * height > HXP.window.height)
+			{
+				scale = HXP.window.height / height;
+			}
+			width = Std.int(width * scale);
+			height = Std.int(height * scale);
+			x = Std.int((HXP.window.width - width) / 2);
+			y = Std.int((HXP.window.height - height) / 2);
+		case Stretch:
+		}
+		Renderer.setViewport(x, y, width, height);
 	}
 
 	override public function render(context:RenderContext):Void
 	{
+		setViewport();
 		var time = haxe.Timer.stamp();
 		scene.draw();
 		HXP.renderTime = time - haxe.Timer.stamp();
