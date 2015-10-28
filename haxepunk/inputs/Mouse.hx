@@ -147,26 +147,34 @@ class Mouse
 	 */
 	private static inline function onMouseMove(x:Float, y:Float):Void
 	{
-		var ww = HXP.window.width,
-			wh = HXP.window.height,
-			width = HXP.scene.width == 0 ? ww : HXP.scene.width,
-			height = HXP.scene.height == 0 ? wh : HXP.scene.height;
-		switch (HXP.scaleMode)
+		if (HXP.window != null)
 		{
-			case NoScale:
-				Mouse.x = x - Std.int((ww - width) / 2);
-				Mouse.x = y - Std.int((wh - height) / 2);
-			case LetterBox:
-				var scale = ww / width;
-				if (scale * height > wh)
-				{
-					scale = wh / height;
-				}
-				Mouse.x = (x - Std.int((ww - Std.int(width * scale)) / 2)) / scale;
-				Mouse.y = (y - Std.int((wh - Std.int(height * scale)) / 2)) / scale;
-			case Stretch:
-				Mouse.x = x * (width / ww);
-				Mouse.y = y * (height / wh);
+			var ww = HXP.window.width,
+				wh = HXP.window.height,
+				width = HXP.scene.width == 0 ? ww : HXP.scene.width,
+				height = HXP.scene.height == 0 ? wh : HXP.scene.height;
+			switch (HXP.scaleMode)
+			{
+				case NoScale:
+					Mouse.x = x - Std.int((ww - width) / 2);
+					Mouse.x = y - Std.int((wh - height) / 2);
+				case LetterBox:
+					var scale = ww / width;
+					if (scale * height > wh)
+					{
+						scale = wh / height;
+					}
+					Mouse.x = (x - Std.int((ww - Std.int(width * scale)) / 2)) / scale;
+					Mouse.y = (y - Std.int((wh - Std.int(height * scale)) / 2)) / scale;
+				case Stretch:
+					Mouse.x = x * (width / ww);
+					Mouse.y = y * (height / wh);
+			}
+		}
+		else
+		{
+			Mouse.x = x;
+			Mouse.y = y;
 		}
 		Mouse.screenX = x;
 		Mouse.screenY = y;

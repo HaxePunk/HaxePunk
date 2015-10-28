@@ -49,7 +49,7 @@ class Sphere implements Mask
 		return (dx * dx + dy * dy + dz * dz) < Math.pow(radius + other.radius, 2);
 	}
 
-	private function debugDraw(offset:Vector3):Void
+	public function debugDraw(offset:Vector3, color:haxepunk.graphics.Color):Void
 	{
 	}
 
