@@ -38,10 +38,9 @@ class Text extends Graphic
 			_images = _font.renderGlyphs(_font.getGlyphs(), value);
 			if (_images != null)
 			{
-				var it = _images.iterator();
-				if (it.hasNext())
+				for (image in _images)
 				{
-					_texture.loadFromImage(it.next().buffer);
+					_texture.loadFromImage(image);
 				}
 			}
 		}

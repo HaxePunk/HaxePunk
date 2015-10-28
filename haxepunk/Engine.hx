@@ -58,7 +58,6 @@ class Engine extends Application
 	{
 		if (scene.width == 0) scene.width = HXP.window.width;
 		if (scene.height == 0) scene.height = HXP.window.height;
-		trace(scene.width + ", " + scene.height);
 		var x = 0, y = 0, width = scene.width, height = scene.height;
 		switch (HXP.scaleMode)
 		{

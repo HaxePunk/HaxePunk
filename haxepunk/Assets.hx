@@ -29,7 +29,7 @@ class Assets
 			var texture = new Texture(id);
 			if (Assets.exists(id))
 			{
-				texture.loadFromImage(lime.Assets.getImage(id).buffer);
+				texture.loadFromImage(lime.Assets.getImage(id));
 				Texture._textures.set(id, texture);
 			}
 			else

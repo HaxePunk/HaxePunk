@@ -145,15 +145,17 @@ class Texture
 	}
 
 	@:allow(haxepunk.graphics, haxepunk.Assets)
-	private function loadFromImage(image:lime.graphics.ImageBuffer)
+	private function loadFromImage(image:lime.graphics.Image)
 	{
 		if (image == null) return;
-		sourceWidth = image.width;
-		sourceHeight = image.height;
+		var w = image.buffer.width,
+			h = image.buffer.height;
+		sourceWidth = w;
+		sourceHeight = h;
 
-		_texture = Renderer.createTexture(image);
-		width = image.width;
-		height = image.height;
+		_texture = Renderer.createTextureFromBytes(image.data, w, h);
+		width = w;
+		height = h;
 	}
 
 	/**
