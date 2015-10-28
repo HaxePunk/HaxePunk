@@ -5,9 +5,18 @@ import haxepunk.scene.Scene;
 import haxepunk.graphics.SpriteBatch;
 import haxepunk.graphics.Color;
 
+enum ScaleMode
+{
+	NoScale;
+	Stretch;
+	LetterBox;
+}
+
 class HXP
 {
 	public static var window:Window;
+
+	public static var scaleMode:ScaleMode = LetterBox;
 
 	// TODO: change this so it can't get out of sync with Engine
 	@:allow(haxepunk.Engine)

@@ -37,11 +37,17 @@ class Mouse
 	/** The delta of the mouse wheel on the vertical axis, 0 if it wasn't moved this frame */
 	public static var wheelDeltaY(default, null):Float = 0;
 
-	/** X position of the mouse on the screen */
+	/** X position of the mouse in the viewport */
 	public static var x(default, null):Float = 0;
 
-	/** Y position of the mouse on the screen */
+	/** Y position of the mouse in the viewport */
 	public static var y(default, null):Float = 0;
+
+	/** X position of the mouse on the screen */
+	public static var screenX(default, null):Float = 0;
+
+	/** Y position of the mouse on the screen */
+	public static var screenY(default, null):Float = 0;
 
 	/**
 	 * Returns the name of the mouse button.
@@ -141,8 +147,29 @@ class Mouse
 	 */
 	private static inline function onMouseMove(x:Float, y:Float):Void
 	{
-		Mouse.x = x;
-		Mouse.y = y;
+		var ww = HXP.window.width,
+			wh = HXP.window.height,
+			width = HXP.scene.width == 0 ? ww : HXP.scene.width,
+			height = HXP.scene.height == 0 ? wh : HXP.scene.height;
+		switch (HXP.scaleMode)
+		{
+			case NoScale:
+				Mouse.x = x - Std.int((ww - width) / 2);
+				Mouse.x = y - Std.int((wh - height) / 2);
+			case LetterBox:
+				var scale = ww / width;
+				if (scale * height > wh)
+				{
+					scale = wh / height;
+				}
+				Mouse.x = (x - Std.int((ww - Std.int(width * scale)) / 2)) / scale;
+				Mouse.y = (y - Std.int((wh - Std.int(height * scale)) / 2)) / scale;
+			case Stretch:
+				Mouse.x = x * (width / ww);
+				Mouse.y = y * (height / wh);
+		}
+		Mouse.screenX = x;
+		Mouse.screenY = y;
 	}
 
 	/**

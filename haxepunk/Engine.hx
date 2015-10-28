@@ -11,17 +11,8 @@ import lime.app.Config;
 import lime.graphics.RenderContext;
 import lime.ui.Window;
 
-enum ScaleMode
-{
-	NoScale;
-	Stretch;
-	LetterBox;
-}
-
 class Engine extends Application
 {
-
-	public var scaleMode:ScaleMode = LetterBox;
 
 	public var scene(get, set):Scene;
 	private inline function get_scene():Scene { return _scenes.first(); }
@@ -63,27 +54,30 @@ class Engine extends Application
 	 */
 	public function ready() { }
 
+	// TODO: only call this when window resizes or scene dimensions change
 	private function setViewport()
 	{
 		var x = 0, y = 0,
 			width = scene.width == 0 ? HXP.window.width : scene.width,
 			height = scene.height == 0 ? HXP.window.height : scene.height;
-		switch (scaleMode)
+		switch (HXP.scaleMode)
 		{
-		case NoScale:
-			x = Std.int((HXP.window.width - width) / 2);
-			y = Std.int((HXP.window.height - height) / 2);
-		case LetterBox:
-			var scale = HXP.window.width / width;
-			if (scale * height > HXP.window.height)
-			{
-				scale = HXP.window.height / height;
-			}
-			width = Std.int(width * scale);
-			height = Std.int(height * scale);
-			x = Std.int((HXP.window.width - width) / 2);
-			y = Std.int((HXP.window.height - height) / 2);
-		case Stretch:
+			case NoScale:
+				x = Std.int((HXP.window.width - width) / 2);
+				y = Std.int((HXP.window.height - height) / 2);
+			case LetterBox:
+				var scale = HXP.window.width / width;
+				if (scale * height > HXP.window.height)
+				{
+					scale = HXP.window.height / height;
+				}
+				width = Std.int(width * scale);
+				height = Std.int(height * scale);
+				x = Std.int((HXP.window.width - width) / 2);
+				y = Std.int((HXP.window.height - height) / 2);
+			case Stretch:
+				width = HXP.window.width;
+				height = HXP.window.height;
 		}
 		Renderer.setViewport(x, y, width, height);
 	}
