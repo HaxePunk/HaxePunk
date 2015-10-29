@@ -2,6 +2,7 @@ import haxepunk.Engine;
 import haxepunk.HXP;
 import haxepunk.graphics.*;
 import haxepunk.math.*;
+import haxepunk.masks.*;
 
 class Main extends Engine
 {
@@ -9,43 +10,22 @@ class Main extends Engine
 	{
 		super.ready();
 
-		// var image = new Image("assets/lime.jpg");
-		// image.centerOrigin();
-		// image.scale.x = 0.5;
-		// image.scale.y = 0.75;
-		// scene.addGraphic(image);
+		haxepunk.debug.Console.enabled = true;
 
-		// scene.camera.clearColor.r = scene.camera.clearColor.g = scene.camera.clearColor.b = 0.6;
+		scene.addMask(new Box(30, 30, -15, -15), 0, 300, 500);
+		scene.addMask(new Box(50, 50), 0, 400, 500);
+		scene.addMask(new Circle(300, 50, 50), 0, 500, 500);
 
-		// var text = new haxepunk.graphics.Text("The quick brown fox jumps over the lazy dog.", 16);
-		// text.color.r = 0.997;
-		// text.color.g = 0.868;
-		// text.color.b = 0.462;
-		// scene.addGraphic(text, 50, 200);
+		var poly = Polygon.createRegular(5);
+		poly.angle = -90 * Math.RAD;
+		scene.addMask(poly, 0, 200, 250);
 
-		// scene.add(new Player());
-		scene.addGraphic(new ParticleEmitter("assets/lime.png"));
+		scene.addMask(Polygon.createRegular(8, 75), 0, 400, 200);
 
-		scene.camera.x = -(HXP.window.width / 2);
-		scene.camera.y = -(HXP.window.height / 2);
-		var material = new Material();
-		var pass = material.firstPass;
-		pass.depthCheck = true;
-		pass.shader = new Shader(lime.Assets.getText("shaders/lighting.vert"), lime.Assets.getText("shaders/lighting.frag"));
-
-		// var mesh = haxepunk.graphics.importer.Wavefront.load("assets/project.obj", material);
-		// scene.addGraphic(mesh);
-
-		fps = new Text("", 32);
-		scene.addGraphic(fps, 50, 50);//scene.camera.x, scene.camera.y);
+		poly = Polygon.createRegular(5, 50);
+		poly.x = poly.y = 50;
+		poly.angle = 90 * Math.RAD;
+		scene.addMask(poly, 0, 50, 50);
 	}
-
-	override public function update(deltaTime:Int)
-	{
-		super.update(deltaTime);
-		fps.text = "" + Std.int(HXP.frameRate);
-	}
-
-	private var fps:Text;
 
 }

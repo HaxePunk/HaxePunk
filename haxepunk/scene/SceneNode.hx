@@ -6,6 +6,7 @@ class SceneNode
 {
 
 	public var position:Vector3;
+	public var remove:Bool = false;
 
 	@:allow(haxepunk.scene.Scene)
 	public var scene(default, set):Scene;

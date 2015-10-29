@@ -1,7 +1,7 @@
-package haxepunk.masks;
+package haxepunk.masks3d;
 
+import haxepunk.masks.Mask;
 import haxepunk.math.Vector3;
-import haxepunk.scene.Entity;
 
 class AABB implements Mask
 {
@@ -128,13 +128,13 @@ class AABB implements Mask
 		return false;
 	}
 
-	public function collide(other:Mask):Vector3
+	public function overlap(other:Mask):Vector3
 	{
-		if (Std.is(other, AABB)) return collideAABB(cast other);
-		return Vector3.ZERO;
+		if (Std.is(other, AABB)) return overlapAABB(cast other);
+		return null;
 	}
 
-	public function intersectsPoint(vec:Vector3):Bool
+	public function containsPoint(vec:Vector3):Bool
 	{
 		return vec.x >= min.x && vec.x <= max.x &&
 			vec.y >= min.y && vec.y <= max.y &&
@@ -148,7 +148,7 @@ class AABB implements Mask
 			max.z >= other.min.z && min.z <= other.max.z;
 	}
 
-	public function collideAABB(other:AABB):Vector3
+	public function overlapAABB(other:AABB):Vector3
 	{
 		var result = new Vector3();
 
@@ -171,9 +171,9 @@ class AABB implements Mask
 		return result;
 	}
 
-	private function debugDraw(parent:Entity):Void
+	public function debugDraw(offset:Vector3, color:haxepunk.graphics.Color):Void
 	{
-		haxepunk.graphics.Draw.rect(parent.x + left, parent.y + top, width, height, HXP.maskColor);
+		haxepunk.graphics.Draw.rect(offset.x + left, offset.y + top, width, height, color);
 	}
 
 	private var _center:Vector3;

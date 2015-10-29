@@ -27,8 +27,11 @@ class TestMain
 		runner.add(new haxepunk.inputs.MouseTest());
 
 		// mask tests
-		runner.add(new haxepunk.masks.AABBTest());
-		runner.add(new haxepunk.masks.SphereTest());
+		runner.add(new haxepunk.masks.BoxTest());
+		runner.add(new haxepunk.masks.CircleTest());
+		runner.add(new haxepunk.masks.PolygonTest());
+		runner.add(new haxepunk.masks3d.AABBTest());
+		runner.add(new haxepunk.masks3d.SphereTest());
 
 		runner.run();
 	}

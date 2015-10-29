@@ -54,6 +54,8 @@ class Console
 	{
 		var pos = scene.camera.position;
 
+		Draw.begin();
+
 		_logText.origin.y = HXP.window.height - _logText.height;
 		_logText.draw(pos);
 
@@ -65,18 +67,21 @@ class Console
 
 		if (_frameInfos.length > 1)
 		{
-			var lastInfo:FrameInfo = _frameInfos[0];
 			var fpsColor = new Color(0.27, 0.54, 0.4);
 			var updateColor = new Color(1.0, 0.94, 0.65);
 			var renderColor = new Color(0.71, 0.29, 0.15);
 			var x, y = pos.y + 50, w = 3, h = 30;
+			var lastInfo:FrameInfo = null;
 			for (i in 1..._frameInfos.length)
 			{
-				var info = _frameInfos[i];
-				x = pos.x + i * w;
-				Draw.line(x, y - lastInfo.frameRate * h, x + w, y - info.frameRate * h, fpsColor);
-				Draw.line(x, y - lastInfo.updateTime * h, x + w, y - info.updateTime * h, updateColor);
-				Draw.line(x, y - lastInfo.renderTime * h, x + w, y - info.renderTime * h, renderColor);
+				var info = _frameInfos.get(i);
+				if (lastInfo != null)
+				{
+					x = pos.x + i * w;
+					Draw.line(x, y - lastInfo.frameRate * h, x + w, y - info.frameRate * h, fpsColor);
+					Draw.line(x, y - lastInfo.updateTime * h, x + w, y - info.updateTime * h, updateColor);
+					Draw.line(x, y - lastInfo.renderTime * h, x + w, y - info.renderTime * h, renderColor);
+				}
 				lastInfo = info;
 			}
 		}
@@ -85,7 +90,7 @@ class Console
 		{
 			if (entity.mask != null)
 			{
-				entity.mask.debugDraw(entity);
+				entity.mask.debugDraw(entity.position, HXP.maskColor);
 			}
 			Draw.pixel(entity.x, entity.y, HXP.entityColor, 4);
 		}

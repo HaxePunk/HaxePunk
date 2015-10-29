@@ -9,7 +9,6 @@ import haxepunk.inputs.Input;
 import lime.app.Application;
 import lime.app.Config;
 import lime.graphics.RenderContext;
-import lime.ui.Window;
 
 class Engine extends Application
 {
@@ -25,47 +24,74 @@ class Engine extends Application
 		pushScene(scene == null ? new Scene() : scene);
 	}
 
-	override public function create(config:Config):Void
+	override public function exec():Int
 	{
-		super.create(config);
-
 		HXP.window = windows[0];
+
+		HXP.window.onResize.add(setViewport);
+		setViewport(HXP.window.width, HXP.window.height);
 
 		// Init the input system
 		Input.init(HXP.window);
 
-		switch (HXP.window.currentRenderer.context)
+		switch (HXP.window.renderer.context)
 		{
 			#if flash
 			case FLASH(stage):
 				Renderer.init(stage, ready);
-			#elseif (js && canvas)
-			case CANVAS(canvas):
-				Renderer.init(canvas);
-				ready();
 			#end
-			default:
+			case OPENGL(gl):
 				ready();
+			default:
+				throw "Rendering context is not supported!";
 		}
+
+		return super.exec();
 	}
 
 	/**
 	 * This function is called when the engine is ready. All initialization code should go here.
 	 */
-	public function ready()
+	public function ready() { }
+
+	private function setViewport(windowWidth:Int, windowHeight:Int)
 	{
-		Renderer.setViewport(0, 0, HXP.window.width, HXP.window.height);
+		if (scene.width == 0) scene.width = HXP.window.width;
+		if (scene.height == 0) scene.height = HXP.window.height;
+		var x = 0, y = 0, width = scene.width, height = scene.height;
+		switch (HXP.scaleMode)
+		{
+			case NoScale:
+				x = Std.int((windowWidth - width) / 2);
+				y = Std.int((windowHeight - height) / 2);
+			case LetterBox:
+				var scale = windowWidth / width;
+				if (scale * height > windowHeight)
+				{
+					scale = windowHeight / height;
+				}
+				width = Std.int(width * scale);
+				height = Std.int(height * scale);
+				x = Std.int((windowWidth - width) / 2);
+				y = Std.int((windowHeight - height) / 2);
+			case Stretch:
+				width = windowWidth;
+				height = windowHeight;
+		}
+		Renderer.setViewport(x, y, width, height);
 	}
 
-	override public function render(context:RenderContext):Void
+	override public function render(renderer:lime.graphics.Renderer):Void
 	{
 		var time = haxe.Timer.stamp();
 		scene.draw();
 		HXP.renderTime = time - haxe.Timer.stamp();
 
+		#if flash
 		// must reset program and texture at end of each frame...
 		Renderer.bindProgram();
 		Renderer.bindTexture(null, 0);
+		#end
 	}
 
 	override public function update(deltaTime:Int):Void

@@ -27,6 +27,16 @@ class GLRenderer
 		GL.viewport(x, y, width, height);
 	}
 
+	public static inline function attribute(program:ShaderProgram, a:String):Int
+	{
+		return GL.getAttribLocation(program, a);
+	}
+
+	public static inline function uniform(program:ShaderProgram, u:String):Location
+	{
+		return GL.getUniformLocation(program, u);
+	}
+
 	public static inline function present():Void
 	{
 		_totalRenderCalls += _renderCalls;
@@ -67,27 +77,19 @@ class GLRenderer
 		}
 	}
 
-	public static inline function createTexture(image:Image):NativeTexture
+	public static inline function createTexture(image:ImageBuffer):NativeTexture
 	{
-		image.powerOfTwo = true;
-
-		var format = image.buffer.bitsPerPixel == 1 ? GL.ALPHA : GL.RGBA;
-		var texture = GL.createTexture();
-		GL.bindTexture(GL.TEXTURE_2D, texture);
-		GL.texImage2D(GL.TEXTURE_2D, 0, format, image.width, image.height, 0, format, GL.UNSIGNED_BYTE, image.data);
-		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
-		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
-
-		return texture;
+		var format = image.bitsPerPixel == 8 ? GL.ALPHA : GL.RGBA;
+		return createTextureFromBytes(image.data, image.width, image.height, format);
 	}
 
-	public static inline function createTextureFromBytes(bytes:UInt8Array, width:Int, height:Int):NativeTexture
+	public static inline function createTextureFromBytes(bytes:UInt8Array, width:Int, height:Int, format:Int=GL.RGBA):NativeTexture
 	{
 		var texture = GL.createTexture();
 		GL.bindTexture(GL.TEXTURE_2D, texture);
-		GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, bytes);
-		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
-		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
+		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
+		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
+		GL.texImage2D(GL.TEXTURE_2D, 0, format, width, height, 0, format, GL.UNSIGNED_BYTE, bytes);
 		return texture;
 	}
 
@@ -174,14 +176,14 @@ class GLRenderer
 
 	public static inline function updateBuffer(data:FloatArray, ?usage:BufferUsage):Void
 	{
-		GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(data), usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
+		GL.bufferData(GL.ARRAY_BUFFER, data, usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 	}
 
 	public static inline function updateIndexBuffer(data:IntArray, ?usage:BufferUsage, ?buffer:IndexBuffer):IndexBuffer
 	{
 		if (buffer == null) buffer = GL.createBuffer();
 		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, buffer);
-		GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, new Int16Array(data), usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
+		GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, data, usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 		_activeState.indexBuffer = buffer;
 		return buffer;
 	}

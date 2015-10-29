@@ -1,6 +1,6 @@
 package haxepunk.graphics;
 
-import haxepunk.HXP;
+import haxepunk.*;
 import haxepunk.math.Vector3;
 import haxepunk.math.Matrix4;
 import haxepunk.math.Rectangle;
@@ -14,7 +14,7 @@ abstract ImageSource(Material) to Material from Material
 	static inline private function fromAsset(asset:String):ImageSource
 	{
 		var material = new Material();
-		material.firstPass.addTexture(Texture.fromAsset(asset));
+		material.firstPass.addTexture(Assets.getTexture(asset));
 		return new ImageSource(material);
 	}
 }
@@ -34,6 +34,8 @@ class Image extends Graphic
 	 * Flip image on the y-axis
 	 */
 	public var flipY:Bool = false;
+
+	public var tint:Color;
 
 	/**
 	 * Clipping rectangle used to only render a portion of the full texture.
@@ -67,6 +69,8 @@ class Image extends Graphic
 	{
 		super();
 
+		tint = new Color(1, 1, 1, 1);
+
 #if !unit_test
 		this.material = source;
 		var texture = this.material.firstPass.getTexture(0);
@@ -82,9 +86,9 @@ class Image extends Graphic
 	 */
 	override public function draw(offset:Vector3):Void
 	{
-		SpriteBatch.draw(material, offset.x, offset.y, width, height,
+		SpriteBatch.draw(material, offset.x - origin.x, offset.y - origin.y, width, height,
 			clipRect.x, clipRect.y, clipRect.width, clipRect.height,
-			flipX, flipY, origin.x, origin.y, scale.x, scale.y, angle);
+			flipX, flipY, origin.x, origin.y, scale.x, scale.y, angle, tint);
 	}
 
 }

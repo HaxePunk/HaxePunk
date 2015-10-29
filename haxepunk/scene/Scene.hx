@@ -4,6 +4,7 @@ import haxe.ds.StringMap;
 import haxepunk.debug.Console;
 import haxepunk.graphics.Graphic;
 import haxepunk.graphics.Draw;
+import haxepunk.masks.Mask;
 import haxepunk.math.Matrix4;
 import haxepunk.renderers.Renderer;
 import haxepunk.graphics.SpriteBatch;
@@ -12,10 +13,13 @@ class Scene
 {
 
 	public var camera:Camera;
+	public var width:Int = 0;
+	public var height:Int = 0;
 
 	public function new()
 	{
 		camera = new Camera();
+		_added = new Array<Entity>();
 		_entities = new Array<Entity>();
 		_types = new StringMap<Array<Entity>>();
 		_entityNames = new StringMap<Entity>();
@@ -24,25 +28,39 @@ class Scene
 
 	public function add(e:Entity)
 	{
-		_entities.push(e);
-		e.scene = this;
-		if (e.type != "") addType(e);
-		if (e.name != "") registerName(e);
+		_added.push(e);
 	}
 
 	public function remove(e:Entity)
 	{
-		e.scene = null;
-		_entities.remove(e);
-		if (e.type != "") removeType(e);
-		if (e.name != "") unregisterName(e);
+		e.remove = true;
 	}
 
-	public function addGraphic(graphic:Graphic, layer:Int=0, x:Float=0, y:Float=0)
+	/**
+	 * Remove all entities in the scene
+	 */
+	public function clear()
+	{
+		for (i in 0..._entities.length)
+		{
+			_entities[i].remove = true;
+		}
+	}
+
+	public function addMask(mask:Mask, layer:Int=0, x:Float=0, y:Float=0):Entity
+	{
+		var e = new Entity(x, y, layer);
+		e.addMask(mask);
+		add(e);
+		return e;
+	}
+
+	public function addGraphic(graphic:Graphic, layer:Int=0, x:Float=0, y:Float=0):Entity
 	{
 		var e = new Entity(x, y, layer);
 		e.addGraphic(graphic);
 		add(e);
+		return e;
 	}
 
 	public var count(get, never):Int;
@@ -146,6 +164,11 @@ class Scene
 		_entityNames.remove(e.name);
 	}
 
+	private function sortByLayer(a:Entity, b:Entity):Int
+	{
+		return Std.int(a.layer - b.layer);
+	}
+
 	public function draw()
 	{
 		Renderer.clear(camera.clearColor);
@@ -166,20 +189,69 @@ class Scene
 
 	public function update(elapsed:Float)
 	{
-		for (i in 0..._entities.length)
-		{
-			var e = _entities[i];
-			e.update(elapsed);
-			if (e._graphic != null) e._graphic.update(elapsed);
-		}
+		updateEntities(elapsed);
 		if (Console.enabled) Console.instance.update(this, elapsed);
 		camera.update();
+	}
+
+	/**
+	 * Adds, updates, and removes entities from the scene
+	 */
+	private inline function updateEntities(elapsed:Float=0)
+	{
+		var removed = new Array<Entity>(),
+			e:Entity;
+
+		// add any entities for this update
+		for (e in _added)
+		{
+			_entities.push(e);
+			e.scene = this;
+			if (e.type != "") addType(e);
+			if (e.name != "") registerName(e);
+		}
+		_added.splice(0, _added.length); // clear added array
+
+		var layerDirty = false;
+		for (i in 0..._entities.length)
+		{
+			e = _entities[i];
+			if (e.remove)
+			{
+				removed.push(e);
+			}
+			else
+			{
+				var layer = e.layer;
+				e.update(elapsed);
+				if (layer != e.layer)
+				{
+					layerDirty = true;
+				}
+				if (e._graphic != null) e._graphic.update(elapsed);
+			}
+		}
+		if (layerDirty)
+		{
+			// TODO: only sort entities that changed
+			_entities.sort(sortByLayer);
+		}
+
+		// remove any entities no longer used
+		for (e in removed)
+		{
+			e.scene = null;
+			_entities.remove(e);
+			if (e.type != "") removeType(e);
+			if (e.name != "") unregisterName(e);
+		}
 	}
 
 	private var _frameLast:Float = 0;
 	private var _frameListSum:Float = 0;
 	private var _frameList:Array<Float>;
 
+	private var _added:Array<Entity>;
 	private var _entities:Array<Entity>;
 	private var _types:StringMap<Array<Entity>>;
 	private var _entityNames:StringMap<Entity>;
