@@ -42,6 +42,11 @@ class Pass
 		return shader = value;
 	}
 
+	public function removeTexture(texture:Texture)
+	{
+		_textures.remove(texture);
+	}
+
 	public function addTexture(texture:Texture, uniformName:String="uImage0")
 	{
 		// keep uniform to allow removal of textures?

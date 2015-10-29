@@ -5,10 +5,78 @@ import haxepunk.scene.Camera;
 import haxepunk.math.Vector3;
 import haxepunk.math.Matrix4;
 import haxepunk.renderers.Renderer;
-import lime.text.Font;
 import lime.text.TextLayout;
 
 using StringTools;
+
+typedef GlyphImages = Map<lime.text.Glyph, lime.graphics.Image>;
+
+class Font
+{
+
+	public var font(default, null):lime.text.Font;
+
+	public static function fromFile(asset:String)
+	{
+		if (_fonts.exists(asset))
+		{
+			return _fonts.get(asset);
+		}
+		else
+		{
+			var font = new Font(asset);
+			_fonts.set(asset, font);
+			return font;
+		}
+	}
+
+	private function new(asset:String)
+	{
+		this.font = lime.text.Font.fromFile(asset);
+		_sizes = new Map<Int, GlyphImages>();
+		_textures = new Map<Int, Texture>();
+	}
+
+	private function loadGlyphs(size:Int):Void
+	{
+		var images = font.renderGlyphs(font.getGlyphs(), size);
+		if (images == null)
+		{
+			throw "Failed to load font glyphs";
+		}
+		// only load the first "image" since they all share the same buffer
+		var it = images.iterator();
+		if (it.hasNext())
+		{
+			var texture = new Texture();
+			texture.loadFromImage(it.next());
+			_textures.set(size, texture);
+		}
+		_sizes.set(size, images);
+	}
+
+	public function getTexture(size:Int):Texture
+	{
+		if (!_textures.exists(size))
+		{
+			loadGlyphs(size);
+		}
+		return _textures.get(size);
+	}
+
+	public function getGlyphs(size:Int):GlyphImages
+	{
+		if (!_sizes.exists(size))
+		{
+			loadGlyphs(size);
+		}
+		return _sizes.get(size);
+	}
+
+	private var _sizes:Map<Int, GlyphImages>;
+	private var _textures:Map<Int, Texture>;
+	private static var _fonts = new Map<String, Font>();
+}
 
 class Text extends Graphic
 {
@@ -35,14 +103,14 @@ class Text extends Graphic
 	private function set_size(value:Int):Int {
 		if (size != value)
 		{
-			_images = _font.renderGlyphs(_font.getGlyphs(), value);
-			if (_images != null)
+			// TODO: change texture
+			_images = _font.getGlyphs(value);
+			if (_texture != null)
 			{
-				for (image in _images)
-				{
-					_texture.loadFromImage(image);
-				}
+				material.firstPass.removeTexture(_texture);
 			}
+			_texture = _font.getTexture(value);
+			material.firstPass.addTexture(_texture);
 		}
 		return size = value;
 	}
@@ -150,7 +218,6 @@ class Text extends Graphic
 		super();
 		_vertices = new FloatArray();
 		_indices = new IntArray();
-		_texture = new Texture();
 		color = new Color();
 
 		#if flash
@@ -158,10 +225,8 @@ class Text extends Graphic
 		var frag = "tex ft0, v0, fs0 <linear nomip 2d wrap>\nmov ft0.xyz, fc1.xyz\nmov oc, ft0";
 		#else
 		_font = Font.fromFile("hxp/font/OpenSans-Regular.ttf");
-		_textLayout = new TextLayout("", _font, size, LEFT_TO_RIGHT, LATIN, "en");
-
-		// MUST be set after the texture is created
-		this.lineHeight = this.size = size;
+		_textLayout = new TextLayout("", _font.font, size, LEFT_TO_RIGHT, LATIN, "en");
+		_texture = _font.getTexture(size);
 
 		var vert = Assets.getText("hxp/shaders/default.vert");
 		var frag = Assets.getText("hxp/shaders/text.frag");
@@ -171,7 +236,9 @@ class Text extends Graphic
 		material = Material.fromAsset("hxp/materials/text.material");
 		var pass = material.firstPass;
 		pass.shader = shader;
-		pass.addTexture(_texture);
+
+		// MUST be set after material is created
+		this.lineHeight = this.size = size;
 
 		_vertexBuffer = Renderer.createBuffer(4);
 
@@ -220,7 +287,7 @@ class Text extends Graphic
 	private var _font:Font;
 	private var _texture:Texture;
 
-	private var _images:Map<lime.text.Glyph, lime.graphics.Image>;
+	private var _images:GlyphImages;
 	private var _vertices:FloatArray;
 	private var _indices:IntArray;
 	private var _vertexBuffer:VertexBuffer;
