@@ -137,7 +137,7 @@ class Text extends Graphic
 				_textLayout.text = value;
 				var x:Float, y:Float;
 				var lines = value.split("\n");
-				var vertIndex = 0, indIndex = 0;
+				var vertIndex = 0;
 				for (i in 0...lines.length)
 				{
 					var line = lines[i];
@@ -182,14 +182,11 @@ class Text extends Graphic
 							_vertices[vertIndex++] = left;
 							_vertices[vertIndex++] = top;
 
-							var j = Std.int(indIndex / 6) * 4;
-							_indices[indIndex++] = j;
-							_indices[indIndex++] = j+1;
-							_indices[indIndex++] = j+2;
-
-							_indices[indIndex++] = j+1;
-							_indices[indIndex++] = j+2;
-							_indices[indIndex++] = j+3;
+							_numTriangles += 2;
+#if debug
+							// TODO: remove this limitation
+							if (_numTriangles > 1024) throw "Text doesn't support more than 512 characters currently";
+#end
 						}
 
 						x += p.advance.x;
@@ -197,15 +194,32 @@ class Text extends Graphic
 					}
 					if (x > width) width = x;
 				}
-				_numTriangles = Math.floor(indIndex / 3);
 				height = lineHeight * lines.length;
 				Renderer.bindBuffer(_vertexBuffer);
 				Renderer.updateBuffer(_vertices, STATIC_DRAW);
-				_indexBuffer = Renderer.updateIndexBuffer(_indices, STATIC_DRAW, _indexBuffer);
 			}
 		}
 		#end
 		return text = value;
+	}
+
+	private function createIndices()
+	{
+		var maxIndices = 4092;
+		var indices = new IntArray(#if !flash maxIndices #end);
+		var i = 0, j = 0;
+		while (i < maxIndices)
+		{
+			indices[i++] = j;
+			indices[i++] = j+1;
+			indices[i++] = j+2;
+
+			indices[i++] = j+1;
+			indices[i++] = j+2;
+			indices[i++] = j+3;
+			j += 4;
+		}
+		_indexBuffer = Renderer.updateIndexBuffer(indices, STATIC_DRAW, _indexBuffer);
 	}
 
 	/**
@@ -216,8 +230,8 @@ class Text extends Graphic
 	public function new(text:String, size:Int=14)
 	{
 		super();
-		_vertices = new FloatArray(#if !flash 4096 #end);
-		_indices = new IntArray(#if !flash 1024 #end);
+		_vertices = new FloatArray(#if !flash 8192 #end);
+		if (_indexBuffer == null) createIndices();
 		color = new Color();
 
 		#if flash
@@ -257,16 +271,15 @@ class Text extends Graphic
 		// finish drawing whatever came before the text area
 		SpriteBatch.flush();
 
-		origin *= scale;
-		origin += offset;
+		_drawPosition.x = -origin.x;
+		_drawPosition.y = -origin.y;
+		_drawPosition *= scale;
+		_drawPosition += offset;
 
 		_matrix.identity();
-		_matrix.translateVector3(origin);
+		_matrix.translateVector3(_drawPosition);
 		if (angle != 0) _matrix.rotateZ(angle);
 		_matrix.multiply(HXP.scene.camera.transform);
-
-		origin -= offset;
-		origin /= scale;
 
 		Renderer.bindBuffer(_vertexBuffer);
 		for (pass in material.passes)
@@ -288,9 +301,10 @@ class Text extends Graphic
 
 	private var _images:GlyphImages;
 	private var _vertices:FloatArray;
-	private var _indices:IntArray;
 	private var _vertexBuffer:VertexBuffer;
-	private var _indexBuffer:IndexBuffer;
 	private var _numTriangles:Int = 0;
+
+	private static var _indexBuffer:IndexBuffer;
+	private static var _drawPosition = new Vector3();
 
 }
