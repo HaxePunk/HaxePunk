@@ -74,7 +74,7 @@ class Draw
 			g = color.g,
 			b = color.b;
 
-		SpriteBatch.addTriFan(2);
+		SpriteBatch.addQuad();
 		SpriteBatch.addVertex(x, y, 0, 0, r, g, b);
 		SpriteBatch.addVertex(x + width, y, 0, 0, r, g, b);
 		SpriteBatch.addVertex(x + width, y + height, 0, 0, r, g, b);
@@ -107,7 +107,7 @@ class Draw
 			g = color.g,
 			b = color.b;
 
-		SpriteBatch.addTriFan(2);
+		SpriteBatch.addQuad();
 		SpriteBatch.addVertex(x1 + dx, y1 + dy, 0, 0, r, g, b);
 		SpriteBatch.addVertex(x1 - dx, y1 - dy, 0, 0, r, g, b);
 		SpriteBatch.addVertex(x2 - dx, y2 - dy, 0, 0, r, g, b);

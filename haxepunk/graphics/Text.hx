@@ -81,6 +81,8 @@ class Font
 class Text extends Graphic
 {
 
+	public static var defaultFont:String = "hxp/font/OpenSans-Regular.ttf";
+
 	/**
 	 * The font color of the Text
 	 */
@@ -203,25 +205,6 @@ class Text extends Graphic
 		return text = value;
 	}
 
-	private function createIndices()
-	{
-		var maxIndices = 4092;
-		var indices = new IntArray(#if !flash maxIndices #end);
-		var i = 0, j = 0;
-		while (i < maxIndices)
-		{
-			indices[i++] = j;
-			indices[i++] = j+1;
-			indices[i++] = j+2;
-
-			indices[i++] = j+1;
-			indices[i++] = j+2;
-			indices[i++] = j+3;
-			j += 4;
-		}
-		_indexBuffer = Renderer.updateIndexBuffer(indices, STATIC_DRAW, _indexBuffer);
-	}
-
 	/**
 	 * Create a new Text graphic
 	 * @param text the default text to render
@@ -238,7 +221,7 @@ class Text extends Graphic
 		var vert = "m44 op, va0, vc0\nmov v0, va1";
 		var frag = "tex ft0, v0, fs0 <linear nomip 2d wrap>\nmov ft0.xyz, fc1.xyz\nmov oc, ft0";
 		#else
-		_font = Font.fromFile("hxp/font/OpenSans-Regular.ttf");
+		_font = Font.fromFile(defaultFont);
 		_textLayout = new TextLayout("", _font.font, size, LEFT_TO_RIGHT, LATIN, "en");
 		_texture = _font.getTexture(size);
 
@@ -293,6 +276,25 @@ class Text extends Graphic
 		}
 
 		#end
+	}
+
+	private function createIndices()
+	{
+		var maxIndices = 4092;
+		var indices = new IntArray(#if !flash maxIndices #end);
+		var i = 0, j = 0;
+		while (i < maxIndices)
+		{
+			indices[i++] = j;
+			indices[i++] = j+1;
+			indices[i++] = j+2;
+
+			indices[i++] = j+1;
+			indices[i++] = j+2;
+			indices[i++] = j+3;
+			j += 4;
+		}
+		_indexBuffer = Renderer.updateIndexBuffer(indices, STATIC_DRAW, _indexBuffer);
 	}
 
 	private var _textLayout:TextLayout;
