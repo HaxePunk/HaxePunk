@@ -1,5 +1,4 @@
-import haxepunk.Engine;
-import haxepunk.HXP;
+import haxepunk.*;
 import haxepunk.scene.Entity;
 import haxepunk.graphics.*;
 import haxepunk.math.Vector3;
@@ -11,14 +10,14 @@ class StressTest extends Engine
 		super.ready();
 
 		var material = new Material();
-		material.firstPass.addTexture(Texture.fromAsset("assets/lime.png"));
-		var numCubes = Std.int(Math.random() * 50 + 150);
-		numCubes = 20000;
+		material.firstPass.addTexture(Assets.getTexture("assets/lime.png"));
+		var num = Std.int(Math.random() * 50 + 150);
+		num = 10000;
 
 		var material = new Material();
-		material.firstPass.addTexture(new TextureAtlas(lime.Assets.getImage("assets/character.png")));
+		material.firstPass.addTexture(Assets.getTexture("assets/character.png"));
 
-		for (i in 0...numCubes)
+		for (i in 0...num)
 		{
 			var sprite = new Spritemap(material, 32, 32);
 			sprite.add("walk", [0, 1, 2, 3, 4, 5, 6, 7], 12);
@@ -27,7 +26,7 @@ class StressTest extends Engine
 
 			scene.addGraphic(sprite,
 				Std.int(Math.random() * -50),
-				Math.random() * HXP.window.width + 50,
+				Math.random() * HXP.window.width,
 				Math.random() * HXP.window.height);
 		}
 

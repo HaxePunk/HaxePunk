@@ -172,8 +172,6 @@ class Scene
 	public function draw()
 	{
 		Renderer.clear(camera.clearColor);
-		// TODO: find a faster way to sort entities without coupling...
-		_entities.sort(sortByLayer);
 		for (i in 0..._entities.length)
 		{
 			_entities[i].draw();
@@ -214,6 +212,7 @@ class Scene
 		}
 		_added.splice(0, _added.length); // clear added array
 
+		var layerDirty = false;
 		for (i in 0..._entities.length)
 		{
 			e = _entities[i];
@@ -223,9 +222,19 @@ class Scene
 			}
 			else
 			{
+				var layer = e.layer;
 				e.update(elapsed);
+				if (layer != e.layer)
+				{
+					layerDirty = true;
+				}
 				if (e._graphic != null) e._graphic.update(elapsed);
 			}
+		}
+		if (layerDirty)
+		{
+			// TODO: only sort entities that changed
+			_entities.sort(sortByLayer);
 		}
 
 		// remove any entities no longer used

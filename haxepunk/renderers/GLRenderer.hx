@@ -176,14 +176,14 @@ class GLRenderer
 
 	public static inline function updateBuffer(data:FloatArray, ?usage:BufferUsage):Void
 	{
-		GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(data), usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
+		GL.bufferData(GL.ARRAY_BUFFER, data, usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 	}
 
 	public static inline function updateIndexBuffer(data:IntArray, ?usage:BufferUsage, ?buffer:IndexBuffer):IndexBuffer
 	{
 		if (buffer == null) buffer = GL.createBuffer();
 		GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, buffer);
-		GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, new Int16Array(data), usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
+		GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, data, usage == DYNAMIC_DRAW ? GL.DYNAMIC_DRAW : GL.STATIC_DRAW);
 		_activeState.indexBuffer = buffer;
 		return buffer;
 	}

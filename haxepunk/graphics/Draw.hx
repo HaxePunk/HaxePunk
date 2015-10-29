@@ -140,13 +140,4 @@ class Draw
         }
     }
 
-	private static var _vIndex:Int = 0;
-	private static var _iIndex:Int = 0;
-	private static var _index:Int = 0;
-	private static var _vertices:FloatArray = new FloatArray();
-	private static var _indices:IntArray = new IntArray();
-	private static var _vertexBuffer:VertexBuffer;
-	private static var _indexBuffer:IndexBuffer;
-	private static var _shader:Shader;
-
 }

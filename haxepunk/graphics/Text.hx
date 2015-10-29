@@ -216,8 +216,8 @@ class Text extends Graphic
 	public function new(text:String, size:Int=14)
 	{
 		super();
-		_vertices = new FloatArray();
-		_indices = new IntArray();
+		_vertices = new FloatArray(#if !flash 4096 #end);
+		_indices = new IntArray(#if !flash 1024 #end);
 		color = new Color();
 
 		#if flash
@@ -237,11 +237,10 @@ class Text extends Graphic
 		var pass = material.firstPass;
 		pass.shader = shader;
 
-		// MUST be set after material is created
-		this.lineHeight = this.size = size;
-
 		_vertexBuffer = Renderer.createBuffer(4);
 
+		// MUST be set after material is created
+		this.lineHeight = this.size = size;
 		this.text = text;
 	}
 

@@ -192,6 +192,7 @@ class SpriteBatch
 
 	inline private static function addTriFan(tris:Int)
 	{
+		if (_iIndex + tris * 3 > MAX_INDICES) flush();
 		var first = _index++;
 		for (i in 0...tris)
 		{
@@ -254,8 +255,9 @@ class SpriteBatch
 	private static var _iIndex:Int = 0;
 	private static var _vIndex:Int = 0;
 
-	private static var _vertices:FloatArray = new FloatArray();
-	private static var _indices:IntArray = new IntArray();
+	private static inline var MAX_INDICES = 4096;
+	private static var _vertices = new FloatArray(#if !flash 16384 #end);
+	private static var _indices = new IntArray(#if !flash MAX_INDICES #end);
 	private static var _vertexBuffer:VertexBuffer;
 	private static var _indexBuffer:IndexBuffer;
 	private static var _invTexWidth:Float = 0;
