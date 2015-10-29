@@ -79,7 +79,7 @@ class GLRenderer
 
 	public static inline function createTexture(image:ImageBuffer):NativeTexture
 	{
-		var format = image.bitsPerPixel == 1 ? GL.ALPHA : GL.RGBA;
+		var format = image.bitsPerPixel == 8 ? GL.ALPHA : GL.RGBA;
 		return createTextureFromBytes(image.data, image.width, image.height, format);
 	}
 
