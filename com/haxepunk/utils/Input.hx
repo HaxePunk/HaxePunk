@@ -9,7 +9,7 @@ import flash.ui.MultitouchInputMode;
 import com.haxepunk.HXP;
 import com.haxepunk.ds.Either;
 
-#if (cpp || neko)
+#if (openfl_legacy && (cpp || neko))
 	import openfl.events.JoystickEvent;
 #end
 
@@ -334,7 +334,7 @@ class Input
 				HXP.stage.addEventListener(TouchEvent.TOUCH_END, onTouchEnd);
 			}
 
-#if (openfl && (cpp || neko))
+#if (openfl_legacy && (cpp || neko))
 			HXP.stage.addEventListener(JoystickEvent.AXIS_MOVE, onJoyAxisMove);
 			HXP.stage.addEventListener(JoystickEvent.BALL_MOVE, onJoyBallMove);
 			HXP.stage.addEventListener(JoystickEvent.BUTTON_DOWN, onJoyButtonDown);
@@ -427,7 +427,7 @@ class Input
 		if (rightMouseReleased) rightMouseReleased = false;
 	#end
 
-#if (openfl && (cpp || neko))
+#if (openfl_legacy && (cpp || neko))
 		for (joystick in _joysticks) joystick.update();
 #end
 		if (multiTouchSupported)
@@ -589,7 +589,7 @@ class Input
 		}
 	}
 
-#if (openfl && (cpp || neko))
+#if (openfl_legacy && (cpp || neko))
 
 	private static function onJoyAxisMove(e:JoystickEvent)
 	{
