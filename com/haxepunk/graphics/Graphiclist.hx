@@ -47,6 +47,7 @@ class Graphiclist extends Graphic
 	 * @param	i	The index of the array.
 	 * @return	The graphic in n index.
 	 */
+	@:arrayAccess
 	public function get(i:Int):Graphic
 	{	
 		if ( i >= _graphics.length || i < 0 ) throw "Index out of bounds.";
