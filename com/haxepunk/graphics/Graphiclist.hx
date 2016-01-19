@@ -42,6 +42,18 @@ class Graphiclist extends Graphic
 		}
 	}
 
+	/**
+	 * Returns the Graphic from the list.
+	 * @param	i	The index of the array.
+	 * @return	The graphic in n index.
+	 */
+	@:arrayAccess
+	public function get(i:Int):Graphic
+	{	
+		if ( i >= _graphics.length || i < 0 ) throw "Index out of bounds.";
+		else return _graphics[i];
+	}
+
 	private inline function renderList(renderFunc:Graphic->Void, point:Point, camera:Point)
 	{
 		point.x += x;
