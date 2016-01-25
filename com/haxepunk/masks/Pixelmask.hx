@@ -37,7 +37,7 @@ class Pixelmask extends Hitbox
 
 		threshold = 1;
 
-		_rect = HXP.rect;
+		_rect = new Rectangle(0, 0, data.width, data.height);
 		_point = HXP.point;
 		_point2 = HXP.point2;
 
@@ -51,20 +51,39 @@ class Pixelmask extends Hitbox
 		_check.set(Type.getClassName(Mask), collideMask);
 		_check.set(Type.getClassName(Pixelmask), collidePixelmask);
 		_check.set(Type.getClassName(Hitbox), collideHitbox);
+    _check.set(Type.getClassName(Circle), collideCircle);
 	}
 
 	/** @private Collide against an Entity. */
 	override private function collideMask(other:Mask):Bool
 	{
-		_point.x = _parent.x + _x;
-		_point.y = _parent.y + _y;
-		_rect.x = other._parent.x - other._parent.originX;
-		_rect.y = other._parent.y - other._parent.originY;
-		_rect.width = other._parent.width;
-		_rect.height = other._parent.height;
 		#if flash
+		_point.x = parent.x + _x;
+		_point.y = parent.y + _y;
+		_rect.x = other.parent.x - other.parent.originX;
+		_rect.y = other.parent.y - other.parent.originY;
+		_rect.width = other.parent.width;
+		_rect.height = other.parent.height;
 		return _data.hitTest(_point, threshold, _rect);
 		#else
+    _point.x = other.parent.x - other.parent.originX - (parent.x + _x);
+    _point.y = other.parent.y - other.parent.originY - (parent.y + _y);
+    var rect:Rectangle = new Rectangle(_point.x, _point.y, other.parent.width, other.parent.height);
+    rect = rect.intersection(_rect);
+    
+    if (rect.isEmpty()) return false;
+    
+    for (y in Std.int(rect.y)...Std.int(rect.y + rect.height))
+    {
+      for (x in Std.int(rect.x)...Std.int(rect.x + rect.width))
+      {
+        if (((_data.getPixel32(x, y) >> 24) & 0xFF) >= threshold)
+        {
+          return true;
+        }
+      }
+    }
+    
 		return false;
 		#end
 	}
@@ -72,19 +91,67 @@ class Pixelmask extends Hitbox
 	/** @private Collide against a Hitbox. */
 	override private function collideHitbox(other:Hitbox):Bool
 	{
-		_point.x = _parent.x + _x;
-		_point.y = _parent.y + _y;
-		_rect.x = other._parent.x + other._x;
-		_rect.y = other._parent.y + other._y;
+		#if flash
+		_point.x = parent.x + _x;
+		_point.y = parent.y + _y;
+		_rect.x = other.parent.x + other._x;
+		_rect.y = other.parent.y + other._y;
 		_rect.width = other._width;
 		_rect.height = other._height;
-		#if flash
 		return _data.hitTest(_point, threshold, _rect);
 		#else
+    
+    _point.x = other.parent.x + other._x - (parent.x + _x);
+    _point.y = other.parent.y + other._y - (parent.y + _y);
+    var rect:Rectangle = new Rectangle(_point.x, _point.y, other._width, other._height);
+    rect = rect.intersection(_rect);
+    
+    if (rect.isEmpty()) return false;
+    
+    for (y in Std.int(rect.y)...Std.int(rect.y + rect.height))
+    {
+      for (x in Std.int(rect.x)...Std.int(rect.x + rect.width))
+      {
+        if (((_data.getPixel32(x, y) >> 24) & 0xFF) >= threshold)
+        {
+          return true;
+        }
+      }
+    }
+    
 		return false;
 		#end
 	}
 
+  /** @private Collide against a Circle. */
+	private function collideCircle(other:Circle):Bool
+	{
+    _point.x = other.parent.x + other._x - (parent.x + _x);
+    _point.y = other.parent.y + other._y - (parent.y + _y);
+    var rect:Rectangle = new Rectangle(_point.x, _point.y, other._width, other._height);
+    rect = rect.intersection(_rect);
+    
+    if (rect.isEmpty()) return false;
+    
+    var radius:Float = cast other.radius;
+    var circleX:Float = _point.x + radius;
+    var circleY:Float = _point.y + radius;
+    
+    for (y in Std.int(rect.y)...Std.int(rect.y + rect.height))
+    {
+      for (x in Std.int(rect.x)...Std.int(rect.x + rect.width))
+      {
+        var pixel = (_data.getPixel32(x, y) >> 24) & 0xFF;
+        if (pixel >= threshold && HXP.distance(x, y, circleX, circleY) <= radius)
+        {
+          return true;
+        }
+      }
+    }
+    
+		return false;
+	}
+  
 	/** @private Collide against a Pixelmask. */
 	private function collidePixelmask(other:Pixelmask):Bool
 	{
