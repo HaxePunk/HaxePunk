@@ -5,7 +5,7 @@ class Run
 {
 	public static function main ()
 	{
-		#if haxe_ver < 3.3.0
+		#if haxe-ver < 3.3.0
 		var path = Path.normalize(Path.join([ Sys.getCwd(), Path.directory(neko.vm.Module.local().name) ]));
 		#else
 		var path = Path.normalize(Path.directory(neko.vm.Module.local().name));
