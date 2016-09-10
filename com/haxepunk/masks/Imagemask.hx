@@ -44,6 +44,7 @@ class Imagemask extends Pixelmask
 	public function new(source:Image)
 	{
 		super(new BitmapData(1, 1));
+		_class = Type.getClassName(Type.getSuperClass(Type.getClass(this)));
 		_source = source;
 		update();
 		_check.set(Type.getClassName(Imagemask), collidePixelmask);
