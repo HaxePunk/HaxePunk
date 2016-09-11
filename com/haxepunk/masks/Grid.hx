@@ -416,8 +416,6 @@ class Grid extends Hitbox
 		
 		var intersect = r1.intersection(_rect);
 		
-		trace(r1, _rect, intersect);
-		
 		if(intersect.isEmpty())
 			return false;
 		
