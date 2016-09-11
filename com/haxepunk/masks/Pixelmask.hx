@@ -65,8 +65,8 @@ class Pixelmask extends Hitbox
 		#if flash
 		return _data.hitTest(_point, threshold, _rect);
 		#else
-		_point.x = other._parent.x - other._parent.originX + other._x - (_parent.x + _x);
-		_point.y = other._parent.y - other._parent.originY + other._y - (_parent.y + _y);
+		_point.x = other._parent.x - other._parent.originX - (_parent.x + _x);
+		_point.y = other._parent.y - other._parent.originY - (_parent.y + _y);
 		
 		var r1 = new Rectangle(0, 0, _data.width, _data.height);
 		var r2 = new Rectangle(_point.x, _point.y, other._parent.width, other._parent.height);
