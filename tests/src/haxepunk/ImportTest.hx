@@ -66,10 +66,10 @@ import haxepunk.tweens.sound.SfxFader;
 import haxepunk.utils.Data;
 import haxepunk.utils.Draw;
 import haxepunk.utils.Ease;
-import haxepunk.utils.Input;
-import haxepunk.utils.Joystick;
-import haxepunk.utils.Key;
-import haxepunk.utils.Touch;
+import haxepunk.input.Input;
+import haxepunk.input.Joystick;
+import haxepunk.input.Key;
+import haxepunk.input.Touch;
 
 /**
  * Empty test.

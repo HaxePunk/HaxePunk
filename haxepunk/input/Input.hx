@@ -1,4 +1,4 @@
-package haxepunk.utils;
+package haxepunk.input;
 
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;

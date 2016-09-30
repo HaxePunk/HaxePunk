@@ -2,8 +2,8 @@ package haxepunk.debug;
 
 import haxepunk.Entity;
 import haxepunk.HXP;
-import haxepunk.utils.Input;
-import haxepunk.utils.Key;
+import haxepunk.input.Input;
+import haxepunk.input.Key;
 
 import openfl.Assets;
 import flash.display.Bitmap;
