@@ -2,6 +2,8 @@
 
 # HaxePunk
 
+[![Join the chat at https://gitter.im/HaxePunk/HaxePunk](https://badges.gitter.im/HaxePunk/HaxePunk.svg)](https://gitter.im/HaxePunk/HaxePunk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 A Haxe port of the [FlashPunk](http://useflashpunk.net) AS3 library. There are a few additions/differences from the original.
 
 * Builds for Flash, Windows, Mac, Linux, iOS, Android, and Ouya
