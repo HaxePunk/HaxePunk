@@ -1,4 +1,4 @@
-package haxepunk.utils;
+package haxepunk.input;
 
 /**
  * List of keys to be used with `Input`.

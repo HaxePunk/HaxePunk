@@ -10,7 +10,7 @@ import flash.geom.Rectangle;
 import flash.Lib;
 import haxe.Timer;
 import haxepunk.utils.Draw;
-import haxepunk.utils.Input;
+import haxepunk.input.Input;
 import haxepunk.Tweener;
 
 /**

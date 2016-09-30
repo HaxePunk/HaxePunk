@@ -1,4 +1,4 @@
-package haxepunk.utils;
+package haxepunk.input;
 
 import flash.geom.Point;
 import haxepunk.HXP;
