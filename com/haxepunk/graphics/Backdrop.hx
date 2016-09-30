@@ -20,8 +20,9 @@ class Backdrop extends Canvas
 	 * @param	source		Source texture.
 	 * @param	repeatX		Repeat horizontally.
 	 * @param	repeatY		Repeat vertically.
+     * @param	screenScale	How many screens the backdrop must span (to use with screen scaling)
 	 */
-	public function new(source:ImageType, repeatX:Bool = true, repeatY:Bool = true)
+	public function new(source:ImageType, repeatX:Bool = true, repeatY:Bool = true, screenScale:Float = 1.)
 	{
 		switch (source.type)
 		{
@@ -40,8 +41,8 @@ class Backdrop extends Canvas
 		_repeatX = repeatX;
 		_repeatY = repeatY;
 
-		super(HXP.width * (repeatX ? 1 : 0) + _textWidth, HXP.height * (repeatY ? 1 : 0) + _textHeight);
-
+		super(Std.int(HXP.width * (repeatX ? 1 : 0) * screenScale) + _textWidth, Std.int(HXP.height * (repeatY ? 1 : 0) * screenScale) + _textHeight);
+        
 		if (blit)
 		{
 			HXP.rect.x = HXP.rect.y = 0;
@@ -102,7 +103,7 @@ class Backdrop extends Canvas
 			if (_point.y > 0) _point.y -= _textHeight * sy * fsy;
 		}
 
-		var px:Int = Std.int(_point.x * fsx), py:Int = Std.int(_point.y * fsy);
+		var px:Int = Std.int(_point.x), py:Int = Std.int(_point.y);
 
 		var y:Int = 0;
 		while (y < _height * sy * fsy)

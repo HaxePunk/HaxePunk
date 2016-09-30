@@ -396,7 +396,40 @@ class Grid extends Hitbox
 			_tile.y += _tile.height;
 		}
 #else
-		trace('Pixelmasks will not work in targets other than flash due to hittest not being implemented in OpenFL.');
+		_point.x = _parent.x + _x - _parent.originX;
+		_point.y = _parent.y + _y - _parent.originY;
+		if(Std.instance(other, Imagemask) != null) // 'other' inherits from Imagemask
+		{
+			_rect = cast(other, Imagemask).getBounds();
+			_rect.x += other._parent.x;
+			_rect.y += other._parent.y;
+		}
+		else
+		{
+			_rect.x = other._parent.x + other.x - other._parent.originX;
+			_rect.y = other._parent.y + other.y - other._parent.originY;
+			_rect.width = other.width;
+			_rect.height = other.height;
+		}
+		
+		var r1 = new Rectangle(_point.x, _point.y, _width, _height);
+		
+		var intersect = r1.intersection(_rect);
+		
+		if(intersect.isEmpty())
+			return false;
+		
+		for(dx in Math.floor(intersect.x - _rect.x) ...Math.floor(intersect.x - _rect.x + intersect.width))
+		{
+			for(dy in Math.floor(intersect.y - _rect.y) ...Math.floor(intersect.y - _rect.y + intersect.height))
+			{
+				var tx = Std.int((dx + _rect.x) / _tile.width), ty = Std.int((dy + _rect.y) / _tile.height);
+				if (data[ty][tx] && (other.data.getPixel32(dx, dy) >> 24) & 0xFF > 0)
+				{
+					return true;
+				}
+			}
+		}
 #end
 		return false;
 	}

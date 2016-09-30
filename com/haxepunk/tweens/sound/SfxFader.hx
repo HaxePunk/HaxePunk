@@ -70,6 +70,7 @@ class SfxFader extends Tween
 	/** @private When the tween completes. */
 	override private function finish()
 	{
+		super.finish();
 		if (_crossSfx != null)
 		{
 			if (_sfx != null) _sfx.stop();

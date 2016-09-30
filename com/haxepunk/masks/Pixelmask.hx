@@ -65,6 +65,22 @@ class Pixelmask extends Hitbox
 		#if flash
 		return _data.hitTest(_point, threshold, _rect);
 		#else
+		_point.x = other._parent.x - other._parent.originX - (_parent.x + _x);
+		_point.y = other._parent.y - other._parent.originY - (_parent.y + _y);
+		
+		var r1 = new Rectangle(0, 0, _data.width, _data.height);
+		var r2 = new Rectangle(_point.x, _point.y, other._parent.width, other._parent.height);
+		
+		var intersect = r1.intersection(r2);
+		
+		if (intersect.isEmpty())
+			return false;
+		
+		for(dx in Math.floor(intersect.x)...Math.floor(intersect.x + intersect.width + 1))
+			for(dy in Math.floor(intersect.y)...Math.floor(intersect.y + intersect.height + 1))
+				if ((_data.getPixel32(dx, dy) >> 24) & 0xFF > 0)
+					return true;
+		
 		return false;
 		#end
 	}
@@ -81,6 +97,22 @@ class Pixelmask extends Hitbox
 		#if flash
 		return _data.hitTest(_point, threshold, _rect);
 		#else
+		_point.x = other._parent.x + other._x - (_parent.x + _x);
+		_point.y = other._parent.y + other._y - (_parent.y + _y);
+		
+		var r1 = new Rectangle(0, 0, _data.width, _data.height);
+		var r2 = new Rectangle(_point.x, _point.y, other.width, other.height);
+		
+		var intersect = r1.intersection(r2);
+		
+		if (intersect.isEmpty())
+			return false;
+		
+		for(dx in Math.floor(intersect.x)...Math.floor(intersect.x + intersect.width + 1))
+			for(dy in Math.floor(intersect.y)...Math.floor(intersect.y + intersect.height + 1))
+				if ((_data.getPixel32(dx, dy) >> 24) & 0xFF > 0)
+					return true;
+		
 		return false;
 		#end
 	}
