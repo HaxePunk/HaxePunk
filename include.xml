@@ -5,6 +5,7 @@
 	<assets path="assets/graphics" rename="graphics" include="*.png" embed="true" />
 	<assets path="assets/font" rename="font" include="*.ttf" embed="true" />
 
+	<set name="legacy" unless="next" />
 	<set name="openfl-legacy" unless="next || hybrid" />
 	<haxelib name="openfl-ouya" if="ouya" />
 	<haxelib name="openfl" />
