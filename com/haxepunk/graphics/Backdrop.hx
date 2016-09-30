@@ -106,10 +106,10 @@ class Backdrop extends Canvas
 		var px:Int = Std.int(_point.x), py:Int = Std.int(_point.y);
 
 		var y:Int = 0;
-		while (y < _height * sy * fsy)
+		while (py + y < _height * sy * fsy)
 		{
 			var x:Int = 0;
-			while (x < _width * sx * fsx)
+			while (px + x < _width * sx * fsx)
 			{
 				_region.draw(px + x, py + y, layer, sx * fsx, sy * fsy, 0, _red, _green, _blue, _alpha);
 				x += Std.int(_textWidth * sx * fsx);
