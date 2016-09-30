@@ -1,5 +1,8 @@
 --no-output
 --remap flash:openfl
+-D legacy
+-D openfl_legacy
+-D display
 -lib lime
 -lib openfl
 -D doc

@@ -1,19 +1,24 @@
 LIME_PATH="$(HOME)/haxe/lib/lime"
+COMMAND=openfl
+TARGET=neko
 
-.PHONY: all doc haxelib examples unit unit-travis build clean
+.PHONY: all doc docs haxelib examples unit unit-travis build clean
 
 all: clean unit build examples
 
-tool.n:
+docs:
+	@make doc/pages/index.html
+
+tool.n: tools/tool.hxml $(shell find tools -name '*.hx')
 	@echo "Compiling tool.n"
 	@cd tools && haxe tool.hxml
 
-doc/pages/index.html:
+doc/pages/index.html: $(shell find . -name '*.hx')
 	@echo "Generating documentation"
 	@cd doc && \
 		haxe doc.hxml && \
 		haxelib run dox -i xmls/ -o pages/ -theme theme/ \
-			-in com --title "HaxePunk API" \
+			-in com --title "HaxePunk" \
 			-D source-path "https://github.com/HaxePunk/HaxePunk/tree/master" > log.txt || cat log.txt
 
 template.zip:
@@ -28,7 +33,7 @@ haxepunk.zip: doc/pages/index.html tool.n template.zip
 haxelib: haxepunk.zip
 	@haxelib local haxepunk.zip > log.txt || cat log.txt
 
-unit: haxelib
+unit:
 	@echo "Running unit tests"
 	@cd tests && haxe compile.hxml && neko unit.n
 
@@ -37,20 +42,9 @@ unit-travis:
 	@cp $(LIME_PATH)/`cat $(LIME_PATH)/.current | sed -e 's/\./,/g'`/legacy/ndll/Linux64/* .
 	@make unit # run unit tests
 
-build: haxelib
-	@echo "Testing builds on multiple platforms"
-	@neko tool.n new build-test > log.txt || cat log.txt
-	@echo "Flash..."
-	@haxelib run lime build build-test flash
-	@echo "Neko..."
-	@haxelib run lime build build-test neko
-	@echo "Html5..."
-	@haxelib run lime build build-test html5
-	@rm -rf build-test
-
-examples: haxelib
-	@echo "Running example application"
-	@cd examples && haxelib run lime test neko -debug
+examples: tool.n
+	@echo "Building examples with" ${TARGET} "using" ${COMMAND}
+	@cd examples && haxelib run ${COMMAND} build ${TARGET}
 
 clean:
 	@echo "Cleaning up old files"

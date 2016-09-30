@@ -8,15 +8,25 @@ matrix:
   allow_failures:
     - haxe: development
 
+env:
+  - TARGET=flash COMMAND=openfl
+  - TARGET=neko COMMAND=openfl
+  - TARGET=cpp COMMAND=openfl
+  - TARGET=html5 COMMAND=openfl
+  - TARGET=flash COMMAND=nme
+  - TARGET=neko COMMAND=nme
+  - TARGET=cpp COMMAND=nme
+
 neko: "2.0.0"
 
 sudo: false
 
 install:
   - haxelib dev HaxePunk $TRAVIS_BUILD_DIR
-  - haxelib install lime > log.txt || cat log.txt
-  - haxelib install openfl > log.txt || cat log.txt
-  - haxelib install dox > log.txt || cat log.txt
+  - yes | haxelib install lime 2.9.1 > log.txt || cat log.txt
+  - yes | haxelib install openfl 3.6.1 > log.txt || cat log.txt
+  - yes | haxelib install dox > log.txt || cat log.txt
+  - yes | haxelib install nme > log.txt || cat log.txt
   - haxelib list
 
 before_script:
@@ -24,7 +34,7 @@ before_script:
   - echo "n" | haxelib run HaxePunk setup
 
 script:
-  - make clean build unit-travis
+  - make clean unit-travis examples COMMAND=$COMMAND TARGET=$TARGET
 
 cache:
   directories:

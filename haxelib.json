@@ -8,8 +8,8 @@
 	"releasenote": "See CHANGELOG.md",
 	"contributors": ["heardtheword", "_ibilon"],
 	"dependencies": {
-		"lime": "",
-		"openfl": ""
+		"lime": "2.9.1",
+		"openfl": "3.6.1"
 	},
 	"install": {
 		"openfl-ouya": ""

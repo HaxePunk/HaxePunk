@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
-	<app preloader="com.haxepunk.Preloader" unless="noHaxepunkPreloader || html5" />
+	<app preloader="com.haxepunk.Preloader" unless="noHaxepunkPreloader || html5"/>
+	<app swf-version="11.7" if="flash"/>
 
-	<assets path="assets/graphics" rename="graphics" include="*.png" embed="true" />
-	<assets path="assets/font" rename="font" include="*.ttf" embed="true" />
+	<assets path="assets/graphics" rename="graphics" include="*.png" embed="true"/>
+	<assets path="assets/font" rename="font" include="*.ttf" embed="true"/>
 
-	<set name="openfl-legacy" unless="next || hybrid" />
-	<haxelib name="openfl-ouya" if="ouya" />
-	<haxelib name="openfl" />
+	<set name="legacy" unless="next"/>
+	<set name="openfl-legacy" unless="next || hybrid"/>
+	<haxelib name="openfl-ouya" if="ouya"/>
+	<haxelib name="openfl"/>
 </project>
