@@ -3,6 +3,8 @@ package haxepunk.graphics.atlas;
 import flash.geom.Rectangle;
 import flash.geom.Point;
 import flash.geom.Matrix;
+import haxepunk.utils.MathUtil;
+
 
 class AtlasRegion
 {
@@ -107,7 +109,7 @@ class AtlasRegion
 		if (rotated)
 		{
 			var matrix = new Matrix(a, b, c, d, tx, ty);
-			matrix.rotate(90 * HXP.RAD);
+			matrix.rotate(90 * MathUtil.RAD);
 			_parent.prepareTileMatrix(_rect, layer,
 				matrix.tx, matrix.ty, matrix.a, matrix.b, matrix.c, matrix.d,
 				red, green, blue, alpha, smooth);

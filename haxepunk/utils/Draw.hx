@@ -12,6 +12,7 @@ import haxepunk.Entity;
 import haxepunk.HXP;
 import haxepunk.Graphic;
 import haxepunk.graphics.Text;
+import haxepunk.utils.Color;
 
 /**
  * Static class with access to miscellanious drawing functions.
@@ -86,7 +87,7 @@ class Draw
 	 * @param	y2		Ending y position.
 	 * @param	color	Color of the line.
 	 */
-	public static function line(x1:Int, y1:Int, x2:Int, y2:Int, color:Int = 0xFFFFFF)
+	public static function line(x1:Int, y1:Int, x2:Int, y2:Int, color:Color = 0xFFFFFF)
 	{
 		if (HXP.renderMode == RenderMode.BUFFER)
 		{
@@ -193,7 +194,7 @@ class Draw
 	 * @param	alpha	Alpha of the line.
 	 * @param	thick	The thickness of the line.
 	 */
-	public static function linePlus(x1:Int, y1:Int, x2:Int, y2:Int, color:Int = 0xFF000000, alpha:Float = 1, thick:Float = 1)
+	public static function linePlus(x1:Int, y1:Int, x2:Int, y2:Int, color:Color = 0xFF000000, alpha:Float = 1, thick:Float = 1)
 	{
 		if (HXP.renderMode == RenderMode.BUFFER)
 		{
@@ -221,7 +222,7 @@ class Draw
 	 * @param	color		Color of the rectangle.
 	 * @param	alpha		Alpha of the rectangle.
 	 */
-	public static function rect(x:Int, y:Int, width:Int, height:Int, color:Int = 0xFFFFFF, alpha:Float = 1)
+	public static function rect(x:Int, y:Int, width:Int, height:Int, color:Color = 0xFFFFFF, alpha:Float = 1)
 	{
 		if (HXP.renderMode == RenderMode.BUFFER)
 		{
@@ -260,7 +261,7 @@ class Draw
 	 * @param	thick		How thick the outline should be (only applicable when fill = false).
 	 * @since	2.5.2
 	 */
-	public static function rectPlus(x:Float, y:Float, width:Float, height:Float, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1)
+	public static function rectPlus(x:Float, y:Float, width:Float, height:Float, color:Color = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1)
 	{
 		color = 0xFFFFFF & color;
 		
@@ -288,7 +289,7 @@ class Draw
 	 * @param	radius		Radius of the circle.
 	 * @param	color		Color of the circle.
 	 */
-	public static function circle(x:Int, y:Int, radius:Int, color:Int = 0xFFFFFF)
+	public static function circle(x:Int, y:Int, radius:Int, color:Color = 0xFFFFFF)
 	{
 		if (HXP.renderMode == RenderMode.BUFFER)
 		{
@@ -341,7 +342,7 @@ class Draw
 	 * @param	fill		If the circle should be filled with the color (true) or just an outline (false).
 	 * @param	thick		How thick the outline should be (only applicable when fill = false).
 	 */
-	public static function circlePlus(x:Int, y:Int, radius:Float, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Int = 1)
+	public static function circlePlus(x:Int, y:Int, radius:Float, color:Color = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Int = 1)
 	{
 		if (HXP.renderMode == RenderMode.BUFFER)
 		{
@@ -383,7 +384,7 @@ class Draw
 	 * @param	color		Color of the hitbox.
 	 * @param	alpha		Alpha of the hitbox.
 	 */
-	public static function hitbox(e:Entity, outline:Bool = true, color:Int = 0xFFFFFF, alpha:Float = 1)
+	public static function hitbox(e:Entity, outline:Bool = true, color:Color = 0xFFFFFF, alpha:Float = 1)
 	{
 		if (HXP.renderMode == RenderMode.BUFFER)
 		{
@@ -443,7 +444,7 @@ class Draw
 	 * @param	color	Color of the curve
 	 * @param	alpha	Alpha transparency.
 	 */
-	public static function curve(x1:Int, y1:Int, x2:Int, y2:Int, x3:Int, y3:Int, thick:Float = 1, color:Int = 0, alpha:Float = 1)
+	public static function curve(x1:Int, y1:Int, x2:Int, y2:Int, x3:Int, y3:Int, thick:Float = 1, color:Color = 0, alpha:Float = 1)
 	{
 		if (HXP.renderMode == RenderMode.BUFFER)
 		{

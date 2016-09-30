@@ -4,6 +4,8 @@ import flash.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Tween;
 import haxepunk.utils.Ease;
+import haxepunk.utils.MathUtil;
+
 
 /**
  * Determines a circular motion.
@@ -38,7 +40,7 @@ class CircularMotion extends Motion
 		_centerX = centerX;
 		_centerY = centerY;
 		_radius = radius;
-		this.angle = _angleStart = angle * HXP.RAD;
+		this.angle = _angleStart = angle * MathUtil.RAD;
 		_angleFinish = _CIRC * (clockwise ? 1 : -1);
 		_target = duration;
 		_ease = ease;
@@ -60,7 +62,7 @@ class CircularMotion extends Motion
 		_centerX = centerX;
 		_centerY = centerY;
 		_radius = radius;
-		this.angle = _angleStart = angle * HXP.RAD;
+		this.angle = _angleStart = angle * MathUtil.RAD;
 		_angleFinish = _CIRC * (clockwise ? 1 : -1);
 		_target = (_radius * _CIRC) / speed;
 		_ease = ease;

@@ -7,6 +7,7 @@ import flash.text.TextFormatAlign;
 import openfl.Assets;
 import haxepunk.HXP;
 import haxepunk.graphics.atlas.Atlas;
+import haxepunk.utils.Color;
 
 @:dox(hide)
 #if (lime || flash)
@@ -31,7 +32,7 @@ typedef TextOptions =
 	/** Optional. If the text field can automatically resize if its contents grow. Default value is true. */
 	@:optional var resizable:Bool;
 	/** Optional. The color of the text. Default value is white. */
-	@:optional var color:Int;
+	@:optional var color:Color;
 	/** Optional. Vertical space between lines. Default value is 0. */
 	@:optional var leading:Int;
 	/** Optional. If the text field uses a rich text string. */
@@ -48,7 +49,7 @@ typedef TextOptions =
 @:dox(hide)
 abstract StyleType(TextFormat)
 {
-	private function new(format:TextFormat) this = format;
+	function new(format:TextFormat) this = format;
 	@:to public function toTextformat():TextFormat return this;
 
 	@:from public static inline function fromTextFormat(format:TextFormat) return new StyleType(format);
@@ -187,7 +188,7 @@ class Text extends Image
 		if (_richText != null) updateTextBuffer();
 	}
 
-	override private function updateColorTransform():Void
+	override function updateColorTransform():Void
 	{
 		if (_richText != null)
 		{
@@ -222,8 +223,8 @@ class Text extends Image
 		}
 	}
 	
-	private static var tag_re = ~/<([^>]+)>([^(?:<\/)]+)<\/[^>]+>/g;
-	private function matchStyles()
+	static var tag_re = ~/<([^>]+)>([^(?:<\/)]+)<\/[^>]+>/g;
+	function matchStyles()
 	{
 		_text = _richText;
 
@@ -329,8 +330,8 @@ class Text extends Image
 	 * Text string.
 	 */
 	public var text(get, set):String;
-	private inline function get_text():String return _text; 
-	private function set_text(value:String):String
+	inline function get_text():String return _text;
+	function set_text(value:String):String
 	{
 		if (_text == value && _richText == null) return value;
 		_field.text = _text = value;
@@ -351,8 +352,8 @@ class Text extends Image
 	 * Use `Text.addStyle` to control the appearance of marked-up text.
 	 */
 	public var richText(get, set):String;
-	private function get_richText():String return (_richText == null ? _text : _richText); 
-	private function set_richText(value:String):String
+	function get_richText():String return (_richText == null ? _text : _richText);
+	function set_richText(value:String):String
 	{
 		if (_richText == value) return value;
 		var fromPlain = (_richText == null);
@@ -424,7 +425,7 @@ class Text extends Image
 	 * Font family.
 	 */
 	public var font(default, set):String;
-	private function set_font(value:String):String
+	function set_font(value:String):String
 	{
 		if (font == value) return value;
 		value = Assets.getFont(value).fontName;
@@ -437,7 +438,7 @@ class Text extends Image
 	 * Font size.
 	 */
 	public var size(default, set):Int;
-	private function set_size(value:Int):Int
+	function set_size(value:Int):Int
 	{
 		if (size == value) return value;
 		_format.size = size = value;
@@ -449,7 +450,7 @@ class Text extends Image
 	 * Font alignment.
 	 */
 	public var align(default, set):AlignType;
-	private function set_align(value:AlignType):AlignType
+	function set_align(value:AlignType):AlignType
 	{
 		if (align == value) return value;
 		_format.align = value;
@@ -461,7 +462,7 @@ class Text extends Image
 	 * Leading (amount of vertical space between lines).
 	 */
 	public var leading(default, set):Int;
-	private function set_leading(value:Int):Int
+	function set_leading(value:Int):Int
 	{
 		if (leading == value) return value;
 		_format.leading = leading = value;
@@ -473,7 +474,7 @@ class Text extends Image
 	 * Automatic word wrapping.
 	 */
 	public var wordWrap(default, set):Bool;
-	private function set_wordWrap(value:Bool):Bool
+	function set_wordWrap(value:Bool):Bool
 	{
 		if (wordWrap == value) return value;
 		_field.wordWrap = wordWrap = value;
@@ -481,16 +482,15 @@ class Text extends Image
 		return value;
 	}
 
-	override private function get_width():Int return Std.int(_width); 
-	override private function get_height():Int return Std.int(_height); 
+	override function get_width():Int return Std.int(_width);
+	override function get_height():Int return Std.int(_height);
 
 	// Text information.
-	private var _width:Int;
-	private var _height:Int;
-	private var _text:String;
-	private var _richText:String;
-	private var _field:TextField;
-	private var _format:TextFormat;
-	private var _styles:StringMap<TextFormat>;
-
+	var _width:Int;
+	var _height:Int;
+	var _text:String;
+	var _richText:String;
+	var _field:TextField;
+	var _format:TextFormat;
+	var _styles:StringMap<TextFormat>;
 }

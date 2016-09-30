@@ -1,6 +1,8 @@
 package haxepunk.input;
 
 import haxepunk.HXP;
+import haxepunk.utils.MathUtil;
+
 
 /**
  * Gesture input. Used to support complex touch input such as swipes,
@@ -43,7 +45,7 @@ class GestureType
 	public var distance(get, never):Float;
 	function get_distance()
 	{
-		return HXP.distance(x, y, x2, y2);
+		return MathUtil.distance(x, y, x2, y2);
 	}
 
 	public var velocity(get, never):Float;
@@ -282,7 +284,7 @@ abstract Gesture(Int) from Int to Int
 				else if (touchCount == 1)
 				{
 					var touch:Touch = getTouch(touches, touchOrder, 0);
-					var dist = HXP.distance(touch.startX, touch.startY, touch.x, touch.y);
+					var dist = MathUtil.distance(touch.startX, touch.startY, touch.x, touch.y);
 					if (dist > deadZone)
 					{
 						mode = SINGLE_MOVE;
@@ -306,7 +308,7 @@ abstract Gesture(Int) from Int to Int
 				else
 				{
 					var touch:Touch = getTouch(touches, touchOrder, 0);
-					var dist = HXP.distance(touch.startX, touch.startY, touch.x, touch.y);
+					var dist = MathUtil.distance(touch.startX, touch.startY, touch.x, touch.y);
 					if (!check(MOVE))
 					{
 						start(MOVE, touch.startX, touch.startY);
@@ -350,8 +352,8 @@ abstract Gesture(Int) from Int to Int
 					var t2:Touch = getTouch(touches, touchOrder, 1);
 					if (t1 != null && t2 != null)
 					{
-						var d1 = HXP.distance(t1.startX, t1.startY, t1.x, t1.y);
-						var d2 = HXP.distance(t2.startX, t2.startY, t2.x, t2.y);
+						var d1 = MathUtil.distance(t1.startX, t1.startY, t1.x, t1.y);
+						var d2 = MathUtil.distance(t2.startX, t2.startY, t2.x, t2.y);
 						if (d1 > deadZone && d2 > deadZone)
 						{
 							if (!check(PINCH))
@@ -360,8 +362,8 @@ abstract Gesture(Int) from Int to Int
 								var my = (t1.startY - t2.startY) / 2;
 								start(PINCH, mx, my);
 							}
-							var inner = HXP.distance(t1.startX, t1.startY, t2.startX, t2.startY);
-							var outer = HXP.distance(t1.x, t1.y, t2.x, t2.y);
+							var inner = MathUtil.distance(t1.startX, t1.startY, t2.startX, t2.startY);
+							var outer = MathUtil.distance(t1.x, t1.y, t2.x, t2.y);
 							get(PINCH).magnitude = inner / outer;
 						}
 					}

@@ -5,6 +5,7 @@ import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxepunk.HXP;
+import haxepunk.utils.MathUtil;
 
 /**
  * Creates a pre-rotated Image strip to increase runtime performance for rotating graphics.
@@ -37,7 +38,7 @@ class PreRotation extends Image
 			{
 				// produce a rotated bitmap strip
 				var temp:BitmapData = HXP.getBitmap(source);
-				size = Math.ceil(HXP.distance(0, 0, temp.width, temp.height));
+				size = Math.ceil(MathUtil.distance(0, 0, temp.width, temp.height));
 				_sizes.set(source, size);
 				_frame.width = _frame.height = size;
 				var width:Int = Std.int(_frame.width * frameCount),

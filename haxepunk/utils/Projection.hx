@@ -1,4 +1,5 @@
-package haxepunk.math;
+package haxepunk.utils;
+
 
 @:dox(hide)
 class Projection

@@ -1,9 +1,10 @@
 package haxepunk.masks;
 
+import flash.display.Graphics;
 import haxepunk.Entity;
 import haxepunk.HXP;
 import haxepunk.Mask;
-import flash.display.Graphics;
+import haxepunk.utils.MathUtil;
 
 /**
  * A Mask that can contain multiple Masks of one or various types.
@@ -147,8 +148,8 @@ class Masklist extends Hitbox
 	{
 		// find bounds of the contained masks
 		var t:Int, l:Int, r:Int, b:Int, h:Hitbox;
-		t = l = HXP.INT_MAX_VALUE;
-		r = b = HXP.INT_MIN_VALUE;
+		t = l = MathUtil.INT_MAX_VALUE;
+		r = b = MathUtil.INT_MIN_VALUE;
 		var h:Hitbox;
 		var p:Polygon;
 		

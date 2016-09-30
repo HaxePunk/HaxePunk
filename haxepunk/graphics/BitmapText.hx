@@ -10,6 +10,7 @@ import haxepunk.Graphic;
 import haxepunk.graphics.Text;
 import haxepunk.graphics.atlas.BitmapFontAtlas;
 import haxepunk.graphics.atlas.AtlasRegion;
+import haxepunk.utils.Color;
 
 @:dox(hide)
 typedef RenderFunction = AtlasRegion -> GlyphData -> Float -> Float -> Void;
@@ -120,8 +121,8 @@ class BitmapText extends Graphic
 	private var _red:Float;
 	private var _green:Float;
 	private var _blue:Float;
-	public var color(default, set):Int;
-	private function set_color(value:Int):Int
+	public var color(default, set):Color;
+	private function set_color(value:Color):Int
 	{
 		value &= 0xFFFFFF;
 		if (color == value) return value;
@@ -148,9 +149,9 @@ class BitmapText extends Graphic
 	private function updateColor()
 	{
 		// update _colorTransform if blitting
-		_red = HXP.getRed(color) / 255;
-		_green = HXP.getGreen(color) / 255;
-		_blue = HXP.getBlue(color) / 255;
+		_red = color.red;
+		_green = color.green;
+		_blue = color.blue;
 
 		if (blit)
 		{
