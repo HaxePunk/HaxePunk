@@ -1,8 +1,8 @@
 package haxepunk.masks;
 
 import haxepunk.Mask;
-import haxepunk.math.Projection;
-import haxepunk.math.Vector;
+import haxepunk.utils.Projection;
+import haxepunk.utils.Vector;
 import flash.display.Graphics;
 import flash.geom.Point;
 import haxepunk.masks.Polygon;

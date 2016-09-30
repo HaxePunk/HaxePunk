@@ -4,6 +4,7 @@ import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.Graphic;
 import haxepunk.graphics.atlas.TileAtlas;
+import haxepunk.utils.Random;
 
 /**
  * Performance-optimized animated Image. Can have multiple animations,
@@ -296,7 +297,7 @@ class Spritemap extends Image
 	 */
 	public function randFrame()
 	{
-		frame = HXP.rand(_frameCount);
+		frame = Random.randInt(_frameCount);
 	}
 
 	/**

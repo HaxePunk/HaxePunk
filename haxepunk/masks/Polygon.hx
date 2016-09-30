@@ -3,10 +3,15 @@ package haxepunk.masks;
 import haxepunk.Entity;
 import haxepunk.HXP;
 import haxepunk.Mask;
-import haxepunk.math.Projection;
-import haxepunk.math.Vector;
+import haxepunk.masks.Circle;
+import haxepunk.masks.Grid;
+import haxepunk.masks.Hitbox;
+import haxepunk.utils.Projection;
+import haxepunk.utils.Vector;
+import haxepunk.utils.MathUtil;
 import flash.display.Graphics;
 import flash.geom.Point;
+
 
 /**
  * Uses polygonal structure to check for collisions.
@@ -498,7 +503,7 @@ class Polygon extends Hitbox
 	{
 		_angle += angleDelta;
 
-		angleDelta *= HXP.RAD;
+		angleDelta *= MathUtil.RAD;
 
 		var p:Vector;
 

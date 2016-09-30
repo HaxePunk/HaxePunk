@@ -3,7 +3,9 @@ package haxepunk.graphics.atlas;
 import flash.display.BitmapData;
 import flash.geom.Rectangle;
 import flash.geom.Point;
+import flash.geom.Matrix;
 import haxepunk.Scene;
+import haxepunk.utils.MathUtil;
 
 /**
  * Abstract representing either a `String`, a `AtlasData` or a `BitmapData`.
@@ -212,8 +214,8 @@ class AtlasData
 		}
 		else
 		{
-			var cos = Math.cos(-angle * HXP.RAD);
-			var sin = Math.sin(-angle * HXP.RAD);
+			var cos = Math.cos(-angle * MathUtil.RAD);
+			var sin = Math.sin(-angle * MathUtil.RAD);
 			a = cos * scaleX; // m00
 			b = -sin * scaleY; // m10
 			c = sin * scaleX; // m01

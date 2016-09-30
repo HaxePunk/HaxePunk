@@ -11,7 +11,7 @@ import flash.Lib;
 import haxe.Timer;
 import haxepunk.utils.Draw;
 import haxepunk.input.Input;
-import haxepunk.Tweener;
+import haxepunk.utils.Random;
 
 /**
  * Main game Sprite class, added to the Flash Stage.
@@ -73,7 +73,7 @@ class Engine extends Sprite
 		}
 
 		// miscellaneous startup stuff
-		if (HXP.randomSeed == 0) HXP.randomizeSeed();
+		if (Random.randomSeed == 0) Random.randomizeSeed();
 
 		HXP.entity = new Entity();
 		HXP.time = Lib.getTimer();

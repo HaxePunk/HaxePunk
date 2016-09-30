@@ -1,6 +1,7 @@
-package haxepunk.math;
+package haxepunk.utils;
 
 import flash.geom.Point;
+
 
 @:dox(hide)
 abstract Vector(Point)

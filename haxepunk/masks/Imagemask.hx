@@ -7,6 +7,8 @@ import flash.geom.Matrix;
 import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.graphics.Image;
+import haxepunk.utils.MathUtil;
+
 
 /**
  * A bitmap mask used for pixel-perfect collision.
@@ -92,7 +94,7 @@ class Imagemask extends Pixelmask
 		var matrix = new Matrix(sx, 0, 0, sy,
 			-_source.originX * sx,
 			-_source.originY * sy);
-		matrix.rotate(_source.angle * HXP.RAD);
+		matrix.rotate(_source.angle * MathUtil.RAD);
 
 		var point = new Point(0, 0);
 		var p1 = matrix.transformPoint(point);

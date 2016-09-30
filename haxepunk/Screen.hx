@@ -8,6 +8,7 @@ import flash.geom.Matrix;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.Image;
 import haxepunk.screen.ScaleMode;
+import haxepunk.utils.MathUtil;
 
 /**
  * Container for the main screen buffer. Can be used to transform the screen.
@@ -308,11 +309,11 @@ class Screen
 	 * Rotation of the screen, in degrees.
 	 */
 	public var angle(get, set):Float;
-	private function get_angle():Float return _angle * HXP.DEG;
+	private function get_angle():Float return _angle * MathUtil.DEG;
 	private function set_angle(value:Float):Float
 	{
-		if (_angle == value * HXP.RAD) return value;
-		_angle = value * HXP.RAD;
+		if (_angle == value * MathUtil.RAD) return value;
+		_angle = value * MathUtil.RAD;
 		updateTransformation();
 		return _angle;
 	}

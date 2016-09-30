@@ -3,6 +3,7 @@ package haxepunk.graphics.atlas;
 import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.geom.Rectangle;
+import haxepunk.utils.Color;
 
 @:access(haxepunk.Scene)
 @:access(haxepunk.graphics.atlas.DrawCommand)
@@ -30,10 +31,10 @@ class SceneSprite extends Sprite
 		{
 			// draw the scene background
 			var command = getDrawCommand(null, false, BlendMode.Normal);
-			var sceneColor = scene.color == null ? HXP.stage.color : scene.color;
-			var red = HXP.getRed(sceneColor) / 255,
-				green = HXP.getGreen(sceneColor) / 255,
-				blue = HXP.getBlue(sceneColor) / 255;
+			var sceneColor:Color = scene.color == null ? HXP.stage.color : scene.color;
+			var red = sceneColor.red,
+				green = sceneColor.green,
+				blue = sceneColor.blue;
 			var w = HXP.width * HXP.screen.fullScaleX,
 				h = HXP.height * HXP.screen.fullScaleY;
 			command.addTriangle(0, 0, 0, 0, w, 0, 0, 0, 0, h, 0, 0, red, green, blue, scene.alpha);

@@ -1,7 +1,8 @@
 package haxepunk;
 
-import haxepunk.math.Projection;
-import haxepunk.math.Vector;
+import haxepunk.Entity;
+import haxepunk.utils.Projection;
+import haxepunk.utils.Vector;
 import haxepunk.masks.Masklist;
 import flash.display.Graphics;
 

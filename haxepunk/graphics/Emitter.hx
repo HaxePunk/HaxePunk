@@ -5,7 +5,10 @@ import flash.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Graphic;
 import haxepunk.graphics.atlas.AtlasRegion;
+import haxepunk.utils.Color;
 import haxepunk.utils.Ease;
+import haxepunk.utils.MathUtil;
+import haxepunk.utils.Random;
 
 /**
  * Particle emitter used for emitting and rendering particle sprites.
@@ -366,17 +369,17 @@ class Emitter extends Graphic
 
 		p._type = type;
 		p._time = 0;
-		p._duration = type._duration + type._durationRange * Math.random();
+		p._duration = type._duration + type._durationRange * Random.random;
 		p._stopTime = p._duration;
-		p._angle = angle + type._angle + type._angleRange * Math.random();
-		p._startAngle = type._startAngle + type._startAngleRange * Math.random();
-		p._spanAngle = type._spanAngle + type._spanAngleRange * Math.random();
-		var d:Float = type._distance + type._distanceRange * Math.random();
-		p._moveX = Math.cos(p._angle * HXP.RAD) * d;
-		p._moveY = Math.sin(p._angle * HXP.RAD) * d;
+		p._angle = angle + type._angle + type._angleRange * Random.random;
+		p._startAngle = type._startAngle + type._startAngleRange * Random.random;
+		p._spanAngle = type._spanAngle + type._spanAngleRange * Random.random;
+		var d:Float = type._distance + type._distanceRange * Random.random;
+		p._moveX = Math.cos(p._angle * MathUtil.RAD) * d;
+		p._moveY = Math.sin(p._angle * MathUtil.RAD) * d;
 		p._x = x;
 		p._y = y;
-		p._gravity = type._gravity + type._gravityRange * Math.random();
+		p._gravity = type._gravity + type._gravityRange * Random.random;
 		p._firstDraw = true;
 		p._ox = p._oy = 0;
 		particleCount++;
@@ -394,8 +397,8 @@ class Emitter extends Graphic
 	 */
 	public function emitInCircle(name:String, x:Float, y:Float, radius:Float):Particle
 	{
-		var angle = Math.random() * Math.PI * 2;
-		radius *= Math.random();
+		var angle = Random.random * Math.PI * 2;
+		radius *= Random.random;
 		return emit(name, x + Math.cos(angle) * radius, y + Math.sin(angle) * radius);
 	}
 
@@ -411,7 +414,7 @@ class Emitter extends Graphic
 	 */
 	public function emitInRectangle(name:String, x:Float, y:Float, width:Float, height:Float):Particle
 	{
-		return emit(name, x + Math.random() * width, y + Math.random() * height);
+		return emit(name, x + Random.random * width, y + Random.random * height);
 	}
 
 	/**
