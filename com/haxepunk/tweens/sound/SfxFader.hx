@@ -77,7 +77,6 @@ class SfxFader extends Tween
 			_sfx = _crossSfx;
 			_crossSfx = null;
 		}
-		dispatchEvent(new TweenEvent(TweenEvent.FINISH));
 	}
 
 	/**
