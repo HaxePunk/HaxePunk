@@ -14,8 +14,8 @@ sudo: false
 
 install:
   - haxelib dev HaxePunk $TRAVIS_BUILD_DIR
-  - haxelib install lime > log.txt || cat log.txt
-  - haxelib install openfl > log.txt || cat log.txt
+  - haxelib install lime 2.9.1 > log.txt || cat log.txt
+  - haxelib install openfl 3.6.1 > log.txt || cat log.txt
   - haxelib install dox > log.txt || cat log.txt
   - haxelib list
 

@@ -28,7 +28,7 @@ haxepunk.zip: doc/pages/index.html tool.n template.zip
 haxelib: haxepunk.zip
 	@haxelib local haxepunk.zip > log.txt || cat log.txt
 
-unit: haxelib
+unit:
 	@echo "Running unit tests"
 	@cd tests && haxe compile.hxml && neko unit.n
 
