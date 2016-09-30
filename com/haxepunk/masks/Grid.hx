@@ -398,7 +398,7 @@ class Grid extends Hitbox
 #else
 		_point.x = _parent.x + _x - _parent.originX;
 		_point.y = _parent.y + _y - _parent.originY;
-		if(Std.instance(other, Imagemask) != null) // 'other' inherits from Imagemask
+		if (Std.instance(other, Imagemask) != null) // 'other' inherits from Imagemask
 		{
 			_rect = cast(other, Imagemask).getBounds();
 			_rect.x += other._parent.x;
@@ -416,12 +416,12 @@ class Grid extends Hitbox
 		
 		var intersect = r1.intersection(_rect);
 		
-		if(intersect.isEmpty())
+		if (intersect.isEmpty())
 			return false;
 		
-		for(dx in Math.floor(intersect.x - _rect.x) ...Math.floor(intersect.x - _rect.x + intersect.width))
+		for (dx in Math.floor(intersect.x - _rect.x) ...Math.floor(intersect.x - _rect.x + intersect.width))
 		{
-			for(dy in Math.floor(intersect.y - _rect.y) ...Math.floor(intersect.y - _rect.y + intersect.height))
+			for (dy in Math.floor(intersect.y - _rect.y) ...Math.floor(intersect.y - _rect.y + intersect.height))
 			{
 				var tx = Std.int((dx + _rect.x) / _tile.width), ty = Std.int((dy + _rect.y) / _tile.height);
 				if (data[ty][tx] && (other.data.getPixel32(dx, dy) >> 24) & 0xFF > 0)

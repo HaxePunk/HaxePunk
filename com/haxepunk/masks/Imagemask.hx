@@ -128,7 +128,7 @@ class Imagemask extends Pixelmask
 			rect.x += _parent.x;
 			rect.y += _parent.y;
 			
-			if(Std.instance(other, Imagemask) != null) // 'other' inherits from Imagemask
+			if (Std.instance(other, Imagemask) != null) // 'other' inherits from Imagemask
 			{
 				_rect = cast(other, Imagemask).getBounds();
 				_rect.x += other._parent.x;
@@ -149,9 +149,9 @@ class Imagemask extends Pixelmask
 				return false;
 			}
 
-			for(dx in Math.floor(intersect.x)...Math.floor(intersect.x + intersect.width))
+			for (dx in Math.floor(intersect.x)...Math.floor(intersect.x + intersect.width))
 			{
-				for(dy in Math.floor(intersect.y)...Math.floor(intersect.y + intersect.height))
+				for (dy in Math.floor(intersect.y)...Math.floor(intersect.y + intersect.height))
 				{
 					var p1 = (_data.getPixel32(Std.int(dx - rect.x), Std.int(dy - rect.y)) >> 24) & 0xFF;
 					var p2 = (other._data.getPixel32(Std.int(dx - _rect.x),

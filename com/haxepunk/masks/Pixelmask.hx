@@ -76,8 +76,8 @@ class Pixelmask extends Hitbox
 		if (intersect.isEmpty())
 			return false;
 		
-		for(dx in Math.floor(intersect.x)...Math.floor(intersect.x + intersect.width + 1))
-			for(dy in Math.floor(intersect.y)...Math.floor(intersect.y + intersect.height + 1))
+		for (dx in Math.floor(intersect.x)...Math.floor(intersect.x + intersect.width + 1))
+			for (dy in Math.floor(intersect.y)...Math.floor(intersect.y + intersect.height + 1))
 				if ((_data.getPixel32(dx, dy) >> 24) & 0xFF > 0)
 					return true;
 		
@@ -108,8 +108,8 @@ class Pixelmask extends Hitbox
 		if (intersect.isEmpty())
 			return false;
 		
-		for(dx in Math.floor(intersect.x)...Math.floor(intersect.x + intersect.width + 1))
-			for(dy in Math.floor(intersect.y)...Math.floor(intersect.y + intersect.height + 1))
+		for (dx in Math.floor(intersect.x)...Math.floor(intersect.x + intersect.width + 1))
+			for (dy in Math.floor(intersect.y)...Math.floor(intersect.y + intersect.height + 1))
 				if ((_data.getPixel32(dx, dy) >> 24) & 0xFF > 0)
 					return true;
 		
@@ -141,9 +141,9 @@ class Pixelmask extends Hitbox
 				return false;
 			}
 
-			for(dx in Math.floor(intersect.x)...Math.floor(intersect.x + intersect.width + 1))
+			for (dx in Math.floor(intersect.x)...Math.floor(intersect.x + intersect.width + 1))
 			{
-				for(dy in Math.floor(intersect.y)...Math.floor(intersect.y + intersect.height + 1))
+				for (dy in Math.floor(intersect.y)...Math.floor(intersect.y + intersect.height + 1))
 				{
 					var p1 = (_data.getPixel32(dx, dy) >> 24) & 0xFF;
 					var p2 = (other._data.getPixel32(Math.floor(dx - _point.x),
