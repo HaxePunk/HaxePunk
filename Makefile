@@ -44,8 +44,9 @@ unit-travis:
 	@make unit # run unit tests
 
 examples: tool.n
+	@git submodule update --init
 	@echo "Building examples with" ${TARGET} "using" ${COMMAND}
-	@cd examples && haxelib run ${COMMAND} build ${TARGET}
+	@for path in `find examples -name example-*`; do echo "Building" $$path"..."; cd $$path; haxelib run ${COMMAND} build ${TARGET}; done
 
 clean:
 	@echo "Cleaning up old files"
