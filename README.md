@@ -23,16 +23,16 @@ haxelib run HaxePunk new MyProject # creates a new project
 
 ## Development build
 
-You need to have ant installed to build a development version of HaxePunk. Make sure you set a default program for swf files to view the debug output. You will also need a C++ compiler for native builds (Xcode, Visual Studio, g++).
+Make sure you set a default program for swf files to view the debug output. You will also need a C++ compiler for native builds (Xcode, Visual Studio, g++).
 
 ```bash
 git clone https://github.com/HaxePunk/HaxePunk.git
 make
 ```
 
-This will install a dev version of HaxePunk through haxelib, build documentation, run unit tests, and run the example project. If you fix an issue, feel free to create a pull request.
+This will build documentation, run unit tests, and run the example project. If you fix an issue, feel free to create a pull request.
 
-If you are looking to just use the latest version from GitHub there is an alternative way. Run the following commands instead which will setup your local folder as the development directory in haxelib.
+If you've cloned locally, you can set your local repo as a development directory accessible through Haxelib:
 
 ```bash
 git clone https://github.com/HaxePunk/HaxePunk.git
@@ -40,6 +40,12 @@ haxelib dev HaxePunk HaxePunk/
 ```
 
 To disable the dev directory for HaxePunk simply run the command `haxelib dev HaxePunk`. Notice there is no third argument passed.
+
+If you just want to install the latest dev version from Git, you can also do this with haxelib:
+
+```bash
+haxelib git HaxePunk https://github.com/HaxePunk/HaxePunk.git dev
+```
 
 ## Have questions or looking to get involved?
 

@@ -4,7 +4,7 @@ TARGET=neko
 
 .PHONY: all doc docs haxelib examples unit unit-travis build clean
 
-all: clean unit build examples
+all: clean unit docs examples
 
 docs:
 	@make doc/pages/index.html
