@@ -31,25 +31,25 @@ class Entity extends Tweener
 	/**
 	 * If the Entity should render.
 	 */
-	public var visible:Bool;
+	public var visible:Bool = true;
 
 	/**
 	 * If the Entity should respond to collision checks.
 	 */
-	public var collidable:Bool;
+	public var collidable:Bool = true;
 
 	/**
 	 * X position of the Entity in the Scene.
 	 */
-	@:isVar public var x(get, set):Float;
-	private inline function get_x():Float
+	@:isVar public var x(get, set):Float = 0;
+	private function get_x():Float
 	{
 		if (followCamera)
 			return x + HXP.camera.x;
 		else
 			return x;
 	}
-	private inline function set_x(v:Float):Float
+	private function set_x(v:Float):Float
 	{
 		return x = v;
 	}
@@ -57,15 +57,15 @@ class Entity extends Tweener
 	/**
 	 * Y position of the Entity in the Scene.
 	 */
-	@:isVar public var y(get, set):Float;
-	private inline function get_y():Float
+	@:isVar public var y(get, set):Float = 0;
+	private function get_y():Float
 	{
 		if (followCamera)
 			return y + HXP.camera.y;
 		else
 			return y;
 	}
-	private inline function set_y(v:Float):Float
+	private function set_y(v:Float):Float
 	{
 		return y = v;
 	}
@@ -73,27 +73,27 @@ class Entity extends Tweener
 	/**
 	 * If the entity should follow the camera.
 	 */
-	public var followCamera:Bool;
+	public var followCamera:Bool = false;
 
 	/**
 	 * Width of the Entity's hitbox.
 	 */
-	public var width:Int;
+	public var width:Int = 0;
 
 	/**
 	 * Height of the Entity's hitbox.
 	 */
-	public var height:Int;
+	public var height:Int = 0;
 
 	/**
 	 * X origin of the Entity's hitbox.
 	 */
-	public var originX:Int;
+	public var originX:Int = 0;
 
 	/**
 	 * Y origin of the Entity's hitbox.
 	 */
-	public var originY:Int;
+	public var originY:Int = 0;
 
 	/**
 	 * The BitmapData target to draw the Entity to. Leave as null to render to the current screen buffer (default).
@@ -110,9 +110,6 @@ class Entity extends Tweener
 	public function new(x:Float = 0, y:Float = 0, graphic:Graphic = null, mask:Mask = null)
 	{
 		super();
-		visible = true;
-		collidable = true;
-		followCamera = false;
 		this.x = x;
 		this.y = y;
 
@@ -907,7 +904,7 @@ class Entity extends Tweener
 	private var _class:String;
 	private var _scene:Scene;
 	private var _type:String;
-	private var _layer:Int;
+	private var _layer:Int = 0;
 	private var _name:String;
 
 	private var _recycleNext:Entity;
@@ -915,10 +912,10 @@ class Entity extends Tweener
 	// Collision information.
 	private var HITBOX:Mask;
 	private var _mask:Mask;
-	private var _x:Float;
-	private var _y:Float;
-	private var _moveX:Float;
-	private var _moveY:Float;
+	private var _x:Float = 0;
+	private var _y:Float = 0;
+	private var _moveX:Float = 0;
+	private var _moveY:Float = 0;
 
 	// Rendering information.
 	private var _graphic:Graphic;

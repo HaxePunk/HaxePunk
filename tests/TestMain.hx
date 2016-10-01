@@ -11,6 +11,7 @@ class TestMain
 		r.add(new masks.TestCollide());
 		r.add(new TestScreen());
 		r.add(new TestScene());
+		r.add(new TestEntityList());
 		r.run();
 	}
 }
