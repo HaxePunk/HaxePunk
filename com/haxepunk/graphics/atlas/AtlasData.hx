@@ -36,6 +36,7 @@ class AtlasData
 
 	public var width(default, null):Int;
 	public var height(default, null):Int;
+	public var bitmapData:BitmapData;
 
 	public static inline var BLEND_NONE:Int = 0;
 	public static inline var BLEND_ADD:Int = Tilesheet.TILE_BLEND_ADD;
@@ -58,6 +59,8 @@ class AtlasData
 	 */
 	public function new(bd:BitmapData, ?name:String, ?flags:Int)
 	{
+		bitmapData = bd;
+
 		_data = new Array<Float>();
 		_smoothData = new Array<Float>();
 		_dataIndex = _smoothDataIndex = 0;
@@ -122,8 +125,11 @@ class AtlasData
 	 */
 	public function reload(bd:BitmapData):Bool
 	{
-		if(_name != null)
+		if (_name != null)
+		{
+			bitmapData = bd;
 			return HXP.overwriteBitmapCache(_name, bd);
+		}
 		return false;
 	}
 

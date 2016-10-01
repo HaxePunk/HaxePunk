@@ -122,7 +122,6 @@ class BitmapFontAtlas extends TextureAtlas
 	 * 						glyphBGColor	An additional background color to remove. Defaults to 0xFF202020, often used for glyphs background.
 	 */
 	@:access(com.haxepunk.graphics.atlas.AtlasData)
-	@:access(openfl.display.Tilesheet)
 	public static function loadXNAFont(asset:String, ?options:Dynamic):BitmapFontAtlas
 	{
 		var atlas = new BitmapFontAtlas(asset);
@@ -130,7 +129,7 @@ class BitmapFontAtlas extends TextureAtlas
 		
 		try
 		{
-			bmd = atlas._data._tilesheet.__bitmap;
+			bmd = atlas._data.bitmapData;
 		}
 		catch (_:Dynamic) { }
 	

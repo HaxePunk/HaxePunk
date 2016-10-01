@@ -11,6 +11,9 @@ class AtlasRegion
 	 * If the region is rotated by 90 degress (used for sprite packing)
 	 */
 	public var rotated:Bool;
+
+	public var x(get, never):Float;
+	public var y(get, never):Float;
 	/**
 	 * Width of this region
 	 */
@@ -134,6 +137,8 @@ class AtlasRegion
 		return "[AtlasRegion " + _rect + "]";
 	}
 
+	private inline function get_x():Float { return _rect.x; }
+	private inline function get_y():Float { return _rect.y; }
 	private inline function get_width():Float { return _rect.width; }
 	private inline function get_height():Float { return _rect.height; }
 
