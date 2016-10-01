@@ -46,3 +46,9 @@ notifications:
     on_failure: always
     rooms:
       - openfl:sBwVO0kgB7EuWLYzZzUezVIz#haxepunk
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/b5256a55779b5e854b0a
+    on_success: change
+    on_failure: always
+    on_start: never
