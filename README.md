@@ -5,6 +5,6 @@ These are sample applications which demonstrate HaxePunk's features and how to u
 To build and run an example:
 
 ```bash
-cd example-classic
+cd classic
 openfl test neko
 ```
