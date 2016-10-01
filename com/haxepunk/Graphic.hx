@@ -8,6 +8,7 @@ import com.haxepunk.graphics.atlas.AtlasRegion;
 import flash.display.BitmapData;
 import flash.geom.Point;
 
+
 /**
  * Abstract representing either a `String`, a `TileAtlas` or a `BitmapData`.
  * 
@@ -34,8 +35,8 @@ abstract TileType(Either<BitmapData, TileAtlas>)
 		else
 			return new TileType(Left(bd));
 	}
-
 }
+
 
 /**
  * Abstract representing either a `String`, a `TileAtlas`, a `BitmapData` or a `AtlasRegion`.
@@ -67,6 +68,24 @@ abstract ImageType(Either<BitmapData, AtlasRegion>)
 			return new ImageType(Left(bd));
 	}
 }
+
+
+abstract ImageOrTileType(Either<ImageType, TileType>)
+{
+	private inline function new(e:Either<ImageType, TileType>) this = e;
+	@:dox(hide) public var type(get,never):Either<ImageType, TileType>;
+	@:to inline function get_type() return this;
+
+	@:dox(hide) @:from public static inline function fromString(tileset:String):ImageOrTileType
+	return new ImageOrTileType(Right(TileType.fromString(tileset)));
+	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData):ImageOrTileType
+	return new ImageOrTileType(Right(TileType.fromBitmapData(bd)));
+	@:dox(hide) @:from public static inline function fromTileAtlas(atlas:TileAtlas):ImageOrTileType
+	return new ImageOrTileType(Right(TileType.fromTileAtlas(atlas)));
+	@:dox(hide) @:from public static inline function fromAtlasRegion(region:AtlasRegion):ImageOrTileType
+	return new ImageOrTileType(Left(ImageType.fromAtlasRegion(region)));
+}
+
 
 /**
  * Base class for graphics type.
