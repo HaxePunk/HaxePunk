@@ -70,6 +70,11 @@ abstract ImageType(Either<BitmapData, AtlasRegion>)
 }
 
 
+/**
+ * An abstract which can either be a static image or a tiled image.
+ *
+ * Conversion is automatic, no need to use this.
+ */
 abstract ImageOrTileType(Either<ImageType, TileType>)
 {
 	private inline function new(e:Either<ImageType, TileType>) this = e;
