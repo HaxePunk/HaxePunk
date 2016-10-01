@@ -7,6 +7,9 @@ haxe:
 matrix:
   allow_failures:
     - haxe: development
+    - env: TARGET=flash COMMAND=nme
+    - env: TARGET=neko COMMAND=nme
+    - env: TARGET=cpp COMMAND=nme
 
 env:
   - TARGET=flash COMMAND=openfl
