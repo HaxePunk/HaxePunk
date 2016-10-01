@@ -7,6 +7,8 @@
 *.docset/
 build-test/
 libs/
+bin
+log.txt
 
 # OS specific files
 .DS_Store

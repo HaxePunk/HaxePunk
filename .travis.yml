@@ -34,7 +34,7 @@ before_script:
   - echo "n" | haxelib run HaxePunk setup
 
 script:
-  - make clean unit-travis examples COMMAND=$COMMAND TARGET=$TARGET
+  - make clean unit-travis examples docs COMMAND=$COMMAND TARGET=$TARGET
 
 cache:
   directories:

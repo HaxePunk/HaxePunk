@@ -1,9 +1,5 @@
 package com.haxepunk;
 
-#if doc
-
-#else
-
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Graphics;
@@ -89,5 +85,3 @@ class Preloader extends NMEPreloader
 	private var tileData:Array<Float>;
 
 }
-
-#end

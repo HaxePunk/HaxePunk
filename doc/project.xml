@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+    <meta title="Docs" version="1.0.0" />
+    <app file="Main" main="Main" />
+    <haxedef name="doc" />
+    <haxedef name="doc-gen" />
+    <haxelib name="HaxePunk" />
+    <haxeflag name="--macro" value="include('com.haxepunk')" />
+</project>

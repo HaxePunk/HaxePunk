@@ -16,8 +16,9 @@ tool.n: tools/tool.hxml $(shell find tools -name '*.hx')
 doc/pages/index.html: $(shell find . -name '*.hx')
 	@echo "Generating documentation"
 	@cd doc && \
-		haxe doc.hxml && \
-		haxelib run dox -i xmls/ -o pages/ -theme theme/ \
+		rm -rf bin && \
+		haxelib run $(COMMAND) build $(TARGET) -xml && \
+		haxelib run dox -i `find bin -name 'types.xml'` -o pages/ -theme theme/ \
 			-in com --title "HaxePunk" \
 			-D source-path "https://github.com/HaxePunk/HaxePunk/tree/master" > log.txt || cat log.txt
 
