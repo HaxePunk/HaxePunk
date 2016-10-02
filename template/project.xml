@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
-	<meta title="{{PROJECT_NAME}}" package="com.example.app" version="1.0.0" company="" />
+	<meta title="{{PROJECT_NAME}}" package="com.example.app" version="1.0.0" company=""/>
 
- 	<app file="{{PROJECT_CLASS}}" main="{{PROJECT_CLASS}}" path="bin" />
+	<app file="{{PROJECT_CLASS}}" main="{{PROJECT_CLASS}}" path="bin"/>
 
-	<window fps="{{FRAMERATE}}" background="0x333333" />
-	<window width="{{WIDTH}}" height="{{HEIGHT}}" resizable="true" unless="mobile" />
-	<window fullscreen="true" if="mobile" />
-	<window orientation="landscape" vsync="true" antialiasing="0" if="cpp" />
+	<window fps="{{FRAMERATE}}" background="0x333333"/>
+	<window width="{{WIDTH}}" height="{{HEIGHT}}" resizable="true" unless="mobile"/>
+	<window width="0" height="0" fullscreen="true" if="mobile"/>
+	<window orientation="landscape" vsync="true" antialiasing="0" if="cpp"/>
 
-	<source path="src" />
+	<source path="src"/>
 
-	<haxelib name="HaxePunk" />
+	<haxelib name="HaxePunk"/>
 
-	<assets path="assets/graphics" rename="graphics" include="*.png|*.jpg" />
-	<assets path="assets/audio" rename="audio" include="*.mp3" if="flash" />
-	<assets path="assets/audio" rename="audio" include="*.wav|*.ogg" unless="flash" />
-	<assets path="assets/font" rename="font" include="*.ttf" />
+	<assets path="assets/graphics" rename="graphics" include="*.png|*.jpg"/>
+	<assets path="assets/audio" rename="audio" include="*.mp3" if="flash"/>
+	<assets path="assets/audio" rename="audio" include="*.wav|*.ogg" unless="flash"/>
+	<assets path="assets/font" rename="font" include="*.ttf"/>
 
-	<icon path="assets/HaxePunk.svg" />
+	<icon path="assets/HaxePunk.svg"/>
 </project>
