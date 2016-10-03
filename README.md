@@ -1,4 +1,7 @@
-[![Build Status](https://img.shields.io/travis/HaxePunk/HaxePunk/dev.svg?style=flat)](https://travis-ci.org/HaxePunk/HaxePunk) [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE) [![Haxelib](https://img.shields.io/github/tag/haxepunk/haxepunk.svg?style=flat&label=haxelib)](http://lib.haxe.org/p/haxepunk) [![Join the chat at https://gitter.im/HaxePunk/HaxePunk](https://badges.gitter.im/HaxePunk/HaxePunk.svg)](https://gitter.im/HaxePunk/HaxePunk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://img.shields.io/travis/HaxePunk/HaxePunk/dev.svg?style=flat)](https://travis-ci.org/HaxePunk/HaxePunk)
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
+[![Haxelib](https://img.shields.io/github/tag/haxepunk/haxepunk.svg?style=flat&label=haxelib)](http://lib.haxe.org/p/haxepunk)
+[![Join the chat at https://gitter.im/HaxePunk/HaxePunk](https://badges.gitter.im/HaxePunk/HaxePunk.svg)](https://gitter.im/HaxePunk/HaxePunk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 # HaxePunk
 
