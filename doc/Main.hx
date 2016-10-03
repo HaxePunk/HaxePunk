@@ -1,1 +1,1 @@
-class Main { static function new() {} }
+class Main { function new() {} }
