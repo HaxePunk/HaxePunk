@@ -32,12 +32,8 @@ install:
   - yes | haxelib install nme > log.txt || cat log.txt
   - haxelib list
 
-before_script:
-  - make tools
-  - echo "n" | haxelib run HaxePunk setup
-
 script:
-  - make clean unit-travis examples docs COMMAND=$COMMAND TARGET=$TARGET
+  - make clean tools unit-travis examples docs COMMAND=$COMMAND TARGET=$TARGET
 
 cache:
   directories:
