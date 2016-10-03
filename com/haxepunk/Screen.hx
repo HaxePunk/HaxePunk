@@ -375,7 +375,7 @@ class Screen
 	 * @param	magnitude	Number of pixels to shake in any direction.
 	 * @param	duration	Duration of shake effect, in seconds.
 	 */
-	public function shake(magnitude:Int, duration:Float)
+	public function shake(magnitude:Int = 4, duration:Float = 0.5)
 	{
 		if (_shakeTime < duration) _shakeTime = duration;
 		_shakeMagnitude = magnitude;
