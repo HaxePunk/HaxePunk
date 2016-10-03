@@ -42,7 +42,7 @@ cache:
 notifications:
   slack:
     on_success: never
-    on_failure: always
+    on_failure: never
     rooms:
       - openfl:sBwVO0kgB7EuWLYzZzUezVIz#haxepunk
   webhooks:
