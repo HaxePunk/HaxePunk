@@ -6,12 +6,17 @@ TARGET=neko
 
 all: clean unit docs examples
 
-docs:
-	@make doc/pages/index.html
+docs: doc/pages/index.html
 
-tool.n: tools/tool.hxml $(shell find tools -name '*.hx')
+tools: tool.n run.n
+
+tool.n: tools/tool.hxml tools/CLI.hx
 	@echo "Compiling tool.n"
 	@cd tools && haxe tool.hxml
+
+run.n: tools/run.hxml tools/Run.hx
+	@echo "Compiling run.n"
+	@cd tools && haxe run.hxml
 
 doc/pages/index.html: $(shell find . -name '*.hx')
 	@echo "Generating documentation"
