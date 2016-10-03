@@ -12,6 +12,5 @@
 		"openfl": "3.6.1"
 	},
 	"install": {
-		"openfl-ouya": ""
 	}
 }
