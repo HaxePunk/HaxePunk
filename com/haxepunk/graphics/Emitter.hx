@@ -189,8 +189,8 @@ class Emitter extends Graphic
 					_source.color = HXP.getColorRGB(Std.int(r*0xff), Std.int(g*0xff), Std.int(b*0xff));
 					_source.alpha = alpha;
 					_source.scale = scale * (type._scale + type._scaleRange * std);
-					_source.x = p._x - point.x + p._ox + p._moveX * (type._backwards ? 1 - td : td);
-					_source.y = p._y - point.y + p._oy + p._moveY * (type._backwards ? 1 - td : td) + Math.pow(td*p._gravity, 2);
+					_source.x = p.x(td) - point.x;
+					_source.y = p.y(td) - point.y;
 					_source.smooth = smooth;
 
 					renderFunc();
