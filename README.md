@@ -6,5 +6,5 @@ To build and run an example:
 
 ```bash
 cd classic
-openfl test neko
+lime test neko
 ```
