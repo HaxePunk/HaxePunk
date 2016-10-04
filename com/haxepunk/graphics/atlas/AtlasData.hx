@@ -4,7 +4,31 @@ import com.haxepunk.Scene;
 import flash.display.BitmapData;
 import flash.geom.Rectangle;
 import flash.geom.Point;
-import openfl.display.Tilesheet;
+import flash.geom.Matrix;
+
+private class Tilesheet
+{
+	public static inline var TILE_SCALE = 0x0001;
+	public static inline var TILE_ROTATION = 0x0002;
+	public static inline var TILE_RGB = 0x0004;
+	public static inline var TILE_ALPHA = 0x0008;
+	public static inline var TILE_TRANS_2x2 = 0x0010;
+	public static inline var TILE_RECT = 0x0020;
+	public static inline var TILE_ORIGIN = 0x0040;
+	public static inline var TILE_TRANS_COLOR = 0x0080;
+
+	public static inline var TILE_BLEND_NORMAL = 0x00000000;
+	public static inline var TILE_BLEND_ADD = 0x00010000;
+	public static inline var TILE_BLEND_MULTIPLY = 0x00020000;
+	public static inline var TILE_BLEND_SCREEN = 0x00040000;
+	public static inline var TILE_BLEND_SUBTRACT = 0x00080000;
+	public static inline var TILE_BLEND_DARKEN = 0x00100000;
+	public static inline var TILE_BLEND_LIGHTEN = 0x00200000;
+	public static inline var TILE_BLEND_OVERLAY = 0x00400000;
+	public static inline var TILE_BLEND_HARDLIGHT = 0x00800000;
+	public static inline var TILE_BLEND_DIFFERENCE = 0x01000000;
+	public static inline var TILE_BLEND_INVERT = 0x02000000;
+}
 
 /**
  * Abstract representing either a `String`, a `AtlasData` or a `BitmapData`.
@@ -30,8 +54,11 @@ abstract AtlasDataType(AtlasData)
 	}
 }
 
+
 class AtlasData
 {
+	public var renderer:Renderer;
+
 	public var width(default, null):Int;
 	public var height(default, null):Int;
 	public var bitmapData:BitmapData;
@@ -63,7 +90,6 @@ class AtlasData
 		_smoothData = new Array<Float>();
 		_dataIndex = _smoothDataIndex = 0;
 
-		_tilesheet = new Tilesheet(bd);
 		_name = name;
 
 		if (_name != null)
@@ -79,11 +105,11 @@ class AtlasData
 		}
 
 		_renderFlags = Tilesheet.TILE_TRANS_2x2 | Tilesheet.TILE_ALPHA | Tilesheet.TILE_BLEND_NORMAL | Tilesheet.TILE_RGB | Tilesheet.TILE_RECT;
-		_flagAlpha = true;
-		_flagRGB = true;
 
 		width = bd.width;
 		height = bd.height;
+
+		renderer = new Renderer(this);
 	}
 
 	/**
@@ -199,13 +225,13 @@ class AtlasData
 	{
 		if (_dataIndex != 0)
 		{
-			_tilesheet.drawTiles(_scene.sprite.graphics, _data, false, _renderFlags, _dataIndex);
+			renderer.drawTiles(_scene.sprite.graphics, _data, false, _renderFlags, _dataIndex);
 			_dataIndex = 0;
 		}
 
 		if (_smoothDataIndex != 0)
 		{
-			_tilesheet.drawTiles(_scene.sprite.graphics, _smoothData, true, _renderFlags, _smoothDataIndex);
+			renderer.drawTiles(_scene.sprite.graphics, _smoothData, true, _renderFlags, _smoothDataIndex);
 			_smoothDataIndex = 0;
 		}
 	}
@@ -253,16 +279,10 @@ class AtlasData
 		_data[_dataIndex++] = d; // m11
 
 		// color
-		if (_flagRGB)
-		{
-			_data[_dataIndex++] = red;
-			_data[_dataIndex++] = green;
-			_data[_dataIndex++] = blue;
-		}
-		if (_flagAlpha)
-		{
-			_data[_dataIndex++] = alpha;
-		}
+		_data[_dataIndex++] = red;
+		_data[_dataIndex++] = green;
+		_data[_dataIndex++] = blue;
+		_data[_dataIndex++] = alpha;
 
 		if (smooth)
 		{
@@ -328,16 +348,10 @@ class AtlasData
 			_data[_dataIndex++] = cos * scaleY; // m11
 		}
 
-		if (_flagRGB)
-		{
-			_data[_dataIndex++] = red;
-			_data[_dataIndex++] = green;
-			_data[_dataIndex++] = blue;
-		}
-		if (_flagAlpha)
-		{
-			_data[_dataIndex++] = alpha;
-		}
+		_data[_dataIndex++] = red;
+		_data[_dataIndex++] = green;
+		_data[_dataIndex++] = blue;
+		_data[_dataIndex++] = alpha;
 
 		if (smooth)
 		{
@@ -347,34 +361,6 @@ class AtlasData
 		{
 			this._dataIndex = _dataIndex;
 		}
-	}
-
-	/**
-	 * Sets the render flag to enable/disable alpha
-	 * Default: true
-	 */
-	public var alpha(get, set):Bool;
-	private function get_alpha():Bool return (_renderFlags & Tilesheet.TILE_ALPHA != 0); 
-	private function set_alpha(value:Bool):Bool
-	{
-		if (value) _renderFlags |= Tilesheet.TILE_ALPHA;
-		else _renderFlags &= ~Tilesheet.TILE_ALPHA;
-		_flagAlpha = value;
-		return value;
-	}
-
-	/**
-	 * Sets the render flag to enable/disable rgb tinting
-	 * Default: true
-	 */
-	public var rgb(get, set):Bool;
-	private function get_rgb():Bool return (_renderFlags & Tilesheet.TILE_RGB != 0); 
-	private function set_rgb(value:Bool)
-	{
-		if (value) _renderFlags |= Tilesheet.TILE_RGB;
-		else _renderFlags &= ~Tilesheet.TILE_RGB;
-		_flagRGB = value;
-		return value;
 	}
 
 	/**
@@ -421,10 +407,7 @@ class AtlasData
 	private var _layerIndex:Int = 0;
 
 	private var _renderFlags:Int;
-	private var _flagRGB:Bool;
-	private var _flagAlpha:Bool;
 
-	private var _tilesheet:Tilesheet;
 	private var _data:Array<Float>;
 	private var _dataIndex:Int;
 	private var _smoothData:Array<Float>;

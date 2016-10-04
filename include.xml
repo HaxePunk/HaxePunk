@@ -6,8 +6,9 @@
 	<assets path="assets/graphics" rename="graphics" include="*.png" embed="true"/>
 	<assets path="assets/font" rename="font" include="*.ttf" embed="true"/>
 
-	<set name="legacy" unless="next"/>
-	<set name="openfl-legacy" unless="next || hybrid"/>
+	<haxedef name="tile_shader" if="openfl > 4.0"/>
+	<set name="legacy" unless="next || hybrid || tile_shader"/>
+	<set name="openfl-legacy" unless="next || hybrid || tile_shader"/>
 	<haxelib name="openfl-ouya" if="ouya"/>
 	<haxelib name="openfl"/>
 </project>
