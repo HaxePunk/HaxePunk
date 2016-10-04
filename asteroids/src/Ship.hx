@@ -55,7 +55,7 @@ class Ship extends Entity
 		// hack: check bullet particles for collision with asteroids
 		var p:Particle = bullet._particle,
 			hit:Asteroid = null,
-			td:Float;
+			t:Float = 0, td:Float = 0;
 
 		hit = cast collide("asteroid", x, y);
 		if (hit != null)
@@ -65,13 +65,17 @@ class Ship extends Entity
 
 		while (p != null)
 		{
-			td = (p._type._ease == null) ? p._time : p._type._ease(p._time);
-			if ((hit = cast collide("asteroid", p.x(td), p.y(td))) != null)
+			if (p._time > 0)
 			{
-				// destroy the asteroid
-				hit.destroy();
-				// remove this particle after it collides with something
-				p._time = 1;
+				t = p._time / p._duration;
+				td = (p._type._ease == null) ? t : p._type._ease(t);
+				if ((hit = cast collide("asteroid", p.x(td), p.y(td))) != null)
+				{
+					// destroy the asteroid
+					hit.destroy();
+					// remove this particle after it collides with something
+					p._time = 1;
+				}
 			}
 			p = p._next;
 		}
