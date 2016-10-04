@@ -40,6 +40,8 @@ typedef TextOptions = {
 	@:optional var leading:Int;
 	/** Optional. If the text field uses a rich text string. */
 	@:optional var richText:Bool;
+	/** Optional. List Of Filters to be applied to Text */
+	@:optional var filters:Array<flash.filters.BitmapFilter>;
 };
 
 /**
@@ -137,6 +139,10 @@ class Text extends Image
 #end
 		_field.wordWrap = options.wordWrap;
 		_field.defaultTextFormat = _format;
+		if(options.filters != null)
+		{
+		   _field.filters = options.filters;
+		}
 		_field.text = _text = text;
 		_field.selectable = false;
 
@@ -259,7 +265,7 @@ class Text extends Image
 	}
 
 	/** @private Updates the drawing buffer. */
-	private function updateTextBuffer()
+	public function updateTextBuffer()
 	{
 		if (_richText == null)
 		{
@@ -485,6 +491,14 @@ class Text extends Image
 		return value;
 	}
 
+	public function setWidth(value:Int)
+	{	
+		_width = value;
+	}
+	public function setHeight(value:Int)
+	{	
+		_height = value;
+	}
 	override private function get_width():Int { return Std.int(_width); }
 	override private function get_height():Int { return Std.int(_height); }
 

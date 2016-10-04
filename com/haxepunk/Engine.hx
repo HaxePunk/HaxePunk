@@ -133,6 +133,13 @@ class Engine extends Sprite
 	}
 
 	/**
+	 * For Any Custom Code you need to call before Render is called.
+	 */
+	public function preRender()
+	{
+		
+	}
+	/**
 	 * Renders the game, rendering the Scene and Entities.
 	 */
 	@:dox(hide)
@@ -315,7 +322,11 @@ class Engine extends Sprite
 
 		// render loop
 		if (paused) _frameLast = _time; // continue updating frame timer
-		else render();
+		else 
+		{
+		 preRender();
+		 render();
+		}
 
 		// update timer
 		_time = _systemTime = Lib.getTimer();
@@ -357,7 +368,10 @@ class Engine extends Sprite
 
 			// update input
 			Input.update();
-
+			if(!paused)
+			{
+			   preRender();
+			}
 			// update timer
 			_time = Lib.getTimer();
 			HXP._updateTime = _time - _updateTime;
