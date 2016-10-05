@@ -15,7 +15,7 @@ class Tilesheet
 	public static inline var TILE_ORIGIN = 0x0040;
 	public static inline var TILE_TRANS_COLOR = 0x0080;
 
-#if (openfl > "4.0.0")
+#if (openfl >= "4.0.0")
 	public static inline var TILE_BLEND_NORMAL:Int = cast openfl.display.BlendMode.ALPHA;
 	public static inline var TILE_BLEND_ADD:Int = cast openfl.display.BlendMode.ADD;
 	public static inline var TILE_BLEND_MULTIPLY:Int = cast openfl.display.BlendMode.MULTIPLY;
