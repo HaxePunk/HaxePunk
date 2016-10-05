@@ -1,6 +1,6 @@
 package com.haxepunk.graphics.atlas.renderer;
 
-#if !(openfl > "4.0.0")
+#if !(openfl >= "4.0.0")
 import com.haxepunk.ds.Either;
 import flash.display.BitmapData;
 import flash.display.Graphics;

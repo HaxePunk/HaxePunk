@@ -14,7 +14,7 @@ class HardwareNotSupportedRenderer
 
 
 
-#if (openfl > "4.0.0")
+#if (openfl >= "4.0.0")
 #if flash
 // shouldn't be used
 typedef Renderer = HardwareNotSupportedRenderer;

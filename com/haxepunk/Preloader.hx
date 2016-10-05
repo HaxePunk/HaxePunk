@@ -7,7 +7,7 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 
 
-#if (openfl > "4.0.0")
+#if (openfl >= "4.0.0")
 typedef Preloader = NMEPreloader;
 #else
 import openfl.display.Tilesheet;
