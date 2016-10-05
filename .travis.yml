@@ -27,7 +27,7 @@ sudo: false
 
 install:
   - haxelib dev HaxePunk $TRAVIS_BUILD_DIR
-
+  - if [[ $TARGET == "cpp" ]]; then yes | haxelib install hxcpp > log.txt || cat log.txt; fi
   - if [[ $LIME_VERSION ]]; then yes | haxelib install lime $LIME_VERSION > log.txt || cat log.txt; fi
   - if [[ $OPENFL_VERSION ]]; then yes | haxelib install openfl $OPENFL_VERSION > log.txt || cat log.txt; fi
   - if [[ $NME_VERSION ]]; then yes | haxelib install nme $NME_VERSION > log.txt || cat log.txt; fi
