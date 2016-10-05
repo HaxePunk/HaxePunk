@@ -46,11 +46,6 @@ unit:
 checkstyle:
 	haxelib run checkstyle -c checkstyle.json -s com
 
-unit-travis:
-	# copy ndll to base path
-	@cp $(LIME_PATH)/`cat $(LIME_PATH)/.current | sed -e 's/\./,/g'`/legacy/ndll/Linux64/* .
-	@make unit # run unit tests
-
 examples: tool.n
 	@git submodule update --init
 	@echo "Building examples with" ${TARGET} "using" ${COMMAND}

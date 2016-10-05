@@ -27,6 +27,7 @@ sudo: false
 
 install:
   - haxelib dev HaxePunk $TRAVIS_BUILD_DIR
+
   - if [[ $LIME_VERSION ]]; then yes | haxelib install lime $LIME_VERSION > log.txt || cat log.txt; fi
   - if [[ $OPENFL_VERSION ]]; then yes | haxelib install openfl $OPENFL_VERSION > log.txt || cat log.txt; fi
   - if [[ $NME_VERSION ]]; then yes | haxelib install nme $NME_VERSION > log.txt || cat log.txt; fi
@@ -34,7 +35,8 @@ install:
   - haxelib list
 
 script:
-  - make clean tools unit-travis examples docs COMMAND=$COMMAND TARGET=$TARGET
+  - export HXCPP_COMPILE_CACHE=~/.hxcpp_cache
+  - make clean tools unit examples docs COMMAND=$COMMAND TARGET=$TARGET
 
 cache:
   directories:
