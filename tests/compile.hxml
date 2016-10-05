@@ -1,8 +1,6 @@
 -main TestMain
 -neko unit.n
 --remap flash:openfl
--lib lime
--lib openfl
 -lib HaxePunk
 -D lime_cffi
 -D native
