@@ -4,11 +4,8 @@
 -lib lime
 -lib openfl
 -lib HaxePunk
--D lime-legacy
--D openfl-legacy
--D legacy
+-D lime_cffi
 -D native
--D openfl-native
 -D lime-native
 -D linux
 -D desktop
