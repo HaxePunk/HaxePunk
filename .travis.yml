@@ -36,7 +36,8 @@ install:
 
 script:
   - export HXCPP_COMPILE_CACHE=~/.hxcpp_cache
-  - make clean tools unit examples docs COMMAND=$COMMAND TARGET=$TARGET
+  - make clean tools unit examples COMMAND=$COMMAND TARGET=$TARGET
+  - if [[ $TARGET == "openfl" ]]; then make docs; fi
 
 cache:
   directories:

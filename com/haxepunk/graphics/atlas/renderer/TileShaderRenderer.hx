@@ -1,6 +1,6 @@
 package com.haxepunk.graphics.atlas.renderer;
 
-#if (openfl > "4.0.0")
+#if ((openfl > "4.0.0") && (!flash))
 import lime.graphics.GLRenderContext;
 import lime.utils.Float32Array;
 import lime.utils.UInt32Array;

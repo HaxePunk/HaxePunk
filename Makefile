@@ -41,7 +41,7 @@ haxelib: haxepunk.zip
 
 unit:
 	@echo "Running unit tests"
-	@cd tests && haxe compile.hxml && neko unit.n
+	@cd tests && haxe compile.hxml -lib ${COMMAND} && neko unit.n
 
 checkstyle:
 	haxelib run checkstyle -c checkstyle.json -s com
