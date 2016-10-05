@@ -7,6 +7,12 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 
 
+#if (openfl > "4.0.0")
+typedef Preloader = NMEPreloader;
+#else
+import openfl.display.Tilesheet;
+
+
 @:bitmap("assets/graphics/preloader/haxepunk.png")
 class HaxePunkLogo extends BitmapData {}
 
@@ -80,3 +86,4 @@ class Preloader extends NMEPreloader
 	private var tiles:Tilesheet;
 	private var tileData:Array<Float>;
 }
+#end
