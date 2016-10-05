@@ -1,6 +1,6 @@
 package com.haxepunk.graphics.atlas.renderer;
 
-#if tile_shader
+#if (openfl > "4.0.0")
 import lime.graphics.GLRenderContext;
 import lime.utils.Float32Array;
 import lime.utils.UInt32Array;
@@ -97,7 +97,7 @@ class TileShaderRenderer
 		if (shader == null) shader = new TileShader();
 	}
 
-	public function drawTiles(graphics:Graphics, tileData:Array<Float>, smooth:Bool = false, flags:Int = 0, count:Int = -1):Void
+	public inline function drawTiles(graphics:Graphics, tileData:Array<Float>, smooth:Bool = false, flags:Int = 0, count:Int = -1):Void
 	{
 		if (count == -1) count = tileData.length;
 
@@ -108,7 +108,7 @@ class TileShaderRenderer
 			var gl:GLRenderContext = renderSession.gl;
 			var displayObject:DisplayObject = graphics.__owner;
 
-			var blend:Int = -1;
+			var blend:Int = data.blend;
 			var texture:BitmapData = data.bitmapData;
 
 			var tx:Float, ty:Float, rx:Float, ry:Float, rw:Float, rh:Float, a:Float, b:Float, c:Float, d:Float,
@@ -156,8 +156,8 @@ class TileShaderRenderer
 
 				matrix.setTo(a, b, c, d, tx, ty);
 
-				inline function transformX(x, y) return Std.int(0.5 + matrix.__transformX(x, y));
-				inline function transformY(x, y) return Std.int(0.5 + matrix.__transformY(x, y));
+				inline function transformX(x, y) return matrix.__transformX(x, y);
+				inline function transformY(x, y) return matrix.__transformY(x, y);
 
 				var start = bufferPos;
 				buffer[bufferPos++] = transformX(0, 0);
