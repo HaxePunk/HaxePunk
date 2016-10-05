@@ -1,4 +1,3 @@
-LIME_PATH="$(HOME)/haxe/lib/lime"
 COMMAND=openfl
 TARGET=neko
 
