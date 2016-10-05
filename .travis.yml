@@ -9,13 +9,17 @@ matrix:
     - haxe: development
 
 env:
-  - TARGET=flash COMMAND=openfl
-  - TARGET=neko COMMAND=openfl
-  - TARGET=cpp COMMAND=openfl
-  - TARGET=html5 COMMAND=openfl
-  - TARGET=flash COMMAND=nme
-  - TARGET=neko COMMAND=nme
-  - TARGET=cpp COMMAND=nme
+  - TARGET=flash COMMAND=openfl OPENFL_VERSION=3.6.1 LIME_VERSION=2.9.1
+  - TARGET=neko COMMAND=openfl OPENFL_VERSION=3.6.1 LIME_VERSION=2.9.1
+  - TARGET=cpp COMMAND=openfl OPENFL_VERSION=3.6.1 LIME_VERSION=2.9.1
+  - TARGET=html5 COMMAND=openfl OPENFL_VERSION=3.6.1 LIME_VERSION=2.9.1
+  - TARGET=flash COMMAND=openfl OPENFL_VERSION=4.2.0 LIME_VERSION=3.2.1
+  - TARGET=neko COMMAND=openfl OPENFL_VERSION=4.2.0 LIME_VERSION=3.2.1
+  - TARGET=cpp COMMAND=openfl OPENFL_VERSION=4.2.0 LIME_VERSION=3.2.1
+  - TARGET=html5 COMMAND=openfl OPENFL_VERSION=4.2.0 LIME_VERSION=3.2.1
+  - TARGET=flash COMMAND=nme NME_VERSION=5.6.4
+  - TARGET=neko COMMAND=nme NME_VERSION=5.6.4
+  - TARGET=cpp COMMAND=nme NME_VERSION=5.6.4
 
 neko: "2.0.0"
 
@@ -23,10 +27,10 @@ sudo: false
 
 install:
   - haxelib dev HaxePunk $TRAVIS_BUILD_DIR
-  - yes | haxelib install lime 2.9.1 > log.txt || cat log.txt
-  - yes | haxelib install openfl 3.6.1 > log.txt || cat log.txt
+  - if [[ $LIME_VERSION ]]; then yes | haxelib install lime $LIME_VERSION > log.txt || cat log.txt; fi
+  - if [[ $OPENFL_VERSION ]]; then yes | haxelib install openfl $OPENFL_VERSION > log.txt || cat log.txt; fi
+  - if [[ $NME_VERSION ]]; then yes | haxelib install nme $NME_VERSION > log.txt || cat log.txt; fi
   - yes | haxelib install dox > log.txt || cat log.txt
-  - yes | haxelib install nme > log.txt || cat log.txt
   - haxelib list
 
 script:
