@@ -4,7 +4,6 @@ import com.haxepunk.Scene;
 import flash.display.BitmapData;
 import flash.geom.Rectangle;
 import flash.geom.Point;
-import flash.geom.Matrix;
 
 /**
  * Abstract representing either a `String`, a `AtlasData` or a `BitmapData`.
@@ -29,7 +28,6 @@ abstract AtlasDataType(AtlasData)
 		return new AtlasDataType(data);
 	}
 }
-
 
 class AtlasData
 {
@@ -80,7 +78,7 @@ class AtlasData
 			}
 		}
 
-		_renderFlags = Tilesheet.TILE_TRANS_2x2 | Tilesheet.TILE_ALPHA | Tilesheet.TILE_BLEND_NORMAL | Tilesheet.TILE_RGB | Tilesheet.TILE_RECT;
+		_renderFlags = Tilesheet.TILE_TRANS_2X2 | Tilesheet.TILE_ALPHA | Tilesheet.TILE_BLEND_NORMAL | Tilesheet.TILE_RGB | Tilesheet.TILE_RECT;
 
 		width = bd.width;
 		height = bd.height;

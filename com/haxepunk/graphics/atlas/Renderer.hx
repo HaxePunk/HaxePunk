@@ -1,6 +1,5 @@
 package com.haxepunk.graphics.atlas;
 
-
 @:dox(hide)
 class HardwareNotSupportedRenderer
 {
@@ -11,8 +10,6 @@ class HardwareNotSupportedRenderer
 		throw "hardware rendering not supported on this platform";
 	}
 }
-
-
 
 #if (openfl >= "4.0.0")
 #if flash

@@ -5,21 +5,15 @@ import lime.graphics.GLRenderContext;
 import lime.utils.Float32Array;
 import lime.utils.UInt32Array;
 import openfl.display.BitmapData;
-import openfl.display.BlendMode;
 import openfl.display.DisplayObject;
 import openfl.display.Graphics;
 import openfl.display.Shader;
 import openfl.geom.Matrix;
-import openfl.geom.Rectangle;
-import openfl.display.Shader;
-import openfl.gl.GL;
 import openfl.gl.GLBuffer;
 #if !display
-import openfl._internal.renderer.RenderSession;
 import openfl._internal.renderer.opengl.GLRenderer;
 #end
 import com.haxepunk.HXP;
-
 
 @:dox(hide)
 private class TileShader extends Shader
@@ -32,15 +26,12 @@ private class TileShader extends Shader
 			attribute vec4 aColor;
 			varying vec2 vTexCoord;
 			varying vec4 vColor;
-
 			uniform mat4 uMatrix;
 
 			void main(void) {
-
 				vTexCoord = aTexCoord;
 				vColor = aColor;
 				gl_Position = uMatrix * aPosition;
-
 			}";
 
 		glFragmentSource =
@@ -51,22 +42,16 @@ private class TileShader extends Shader
 
 			void main(void) {
 				vec4 color = texture2D (uImage0, vTexCoord);
-
 				if (color.a == 0.0) {
-
 					gl_FragColor = vec4 (0.0, 0.0, 0.0, 0.0);
-
 				} else {
-
 					gl_FragColor = vec4 (color.rgb / color.a, color.a * uAlpha)*vColor;
-
 				}
 			}";
 
 		super();
 	}
 }
-
 
 /**
  * Rendering backend used for compatibility with OpenFL 4.0, which removed
@@ -84,10 +69,18 @@ class TileShaderRenderer
 
 	static var shader:TileShader;
 
+	static inline function resize(length:Int, minChunks:Int, chunkSize:Int)
+	{
+		return Std.int(Math.max(
+			Std.int(length * 2 / chunkSize),
+			minChunks
+		) * chunkSize);
+	}
+
 	var data:AtlasData;
 
-	var buffer:Float32Array = new Float32Array(BUFFER_CHUNK);
-	var indexes:UInt32Array = new UInt32Array(INDEX_CHUNK);
+	var buffer:Float32Array;
+	var indexes:UInt32Array;
 	var glBuffer:GLBuffer;
 	var glIndexes:GLBuffer;
 
@@ -117,20 +110,30 @@ class TileShaderRenderer
 
 			// expand arrays if necessary
 			var items = Std.int(count / 14);
-			if (buffer.length < items * BUFFER_CHUNK)
+			var bufferLength:Int = buffer == null ? 0 : buffer.length;
+			if (bufferLength < items * BUFFER_CHUNK)
 			{
-				var newBuffer = new Float32Array(Std.int(Math.max(buffer.length * 2, items * BUFFER_CHUNK)));
-				for (i in 0 ... buffer.length) newBuffer[i] = buffer[i];
-				buffer = newBuffer;
+				buffer = new Float32Array(resize(bufferLength, items, BUFFER_CHUNK));
 			}
-			if (indexes.length < items * INDEX_CHUNK)
+			var indexLength:Int = indexes == null ? 0 : indexes.length;
+			if (indexLength < items * INDEX_CHUNK)
 			{
-				var newIndexes = new UInt32Array(Std.int(Math.max(indexes.length * 2, items * INDEX_CHUNK)));
-				for (i in 0 ... indexes.length) newIndexes[i] = indexes[i];
+				var newIndexes = new UInt32Array(resize(indexLength, items, INDEX_CHUNK));
+				var i:Int = 0, vi:Int = 0;
+				for (v in 0 ... Std.int(newIndexes.length / INDEX_CHUNK))
+				{
+					var vi = v * 4;
+					newIndexes[i++] = vi;
+					newIndexes[i++] = vi + 1;
+					newIndexes[i++] = vi + 2;
+					newIndexes[i++] = vi + 2;
+					newIndexes[i++] = vi + 1;
+					newIndexes[i++] = vi + 3;
+				}
 				indexes = newIndexes;
 			}
 
-			var n:Int = 0, bufferPos:Int = 0, i:Int = 0, v:Int = 0, matrix:Matrix = HXP.matrix;
+			var n:Int = 0, bufferPos:Int = 0, matrix:Matrix = HXP.matrix;
 
 			while (n < count)
 			{
@@ -192,13 +195,6 @@ class TileShaderRenderer
 				buffer[bufferPos++] = green;
 				buffer[bufferPos++] = blue;
 				buffer[bufferPos++] = alpha;
-				indexes[i++] = v;
-				indexes[i++] = v+1;
-				indexes[i++] = v+2;
-				indexes[i++] = v+2;
-				indexes[i++] = v+1;
-				indexes[i++] = v+3;
-				v += 4;
 			}
 
 			renderSession.shaderManager.setShader(shader);
@@ -225,17 +221,17 @@ class TileShaderRenderer
 				glIndexes = gl.createBuffer();
 			}
 
-			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, glIndexes);
-			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indexes, gl.DYNAMIC_DRAW);
-
 			gl.bindBuffer(gl.ARRAY_BUFFER, glBuffer);
 			gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.DYNAMIC_DRAW);
+
+			gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, glIndexes);
+			gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indexes, gl.DYNAMIC_DRAW);
 
 			gl.vertexAttribPointer(shader.data.aPosition.index, 2, gl.FLOAT, false, 8 * Float32Array.BYTES_PER_ELEMENT, 0);
 			gl.vertexAttribPointer(shader.data.aTexCoord.index, 2, gl.FLOAT, false, 8 * Float32Array.BYTES_PER_ELEMENT, 2 * Float32Array.BYTES_PER_ELEMENT);
 			gl.vertexAttribPointer(shader.data.aColor.index, 4, gl.FLOAT, false, 8 * Float32Array.BYTES_PER_ELEMENT, 4 * Float32Array.BYTES_PER_ELEMENT);
 
-			gl.drawElements(gl.TRIANGLES, items*6, gl.UNSIGNED_INT, 0);
+			gl.drawElements(gl.TRIANGLES, items * INDEX_CHUNK, gl.UNSIGNED_INT, 0);
 		}
 	}
 }
