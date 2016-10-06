@@ -7,6 +7,7 @@ import com.haxepunk.Entity;
 import com.haxepunk.Tweener;
 import flash.geom.Rectangle;
 import haxe.ds.IntMap;
+import com.haxepunk.Cursor;
 
 /**
  * Updated by `Engine`, main game container that holds all currently active Entities.
@@ -87,6 +88,16 @@ class Scene extends Tweener
 			}
 			if (e.graphic != null && e.graphic.active) e.graphic.update();
 		}
+	}
+
+	/**
+	 * Sets a custom cursor, default layer is the highest unless previosly modified.
+	 * @param Cursor object that will be displayed
+	 */
+	public function setCursor(cursor:Cursor)
+	{
+		if (cursor.layer == 0) cursor.layer = -999999999;
+		add(cursor);
 	}
 
 	/**
