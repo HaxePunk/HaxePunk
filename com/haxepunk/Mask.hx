@@ -1,11 +1,9 @@
 package com.haxepunk;
 
-import com.haxepunk.Entity;
 import com.haxepunk.math.Projection;
 import com.haxepunk.math.Vector;
 import com.haxepunk.masks.Masklist;
 import flash.display.Graphics;
-import flash.geom.Point;
 
 /**
  * Base class for Entity collision masks.
@@ -16,15 +14,15 @@ class Mask
 	/**
 	 * The parent Entity of this mask.
 	 */
-	public var parent(get,set):Entity;
-	private inline function get_parent() : Entity
+	public var parent(get, set):Entity;
+	private inline function get_parent():Entity
 	{
 		return _parent != Entity._EMPTY ? _parent : null;
 	}
-	private function set_parent(value:Entity) : Entity
+	private function set_parent(value:Entity):Entity
 	{
-		if (value == null) { _parent = Entity._EMPTY; }
-		else { _parent = value; update(); }
+		if (value == null) _parent = Entity._EMPTY;
+		else _parent = value; update();
 		return value;
 	}
 
@@ -41,7 +39,7 @@ class Mask
 	{
 		_parent = Entity._EMPTY;
 		_class = Type.getClassName(Type.getClass(this));
-		_check = new Map<String,Dynamic -> Bool>();
+		_check = new Map<String, Dynamic -> Bool>();
 		_check.set(Type.getClassName(Mask), collideMask);
 		_check.set(Type.getClassName(Masklist), collideMasklist);
 	}
@@ -80,17 +78,11 @@ class Mask
 	 * Override this
 	 */
 	@:dox(hide)
-	public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
-	{
-
-	}
+	public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void {}
 
 	/** Updates the parent's bounds for this mask. */
 	@:dox(hide)
-	public function update()
-	{
-
-	}
+	public function update() {}
 
 	@:dox(hide)
 	public function project(axis:Vector, projection:Projection):Void
@@ -129,6 +121,6 @@ class Mask
 
 	// Mask information.
 	private var _class:String;
-	private var _check:Map<String,Dynamic -> Bool>;
+	private var _check:Map<String, Dynamic -> Bool>;
 	private var _parent:Entity;
 }

@@ -4,8 +4,6 @@ import com.haxepunk.Mask;
 import com.haxepunk.math.Projection;
 import com.haxepunk.math.Vector;
 import flash.display.Graphics;
-import flash.geom.Point;
-import com.haxepunk.masks.Polygon;
 
 /** Uses parent's hitbox to determine collision.
  * This class is used internally by HaxePunk, you don't need to use this class because
@@ -64,7 +62,7 @@ class Hitbox extends Mask
 	 * X offset.
 	 */
 	public var x(get, set):Int;
-	private function get_x():Int { return _x; }
+	private function get_x():Int return _x; 
 	private function set_x(value:Int):Int
 	{
 		if (_x == value) return value;
@@ -78,7 +76,7 @@ class Hitbox extends Mask
 	 * Y offset.
 	 */
 	public var y(get, set):Int;
-	private function get_y():Int { return _y; }
+	private function get_y():Int return _y; 
 	private function set_y(value:Int):Int
 	{
 		if (_y == value) return value;
@@ -92,7 +90,7 @@ class Hitbox extends Mask
 	 * Width.
 	 */
 	public var width(get, set):Int;
-	private function get_width():Int { return _width; }
+	private function get_width():Int return _width; 
 	private function set_width(value:Int):Int
 	{
 		if (_width == value) return value;
@@ -106,7 +104,7 @@ class Hitbox extends Mask
 	 * Height.
 	 */
 	public var height(get, set):Int;
-	private function get_height():Int { return _height; }
+	private function get_height():Int return _height; 
 	private function set_height(value:Int):Int
 	{
 		if (_height == value) return value;

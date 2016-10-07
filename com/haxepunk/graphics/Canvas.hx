@@ -82,9 +82,9 @@ class Canvas extends Graphic
 					w = x < _refWidth - 1 ? _maxWidth : ww;
 					_ref.setPixel(x, y, i);
 					_buffers[i] = HXP.createBitmap(w, h, true);
-					i ++; x ++;
+					i++; x++;
 				}
-				x = 0; y ++;
+				x = 0; y++;
 			}
 		}
 	}
@@ -101,8 +101,8 @@ class Canvas extends Graphic
 		_point.y = point.y + y - camera.y * scrollY;
 
 		_rect.x = _rect.y = 0;
-		_rect.width = _maxWidth*sx;
-		_rect.height = _maxHeight*sy;
+		_rect.width = _maxWidth * sx;
+		_rect.height = _maxHeight * sy;
 
 		// render the buffers
 		var xx:Int = 0, yy:Int = 0, buffer:BitmapData, px:Float = _point.x;
@@ -172,12 +172,12 @@ class Canvas extends Graphic
 				}
 
 				_point.x += _maxWidth * sx;
-				xx ++;
+				xx++;
 			}
 			_point.x = px;
 			_point.y += _maxHeight * sy;
 			xx = 0;
-			yy ++;
+			yy++;
 		}
 		#if !bitfive target.unlock(); #end
 
@@ -333,7 +333,7 @@ class Canvas extends Graphic
 	 * The tinted color of the Canvas. Use 0xFFFFFF to draw the it normally.
 	 */
 	public var color(get, set):Int;
-	private function get_color():Int { return _color; }
+	private function get_color():Int return _color; 
 	private function set_color(value:Int):Int
 	{
 		value %= 0xFFFFFF;
@@ -361,7 +361,7 @@ class Canvas extends Graphic
 	 * Change the opacity of the Canvas, a value from 0 to 1.
 	 */
 	public var alpha(get, set):Float;
-	private function get_alpha():Float { return _alpha; }
+	private function get_alpha():Float return _alpha; 
 	private function set_alpha(value:Float):Float
 	{
 		if (value < 0) value = 0;
@@ -396,13 +396,13 @@ class Canvas extends Graphic
 	 * Width of the canvas.
 	 */
 	public var width(get, null):Int;
-	private function get_width():Int { return _width; }
+	private function get_width():Int return _width; 
 
 	/**
 	 * Height of the canvas.
 	 */
 	public var height(get, null):Int;
-	private function get_height():Int { return _height; }
+	private function get_height():Int return _height; 
 
 	// Buffer information.
 	private var _buffers:Array<BitmapData>;

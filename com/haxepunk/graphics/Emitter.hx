@@ -1,18 +1,11 @@
 package com.haxepunk.graphics;
 
 import flash.display.BitmapData;
-import flash.geom.ColorTransform;
 import flash.geom.Point;
-import flash.geom.Rectangle;
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
-import com.haxepunk.ds.Either;
-import com.haxepunk.graphics.ParticleType;
-import com.haxepunk.graphics.atlas.Atlas;
 import com.haxepunk.graphics.atlas.AtlasRegion;
-import com.haxepunk.graphics.atlas.TileAtlas;
 import com.haxepunk.utils.Ease;
-
 
 /**
  * Particle emitter used for emitting and rendering particle sprites.
@@ -29,7 +22,7 @@ class Emitter extends Graphic
 	public function new(source:ImageOrTileType, frameWidth:Int = 0, frameHeight:Int = 0)
 	{
 		super();
-		_types = new Map<String,ParticleType>();
+		_types = new Map<String, ParticleType>();
 
 		setSource(source, frameWidth, frameHeight);
 		active = true;
@@ -88,7 +81,7 @@ class Emitter extends Graphic
 				p._prev = null;
 				_cache = p;
 				p = n;
-				particleCount --;
+				particleCount--;
 				continue;
 			}
 
@@ -163,7 +156,7 @@ class Emitter extends Graphic
 				var n:Int = type._trailLength;
 				while (n >= 0)
 				{
-					pt = p._time - n*type._trailDelay;
+					pt = p._time - n * type._trailDelay;
 					n -= 1;
 					t = pt / p._duration;
 					if (t < 0 || pt >= p._stopTime) continue;
@@ -186,7 +179,7 @@ class Emitter extends Graphic
 						g = type._green + type._greenRange * ctd,
 						b = type._blue + type._blueRange * ctd;
 					if (type._trailAlpha < 1) alpha *= Math.pow(type._trailAlpha, n);
-					_source.color = HXP.getColorRGB(Std.int(r*0xff), Std.int(g*0xff), Std.int(b*0xff));
+					_source.color = HXP.getColorRGB(Std.int(r * 0xff), Std.int(g * 0xff), Std.int(b * 0xff));
 					_source.alpha = alpha;
 					_source.scale = scale * (type._scale + type._scaleRange * std);
 					_source.x = p.x(td) - point.x;
@@ -204,18 +197,14 @@ class Emitter extends Graphic
 
 	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
-		renderParticles(function() {
-			_source.render(target, point, camera);
-		}, point, camera);
+		renderParticles(function() _source.render(target, point, camera), point, camera);
 
 		super.render(target, point, camera);
 	}
 
 	override public function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
-		renderParticles(function() {
-			_source.renderAtlas(layer, point, camera);
-		}, point, camera);
+		renderParticles(function() _source.renderAtlas(layer, point, camera), point, camera);
 
 		super.renderAtlas(layer, point, camera);
 	}
@@ -391,7 +380,7 @@ class Emitter extends Graphic
 		p._gravity = type._gravity + type._gravityRange * Math.random();
 		p._firstDraw = true;
 		p._ox = p._oy = 0;
-		particleCount ++;
+		particleCount++;
 		return (_particle = p);
 	}
 
@@ -421,7 +410,7 @@ class Emitter extends Graphic
 	 *
 	 * @return The Particle emited.
 	 */
-	public function emitInRectangle(name:String, x:Float, y:Float, width:Float ,height:Float):Particle
+	public function emitInRectangle(name:String, x:Float, y:Float, width:Float, height:Float):Particle
 	{
 		return emit(name, x + Math.random() * width, y + Math.random() * height);
 	}
@@ -450,6 +439,6 @@ class Emitter extends Graphic
 	private var _frames:Array<AtlasRegion>;
 
 	// Drawing information.
-	private static var SIN(get,never):Float;
-	private static inline function get_SIN():Float { return Math.PI / 2; }
+	private static var SIN(get, never):Float;
+	private static inline function get_SIN():Float return Math.PI / 2; 
 }

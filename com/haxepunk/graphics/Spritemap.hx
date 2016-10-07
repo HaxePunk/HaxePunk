@@ -1,13 +1,9 @@
 package com.haxepunk.graphics;
 
+import flash.geom.Rectangle;
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
 import com.haxepunk.graphics.atlas.TileAtlas;
-
-import flash.display.BitmapData;
-import flash.display.SpreadMethod;
-import flash.geom.Point;
-import flash.geom.Rectangle;
 
 /**
  * Performance-optimized animated Image. Can have multiple animations,
@@ -42,7 +38,7 @@ class Spritemap extends Image
 	{
 		complete = true;
 		rate = 1;
-		_anims = new Map<String,Animation>();
+		_anims = new Map<String, Animation>();
 		_timer = _frame = 0;
 
 		_rect = new Rectangle(0, 0, frameWidth, frameHeight);
@@ -210,13 +206,13 @@ class Spritemap extends Image
 	 */
 	public function playFrames(frames:Array<Int>, frameRate:Float = 0, loop:Bool = true, reset:Bool = false, reverse:Bool = false):Animation
 	{
-		if(frames == null || frames.length == 0)
+		if (frames == null || frames.length == 0)
 		{
 			stop(reset);		
 			return null;
 		}
 
-		if(reset == false && _anim != null && _anim.frames == frames)
+		if (!reset && _anim != null && _anim.frames == frames)
 			return _anim;
 
 		return playAnimation(new Animation(null, frames, frameRate, loop), reset, reverse);
@@ -231,10 +227,10 @@ class Spritemap extends Image
 	 */
  	public function playAnimation(anim:Animation, reset:Bool = false, reverse:Bool = false): Animation
 	{
-		if(anim == null)
+		if (anim == null)
 			throw "No animation supplied";
 			
-		if(reset == false && _anim == anim)
+		if (!reset && _anim == anim)
 			return anim;
 
 		_anim = anim;
@@ -261,7 +257,7 @@ class Spritemap extends Image
 	 */
 	public function stop(reset:Bool = false)
 	{
-		if(reset)
+		if (reset)
 			_frame = _index = reverse ? _anim.frames.length - 1 : 0;
 		
 		_anim = null;
@@ -321,7 +317,7 @@ class Spritemap extends Image
 	 * animations playing will be stopped to force the frame.
 	 */
 	public var frame(get, set):Int;
-	private function get_frame():Int { return _frame; }
+	private function get_frame():Int return _frame; 
 	private function set_frame(value:Int):Int
 	{
 		_anim = null;
@@ -337,7 +333,7 @@ class Spritemap extends Image
 	 * Current index of the playing animation.
 	 */
 	public var index(get, set):Int;
-	private function get_index():Int { return _anim != null ? _index : 0; }
+	private function get_index():Int return _anim != null ? _index : 0; 
 	private function set_index(value:Int):Int
 	{
 		if (_anim == null) return 0;
@@ -358,25 +354,25 @@ class Spritemap extends Image
 	 * The amount of frames in the Spritemap.
 	 */
 	public var frameCount(get, null):Int;
-	private function get_frameCount():Int { return _frameCount; }
+	private function get_frameCount():Int return _frameCount; 
 
 	/**
 	 * Columns in the Spritemap.
 	 */
 	public var columns(get, null):Int;
-	private function get_columns():Int { return _columns; }
+	private function get_columns():Int return _columns; 
 
 	/**
 	 * Rows in the Spritemap.
 	 */
 	public var rows(get, null):Int;
-	private function get_rows():Int { return _rows; }
+	private function get_rows():Int return _rows; 
 
 	/**
 	 * The currently playing animation.
 	 */
 	public var currentAnim(get, null):String;
-	private function get_currentAnim():String { return (_anim != null) ? _anim.name : ""; }
+	private function get_currentAnim():String return (_anim != null) ? _anim.name : ""; 
 
 	// Spritemap information.
 	private var _rect:Rectangle;
@@ -385,7 +381,7 @@ class Spritemap extends Image
 	private var _columns:Int;
 	private var _rows:Int;
 	private var _frameCount:Int;
-	private var _anims:Map<String,Animation>;
+	private var _anims:Map<String, Animation>;
 	private var _anim:Animation;
 	private var _index:Int;
 	private var _frame:Int;

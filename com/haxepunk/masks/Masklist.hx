@@ -55,7 +55,7 @@ class Masklist extends Hitbox
 	 */
 	public function add(mask:Mask):Mask
 	{
-		_masks[_count ++] = mask;
+		_masks[_count++] = mask;
 		mask.list = this;
 		mask.parent = parent;
 		update();
@@ -77,7 +77,7 @@ class Masklist extends Hitbox
 			{
 				mask.list = null;
 				mask.parent = null;
-				_count --;
+				_count--;
 				update();
 			}
 			else _temp[_temp.length] = m;
@@ -102,7 +102,7 @@ class Masklist extends Hitbox
 			if (i == index)
 			{
 				_masks[index].list = null;
-				_count --;
+				_count--;
 				update();
 			}
 			else _temp[_temp.length] = _masks[index];
@@ -192,7 +192,7 @@ class Masklist extends Hitbox
 	 * Amount of Masks in the list.
 	 */
 	public var count(get, null):Int;
-	private function get_count():Int { return _count; }
+	private function get_count():Int return _count; 
 
 	// List information.
 	private var _masks:Array<Mask>;

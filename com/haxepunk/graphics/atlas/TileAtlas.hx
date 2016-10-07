@@ -1,9 +1,7 @@
 package com.haxepunk.graphics.atlas;
 
 import com.haxepunk.HXP;
-import com.haxepunk.ds.Either;
 import com.haxepunk.graphics.atlas.AtlasData;
-import flash.display.BitmapData;
 
 class TileAtlas extends Atlas
 {
@@ -54,11 +52,11 @@ class TileAtlas extends Atlas
 
 		for (y in 0...rows)
 		{
-			HXP.rect.y = y * (tileHeight+tileMarginHeight);
+			HXP.rect.y = y * (tileHeight + tileMarginHeight);
 
 			for (x in 0...cols)
 			{
-				HXP.rect.x = x * (tileWidth+tileMarginWidth);
+				HXP.rect.x = x * (tileWidth + tileMarginWidth);
 
 				_regions.push(_data.createRegion(HXP.rect, HXP.point));
 			}

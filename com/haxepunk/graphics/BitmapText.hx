@@ -2,13 +2,11 @@ package com.haxepunk.graphics;
 
 import flash.display.BitmapData;
 import flash.geom.Point;
-import flash.geom.Rectangle;
 import flash.geom.Matrix;
 import flash.geom.ColorTransform;
 import com.haxepunk.HXP;
 import com.haxepunk.RenderMode;
 import com.haxepunk.Graphic;
-import com.haxepunk.graphics.Canvas;
 import com.haxepunk.graphics.Text;
 import com.haxepunk.graphics.atlas.BitmapFontAtlas;
 import com.haxepunk.graphics.atlas.AtlasRegion;
@@ -19,7 +17,8 @@ typedef RenderFunction = AtlasRegion -> GlyphData -> Float -> Float -> Void;
 /**
  * Text option including the font, size, color, font format...
  */
-typedef BitmapTextOptions = {
+typedef BitmapTextOptions =
+{
 	> TextOptions,
 	@:optional var format:BitmapFontFormat;
 	@:optional var extraParams:Dynamic;
@@ -35,7 +34,7 @@ class BitmapText extends Graphic
 	public var textWidth:Int = 0;
 	public var textHeight:Int = 0;
 	public var autoWidth:Bool = false;
-        
+
 	/**
 	 * Whether or not to automatically figure out the height 
 	 * and width of the text. 
@@ -132,7 +131,7 @@ class BitmapText extends Graphic
 		return value;
 	}
 
-	public var alpha(default,set):Float=1;
+	public var alpha(default, set):Float=1;
 	private function set_alpha(value:Float)
 	{
 		alpha = value;
@@ -203,15 +202,13 @@ class BitmapText extends Graphic
 			for (n in 0 ... line.length)
 			{
 				var char:String = line.charAt(n);
-				switch(char)
+				switch (char)
 				{
-					case ' ', '-': {
+					case ' ', '-':
 						words.push(thisWord + char);
 						thisWord = "";
-					}
-					default: {
+					default:
 						thisWord += char;
-					}
 				}
 			}
 			if (thisWord != "") words.push(thisWord);
@@ -232,7 +229,7 @@ class BitmapText extends Graphic
 					// if the word ends in a space, don't count that last space
 					// toward the line length for determining overflow
 					var endsInSpace = word.charAt(word.length - 1) == ' ';
-					if ((lineWidth - (endsInSpace ? spaceWidth : 0)) > width/sx)
+					if ((lineWidth - (endsInSpace ? spaceWidth : 0)) > width / sx)
 					{
 						// line is too long; split it before this word
 						subLines.push(words.slice(lastBreak, w).join(''));
@@ -290,16 +287,16 @@ class BitmapText extends Graphic
 		if (autoWidth || autoHeight)
 		{
 			computeTextSize();
-			w = Std.int(autoWidth ? (textWidth/sx) : (width/sx));
-			h = Std.int(autoHeight ? (textHeight/sy) : (height/sy));
+			w = Std.int(autoWidth ? (textWidth / sx) : (width / sx));
+			h = Std.int(autoHeight ? (textHeight / sy) : (height / sy));
 		}
 		else
 		{
-			w = Std.int(width/sx);
-			h = Std.int(height/sy);
+			w = Std.int(width / sx);
+			h = Std.int(height / sy);
 		}
 		w = Std.int(w);
-		h = Std.int(h+_font.lineHeight+lineSpacing);
+		h = Std.int(h + _font.lineHeight + lineSpacing);
 
 		// create or clear the buffer if necessary
 		if (_buffer == null || _buffer.width != w || _buffer.height != h)
@@ -313,7 +310,8 @@ class BitmapText extends Graphic
 		}
 
 		// make a pass through each character, copying it onto the buffer
-		renderFont(function(region:AtlasRegion,gd:GlyphData,x:Float,y:Float) {
+		renderFont(function(region:AtlasRegion, gd:GlyphData, x:Float, y:Float)
+		{
 			_point.x = x;
 			_point.y = y;
 
@@ -329,7 +327,7 @@ class BitmapText extends Graphic
 	{
 		// loop through the text one character at a time, calling the supplied
 		// rendering function for each character
-		var fontScale = size/_font.fontSize;
+		var fontScale = size / _font.fontSize;
 
 		var lineHeight:Int = Std.int(_font.lineHeight + lineSpacing);
 
@@ -352,7 +350,7 @@ class BitmapText extends Graphic
 					gd = _font.glyphData.get(' ');
 				}
 
-				if (letter==' ')
+				if (letter == ' ')
 				{
 					// it's a space, just move the cursor
 					rx += Std.int(gd.xAdvance);
@@ -368,7 +366,7 @@ class BitmapText extends Graphic
 					}
 					// advance cursor position
 					rx += Std.int((gd.xAdvance + charSpacing));
-					if (width != 0 && rx > width/sx)
+					if (width != 0 && rx > width / sx)
 					{
 						textWidth = Std.int(width);
 						rx = 0;
@@ -377,13 +375,13 @@ class BitmapText extends Graphic
 				}
 
 				// longest line so far
-				if (Std.int(rx*sx) > textWidth) textWidth = Std.int(rx*sx);
+				if (Std.int(rx * sx) > textWidth) textWidth = Std.int(rx * sx);
 			}
 
 			// next line
 			rx = 0;
 			ry += lineHeight;
-			if (Std.int(ry*sy) > textHeight) textHeight = Std.int(ry*sy);
+			if (Std.int(ry * sy) > textHeight) textHeight = Std.int(ry * sy);
 		}
 	}
 
@@ -425,7 +423,8 @@ class BitmapText extends Graphic
 		_point.y = Math.floor(point.y + y - camera.y * scrollY);
 
 		// use hardware accelerated rendering
-		renderFont(function(region:AtlasRegion, gd:GlyphData, x:Float, y:Float) {
+		renderFont(function(region:AtlasRegion, gd:GlyphData, x:Float, y:Float)
+		{
 			region.draw(_point.x * fsx + x * sx, _point.y * fsy + y * sy, layer, sx, sy, 0, _red, _green, _blue, alpha, smooth);
 		});
 	}

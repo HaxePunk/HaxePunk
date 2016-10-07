@@ -26,7 +26,7 @@ import openfl.utils.JNI;
 abstract InputType(Either<String, Int>)
 {
 	@:dox(hide) public inline function new( e:Either<String, Int> ) this = e;
-	@:dox(hide) public var type(get,never):Either<String, Int>;
+	@:dox(hide) public var type(get, never):Either<String, Int>;
 	@:to inline function get_type() return this;
 	@:from static function fromLeft(v:String) return new InputType(Left(v));
 	@:from static function fromRight(v:Int) return new InputType(Right(v));
@@ -198,12 +198,7 @@ class Input
 #end
 				for (key in _control.get(s))
 				{
-					if (key < 0)
-					{
-						if (_keyNum > 0) return true;
-						continue;
-					}
-					if (_key.get(key) == true) return true;
+					if ((key < 0 && _keyNum > 0) || _key.get(key)) return true;
 				}
 				return false;
 			case Right(i):
@@ -264,11 +259,11 @@ class Input
 		}
 	}
 
-	public static var touches(get, never):Map<Int,Touch>;
-	private static inline function get_touches():Map<Int,Touch> { return _touches; }
+	public static var touches(get, never):Map<Int, Touch>;
+	private static inline function get_touches():Map<Int, Touch> return _touches; 
 
 	public static var touchOrder(get, never):Array<Int>;
-	private static inline function get_touchOrder():Array<Int> { return _touchOrder; }
+	private static inline function get_touchOrder():Array<Int> return _touchOrder; 
 
 	/**
 	 * Returns a joystick object (creates one if not connected)
@@ -343,7 +338,7 @@ class Input
 
 		#if ouya
 			// Initializing OuyaController
-			var getContext = JNI.createStaticMethod("org.haxe.lime.GameActivity", "getContext", "()Landroid/content/Context;",true);
+			var getContext = JNI.createStaticMethod("org.haxe.lime.GameActivity", "getContext", "()Landroid/content/Context;", true);
 			OuyaController.init(getContext());
 		#end
 #end
@@ -490,7 +485,7 @@ class Input
 		}
 	}
 
-	private static function keyCode(e:KeyboardEvent) : Int
+	private static function keyCode(e:KeyboardEvent):Int
 	{
 	#if (flash || js)
 		return e.keyCode;
@@ -662,9 +657,9 @@ class Input
 	private static var _release:Array<Int> = new Array<Int>();
 	private static var _releaseNum:Int = 0;
 	private static var _mouseWheelDelta:Int = 0;
-	private static var _touches:Map<Int,Touch> = new Map<Int,Touch>();
+	private static var _touches:Map<Int, Touch> = new Map<Int, Touch>();
 	private static var _touchOrder:Array<Int> = new Array();
-	private static var _joysticks:Map<Int,Joystick> = new Map<Int,Joystick>();
-	private static var _control:Map<String,Array<Int>> = new Map<String,Array<Int>>();
+	private static var _joysticks:Map<Int, Joystick> = new Map<Int, Joystick>();
+	private static var _control:Map<String, Array<Int>> = new Map<String, Array<Int>>();
 	private static var _nativeCorrection:Map<String, Int> = new Map<String, Int>();
 }

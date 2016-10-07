@@ -64,11 +64,11 @@ class HXP
 	 * Flash equivalent: Number.MAX_VALUE
 	 */
 #if flash
-	public static var NUMBER_MAX_VALUE(get_NUMBER_MAX_VALUE,never):Float;
-	private static inline function get_NUMBER_MAX_VALUE():Float { return untyped __global__["Number"].MAX_VALUE; }
+	public static var NUMBER_MAX_VALUE(get_NUMBER_MAX_VALUE, never):Float;
+	private static inline function get_NUMBER_MAX_VALUE():Float return untyped __global__["Number"].MAX_VALUE; 
 #else
-	public static var NUMBER_MAX_VALUE(get_NUMBER_MAX_VALUE,never):Float;
-	private static inline function get_NUMBER_MAX_VALUE():Float { return 179 * Math.pow(10, 306); } // 1.79e+308
+	public static var NUMBER_MAX_VALUE(get_NUMBER_MAX_VALUE, never):Float;
+	private static inline function get_NUMBER_MAX_VALUE():Float return 179 * Math.pow(10, 306);  // 1.79e+308
 #end
 
 	/**
@@ -237,16 +237,16 @@ class HXP
 	 * The currently active World object (deprecated), use scene instead.
 	 */
 	@:deprecated public static var world(get, set):Scene;
-	private static inline function get_world():Scene { return get_scene(); }
-	private static inline function set_world(value:Scene):Scene { return set_scene(value); }
+	private static inline function get_world():Scene return get_scene(); 
+	private static inline function set_world(value:Scene):Scene return set_scene(value); 
 
 	/**
 	 * The currently active Scene object. When you set this, the Scene is flagged
 	 * to switch, but won't actually do so until the end of the current frame.
 	 */
 	public static var scene(get, set):Scene;
-	private static inline function get_scene():Scene { return engine.scene; }
-	private static inline function set_scene(value:Scene):Scene { return engine.scene = value; }
+	private static inline function get_scene():Scene return engine.scene; 
+	private static inline function set_scene(value:Scene):Scene return engine.scene = value; 
 
 	/**
 	 * Resize the screen.
@@ -303,7 +303,7 @@ class HXP
 	 * Toggles between windowed and fullscreen modes
 	 */
 	public static var fullscreen(get, set):Bool;
-	private static inline function get_fullscreen():Bool { return HXP.stage.displayState == StageDisplayState.FULL_SCREEN; }
+	private static inline function get_fullscreen():Bool return HXP.stage.displayState == StageDisplayState.FULL_SCREEN; 
 	private static inline function set_fullscreen(value:Bool):Bool
 	{
 		if (value) HXP.stage.displayState = StageDisplayState.FULL_SCREEN;
@@ -315,7 +315,7 @@ class HXP
 	 * Global volume factor for all sounds, a value from 0 to 1.
 	 */
 	public static var volume(get, set):Float;
-	private static inline function get_volume():Float { return _volume; }
+	private static inline function get_volume():Float return _volume; 
 	private static function set_volume(value:Float):Float
 	{
 		if (value < 0) value = 0;
@@ -335,7 +335,7 @@ class HXP
 	 * Panning only applies to mono sounds. It is ignored on stereo.
 	 */
 	public static var pan(get, set):Float;
-	private static inline function get_pan():Float { return _pan; }
+	private static inline function get_pan():Float return _pan; 
 	private static function set_pan(value:Float):Float
 	{
 		if (value < -1) value = -1;
@@ -751,7 +751,7 @@ class HXP
 	 * This function uses operator [==] to check for equality.
 	 * If [v] does not exist in [arr], the result is -1.
 	 **/
-	public static inline function indexOf<T>(arr:Array<T>, v:T) : Int
+	public static inline function indexOf<T>(arr:Array<T>, v:T):Int
 	{
 		#if (haxe_ver >= 3.1)
 		return arr.indexOf(v);
@@ -1185,7 +1185,7 @@ class HXP
 	public static function frames(from:Int, to:Int, skip:Int = 0):Array<Int>
 	{
 		var a:Array<Int> = new Array<Int>();
-		skip ++;
+		skip++;
 		if (from < to)
 		{
 			while (from <= to)
@@ -1272,10 +1272,10 @@ class HXP
 	// Used for rad-to-deg and deg-to-rad conversion.
 	/** Convert a radian value into a degree value. */
 	public static var DEG(get, never):Float;
-	private static inline function get_DEG(): Float { return -180 / Math.PI; }
+	private static inline function get_DEG(): Float return -180 / Math.PI; 
 	/** Convert a degree value into a radian value. */
 	public static var RAD(get, never):Float;
-	private static inline function get_RAD(): Float { return Math.PI / -180; }
+	private static inline function get_RAD(): Float return Math.PI / -180; 
 
 	// Global Flash objects.
 	/** The flash stage. */

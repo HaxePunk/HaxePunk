@@ -1,6 +1,5 @@
 package com.haxepunk.utils;
 
-
 typedef EaseFunction = Float -> Float;
 
 /**
@@ -53,7 +52,7 @@ class Ease
 	/** Quart out. */
 	public static function quartOut(t:Float):Float
 	{
-		return 1 - (t-=1) * t * t * t;
+		return 1 - (t -= 1) * t * t * t;
 	}
 
 	/** Quart in and out. */
@@ -188,23 +187,23 @@ class Ease
 	{
 		t *= 2;
 		if (t < 1) return t * t * (2.70158 * t - 1.70158) / 2;
-		t --;
+		t--;
 		return (1 - (--t) * (t) * (-2.70158 * t - 1.70158)) / 2 + .5;
 	}
 
 	// Easing constants.
-	private static var PI(get,never):Float;
-	private static var PI2(get,never):Float;
-	private static var EL(get,never):Float;
+	private static var PI(get, never):Float;
+	private static var PI2(get, never):Float;
+	private static var EL(get, never):Float;
 	private static inline var B1:Float = 1 / 2.75;
 	private static inline var B2:Float = 2 / 2.75;
 	private static inline var B3:Float = 1.5 / 2.75;
 	private static inline var B4:Float = 2.5 / 2.75;
 	private static inline var B5:Float = 2.25 / 2.75;
 	private static inline var B6:Float = 2.625 / 2.75;
-	private static function get_PI(): Float  { return Math.PI; }
-	private static function get_PI2(): Float { return Math.PI / 2; }
-	private static function get_EL(): Float  { return 2 * PI / 0.45; }
+	private static function get_PI(): Float  return Math.PI; 
+	private static function get_PI2(): Float return Math.PI / 2; 
+	private static function get_EL(): Float  return 2 * PI / 0.45; 
 
 	/**
 	 * Operation of in/out easers:

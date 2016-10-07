@@ -1,7 +1,6 @@
 package com.haxepunk.tweens.motion;
 
 import com.haxepunk.Tween;
-import com.haxepunk.utils.Ease;
 import flash.geom.Point;
 
 /**
@@ -98,7 +97,7 @@ class LinearPath extends Motion
 		super.update();
 		if (_index < _points.length - 1)
 		{
-			while (_t > _pointT[_index + 1]) _index ++;
+			while (_t > _pointT[_index + 1]) _index++;
 		}
 		var td:Float = _pointT[_index],
 			tt:Float = _pointT[_index + 1] - td;
@@ -133,7 +132,7 @@ class LinearPath extends Motion
 	 * How many points are on the path.
 	 */
 	public var pointCount(get, never):Float;
-	private function get_pointCount():Float { return _points.length; }
+	private function get_pointCount():Float return _points.length; 
 
 	// Path information.
 	private var _points:Array<Point>;

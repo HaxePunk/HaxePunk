@@ -1,11 +1,9 @@
 package com.haxepunk.graphics;
 
-import com.haxepunk.Entity;
-import com.haxepunk.HXP;
-import com.haxepunk.Graphic;
-import com.haxepunk.graphics.atlas.Atlas;
 import flash.display.BitmapData;
 import flash.geom.Point;
+import com.haxepunk.HXP;
+import com.haxepunk.Graphic;
 
 /**
  * A Graphic that can contain multiple Graphics of one or various types.
@@ -82,18 +80,14 @@ class Graphiclist extends Graphic
 	@:dox(hide)
 	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
-		renderList(function(g:Graphic) {
-			g.render(target, _point, _camera);
-		}, point, camera);
+		renderList(function(g:Graphic) g.render(target, _point, _camera), point, camera);
 	}
 
 	/** @private Renders the Graphics in the list. */
 	@:dox(hide)
 	override public function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
-		renderList(function(g:Graphic) {
-			g.renderAtlas(layer, _point, _camera);
-		}, point, camera);
+		renderList(function(g:Graphic) g.renderAtlas(layer, _point, _camera), point, camera);
 	}
 
 	/**
@@ -120,7 +114,7 @@ class Graphiclist extends Graphic
 		if (_count == 0) blit = graphic.blit;
 		else if (blit != graphic.blit) throw "Can't add graphic objects with different render methods.";
 
-		_graphics[_count ++] = graphic;
+		_graphics[_count++] = graphic;
 		if (!active) active = graphic.active;
 		return graphic;
 	}
@@ -137,7 +131,7 @@ class Graphiclist extends Graphic
 
 		for (g in _graphics)
 		{
-			if (g == graphic) _count --;
+			if (g == graphic) _count--;
 			else _temp[_temp.length] = g;
 		}
 		var temp:Array<Graphic> = _graphics;
@@ -174,13 +168,13 @@ class Graphiclist extends Graphic
 	 * All Graphics in this list.
 	 */
 	public var children(get, null):Array<Graphic>;
-	private function get_children():Array<Graphic> { return _graphics; }
+	private function get_children():Array<Graphic> return _graphics; 
 
 	/**
 	 * Amount of Graphics in this list.
 	 */
 	public var count(get, null):Int;
-	private function get_count():Int { return _count; }
+	private function get_count():Int return _count; 
 
 	/**
 	 * Check if the Graphiclist should update.

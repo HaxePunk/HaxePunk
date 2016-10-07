@@ -1,22 +1,16 @@
 package com.haxepunk.debug;
 
-import com.haxepunk.utils.Input;
-
+import haxe.ds.IntMap;
 import flash.display.Bitmap;
 import flash.display.Sprite;
 import flash.events.MouseEvent;
-import flash.geom.Rectangle;
 import flash.text.TextField;
 import flash.text.TextFormat;
-import flash.text.TextFormatAlign;
-import haxe.ds.IntMap;
-
 import openfl.Assets;
 
 @:dox(hide)
 class VisibleLabel extends Sprite
 {
-
 	public function new(textFormat:TextFormat)
 	{
 		super();

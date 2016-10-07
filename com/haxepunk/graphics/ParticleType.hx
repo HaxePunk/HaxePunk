@@ -2,10 +2,7 @@ package com.haxepunk.graphics;
 
 import flash.display.BitmapData;
 import flash.geom.Rectangle;
-import com.haxepunk.HXP;
-import com.haxepunk.Entity;
 import com.haxepunk.utils.Ease;
-
 
 /**
  * Template used to define a particle type used by the Emitter class. Instead

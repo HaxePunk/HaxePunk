@@ -5,7 +5,7 @@ import com.haxepunk.Scene;
 class TestScreen extends haxe.unit.TestCase
 {
 
-	public override function setup()
+	override public function setup()
 	{
 		HXP.windowWidth = 320;
 		HXP.windowHeight = 480;

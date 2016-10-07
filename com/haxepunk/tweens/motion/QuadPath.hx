@@ -96,7 +96,7 @@ class QuadPath extends Motion
 		super.update();
 		if (_index < _curve.length - 1)
 		{
-			while (_t > _curveT[_index + 1]) _index ++;
+			while (_t > _curveT[_index + 1]) _index++;
 		}
 		var td:Float = _curveT[_index],
 			tt:Float = _curveT[_index + 1] - td;
@@ -138,7 +138,7 @@ class QuadPath extends Motion
 				c.y = p.y;
 			}
 			l = p;
-			i ++;
+			i++;
 		}
 
 		// find the total distance of the path
@@ -147,7 +147,7 @@ class QuadPath extends Motion
 		while (i < _curve.length - 1)
 		{
 			_curveD[i] = curveLength(_curve[i], _points[i + 1], _curve[i + 1]);
-			_distance += _curveD[i ++];
+			_distance += _curveD[i++];
 		}
 
 		// find t for each point on the curve
@@ -156,7 +156,7 @@ class QuadPath extends Motion
 		while (i < _curve.length - 1)
 		{
 			d += _curveD[i];
-			_curveT[i ++] = d / _distance;
+			_curveT[i++] = d / _distance;
 		}
 		_curveT[_curve.length - 1] = 1;
 	}
@@ -165,7 +165,7 @@ class QuadPath extends Motion
 	 * Amount of points on the path.
 	 */
 	public var pointCount(get, null):Float;
-	private function get_pointCount():Float { return _points.length; }
+	private function get_pointCount():Float return _points.length; 
 
 	/** @private Calculates the lenght of the curve. */
 	private function curveLength(start:Point, control:Point, finish:Point):Float

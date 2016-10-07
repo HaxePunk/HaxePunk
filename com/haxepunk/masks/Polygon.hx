@@ -3,9 +3,6 @@ package com.haxepunk.masks;
 import com.haxepunk.Entity;
 import com.haxepunk.HXP;
 import com.haxepunk.Mask;
-import com.haxepunk.masks.Circle;
-import com.haxepunk.masks.Grid;
-import com.haxepunk.masks.Hitbox;
 import com.haxepunk.math.Projection;
 import com.haxepunk.math.Vector;
 import flash.display.Graphics;
@@ -20,7 +17,6 @@ class Polygon extends Hitbox
 	 * The polygon rotates around this point when the angle is set.
 	 */
 	public var origin:Point;
-
 
 	// Polygon bounding box.
 	/** Left x bounding box position. */
@@ -217,7 +213,6 @@ class Polygon extends Hitbox
 		var offsetX:Float = _parent.x + _x;
 		var offsetY:Float = _parent.y + _y;
 
-
 		// check if circle center is inside the polygon
 		i = 0;
 		j = nPoints - 1;
@@ -388,7 +383,7 @@ class Polygon extends Hitbox
 	 * Rotation angle (in degrees) of the polygon (rotates around origin point).
 	 */
 	public var angle(get, set):Float;
-	private inline function get_angle():Float { return _angle; }
+	private inline function get_angle():Float return _angle; 
 	private function set_angle(value:Float):Float
 	{
 		if (value != _angle)
@@ -406,7 +401,7 @@ class Polygon extends Hitbox
 	 * to make sure the axes update as well.
 	 */
 	public var points(get, set):Array<Vector>;
-	private inline function get_points():Array<Vector> { return _points; }
+	private inline function get_points():Array<Vector> return _points; 
 	private function set_points(value:Array<Vector>):Array<Vector>
 	{
 		if (_points != value)

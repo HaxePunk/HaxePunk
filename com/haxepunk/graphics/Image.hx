@@ -1,15 +1,5 @@
 package com.haxepunk.graphics;
 
-import com.haxepunk.graphics.atlas.Atlas;
-import com.haxepunk.graphics.atlas.TextureAtlas;
-import com.haxepunk.graphics.atlas.TileAtlas;
-import com.haxepunk.graphics.atlas.AtlasRegion;
-import com.haxepunk.masks.Polygon;
-import com.haxepunk.math.Vector;
-import com.haxepunk.Graphic;
-import com.haxepunk.HXP;
-import com.haxepunk.RenderMode;
-
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.BlendMode;
@@ -20,6 +10,13 @@ import flash.geom.Rectangle;
 import flash.display.Graphics;
 import flash.display.JointStyle;
 import flash.display.LineScaleMode;
+import com.haxepunk.graphics.atlas.Atlas;
+import com.haxepunk.graphics.atlas.AtlasRegion;
+import com.haxepunk.masks.Polygon;
+import com.haxepunk.math.Vector;
+import com.haxepunk.Graphic;
+import com.haxepunk.HXP;
+import com.haxepunk.RenderMode;
 
 /**
  * Performance-optimized non-animated image. Can be drawn to the screen with transformations.
@@ -36,8 +33,8 @@ class Image extends Graphic
 	 * Scale of the image, effects both x and y scale.
 	 */
 	public var scale(get, set):Float;
-	private inline function get_scale():Float { return _scale; }
-	private inline function set_scale(value:Float):Float { return _scale = value; }
+	private inline function get_scale():Float return _scale; 
+	private inline function set_scale(value:Float):Float return _scale = value; 
 
 	/**
 	 * X scale of the image.
@@ -347,7 +344,6 @@ class Image extends Graphic
 		else
 			graphics.lineStyle(thick, 0xFFFFFF, 1, false, LineScaleMode.NORMAL, null, JointStyle.MITER);
 
-
 		graphics.moveTo(points[points.length - 1].x, points[points.length - 1].y);
 		for (p in points)
 		{
@@ -379,8 +375,8 @@ class Image extends Graphic
 		image.angle = originalAngle;
 		polygon.angle = originalAngle;
 
-        image.color = color;
-        image.alpha = alpha;
+		image.color = color;
+		image.alpha = alpha;
 
 		return image;
 	}
@@ -435,7 +431,7 @@ class Image extends Graphic
 	 * Change the opacity of the Image, a value from 0 to 1.
 	 */
 	public var alpha(get_alpha, set_alpha):Float;
-	private inline function get_alpha():Float { return _alpha; }
+	private inline function get_alpha():Float return _alpha; 
 	private function set_alpha(value:Float):Float
 	{
 		value = value < 0 ? 0 : (value > 1 ? 1 : value);
@@ -449,7 +445,7 @@ class Image extends Graphic
 	 * The tinted color of the Image. Use 0xFFFFFF to draw the Image normally.
 	 */
 	public var color(get_color, set_color):Int;
-	private inline function get_color():Int { return _color; }
+	private inline function get_color():Int return _color; 
 	private function set_color(value:Int):Int
 	{
 		value &= 0xFFFFFF;
@@ -474,7 +470,7 @@ class Image extends Graphic
 	 * @default 1.
 	 */
 	public var tinting(get, set):Float;
-	inline function get_tinting():Float { return _tintFactor; }
+	inline function get_tinting():Float return _tintFactor; 
 	function set_tinting(value:Float):Float
 	{
 		if (_tintFactor == value || !blit) return value;
@@ -493,7 +489,7 @@ class Image extends Graphic
 	 * @default Image.TINTING_MULTIPLY
 	 */
 	public var tintMode(get, set):Float;
-	inline function get_tintMode():Float { return _tintMode; }
+	inline function get_tintMode():Float return _tintMode; 
 	function set_tintMode(value:Float):Float
 	{
 		if (_tintMode == value || !blit) return value;
@@ -507,7 +503,7 @@ class Image extends Graphic
 	 * faster than setting scaleX to -1 if your image isn't transformed.
 	 */
 	public var flipped(get_flipped, set_flipped):Bool;
-	private inline function get_flipped():Bool { return _flipped; }
+	private inline function get_flipped():Bool return _flipped; 
 	private function set_flipped(value:Bool):Bool
 	{
 		if (_flipped == value) return value;
@@ -569,10 +565,8 @@ class Image extends Graphic
 	 */
 	#if flash
 	public var smooth(get_smooth, set_smooth):Bool;
-	private inline function get_smooth():Bool { return _bitmap.smoothing; }
-	private inline function set_smooth(s:Bool):Bool {
-		return _bitmap.smoothing = s;
-	}
+	private inline function get_smooth():Bool return _bitmap.smoothing; 
+	private inline function set_smooth(s:Bool):Bool return _bitmap.smoothing = s;
 	#else
 	public var smooth:Bool;
 	#end
@@ -581,37 +575,33 @@ class Image extends Graphic
 	 * Width of the image.
 	 */
 	public var width(get_width, never):Int;
-	private function get_width():Int { return Std.int(blit ? _bufferRect.width : (!_region.rotated ? _region.width : _region.height)); }
+	private function get_width():Int return Std.int(blit ? _bufferRect.width : (!_region.rotated ? _region.width : _region.height)); 
 
 	/**
 	 * Height of the image.
 	 */
 	public var height(get_height, never):Int;
-	private function get_height():Int { return Std.int(blit ? _bufferRect.height : (!_region.rotated ? _region.height : _region.width)); }
+	private function get_height():Int return Std.int(blit ? _bufferRect.height : (!_region.rotated ? _region.height : _region.width)); 
 
 	/**
 	 * The scaled width of the image.
 	 */
 	public var scaledWidth(get_scaledWidth, set_scaledWidth):Float;
-	private inline function get_scaledWidth():Float { return width * scaleX * scale; }
-	private inline function set_scaledWidth(w:Float):Float {
-		return scaleX = w / scale / width;
-	}
+	private inline function get_scaledWidth():Float return width * scaleX * scale; 
+	private inline function set_scaledWidth(w:Float):Float return scaleX = w / scale / width;
 
 	/**
 	 * The scaled height of the image.
 	 */
 	public var scaledHeight(get_scaledHeight, set_scaledHeight):Float;
-	private inline function get_scaledHeight():Float { return height * scaleY * scale; }
-	private inline function set_scaledHeight(h:Float):Float {
-		return scaleY = h / scale / height;
-	}
+	private inline function get_scaledHeight():Float return height * scaleY * scale; 
+	private inline function set_scaledHeight(h:Float):Float return scaleY = h / scale / height;
 
 	/**
 	 * Clipping rectangle for the image.
 	 */
 	public var clipRect(get_clipRect, null):Rectangle;
-	private inline function get_clipRect():Rectangle { return _sourceRect; }
+	private inline function get_clipRect():Rectangle return _sourceRect; 
 
 	// Source and buffer information.
 	private var _source:BitmapData;

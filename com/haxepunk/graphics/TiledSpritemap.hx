@@ -1,11 +1,9 @@
 package com.haxepunk.graphics;
 
-import flash.display.BitmapData;
 import flash.display.Graphics;
 import flash.geom.Point;
 import com.haxepunk.HXP;
 import com.haxepunk.Graphic;
-import com.haxepunk.graphics.Spritemap;
 
 /**
  * Special Spritemap object that can display blocks of animated sprites.
@@ -112,7 +110,7 @@ class TiledSpritemap extends Spritemap
 	 * The x-offset of the texture.
 	 */
 	public var offsetX(get, set):Float;
-	private function get_offsetX():Float { return _offsetX; }
+	private function get_offsetX():Float return _offsetX; 
 	private function set_offsetX(value:Float):Float
 	{
 		if (_offsetX == value) return value;
@@ -125,7 +123,7 @@ class TiledSpritemap extends Spritemap
 	 * The y-offset of the texture.
 	 */
 	public var offsetY(get, set):Float;
-	private function get_offsetY():Float { return _offsetY; }
+	private function get_offsetY():Float return _offsetY; 
 	private function set_offsetY(value:Float):Float
 	{
 		if (_offsetY == value) return value;

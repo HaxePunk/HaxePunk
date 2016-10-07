@@ -1,8 +1,6 @@
 package com.haxepunk;
 
-import flash.display.Bitmap;
 import flash.display.BitmapData;
-import flash.display.Graphics;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.geom.Point;
@@ -15,7 +13,6 @@ class HaxePunkLogo extends BitmapData {}
 
 class Preloader extends NMEPreloader
 {
-
 	public function new()
 	{
 		tileData = [
@@ -83,5 +80,4 @@ class Preloader extends NMEPreloader
 
 	private var tiles:Tilesheet;
 	private var tileData:Array<Float>;
-
 }

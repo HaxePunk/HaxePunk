@@ -18,10 +18,7 @@ class Tweener
 	}
 
 	@:dox(hide)
-	public function update()
-	{
-
-	}
+	public function update() {}
 
 	/**
 	 * Add the tween to the tween list.
@@ -122,7 +119,7 @@ class Tweener
 
 	/** If there is at least a tween. */
 	public var hasTween(get, never):Bool;
-	private function get_hasTween():Bool { return (_tween != null); }
+	private function get_hasTween():Bool return (_tween != null); 
 
 	private var _tween:Tween;
 }

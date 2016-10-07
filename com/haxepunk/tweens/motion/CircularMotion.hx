@@ -86,7 +86,7 @@ class CircularMotion extends Motion
 	 * The circumference of the current circle motion.
 	 */
 	public var circumference(get, never):Float;
-	private function get_circumference():Float { return _radius * _CIRC; }
+	private function get_circumference():Float return _radius * _CIRC; 
 
 	// Circle information.
 	private var _centerX:Float;
