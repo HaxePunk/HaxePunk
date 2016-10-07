@@ -1,14 +1,11 @@
 package com.haxepunk.graphics;
 
-import com.haxepunk.HXP;
-import com.haxepunk.Graphic;
-import com.haxepunk.graphics.atlas.Atlas;
-import com.haxepunk.graphics.atlas.AtlasRegion;
-
 import flash.display.BitmapData;
-import flash.display.DisplayObject;
 import flash.geom.Point;
 import flash.geom.Rectangle;
+import com.haxepunk.HXP;
+import com.haxepunk.Graphic;
+import com.haxepunk.graphics.atlas.AtlasRegion;
 
 /**
  * A simple non-transformed, non-animated graphic.
@@ -67,13 +64,13 @@ class Stamp extends Graphic
 	 * Width of the image.
 	 */
 	public var width(get, never):Int;
-	private function get_width():Int { return Std.int(blit ? _source.width : _region.width); }
+	private function get_width():Int return Std.int(blit ? _source.width : _region.width); 
 
 	/**
 	 * Height of the image.
 	 */
 	public var height(get, never):Int;
-	private function get_height():Int { return Std.int(blit ? _source.height : _region.height); }
+	private function get_height():Int return Std.int(blit ? _source.height : _region.height); 
 
 	// Stamp information.
 	private var _source:BitmapData;

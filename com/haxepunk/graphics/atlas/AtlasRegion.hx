@@ -137,10 +137,10 @@ class AtlasRegion
 		return "[AtlasRegion " + _rect + "]";
 	}
 
-	private inline function get_x():Float { return _rect.x; }
-	private inline function get_y():Float { return _rect.y; }
-	private inline function get_width():Float { return _rect.width; }
-	private inline function get_height():Float { return _rect.height; }
+	private inline function get_x():Float return _rect.x; 
+	private inline function get_y():Float return _rect.y; 
+	private inline function get_width():Float return _rect.width; 
+	private inline function get_height():Float return _rect.height; 
 
 	private var _rect:Rectangle;
 	private var _parent:AtlasData;

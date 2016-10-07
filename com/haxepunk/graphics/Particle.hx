@@ -1,12 +1,5 @@
 package com.haxepunk.graphics;
 
-import flash.display.BitmapData;
-import flash.geom.Point;
-import flash.geom.Rectangle;
-import com.haxepunk.graphics.Emitter;
-import com.haxepunk.graphics.ParticleType;
-
-
 /**
  * Used by the Emitter class to track an existing Particle.
  */
@@ -20,7 +13,7 @@ class Particle
 	}
 	public inline function y(td:Float):Float
 	{
-		return _y + _oy + _moveY * (_type._backwards ? 1 - td : td) + Math.pow(td*_gravity, 2);
+		return _y + _oy + _moveY * (_type._backwards ? 1 - td : td) + Math.pow(td * _gravity, 2);
 	}
 
 	public function new() {}

@@ -3,10 +3,6 @@ package com.haxepunk;
 import com.haxepunk.graphics.atlas.AtlasData;
 import flash.display.Sprite;
 import flash.geom.Point;
-import com.haxepunk.Entity;
-import com.haxepunk.Tweener;
-import flash.geom.Rectangle;
-import haxe.ds.IntMap;
 
 /**
  * Updated by `Engine`, main game container that holds all currently active Entities.
@@ -41,34 +37,34 @@ class Scene extends Tweener
 		_recycle = new Array<Entity>();
 
 		_update = new List<Entity>();
-		_layerDisplay = new Map<Int,Bool>();
-		_layers = new Map<Int,List<Entity>>();
-		_types = new Map<String,List<Entity>>();
+		_layerDisplay = new Map<Int, Bool>();
+		_layers = new Map<Int, List<Entity>>();
+		_types = new Map<String, List<Entity>>();
 
-		_classCount = new Map<String,Int>();
-		_recycled = new Map<String,Entity>();
-		_entityNames = new Map<String,Entity>();
+		_classCount = new Map<String, Int>();
+		_recycled = new Map<String, Entity>();
+		_entityNames = new Map<String, Entity>();
 	}
 
 	/**
 	 * Override this; called when Scene is switch to, and set to the currently active scene.
 	 */
-	public function begin() { }
+	public function begin() {}
 
 	/**
 	 * Override this; called when Scene is changed, and the active scene is no longer this.
 	 */
-	public function end() { }
+	public function end() {}
 
 	/**
 	 * Override this, called when game gains focus
 	 */
-	public function focusGained() { }
+	public function focusGained() {}
 
 	/**
 	 * Override this, called when game loses focus
 	 */
-	public function focusLost() { }
+	public function focusLost() {}
 
 	/**
 	 * Performed by the game loop, updates all contained Entities.
@@ -435,7 +431,7 @@ class Scene extends Tweener
 						result = e;
 					}
 					// compare if the new collided entity is above the former one (lower valuer is toward, higher value is backward)
-					else if(e.layer < result.layer)
+					else if (e.layer < result.layer)
 					{
 						result = e;
 					}
@@ -592,7 +588,7 @@ class Scene extends Tweener
 		{
 			for (e in _types.get(type))
 			{
-				if (e.collidable && e.collideRect(e.x, e.y, rX, rY, rWidth, rHeight)) into[n ++] = cast e;
+				if (e.collidable && e.collideRect(e.x, e.y, rX, rY, rWidth, rHeight)) into[n++] = cast e;
 			}
 		}
 	}
@@ -614,7 +610,7 @@ class Scene extends Tweener
 		radius *= radius;//Square it to avoid the square root
 		for (e in _types.get(type))
 		{
-			if (HXP.distanceSquared(circleX, circleY, e.x, e.y) < radius) into[n ++] = cast e;
+			if (HXP.distanceSquared(circleX, circleY, e.x, e.y) < radius) into[n++] = cast e;
 		}
 	}
 
@@ -632,7 +628,7 @@ class Scene extends Tweener
 		var n:Int = into.length;
 		for (e in _types.get(type))
 		{
-			if (e.collidable && e.collidePoint(e.x, e.y, pX, pY)) into[n ++] = cast e;
+			if (e.collidable && e.collidePoint(e.x, e.y, pX, pY)) into[n++] = cast e;
 		}
 	}
 
@@ -765,7 +761,7 @@ class Scene extends Tweener
 	 * How many Entities are in the Scene.
 	 */
 	public var count(get, never):Int;
-	private inline function get_count():Int { return _update.length; }
+	private inline function get_count():Int return _update.length;
 
 	/**
 	 * Returns the amount of Entities of the type are in the Scene.
@@ -801,13 +797,13 @@ class Scene extends Tweener
 	 * The first Entity in the Scene.
 	 */
 	public var first(get, null):Entity;
-	private inline function get_first():Entity { return _update.first(); }
+	private inline function get_first():Entity return _update.first();
 
 	/**
 	 * How many Entity layers the Scene has.
 	 */
 	public var layers(get, null):Int;
-	private inline function get_layers():Int { return _layerList.length; }
+	private inline function get_layers():Int return _layerList.length;
 
 	/**
 	 * A list of Entity objects of the type.
@@ -947,7 +943,7 @@ class Scene extends Tweener
 		var n:Int = into.length;
 		for (e in _layers.get(layer))
 		{
-			into[n ++] = cast e;
+			into[n++] = cast e;
 		}
 	}
 
@@ -961,7 +957,7 @@ class Scene extends Tweener
 		var n:Int = into.length;
 		for (e in _update)
 		{
-			into[n ++] = cast e;
+			into[n++] = cast e;
 		}
 	}
 
@@ -1195,13 +1191,13 @@ class Scene extends Tweener
 
 	// Render information.
 	private var _layerList:Array<Int>;
-	private var _layerDisplay:Map<Int,Bool>;
-	private var _layers:Map<Int,List<Entity>>;
+	private var _layerDisplay:Map<Int, Bool>;
+	private var _layers:Map<Int, List<Entity>>;
 
-	private var _classCount:Map<String,Int>;
+	private var _classCount:Map<String, Int>;
 
-	private var _types:Map<String,List<Entity>>;
+	private var _types:Map<String, List<Entity>>;
 
-	private var _recycled:Map<String,Entity>;
-	private var _entityNames:Map<String,Entity>;
+	private var _recycled:Map<String, Entity>;
+	private var _entityNames:Map<String, Entity>;
 }

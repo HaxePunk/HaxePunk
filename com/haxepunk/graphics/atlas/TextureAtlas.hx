@@ -1,17 +1,16 @@
 package com.haxepunk.graphics.atlas;
 
-import com.haxepunk.graphics.atlas.AtlasData;
-import com.haxepunk.HXP;
-import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import openfl.Assets;
+import com.haxepunk.HXP;
+import com.haxepunk.graphics.atlas.AtlasData;
 
 class TextureAtlas extends Atlas
 {
 	private function new(source:AtlasDataType)
 	{
-		_regions = new Map<String,AtlasRegion>();
+		_regions = new Map<String, AtlasRegion>();
 
 		super(source);
 	}
@@ -77,5 +76,5 @@ class TextureAtlas extends Atlas
 		return region;
 	}
 
-	private var _regions:Map<String,AtlasRegion>;
+	private var _regions:Map<String, AtlasRegion>;
 }

@@ -2,8 +2,6 @@ package com.haxepunk;
 
 import flash.display.BitmapData;
 import flash.geom.Point;
-import flash.geom.Rectangle;
-import com.haxepunk.graphics.Image;
 import com.haxepunk.graphics.Graphiclist;
 import com.haxepunk.ds.Either;
 
@@ -15,7 +13,7 @@ import com.haxepunk.ds.Either;
 abstract SolidType(Either<String, Array<String>>)
 {
 	@:dox(hide) public inline function new( e:Either<String, Array<String>> ) this = e;
-	@:dox(hide) public var type(get,never):Either<String, Array<String>>;
+	@:dox(hide) public var type(get, never):Either<String, Array<String>>;
 	@:to inline function get_type() return this;
 	@:from static function fromLeft(v:String) return new SolidType(Left(v));
 	@:from static function fromRight(v:Array<String>) return new SolidType(Right(v));
@@ -107,7 +105,7 @@ class Entity extends Tweener
 	 * @param	graphic		Graphic to assign to the Entity.
 	 * @param	mask		Mask to assign to the Entity.
 	 */
-	public function new(x:Float = 0, y:Float = 0, graphic:Graphic = null, mask:Mask = null)
+	public function new(x:Float = 0, y:Float = 0, ?graphic:Graphic, ?mask:Mask)
 	{
 		super();
 		this.x = x;
@@ -134,17 +132,17 @@ class Entity extends Tweener
 	/**
 	 * Override this, called when the Entity is added to a Scene.
 	 */
-	public function added():Void { }
+	public function added():Void {}
 
 	/**
 	 * Override this, called when the Entity is removed from a Scene.
 	 */
-	public function removed():Void { }
+	public function removed():Void {}
 
 	/**
 	 * Updates the Entity.
 	 */
-	override public function update():Void { }
+	override public function update():Void {}
 
 	/**
 	 * Renders the Entity. If you override this for special behaviour,
@@ -449,7 +447,7 @@ class Entity extends Tweener
 	 * The world object is deprecated, use scene instead.
 	 */
 	@:deprecated public var world(get, never):Scene;
-	private inline function get_world():Scene { return _scene; }
+	private inline function get_world():Scene return _scene;
 
 	/**
 	 * The Scene object this Entity has been added to.
@@ -464,55 +462,55 @@ class Entity extends Tweener
 	 * Half the Entity's width.
 	 */
 	public var halfWidth(get, null):Float;
-	private inline function get_halfWidth():Float { return width / 2; }
+	private inline function get_halfWidth():Float return width / 2;
 
 	/**
 	 * Half the Entity's height.
 	 */
 	public var halfHeight(get, null):Float;
-	private inline function get_halfHeight():Float { return height / 2; }
+	private inline function get_halfHeight():Float return height / 2;
 
 	/**
 	 * The center x position of the Entity's hitbox.
 	 */
 	public var centerX(get, null):Float;
-	private inline function get_centerX():Float { return x - originX + width / 2; }
+	private inline function get_centerX():Float return x - originX + width / 2;
 
 	/**
 	 * The center y position of the Entity's hitbox.
 	 */
 	public var centerY(get, null):Float;
-	private inline function get_centerY():Float { return y - originY + height / 2; }
+	private inline function get_centerY():Float return y - originY + height / 2;
 
 	/**
 	 * The leftmost position of the Entity's hitbox.
 	 */
 	public var left(get, null):Float;
-	private inline function get_left():Float { return x - originX; }
+	private inline function get_left():Float return x - originX;
 
 	/**
 	 * The rightmost position of the Entity's hitbox.
 	 */
 	public var right(get, null):Float;
-	private inline function get_right():Float { return x - originX + width; }
+	private inline function get_right():Float return x - originX + width;
 
 	/**
 	 * The topmost position of the Entity's hitbox.
 	 */
 	public var top(get, null):Float;
-	private inline function get_top():Float { return y - originY; }
+	private inline function get_top():Float return y - originY;
 
 	/**
 	 * The bottommost position of the Entity's hitbox.
 	 */
 	public var bottom(get, null):Float;
-	private inline function get_bottom():Float { return y - originY + height; }
+	private inline function get_bottom():Float return y - originY + height;
 
 	/**
 	 * The rendering layer of this Entity. Higher layers are rendered first.
 	 */
 	public var layer(get, set):Int;
-	private inline function get_layer():Int { return _layer; }
+	private inline function get_layer():Int return _layer;
 	private function set_layer(value:Int):Int
 	{
 		if (_layer == value) return _layer;
@@ -531,7 +529,7 @@ class Entity extends Tweener
 	 * The collision type, used for collision checking.
 	 */
 	public var type(get, set):String;
-	private inline function get_type():String { return _type; }
+	private inline function get_type():String return _type;
 	private function set_type(value:String):String
 	{
 		if (_type == value) return _type;
@@ -551,7 +549,7 @@ class Entity extends Tweener
 	 * not assigned, collision checks will use the Entity's hitbox by default.
 	 */
 	public var mask(get, set):Mask;
-	private inline function get_mask():Mask { return _mask; }
+	private inline function get_mask():Mask return _mask;
 	private function set_mask(value:Mask):Mask
 	{
 		if (_mask == value) return value;
@@ -565,7 +563,7 @@ class Entity extends Tweener
 	 * Graphical component to render to the screen.
 	 */
 	public var graphic(get, set):Graphic;
-	private inline function get_graphic():Graphic { return _graphic; }
+	private inline function get_graphic():Graphic return _graphic;
 	private function set_graphic(value:Graphic):Graphic
 	{
 		if (_graphic == value) return value;
@@ -577,7 +575,7 @@ class Entity extends Tweener
 	 * An optional name for the entity.
 	 */
 	public var name(get, set):String;
-	private inline function get_name():String { return _name; }
+	private inline function get_name():String return _name;
 	private function set_name(value:String):String
 	{
 		if (_name == value) return _name;
@@ -799,7 +797,7 @@ class Entity extends Tweener
 	 * @param	solidType	An optional collision type to stop flush against upon collision.
 	 * @param	sweep		If sweeping should be used (prevents fast-moving objects from going through solidType).
 	 */
-	public inline function moveTo(x:Float, y:Float, solidType:SolidType = null, sweep:Bool = false)
+	public inline function moveTo(x:Float, y:Float, ?solidType:SolidType, sweep:Bool = false)
 	{
 		moveBy(x - this.x, y - this.y, solidType, sweep);
 	}
@@ -812,7 +810,7 @@ class Entity extends Tweener
 	 * @param	solidType	An optional collision type to stop flush against upon collision.
 	 * @param	sweep		If sweeping should be used (prevents fast-moving objects from going through solidType).
 	 */
-	public inline function moveTowards(x:Float, y:Float, amount:Float, solidType:SolidType = null, sweep:Bool = false)
+	public inline function moveTowards(x:Float, y:Float, amount:Float, ?solidType:SolidType, sweep:Bool = false)
 	{
 		_point.x = x - this.x;
 		_point.y = y - this.y;
@@ -830,7 +828,7 @@ class Entity extends Tweener
 	 * @param	solidType	An optional collision type to stop flush against upon collision.
 	 * @param	sweep		If sweeping should be used (prevents fast-moving objects from going through solidType).
 	 */
-	public inline function moveAtAngle(angle:Float, amount:Float, solidType:SolidType = null, sweep:Bool = false):Void
+	public inline function moveAtAngle(angle:Float, amount:Float, ?solidType:SolidType, sweep:Bool = false):Void
 	{
 		angle *= HXP.RAD;
 		moveBy(Math.cos(angle) * amount, Math.sin(angle) * amount, solidType, sweep);
@@ -921,6 +919,6 @@ class Entity extends Tweener
 	private var _graphic:Graphic;
 	private var _point:Point;
 	private var _camera:Point;
-	
-	static private var _EMPTY = new Entity();
+
+	static var _EMPTY:Entity = new Entity();
 }

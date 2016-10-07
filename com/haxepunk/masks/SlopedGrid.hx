@@ -1,7 +1,5 @@
 package com.haxepunk.masks;
 
-import flash.display.Bitmap;
-import flash.display.BitmapData;
 import flash.display.Graphics;
 import flash.geom.Point;
 import flash.geom.Rectangle;
@@ -21,7 +19,8 @@ enum TileType
 	BottomRight;
 }
 
-typedef Tile = {
+typedef Tile =
+{
 	var type:TileType;
 	@:optional var slope:Float;
 	@:optional var yOffset:Float;
@@ -37,7 +36,6 @@ class SlopedGrid extends Hitbox
 	 * If x/y positions should be used instead of columns/rows.
 	 */
 	public var usePositions:Bool;
-
 
 	/**
 	 * Constructor.
@@ -226,7 +224,7 @@ class SlopedGrid extends Hitbox
 	 */
 	public inline function getTile(column:Int = 0, row:Int = 0):Tile
 	{
-		if ( ! checkTile(column, row) )
+		if (!checkTile(column, row))
 		{
 			return _emptyTile;
 		}
@@ -288,13 +286,13 @@ class SlopedGrid extends Hitbox
 	 * The tile width.
 	 */
 	public var tileWidth(get, never):Int;
-	private inline function get_tileWidth():Int { return Std.int(_tile.width); }
+	private inline function get_tileWidth():Int return Std.int(_tile.width); 
 
 	/**
 	 * The tile height.
 	 */
 	public var tileHeight(get, never):Int;
-	private inline function get_tileHeight():Int { return Std.int(_tile.height); }
+	private inline function get_tileHeight():Int return Std.int(_tile.height); 
 
 	/**
 	 * How many columns the grid has
@@ -426,9 +424,7 @@ class SlopedGrid extends Hitbox
 			for (x in startx...destx)
 			{
 				var tile = row[x];
-				if (tile == null || tile.type == null)
-				{
-				}
+				if (tile == null || tile.type == null) {}
 				else if (tile.type == Solid)
 				{
 					graphics.lineStyle(1, 0xFFFFFF, 0.3);

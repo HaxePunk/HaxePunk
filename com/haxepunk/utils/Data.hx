@@ -19,7 +19,7 @@ class Data
 	public static function load(file:String = "")
 	{
 		var data:Dynamic = loadData(file);
-		_data = new Map<String,Dynamic>();
+		_data = new Map<String, Dynamic>();
 		for (str in Reflect.fields(data)) _data.set(str, Reflect.field(data, str));
 	}
 
@@ -111,7 +111,7 @@ class Data
 	// Data information.
 	private static var _shared:SharedObject;
 	private static var _dir:String;
-	private static var _data:Map<String,Dynamic> = new Map<String,Dynamic>();
+	private static var _data:Map<String, Dynamic> = new Map<String, Dynamic>();
 	private static inline var PREFIX:String = "HaxePunk";
 	private static inline var DEFAULT_FILE:String = "_file";
 	private static inline var SIZE:Int = 10000;

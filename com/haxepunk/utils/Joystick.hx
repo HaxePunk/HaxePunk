@@ -23,7 +23,7 @@ class Joystick
 	/**
 	 * A map of buttons and their states
 	 */
-	public var buttons:Map<Int,JoyButtonState>;
+	public var buttons:Map<Int, JoyButtonState>;
 	/**
 	 * Each axis contained in an array.
 	 */
@@ -48,7 +48,7 @@ class Joystick
 	@:dox(hide)
 	public function new()
 	{
-		buttons = new Map<Int,JoyButtonState>();
+		buttons = new Map<Int, JoyButtonState>();
 		ball = new Point(0, 0);
 		axis = new Array<Float>();
 		hat = new Point(0, 0);
@@ -155,7 +155,7 @@ class Joystick
 	 * If the joystick is currently connected.
 	 */
 	public var connected(get, set):Bool;
-	private function get_connected():Bool { return _timeout > 0; }
+	private function get_connected():Bool return _timeout > 0; 
 	private function set_connected(value:Bool):Bool
 	{
 		if (value) _timeout = 3; // 3 seconds to timeout

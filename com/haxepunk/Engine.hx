@@ -1,7 +1,5 @@
 package com.haxepunk;
 
-import flash.display.Bitmap;
-import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.display.StageAlign;
 import flash.display.StageDisplayState;
@@ -10,12 +8,9 @@ import flash.display.StageScaleMode;
 import flash.events.Event;
 import flash.geom.Rectangle;
 import flash.Lib;
-import haxe.EnumFlags;
 import haxe.Timer;
-import com.haxepunk.graphics.atlas.AtlasData;
 import com.haxepunk.utils.Draw;
 import com.haxepunk.utils.Input;
-import com.haxepunk.Tweener;
 
 /**
  * Main game Sprite class, added to the Flash Stage.
@@ -103,17 +98,17 @@ class Engine extends Sprite
 	/**
 	 * Override this, called after Engine has been added to the stage.
 	 */
-	public function init() { }
+	public function init() {}
 
 	/**
 	 * Override this, called when game gains focus
 	 */
-	public function focusGained() { }
+	public function focusGained() {}
 
 	/**
 	 * Override this, called when game loses focus
 	 */
-	public function focusLost() { }
+	public function focusLost() {}
 
 	/**
 	 * Updates the game, updating the Scene and Entities.
@@ -185,24 +180,25 @@ class Engine extends Sprite
 		resize(); // call resize once to initialize the screen
 
 		// set resize event
-		HXP.stage.addEventListener(Event.RESIZE, function (e:Event) {
-			resize();
-		});
+		HXP.stage.addEventListener(Event.RESIZE, function (e:Event) resize());
 
-		HXP.stage.addEventListener(Event.ACTIVATE, function (e:Event) {
+		HXP.stage.addEventListener(Event.ACTIVATE, function (e:Event)
+		{
 			HXP.focused = true;
 			focusGained();
 			_scene.focusGained();
 		});
 
-		HXP.stage.addEventListener(Event.DEACTIVATE, function (e:Event) {
+		HXP.stage.addEventListener(Event.DEACTIVATE, function (e:Event)
+		{
 			HXP.focused = false;
 			focusLost();
 			_scene.focusLost();
 		});
 
 #if (!(flash || html5) && openfl_legacy)
-		flash.display.Stage.shouldRotateInterface = function(orientation:Int):Bool {
+		flash.display.Stage.shouldRotateInterface = function(orientation:Int):Bool
+		{
 			if (HXP.indexOf(HXP.orientations, orientation) == -1) return false;
 			var tmp = HXP.height;
 			HXP.height = HXP.width;
@@ -227,7 +223,7 @@ class Engine extends Sprite
 	}
 
 	/** @private Event handler for stage entry. */
-	private function onStage(e:Event = null)
+	private function onStage(?e:Event)
 	{
 		// remove event listener
 #if flash
@@ -417,7 +413,7 @@ class Engine extends Sprite
 	 * to switch, but won't actually do so until the end of the current frame.
 	 */
 	public var scene(get, set):Scene;
-	private inline function get_scene():Scene { return _scene; }
+	private inline function get_scene():Scene return _scene;
 	private function set_scene(value:Scene):Scene
 	{
 		if (_scene == value) return value;

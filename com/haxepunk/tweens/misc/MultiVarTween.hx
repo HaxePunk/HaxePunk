@@ -1,7 +1,6 @@
 package com.haxepunk.tweens.misc;
 
 import com.haxepunk.Tween;
-import com.haxepunk.utils.Ease;
 
 /**
  * Tweens multiple numeric public properties of an Object simultaneously.

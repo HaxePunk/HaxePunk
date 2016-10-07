@@ -1,6 +1,5 @@
 package com.haxepunk;
 
-import com.haxepunk.utils.Ease;
 import com.haxepunk.tweens.TweenEvent;
 import flash.events.EventDispatcher;
 
@@ -9,8 +8,10 @@ import flash.events.EventDispatcher;
  */
 enum TweenType
 {
-	/** Default type, the tween is still available after it ended and can
-	  * be started again with the restart() method. */
+	/**
+	 * Default type, the tween is still available after it ended and can
+	 * be started again with the restart() method.
+	 */
 	Persist;
 	
 	/** The tween will loop. */
@@ -24,7 +25,8 @@ enum TweenType
  * Friend class for access to Tween private members
  */
 @:dox(hide)
-typedef FriendTween = {
+typedef FriendTween =
+{
 	private function finish():Void;
 
 	private var _finish:Bool;
@@ -110,7 +112,7 @@ class Tween extends EventDispatcher
 	/** @private Called when the Tween completes. */
 	private function finish()
 	{
-		switch(_type)
+		switch (_type)
 		{
 			case Persist:
 				_time = _target;
@@ -148,11 +150,11 @@ class Tween extends EventDispatcher
 
 	/** Progression of the tween, between 0 and 1. */
 	public var percent(get, set):Float;
-	private function get_percent():Float { return _time / _target; }
-	private function set_percent(value:Float):Float { _time = _target * value; return _time; }
+	private function get_percent():Float return _time / _target; 
+	private function set_percent(value:Float):Float return _time = _target * value;
 
 	public var scale(get, null):Float;
-	private function get_scale():Float { return _t; }
+	private function get_scale():Float return _t; 
 
 	private var _type:TweenType;
 	private var _ease:Float -> Float;

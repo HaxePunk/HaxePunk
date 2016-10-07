@@ -19,10 +19,10 @@
             "type": "ModifierOrder",
                 "props": {
                 "modifiers": [
+                    "MACRO",
                     "OVERRIDE",
                     "PUBLIC_PRIVATE",
                     "STATIC",
-                    "MACRO",
                     "INLINE",
                     "DYNAMIC"
                 ]
@@ -157,6 +157,7 @@
         {
             "type": "EmptyPackage",
             "props": {
+                "severity": "INFO",
                 "enforceEmptyPackage": true
             }
         },
@@ -169,6 +170,7 @@
         {
             "type": "UnusedImport",
             "props": {
+                "severity": "INFO",
                 "ignoreModules": [
                     "haxe.macro.Expr"
                 ]

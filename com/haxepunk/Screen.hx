@@ -1,15 +1,12 @@
 package com.haxepunk;
 
-import com.haxepunk.graphics.atlas.Atlas;
-import com.haxepunk.graphics.Image;
-
 import flash.display.Bitmap;
-import flash.display.BitmapData;
 import flash.display.PixelSnapping;
 import flash.display.Sprite;
 import flash.filters.BitmapFilter;
 import flash.geom.Matrix;
-import flash.Lib;
+import com.haxepunk.graphics.atlas.Atlas;
+import com.haxepunk.graphics.Image;
 
 /**
  * Container for the main screen buffer. Can be used to transform the screen.
@@ -149,8 +146,8 @@ class Screen
 		// screen shake
 		if (_shakeTime > 0)
 		{
-			var sx:Int = Std.random(_shakeMagnitude*2+1) - _shakeMagnitude;
-			var sy:Int = Std.random(_shakeMagnitude*2+1) - _shakeMagnitude;
+			var sx:Int = Std.random(_shakeMagnitude * 2 + 1) - _shakeMagnitude;
+			var sy:Int = Std.random(_shakeMagnitude * 2 + 1) - _shakeMagnitude;
 
 			x += sx - _shakeX;
 			y += sy - _shakeY;
@@ -173,7 +170,7 @@ class Screen
 	 * Refresh color of the screen.
 	 */
 	public var color(get, set):Int;
-	private function get_color():Int { return HXP.stage.color; }
+	private function get_color():Int return HXP.stage.color;
 	private function set_color(value:Int):Int
 	{
 		HXP.stage.color = value;
@@ -293,7 +290,7 @@ class Screen
 	 * Rotation of the screen, in degrees.
 	 */
 	public var angle(get, set):Float;
-	private function get_angle():Float { return _angle * HXP.DEG; }
+	private function get_angle():Float return _angle * HXP.DEG;
 	private function set_angle(value:Float):Float
 	{
 		if (_angle == value * HXP.RAD) return value;
@@ -344,13 +341,13 @@ class Screen
 	 * X position of the mouse on the screen.
 	 */
 	public var mouseX(get, null):Int;
-	private function get_mouseX():Int { return Std.int(_sprite.mouseX); }
+	private function get_mouseX():Int return Std.int(_sprite.mouseX);
 
 	/**
 	 * Y position of the mouse on the screen.
 	 */
 	public var mouseY(get, null):Int;
-	private function get_mouseY():Int { return Std.int(_sprite.mouseY); }
+	private function get_mouseY():Int return Std.int(_sprite.mouseY);
 
 	/**
 	 * Captures the current screen as an Image object.

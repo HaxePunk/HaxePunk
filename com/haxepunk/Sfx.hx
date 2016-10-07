@@ -181,7 +181,7 @@ class Sfx
 	 * Alter the volume factor (a value from 0 to 1) of the sound during playback.
 	 */
 	public var volume(get, set):Float;
-	private function get_volume():Float { return _volume; }
+	private function get_volume():Float return _volume; 
 	private function set_volume(value:Float):Float
 	{
 		if (value < 0) value = 0;
@@ -200,7 +200,7 @@ class Sfx
 	 * Panning only applies to mono sounds. It is ignored on stereo.
 	 */
 	public var pan(get, set):Float;
-	private function get_pan():Float { return _pan; }
+	private function get_pan():Float return _pan; 
 	private function set_pan(value:Float):Float
 	{
 		value = HXP.clamp(value, -1, 1);
@@ -218,7 +218,7 @@ class Sfx
 	 * sounds to mute or pan en masse.
 	 */
 	public var type(get, set):String;
-	private function get_type():String { return _type; }
+	private function get_type():String return _type; 
 	private function set_type(value:String):String
 	{
 		if (_type == value) return value;
@@ -242,19 +242,19 @@ class Sfx
 	 * If the sound is currently playing.
 	 */
 	public var playing(get, null):Bool;
-	private inline function get_playing():Bool { return _channel != null; }
+	private inline function get_playing():Bool return _channel != null; 
 
 	/**
 	 * Position of the currently playing sound, in seconds.
 	 */
 	public var position(get, null):Float;
-	private function get_position():Float { return (playing ? _channel.position : _position) / 1000; }
+	private function get_position():Float return (playing ? _channel.position : _position) / 1000; 
 
 	/**
 	 * Length of the sound, in seconds.
 	 */
 	public var length(get, null):Float;
-	private function get_length():Float { return _sound.length / 1000; }
+	private function get_length():Float return _sound.length / 1000; 
 
 	/**
 	 * Return a sound type's pan setting. 
@@ -264,13 +264,13 @@ class Sfx
 	 *
 	 * @return	The pan for the type.
 	 */
-	static public function getPan(type:String):Float
+	public static function getPan(type:String):Float
 	{
 		var result:Float = 0;
 		if (_typeTransforms.exists(type))
 		{
 			var transform = _typeTransforms.get(type);
-			if(transform != null)
+			if (transform != null)
 			result = transform.pan;
 		}
 		#if flash
@@ -288,13 +288,13 @@ class Sfx
 	 *
 	 * @return	The volume for the type.
 	 */
-	static public function getVolume(type:String):Float
+	public static function getVolume(type:String):Float
 	{
 		var result:Float = 1;
 		if (_typeTransforms.exists(type))
 		{
 			var transform = _typeTransforms.get(type);
-			if(transform != null)
+			if (transform != null)
 				result = transform.volume;
 		}
 		#if flash
@@ -311,7 +311,7 @@ class Sfx
 	 * @param	type	The type to set.
 	 * @param	pan		The pan value.
 	 */
-	static public function setPan(type:String, pan:Float)
+	public static function setPan(type:String, pan:Float)
 	{
 		var transform:SoundTransform = _typeTransforms.get(type);
 		if (transform == null)
@@ -337,7 +337,7 @@ class Sfx
 	 * @param	type	The type to set.
 	 * @param	volume	The volume value.
 	 */
-	static public function setVolume(type:String, volume:Float)
+	public static function setVolume(type:String, volume:Float)
 	{
 		var transform:SoundTransform = _typeTransforms.get(type);
 		if (transform == null)
@@ -363,13 +363,13 @@ class Sfx
 	 *
 	 * @param	updatePan	True indicates pan changed, false indicates volume changed.
 	 */
-	static public function onGlobalUpdated(updatePan:Bool)
+	public static function onGlobalUpdated(updatePan:Bool)
 	{
-		for(type in _typePlaying.keys())
+		for (type in _typePlaying.keys())
 		{
 			for (sfx in _typePlaying.get(type))
 			{
-				if(updatePan)
+				if (updatePan)
 				{
 					sfx.pan = sfx.pan;
 				}
@@ -394,7 +394,7 @@ class Sfx
 	private var _looping:Bool;
 
 	// Stored Sound objects.
-	private static var _sounds:Map<String,Sound> = new Map<String,Sound>();
-	private static var _typePlaying:Map<String,Array<Sfx>> = new Map<String,Array<Sfx>>();
-	private static var _typeTransforms:Map<String,SoundTransform> = new Map<String,SoundTransform>();
+	private static var _sounds:Map<String, Sound> = new Map<String, Sound>();
+	private static var _typePlaying:Map<String, Array<Sfx>> = new Map<String, Array<Sfx>>();
+	private static var _typeTransforms:Map<String, SoundTransform> = new Map<String, SoundTransform>();
 }

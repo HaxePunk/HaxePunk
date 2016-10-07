@@ -1,13 +1,10 @@
 package com.haxepunk.graphics;
 
-import com.haxepunk.HXP;
-import com.haxepunk.Graphic;
-
-import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
+import com.haxepunk.HXP;
 
 /**
  * Creates a pre-rotated Image strip to increase runtime performance for rotating graphics.
@@ -119,8 +116,8 @@ class PreRotation extends Image
 	private var _current:Int;
 
 	// Global information.
-	private static var _rotated:Map<String,BitmapData> = new Map<String,BitmapData>();
-	private static var _sizes:Map<String,Int> = new Map<String,Int>();
+	private static var _rotated:Map<String, BitmapData> = new Map<String, BitmapData>();
+	private static var _sizes:Map<String, Int> = new Map<String, Int>();
 
 	private static inline var _MAX_WIDTH:Int = 3000;
 	private static inline var _MAX_HEIGHT:Int = 4000;

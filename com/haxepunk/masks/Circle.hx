@@ -12,7 +12,6 @@ import flash.geom.Point;
 /**
  * Uses circular area to determine collision.
  */
-
 class Circle extends Hitbox
 {
 	/**
@@ -46,7 +45,7 @@ class Circle extends Hitbox
 		{
 			return false;//The hitbox is to far away so return false
 		}
-		if (distanceX <= other._parent.width * 0.5|| distanceY <= other._parent.height * 0.5)
+		if (distanceX <= other._parent.width * 0.5 || distanceY <= other._parent.height * 0.5)
 		{
 			return true;
 		}
@@ -259,14 +258,14 @@ class Circle extends Hitbox
 		graphics.drawCircle((_parent.x + _x - HXP.camera.x) * scaleX, (_parent.y + _y - HXP.camera.y) * scaleY, radius * scaleX);
 	}
 
-	override private function get_x():Int { return _x - _radius; }
-	override private function get_y():Int { return _y - _radius; }
+	override private function get_x():Int return _x - _radius; 
+	override private function get_y():Int return _y - _radius; 
 
 	/**
 	 * Radius.
 	 */
 	public var radius(get, set):Int;
-	private inline function get_radius():Int { return _radius; }
+	private inline function get_radius():Int return _radius; 
 	private function set_radius(value:Int):Int
 	{
 		if (_radius == value) return value;

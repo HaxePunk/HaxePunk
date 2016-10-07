@@ -6,7 +6,7 @@ import com.haxepunk.masks.*;
 class TestSlopedGrid extends haxe.unit.TestCase
 {
 
-	public override function setup()
+	override public function setup()
 	{
 		grid = new SlopedGrid(320, 320, 32, 32);
 		grid.setRect(0, 0, 10, 1, Solid);

@@ -1,13 +1,10 @@
 package com.haxepunk.graphics;
 
-import com.haxepunk.Graphic;
-import com.haxepunk.graphics.atlas.Atlas;
-import com.haxepunk.graphics.atlas.AtlasRegion;
-import com.haxepunk.HXP;
-import com.haxepunk.RenderMode;
-
 import flash.display.BitmapData;
 import flash.geom.Point;
+import com.haxepunk.graphics.atlas.AtlasRegion;
+import com.haxepunk.HXP;
+import com.haxepunk.Graphic;
 
 /**
  * A background texture that can be repeated horizontally and vertically
@@ -20,7 +17,7 @@ class Backdrop extends Canvas
 	 * @param	source		Source texture.
 	 * @param	repeatX		Repeat horizontally.
 	 * @param	repeatY		Repeat vertically.
-     * @param	screenScale	How many screens the backdrop must span (to use with screen scaling)
+	 * @param	screenScale	How many screens the backdrop must span (to use with screen scaling)
 	 */
 	public function new(source:ImageType, repeatX:Bool = true, repeatY:Bool = true, screenScale:Float = 1.)
 	{
@@ -42,7 +39,7 @@ class Backdrop extends Canvas
 		_repeatY = repeatY;
 
 		super(Std.int(HXP.width * (repeatX ? 1 : 0) * screenScale) + _textWidth, Std.int(HXP.height * (repeatY ? 1 : 0) * screenScale) + _textHeight);
-        
+
 		if (blit)
 		{
 			HXP.rect.x = HXP.rect.y = 0;

@@ -29,7 +29,7 @@ class Animation
 	 */
 	public function play(reset:Bool = false, reverse:Bool = false)
 	{
-		if(name == null)
+		if (name == null)
 			_parent.playAnimation(this, reset, reverse);
 		else
 			_parent.play(name, reset, reverse);
@@ -37,10 +37,7 @@ class Animation
 
 	@:dox(hide)
 	public var parent(null, set):Spritemap;
-	private function set_parent(value:Spritemap):Spritemap {
-		_parent = value;
-		return _parent;
-	}
+	private function set_parent(value:Spritemap):Spritemap return _parent = value;
 
 	/**
 	 * Name of the animation.

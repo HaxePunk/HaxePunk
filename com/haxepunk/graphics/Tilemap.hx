@@ -119,13 +119,13 @@ class Tilemap extends Canvas
 
 		if (blit)
 		{
-			if(_opaqueTiles == false || index < 0)
+			if (!_opaqueTiles || index < 0)
 			{
 				_tile.x = column * _tile.width;
 				_tile.y = row * _tile.height;
 				fill(_tile, 0, 0); // erase tile
 			}
-			if(index >= 0)
+			if (index >= 0)
 			{
 				updateTileRect(index);
 				draw(column * _tile.width, row * _tile.height, _set, _tile); // draw tile
@@ -188,10 +188,10 @@ class Tilemap extends Canvas
 			while (column < r)
 			{
 				setTile(column, row, index);
-				column ++;
+				column++;
 			}
 			column = c;
-			row ++;
+			row++;
 		}
 		usePositions = u;
 	}
@@ -224,10 +224,10 @@ class Tilemap extends Canvas
 			while (column < r)
 			{
 				clearTile(column, row);
-				column ++;
+				column++;
 			}
 			column = c;
-			row ++;
+			row++;
 		}
 		usePositions = u;
 	}
@@ -241,12 +241,12 @@ class Tilemap extends Canvas
 	public function loadFrom2DArray(array:Array<Array<Int>>):Void
 	{
 		for (y in 0...array.length)
-		 {
+		{
 			for (x in 0...array[y].length)
 			{
 				setTile(x, y, array[y][x]);
 			}
-		 }
+		}
 	}
 
 	/**
@@ -422,18 +422,18 @@ class Tilemap extends Canvas
 		{
 			while (y < h)
 			{
-				while (x < w) clearTile(x ++, y);
+				while (x < w) clearTile(x++, y);
 				x = Std.int(rect.x);
-				y ++;
+				y++;
 			}
 		}
 		else
 		{
 			while (y < h)
 			{
-				while (x < w) updateTile(x ++, y);
+				while (x < w) updateTile(x++, y);
 				x = Std.int(rect.x);
-				y ++;
+				y++;
 			}
 		}
 		usePositions = u;
@@ -480,7 +480,7 @@ class Tilemap extends Canvas
 		{
 			wx = sx;
 			// ensure no vertical overlap between this and next tile
-			scy = (Math.floor(wy+stepy) - Math.floor(wy)) / tileHeight;
+			scy = (Math.floor(wy + stepy) - Math.floor(wy)) / tileHeight;
 
 			for (x in startx...destx)
 			{
@@ -488,7 +488,7 @@ class Tilemap extends Canvas
 				if (tile >= 0)
 				{
 					// ensure no horizontal overlap between this and next tile
-					scx = (Math.floor(wx+stepx) - Math.floor(wx)) / tileWidth;
+					scx = (Math.floor(wx + stepx) - Math.floor(wx)) / tileWidth;
 
 					updateTileRect(tile);
 					_atlas.prepareTile(_tile, Math.floor(wx), Math.floor(wy), layer, scx, scy, 0, _red, _green, _blue, alpha, smooth);
@@ -543,13 +543,13 @@ class Tilemap extends Canvas
 	 * The tile width.
 	 */
 	public var tileWidth(get, never):Int;
-	private inline function get_tileWidth():Int { return Std.int(_tile.width); }
+	private inline function get_tileWidth():Int return Std.int(_tile.width); 
 
 	/**
 	 * The tile height.
 	 */
 	public var tileHeight(get, never):Int;
-	private inline function get_tileHeight():Int { return Std.int(_tile.height); }
+	private inline function get_tileHeight():Int return Std.int(_tile.height); 
 
 	/**
 	 * The tile horizontal spacing of tile.
@@ -565,26 +565,26 @@ class Tilemap extends Canvas
 	 * How many tiles the tilemap has.
 	 */
 	public var tileCount(get, never):Int;
-	private inline function get_tileCount():Int { return _setCount; }
+	private inline function get_tileCount():Int return _setCount; 
 
 	/**
 	 * How many columns the tilemap has.
 	 */
 	public var columns(get, null):Int;
-	private inline function get_columns():Int { return _columns; }
+	private inline function get_columns():Int return _columns; 
 
 	/**
 	 * How many rows the tilemap has.
 	 */
 	public var rows(get, null):Int;
-	private inline function get_rows():Int { return _rows; }
+	private inline function get_rows():Int return _rows; 
 
 	/**
 	 * If false, whenever you call setTile or one of the load methods, clears the affected Tilemap areas before redrawing.
 	 * Only used on Flash targets and with tilesets that contain transparency.
 	 */
 	public var opaqueTiles(get, null):Bool;
-	private inline function get_opaqueTiles():Bool { return _opaqueTiles; }
+	private inline function get_opaqueTiles():Bool return _opaqueTiles; 
 
 	/** Default value: false if HXP.stage.quality is LOW, true otherwise. */
 	public var smooth:Bool;

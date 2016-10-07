@@ -4,7 +4,6 @@ import com.haxepunk.HXP;
 
 class GestureType
 {
-
 	public var x:Float = 0;
 	public var y:Float = 0;
 	public var x2:Float = 0;
@@ -75,9 +74,7 @@ class GestureType
 			time += HXP.elapsed;
 		}
 	}
-
 }
-
 
 enum GestureMode
 {
@@ -89,10 +86,8 @@ enum GestureMode
 	FINISHED;
 }
 
-
 class Gesture
 {
-
 	// a quick one-finger tap
 	public static inline var TAP = 1;
 	// two quick one-finger taps
@@ -375,9 +370,7 @@ class Gesture
 		}
 
 		if (touchCount == 0) finishAll();
-
 	}
 
 	static var _lastTap:Float = 0;
-
 }

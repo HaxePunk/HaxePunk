@@ -1,6 +1,5 @@
 package com.haxepunk;
 
-
 /**
  * A group of entities which can be added to or removed from the Scene and
  * moved together. Also supports object pooling.
@@ -21,7 +20,6 @@ class EntityList<T:Entity> extends Entity
 		_recycled = new List();
 		super();
 	}
-
 
 	/**
 	 * Add an Entity to this EntityList and its Scene.

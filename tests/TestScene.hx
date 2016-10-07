@@ -12,7 +12,7 @@ class TestEntity extends Entity
 class TestScene extends haxe.unit.TestCase
 {
 
-	public override function setup()
+	override public function setup()
 	{
 		new Engine();
 		scene = new Scene();

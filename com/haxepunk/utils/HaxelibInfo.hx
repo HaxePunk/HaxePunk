@@ -5,22 +5,26 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.Json;
 import haxe.io.Path;
-import sys.io.Process;
 #end
 
 @:dox(hide)
 class HaxelibInfoBuilder
 {
-
 	macro public static function build():Array<Field>
 	{
 		var path = haxe.macro.Context.resolvePath("com/haxepunk/utils/HaxelibInfo.hx");
 		path = Path.normalize(Path.directory(path) + "/../../../haxelib.json");
 
 		// Read haxelib.json
-		var doc = try {
-			Json.parse(sys.io.File.read(path).readAll().toString());
-		} catch (e:Dynamic) { trace(e); null; }
+		var doc:Dynamic = null;
+		try
+		{
+			doc = Json.parse(sys.io.File.read(path).readAll().toString());
+		}
+		catch (e:Dynamic)
+		{
+			trace(e);
+		}
 
 		// Construct fields
 		var fields:Array<Field> = Context.getBuildFields();
@@ -78,6 +82,4 @@ class HaxelibInfoBuilder
 /**
  * Access HaxePunk's haxelib.json from your code.
  */
-class HaxelibInfo
-{
-}
+class HaxelibInfo {}

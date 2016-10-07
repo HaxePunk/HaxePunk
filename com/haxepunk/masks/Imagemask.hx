@@ -1,6 +1,5 @@
 package com.haxepunk.masks;
 
-import com.haxepunk.Mask;
 import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Matrix;
@@ -84,7 +83,8 @@ class Imagemask extends Pixelmask
 	 * transformation.
 	 * @return  the bound box in local coordinates.
 	 */
-	public function getBounds():flash.geom.Rectangle {
+	public function getBounds():flash.geom.Rectangle
+	{
 		var sx = _source.scale * _source.scaleX;
 		var sy = _source.scale * _source.scaleY;
 

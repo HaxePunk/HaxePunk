@@ -43,6 +43,9 @@ unit:
 	@echo "Running unit tests"
 	@cd tests && haxe compile.hxml && neko unit.n
 
+checkstyle:
+	haxelib run checkstyle -c checkstyle.json -s com
+
 unit-travis:
 	# copy ndll to base path
 	@cp $(LIME_PATH)/`cat $(LIME_PATH)/.current | sed -e 's/\./,/g'`/legacy/ndll/Linux64/* .

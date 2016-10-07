@@ -7,7 +7,6 @@ import com.haxepunk.utils.Key;
 
 import openfl.Assets;
 import flash.display.Bitmap;
-import flash.display.BitmapData;
 import flash.display.BlendMode;
 import flash.display.Graphics;
 import flash.display.Sprite;
@@ -218,7 +217,9 @@ class Console
 			_butPlay = new Bitmap(Assets.getBitmapData("graphics/debug/console_play.png"));
 			_butPause = new Bitmap(Assets.getBitmapData("graphics/debug/console_pause.png"));
 			_butStep = new Bitmap(Assets.getBitmapData("graphics/debug/console_step.png"));
-		} catch (e:Dynamic) {
+		}
+		catch (e:Dynamic)
+		{
 			return;
 		}
 
@@ -408,7 +409,7 @@ class Console
 	 * If the console should be visible.
 	 */
 	public var visible(get, set):Bool;
-	private function get_visible():Bool { return _sprite.visible; }
+	private function get_visible():Bool return _sprite.visible; 
 	private function set_visible(value:Bool):Bool
 	{
 		_sprite.visible = value;
@@ -534,7 +535,7 @@ class Console
 	 * If the Console is currently in paused mode.
 	 */
 	public var paused(get, set):Bool;
-	private function get_paused():Bool { return _paused; }
+	private function get_paused():Bool return _paused; 
 	private function set_paused(value:Bool):Bool
 	{
 		// Quit if the console isn't enabled.
@@ -575,7 +576,7 @@ class Console
 	 * If the Console is currently in debug mode.
 	 */
 	public var debug(get, set):Bool;
-	private function get_debug():Bool { return _debug; }
+	private function get_debug():Bool return _debug; 
 	private function set_debug(value:Bool):Bool
 	{
 		// Quit if the console isn't enabled.
@@ -917,7 +918,7 @@ class Console
 				var i:Int = (LOG.length > _logLines) ? Std.int(Math.round((LOG.length - _logLines) * _logScroll)) : 0,
 					n:Int = Std.int(i + Math.min(_logLines, LOG.length)),
 					s:String = "";
-				while (i < n) s += LOG[i ++] + "\n";
+				while (i < n) s += LOG[i++] + "\n";
 				_logReadText1.text = s;
 			}
 			else _logReadText1.text = "";
@@ -1096,7 +1097,7 @@ class Console
 	{
 		_format.size = size;
 		_format.color = color;
-		switch(align)
+		switch (align)
 		{
 			case "left":
 				_format.align = TextFormatAlign.LEFT;
@@ -1114,13 +1115,13 @@ class Console
 	 * Get the unscaled screen width for the Console.
 	 */
 	public var width(get, never):Int;
-	private function get_width():Int { return HXP.windowWidth; }
+	private function get_width():Int return HXP.windowWidth; 
 
 	/**
 	 * Get the unscaled screen height for the Console.
 	 */
 	public var height(get, never):Int;
-	private function get_height():Int { return HXP.windowHeight; }
+	private function get_height():Int return HXP.windowHeight; 
 
 	// Console state information.
 	private var _enabled:Bool;

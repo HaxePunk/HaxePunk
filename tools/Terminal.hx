@@ -36,20 +36,20 @@ class Terminal
 	//
 	// CURSOR POSITION
 	//
-	public static inline function cursorUp(n:Int = 1):String { return CSI + n + "A"; }
-	public static inline function cursorDown(n:Int = 1):String { return CSI + n + "B"; }
-	public static inline function cursorForward(n:Int = 1):String { return CSI + n + "C"; }
-	public static inline function cursorBackward(n:Int = 1):String { return CSI + n + "D"; }
-	public static inline function cursorNextLine(n:Int = 1):String { return CSI + n + "E"; }
-	public static inline function cursorPrevLine(n:Int = 1):String { return CSI + n + "F"; }
+	public static inline function cursorUp(n:Int = 1):String return CSI + n + "A"; 
+	public static inline function cursorDown(n:Int = 1):String return CSI + n + "B"; 
+	public static inline function cursorForward(n:Int = 1):String return CSI + n + "C"; 
+	public static inline function cursorBackward(n:Int = 1):String return CSI + n + "D"; 
+	public static inline function cursorNextLine(n:Int = 1):String return CSI + n + "E"; 
+	public static inline function cursorPrevLine(n:Int = 1):String return CSI + n + "F"; 
 	public static inline function cursorPosition(x:Int = 1, y:Int = 1):String
 	{
 		return CSI + x + ";" + y + "H"; // could also be "f" instead of "H"
 	}
-	public static inline function cursorSave():String { return CSI + "s"; }
-	public static inline function cursorRestore():String { return CSI + "u"; }
-	public static inline function cursorHide():String { return CSI + "?25l"; }
-	public static inline function cursorShow():String { return CSI + "?25h"; }
+	public static inline function cursorSave():String return CSI + "s"; 
+	public static inline function cursorRestore():String return CSI + "u"; 
+	public static inline function cursorHide():String return CSI + "?25l"; 
+	public static inline function cursorShow():String return CSI + "?25h"; 
 
 	//
 	// ERASE

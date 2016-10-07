@@ -1,25 +1,18 @@
 package com.haxepunk.graphics;
 
 import haxe.ds.StringMap;
-import flash.display.Bitmap;
-import flash.display.BitmapData;
-import flash.display.Sprite;
-import flash.geom.ColorTransform;
-import flash.geom.Point;
-import flash.geom.Rectangle;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
 import openfl.Assets;
-
 import com.haxepunk.HXP;
-import com.haxepunk.Graphic;
 import com.haxepunk.graphics.atlas.Atlas;
 
 /**
  * Text option including the font, size, color...
  */
-typedef TextOptions = {
+typedef TextOptions =
+{
 	/** Optional. The font to use. Default value is com.haxepunk.HXP.defaultFont. */
 	@:optional var font:String;
 	/** Optional. The font size. Default value is 16. */
@@ -328,7 +321,7 @@ class Text extends Image
 	 * Text string.
 	 */
 	public var text(get, set):String;
-	private inline function get_text():String { return _text; }
+	private inline function get_text():String return _text; 
 	private function set_text(value:String):String
 	{
 		if (_text == value && _richText == null) return value;
@@ -350,7 +343,7 @@ class Text extends Image
 	 * Use `Text.addStyle` to control the appearance of marked-up text.
 	 */
 	public var richText(get, set):String;
-	private function get_richText():String { return (_richText == null ? _text : _richText); }
+	private function get_richText():String return (_richText == null ? _text : _richText); 
 	private function set_richText(value:String):String
 	{
 		if (_richText == value) return value;
@@ -485,8 +478,8 @@ class Text extends Image
 		return value;
 	}
 
-	override private function get_width():Int { return Std.int(_width); }
-	override private function get_height():Int { return Std.int(_height); }
+	override private function get_width():Int return Std.int(_width); 
+	override private function get_height():Int return Std.int(_height); 
 
 	// Text information.
 	private var _width:Int;

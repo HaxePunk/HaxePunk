@@ -1,7 +1,5 @@
 package com.haxepunk.masks;
 
-import flash.display.Bitmap;
-import flash.display.BitmapData;
 import flash.display.Graphics;
 import flash.geom.Point;
 import flash.geom.Rectangle;
@@ -20,7 +18,6 @@ class Grid extends Hitbox
 	 * grid coordinates, relative to the grid size.
 	 */
 	public var usePositions:Bool;
-
 
 	/**
 	 * Constructor. The actual size of the grid is determined by dividing the width/height by
@@ -118,14 +115,7 @@ class Grid extends Hitbox
 	private inline function checkTile(column:Int, row:Int):Bool
 	{
 		// check that tile is valid
-		if (column < 0 || column > columns - 1 || row < 0 || row > rows - 1)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
+		return !(column < 0 || column > columns - 1 || row < 0 || row > rows - 1);
 	}
 
 	/**
@@ -271,7 +261,7 @@ class Grid extends Hitbox
 		{
 			for (x in 0...columns)
 			{
-				cloneGrid.setTile(x,y,getTile(x,y));
+				cloneGrid.setTile(x, y, getTile(x, y));
 			}
 		}
 		return cloneGrid;
@@ -281,13 +271,13 @@ class Grid extends Hitbox
 	 * The tile width.
 	 */
 	public var tileWidth(get, never):Int;
-	private inline function get_tileWidth():Int { return Std.int(_tile.width); }
+	private inline function get_tileWidth():Int return Std.int(_tile.width); 
 
 	/**
 	 * The tile height.
 	 */
 	public var tileHeight(get, never):Int;
-	private inline function get_tileHeight():Int { return Std.int(_tile.height); }
+	private inline function get_tileHeight():Int return Std.int(_tile.height); 
 
 	/**
 	 * How many columns the grid has
@@ -310,10 +300,10 @@ class Grid extends Hitbox
 		var rectX:Int, rectY:Int, pointX:Int, pointY:Int;
 		_rect.x = other._parent.x - other._parent.originX - _parent.x + _parent.originX;
 		_rect.y = other._parent.y - other._parent.originY - _parent.y + _parent.originY;
-		pointX  = Std.int((_rect.x + other._parent.width - 1) / _tile.width) + 1;
-		pointY  = Std.int((_rect.y + other._parent.height -1) / _tile.height) + 1;
-		rectX   = Std.int(_rect.x / _tile.width);
-		rectY   = Std.int(_rect.y / _tile.height);
+		pointX = Std.int((_rect.x + other._parent.width - 1) / _tile.width) + 1;
+		pointY = Std.int((_rect.y + other._parent.height - 1) / _tile.height) + 1;
+		rectX = Std.int(_rect.x / _tile.width);
+		rectY = Std.int(_rect.y / _tile.height);
 
 		for (dy in rectY...pointY)
 		{
@@ -371,7 +361,7 @@ class Grid extends Hitbox
 		{
 			if (y1 < 0 || y1 >= data.length)
 			{
-				y1 ++;
+				y1++;
 				continue;
 			}
 
@@ -379,7 +369,7 @@ class Grid extends Hitbox
 			{
 				if (x1 < 0 || x1 >= data[0].length)
 				{
-					x1 ++;
+					x1++;
 					continue;
 				}
 
@@ -387,11 +377,11 @@ class Grid extends Hitbox
 				{
 					if (other.data.hitTest(_point, 1, _tile)) return true;
 				}
-				x1 ++;
+				x1++;
 				_tile.x += _tile.width;
 			}
 			x1 = xx;
-			y1 ++;
+			y1++;
 			_tile.x = x1 * _tile.width;
 			_tile.y += _tile.height;
 		}
@@ -512,9 +502,9 @@ class Grid extends Hitbox
 
 				// Check all the corners for collisions
 				if ((getTile(ac1, ar1) && other.getTile(bc1, br1))
-				 || (getTile(ac2, ar1) && other.getTile(bc2, br1))
-				 || (getTile(ac1, ar2) && other.getTile(bc1, br2))
-				 || (getTile(ac2, ar2) && other.getTile(bc2, br2)))
+					|| (getTile(ac2, ar1) && other.getTile(bc2, br1))
+					|| (getTile(ac1, ar2) && other.getTile(bc1, br2))
+					|| (getTile(ac2, ar2) && other.getTile(bc2, br2)))
 				{
 					return true;
 				}

@@ -75,11 +75,11 @@ import com.haxepunk.utils.Touch;
  */
 class TestImport extends haxe.unit.TestCase
 {
-	public override function setup()
+	override public function setup()
 	{
 	}
 
-	public override function tearDown()
+	override public function tearDown()
 	{
 	}
 }

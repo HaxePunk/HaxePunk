@@ -1,13 +1,9 @@
 package com.haxepunk.graphics.atlas;
 
 import com.haxepunk.Scene;
-import com.haxepunk.ds.Either;
 import flash.display.BitmapData;
-import flash.display.Graphics;
-import flash.display.Sprite;
 import flash.geom.Rectangle;
 import flash.geom.Point;
-import flash.geom.Matrix;
 import openfl.display.Tilesheet;
 
 /**
@@ -20,20 +16,22 @@ abstract AtlasDataType(AtlasData)
 	private inline function new(data:AtlasData) this = data;
 	@:dox(hide) @:to public inline function toAtlasData():AtlasData return this;
 
-	@:dox(hide) @:from public static inline function fromString(s:String) {
+	@:dox(hide) @:from public static inline function fromString(s:String)
+	{
 		return new AtlasDataType(AtlasData.getAtlasDataByName(s, true));
 	}
-	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData) {
+	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData)
+	{
 		return new AtlasDataType(new AtlasData(bd));
 	}
-	@:dox(hide) @:from public static inline function fromAtlasData(data:AtlasData) {
+	@:dox(hide) @:from public static inline function fromAtlasData(data:AtlasData)
+	{
 		return new AtlasDataType(data);
 	}
 }
 
 class AtlasData
 {
-
 	public var width(default, null):Int;
 	public var height(default, null):Int;
 	public var bitmapData:BitmapData;
@@ -68,7 +66,7 @@ class AtlasData
 		_tilesheet = new Tilesheet(bd);
 		_name = name;
 
-		if(_name != null)
+		if (_name != null)
 		{
 			if (_dataPool.exists(_name))
 			{
@@ -100,7 +98,7 @@ class AtlasData
 		{
 			data = _dataPool.get(name);
 		}
-		else if(create)
+		else if (create)
 		{
 			var bitmap:BitmapData = HXP.getBitmap(name);
 			if (bitmap != null)
@@ -356,7 +354,7 @@ class AtlasData
 	 * Default: true
 	 */
 	public var alpha(get, set):Bool;
-	private function get_alpha():Bool { return (_renderFlags & Tilesheet.TILE_ALPHA != 0); }
+	private function get_alpha():Bool return (_renderFlags & Tilesheet.TILE_ALPHA != 0); 
 	private function set_alpha(value:Bool):Bool
 	{
 		if (value) _renderFlags |= Tilesheet.TILE_ALPHA;
@@ -370,7 +368,7 @@ class AtlasData
 	 * Default: true
 	 */
 	public var rgb(get, set):Bool;
-	private function get_rgb():Bool { return (_renderFlags & Tilesheet.TILE_RGB != 0); }
+	private function get_rgb():Bool return (_renderFlags & Tilesheet.TILE_RGB != 0); 
 	private function set_rgb(value:Bool)
 	{
 		if (value) _renderFlags |= Tilesheet.TILE_RGB;
@@ -384,7 +382,8 @@ class AtlasData
 	 * Default: `BLEND_NORMAL`
 	 */
 	public var blend(get, set):Int;
-	private function get_blend():Int {
+	private function get_blend():Int
+	{
 		if (_renderFlags & Tilesheet.TILE_BLEND_NORMAL != 0)
 			return BLEND_NORMAL;
 		else if (_renderFlags & Tilesheet.TILE_BLEND_ADD != 0)
