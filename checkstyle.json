@@ -1,0 +1,184 @@
+{
+    "defaultSeverity": "WARNING",
+    "defineCombinations": [
+        ["flash", "web"],
+        ["html5", "js", "web"],
+        ["neko", "desktop", "native"],
+        ["android", "cpp", "mobile", "native"],
+        ["ios", "cpp", "mobile", "native"],
+        ["desktop", "cpp", "native"]
+    ],
+    "exclude": {
+        "IndentationCharacter": [
+            "haxepunk.Preloader",
+            "haxepunk.graphics.BitmapText"
+        ]
+    },
+    "checks": [
+        {
+            "type": "ModifierOrder",
+                "props": {
+                "modifiers": [
+                    "OVERRIDE",
+                    "PUBLIC_PRIVATE",
+                    "STATIC",
+                    "MACRO",
+                    "INLINE",
+                    "DYNAMIC"
+                ]
+            }
+        },
+        {
+            "type": "ConstantName",
+            "props": {
+                "severity": "INFO",
+                "format": "^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$",
+                "tokens": ["INLINE"]
+            }
+        },
+        {
+            "type": "EmptyLines",
+            "props": {
+                "max": 1,
+                "allowEmptyLineAfterMultiLineComment": false,
+                "requireEmptyLineAfterClass": false,
+                "requireEmptyLineAfterInterface": false,
+                "requireEmptyLineAfterAbstract": false
+            }
+        },
+        {
+            "type": "IndentationCharacter",
+            "props": {
+                "severity": "ERROR",
+                "character": "tab"
+            }
+        },
+        {
+            "type": "LocalVariableName",
+            "props": {
+                "severity": "INFO",
+                "format": "^[a-z][a-zA-Z0-9]*$"
+            }
+        },
+        {
+            "type": "MemberName",
+            "props": {
+                "severity": "INFO",
+                "format": "^([a-z][a-zA-Z0-9]*|[A-Z0-9_]*)$",
+                "tokens": [
+                    "CLASS",
+                    "TYPEDEF",
+                    "PUBLIC"
+                ]
+            }
+        },
+        {
+            "type": "MemberName",
+            "props": {
+                "severity": "INFO",
+                "format": "^_?([a-z][a-zA-Z0-9]*|[A-Z0-9_]*)$",
+                "tokens": [
+                    "CLASS",
+                    "PRIVATE"
+                ]
+            }
+        },
+        {
+            "type": "MemberName",
+            "props": {
+                "severity": "INFO",
+                "format": "^[A-Z]([A-Z0-9_]*|[A-Za-z0-9]*)$",
+                "tokens": ["ENUM"]
+            }
+        },
+        {
+            "type": "MethodName",
+            "props": {
+                "severity": "INFO",
+                "format": "^[a-z][a-zA-Z0-9]*$",
+                "tokens": ["PUBLIC"]
+            }
+        },
+        {
+            "type": "MethodName",
+            "props": {
+                "severity": "INFO",
+                "format": "^_?[a-z][a-zA-Z0-9]*$",
+                "tokens": ["PRIVATE"]
+            }
+        },
+        {
+            "type": "TypeName",
+            "props": {
+                "severity": "INFO",
+                "format": "^[A-Z]+[a-zA-Z0-9]*$"
+            }
+        },
+        {
+            "type": "Spacing",
+            "props": {
+                "spaceIfCondition": true,
+                "spaceAroundBinop": true,
+                "noSpaceAroundUnop": true,
+                "ignoreRangeOperator": true
+            }
+        },
+        {
+            "type": "WhitespaceAfter",
+            "props": {
+                "tokens": [","]
+            }
+        },
+        {
+            "type": "EmptyBlock"
+        },
+        {
+            "type": "LeftCurly",
+            "props": {
+                "option": "nl",
+                "ignoreEmptySingleline": true
+            }
+        },
+        {
+            "type": "RightCurly"
+        },
+        {
+            "type": "SimplifyBooleanExpression"
+        },
+        {
+            "type": "SimplifyBooleanReturn"
+        },
+        {
+            "type": "NullableParameter",
+            "props": {
+                "severity": "INFO"
+            }
+        },
+        {
+            "type": "EmptyPackage",
+            "props": {
+                "enforceEmptyPackage": true
+            }
+        },
+        {
+            "type": "AvoidStarImport",
+            "props": {
+                "severity": "ERROR"
+            }
+        },
+        {
+            "type": "UnusedImport",
+            "props": {
+                "ignoreModules": [
+                    "haxe.macro.Expr"
+                ]
+            }
+        },
+        {
+            "type": "UnnecessaryConstructor",
+            "props": {
+                "severity": "ERROR"
+            }
+        }
+    ]
+}

@@ -1,0 +1,8 @@
+engines:
+ haxe-checkstyle:
+    enabled: true
+    minimum-severity: WARNING
+
+ratings:
+  paths:
+    - "com/**.hx"
