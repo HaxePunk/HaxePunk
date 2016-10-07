@@ -26,7 +26,6 @@ import haxepunk.graphics.Particle;
 import haxepunk.graphics.ParticleType;
 import haxepunk.graphics.PreRotation;
 import haxepunk.graphics.Spritemap;
-import haxepunk.graphics.Stamp;
 import haxepunk.graphics.Text;
 import haxepunk.graphics.TiledImage;
 import haxepunk.graphics.TiledSpritemap;
