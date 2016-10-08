@@ -17,7 +17,7 @@ run.n: tools/run.hxml tools/Run.hx
 	@echo "Compiling run.n"
 	@cd tools && haxe run.hxml
 
-doc/pages/index.html: $(shell find . -name '*.hx')
+doc/pages/index.html: $(shell find . -name '*.hx') $(shell find doc -name '*.mtt')
 	@echo "Generating documentation"
 	@cd doc && \
 		rm -rf bin && \

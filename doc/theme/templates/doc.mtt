@@ -31,3 +31,12 @@ default value ::raw info.defaultValue.doc::
 		::raw info.returns.doc::
 	</div>
 ::end::
+
+::if info.since != null::
+	<br />
+	<em>Available since:</em>
+	
+	<div style="margin-left: 30px;">
+		::raw info.since.doc::
+	</div>
+::end::
