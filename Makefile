@@ -29,7 +29,7 @@ template.zip:
 	@echo "Generating template.zip"
 	@cd template && zip -rqX ../template.zip . -x *.DS_Store*
 
-haxepunk.zip: doc/pages/index.html tool.n template.zip
+haxepunk.zip: docs tools template.zip
 	@echo "Building haxelib project"
 	@zip -q haxepunk.zip run.n tool.n haxelib.json README.md include.xml template.zip
 	@zip -rq haxepunk.zip com assets doc/pages -x *.DS_Store*
