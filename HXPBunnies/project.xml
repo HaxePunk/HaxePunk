@@ -11,10 +11,9 @@
 
 	<source path="src"/>
 
-	<haxelib name="openfl"/>
 	<haxelib name="HaxePunk"/>
 
-	<assets path="assets/graphics" rename="gfx" include="*.png|*.jpg"/>
-	<assets path="assets/font" rename="font" include="*.ttf"/>
-	<assets path="assets/atlas" rename="atlas" include="*.xml"/>
+	<assets path="assets/graphics" rename="gfx" include="*.png|*.jpg" embed="true"/>
+	<assets path="assets/font" rename="font" include="*.ttf" embed="true"/>
+	<assets path="assets/atlas" rename="atlas" include="*.xml" embed="true"/>
 </project>

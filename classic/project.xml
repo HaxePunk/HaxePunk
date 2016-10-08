@@ -2,7 +2,7 @@
 <project>
 	<meta title="HaxePunk" package="com.example.app" version="1.0.0" company="HaxePunk" />
 
- 	<app file="HaxePunk" main="Main" path="bin" />
+ 	<app file="classic" main="Main" path="bin" />
 
 	<window fps="60" resizable="true" background="0x333333" />
 	<window width="640" height="480" unless="mobile" />

@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
-	<meta title="asteroids" package="com.example.app" version="1.0.0" company="" />
+	<meta title="asteroids" package="com.example.app" version="1.0.0" company=""/>
 
-	<app file="asteroids" main="Main" path="bin" />
+	<app file="asteroids" main="Main" path="bin"/>
 
-	<window fps="60" background="0x000000" />
-	<window width="640" height="480" resizable="true" unless="mobile" />
-	<window fullscreen="true" if="mobile" />
-	<window orientation="landscape" vsync="true" />
-	<window antialiasing="4" />
+	<window fps="60" background="0x000000"/>
+	<window width="640" height="480" resizable="true" unless="mobile"/>
+	<window fullscreen="true" if="mobile"/>
+	<window orientation="landscape" vsync="true"/>
+	<window antialiasing="4"/>
 
-	<source path="src" />
+	<source path="src"/>
 
-	<haxelib name="HaxePunk" />
+	<haxelib name="HaxePunk"/>
 
-	<assets path="assets/graphics" rename="graphics" include="*.png|*.jpg" type="image" embed="true" />
-	<assets path="assets/audio" rename="audio" include="*.mp3" if="flash" />
-	<assets path="assets/audio" rename="audio" include="*.wav|*.ogg" unless="flash" />
+	<assets path="assets/graphics" rename="graphics" include="*.png|*.jpg" type="image" embed="true"/>
+	<assets path="assets/audio" rename="audio" include="*.mp3" if="flash" embed="true"/>
+	<assets path="assets/audio" rename="audio" include="*.wav|*.ogg" unless="flash" embed="true"/>
 </project>
