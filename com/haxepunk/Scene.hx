@@ -3,6 +3,7 @@ package com.haxepunk;
 import com.haxepunk.graphics.atlas.AtlasData;
 import flash.display.Sprite;
 import flash.geom.Point;
+import com.haxepunk.utils.Cursor;
 
 /**
  * Updated by `Engine`, main game container that holds all currently active Entities.
@@ -83,6 +84,12 @@ class Scene extends Tweener
 			}
 			if (e.graphic != null && e.graphic.active) e.graphic.update();
 		}
+
+		// updates the cursor
+		if (HXP.cursor != null && HXP.cursor.active)
+		{
+			HXP.cursor.update();
+		}
 	}
 
 	/**
@@ -129,6 +136,12 @@ class Scene extends Tweener
 			{
 				if (e.visible) e.render();
 			}
+		}
+
+		// renders the cursor
+		if (HXP.cursor != null && HXP.cursor.visible)
+		{
+			HXP.cursor.render();
 		}
 
 		if (HXP.renderMode == RenderMode.HARDWARE)
@@ -978,6 +991,11 @@ class Scene extends Tweener
 	public function updateLists(shouldAdd:Bool = true)
 	{
 		var e:Entity;
+
+		if (HXP.cursor != null)
+		{
+			HXP.cursor._scene = this;
+		}
 
 		// remove entities
 		if (_remove.length > 0)

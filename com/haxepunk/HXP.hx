@@ -21,8 +21,11 @@ import com.haxepunk.Tween;
 import com.haxepunk.debug.Console;
 import com.haxepunk.tweens.misc.Alarm;
 import com.haxepunk.tweens.misc.MultiVarTween;
+import com.haxepunk.utils.Cursor;
 import com.haxepunk.utils.Ease;
 import com.haxepunk.utils.HaxelibInfo;
+
+import openfl.ui.Mouse;
 
 import haxe.CallStack;
 import haxe.EnumFlags;
@@ -181,6 +184,14 @@ class HXP
 	 * Defines the allowed orientations
 	 */
 	public static var orientations:Array<Int> = [];
+
+	public static var cursor(default,set):Cursor;
+	private static inline function set_cursor(cursor:Cursor = null):Cursor
+	{
+		if (cursor == null) Mouse.show();
+		else Mouse.hide();
+		return HXP.cursor = cursor;
+	}
 
 	/**
 	 * Defines how to render the scene
