@@ -2,6 +2,7 @@ package com.haxepunk.graphics.atlas;
 
 /**
  * Renderer-specific flags.
+ * @since	2.6.0
  */
 class Tilesheet
 {

@@ -56,6 +56,7 @@ private class TileShader extends Shader
 /**
  * Rendering backend used for compatibility with OpenFL 4.0, which removed
  * support for drawTiles. Based on work by @Yanrishatum.
+ * @since	2.6.0
  */
 @:access(openfl.display.Stage)
 @:access(openfl.display.DisplayObject)

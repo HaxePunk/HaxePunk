@@ -282,6 +282,7 @@ class Emitter extends Graphic
 	 * @param	finish		The finish scale.
 	 * @param	ease		Optional easer function.
 	 * @return	This ParticleType object.
+	 * @since	2.6.0
 	 */
 	public function setScale(name:String, ?start:Float = 1, ?finish:Float = 0, ?ease:EaseFunction = null):ParticleType
 	{
@@ -298,6 +299,7 @@ class Emitter extends Graphic
 	 * @param	startAngleRange	Random amount to add to the particle's starting angle.
 	 * @param	spanAngleRange	Random amount to add to the particle's span angle.
 	 * @param	ease	Optional easer function.
+	 * @since	2.6.0
 	 * @return	This ParticleType object.
 	 */
 	public function setRotation(name:String, startAngle:Float, spanAngle:Float, startAngleRange:Float = 0, spanAngleRange:Float = 0, ease:EaseFunction = null):ParticleType
@@ -313,6 +315,7 @@ class Emitter extends Graphic
 	 * @param	length		Number of trailing particles to draw.
 	 * @param	delay		Time to delay each trailing particle, in seconds.
 	 * @param	alpha		Multiply each successive trail particle's alpha by this amount.
+	 * @since	2.6.0
 	 * @return	This ParticleType object.
 	 */
 	public function setTrail(name:String, length:Int = 1, delay:Float = 0.1, alpha:Float=1):ParticleType
