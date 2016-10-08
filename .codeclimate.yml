@@ -1,8 +1,8 @@
 engines:
  haxe-checkstyle:
     enabled: true
-    minimum-severity: WARNING
-
+    exclude_paths:
+      - "tests/"
 ratings:
   paths:
     - "com/**.hx"
