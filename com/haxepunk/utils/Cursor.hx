@@ -7,7 +7,7 @@ class Cursor extends Entity
 	 * @param	graphic		Graphic to assign to the Entity.
 	 * @param	mask		Mask to assign to the Entity.
 	 */
-	public function new(graphic:Graphic = null, mask:Mask = null)
+	public override function new(?graphic:Graphic = null, ?mask:Mask = null)
 	{
 		super(0, 0, graphic, mask);
 	}

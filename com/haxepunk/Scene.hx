@@ -3,7 +3,6 @@ package com.haxepunk;
 import com.haxepunk.graphics.atlas.AtlasData;
 import flash.display.Sprite;
 import flash.geom.Point;
-import com.haxepunk.utils.Cursor;
 
 /**
  * Updated by `Engine`, main game container that holds all currently active Entities.
