@@ -62,3 +62,6 @@ notifications:
     on_success: change
     on_failure: always
     on_start: never
+  email:
+    on_success: change
+    on_failure: change
