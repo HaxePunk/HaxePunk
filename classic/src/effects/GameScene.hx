@@ -47,12 +47,17 @@ class GameScene extends DemoScene
 
 	public override function update()
 	{
+#if mobile
 		if (Input.multiTouchSupported)
 		{
 			Input.touchPoints(onTouch);
 		}
 		else
 		{
+#else
+		if (true)
+		{
+#end
 			for (i in 0...10)
 			{
 				smoke.emit("exhaust", mouseX, mouseY);
