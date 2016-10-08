@@ -1,51 +1,54 @@
+package com.haxepunk;
+
+import massive.munit.Assert;
 import com.haxepunk.Engine;
 import com.haxepunk.Entity;
 import com.haxepunk.HXP;
 import com.haxepunk.Scene;
 
 // dummy entity for testing class types
-class TestEntity extends Entity
-{
-	public function new() { super(); }
-}
+class TestEntity extends Entity {}
 
-class TestScene extends haxe.unit.TestCase
+class SceneTest extends TestSuite
 {
-
-	override public function setup()
+	@Before
+	public function setup()
 	{
 		new Engine();
 		scene = new Scene();
 	}
 
+	@Test
 	public function testScene()
 	{
 		HXP.scene = scene;
-		assertFalse(HXP.scene == scene);
+		Assert.isFalse(HXP.scene == scene);
 
 		// update to set the scene as active
 		HXP.engine.update();
-		assertTrue(HXP.scene == scene);
+		Assert.isTrue(HXP.scene == scene);
 	}
 
+	@Test
 	public function testEntityCount()
 	{
 		var e = new Entity();
 		e.type = "foo";
 		scene.add(e);
-		assertEquals(0, scene.count);
+		Assert.areEqual(0, scene.count);
 
 		scene.updateLists();
-		assertEquals(1, scene.count);
+		Assert.areEqual(1, scene.count);
 
 		scene.add(new Entity());
 		scene.add(new Entity());
 		scene.add(new Entity());
 		scene.remove(e);
 		scene.updateLists();
-		assertEquals(3, scene.count);
+		Assert.areEqual(3, scene.count);
 	}
 
+	@Test
 	public function testEntityTypes()
 	{
 		var e = new Entity();
@@ -53,55 +56,58 @@ class TestScene extends haxe.unit.TestCase
 		scene.add(e);
 		scene.add(new Entity());
 		scene.updateLists();
-		assertEquals(1, scene.typeCount("foo"));
-		assertEquals(0, scene.typeCount("bar"));
-		assertEquals(1, scene.uniqueTypes);
+		Assert.areEqual(1, scene.typeCount("foo"));
+		Assert.areEqual(0, scene.typeCount("bar"));
+		Assert.areEqual(1, scene.uniqueTypes);
 
-		assertEquals(1, scene.classCount("com.haxepunk.Entity"));
+		Assert.areEqual(1, scene.classCount("com.haxepunk.Entity"));
 
 		e.type = "bar";
-		assertEquals(0, scene.typeCount("foo"));
-		assertEquals(1, scene.typeCount("bar"));
-		assertEquals(1, scene.uniqueTypes);
+		Assert.areEqual(0, scene.typeCount("foo"));
+		Assert.areEqual(1, scene.typeCount("bar"));
+		Assert.areEqual(1, scene.uniqueTypes);
 	}
 
+	@Test
 	public function testEntityLayers()
 	{
 		var e = new Entity();
 		scene.add(e);
 		scene.add(new Entity());
 		scene.updateLists();
-		assertEquals(0, scene.layerCount(15));
-		assertEquals(1, scene.layers);
+		Assert.areEqual(0, scene.layerCount(15));
+		Assert.areEqual(1, scene.layers);
 
 		e.layer = 15;
-		assertEquals(1, scene.layerCount(15));
-		assertEquals(2, scene.layers);
+		Assert.areEqual(1, scene.layerCount(15));
+		Assert.areEqual(2, scene.layers);
 
 		e.layer = 0;
-		assertEquals(1, scene.layers);
+		Assert.areEqual(1, scene.layers);
 	}
 
+	@Test
 	public function testCreateRecycle()
 	{
 		var e:TestEntity = scene.create(TestEntity, false);
-		assertTrue(Std.is(e, TestEntity));
+		Assert.isTrue(Std.is(e, TestEntity));
 		scene.updateLists();
-		assertEquals(0, countRecycled(scene));
+		Assert.areEqual(0, countRecycled(scene));
 
 		scene.recycle(e);
 		scene.recycle(new Entity());
 		scene.recycle(new Entity()); // linked with previous entity _recycleNext
 		scene.updateLists();
-		assertEquals(2, countRecycled(scene));
+		Assert.areEqual(2, countRecycled(scene));
 
 		scene.clearRecycled(TestEntity);
-		assertEquals(1, countRecycled(scene));
+		Assert.areEqual(1, countRecycled(scene));
 
 		scene.clearRecycledAll();
-		assertEquals(0, countRecycled(scene));
+		Assert.areEqual(0, countRecycled(scene));
 	}
 
+	@Test
 	public function testEntityName()
 	{
 		var e = new Entity();
@@ -109,11 +115,11 @@ class TestScene extends haxe.unit.TestCase
 		scene.add(e);
 		scene.updateLists();
 
-		assertEquals(e, scene.getInstance("foo"));
+		Assert.areEqual(e, scene.getInstance("foo"));
 
 		e.name = "bar";
-		assertEquals(e, scene.getInstance("bar"));
-		assertEquals(null, scene.getInstance("foo"));
+		Assert.areEqual(e, scene.getInstance("bar"));
+		Assert.areEqual(null, scene.getInstance("foo"));
 	}
 
 	@:access(com.haxepunk.Scene)
