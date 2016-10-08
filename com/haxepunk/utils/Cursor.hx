@@ -7,7 +7,7 @@ class Cursor extends Entity
 	 * @param	graphic		Graphic to assign to the Entity.
 	 * @param	mask		Mask to assign to the Entity.
 	 */
-	public override function new(?graphic:Graphic = null, ?mask:Mask = null)
+	override public function new(?graphic:Graphic, ?mask:Mask)
 	{
 		super(0, 0, graphic, mask);
 	}
@@ -15,7 +15,7 @@ class Cursor extends Entity
 	/**
 	 * Updates the entitiy coordinates to match the cursor.
 	 */
-	public override function update()
+	override public function update()
 	{
 		super.update();
 		x = scene.mouseX;
