@@ -1,9 +1,0 @@
--main TestMain
--neko unit.n
---remap flash:openfl
--lib HaxePunk
--D lime_cffi
--D native
--D lime-native
--D linux
--D desktop

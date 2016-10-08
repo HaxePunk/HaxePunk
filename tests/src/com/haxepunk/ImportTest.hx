@@ -1,3 +1,6 @@
+package com.haxepunk;
+
+import massive.munit.Assert;
 import com.haxepunk.Engine;
 import com.haxepunk.Entity;
 import com.haxepunk.Graphic;
@@ -73,13 +76,11 @@ import com.haxepunk.utils.Touch;
  * Import all of HaxePunk classes to make sure everything compile,
  * and that all used openfl functionalities exists.
  */
-class TestImport extends haxe.unit.TestCase
+class ImportTest extends TestSuite
 {
-	override public function setup()
+	@Test
+	public function tearDown()
 	{
-	}
-
-	override public function tearDown()
-	{
+		Assert.isTrue(true);
 	}
 }

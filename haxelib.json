@@ -12,5 +12,7 @@
 		"openfl": ""
 	},
 	"install": {
+		"munit": "",
+		"mcover": ""
 	}
 }

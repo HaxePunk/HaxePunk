@@ -1,0 +1,7 @@
+version=2.1.2
+src=src
+bin=bin
+report=report
+hxml=test-openfl4.hxml
+classPaths=src,..
+coveragePackages=com

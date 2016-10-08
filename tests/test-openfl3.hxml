@@ -1,0 +1,23 @@
+-cp ..
+-cp src
+-main TestMain
+--macro include("com.haxepunk")
+-D display
+-lib munit
+-lib hamcrest
+
+--each
+
+-D lime_cffi
+-D openfl="3.6.1"
+-D lime="2.9.1"
+-D openfl_legacy
+-D lime_legacy
+-D native
+-D lime-native
+-D linux
+-D desktop
+-lib lime
+-lib openfl
+--remap flash:openfl
+-neko test.n

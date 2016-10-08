@@ -1,0 +1,20 @@
+-cp ..
+-cp src
+-main TestMain
+--macro include("com.haxepunk")
+-D display
+-lib munit
+-lib hamcrest
+
+--each
+
+-D openfl
+-D openfl_legacy
+-D nme
+-D native
+-D linux
+-D desktop
+-lib nme
+--remap flash:nme
+--remap openfl:nme
+-neko test.n

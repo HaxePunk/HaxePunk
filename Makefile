@@ -1,11 +1,19 @@
 COMMAND=openfl
 TARGET=neko
+TEST=openfl4
 
-.PHONY: all doc docs haxelib examples unit unit-travis build clean
+.PHONY: all doc docs haxelib examples unit test build clean
 
 all: clean unit docs examples
 
-docs: doc/pages/index.html
+docs:
+	@echo "Generating documentation"
+	@cd doc && \
+		rm -rf bin && \
+		haxelib run $(COMMAND) build $(TARGET) -xml && \
+		haxelib run dox -i `find bin -name 'types.xml'` -o pages/ -theme theme/ \
+			-in com --title "HaxePunk" \
+			-D source-path "https://github.com/HaxePunk/HaxePunk/tree/master" > log.txt || cat log.txt
 
 tools: tool.n run.n
 
@@ -16,15 +24,6 @@ tool.n: tools/tool.hxml tools/CLI.hx
 run.n: tools/run.hxml tools/Run.hx
 	@echo "Compiling run.n"
 	@cd tools && haxe run.hxml
-
-doc/pages/index.html: $(shell find . -name '*.hx') $(shell find doc -name '*.mtt')
-	@echo "Generating documentation"
-	@cd doc && \
-		rm -rf bin && \
-		haxelib run $(COMMAND) build $(TARGET) -xml && \
-		haxelib run dox -i `find bin -name 'types.xml'` -o pages/ -theme theme/ \
-			-in com --title "HaxePunk" \
-			-D source-path "https://github.com/HaxePunk/HaxePunk/tree/master" > log.txt || cat log.txt
 
 template.zip:
 	@echo "Generating template.zip"
@@ -38,9 +37,11 @@ haxepunk.zip: doc/pages/index.html tool.n template.zip
 haxelib: haxepunk.zip
 	@haxelib local haxepunk.zip > log.txt || cat log.txt
 
+test: unit
+
 unit:
 	@echo "Running unit tests"
-	@cd tests && haxe compile.hxml -lib ${COMMAND} && neko unit.n
+	@cd tests && haxelib run munit test test-${TEST}.hxml
 
 checkstyle:
 	haxelib run checkstyle -c checkstyle.json -s com

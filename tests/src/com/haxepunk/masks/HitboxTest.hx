@@ -1,31 +1,34 @@
-package masks;
+package com.haxepunk.masks;
 
+import massive.munit.Assert;
 import com.haxepunk.*;
 import com.haxepunk.masks.*;
 
-class TestHitbox extends haxe.unit.TestCase
+class HitboxTest extends TestSuite
 {
-
-	override public function setup()
+	@Before
+	public function setup()
 	{
 		box = new Hitbox(20, 20, -10, -10);
 	}
 
+	@Test
 	public function testHitbox()
 	{
 		var hitbox = new Hitbox(50, 50);
-		assertTrue(collideHitbox(hitbox, 0, 0));
+		Assert.isTrue(collideHitbox(hitbox, 0, 0));
 	}
 
+	@Test
 	public function testCircle()
 	{
 		var circle = new Circle(8);
 		// hit
-		assertTrue(collideCircle(circle, 0, 0));
+		Assert.isTrue(collideCircle(circle, 0, 0));
 
 		// miss
-		assertFalse(collideCircle(circle, 20, 0));
-		assertFalse(collideCircle(circle, 0, 20));
+		Assert.isFalse(collideCircle(circle, 20, 0));
+		Assert.isFalse(collideCircle(circle, 0, 20));
 	}
 
 	@:access(com.haxepunk.masks.Hitbox)
