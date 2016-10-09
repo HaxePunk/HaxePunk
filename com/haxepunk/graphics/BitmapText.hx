@@ -26,6 +26,7 @@ typedef BitmapTextOptions =
 
 /**
  * An object for drawing text using a bitmap font.
+ * @since	2.5.0
  */
 class BitmapText extends Graphic
 {

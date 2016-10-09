@@ -99,7 +99,7 @@ class Entity extends Tweener
 	public var renderTarget:BitmapData;
 
 	/**
-	 * Constructor. Can be usd to place the Entity and assign a graphic and mask.
+	 * Constructor. Can be used to place the Entity and assign a graphic and mask.
 	 * @param	x			X position to place the Entity.
 	 * @param	y			Y position to place the Entity.
 	 * @param	graphic		Graphic to assign to the Entity.

@@ -22,13 +22,18 @@ typedef GlyphData =
 	var xAdvance:Int;
 };
 
+/**
+ * TextureAtlas which supports parsing various bitmap font formats. Used by
+ * BitmapFont.
+ * @since	2.5.0
+ */
 class BitmapFontAtlas extends TextureAtlas
 {
 	public var lineHeight:Int = 0;
 	public var fontSize:Int = 0;
 	public var glyphData:Map<String, GlyphData>;
 
-	/*
+	/**
 	 * Loads a bitmap font, returning a BitmapFontAtlas. The first time a font
 	 * is loaded, it is cached for later use.
 	 * @param fontName    The path to a .fnt bitmap font description.
@@ -54,7 +59,7 @@ class BitmapFontAtlas extends TextureAtlas
 		return _fonts[fontName];
 	}
 
-	/*
+	/**
 	 * Load a font from Sparrow (or BMFont) XML format.
 	 */
 	public static function loadXMLFont(file:String):BitmapFontAtlas
@@ -114,12 +119,13 @@ class BitmapFontAtlas extends TextureAtlas
 		return atlas;
 	}
 
-	/*
+	/**
 	 * Load a font from XNA/BMFont format.
 	 * @param asset		An asset
 	 * @param options 	An object containing optional parameters
 	 * 						letters			String of glyphs contained in the asset, in order (ex. " abcdefghijklmnopqrstuvwxyz"). Defaults to _DEFAULT_GLYPHS.
 	 * 						glyphBGColor	An additional background color to remove. Defaults to 0xFF202020, often used for glyphs background.
+	 * @since	2.5.3
 	 */
 	@:access(com.haxepunk.graphics.atlas.AtlasData)
 	public static function loadXNAFont(asset:String, ?options:Dynamic):BitmapFontAtlas

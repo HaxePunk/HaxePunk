@@ -2,6 +2,11 @@ package com.haxepunk.utils;
 
 import com.haxepunk.HXP;
 
+/**
+ * Gesture input. Used to support complex touch input such as swipes,
+ * pinch/zoom, and long or quick taps.
+ * @since	2.5.3
+ */
 class GestureType
 {
 	public var x:Float = 0;
@@ -76,32 +81,34 @@ class GestureType
 	}
 }
 
-enum GestureMode
+@:enum
+abstract GestureMode(Int)
 {
-	READY;
-	SINGLE_TOUCH;
-	SINGLE_MOVE;
-	MULTI_TOUCH;
-	MULTI_MOVE;
-	FINISHED;
+	var READY = 0;
+	var SINGLE_TOUCH = 1;
+	var SINGLE_MOVE = 2;
+	var MULTI_TOUCH = 3;
+	var MULTI_MOVE = 4;
+	var FINISHED = 5;
 }
 
-class Gesture
+@:enum
+abstract Gesture(Int) from Int to Int
 {
 	// a quick one-finger tap
-	public static inline var TAP = 1;
+	var TAP = 1;
 	// two quick one-finger taps
-	public static inline var DOUBLE_TAP = 2;
+	var DOUBLE_TAP = 2;
 	// one-finger tap and hold
-	public static inline var LONG_PRESS = 3;
+	var LONG_PRESS = 3;
 	// tap and move; may be concurrent with LONG_PRESS if a LONG_PRESS was
 	// initiated first
-	public static inline var MOVE = 4;
+	var MOVE = 4;
 	// two-finger touch and move in opposite directions
 	// zoom out if magnitude < 1, zoom in if > 1
-	public static inline var PINCH = 5;
+	var PINCH = 5;
 	// two-finger quick tap
-	public static inline var TWO_FINGER_TAP = 6;
+	var TWO_FINGER_TAP = 6;
 	// not yet implemented
 	//public static inline var ROTATE = 7;
 

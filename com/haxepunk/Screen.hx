@@ -92,7 +92,6 @@ class Screen
 
 	/**
 	 * Add a filter.
-	 *
 	 * @param	filter	The filter to add.
 	 */
 	public function addFilter(filter:Array<BitmapFilter>)
@@ -368,9 +367,9 @@ class Screen
 
 	/**
 	 * Cause the screen to shake for a specified length of time.
-	 *
 	 * @param	magnitude	Number of pixels to shake in any direction.
 	 * @param	duration	Duration of shake effect, in seconds.
+	 * @since	2.5.3
 	 */
 	public function shake(magnitude:Int = 4, duration:Float = 0.5)
 	{
@@ -380,6 +379,7 @@ class Screen
 
 	/**
 	 * Stop the screen from shaking immediately.
+	 * @since	2.5.3
 	 */
 	public function shakeStop()
 	{

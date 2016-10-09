@@ -258,6 +258,7 @@ class Draw
 	 * @param	alpha		Alpha of the rectangle.
 	 * @param	fill		If the rectangle should be filled with the color (true) or just an outline (false).
 	 * @param	thick		How thick the outline should be (only applicable when fill = false).
+	 * @since	2.5.2
 	 */
 	public static function rectPlus(x:Float, y:Float, width:Float, height:Float, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1)
 	{

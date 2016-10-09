@@ -305,6 +305,7 @@ class Image extends Graphic
 	 * @param	fill		If the polygon should be filled with the color (true) or just an outline (false).
 	 * @param	thick		How thick the outline should be (only applicable when fill = false).
 	 * @return	A new Image object.
+	 * @since	2.5.3
 	 */
 	public static function createPolygon(polygon:Polygon, color:Int = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Int = 1):Image
 	{

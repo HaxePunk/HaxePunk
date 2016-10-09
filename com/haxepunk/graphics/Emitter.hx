@@ -92,6 +92,7 @@ class Emitter extends Graphic
 
 	/**
 	 * Clears all particles.
+	 * @since	2.5.2
 	 */
 	public function clear()
 	{
