@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	<meta title="cursors" package="com.haxepunk.cursors" version="1.0.0" company="HaxePunk"/>
+
+	<app file="Main" main="Main" path="bin"/>
+
+	<window fps="60" background="0xE6E6E6"/>
+	<window width="640" height="480" resizable="false" unless="mobile"/>
+	<window width="0" height="0" fullscreen="true" if="mobile"/>
+	<window orientation="landscape" vsync="true" antialiasing="0" if="cpp"/>
+
+	<source path="src"/>
+
+	<haxelib name="HaxePunk"/>
+
+	<assets path="assets/graphics" rename="graphics" include="*.png|*.jpg"/>
+
+	<icon path="assets/HaxePunk.svg"/>
+</project>
