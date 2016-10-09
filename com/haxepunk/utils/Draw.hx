@@ -514,7 +514,7 @@ class Draw
 	 * @param  y       Y position.
 	 * @param  options Options (see Text constructor).
 	 */
-	public static function text(text:String, ?x:Float = 0, ?y:Float = 0, ?options:TextOptions = null)
+	public static function text(text:String, ?x:Float = 0, ?y:Float = 0, ?options:TextOptions)
 	{
 		var textGfx:Text = new Text(text, x, y, 0, 0, options);
 		textGfx.render(_target, HXP.zero, _camera);

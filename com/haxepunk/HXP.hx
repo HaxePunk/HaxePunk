@@ -1175,7 +1175,7 @@ class HXP
 	 *
 	 * Example: HXP.alarm(5.0, callbackFunction, TweenType.Looping); // Calls callbackFunction every 5 seconds
 	 */
-	public static function alarm(delay:Float, complete:Dynamic -> Void, ?type:TweenType = null, tweener:Tweener = null):Alarm
+	public static function alarm(delay:Float, complete:Dynamic -> Void, ?type:TweenType, tweener:Tweener = null):Alarm
 	{
 		if (type == null) type = TweenType.OneShot;
 		if (tweener == null) tweener = HXP.tweener;
