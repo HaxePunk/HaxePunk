@@ -8,6 +8,7 @@ import flash.ui.Multitouch;
 import flash.ui.MultitouchInputMode;
 import com.haxepunk.HXP;
 import com.haxepunk.ds.Either;
+import openfl.ui.Mouse;
 
 #if (openfl_legacy && (cpp || neko))
 	import openfl.events.JoystickEvent;
@@ -131,6 +132,22 @@ class Input
 			return _mouseWheelDelta;
 		}
 		return 0;
+	}
+
+	/**
+	 * Shows the native cursor
+	 */
+	public static function showCursor()
+	{
+		Mouse.show();
+	}
+
+	/**
+	 * Hides the native cursor
+	 */
+	public static function hideCursor()
+	{
+		Mouse.hide();
 	}
 
 	/**
