@@ -75,7 +75,7 @@ abstract ImageType(Either<BitmapData, AtlasRegion>)
 	public var width(get, never):Int;
 	inline function get_width()
 	{
-		return Std.int(switch(this)
+		return Std.int(switch (this)
 		{
 			case Left(b): b.width;
 			case Right(a): a.width;
@@ -85,7 +85,7 @@ abstract ImageType(Either<BitmapData, AtlasRegion>)
 	public var height(get, never):Int;
 	inline function get_height()
 	{
-		return Std.int(switch(this)
+		return Std.int(switch (this)
 		{
 			case Left(b): b.height;
 			case Right(a): a.height;
