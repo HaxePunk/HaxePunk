@@ -71,6 +71,26 @@ abstract ImageType(Either<BitmapData, AtlasRegion>)
 		else
 			return new ImageType(Left(bd));
 	}
+
+	public var width(get, never):Int;
+	inline function get_width()
+	{
+		return Std.int(switch(this)
+		{
+			case Left(b): b.width;
+			case Right(a): a.width;
+		});
+	}
+
+	public var height(get, never):Int;
+	inline function get_height()
+	{
+		return Std.int(switch(this)
+		{
+			case Left(b): b.height;
+			case Right(a): a.height;
+		});
+	}
 }
 
 /**
