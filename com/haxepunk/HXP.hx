@@ -991,22 +991,12 @@ class HXP
 	 * @param	source		Embedded Bitmap class.
 	 * @return	The stored BitmapData object.
 	 */
-#if openfl
 	public static function getBitmap(name:String):BitmapData
 	{
-#else
-	public static function getBitmap(source:Bitmap):BitmapData
-	{
-		var name = Std.string(source);
-#end
 		if (_bitmap.exists(name))
 			return _bitmap.get(name);
 
-#if openfl
 		var data:BitmapData = openfl.Assets.getBitmapData(name, false);
-#else
-		var data:BitmapData = source.bitmapData;
-#end
 
 		if (data != null)
 			_bitmap.set(name, data);
