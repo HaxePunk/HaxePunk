@@ -1,8 +1,7 @@
 package com.haxepunk;
 
+import haxe.Timer;
 import flash.display.BitmapData;
-import flash.display.Bitmap;
-import flash.display.Graphics;
 import flash.display.Sprite;
 import flash.display.Stage;
 import flash.display.StageDisplayState;
@@ -13,23 +12,13 @@ import flash.geom.Rectangle;
 import flash.media.SoundMixer;
 #end
 import flash.media.SoundTransform;
-import flash.system.System;
-import flash.utils.ByteArray;
-
-import com.haxepunk.Graphic;
-import com.haxepunk.Tween;
+import openfl.ui.Mouse;
+import com.haxepunk.Tween.TweenType;
 import com.haxepunk.debug.Console;
 import com.haxepunk.tweens.misc.Alarm;
 import com.haxepunk.tweens.misc.MultiVarTween;
 import com.haxepunk.utils.Cursor;
-import com.haxepunk.utils.Ease;
 import com.haxepunk.utils.HaxelibInfo;
-
-import openfl.ui.Mouse;
-
-import haxe.CallStack;
-import haxe.EnumFlags;
-import haxe.Timer;
 
 /**
  * Represents a position on a two dimensional coordinate system.
@@ -185,7 +174,7 @@ class HXP
 	 */
 	public static var orientations:Array<Int> = [];
 
-	public static var cursor(default,set):Cursor;
+	public static var cursor(default, set):Cursor;
 	private static inline function set_cursor(cursor:Cursor = null):Cursor
 	{
 		if (cursor == null) Mouse.show();
@@ -1095,7 +1084,8 @@ class HXP
 	 * Logs data to the console.
 	 * @param	...data		The data parameters to log, can be variables, objects, etc. Parameters will be separated by a space (" ").
 	 */
-	public static var log = Reflect.makeVarArgs(function(data:Array<Dynamic>) {
+	public static var log = Reflect.makeVarArgs(function(data:Array<Dynamic>)
+	{
 		if (_console != null)
 		{
 			_console.log(data);
@@ -1106,7 +1096,8 @@ class HXP
 	 * Adds properties to watch in the console's debug panel.
 	 * @param	...properties		The properties (strings) to watch.
 	 */
-	public static var watch = Reflect.makeVarArgs(function(properties:Array<Dynamic>) {
+	public static var watch = Reflect.makeVarArgs(function(properties:Array<Dynamic>)
+	{
 		if (_console != null)
 		{
 			_console.watch(properties);
@@ -1133,7 +1124,7 @@ class HXP
 		{
 			var delay:Float = options.delay;
 			Reflect.deleteField( options, "delay" );
-			HXP.alarm(delay, function (o:Dynamic):Void { HXP.tween(object, values, duration, options); });
+			HXP.alarm(delay, function (o:Dynamic) HXP.tween(object, values, duration, options));
 			return null;
 		}
 
@@ -1242,7 +1233,8 @@ class HXP
 	}
 
 	public static var time(null, set):Float;
-	private static inline function set_time(value:Float):Float {
+	private static inline function set_time(value:Float):Float
+	{
 		_time = value;
 		return _time;
 	}
@@ -1258,7 +1250,7 @@ class HXP
 	@:dox(hide) public static var _systemTime:Float;
 
 	// Bitmap storage.
-	private static var _bitmap:Map<String,BitmapData> = new Map<String,BitmapData>();
+	private static var _bitmap:Map<String, BitmapData> = new Map<String, BitmapData>();
 
 	// Pseudo-random number generation (the seed is set in Engine's contructor).
 	private static var _seed:Int = 0;
