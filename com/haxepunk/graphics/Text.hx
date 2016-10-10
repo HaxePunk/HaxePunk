@@ -105,10 +105,9 @@ class Text extends Image
 	 * 						leading		Vertical space between lines.
 	 *						richText	If the text field uses a rich text string
 	 */
-	public function new(?text:String, ?x:Float = 0, ?y:Float = 0, ?width:Int = 0, ?height:Int = 0, ?options:TextOptions)
+	public function new(text:String = "", ?x:Float = 0, ?y:Float = 0, ?width:Int = 0, ?height:Int = 0, ?options:TextOptions)
 	{
 		if (options == null) options = {};
-		if (text == null) text = "";
 
 		// defaults
 		if (!Reflect.hasField(options, "font"))      options.font      = HXP.defaultFont;
