@@ -30,7 +30,7 @@ class EntityList<T:Entity> extends Entity
 	public function add(entity:T):T
 	{
 		entities.push(entity);
-		entity.type = type;
+		if (type != "") entity.type = type;
 		if (scene != null) scene.add(entity);
 		return entity;
 	}
@@ -103,7 +103,7 @@ class EntityList<T:Entity> extends Entity
 
 	override function set_type(value:String):String
 	{
-		for (entity in entities) entity.type = value;
+		if (value != "") for (entity in entities) entity.type = value;
 		return _type = value;
 	}
 
