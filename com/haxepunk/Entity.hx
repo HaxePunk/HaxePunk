@@ -76,12 +76,16 @@ class Entity extends Tweener
 	/**
 	 * Width of the Entity's hitbox.
 	 */
-	public var width:Int = 0;
+	@:isVar public var width(get, set):Int = 0;
+	function get_width() return width;
+	function set_width(w:Int) return width = w;
 
 	/**
 	 * Height of the Entity's hitbox.
 	 */
-	public var height:Int = 0;
+	@:isVar public var height(get, set):Int = 0;
+	function get_height() return height;
+	function set_height(h:Int) return height = h;
 
 	/**
 	 * X origin of the Entity's hitbox.
