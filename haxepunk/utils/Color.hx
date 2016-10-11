@@ -1,10 +1,13 @@
 package haxepunk.utils;
 
 
+/**
+ * An abstract with various color utility functions.
+ * @since	4.0.0
+ **/
 abstract Color(UInt) from UInt to UInt
 {
-
-/**
+	/**
 	 * Linear interpolation between two colors.
 	 * @param	fromColor		First color.
 	 * @param	toColor			Second color.

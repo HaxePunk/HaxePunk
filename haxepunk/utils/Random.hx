@@ -1,6 +1,10 @@
 package haxepunk.utils;
 
 
+/**
+ * Various randomness-related utility functions.
+ * @since	4.0.0
+ */
 class Random
 {
 	/**
