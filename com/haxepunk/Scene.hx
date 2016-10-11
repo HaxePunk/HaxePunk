@@ -20,6 +20,9 @@ class Scene extends Tweener
 	 */
 	public var camera:Point;
 
+	public var width:Int = 0;
+	public var height:Int = 0;
+
 	/**
 	 * Constructor.
 	 */
@@ -55,6 +58,19 @@ class Scene extends Tweener
 	 * Override this; called when Scene is changed, and the active scene is no longer this.
 	 */
 	public function end() {}
+
+	public function resize()
+	{
+		if (width != HXP.width || height != HXP.height)
+		{
+			width = HXP.width;
+			height = HXP.height;
+			for (e in _update)
+			{
+				e.resized();
+			}
+		}
+	}
 
 	/**
 	 * Override this, called when game gains focus
