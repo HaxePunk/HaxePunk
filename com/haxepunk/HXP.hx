@@ -265,6 +265,7 @@ class HXP
 		HXP.bounds.width = width;
 		HXP.bounds.height = height;
 		HXP.screen.resize();
+		HXP.scene.resize();
 	}
 
 	/**

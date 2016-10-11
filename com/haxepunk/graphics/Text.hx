@@ -72,7 +72,6 @@ abstract StyleType(TextFormat)
  */
 class Text extends Image
 {
-
 	/**
 	 * If the text field can automatically resize if its contents grow.
 	 */
