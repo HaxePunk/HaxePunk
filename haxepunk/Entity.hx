@@ -455,12 +455,6 @@ class Entity extends Tweener
 	}
 
 	/**
-	 * The world object is deprecated, use scene instead.
-	 */
-	@:deprecated public var world(get, never):Scene;
-	private inline function get_world():Scene return _scene;
-
-	/**
 	 * The Scene object this Entity has been added to.
 	 */
 	public var scene(get, never):Scene;

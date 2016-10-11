@@ -12,7 +12,6 @@ import haxepunk.Screen;
 import haxepunk.Sfx;
 import haxepunk.Tweener;
 import haxepunk.Tween;
-import haxepunk.World;
 import haxepunk.debug.Console;
 import haxepunk.debug.LayerList;
 import haxepunk.graphics.Animation;
