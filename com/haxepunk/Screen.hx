@@ -63,15 +63,20 @@ class Screen
 	 * Resizes the screen by recreating the bitmap buffer.
 	 */
 	@:dox(hide)
-	public function resize(width:Int, height:Int)
+	@:allow(com.haxepunk.HXP)
+	function resize(width:Int, height:Int)
 	{
 		var oldWidth:Int = HXP.width,
 			oldHeight:Int = HXP.height;
 
+		HXP.camera.x += HXP.screen.offsetX;
+		HXP.camera.y += HXP.screen.offsetY;
 		scaleMode.resize(width, height);
+		HXP.camera.x -= HXP.screen.offsetX;
+		HXP.camera.y -= HXP.screen.offsetY;
 
-		width = HXP.width;
-		height = HXP.height;
+		width = HXP.width = Std.int(HXP.screen.width / HXP.screen.fullScaleX);
+		height = HXP.height = Std.int(HXP.screen.height / HXP.screen.fullScaleY);
 
 		if (HXP.renderMode == RenderMode.BUFFER &&
 			(_bitmap.length == 0 || width != oldWidth || height != oldHeight))
@@ -240,12 +245,15 @@ class Screen
 	private function set_scaleX(value:Float):Float
 	{
 		if (scaleX == value) return value;
+		_scaleXMult *= value / scaleX;
 		scaleX = value;
 		fullScaleX = scaleX * scale;
 		updateTransformation();
 		needsResize = true;
 		return scaleX;
 	}
+	/* Track extra scale added by user */
+	var _scaleXMult:Float = 1;
 
 	/**
 	 * Y scale of the screen.
@@ -254,12 +262,15 @@ class Screen
 	private function set_scaleY(value:Float):Float
 	{
 		if (scaleY == value) return value;
+		_scaleYMult *= value / scaleY;
 		scaleY = value;
 		fullScaleY = scaleY * scale;
 		updateTransformation();
 		needsResize = true;
 		return scaleY;
 	}
+	/* Track extra scale added by user */
+	var _scaleYMult:Float = 1;
 
 	/**
 	 * Scale factor of the screen. Final scale is scaleX * scale by scaleY * scale, so
@@ -355,6 +366,15 @@ class Screen
 	 */
 	public var mouseY(get, null):Int;
 	private function get_mouseY():Int return Std.int(_sprite.mouseY);
+
+	/**
+	 * X position offset applied to the camera.
+	 */
+	public var offsetX:Int = 0;
+	/**
+	 * Y position offset applied to the camera.
+	 */
+	public var offsetY:Int = 0;
 
 	/**
 	 * Captures the current screen as an Image object.

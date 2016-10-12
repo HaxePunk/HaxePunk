@@ -13,8 +13,9 @@ class FixedScaleMode extends ScaleMode
 
 	override public function resize(stageWidth:Int, stageHeight:Int)
 	{
-		HXP.width = HXP.screen.width = stageWidth;
-		HXP.height = HXP.screen.height = stageHeight;
+		HXP.screen.width = stageWidth;
+		HXP.screen.height = stageHeight;
+		HXP.screen.offsetX = HXP.screen.offsetY = 0;
 		HXP.screen.scaleX = HXP.screen.scaleY = 1;
 	}
 }
