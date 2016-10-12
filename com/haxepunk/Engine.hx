@@ -174,8 +174,6 @@ class Engine extends Sprite
 #end
 		HXP.stage.scaleMode = StageScaleMode.NO_SCALE;
 		HXP.stage.displayState = StageDisplayState.NORMAL;
-		HXP.windowWidth = HXP.stage.stageWidth;
-		HXP.windowHeight = HXP.stage.stageHeight;
 
 		resize(); // call resize once to initialize the screen
 
@@ -217,9 +215,10 @@ class Engine extends Sprite
 		// calculate scale from width/height values
 		HXP.windowWidth = HXP.stage.stageWidth;
 		HXP.windowHeight = HXP.stage.stageHeight;
-		HXP.screen.scaleX = HXP.stage.stageWidth / HXP.width;
-		HXP.screen.scaleY = HXP.stage.stageHeight / HXP.height;
 		HXP.resize(HXP.stage.stageWidth, HXP.stage.stageHeight);
+		_scrollRect.width = HXP.screen.width;
+		_scrollRect.height = HXP.screen.height;
+		scrollRect = _scrollRect;
 	}
 
 	/** @private Event handler for stage entry. */
@@ -450,4 +449,6 @@ class Engine extends Sprite
 	private var _frameLast:Float;
 	private var _frameListSum:Int;
 	private var _frameList:Array<Int>;
+
+	private var _scrollRect:Rectangle = new Rectangle();
 }
