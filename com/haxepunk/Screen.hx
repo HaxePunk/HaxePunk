@@ -7,13 +7,20 @@ import flash.filters.BitmapFilter;
 import flash.geom.Matrix;
 import com.haxepunk.graphics.atlas.Atlas;
 import com.haxepunk.graphics.Image;
+import com.haxepunk.screen.ScaleMode;
 
 /**
  * Container for the main screen buffer. Can be used to transform the screen.
  * To be used through `HXP.screen`.
  */
+@:allow(com.haxepunk.screen)
 class Screen
 {
+	/**
+	 * Controls how the game scale changes when the window is resized.
+	 */
+	public var scaleMode:ScaleMode = new ScaleMode();
+
 	/**
 	 * Constructor.
 	 */
@@ -56,12 +63,18 @@ class Screen
 	 * Resizes the screen by recreating the bitmap buffer.
 	 */
 	@:dox(hide)
-	public function resize()
+	public function resize(width:Int, height:Int)
 	{
+		var oldWidth:Int = HXP.width,
+			oldHeight:Int = HXP.height;
+
+		scaleMode.resize(width, height);
+
 		width = HXP.width;
 		height = HXP.height;
 
-		if (HXP.renderMode == RenderMode.BUFFER)
+		if (HXP.renderMode == RenderMode.BUFFER &&
+			(_bitmap.length == 0 || width != oldWidth || height != oldHeight))
 		{
 			disposeBitmap(_bitmap[0]);
 			disposeBitmap(_bitmap[1]);
@@ -85,7 +98,7 @@ class Screen
 	{
 		if (HXP.renderMode == RenderMode.BUFFER)
 		{
-			#if !bitfive _current = 1 - _current; #end
+			_current = 1 - _current;
 			HXP.buffer = _bitmap[_current].bitmapData;
 		}
 	}
@@ -169,13 +182,8 @@ class Screen
 	 * Refresh color of the screen.
 	 */
 	public var color(get, set):Int;
-	private function get_color():Int return HXP.stage.color;
-	private function set_color(value:Int):Int
-	{
-		HXP.stage.color = value;
-		
-		return value;
-	}
+	inline function get_color():Null<Int> return HXP.stage.color;
+	inline function set_color(value:Null<Int>):Null<Int> return HXP.stage.color = value;
 
 	/**
 	 * X offset of the screen.
@@ -329,12 +337,12 @@ class Screen
 	/**
 	 * Width of the screen.
 	 */
-	public var width(default, null):Int;
+	public var width(default, null):Int = 0;
 
 	/**
 	 * Height of the screen.
 	 */
-	public var height(default, null):Int;
+	public var height(default, null):Int = 0;
 
 	/**
 	 * X position of the mouse on the screen.

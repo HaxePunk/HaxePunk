@@ -232,7 +232,10 @@ class TileShaderRenderer
 			gl.vertexAttribPointer(shader.data.aTexCoord.index, 2, gl.FLOAT, false, 8 * Float32Array.BYTES_PER_ELEMENT, 2 * Float32Array.BYTES_PER_ELEMENT);
 			gl.vertexAttribPointer(shader.data.aColor.index, 4, gl.FLOAT, false, 8 * Float32Array.BYTES_PER_ELEMENT, 4 * Float32Array.BYTES_PER_ELEMENT);
 
+			gl.scissor(HXP.screen.x, HXP.screen.y, HXP.screen.width, HXP.screen.height);
+			gl.enable(gl.SCISSOR_TEST);
 			gl.drawElements(gl.TRIANGLES, items * INDEX_CHUNK, gl.UNSIGNED_INT, 0);
+			gl.disable(gl.SCISSOR_TEST);
 		}
 	}
 }

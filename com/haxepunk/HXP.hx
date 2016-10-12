@@ -256,15 +256,11 @@ class HXP
 	public static function resize(width:Int, height:Int)
 	{
 		// resize scene to scale
-		width = Std.int(width / HXP.screen.fullScaleX);
-		height = Std.int(height / HXP.screen.fullScaleY);
-		HXP.width = width;
-		HXP.height = height;
-		HXP.halfWidth = width / 2;
-		HXP.halfHeight = height / 2;
+		HXP.screen.resize(width, height);
+		HXP.halfWidth = HXP.width / 2;
+		HXP.halfHeight = HXP.height / 2;
 		HXP.bounds.width = width;
 		HXP.bounds.height = height;
-		HXP.screen.resize();
 		HXP.scene.resize();
 	}
 
@@ -1219,14 +1215,14 @@ class HXP
 	 * @param	width	New width.
 	 * @param	height	New height.
 	 */
-	public static function resizeStage (width:Int, height:Int)
+	public static function resizeStage(width:Int, height:Int)
 	{
 		#if (cpp || neko)
-			#if openfl_legacy
-			HXP.stage.resize(width, height);
-			#else
-			openfl.Lib.application.window.resize(width, height);
-			#end
+		#if openfl_legacy
+		HXP.stage.resize(width, height);
+		#else
+		openfl.Lib.application.window.resize(width, height);
+		#end
 		resize(width, height);
 		#elseif debug
 		trace("Can only resize the stage in cpp or neko targets.");
