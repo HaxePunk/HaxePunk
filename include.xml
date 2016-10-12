@@ -7,8 +7,10 @@
 	<assets path="assets/font" rename="font" include="*.ttf" embed="true"/>
 
 	<haxedef name="source-header" value="haxe"/>
+	<haxeflag name="--macro" value="com.haxepunk.utils.Platform.run()"/>
 	<set name="legacy" unless="next"/>
 	<set name="openfl-legacy" unless="next"/>
+
 	<haxelib name="openfl-ouya" if="ouya"/>
 	<haxelib name="openfl"/>
 </project>

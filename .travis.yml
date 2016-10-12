@@ -24,7 +24,6 @@ env:
 sudo: false
 
 install:
-  - haxelib dev HaxePunk $TRAVIS_BUILD_DIR
   - yes | haxelib install hxcpp > log.txt || cat log.txt
   - if [[ $TEST ]]; then
         yes | haxelib install munit > log.txt || cat log.txt;
@@ -35,6 +34,7 @@ install:
   - if [[ $OPENFL ]]; then yes | haxelib install openfl $OPENFL > log.txt || cat log.txt; fi
   - if [[ $NME ]]; then yes | haxelib install nme $NME > log.txt || cat log.txt; fi
   - yes | haxelib install dox > log.txt || cat log.txt
+  - haxelib dev HaxePunk $TRAVIS_BUILD_DIR
   - haxelib list
 
 script:
