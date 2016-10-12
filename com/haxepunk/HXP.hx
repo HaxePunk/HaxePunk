@@ -192,7 +192,9 @@ class HXP
 
 		// recreate screen for buffer rendering
 		if (HXP.screen == null)
+		{
 			HXP.screen = new Screen();
+		}
 		else
 			HXP.screen.init();
 
@@ -256,6 +258,8 @@ class HXP
 	public static function resize(width:Int, height:Int)
 	{
 		// resize scene to scale
+		HXP.windowWidth = width;
+		HXP.windowHeight = height;
 		HXP.screen.resize(width, height);
 		HXP.halfWidth = HXP.width / 2;
 		HXP.halfHeight = HXP.height / 2;

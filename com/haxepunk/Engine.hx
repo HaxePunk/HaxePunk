@@ -210,11 +210,14 @@ class Engine extends Sprite
 	/** @private Event handler for stage resize */
 	private function resize()
 	{
-		if (HXP.width == 0) HXP.width = HXP.stage.stageWidth;
-		if (HXP.height == 0) HXP.height = HXP.stage.stageHeight;
+		if (HXP.width == 0 || HXP.height == 0)
+		{
+			// set initial size
+			HXP.width = HXP.stage.stageWidth;
+			HXP.height = HXP.stage.stageHeight;
+			HXP.screen.scaleMode.setBaseSize();
+		}
 		// calculate scale from width/height values
-		HXP.windowWidth = HXP.stage.stageWidth;
-		HXP.windowHeight = HXP.stage.stageHeight;
 		HXP.resize(HXP.stage.stageWidth, HXP.stage.stageHeight);
 		_scrollRect.width = HXP.screen.width;
 		_scrollRect.height = HXP.screen.height;

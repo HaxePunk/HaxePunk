@@ -12,7 +12,8 @@ class ScreenTest extends TestSuite
 	{
 		HXP.windowWidth = 320;
 		HXP.windowHeight = 480;
-		var engine = new Engine(HXP.windowWidth, HXP.windowHeight);
+		HXP.engine = new Engine(HXP.windowWidth, HXP.windowHeight);
+		HXP.screen.scaleMode.setBaseSize();
 	}
 
 	@Test
@@ -32,6 +33,13 @@ class ScreenTest extends TestSuite
 		Assert.areEqual(240, HXP.height);
 		Assert.areEqual(320, HXP.windowWidth);
 		Assert.areEqual(480, HXP.windowHeight);
+
+		HXP.screen.scale = 1;
+		HXP.resize(HXP.windowWidth, HXP.windowHeight);
+		Assert.areEqual(320, HXP.width);
+		Assert.areEqual(480, HXP.height);
+		Assert.areEqual(320, HXP.windowWidth);
+		Assert.areEqual(480, HXP.windowHeight);
 	}
 
 	@Test
@@ -42,5 +50,11 @@ class ScreenTest extends TestSuite
 		HXP.resize(HXP.windowWidth, HXP.windowHeight);
 		Assert.areEqual(160, HXP.width);
 		Assert.areEqual(160, HXP.height);
+
+		HXP.screen.scaleX = 1;
+		HXP.screen.scaleY = 1;
+		HXP.resize(HXP.windowWidth, HXP.windowHeight);
+		Assert.areEqual(320, HXP.width);
+		Assert.areEqual(480, HXP.height);
 	}
 }
