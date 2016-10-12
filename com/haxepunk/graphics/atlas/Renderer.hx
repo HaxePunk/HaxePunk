@@ -11,13 +11,10 @@ class HardwareNotSupportedRenderer
 	}
 }
 
-#if (openfl >= "4.0.0")
-#if flash
-// shouldn't be used
-typedef Renderer = HardwareNotSupportedRenderer;
-#else
+#if tile_shader
 typedef Renderer = com.haxepunk.graphics.atlas.renderer.TileShaderRenderer;
-#end
-#else
+#elseif draw_tiles
 typedef Renderer = com.haxepunk.graphics.atlas.renderer.DrawTilesRenderer;
+#else
+typedef Renderer = HardwareNotSupportedRenderer;
 #end

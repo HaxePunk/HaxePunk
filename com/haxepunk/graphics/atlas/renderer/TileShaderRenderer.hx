@@ -1,6 +1,6 @@
 package com.haxepunk.graphics.atlas.renderer;
 
-#if ((openfl >= "4.0.0") && (!flash))
+#if tile_shader
 import lime.graphics.GLRenderContext;
 import lime.utils.Float32Array;
 import lime.utils.UInt32Array;
@@ -10,9 +10,7 @@ import openfl.display.Graphics;
 import openfl.display.Shader;
 import openfl.geom.Matrix;
 import openfl.gl.GLBuffer;
-#if !display
 import openfl._internal.renderer.opengl.GLRenderer;
-#end
 import com.haxepunk.HXP;
 
 @:dox(hide)
@@ -76,6 +74,16 @@ class TileShaderRenderer
 			Std.int(length * 2 / chunkSize),
 			minChunks
 		) * chunkSize);
+	}
+
+	static inline function matrixTransformX(m:Matrix, px:Float, py:Float):Float
+	{
+		return px * m.a + py * m.c + m.tx;
+	}
+
+	static inline function matrixTransformY(m:Matrix, px:Float, py:Float):Float
+	{
+		return px * m.b + py * m.d + m.ty;
 	}
 
 	var data:AtlasData;
@@ -160,8 +168,8 @@ class TileShaderRenderer
 
 				matrix.setTo(a, b, c, d, tx, ty);
 
-				inline function transformX(x, y) return matrix.__transformX(x, y);
-				inline function transformY(x, y) return matrix.__transformY(x, y);
+				inline function transformX(x, y) return matrixTransformX(matrix, x, y);
+				inline function transformY(x, y) return matrixTransformY(matrix, x, y);
 
 				var start = bufferPos;
 				buffer[bufferPos++] = transformX(0, 0);
@@ -200,7 +208,7 @@ class TileShaderRenderer
 
 			renderSession.shaderManager.setShader(shader);
 			gl.uniform1f(shader.data.uAlpha.index, displayObject.__worldAlpha);
-			gl.uniformMatrix4fv(shader.data.uMatrix.index, false, renderer.getMatrix(displayObject.__worldTransform));
+			gl.uniformMatrix4fv(shader.data.uMatrix.index, false, renderer.getMatrix(displayObject.__renderTransform));
 
 			renderSession.blendModeManager.setBlendMode(cast blend);
 
