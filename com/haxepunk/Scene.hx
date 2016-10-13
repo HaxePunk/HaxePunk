@@ -1,8 +1,8 @@
 package com.haxepunk;
 
-import com.haxepunk.graphics.atlas.AtlasData;
 import flash.display.Sprite;
 import flash.geom.Point;
+import com.haxepunk.graphics.atlas.AtlasData;
 
 /**
  * Updated by `Engine`, main game container that holds all currently active Entities.
@@ -14,6 +14,12 @@ class Scene extends Tweener
 	 * If the render() loop is performed.
 	 */
 	public var visible:Bool;
+
+	/**
+	 * If true, Scenes behind this Scene in the stack will still be rendered
+	 * (until the first non-transparent Scene is hit.)
+	 */
+	public var transparent:Bool = false;
 
 	/**
 	 * Point used to determine drawing offset in the render loop.

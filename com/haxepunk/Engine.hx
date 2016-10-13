@@ -147,7 +147,21 @@ class Engine extends Sprite
 		}
 		Draw.resetTarget();
 
-		if (_scene.visible) _scene.render();
+		if (_scenes.length > 0)
+		{
+			// find the last visible scene, falling through transparent scenes
+			var visibleScene:Int = _scenes.length - 1;
+			while (_scenes[visibleScene].transparent && visibleScene > 0)
+			{
+				--visibleScene;
+			}
+			// render all visible scenes back to front
+			while (visibleScene < _scenes.length)
+			{
+				var scene = _scenes[visibleScene++];
+				if (scene.visible) scene.render();
+			}
+		}
 
 		if (HXP.renderMode == RenderMode.BUFFER)
 		{
@@ -376,14 +390,14 @@ class Engine extends Sprite
 	/** @private Switch scenes if they've changed. */
 	private inline function checkScene()
 	{
-		if (_scene != null && !_scenes.isEmpty() && _scenes.first() != _scene)
+		if (_scene != null && _scenes.length > 0 && _scenes[_scenes.length - 1] != _scene)
 		{
 			_scene.end();
 			_scene.updateLists();
 			if (_scene.autoClear && _scene.hasTween) _scene.clearTweens();
 			if (contains(_scene.sprite)) removeChild(_scene.sprite);
 
-			_scene = _scenes.first();
+			_scene = _scenes[_scenes.length - 1];
 
 			addChild(_scene.sprite);
 			HXP.camera = _scene.camera;
@@ -431,7 +445,7 @@ class Engine extends Sprite
 
 	// Scene information.
 	private var _scene:Scene = new Scene();
-	private var _scenes:List<Scene> = new List<Scene>();
+	private var _scenes:Array<Scene> = new Array<Scene>();
 
 	// Timing information.
 	private var _delta:Float;
