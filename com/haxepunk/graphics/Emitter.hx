@@ -161,11 +161,11 @@ class Emitter extends Graphic
 					n -= 1;
 					t = pt / p._duration;
 					if (t < 0 || pt >= p._stopTime) continue;
-					td = (type._ease == null) ? t : type._ease(t);
-					atd = (type._alphaEase == null) ? t : type._alphaEase(t);
-					std = (type._scaleEase == null) ? t : type._scaleEase(t);
-					rtd = (type._rotationEase == null) ? t : type._rotationEase(t);
-					ctd = (type._colorEase == null) ? t : type._colorEase(t);
+					td = type.ease(type._ease, t);
+					atd = type.ease(type._alphaEase, t);
+					std = type.ease(type._scaleEase, t);
+					rtd = type.ease(type._rotationEase, t);
+					ctd = type.ease(type._colorEase, t);
 
 					if (_animated)
 					{
@@ -174,15 +174,10 @@ class Emitter extends Graphic
 						var spritemap:Spritemap = cast _source;
 						spritemap.frame = type._frames[frame];
 					}
-					_source.angle = p._startAngle + p._spanAngle * rtd;
-					var alpha = type._alpha + type._alphaRange * atd;
-					var r = type._red + type._redRange * ctd,
-						g = type._green + type._greenRange * ctd,
-						b = type._blue + type._blueRange * ctd;
-					if (type._trailAlpha < 1) alpha *= Math.pow(type._trailAlpha, n);
-					_source.color = HXP.getColorRGB(Std.int(r * 0xff), Std.int(g * 0xff), Std.int(b * 0xff));
-					_source.alpha = alpha;
-					_source.scale = scale * (type._scale + type._scaleRange * std);
+					_source.angle = p.angle(rtd);
+					_source.color = p.color(ctd);
+					_source.alpha = p.alpha(atd) * Math.pow(type._trailAlpha, n);
+					_source.scale = scale * p.scale(std);
 					_source.x = p.x(td) - point.x;
 					_source.y = p.y(td) - point.y;
 					_source.smooth = smooth;

@@ -7,6 +7,12 @@ typedef EaseFunction = Float -> Float;
  */
 class Ease
 {
+	/** Linear easing */
+	public static function linear(t:Float):Float
+	{
+		return t;
+	}
+
 	/** Quadratic in. */
 	public static function quadIn(t:Float):Float
 	{

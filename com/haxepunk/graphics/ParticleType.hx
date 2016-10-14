@@ -11,6 +11,11 @@ import com.haxepunk.utils.Ease;
 @:allow(com.haxepunk.graphics.Emitter)
 class ParticleType
 {
+	public inline function ease(?f:EaseFunction, t:Float):Float
+	{
+		return f == null ? t : f(t);
+	}
+
 	/**
 	 * Constructor.
 	 * @param	name			Name of the particle type.
