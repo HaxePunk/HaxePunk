@@ -18,6 +18,7 @@ class Scene extends Tweener
 	/**
 	 * If true, Scenes behind this Scene in the stack will still be rendered
 	 * (until the first non-transparent Scene is hit.)
+	 * @since	2.6.0
 	 */
 	public var transparent:Bool = false;
 
