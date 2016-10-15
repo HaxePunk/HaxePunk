@@ -5,11 +5,8 @@ class Run
 {
 	public static function main ()
 	{
-		#if (haxe_ver < "3.3")
-		var path = Path.normalize(Path.join([ Sys.getCwd(), Path.directory(neko.vm.Module.local().name) ]));
-        	#else
-		var path = Path.normalize(Path.directory(neko.vm.Module.local().name));
-        	#end
+		var path = FileSystem.absolutePath(Path.directory(neko.vm.Module.local().name));
+
 		var tool = Path.join([ path, "tool.n" ]);
 		var template = Path.join([ path, "template.zip" ]);
 		var args = Sys.args();
