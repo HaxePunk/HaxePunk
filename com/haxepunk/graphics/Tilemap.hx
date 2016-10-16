@@ -470,12 +470,14 @@ class Tilemap extends Canvas
 		if (starty < 0) starty = 0;
 		if (desty > _rows) desty = _rows;
 
-		var wx:Float, sx:Float = (_point.x + startx * tw * scx) * scalex,
-			wy:Float = (_point.y + starty * th * scy) * scaley,
+		var wx:Float, sx:Float = (startx * tw * scx) * scalex,
+			wy:Float = (starty * th * scy) * scaley,
 			stepx:Float = tw * scx * scalex,
 			stepy:Float = th * scy * scaley,
 			tile:Int = 0;
 
+		_point.x = Std.int(_point.x * scalex);
+		_point.y = Std.int(_point.y * scaley);
 		for (y in starty...desty)
 		{
 			wx = sx;
@@ -491,7 +493,7 @@ class Tilemap extends Canvas
 					scx = (Math.floor(wx + stepx) - Math.floor(wx)) / tileWidth;
 
 					updateTileRect(tile);
-					_atlas.prepareTile(_tile, Math.floor(wx), Math.floor(wy), layer, scx, scy, 0, _red, _green, _blue, alpha, smooth);
+					_atlas.prepareTile(_tile, Math.floor(_point.x + wx), Math.floor(_point.y + wy), layer, scx, scy, 0, _red, _green, _blue, alpha, smooth);
 				}
 				wx += stepx;
 			}
