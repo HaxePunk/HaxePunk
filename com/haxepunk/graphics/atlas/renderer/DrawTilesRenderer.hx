@@ -1,10 +1,11 @@
 package com.haxepunk.graphics.atlas.renderer;
 
-#if !(openfl >= "4.0.0")
+#if draw_tiles
 import flash.display.Graphics;
 import openfl.display.Tilesheet;
 
 @:access(com.haxepunk.graphics.atlas.AtlasData)
+@:dox(hide)
 class DrawTilesRenderer
 {
 	public function new(data:AtlasData)

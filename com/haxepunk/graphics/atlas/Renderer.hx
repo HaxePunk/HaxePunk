@@ -11,6 +11,7 @@ class HardwareNotSupportedRenderer
 	}
 }
 
+@:dox(hide)
 #if tile_shader
 typedef Renderer = com.haxepunk.graphics.atlas.renderer.TileShaderRenderer;
 #elseif draw_tiles

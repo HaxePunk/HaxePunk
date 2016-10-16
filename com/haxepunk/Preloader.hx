@@ -8,6 +8,7 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 
 @:bitmap("assets/graphics/preloader/haxepunk.png")
+@:dox(hide)
 class HaxePunkLogo extends BitmapData {}
 
 class Preloader extends NMEPreloader

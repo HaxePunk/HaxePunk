@@ -61,6 +61,7 @@ private class TileShader extends Shader
 @:access(openfl.display.Graphics)
 @:access(openfl._internal.renderer.RenderSession)
 @:access(openfl._internal.renderer.opengl.GLRenderer)
+@:dox(hide)
 class TileShaderRenderer
 {
 	static inline var BUFFER_CHUNK:Int = 32;
