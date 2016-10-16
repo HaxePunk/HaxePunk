@@ -14,6 +14,5 @@
 	<haxelib name="HaxePunk"/>
 
 	<assets path="assets/graphics" rename="gfx" include="*.png|*.jpg" embed="true"/>
-	<assets path="assets/font" rename="font" include="*.ttf" embed="true"/>
 	<assets path="assets/atlas" rename="atlas" include="*.xml" embed="true"/>
 </project>
