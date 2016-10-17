@@ -209,7 +209,7 @@ class TileShaderRenderer
 
 			renderSession.shaderManager.setShader(shader);
 			gl.uniform1f(shader.data.uAlpha.index, displayObject.__worldAlpha);
-			gl.uniformMatrix4fv(shader.data.uMatrix.index, false, renderer.getMatrix(displayObject.__renderTransform));
+			gl.uniformMatrix4fv(shader.data.uMatrix.index, false, new lime.utils.Float32Array(renderer.getMatrix(displayObject.__renderTransform)));
 
 			renderSession.blendModeManager.setBlendMode(cast blend);
 
