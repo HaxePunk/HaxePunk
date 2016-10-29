@@ -5,8 +5,12 @@ package haxepunk.utils;
  * An abstract with various color utility functions.
  * @since	4.0.0
  **/
+@:enum
 abstract Color(UInt) from UInt to UInt
 {
+	var White = 0xffffff;
+	var Black = 0x000000;
+
 	/**
 	 * Linear interpolation between two colors.
 	 * @param	fromColor		First color.
