@@ -36,8 +36,8 @@ class Image extends Graphic
 	 * Scale of the image, effects both x and y scale.
 	 */
 	public var scale(get, set):Float;
-	private inline function get_scale():Float return _scale; 
-	private inline function set_scale(value:Float):Float return _scale = value; 
+	inline function get_scale():Float return _scale;
+	inline function set_scale(value:Float):Float return _scale = value;
 
 	/**
 	 * X scale of the image.
@@ -127,7 +127,7 @@ class Image extends Graphic
 	}
 
 	/** @private Initialize variables */
-	private inline function init()
+	inline function init()
 	{
 		angle = 0;
 		scale = scaleX = scaleY = 1;
@@ -141,7 +141,7 @@ class Image extends Graphic
 	}
 
 	/** @private Creates the buffer. */
-	private function createBuffer()
+	function createBuffer()
 	{
 		_buffer = HXP.createBitmap(Std.int(_sourceRect.width), Std.int(_sourceRect.height), true);
 		_bufferRect = _buffer.rect;
@@ -397,7 +397,7 @@ class Image extends Graphic
 		if (_tint != null) _buffer.colorTransform(_bufferRect, _tint);
 	}
 
-	private function updateColorTransform()
+	function updateColorTransform()
 	{
 		if (_alpha == 1)
 		{
@@ -410,13 +410,13 @@ class Image extends Graphic
 		
 		_tint = _colorTransform;
 		
-		_tint.redMultiplier		= _tintMode * (1.0 - _tintFactor) + (1 - _tintMode) * (_tintFactor * ((_color >> 16 & 0xFF) / 255 - 1) + 1);
-		_tint.greenMultiplier	= _tintMode * (1.0 - _tintFactor) + (1 - _tintMode) * (_tintFactor * ((_color >>  8 & 0xFF) / 255 - 1) + 1);
-		_tint.blueMultiplier	= _tintMode * (1.0 - _tintFactor) + (1 - _tintMode) * (_tintFactor * ((_color		& 0xFF) / 255 - 1) + 1);
+		_tint.redMultiplier = _tintMode * (1.0 - _tintFactor) + (1 - _tintMode) * (_tintFactor * ((_color >> 16 & 0xFF) / 255 - 1) + 1);
+		_tint.greenMultiplier = _tintMode * (1.0 - _tintFactor) + (1 - _tintMode) * (_tintFactor * ((_color >>  8 & 0xFF) / 255 - 1) + 1);
+		_tint.blueMultiplier = _tintMode * (1.0 - _tintFactor) + (1 - _tintMode) * (_tintFactor * ((_color		& 0xFF) / 255 - 1) + 1);
 		
-		_tint.redOffset		= (_color >> 16 & 0xFF) * _tintFactor * _tintMode;
-		_tint.greenOffset	= (_color >>  8 & 0xFF) * _tintFactor * _tintMode;
-		_tint.blueOffset	= (_color		& 0xFF) * _tintFactor * _tintMode;
+		_tint.redOffset = _color.r * _tintFactor * _tintMode;
+		_tint.greenOffset = _color.g * _tintFactor * _tintMode;
+		_tint.blueOffset = _color.b * _tintFactor * _tintMode;
 		
 		_tint.alphaMultiplier = _alpha;
 		updateBuffer();
@@ -435,8 +435,8 @@ class Image extends Graphic
 	 * Change the opacity of the Image, a value from 0 to 1.
 	 */
 	public var alpha(get_alpha, set_alpha):Float;
-	private inline function get_alpha():Float return _alpha; 
-	private function set_alpha(value:Float):Float
+	inline function get_alpha():Float return _alpha;
+	function set_alpha(value:Float):Float
 	{
 		value = value < 0 ? 0 : (value > 1 ? 1 : value);
 		if (_alpha == value) return value;
@@ -449,8 +449,8 @@ class Image extends Graphic
 	 * The tinted color of the Image. Use 0xFFFFFF to draw the Image normally.
 	 */
 	public var color(get_color, set_color):Color;
-	private inline function get_color():Color return _color;
-	private function set_color(value:Color):Color
+	inline function get_color():Color return _color;
+	function set_color(value:Color):Color
 	{
 		value &= 0xFFFFFF;
 		if (_color == value) return value;
@@ -474,7 +474,7 @@ class Image extends Graphic
 	 * @default 1.
 	 */
 	public var tinting(get, set):Float;
-	inline function get_tinting():Float return _tintFactor; 
+	inline function get_tinting():Float return _tintFactor;
 	function set_tinting(value:Float):Float
 	{
 		if (_tintFactor == value || !blit) return value;
@@ -493,7 +493,7 @@ class Image extends Graphic
 	 * @default Image.TINTING_MULTIPLY
 	 */
 	public var tintMode(get, set):Float;
-	inline function get_tintMode():Float return _tintMode; 
+	inline function get_tintMode():Float return _tintMode;
 	function set_tintMode(value:Float):Float
 	{
 		if (_tintMode == value || !blit) return value;
@@ -507,8 +507,8 @@ class Image extends Graphic
 	 * faster than setting scaleX to -1 if your image isn't transformed.
 	 */
 	public var flipped(get_flipped, set_flipped):Bool;
-	private inline function get_flipped():Bool return _flipped; 
-	private function set_flipped(value:Bool):Bool
+	inline function get_flipped():Bool return _flipped;
+	function set_flipped(value:Bool):Bool
 	{
 		if (_flipped == value) return value;
 		_flipped = value;
@@ -569,8 +569,8 @@ class Image extends Graphic
 	 */
 	#if flash
 	public var smooth(get_smooth, set_smooth):Bool;
-	private inline function get_smooth():Bool return _bitmap.smoothing; 
-	private inline function set_smooth(s:Bool):Bool return _bitmap.smoothing = s;
+	inline function get_smooth():Bool return _bitmap.smoothing;
+	inline function set_smooth(s:Bool):Bool return _bitmap.smoothing = s;
 	#else
 	public var smooth:Bool;
 	#end
@@ -590,47 +590,47 @@ class Image extends Graphic
 	/**
 	 * The scaled width of the image.
 	 */
-	public var scaledWidth(get_scaledWidth, set_scaledWidth):Float;
-	private inline function get_scaledWidth():Float return width * scaleX * scale; 
-	private inline function set_scaledWidth(w:Float):Float return scaleX = w / scale / width;
+	public var scaledWidth(get, set_scaledWidth):Float;
+	inline function get_scaledWidth():Float return width * scaleX * scale;
+	inline function set_scaledWidth(w:Float):Float return scaleX = w / scale / width;
 
 	/**
 	 * The scaled height of the image.
 	 */
-	public var scaledHeight(get_scaledHeight, set_scaledHeight):Float;
-	private inline function get_scaledHeight():Float return height * scaleY * scale; 
-	private inline function set_scaledHeight(h:Float):Float return scaleY = h / scale / height;
+	public var scaledHeight(get, set_scaledHeight):Float;
+	inline function get_scaledHeight():Float return height * scaleY * scale;
+	inline function set_scaledHeight(h:Float):Float return scaleY = h / scale / height;
 
 	/**
 	 * Clipping rectangle for the image.
 	 */
-	public var clipRect(get_clipRect, null):Rectangle;
-	private inline function get_clipRect():Rectangle return _sourceRect; 
+	public var clipRect(get, null):Rectangle;
+	inline function get_clipRect():Rectangle return _sourceRect;
 
 	// Source and buffer information.
-	private var _source:BitmapData;
-	private var _sourceRect:Rectangle;
-	private var _buffer:BitmapData;
-	private var _bufferRect:Rectangle;
-	private var _bitmap:Bitmap;
-	private var _region:AtlasRegion;
+	var _source:BitmapData;
+	var _sourceRect:Rectangle;
+	var _buffer:BitmapData;
+	var _bufferRect:Rectangle;
+	var _bitmap:Bitmap;
+	var _region:AtlasRegion;
 
 	// Color and alpha information.
-	private var _alpha:Float;
-	private var _color:Color;
-	private var _tintFactor:Float = 1.0;
-	private var _tintMode:Float = TINTING_MULTIPLY;
-	private var _tint:ColorTransform;
-	private var _colorTransform:ColorTransform;
-	private var _matrix:Matrix;
-	private var _red:Float;
-	private var _green:Float;
-	private var _blue:Float;
+	var _alpha:Float;
+	var _color:Color;
+	var _tintFactor:Float = 1.0;
+	var _tintMode:Float = TINTING_MULTIPLY;
+	var _tint:ColorTransform;
+	var _colorTransform:ColorTransform;
+	var _matrix:Matrix;
+	var _red:Float;
+	var _green:Float;
+	var _blue:Float;
 
 	// Flipped image information.
-	private var _flipped:Bool;
-	private var _flip:BitmapData;
+	var _flipped:Bool;
+	var _flip:BitmapData;
 	private static var _flips:Map<BitmapData, BitmapData> = new Map<BitmapData, BitmapData>();
 
-	private var _scale:Float;
+	var _scale:Float;
 }
