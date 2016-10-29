@@ -49,10 +49,10 @@ class Draw
 	 * @param	camera		The camera offset (use null for none).
 	 * @param	blend		The blend mode to use.
 	 */
-	public static function setTarget(target:BitmapData, camera:Point = null, blend:BlendMode = null)
+	public static function setTarget(target:BitmapData, camera:Camera = null, blend:BlendMode = null)
 	{
 		_target = target;
-		_camera = (camera != null) ? camera : HXP.zero;
+		_camera = (camera != null) ? camera : HXP.camera;
 		Draw.blend = blend;
 	}
 
@@ -464,51 +464,6 @@ class Draw
 	}
 
 	/**
-	 * Draws a graphic object.
-	 * @param	g		The Graphic to draw.
-	 * @param	x		X position.
-	 * @param	y		Y position.
-	 */
-	public static function graphic(g:Graphic, x:Int = 0, y:Int = 0, layer: Int = 0)
-	{
-		if (g.visible)
-		{
-			if (g.relative)
-			{
-				HXP.point.x = x;
-				HXP.point.y = y;
-			}
-			else HXP.point.x = HXP.point.y = 0;
-			HXP.point2.x = HXP.camera.x;
-			HXP.point2.y = HXP.camera.y;
-			if (HXP.renderMode == RenderMode.BUFFER) 
-			{
-				g.render(_target, HXP.point, HXP.point2);	
-			} 
-			else 
-			{
-				g.renderAtlas(layer, HXP.point, HXP.point2);
-			}
-		}
-	}
-
-	/**
-	 * Draws an Entity object.
-	 * @param	e					The Entity to draw.
-	 * @param	x					X position.
-	 * @param	y					Y position.
-	 * @param	addEntityPosition	Adds the Entity's x and y position to the target position.
-	 */
-	public static function entity(e:Entity, ?x:Int = 0, ?y:Int = 0, ?addEntityPosition:Bool = false)
-	{
-		if (e.visible && e.graphic != null)
-		{
-			if (addEntityPosition) graphic(e.graphic, Std.int(x + e.x), Std.int(y + e.y));
-			else graphic(e.graphic, x, y);
-		}
-	}
-
-	/**
 	 * Draws text.
 	 * @param  text    The text to render.
 	 * @param  x       X position.
@@ -523,7 +478,7 @@ class Draw
 
 	// Drawing information.
 	private static var _target:BitmapData;
-	private static var _camera:Point;
+	private static var _camera:Camera;
 	private static var _graphics:Graphics;
 	private static var _rect:Rectangle;
 	private static var _matrix:Matrix = new Matrix();
