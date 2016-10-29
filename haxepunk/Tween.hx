@@ -10,7 +10,7 @@ enum TweenType
 {
 	/**
 	 * Default type, the tween is still available after it ended and can
-	 * be started again with the restart() method.
+	 * be started again with the start() method.
 	 */
 	Persist;
 	
@@ -19,20 +19,9 @@ enum TweenType
 	
 	/** The tween will be removed after it ended. */
 	OneShot;
-}
 
-/**
- * Friend class for access to Tween private members
- */
-@:dox(hide)
-typedef FriendTween =
-{
-	private function finish():Void;
-
-	private var _finish:Bool;
-	private var _parent:Tweener;
-	private var _prev:FriendTween;
-	private var _next:FriendTween;
+	/** The tween will loop, alternating backwards and forwards */
+	PingPong;
 }
 
 /**
@@ -51,9 +40,12 @@ class Tween extends EventDispatcher
 	/** If the tween is active. */
 	public var active:Bool;
 
+	/** Whether tween is currently running forward. For TweenType.PingPong. */
+	public var forward:Bool = true;
+
 	/**
 	 * Constructor. Specify basic information about the Tween.
-	 * @param	duration		Duration of the tween (in seconds or frames).
+	 * @param	duration		Duration of the tween (in seconds).
 	 * @param	type			Tween type, one of Tween.PERSIST (default), Tween.LOOPING, or Tween.ONESHOT.
 	 * @param	complete		Optional callback for when the Tween completes.
 	 * @param	ease			Optional easer function to apply to the Tweened value.
@@ -80,12 +72,12 @@ class Tween extends EventDispatcher
 	@:dox(hide)
 	public function update()
 	{
-		_time += HXP.fixed ? 1 : HXP.elapsed;
-		_t = _time / _target;
+		_time += HXP.elapsed;
+		_t = percent;
 		if (_ease != null && _t > 0 && _t < 1) _t = _ease(_t);
 		if (_time >= _target)
 		{
-			_t = 1;
+			_t = forward ? 1 : 0;
 			_finish = true;
 		}
 		dispatchEvent(new TweenEvent(TweenEvent.UPDATE));
@@ -117,10 +109,8 @@ class Tween extends EventDispatcher
 			case Persist:
 				_time = _target;
 				active = false;
-			case Looping:
-				_time %= _target;
-				_t = _time / _target;
-				if (_ease != null && _t > 0 && _t < 1) _t = _ease(_t);
+			case Looping, PingPong:
+				if (_type == PingPong) forward = !forward;
 				start();
 			case OneShot:
 				_time = _target;
@@ -150,7 +140,7 @@ class Tween extends EventDispatcher
 
 	/** Progression of the tween, between 0 and 1. */
 	public var percent(get, set):Float;
-	private function get_percent():Float return _time / _target; 
+	private function get_percent():Float return (forward ? _time : (_target - _time)) / _target;
 	private function set_percent(value:Float):Float return _time = _target * value;
 
 	public var scale(get, null):Float;
@@ -166,6 +156,6 @@ class Tween extends EventDispatcher
 	private var _callback:Dynamic -> Void;
 	private var _finish:Bool;
 	private var _parent:Tweener;
-	private var _prev:FriendTween;
-	private var _next:FriendTween;
+	private var _prev:Tween;
+	private var _next:Tween;
 }

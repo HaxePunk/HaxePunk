@@ -5,6 +5,7 @@ import haxepunk.Tween;
 /**
  * Abstract class used to add the ability to add tweens.
  */
+@:access(haxepunk.Tween)
 class Tweener
 {
 	public var active:Bool;
@@ -30,17 +31,14 @@ class Tweener
 	 */
 	public function addTween(t:Tween, start:Bool = false):Tween
 	{
-		var ft:FriendTween = t;
-
-		if (ft._parent != null)
+		if (t._parent != null)
 			throw "Cannot add a Tween object more than once.";
 
-		ft._parent = this;
-		ft._next = _tween;
-		var friendTween:FriendTween = _tween;
+		t._parent = this;
+		t._next = _tween;
 
 		if (_tween != null)
-			friendTween._prev = t;
+			_tween._prev = t;
 
 		_tween = t;
 
@@ -61,23 +59,22 @@ class Tweener
 	 */
 	public function removeTween(t:Tween):Tween
 	{
-		var ft:FriendTween = t;
-		if (ft._parent != this)
+		if (t._parent != this)
 			throw "Core object does not contain Tween.";
 
-		if (ft._next != null)
-			ft._next._prev = ft._prev;
+		if (t._next != null)
+			t._next._prev = t._prev;
 
-		if (ft._prev != null)
+		if (t._prev != null)
 		{
-			ft._prev._next = ft._next;
+			t._prev._next = t._next;
 		}
 		else
 		{
-			_tween = (ft._next == null) ? null : cast(ft._next, Tween);
+			_tween = (t._next == null) ? null : cast(t._next, Tween);
 		}
-		ft._next = ft._prev = null;
-		ft._parent = null;
+		t._next = t._prev = null;
+		t._parent = null;
 		t.active = false;
 		return t;
 	}
@@ -88,13 +85,11 @@ class Tweener
 	public function clearTweens()
 	{
 		var t:Tween,
-			ft:FriendTween= _tween;
-		var fn:FriendTween;
+			ft:Tween = _tween;
 		while (ft != null)
 		{
-			fn = ft._next;
-			removeTween(cast(ft, Tween));
-			ft = fn;
+			removeTween(ft._next);
+			ft = ft._next;
 		}
 	}
 
@@ -104,7 +99,7 @@ class Tweener
 	public function updateTweens()
 	{
 		var t:Tween,
-			ft:FriendTween = _tween;
+			ft:Tween = _tween;
 		while (ft != null)
 		{
 			t = cast(ft, Tween);
