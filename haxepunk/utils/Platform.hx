@@ -3,6 +3,7 @@ package haxepunk.utils;
 #if macro
 import haxe.macro.Context;
 
+@:dox(hide)
 class Platform
 {
 	static var remap = [
@@ -19,33 +20,13 @@ class Platform
 		Context.onTypeNotFound(function (typeName:String)
 		{
 			var parts = typeName.split(".");
-			if (parts[0] == "haxepunk")
+			if (parts[0] == "com" && parts[1] == "haxepunk")
 			{
-				try
-				{
-					// if the com.* type exists, return a typedef
-					var type = Context.getType("com." + typeName);
-				}
-				catch (e:String)
-				{
-					return null;
-				}
-
 				var name = parts[parts.length - 1],
-					futurePack = parts.slice(0, parts.length - 1);
-				var currentPack, newName;
-				if (remap.exists(typeName))
-				{
-					currentPack = remap[typeName].split(".");
-					newName = currentPack[currentPack.length - 1];
-					currentPack = currentPack.slice(0, currentPack.length - 1);
-				}
-				else
-				{
-					currentPack = ["com"].concat(parts.slice(0, parts.length - 1));
-					newName = name;
-				}
-				return {name: name, pack: futurePack, kind: TDAlias(TPath({name: newName, pack: currentPack})), fields: [], pos: Context.currentPos()};
+					currentPack = parts.slice(1, parts.length - 1),
+					deprecatedPack = parts.slice(0, parts.length - 1);
+				trace('Warning: the com.haxepunk package is deprecated ($typeName -> ' + currentPack.join(".") + '.$name)');
+				return {name: name, pack: deprecatedPack, kind: TDAlias(TPath({name: name, pack: currentPack})), fields: [], pos: Context.currentPos()};
 			}
 			return null;
 		});
