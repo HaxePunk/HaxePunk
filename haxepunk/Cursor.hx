@@ -1,4 +1,4 @@
-package haxepunk.utils;
+package haxepunk;
 
 import haxepunk.Graphic;
 import haxepunk.graphics.Image;

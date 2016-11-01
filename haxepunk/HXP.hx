@@ -18,7 +18,6 @@ import haxepunk.debug.Console;
 import haxepunk.tweens.misc.Alarm;
 import haxepunk.tweens.misc.MultiVarTween;
 import haxepunk.utils.Color;
-import haxepunk.utils.Cursor;
 import haxepunk.utils.HaxelibInfo;
 import haxepunk.utils.MathUtil;
 import haxepunk.utils.Random;
