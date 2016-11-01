@@ -8,24 +8,43 @@ import com.haxepunk.utils.Key;
 
 class MainScene extends Scene
 {
-	public override function begin()
+	var redCursor:Cursor = new Cursor("graphics/redCursor.png");
+	var blueCursor:Cursor = new Cursor("graphics/blueCursor.png");
+
+	var blueBox:Entity;
+	var redBox:Entity;
+	var blackBox:Entity;
+
+	override public function begin()
 	{
-		var blueBox = new Entity(114, 194, new Image("graphics/blueBox.png"));
+		blueBox = new Entity(114, 194, new Image("graphics/blueBox.png"));
 		blueBox.setHitbox(92, 92);
-		blueBox.type = "blueBox";
 		add(blueBox);
 
-		var redBox = new Entity(434, 194, new Image("graphics/redBox.png"));
+		redBox = new Entity(434, 194, new Image("graphics/redBox.png"));
 		redBox.setHitbox(92, 92);
-		redBox.type = "redBox";
 		add(redBox);
 
-		var blackBox = new Entity(274, 194, new Image("graphics/blackBox.png"));
+		blackBox = new Entity(274, 194, new Image("graphics/blackBox.png"));
 		blackBox.setHitbox(92, 92);
-		blackBox.type = "blackBox";
 		add(blackBox);
+	}
 
-		HXP.cursor = new MyCursor();
-		Input.showCursor();
+	override public function update()
+	{
+		super.update();
+
+		if (blueBox.collidePoint(blueBox.x, blueBox.y, mouseX, mouseY))
+		{
+			HXP.cursor = blueCursor;
+		}
+		else if (redBox.collidePoint(redBox.x, redBox.y, mouseX, mouseY))
+		{
+			HXP.cursor = redCursor;
+		}
+		else if (blackBox.collidePoint(blackBox.x, blackBox.y, mouseX, mouseY))
+		{
+			HXP.cursor = null;
+		}
 	}
 }
