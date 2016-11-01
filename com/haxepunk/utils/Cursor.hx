@@ -1,5 +1,8 @@
 package com.haxepunk.utils;
 
+import com.haxepunk.Graphic;
+import com.haxepunk.graphics.Image;
+
 class Cursor extends Entity
 {
 	/**
@@ -7,9 +10,11 @@ class Cursor extends Entity
 	 * @param	graphic		Graphic to assign to the Entity.
 	 * @param	mask		Mask to assign to the Entity.
 	 */
-	override public function new(?graphic:Graphic, ?mask:Mask)
+	override public function new(image:ImageType)
 	{
-		super(0, 0, graphic, mask);
+		var img:Image = new Image(image);
+		img.smooth = true;
+		super(0, 0, img);
 	}
 
 	/**
@@ -20,6 +25,13 @@ class Cursor extends Entity
 		super.update();
 		x = scene.mouseX;
 		y = scene.mouseY;
+		var img:Image = cast graphic;
+		if (img != null)
+		{
+			// scale to 1
+			img.scaleX = 1 / HXP.screen.fullScaleX;
+			img.scaleY = 1 / HXP.screen.fullScaleY;
+		}
 	}
 
 	/**

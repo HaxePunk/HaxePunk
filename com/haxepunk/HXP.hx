@@ -177,6 +177,7 @@ class HXP
 	public static var cursor(default, set):Cursor;
 	private static inline function set_cursor(cursor:Cursor = null):Cursor
 	{
+		if (HXP.cursor == cursor) return cursor;
 		if (cursor == null) Mouse.show();
 		else Mouse.hide();
 		return HXP.cursor = cursor;

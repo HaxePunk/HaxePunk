@@ -561,6 +561,8 @@ class Console
 			// Set the console to paused mode.
 			if (_debug) debug = true;
 			else updateLog();
+
+			Input.showCursor();
 		}
 		else
 		{
@@ -571,6 +573,10 @@ class Console
 			HXP.clear(ENTITY_LIST);
 			HXP.clear(SCREEN_LIST);
 			HXP.clear(SELECT_LIST);
+
+			var cursor = HXP.cursor;
+			HXP.cursor = null;
+			HXP.cursor = cursor;
 		}
 		return _paused;
 	}
