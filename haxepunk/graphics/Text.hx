@@ -140,6 +140,7 @@ class Text extends Image
 				Std.int(_sourceRect.height + bufferMargin * 2),
 				true
 			);
+			_borderBackBuffer = _borderBuffer.clone();
 			_borderSource = _borderBuffer.clone();
 			_borderRegion = Atlas.loadImageAsRegion(_borderSource);
 		}
@@ -189,14 +190,14 @@ class Text extends Image
 		if (options == null) options = {};
 
 		// defaults
-		if (!Reflect.hasField(options, "font"))      options.font      = HXP.defaultFont;
-		if (!Reflect.hasField(options, "size"))      options.size      = 16;
-		if (!Reflect.hasField(options, "align"))     options.align     = TextFormatAlign.LEFT;
-		if (!Reflect.hasField(options, "color"))     options.color     = 0xFFFFFF;
+		if (!Reflect.hasField(options, "font")) options.font = HXP.defaultFont;
+		if (!Reflect.hasField(options, "size")) options.size = 16;
+		if (!Reflect.hasField(options, "align")) options.align = TextFormatAlign.LEFT;
+		if (!Reflect.hasField(options, "color")) options.color = 0xFFFFFF;
 		if (!Reflect.hasField(options, "resizable")) options.resizable = true;
-		if (!Reflect.hasField(options, "wordWrap"))  options.wordWrap  = false;
-		if (!Reflect.hasField(options, "leading"))   options.leading   = 0;
-		if (!Reflect.hasField(options, "border"))    options.border   = null;
+		if (!Reflect.hasField(options, "wordWrap")) options.wordWrap = false;
+		if (!Reflect.hasField(options, "leading")) options.leading = 0;
+		if (!Reflect.hasField(options, "border")) options.border = null;
 
 		var fontObj = Assets.getFont(options.font);
 		_format = new TextFormat(fontObj.fontName, options.size, 0xFFFFFF);
@@ -266,31 +267,8 @@ class Text extends Image
 
 	override function updateColorTransform():Void
 	{
-		if (_richText != null)
-		{
-			if (_alpha == 1)
-			{
-				_tint = null;
-			}
-			else
-			{
-				_tint = _colorTransform;
-				_tint.redMultiplier   = 1;
-				_tint.greenMultiplier = 1;
-				_tint.blueMultiplier  = 1;
-				_tint.redOffset       = 0;
-				_tint.greenOffset     = 0;
-				_tint.blueOffset      = 0;
-				_tint.alphaMultiplier = _alpha;
-			}
-
-			_needsUpdate = true;
-		}
-		else
-		{
-			super.updateColorTransform();
-			if (_tint != null) _tint.alphaMultiplier = 1;
-		}
+		super.updateColorTransform();
+		if (_tint != null) _tint.alphaMultiplier = 1;
 	}
 
 	function matchStyles()
@@ -356,7 +334,7 @@ class Text extends Image
 		else
 		{
 			_source.fillRect(_sourceRect, 0);
-			if (border != null && border.alpha > 0) _source.fillRect(_sourceRect, 0);
+			if (border != null && border.alpha > 0) _borderSource.fillRect(_sourceRect, 0);
 		}
 
 		_field.width = _width;
@@ -385,6 +363,8 @@ class Text extends Image
 		{
 			_borderBuffer.dispose();
 			_borderBuffer = _buffer.clone();
+			_borderBackBuffer.dispose();
+			_borderBackBuffer = _buffer.clone();
 		}
 		_bufferRect = _buffer.rect;
 		_bitmap.bitmapData = _buffer;
@@ -399,7 +379,11 @@ class Text extends Image
 		if (clearBefore)
 		{
 			_buffer.fillRect(_bufferRect, 0);
-			if (border != null && border.alpha > 0) _borderBuffer.fillRect(_bufferRect, 0);
+			if (border != null && border.alpha > 0)
+			{
+				_borderBuffer.fillRect(_bufferRect, 0);
+				_borderBackBuffer.fillRect(_bufferRect, 0);
+			}
 		}
 		if (_source == null) return;
 
@@ -411,8 +395,16 @@ class Text extends Image
 
 			inline function drawBorder(ox, oy)
 			{
+				// two buffers are used because copyPixels from the same
+				// BitmapData forces an expensive clone
+				var _swap = _borderBuffer;
+				_borderBuffer = _borderBackBuffer;
+				_borderBackBuffer = _swap;
+
+				_offset.setTo(0, 0);
+				_borderBuffer.copyPixels(_borderBackBuffer, _bufferRect, _offset, true);
 				_offset.setTo(ox, oy);
-				_borderBuffer.copyPixels(_borderBuffer, _bufferRect, _offset, true);
+				_borderBuffer.copyPixels(_borderBackBuffer, _bufferRect, _offset, true);
 			}
 			switch (border.style)
 			{
@@ -729,6 +721,7 @@ class Text extends Image
 
 	var _borderTint:ColorTransform = new ColorTransform();
 	var _borderBuffer:BitmapData;
+	var _borderBackBuffer:BitmapData;
 	var _borderRegion:AtlasRegion;
 	var _borderSource:BitmapData;
 }
