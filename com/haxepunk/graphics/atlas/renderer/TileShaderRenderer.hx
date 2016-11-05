@@ -5,6 +5,7 @@ import lime.graphics.GLRenderContext;
 import lime.utils.Float32Array;
 import lime.utils.UInt32Array;
 import openfl.display.BitmapData;
+import openfl.display.BlendMode;
 import openfl.display.DisplayObject;
 import openfl.display.Graphics;
 import openfl.display.Shader;
@@ -255,7 +256,24 @@ class TileShaderRenderer
 			gl.uniform1f(shader.uniformIndex("uAlpha"), displayObject.__worldAlpha);
 			gl.uniformMatrix4fv(shader.uniformIndex("uMatrix"), false, new lime.utils.Float32Array(renderer.getMatrix(displayObject.__renderTransform)));
 
-			renderSession.blendModeManager.setBlendMode(cast blend);
+			switch (blend)
+			{
+				case BlendMode.ADD:
+					gl.blendEquation(gl.FUNC_ADD);
+					gl.blendFunc(gl.ONE, gl.ONE);
+				case BlendMode.MULTIPLY:
+					gl.blendEquation(gl.FUNC_ADD);
+					gl.blendFunc(gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA);
+				case BlendMode.SCREEN:
+					gl.blendEquation(gl.FUNC_ADD);
+					gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_COLOR);
+				case BlendMode.SUBTRACT:
+					gl.blendEquation(gl.FUNC_REVERSE_SUBTRACT);
+					gl.blendFunc(gl.ONE, gl.ONE);
+				default:
+					gl.blendEquation(gl.FUNC_ADD);
+					gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+			}
 
 			gl.bindTexture(gl.TEXTURE_2D, texture.getTexture(gl));
 			if (smooth)
