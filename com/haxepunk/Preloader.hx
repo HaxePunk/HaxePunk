@@ -11,7 +11,7 @@ import flash.geom.Rectangle;
 @:dox(hide)
 class HaxePunkLogo extends BitmapData {}
 
-class Preloader extends NMEPreloader
+class Preloader extends #if (openfl >= "4.4.1") openfl.display.Preloader.DefaultPreloader #else NMEPreloader #end
 {
 	var largeCog:Sprite;
 	var smallCog:Sprite;
