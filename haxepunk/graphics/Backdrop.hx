@@ -120,12 +120,12 @@ class Backdrop extends Canvas
 	}
 
 	// Backdrop information.
-	private var _source:BitmapData;
-	private var _region:AtlasRegion;
-	private var _textWidth:Int;
-	private var _textHeight:Int;
-	private var _repeatX:Bool;
-	private var _repeatY:Bool;
-	private var _x:Float;
-	private var _y:Float;
+	var _source:BitmapData;
+	var _region:AtlasRegion;
+	var _textWidth:Int;
+	var _textHeight:Int;
+	var _repeatX:Bool;
+	var _repeatY:Bool;
+	var _x:Float;
+	var _y:Float;
 }
