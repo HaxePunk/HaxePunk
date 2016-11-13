@@ -745,6 +745,11 @@ class HXP
 	}
 
 	/**
+	 * Same as rand. For forward compatibility.
+	 */
+	public static inline function randInt(amount:Int) return rand(amount);
+
+	/**
 	 * Optimized version of Lambda.indexOf for Array on dynamic platforms (Lambda.indexOf is less performant on those targets).
 	 *
 	 * @param	arr		The array to look into.
