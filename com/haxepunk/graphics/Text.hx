@@ -33,6 +33,8 @@ typedef TextOptions =
 	@:optional var leading:Int;
 	/** Optional. If the text field uses a rich text string. */
 	@:optional var richText:Bool;
+	/** Optional. Any Bitmap Filters To Alter Text Style */
+	@:optional var filters:Array<flash.filters.BitmapFilter>;
 };
 
 /**
@@ -128,6 +130,10 @@ class Text extends Image
 #end
 		_field.wordWrap = options.wordWrap;
 		_field.defaultTextFormat = _format;
+		if (options.filters != null)
+		{
+			_field.filters = options.filters;
+		}
 		_field.text = _text = text;
 		_field.selectable = false;
 
