@@ -256,7 +256,7 @@ class Text extends Image
 	}
 
 	/** @private Updates the drawing buffer. */
-	private function updateTextBuffer()
+	public function updateTextBuffer()
 	{
 		if (_richText == null)
 		{
