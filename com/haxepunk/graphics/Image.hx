@@ -82,9 +82,9 @@ class Image extends Graphic
 	public function new(?source:ImageType, ?clipRect:Rectangle)
 	{
 		super();
-		ReInit(source, clipRect);
+		reInit(source, clipRect);
 	}
-	public function ReInit(?source:ImageType, ?clipRect:Rectangle)
+	public function reInit(?source:ImageType, ?clipRect:Rectangle)
 	{
 		init();
 
