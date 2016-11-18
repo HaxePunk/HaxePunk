@@ -82,6 +82,10 @@ class Image extends Graphic
 	public function new(?source:ImageType, ?clipRect:Rectangle)
 	{
 		super();
+		ReInit(source, clipRect);
+	}
+	public function ReInit(?source:ImageType, ?clipRect:Rectangle)
+	{
 		init();
 
 		// check if the _source or _region were set in a higher class
