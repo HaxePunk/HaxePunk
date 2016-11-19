@@ -369,6 +369,11 @@ class Engine extends Sprite
 
 			// update input
 			Input.update();
+			
+			if (!paused)
+			{
+				preRender();
+			}
 
 			// update timer
 			_time = Lib.getTimer();
@@ -442,6 +447,9 @@ class Engine extends Sprite
 		_scenes.push(value);
 		return _scene;
 	}
+
+	public function preRender()
+	{}
 
 	// Scene information.
 	private var _scene:Scene = new Scene();
