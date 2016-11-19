@@ -313,9 +313,9 @@ class Text extends Image
 	/**
 	 * Set TextField Height
 	 */
-	public function setHeight(inHeight:Int)
+	public function setHeight(height:Int)
 	{
-		_field.height = inHeight;
+		_field.height = height;
 	}
 
 	/**
