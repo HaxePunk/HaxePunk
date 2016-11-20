@@ -22,7 +22,7 @@ class Platform
 		{
 			Compiler.define("tile_shader");
 		}
-		else
+		else if (!Context.defined("tile_shader"))
 		{
 			Compiler.define("draw_tiles");
 		}

@@ -1,21 +1,25 @@
 package com.haxepunk.graphics.atlas;
 
-@:dox(hide)
-class HardwareNotSupportedRenderer
-{
-	public function new(data:AtlasData) {}
+import flash.geom.Rectangle;
+import com.haxepunk.Scene;
 
-	public function drawTiles(graphics, tileData, smooth, flags, count):Void
+@:dox(hide)
+class NullRenderer
+{
+	public static function render(drawCommand:DrawCommand, scene:Scene, rect:Rectangle):Void
 	{
 		throw "hardware rendering not supported on this platform";
 	}
+
+	public static function startFrame(scene:Scene) {}
+	public static function endFrame(scene:Scene) {}
 }
 
 @:dox(hide)
 #if tile_shader
-typedef Renderer = com.haxepunk.graphics.atlas.renderer.TileShaderRenderer;
+typedef Renderer = com.haxepunk.graphics.atlas.HardwareRenderer;
 #elseif draw_tiles
-typedef Renderer = com.haxepunk.graphics.atlas.renderer.DrawTilesRenderer;
+typedef Renderer = com.haxepunk.graphics.atlas.DrawTilesRenderer;
 #else
-typedef Renderer = HardwareNotSupportedRenderer;
+typedef Renderer = NullRenderer;
 #end
