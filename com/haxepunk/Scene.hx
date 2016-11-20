@@ -1,8 +1,8 @@
 package com.haxepunk;
 
-import flash.display.Sprite;
 import flash.geom.Point;
 import com.haxepunk.graphics.atlas.AtlasData;
+import com.haxepunk.graphics.atlas.SceneSprite;
 
 /**
  * Updated by `Engine`, main game container that holds all currently active Entities.
@@ -38,7 +38,7 @@ class Scene extends Tweener
 		super();
 		visible = true;
 		camera = new Point();
-		sprite = new Sprite();
+		sprite = new SceneSprite(this);
 
 		_layerList = new Array<Int>();
 
@@ -147,6 +147,8 @@ class Scene extends Tweener
 	 */
 	public function render()
 	{
+		sprite.startFrame();
+
 		if (HXP.renderMode == RenderMode.HARDWARE)
 			AtlasData.startScene(this);
 
@@ -166,8 +168,7 @@ class Scene extends Tweener
 			HXP.cursor.render();
 		}
 
-		if (HXP.renderMode == RenderMode.HARDWARE)
-			AtlasData.active = null; // forces the last active atlas to flush
+		sprite.endFrame();
 	}
 
 	/**
@@ -191,7 +192,7 @@ class Scene extends Tweener
 	/**
 	 * Sprite used to store layer sprites when RenderMode.HARDWARE is set.
 	 */
-	public var sprite(default, null):Sprite;
+	public var sprite(default, null):SceneSprite;
 
 	/**
 	 * Adds the Entity to the Scene at the end of the frame.
