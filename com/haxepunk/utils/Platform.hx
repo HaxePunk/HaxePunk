@@ -32,6 +32,16 @@ class Platform
 			var parts = typeName.split(".");
 			if (parts[0] == "haxepunk")
 			{
+				try
+				{
+					// if the com.* type exists, return a typedef
+					var type = Context.getType("com." + typeName);
+				}
+				catch (e:String)
+				{
+					return null;
+				}
+
 				var name = parts[parts.length - 1],
 					futurePack = parts.slice(0, parts.length - 1);
 				var currentPack, newName;
