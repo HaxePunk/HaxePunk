@@ -88,30 +88,34 @@ class Backdrop extends Canvas
 			fsx = HXP.screen.fullScaleX,
 			fsy = HXP.screen.fullScaleY;
 
+		var xi:Int = 1,
+			yi:Int = 1;
 		if (_repeatX)
 		{
 			_point.x %= _textWidth * sx * fsx;
 			if (_point.x > 0) _point.x -= _textWidth * sx * fsx;
+			xi = Std.int(Math.ceil((HXP.screen.width - _point.x) / Std.int(_textWidth * sx * fsx)));
 		}
-
 		if (_repeatY)
 		{
 			_point.y %= _textHeight * sy * fsy;
 			if (_point.y > 0) _point.y -= _textHeight * sy * fsy;
+			yi = Std.int(Math.ceil((HXP.screen.width - _point.x) / Std.int(_textWidth * sx * fsx)));
 		}
 
 		var px:Int = Std.int(_point.x), py:Int = Std.int(_point.y);
 
-		var y:Int = 0;
-		while (py + y < _height * sy * fsy)
+		for (y in 0 ... yi)
 		{
-			var x:Int = 0;
-			while (px + x < _width * sx * fsx)
+			for (x in 0 ... xi)
 			{
-				_region.draw(px + x, py + y, layer, sx * fsx, sy * fsy, 0, _red, _green, _blue, _alpha);
-				x += Std.int(_textWidth * sx * fsx);
+				_region.draw(
+					px + x * _textWidth * sx * fsx,
+					py + y * _textHeight * sy * fsy,
+					layer, sx * fsx, sy * fsy, 0,
+					_red, _green, _blue, _alpha
+				);
 			}
-			y += Std.int(_textHeight * sy * fsy);
 		}
 	}
 
