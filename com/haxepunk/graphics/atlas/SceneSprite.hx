@@ -1,9 +1,8 @@
 package com.haxepunk.graphics.atlas;
 
 import flash.display.BitmapData;
+import flash.display.Sprite;
 import flash.geom.Rectangle;
-import openfl.display.OpenGLView;
-import openfl.display.Sprite;
 
 @:access(com.haxepunk.graphics.atlas.DrawCommand)
 class SceneSprite extends Sprite
@@ -13,7 +12,7 @@ class SceneSprite extends Sprite
 		super();
 		this.scene = scene;
 #if tile_shader
-		var oglView = new OpenGLView();
+		var oglView = new flash.display.OpenGLView();
 		addChild(oglView);
 		oglView.render = renderScene;
 #end

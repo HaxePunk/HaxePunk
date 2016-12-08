@@ -1,28 +1,31 @@
 package com.haxepunk.graphics.atlas;
 
 import flash.display.BitmapData;
+import flash.geom.Matrix;
 
 @:allow(com.haxepunk.graphics.atlas.DrawCommand)
-private class QuadData
+private class RenderData
 {
 	public function new() {}
 
-	public var rx:Float = 0;
-	public var ry:Float = 0;
-	public var rw:Float = 0;
-	public var rh:Float = 0;
-	public var a:Float = 0;
-	public var b:Float = 0;
-	public var c:Float = 0;
-	public var d:Float = 0;
-	public var tx:Float = 0;
-	public var ty:Float = 0;
+	public var rx1:Float = 0;
+	public var ry1:Float = 0;
+	public var tx1:Float = 0;
+	public var ty1:Float = 0;
+	public var rx2:Float = 0;
+	public var ry2:Float = 0;
+	public var tx2:Float = 0;
+	public var ty2:Float = 0;
+	public var rx3:Float = 0;
+	public var ry3:Float = 0;
+	public var tx3:Float = 0;
+	public var ty3:Float = 0;
 	public var red:Float = 0;
 	public var blue:Float = 0;
 	public var green:Float = 0;
 	public var alpha:Float = 0;
 
-	var _next:QuadData;
+	var _next:RenderData;
 }
 
 /**
@@ -51,8 +54,18 @@ class DrawCommand
 		return command;
 	}
 
+	static inline function matrixTransformX(m:Matrix, px:Float, py:Float):Float
+	{
+		return px * m.a + py * m.c + m.tx;
+	}
+
+	static inline function matrixTransformY(m:Matrix, px:Float, py:Float):Float
+	{
+		return px * m.b + py * m.d + m.ty;
+	}
+
 	static var _pool:DrawCommand;
-	static var _quadPool:QuadData;
+	static var _dataPool:RenderData;
 
 	public var texture:BitmapData;
 	public var smooth:Bool = false;
@@ -60,73 +73,118 @@ class DrawCommand
 
 	function new() {}
 
-	public function add(rx:Float, ry:Float, rw:Float, rh:Float, a:Float, b:Float, c:Float, d:Float, tx:Float, ty:Float, red:Float, green:Float, blue:Float, alpha:Float):Void
+	// TODO
+	public function addTriangle():Void {}
+
+	public function addRect(rx:Float, ry:Float, rw:Float, rh:Float, a:Float, b:Float, c:Float, d:Float, tx:Float, ty:Float, red:Float, green:Float, blue:Float, alpha:Float):Void
 	{
-		var quad:QuadData;
-		if (_quadPool != null)
-		{
-			quad = _quadPool;
-			_quadPool = _quadPool._next;
-			quad._next = null;
-		}
-		else
-		{
-			quad = new QuadData();
-		}
-		quad.rx = rx;
-		quad.ry = ry;
-		quad.rw = rw;
-		quad.rh = rh;
-		quad.a = a;
-		quad.b = b;
-		quad.c = c;
-		quad.d = d;
-		quad.tx = tx;
-		quad.ty = ty;
-		quad.red = red;
-		quad.green = green;
-		quad.blue = blue;
-		quad.alpha = alpha;
+		var uvx1 = (rx / texture.width),
+			uvy1 = (ry / texture.height),
+			uvx2 = ((rx + rw) / texture.width),
+			uvy2 = ((ry + rh) / texture.height);
 
-		if (_lastQuad != null)
-		{
-			_lastQuad._next = quad;
-		}
-		else
-		{
-			this.quad = quad;
-		}
-		_lastQuad = quad;
+		var matrix = HXP.matrix;
+		matrix.setTo(a, b, c, d, tx, ty);
 
-		++quads;
+		inline function transformX(x, y) return matrixTransformX(matrix, x, y);
+		inline function transformY(x, y) return matrixTransformY(matrix, x, y);
+
+		var data1:RenderData = getData();
+		data1.tx1 = transformX(0, 0);
+		data1.ty1 = transformY(0, 0);
+		data1.rx1 = uvx1;
+		data1.ry1 = uvy1;
+		data1.tx2 = transformX(rw, 0);
+		data1.ty2 = transformY(rw, 0);
+		data1.rx2 = uvx2;
+		data1.ry2 = uvy1;
+		data1.tx3 = transformX(0, rh);
+		data1.ty3 = transformY(0, rh);
+		data1.rx3 = uvx1;
+		data1.ry3 = uvy2;
+		data1.red = red;
+		data1.green = green;
+		data1.blue = blue;
+		data1.alpha = alpha;
+		addData(data1);
+
+		var data2:RenderData = getData();
+		data2.tx1 = transformX(0, rh);
+		data2.ty1 = transformY(0, rh);
+		data2.rx1 = uvx1;
+		data2.ry1 = uvy2;
+		data2.tx2 = transformX(rw, 0);
+		data2.ty2 = transformY(rw, 0);
+		data2.rx2 = uvx2;
+		data2.ry2 = uvy1;
+		data2.tx3 = transformX(rw, rh);
+		data2.ty3 = transformY(rw, rh);
+		data2.rx3 = uvx2;
+		data2.ry3 = uvy2;
+		data2.red = red;
+		data2.green = green;
+		data2.blue = blue;
+		data2.alpha = alpha;
+		addData(data2);
 	}
 
 	public function recycle()
 	{
-		recycleQuads();
+		recycleData();
 		var command = this;
 		while (command._next != null)
 		{
 			command = command._next;
-			command.recycleQuads();
+			command.recycleData();
 		}
 		command._next = _pool;
 		_pool = this;
 	}
 
-	inline function recycleQuads()
+	inline function getData():RenderData
 	{
-		quads = 0;
-		if (_lastQuad != null)
+		var data:RenderData;
+		if (_dataPool != null)
 		{
-			_lastQuad._next = _quadPool;
-			_quadPool = quad;
+			data = _dataPool;
+			_dataPool = _dataPool._next;
+			data._next = null;
 		}
-		quad = _lastQuad = null;
+		else
+		{
+			data = new RenderData();
+		}
+		return data;
 	}
 
-	var quad:QuadData;
-	var quads:Int = 0;
-	var _lastQuad:QuadData;
+	inline function addData(data:RenderData):Void
+	{
+		if (this.data == null)
+		{
+			this.data = data;
+		}
+		else
+		{
+			_lastData._next = data;
+		}
+		_lastData = data;
+
+		++dataCount;
+	}
+
+	inline function recycleData()
+	{
+		dataCount = 0;
+		if (data != null)
+		{
+			_lastData._next = _dataPool;
+			_dataPool = data;
+		}
+		data = _lastData = null;
+	}
+
+	var data:RenderData;
+	var dataCount:Int = 0;
+	var _lastData:RenderData;
 	var _next:DrawCommand;
 }

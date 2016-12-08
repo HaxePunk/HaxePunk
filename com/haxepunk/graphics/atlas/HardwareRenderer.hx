@@ -3,20 +3,17 @@ package com.haxepunk.graphics.atlas;
 #if tile_shader
 import flash.geom.Rectangle;
 import openfl.display.BlendMode;
-import openfl.geom.Matrix;
 import openfl.geom.Point;
 import openfl.gl.GL;
 import openfl.gl.GLBuffer;
 import openfl.gl.GLProgram;
 #if lime
 import lime.utils.Float32Array;
-import lime.utils.UInt32Array;
 #if !flash
 import openfl._internal.renderer.opengl.GLRenderer;
 #end
 #elseif nme
 import nme.utils.Float32Array;
-import nme.utils.Int32Array as UInt32Array;
 #end
 import com.haxepunk.HXP;
 
@@ -26,8 +23,10 @@ private class TextureShader
 	public var glProgram:GLProgram;
 
 	public static inline var VERTEX_SHADER =
-"
-#version 120
+"// HaxePunk HardwareRenderer vertex shader
+#ifdef GL_ES
+precision mediump float;
+#endif
 
 attribute vec4 aPosition;
 attribute vec2 aTexCoord;
@@ -43,42 +42,43 @@ void main(void) {
 }";
 
 	public static inline var FRAGMENT_SHADER =
-"#version 120
-" +
-#if !desktop "precision mediump float;
-" + #end
-"
+"// HaxePunk HardwareRenderer fragment shader
+#ifdef GL_ES
+precision mediump float;
+#endif
+
 varying vec2 vTexCoord;
 varying vec4 vColor;
 uniform sampler2D uImage0;
 
 void main(void) {
-	vec4 color = texture2D (uImage0, vTexCoord);
+	vec4 color = texture2D(uImage0, vTexCoord);
 	if (color.a == 0.0) {
-		gl_FragColor = vec4 (0.0, 0.0, 0.0, 0.0);
+		gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
 	} else {
-		gl_FragColor = vec4 (color.rgb / color.a, color.a)*vColor;
+		gl_FragColor = vec4(color.rgb / color.a, color.a) * vColor;
 	}
 }";
 
 	public function new()
 	{
-		glProgram = GL.createProgram();
-
 		var vertexShader = GL.createShader(GL.VERTEX_SHADER);
 		GL.shaderSource(vertexShader, VERTEX_SHADER);
 		GL.compileShader(vertexShader);
 		if (GL.getShaderParameter(vertexShader, GL.COMPILE_STATUS) == 0)
-			throw "Error compiling vertex shader";
-		GL.attachShader(glProgram, vertexShader);
+			throw "Error compiling vertex shader: " +
+				GL.getShaderInfoLog(vertexShader);
 
 		var fragmentShader = GL.createShader(GL.FRAGMENT_SHADER);
 		GL.shaderSource(fragmentShader, FRAGMENT_SHADER);
 		GL.compileShader(fragmentShader);
 		if (GL.getShaderParameter(fragmentShader, GL.COMPILE_STATUS) == 0)
-			throw "Error compiling fragment shader";
-		GL.attachShader(glProgram, fragmentShader);
+			throw "Error compiling fragment shader: " +
+				GL.getShaderInfoLog(fragmentShader);
 
+		glProgram = GL.createProgram();
+		GL.attachShader(glProgram, fragmentShader);
+		GL.attachShader(glProgram, vertexShader);
 		GL.linkProgram(glProgram);
 		if (GL.getProgramParameter(glProgram, GL.LINK_STATUS) == 0)
 			throw "Unable to initialize the shader program.";
@@ -124,8 +124,7 @@ void main(void) {
 @:dox(hide)
 class HardwareRenderer
 {
-	static inline var BUFFER_CHUNK:Int = 32;
-	static inline var INDEX_CHUNK:Int = 6;
+	static inline var BUFFER_CHUNK:Int = 24;
 	static inline var FLOAT32_BYTES:Int = #if lime Float32Array.BYTES_PER_ELEMENT #else Float32Array.SBYTES_PER_ELEMENT #end;
 
 	static var textureShader:TextureShader;
@@ -138,26 +137,14 @@ class HardwareRenderer
 		) * chunkSize);
 	}
 
-	static inline function matrixTransformX(m:Matrix, px:Float, py:Float):Float
-	{
-		return px * m.a + py * m.c + m.tx;
-	}
-
-	static inline function matrixTransformY(m:Matrix, px:Float, py:Float):Float
-	{
-		return px * m.b + py * m.d + m.ty;
-	}
-
 	static var buffer:Float32Array;
-	static var indexes:UInt32Array;
 	static var glBuffer:GLBuffer;
-	static var glIndexes:GLBuffer;
 
 	@:access(com.haxepunk.graphics.atlas.DrawCommand)
-	@:access(com.haxepunk.graphics.atlas.QuadData)
+	@:access(com.haxepunk.graphics.atlas.RenderData)
 	public static function render(drawCommand:DrawCommand, scene:Scene, rect:Rectangle):Void
 	{
-		if (drawCommand != null && drawCommand.quads > 0)
+		if (drawCommand != null && drawCommand.dataCount > 0)
 		{
 			if (textureShader == null) textureShader = new TextureShader();
 
@@ -174,12 +161,11 @@ class HardwareRenderer
 			if (glBuffer == null)
 			{
 				glBuffer = GL.createBuffer();
-				glIndexes = GL.createBuffer();
 			}
 
 			// expand arrays if necessary
 			var bufferLength:Int = buffer == null ? 0 : buffer.length;
-			var items = drawCommand.quads;
+			var items = drawCommand.dataCount;
 			if (bufferLength < items * BUFFER_CHUNK)
 			{
 				buffer = new Float32Array(resize(bufferLength, items, BUFFER_CHUNK));
@@ -187,135 +173,66 @@ class HardwareRenderer
 				GL.bindBuffer(GL.ARRAY_BUFFER, glBuffer);
 				GL.bufferData(GL.ARRAY_BUFFER, buffer, GL.DYNAMIC_DRAW);
 			}
-			var indexLength:Int = indexes == null ? 0 : indexes.length;
-			if (indexLength < items * INDEX_CHUNK)
-			{
-				var newIndexes = new UInt32Array(resize(indexLength, items, INDEX_CHUNK));
-				var i:Int = 0, vi:Int = 0;
-				for (v in 0 ... Std.int(newIndexes.length / INDEX_CHUNK))
-				{
-					vi = v * 4;
-					newIndexes[i++] = vi;
-					newIndexes[i++] = vi + 1;
-					newIndexes[i++] = vi + 2;
-					newIndexes[i++] = vi + 2;
-					newIndexes[i++] = vi + 1;
-					newIndexes[i++] = vi + 3;
-				}
-				indexes = newIndexes;
 
-				GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, glIndexes);
-				GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, indexes, GL.DYNAMIC_DRAW);
-			}
-
-			var bufferPos:Int = 0, matrix:Matrix = HXP.matrix;
+			var bufferPos:Int = 0;
 			var texture = drawCommand.texture;
-			var quad = drawCommand.quad;
+			var data = drawCommand.data;
 			var x0:Float, y0:Float;
 
-			var quads:Int = 0;
-			while (quad != null)
+			var dataCount:Int = 0;
+			while (data != null)
 			{
-				rx = quad.rx;
-				ry = quad.ry;
-				rw = quad.rw;
-				rh = quad.rh;
-				a = quad.a;
-				b = quad.b;
-				c = quad.c;
-				d = quad.d;
-				tx = quad.tx;
-				ty = quad.ty;
-				red = quad.red;
-				green = quad.green;
-				blue = quad.blue;
-				alpha = quad.alpha;
+				buffer[bufferPos++] = data.tx1;
+				buffer[bufferPos++] = data.ty1;
+				buffer[bufferPos++] = data.rx1;
+				buffer[bufferPos++] = data.ry1;
+				buffer[bufferPos++] = data.red;
+				buffer[bufferPos++] = data.green;
+				buffer[bufferPos++] = data.blue;
+				buffer[bufferPos++] = data.alpha;
 
-				if (texture != null)
-				{
-					uvx = (rx / texture.width);
-					uvy = (ry / texture.height);
-					uvx2 = ((rx + rw) / texture.width);
-					uvy2 = ((ry + rh) / texture.height);
-				}
+				buffer[bufferPos++] = data.tx2;
+				buffer[bufferPos++] = data.ty2;
+				buffer[bufferPos++] = data.rx2;
+				buffer[bufferPos++] = data.ry2;
+				buffer[bufferPos++] = data.red;
+				buffer[bufferPos++] = data.green;
+				buffer[bufferPos++] = data.blue;
+				buffer[bufferPos++] = data.alpha;
 
-				matrix.setTo(a, b, c, d, tx, ty);
+				buffer[bufferPos++] = data.tx3;
+				buffer[bufferPos++] = data.ty3;
+				buffer[bufferPos++] = data.rx3;
+				buffer[bufferPos++] = data.ry3;
+				buffer[bufferPos++] = data.red;
+				buffer[bufferPos++] = data.green;
+				buffer[bufferPos++] = data.blue;
+				buffer[bufferPos++] = data.alpha;
 
-				inline function transformX(x, y) return matrixTransformX(matrix, x, y);
-				inline function transformY(x, y) return matrixTransformY(matrix, x, y);
-
-				buffer[bufferPos++] = transformX(0, 0);
-				buffer[bufferPos++] = transformY(0, 0);
-				if (texture != null)
-				{
-					buffer[bufferPos++] = uvx;
-					buffer[bufferPos++] = uvy;
-				}
-				buffer[bufferPos++] = red;
-				buffer[bufferPos++] = green;
-				buffer[bufferPos++] = blue;
-				buffer[bufferPos++] = alpha;
-				buffer[bufferPos++] = transformX(rw, 0);
-				buffer[bufferPos++] = transformY(rw, 0);
-				if (texture != null)
-				{
-					buffer[bufferPos++] = uvx2;
-					buffer[bufferPos++] = uvy;
-				}
-				buffer[bufferPos++] = red;
-				buffer[bufferPos++] = green;
-				buffer[bufferPos++] = blue;
-				buffer[bufferPos++] = alpha;
-				buffer[bufferPos++] = transformX(0, rh);
-				buffer[bufferPos++] = transformY(0, rh);
-				if (texture != null)
-				{
-					buffer[bufferPos++] = uvx;
-					buffer[bufferPos++] = uvy2;
-				}
-				buffer[bufferPos++] = red;
-				buffer[bufferPos++] = green;
-				buffer[bufferPos++] = blue;
-				buffer[bufferPos++] = alpha;
-				buffer[bufferPos++] = transformX(rw, rh);
-				buffer[bufferPos++] = transformY(rw, rh);
-				if (texture != null)
-				{
-					buffer[bufferPos++] = uvx2;
-					buffer[bufferPos++] = uvy2;
-				}
-				buffer[bufferPos++] = red;
-				buffer[bufferPos++] = green;
-				buffer[bufferPos++] = blue;
-				buffer[bufferPos++] = alpha;
-
-				quad = quad._next;
-				quads++;
+				data = data._next;
+				dataCount++;
 			}
 
 			var x0 = HXP.screen.x + rect.x, y0 = HXP.screen.y + rect.y;
 			var transformation = ortho(-x0, -x0 + HXP.stage.stageWidth, -y0 + HXP.stage.stageHeight, -y0, 1000, -1000);
 			GL.uniformMatrix4fv(shader.uniformIndex("uMatrix"), false, transformation);
 
-			if (texture != null)
+			#if (lime && !flash)
+			var renderer:GLRenderer = cast HXP.stage.__renderer;
+			var renderSession = renderer.renderSession;
+			GL.bindTexture(GL.TEXTURE_2D, texture.getTexture(renderSession.gl));
+			#elseif nme
+			GL.bindBitmapDataTexture(texture);
+			#end
+			if (smooth)
 			{
-				#if (lime && !flash)
-				var renderer:GLRenderer = cast HXP.stage.__renderer;
-				var renderSession = renderer.renderSession;
-				GL.bindTexture(GL.TEXTURE_2D, texture.getTexture(renderSession.gl));
-				#elseif nme
-				GL.bindBitmapDataTexture(texture);
-				#end
-				if (smooth)
-				{
-					GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
-					GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
-				}
-				else
-				{
-					GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
-					GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
-				}
+				GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
+				GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
+			}
+			else
+			{
+				GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
+				GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
 			}
 
 			GL.bindBuffer(GL.ARRAY_BUFFER, glBuffer);
@@ -341,16 +258,15 @@ class HardwareRenderer
 			}
 
 			GL.vertexAttribPointer(shader.attributeIndex("aPosition"), 2, GL.FLOAT, false, 8 * FLOAT32_BYTES, 0);
-			if (texture != null)
-			{
-				GL.vertexAttribPointer(shader.attributeIndex("aTexCoord"), 2, GL.FLOAT, false, 8 * FLOAT32_BYTES, 2 * FLOAT32_BYTES);
-			}
+			GL.vertexAttribPointer(shader.attributeIndex("aTexCoord"), 2, GL.FLOAT, false, 8 * FLOAT32_BYTES, 2 * FLOAT32_BYTES);
 			GL.vertexAttribPointer(shader.attributeIndex("aColor"), 4, GL.FLOAT, false, 8 * FLOAT32_BYTES, 4 * FLOAT32_BYTES);
 
 			GL.scissor(Std.int(x0), Std.int(HXP.stage.stageHeight - y0 - rect.height), Std.int(rect.width), Std.int(rect.height));
 			GL.enable(GL.SCISSOR_TEST);
-			GL.drawElements(GL.TRIANGLES, items * INDEX_CHUNK, GL.UNSIGNED_INT, 0);
+			GL.drawArrays(GL.TRIANGLES, 0, items * 3);
 			GL.disable(GL.SCISSOR_TEST);
+
+			GL.bindBuffer(GL.ARRAY_BUFFER, null);
 
 			shader.unbind();
 		}

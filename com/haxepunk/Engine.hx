@@ -68,7 +68,7 @@ class Engine extends Sprite
 		}
 		else
 		{
-			HXP.renderMode = #if (flash || js) RenderMode.BUFFER #else RenderMode.HARDWARE #end;
+			HXP.renderMode = #if (flash) RenderMode.BUFFER #else RenderMode.HARDWARE #end;
 		}
 
 		// miscellaneous startup stuff

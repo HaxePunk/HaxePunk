@@ -26,7 +26,7 @@ import openfl.utils.JNI;
  */
 abstract InputType(Either<String, Int>)
 {
-	@:dox(hide) public inline function new( e:Either<String, Int> ) this = e;
+	@:dox(hide) public inline function new(e:Either<String, Int>) this = e;
 	@:dox(hide) public var type(get, never):Either<String, Int>;
 	@:to inline function get_type() return this;
 	@:from static function fromLeft(v:String) return new InputType(Left(v));
