@@ -8,6 +8,12 @@ import openfl.Assets;
 import com.haxepunk.HXP;
 import com.haxepunk.graphics.atlas.Atlas;
 
+#if (lime || flash)
+typedef AlignType = TextFormatAlign;
+#else
+typedef AlignType = String;
+#end
+
 /**
  * Text option including the font, size, color...
  */
@@ -16,13 +22,9 @@ typedef TextOptions =
 	/** Optional. The font to use. Default value is com.haxepunk.HXP.defaultFont. */
 	@:optional var font:String;
 	/** Optional. The font size. Default value is 16. */
-	@:optional var size:Int;	
+	@:optional var size:Int;
 	/** Optional. The aligment of the text. Default value is left. */
-#if (flash || js || !openfl_legacy)
-	@:optional var align:TextFormatAlign;
-#else
-	@:optional var align:String;
-#end
+	@:optional var align:AlignType;
 	/** Optional. Automatic word wrapping. Default value is false. */
 	@:optional var wordWrap:Bool;
 	/** Optional. If the text field can automatically resize if its contents grow. Default value is true. */
@@ -444,13 +446,8 @@ class Text extends Image
 	/**
 	 * Font alignment.
 	 */
-#if (flash || js || !openfl_legacy)
-	public var align(default, set):TextFormatAlign;
-	private function set_align(value:TextFormatAlign):TextFormatAlign
-#else
-	public var align(default, set):String;
-	private function set_align(value:String):String
-#end
+	public var align(default, set):AlignType;
+	private function set_align(value:AlignType):AlignType
 	{
 		if (align == value) return value;
 		_format.align = value;

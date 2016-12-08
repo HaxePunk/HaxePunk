@@ -1,7 +1,6 @@
 package com.haxepunk.utils;
 
 #if macro
-import haxe.macro.Compiler;
 import haxe.macro.Context;
 
 class Platform
@@ -17,16 +16,6 @@ class Platform
 
 	static function run()
 	{
-		if (Context.defined("flash")) {}
-		else if (Context.definedValue("openfl") >= "4.0.0" && !Context.defined("draw_tiles"))
-		{
-			Compiler.define("tile_shader");
-		}
-		else if (!Context.defined("tile_shader"))
-		{
-			Compiler.define("draw_tiles");
-		}
-
 		Context.onTypeNotFound(function (typeName:String)
 		{
 			var parts = typeName.split(".");

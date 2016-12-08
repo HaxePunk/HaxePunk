@@ -31,8 +31,6 @@ abstract AtlasDataType(AtlasData)
 
 class AtlasData
 {
-	public var renderer:Renderer;
-
 	public var width(default, null):Int;
 	public var height(default, null):Int;
 	public var bitmapData:BitmapData;
@@ -178,7 +176,7 @@ class AtlasData
 	{
 		if (smooth == null) smooth = Atlas.smooth;
 		var command = _scene.sprite.getDrawCommand(bitmapData, smooth, blend);
-		command.add(rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, red, green, blue, alpha);
+		command.addRect(rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, red, green, blue, alpha);
 	}
 
 	/**
@@ -223,7 +221,7 @@ class AtlasData
 		}
 
 		var command = _scene.sprite.getDrawCommand(bitmapData, smooth, blend);
-		command.add(rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, red, green, blue, alpha);
+		command.addRect(rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, red, green, blue, alpha);
 	}
 
 	public var blend:BlendMode = BlendMode.Normal;
