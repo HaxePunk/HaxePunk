@@ -224,6 +224,12 @@ class AtlasData
 		command.addRect(rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, red, green, blue, alpha);
 	}
 
+	public function prepareTriangle(tx1:Float, ty1:Float, uvx1:Float, uvy1:Float, tx2:Float, ty2:Float, uvx2:Float, uvy2:Float, tx3:Float, ty3:Float, uvx3:Float, uvy3:Float, red:Float, green:Float, blue:Float, alpha:Float, ?smooth:Bool):Void
+	{
+		var command = _scene.sprite.getDrawCommand(bitmapData, smooth, blend);
+		command.addTriangle(tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, red, alpha, green, blue);
+	}
+
 	public var blend:BlendMode = BlendMode.Normal;
 
 	// used for pooling

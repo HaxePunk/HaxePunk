@@ -11,7 +11,7 @@ import com.haxepunk.ds.Either;
 import openfl.ui.Mouse;
 
 #if (openfl_legacy && (cpp || neko))
-	import openfl.events.JoystickEvent;
+import openfl.events.JoystickEvent;
 #end
 
 #if ouya

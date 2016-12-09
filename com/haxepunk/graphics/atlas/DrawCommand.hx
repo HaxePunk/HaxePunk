@@ -73,10 +73,29 @@ class DrawCommand
 
 	function new() {}
 
-	// TODO
-	public function addTriangle():Void {}
+	public inline function addTriangle(tx1:Float, ty1:Float, uvx1:Float, uvy1:Float, tx2:Float, ty2:Float, uvx2:Float, uvy2:Float, tx3:Float, ty3:Float, uvx3:Float, uvy3:Float, red:Float, green:Float, blue:Float, alpha:Float):Void
+	{
+		var data:RenderData = getData();
+		data.tx1 = tx1;
+		data.ty1 = ty1;
+		data.rx1 = uvx1;
+		data.ry1 = uvy1;
+		data.tx2 = tx2;
+		data.ty2 = ty2;
+		data.rx2 = uvx2;
+		data.ry2 = uvy2;
+		data.tx3 = tx3;
+		data.ty3 = ty3;
+		data.rx3 = uvx3;
+		data.ry3 = uvy3;
+		data.red = red;
+		data.green = green;
+		data.blue = blue;
+		data.alpha = alpha;
+		addData(data);
+	}
 
-	public function addRect(rx:Float, ry:Float, rw:Float, rh:Float, a:Float, b:Float, c:Float, d:Float, tx:Float, ty:Float, red:Float, green:Float, blue:Float, alpha:Float):Void
+	public inline function addRect(rx:Float, ry:Float, rw:Float, rh:Float, a:Float, b:Float, c:Float, d:Float, tx:Float, ty:Float, red:Float, green:Float, blue:Float, alpha:Float):Void
 	{
 		var uvx1 = (rx / texture.width),
 			uvy1 = (ry / texture.height),
@@ -89,43 +108,19 @@ class DrawCommand
 		inline function transformX(x, y) return matrixTransformX(matrix, x, y);
 		inline function transformY(x, y) return matrixTransformY(matrix, x, y);
 
-		var data1:RenderData = getData();
-		data1.tx1 = transformX(0, 0);
-		data1.ty1 = transformY(0, 0);
-		data1.rx1 = uvx1;
-		data1.ry1 = uvy1;
-		data1.tx2 = transformX(rw, 0);
-		data1.ty2 = transformY(rw, 0);
-		data1.rx2 = uvx2;
-		data1.ry2 = uvy1;
-		data1.tx3 = transformX(0, rh);
-		data1.ty3 = transformY(0, rh);
-		data1.rx3 = uvx1;
-		data1.ry3 = uvy2;
-		data1.red = red;
-		data1.green = green;
-		data1.blue = blue;
-		data1.alpha = alpha;
-		addData(data1);
+		addTriangle(
+			transformX(0, 0), transformY(0, 0), uvx1, uvy1,
+			transformX(rw, 0), transformY(rw, 0), uvx2, uvy1,
+			transformX(0, rh), transformY(0, rh), uvx1, uvy2,
+			red, green, blue, alpha
+		);
 
-		var data2:RenderData = getData();
-		data2.tx1 = transformX(0, rh);
-		data2.ty1 = transformY(0, rh);
-		data2.rx1 = uvx1;
-		data2.ry1 = uvy2;
-		data2.tx2 = transformX(rw, 0);
-		data2.ty2 = transformY(rw, 0);
-		data2.rx2 = uvx2;
-		data2.ry2 = uvy1;
-		data2.tx3 = transformX(rw, rh);
-		data2.ty3 = transformY(rw, rh);
-		data2.rx3 = uvx2;
-		data2.ry3 = uvy2;
-		data2.red = red;
-		data2.green = green;
-		data2.blue = blue;
-		data2.alpha = alpha;
-		addData(data2);
+		addTriangle(
+			transformX(0, rh), transformY(0, rh), uvx1, uvy2,
+			transformX(rw, 0), transformY(rw, 0), uvx2, uvy1,
+			transformX(rw, rh), transformY(rw, rh), uvx2, uvy2,
+			red, green, blue, alpha
+		);
 	}
 
 	public function recycle()
