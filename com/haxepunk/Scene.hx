@@ -16,11 +16,17 @@ class Scene extends Tweener
 	public var visible:Bool;
 
 	/**
-	 * If true, Scenes behind this Scene in the stack will still be rendered
-	 * (until the first non-transparent Scene is hit.)
+	 * Background color of this Scene. If null, will use HXP.stage.color.
 	 * @since	2.6.0
 	 */
-	public var transparent:Bool = false;
+	public var color:Null<Int> = null;
+
+	/**
+	 * Background opacity. If less than 1, Scenes behind this Scene in the stack
+	 * will be rendered underneath.
+	 * @since	2.6.0
+	 */
+	public var alpha:Float = 1;
 
 	/**
 	 * Point used to determine drawing offset in the render loop.
@@ -1223,22 +1229,25 @@ class Scene extends Tweener
 	}
 
 	// Adding and removal.
-	private var _add:Array<Entity>;
-	private var _remove:Array<Entity>;
-	private var _recycle:Array<Entity>;
+	var _add:Array<Entity>;
+	var _remove:Array<Entity>;
+	var _recycle:Array<Entity>;
 
 	// Update information.
-	private var _update:List<Entity>;
+	var _update:List<Entity>;
 
 	// Render information.
-	private var _layerList:Array<Int>;
-	private var _layerDisplay:Map<Int, Bool>;
-	private var _layers:Map<Int, List<Entity>>;
+	var _layerList:Array<Int>;
+	var _layerDisplay:Map<Int, Bool>;
+	var _layers:Map<Int, List<Entity>>;
 
-	private var _classCount:Map<String, Int>;
+	var _classCount:Map<String, Int>;
 
-	private var _types:Map<String, List<Entity>>;
+	var _types:Map<String, List<Entity>>;
 
-	private var _recycled:Map<String, Entity>;
-	private var _entityNames:Map<String, Entity>;
+	var _recycled:Map<String, Entity>;
+	var _entityNames:Map<String, Entity>;
+
+	@:allow(com.haxepunk.Engine)
+	var _drawn:Bool = false;
 }

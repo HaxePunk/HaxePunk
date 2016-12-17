@@ -151,14 +151,19 @@ class Engine extends Sprite
 		{
 			// find the last visible scene, falling through transparent scenes
 			var visibleScene:Int = _scenes.length - 1;
-			while (_scenes[visibleScene].transparent && visibleScene > 0)
+			while (_scenes[visibleScene].alpha < 1 && visibleScene > 0)
 			{
 				--visibleScene;
+			}
+			for (i in 0 ... visibleScene)
+			{
+				_scenes[i]._drawn = false;
 			}
 			// render all visible scenes back to front
 			while (visibleScene < _scenes.length)
 			{
 				var scene = _scenes[visibleScene++];
+				scene._drawn = true;
 				if (scene.visible) scene.render();
 			}
 		}
@@ -395,7 +400,6 @@ class Engine extends Sprite
 			_scene.end();
 			_scene.updateLists();
 			if (_scene.autoClear && _scene.hasTween) _scene.clearTweens();
-			if (contains(_scene.sprite)) removeChild(_scene.sprite);
 
 			_scene = _scenes[_scenes.length - 1];
 
@@ -423,7 +427,12 @@ class Engine extends Sprite
 	 */
 	public function popScene():Scene
 	{
-		return _scenes.pop();
+		var scene = _scenes.pop();
+		if (contains(scene.sprite))
+		{
+			removeChild(scene.sprite);
+		}
+		return scene;
 	}
 
 	/**
@@ -437,7 +446,7 @@ class Engine extends Sprite
 		if (_scene == value) return value;
 		if (_scenes.length > 0)
 		{
-			_scenes.pop();
+			popScene();
 		}
 		_scenes.push(value);
 		return _scene;
