@@ -4,6 +4,7 @@ import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.geom.Rectangle;
 
+@:access(com.haxepunk.Scene)
 @:access(com.haxepunk.graphics.atlas.DrawCommand)
 class SceneSprite extends Sprite
 {
@@ -23,6 +24,20 @@ class SceneSprite extends Sprite
 		if (draw != null) draw.recycle();
 		draw = last = null;
 		Renderer.startFrame(scene);
+
+		if (scene.alpha > 0)
+		{
+			// draw the scene background
+			var command = getDrawCommand(null, false, BlendMode.Normal);
+			var sceneColor = scene.color == null ? HXP.stage.color : scene.color;
+			var red = HXP.getRed(sceneColor) / 255,
+				green = HXP.getGreen(sceneColor) / 255,
+				blue = HXP.getBlue(sceneColor) / 255;
+			var w = HXP.width * HXP.screen.fullScaleX,
+				h = HXP.height * HXP.screen.fullScaleY;
+			command.addTriangle(0, 0, 0, 0, w, 0, 0, 0, 0, h, 0, 0, red, green, blue, scene.alpha);
+			command.addTriangle(0, h, 0, 0, w, 0, 0, 0, w, h, 0, 0, red, green, blue, scene.alpha);
+		}
 	}
 
 	public function endFrame()
@@ -51,11 +66,14 @@ class SceneSprite extends Sprite
 
 	public function renderScene(rect:Rectangle)
 	{
-		var currentDraw:DrawCommand = draw;
-		while (currentDraw != null)
+		if (scene._drawn && scene.visible)
 		{
-			Renderer.render(currentDraw, scene, rect);
-			currentDraw = currentDraw._next;
+			var currentDraw:DrawCommand = draw;
+			while (currentDraw != null)
+			{
+				Renderer.render(currentDraw, scene, rect);
+				currentDraw = currentDraw._next;
+			}
 		}
 	}
 

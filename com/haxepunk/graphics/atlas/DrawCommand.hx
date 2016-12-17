@@ -97,10 +97,20 @@ class DrawCommand
 
 	public inline function addRect(rx:Float, ry:Float, rw:Float, rh:Float, a:Float, b:Float, c:Float, d:Float, tx:Float, ty:Float, red:Float, green:Float, blue:Float, alpha:Float):Void
 	{
-		var uvx1 = (rx / texture.width),
-			uvy1 = (ry / texture.height),
-			uvx2 = ((rx + rw) / texture.width),
+		var uvx1:Float, uvy1:Float, uvx2:Float, uvy2:Float;
+		if (texture == null)
+		{
+			uvx1 = uvy1 = 0;
+			uvx2 = rw;
+			uvy2 = rh;
+		}
+		else
+		{
+			uvx1 = (rx / texture.width);
+			uvy1 = (ry / texture.height);
+			uvx2 = ((rx + rw) / texture.width);
 			uvy2 = ((ry + rh) / texture.height);
+		}
 
 		var matrix = HXP.matrix;
 		matrix.setTo(a, b, c, d, tx, ty);

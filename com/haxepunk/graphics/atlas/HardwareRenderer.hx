@@ -18,37 +18,86 @@ import nme.utils.Float32Array;
 import com.haxepunk.HXP;
 
 @:dox(hide)
-private class TextureShader
+private class Shader
 {
 	public var glProgram:GLProgram;
+	public var bufferChunkSize:Int = 0;
 
+	public function new(vertexSource:String, fragmentSource:String)
+	{
+		var vertexShader = GL.createShader(GL.VERTEX_SHADER);
+		GL.shaderSource(vertexShader, vertexSource);
+		GL.compileShader(vertexShader);
+		if (GL.getShaderParameter(vertexShader, GL.COMPILE_STATUS) == 0)
+			throw "Error compiling vertex shader: " +
+			GL.getShaderInfoLog(vertexShader);
+
+		var fragmentShader = GL.createShader(GL.FRAGMENT_SHADER);
+		GL.shaderSource(fragmentShader, fragmentSource);
+		GL.compileShader(fragmentShader);
+		if (GL.getShaderParameter(fragmentShader, GL.COMPILE_STATUS) == 0)
+			throw "Error compiling fragment shader: " +
+			GL.getShaderInfoLog(fragmentShader);
+
+		glProgram = GL.createProgram();
+		GL.attachShader(glProgram, fragmentShader);
+		GL.attachShader(glProgram, vertexShader);
+		GL.linkProgram(glProgram);
+		if (GL.getProgramParameter(glProgram, GL.LINK_STATUS) == 0)
+			throw "Unable to initialize the shader program.";
+	}
+
+	public function bind()
+	{
+		GL.useProgram(glProgram);
+	}
+
+	public function unbind()
+	{
+		GL.useProgram(null);
+	}
+
+	public inline function attributeIndex(name:String)
+	{
+		return GL.getAttribLocation(glProgram, name);
+	}
+
+	public inline function uniformIndex(name:String)
+	{
+		return GL.getUniformLocation(glProgram, name);
+	}
+}
+
+@:dox(hide)
+private class TextureShader extends Shader
+{
 	public static inline var VERTEX_SHADER =
-"// HaxePunk HardwareRenderer vertex shader
+"// HaxePunk HardwareRenderer texture vertex shader
 #ifdef GL_ES
 precision mediump float;
 #endif
 
 attribute vec4 aPosition;
-attribute vec2 aTexCoord;
 attribute vec4 aColor;
+attribute vec2 aTexCoord;
 varying vec2 vTexCoord;
 varying vec4 vColor;
 uniform mat4 uMatrix;
 
 void main(void) {
-	vTexCoord = aTexCoord;
 	vColor = aColor;
+	vTexCoord = aTexCoord;
 	gl_Position = uMatrix * aPosition;
 }";
 
 	public static inline var FRAGMENT_SHADER =
-"// HaxePunk HardwareRenderer fragment shader
+"// HaxePunk HardwareRenderer texture fragment shader
 #ifdef GL_ES
 precision mediump float;
 #endif
 
-varying vec2 vTexCoord;
 varying vec4 vColor;
+varying vec2 vTexCoord;
 uniform sampler2D uImage0;
 
 void main(void) {
@@ -62,52 +111,77 @@ void main(void) {
 
 	public function new()
 	{
-		var vertexShader = GL.createShader(GL.VERTEX_SHADER);
-		GL.shaderSource(vertexShader, VERTEX_SHADER);
-		GL.compileShader(vertexShader);
-		if (GL.getShaderParameter(vertexShader, GL.COMPILE_STATUS) == 0)
-			throw "Error compiling vertex shader: " +
-				GL.getShaderInfoLog(vertexShader);
-
-		var fragmentShader = GL.createShader(GL.FRAGMENT_SHADER);
-		GL.shaderSource(fragmentShader, FRAGMENT_SHADER);
-		GL.compileShader(fragmentShader);
-		if (GL.getShaderParameter(fragmentShader, GL.COMPILE_STATUS) == 0)
-			throw "Error compiling fragment shader: " +
-				GL.getShaderInfoLog(fragmentShader);
-
-		glProgram = GL.createProgram();
-		GL.attachShader(glProgram, fragmentShader);
-		GL.attachShader(glProgram, vertexShader);
-		GL.linkProgram(glProgram);
-		if (GL.getProgramParameter(glProgram, GL.LINK_STATUS) == 0)
-			throw "Unable to initialize the shader program.";
+		super(VERTEX_SHADER, FRAGMENT_SHADER);
+		bufferChunkSize = 8;
 	}
 
-	public inline function bind()
+	override public function bind()
 	{
-		GL.useProgram(glProgram);
+		super.bind();
 		GL.enableVertexAttribArray(attributeIndex("aPosition"));
 		GL.enableVertexAttribArray(attributeIndex("aTexCoord"));
 		GL.enableVertexAttribArray(attributeIndex("aColor"));
 	}
 
-	public inline function unbind()
+	override public function unbind()
 	{
-		GL.useProgram(null);
+		super.unbind();
 		GL.disableVertexAttribArray(attributeIndex("aPosition"));
 		GL.disableVertexAttribArray(attributeIndex("aTexCoord"));
 		GL.disableVertexAttribArray(attributeIndex("aColor"));
 	}
+}
 
-	public inline function attributeIndex(name:String)
+@:dox(hide)
+private class ColorShader extends Shader
+{
+	public static inline var VERTEX_SHADER =
+"// HaxePunk HardwareRenderer color vertex shader
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+attribute vec4 aPosition;
+attribute vec4 aColor;
+varying vec4 vColor;
+uniform mat4 uMatrix;
+
+void main(void) {
+	vColor = aColor;
+	gl_Position = uMatrix * aPosition;
+}";
+
+	public static inline var FRAGMENT_SHADER =
+"// HaxePunk HardwareRenderer color fragment shader
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+varying vec4 vColor;
+
+void main(void) {
+	gl_FragColor = clamp(vColor, 0.0, 1.0);
+	//gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+}";
+
+	public function new()
 	{
-		return GL.getAttribLocation(glProgram, name);
+		super(VERTEX_SHADER, FRAGMENT_SHADER);
+		bufferChunkSize = 6;
 	}
 
-	public inline function uniformIndex(name:String)
+	override public function bind()
 	{
-		return GL.getUniformLocation(glProgram, name);
+		super.bind();
+		GL.enableVertexAttribArray(attributeIndex("aPosition"));
+		GL.enableVertexAttribArray(attributeIndex("aColor"));
+	}
+
+	override public function unbind()
+	{
+		super.unbind();
+		GL.disableVertexAttribArray(attributeIndex("aPosition"));
+		GL.disableVertexAttribArray(attributeIndex("aColor"));
 	}
 }
 
@@ -124,9 +198,9 @@ void main(void) {
 @:dox(hide)
 class HardwareRenderer
 {
-	static inline var BUFFER_CHUNK:Int = 24;
 	static inline var FLOAT32_BYTES:Int = #if lime Float32Array.BYTES_PER_ELEMENT #else Float32Array.SBYTES_PER_ELEMENT #end;
 
+	static var colorShader:ColorShader;
 	static var textureShader:TextureShader;
 
 	static inline function resize(length:Int, minChunks:Int, chunkSize:Int)
@@ -144,12 +218,22 @@ class HardwareRenderer
 	@:access(com.haxepunk.graphics.atlas.RenderData)
 	public static function render(drawCommand:DrawCommand, scene:Scene, rect:Rectangle):Void
 	{
+		if (colorShader == null) colorShader = new ColorShader();
+		if (textureShader == null) textureShader = new TextureShader();
+
 		if (drawCommand != null && drawCommand.dataCount > 0)
 		{
-			if (textureShader == null) textureShader = new TextureShader();
-
-			var shader = textureShader;
+			var shader:Shader;
+			if (drawCommand.texture == null)
+			{
+				shader = colorShader;
+			}
+			else
+			{
+				shader = textureShader;
+			}
 			shader.bind();
+			var bufferChunkSize = shader.bufferChunkSize;
 
 			var blend:Int = drawCommand.blend;
 			var smooth:Bool = drawCommand.smooth;
@@ -166,9 +250,9 @@ class HardwareRenderer
 			// expand arrays if necessary
 			var bufferLength:Int = buffer == null ? 0 : buffer.length;
 			var items = drawCommand.dataCount;
-			if (bufferLength < items * BUFFER_CHUNK)
+			if (bufferLength < items * bufferChunkSize * 3)
 			{
-				buffer = new Float32Array(resize(bufferLength, items, BUFFER_CHUNK));
+				buffer = new Float32Array(resize(bufferLength, items, bufferChunkSize * 3));
 
 				GL.bindBuffer(GL.ARRAY_BUFFER, glBuffer);
 				GL.bufferData(GL.ARRAY_BUFFER, buffer, GL.DYNAMIC_DRAW);
@@ -184,30 +268,39 @@ class HardwareRenderer
 			{
 				buffer[bufferPos++] = data.tx1;
 				buffer[bufferPos++] = data.ty1;
-				buffer[bufferPos++] = data.rx1;
-				buffer[bufferPos++] = data.ry1;
 				buffer[bufferPos++] = data.red;
 				buffer[bufferPos++] = data.green;
 				buffer[bufferPos++] = data.blue;
 				buffer[bufferPos++] = data.alpha;
+				if (texture != null)
+				{
+					buffer[bufferPos++] = data.rx1;
+					buffer[bufferPos++] = data.ry1;
+				}
 
 				buffer[bufferPos++] = data.tx2;
 				buffer[bufferPos++] = data.ty2;
-				buffer[bufferPos++] = data.rx2;
-				buffer[bufferPos++] = data.ry2;
 				buffer[bufferPos++] = data.red;
 				buffer[bufferPos++] = data.green;
 				buffer[bufferPos++] = data.blue;
 				buffer[bufferPos++] = data.alpha;
+				if (texture != null)
+				{
+					buffer[bufferPos++] = data.rx2;
+					buffer[bufferPos++] = data.ry2;
+				}
 
 				buffer[bufferPos++] = data.tx3;
 				buffer[bufferPos++] = data.ty3;
-				buffer[bufferPos++] = data.rx3;
-				buffer[bufferPos++] = data.ry3;
 				buffer[bufferPos++] = data.red;
 				buffer[bufferPos++] = data.green;
 				buffer[bufferPos++] = data.blue;
 				buffer[bufferPos++] = data.alpha;
+				if (texture != null)
+				{
+					buffer[bufferPos++] = data.rx3;
+					buffer[bufferPos++] = data.ry3;
+				}
 
 				data = data._next;
 				dataCount++;
@@ -217,22 +310,25 @@ class HardwareRenderer
 			var transformation = ortho(-x0, -x0 + HXP.stage.stageWidth, -y0 + HXP.stage.stageHeight, -y0, 1000, -1000);
 			GL.uniformMatrix4fv(shader.uniformIndex("uMatrix"), false, transformation);
 
-			#if (lime && !flash)
-			var renderer:GLRenderer = cast HXP.stage.__renderer;
-			var renderSession = renderer.renderSession;
-			GL.bindTexture(GL.TEXTURE_2D, texture.getTexture(renderSession.gl));
-			#elseif nme
-			GL.bindBitmapDataTexture(texture);
-			#end
-			if (smooth)
+			if (texture != null)
 			{
-				GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
-				GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
-			}
-			else
-			{
-				GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
-				GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
+				#if (lime && !flash)
+				var renderer:GLRenderer = cast HXP.stage.__renderer;
+				var renderSession = renderer.renderSession;
+				GL.bindTexture(GL.TEXTURE_2D, texture.getTexture(renderSession.gl));
+				#elseif nme
+				GL.bindBitmapDataTexture(texture);
+				#end
+				if (smooth)
+				{
+					GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
+					GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
+				}
+				else
+				{
+					GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
+					GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
+				}
 			}
 
 			GL.bindBuffer(GL.ARRAY_BUFFER, glBuffer);
@@ -257,9 +353,13 @@ class HardwareRenderer
 					GL.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
 			}
 
-			GL.vertexAttribPointer(shader.attributeIndex("aPosition"), 2, GL.FLOAT, false, 8 * FLOAT32_BYTES, 0);
-			GL.vertexAttribPointer(shader.attributeIndex("aTexCoord"), 2, GL.FLOAT, false, 8 * FLOAT32_BYTES, 2 * FLOAT32_BYTES);
-			GL.vertexAttribPointer(shader.attributeIndex("aColor"), 4, GL.FLOAT, false, 8 * FLOAT32_BYTES, 4 * FLOAT32_BYTES);
+			var stride = bufferChunkSize * FLOAT32_BYTES;
+			GL.vertexAttribPointer(shader.attributeIndex("aPosition"), 2, GL.FLOAT, false, stride, 0);
+			GL.vertexAttribPointer(shader.attributeIndex("aColor"), 4, GL.FLOAT, false, stride, 2 * FLOAT32_BYTES);
+			if (texture != null)
+			{
+				GL.vertexAttribPointer(shader.attributeIndex("aTexCoord"), 2, GL.FLOAT, false, stride, 6 * FLOAT32_BYTES);
+			}
 
 			GL.scissor(Std.int(x0), Std.int(HXP.stage.stageHeight - y0 - rect.height), Std.int(rect.width), Std.int(rect.height));
 			GL.enable(GL.SCISSOR_TEST);
