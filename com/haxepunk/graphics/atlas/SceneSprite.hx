@@ -6,6 +6,7 @@ import flash.geom.Rectangle;
 
 @:access(com.haxepunk.Scene)
 @:access(com.haxepunk.graphics.atlas.DrawCommand)
+@:dox(hide)
 class SceneSprite extends Sprite
 {
 	public function new(scene:Scene)
