@@ -11,6 +11,5 @@
 	<haxedef name="tile_shader" unless="flash"/>
 	<haxeflag name="--macro" value="com.haxepunk.utils.Platform.run()"/>
 
-	<haxelib name="openfl-ouya" if="ouya"/>
 	<haxelib name="openfl"/>
 </project>
