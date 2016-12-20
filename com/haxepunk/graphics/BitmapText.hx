@@ -71,7 +71,7 @@ class BitmapText extends Graphic
 	 * 						leading		Vertical space between lines. (Currently ignored.)
 	 *						richText	If the text field uses a rich text string. (Currently ignored.) 
 	 */
-	public function new(text:String, x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0, ?options:BitmapTextOptions)
+	public function new(text:String, ?x:Float = 0, ?y:Float = 0, ?width:Float = 0, ?height:Float = 0, ?options:BitmapTextOptions)
 	{
 		super();
 

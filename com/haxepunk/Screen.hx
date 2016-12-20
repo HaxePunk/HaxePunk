@@ -399,7 +399,7 @@ class Screen
 	 * @param	duration	Duration of shake effect, in seconds.
 	 * @since	2.5.3
 	 */
-	public function shake(magnitude:Int = 4, duration:Float = 0.5)
+	public function shake(?magnitude:Int = 4, ?duration:Float = 0.5)
 	{
 		if (_shakeTime < duration) _shakeTime = duration;
 		_shakeMagnitude = magnitude;
