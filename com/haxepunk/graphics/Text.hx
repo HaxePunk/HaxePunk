@@ -313,6 +313,14 @@ class Text extends Image
 		_source.draw(_field);
 		super.updateBuffer();
 	}
+	
+	/**
+	 * Set TextField Height
+	 */
+	public function setHeight(height:Int)
+	{
+		_field.height = height;
+	}
 
 	/**
 	 * Removes the graphic from memory
