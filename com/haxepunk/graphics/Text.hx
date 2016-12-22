@@ -8,6 +8,7 @@ import openfl.Assets;
 import com.haxepunk.HXP;
 import com.haxepunk.graphics.atlas.Atlas;
 
+@:dox(hide)
 #if (lime || flash)
 typedef AlignType = TextFormatAlign;
 #else
@@ -44,14 +45,15 @@ typedef TextOptions =
  * 
  * Conversion is automatic, no need to use this.
  */
+@:dox(hide)
 abstract StyleType(TextFormat)
 {
 	private function new(format:TextFormat) this = format;
-	@:dox(hide) @:to public function toTextformat():TextFormat return this;
+	@:to public function toTextformat():TextFormat return this;
 
-	@:dox(hide) @:from public static inline function fromTextFormat(format:TextFormat) return new StyleType(format);
-	@:dox(hide) @:from public static inline function fromTextOptions(object:TextOptions) return fromDynamic(object);
-	@:dox(hide) @:from public static inline function fromDynamic(object:Dynamic)
+	@:from public static inline function fromTextFormat(format:TextFormat) return new StyleType(format);
+	@:from public static inline function fromTextOptions(object:TextOptions) return fromDynamic(object);
+	@:from public static inline function fromDynamic(object:Dynamic)
 	{
 		var format = new TextFormat();
 		var fields = Type.getInstanceFields(TextFormat);
