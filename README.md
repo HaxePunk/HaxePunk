@@ -8,7 +8,7 @@
 
 A Haxe port of the [FlashPunk](http://useflashpunk.net) AS3 library. There are a few additions/differences from the original.
 
-* Builds for Flash, Windows, Mac, Linux, iOS, Android, and Ouya
+* Builds for Flash, HTML5, Windows, Mac, Linux, iOS, and Android
 * Circle/Polygon masks
 * Hardware acceleration for native targets
 * Joystick and multi-touch input
