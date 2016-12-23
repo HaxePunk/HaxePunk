@@ -6,5 +6,5 @@
     <haxedef name="doc-gen"/>
     <haxedef name="source-header" value="haxe"/>
     <haxelib name="HaxePunk"/>
-    <haxeflag name="--macro" value="include('com.haxepunk')"/>
+    <haxeflag name="--macro" value="include('haxepunk')"/>
 </project>

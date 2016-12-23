@@ -7,5 +7,5 @@
     <haxelib name="munit"/>
     <haxelib name="mcover"/>
     <haxelib name="HaxePunk"/>
-    <haxeflag name="--macro" value="include('com.haxepunk')"/>
+    <haxeflag name="--macro" value="include('haxepunk')"/>
 </project>
