@@ -2,6 +2,9 @@ HaxePunk CHANGELOG
 
 v4.0.0
 ------------------------------
+
+Major release; see MIGRATION.md for migration guide.
+
 * [bendmorris] Removed com package
 * [bendmorris] Reorganization of utility functions
 * [bendmorris] Added NineSlice graphic
