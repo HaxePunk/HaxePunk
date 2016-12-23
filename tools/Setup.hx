@@ -1,4 +1,4 @@
-import com.haxepunk.utils.HaxelibInfo;
+import haxepunk.utils.HaxelibInfo;
 
 class Setup
 {

@@ -12,7 +12,7 @@ docs:
 		rm -rf bin && \
 		haxelib run $(COMMAND) build $(TARGET) -xml && \
 		haxelib run dox -i `find bin -name 'types.xml'` -o pages/ -theme theme/ \
-			-in com --title "HaxePunk" \
+			-in haxepunk --title "HaxePunk" \
 			-D source-path "https://github.com/HaxePunk/HaxePunk/tree/master" > log.txt || cat log.txt
 
 tools: tool.n run.n
@@ -32,7 +32,7 @@ template.zip:
 haxepunk.zip: docs tools template.zip
 	@echo "Building haxelib project"
 	@zip -q haxepunk.zip run.n tool.n haxelib.json README.md include.xml template.zip
-	@zip -rq haxepunk.zip com assets doc/pages -x *.DS_Store*
+	@zip -rq haxepunk.zip haxepunk assets doc/pages -x *.DS_Store*
 
 haxelib: haxepunk.zip
 	@haxelib local haxepunk.zip > log.txt || cat log.txt

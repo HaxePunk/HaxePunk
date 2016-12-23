@@ -4,7 +4,7 @@ import sys.io.Process;
 import haxe.io.BytesOutput;
 import haxe.io.Eof;
 
-import com.haxepunk.utils.HaxelibInfo;
+import haxepunk.utils.HaxelibInfo;
 
 class CLI
 {

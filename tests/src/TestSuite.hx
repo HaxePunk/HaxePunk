@@ -1,14 +1,14 @@
 import massive.munit.TestSuite;
 
-import com.haxepunk.EntityListTest;
-import com.haxepunk.ImportTest;
-import com.haxepunk.masks.CollideTest;
-import com.haxepunk.masks.HitboxTest;
-import com.haxepunk.masks.SlopedGridTest;
-import com.haxepunk.SceneTest;
-import com.haxepunk.screen.FixedScaleModeTest;
-import com.haxepunk.screen.UniformScaleModeTest;
-import com.haxepunk.ScreenTest;
+import haxepunk.EntityListTest;
+import haxepunk.ImportTest;
+import haxepunk.masks.CollideTest;
+import haxepunk.masks.HitboxTest;
+import haxepunk.masks.SlopedGridTest;
+import haxepunk.SceneTest;
+import haxepunk.screen.FixedScaleModeTest;
+import haxepunk.screen.UniformScaleModeTest;
+import haxepunk.ScreenTest;
 
 /**
  * Auto generated Test Suite for MassiveUnit.
@@ -22,14 +22,14 @@ class TestSuite extends massive.munit.TestSuite
 	{
 		super();
 
-		add(com.haxepunk.EntityListTest);
-		add(com.haxepunk.ImportTest);
-		add(com.haxepunk.masks.CollideTest);
-		add(com.haxepunk.masks.HitboxTest);
-		add(com.haxepunk.masks.SlopedGridTest);
-		add(com.haxepunk.SceneTest);
-		add(com.haxepunk.screen.FixedScaleModeTest);
-		add(com.haxepunk.screen.UniformScaleModeTest);
-		add(com.haxepunk.ScreenTest);
+		add(haxepunk.EntityListTest);
+		add(haxepunk.ImportTest);
+		add(haxepunk.masks.CollideTest);
+		add(haxepunk.masks.HitboxTest);
+		add(haxepunk.masks.SlopedGridTest);
+		add(haxepunk.SceneTest);
+		add(haxepunk.screen.FixedScaleModeTest);
+		add(haxepunk.screen.UniformScaleModeTest);
+		add(haxepunk.ScreenTest);
 	}
 }
