@@ -1,5 +1,13 @@
 HaxePunk CHANGELOG
 
+v4.0.0
+------------------------------
+* [bendmorris] Removed com package
+* [bendmorris] Reorganization of utility functions
+* [bendmorris] Added NineSlice graphic
+* [bendmorris] Added Color abstract
+* [bendmorris] Text borders and shadows
+
 v2.6.0
 ------------------------------
 * [bendmorris] OpenFL 4 and NME support
