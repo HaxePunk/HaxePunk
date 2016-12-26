@@ -6,15 +6,6 @@ import haxe.macro.Context;
 @:dox(hide)
 class Platform
 {
-	static var remap = [
-		"haxepunk.input.Input" => "com.haxepunk.utils.Input",
-		"haxepunk.input.Key" => "com.haxepunk.utils.Key",
-		"haxepunk.input.Gesture" => "com.haxepunk.utils.Gesture",
-		"haxepunk.input.Touch" => "com.haxepunk.utils.Touch",
-		"haxepunk.utils.Random" => "com.haxepunk.HXP",
-		"haxepunk.utils.MathUtil" => "com.haxepunk.HXP",
-	];
-
 	static function run()
 	{
 		Context.onTypeNotFound(function (typeName:String)
