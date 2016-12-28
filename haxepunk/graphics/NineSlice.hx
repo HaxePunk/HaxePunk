@@ -8,6 +8,7 @@ import haxepunk.HXP;
 import haxepunk.RenderMode;
 import haxepunk.Graphic;
 import haxepunk.graphics.Image;
+import haxepunk.utils.Color;
 
 /**
  * Automatic scaling 9-slice graphic.
@@ -17,7 +18,51 @@ class NineSlice extends Graphic
 	public var width:Float;
 	public var height:Float;
 	public var clipRect:Rectangle;
-	public var smooth:Bool = false;
+
+	public var smooth(default, set):Bool;
+	inline function set_smooth(v:Bool)
+	{
+		return topL.smooth =
+			topC.smooth =
+			topR.smooth =
+			medL.smooth =
+			medC.smooth =
+			medR.smooth =
+			botL.smooth =
+			botC.smooth =
+			botR.smooth =
+			v;
+	}
+
+	public var color:Color;
+	inline function set_color(v:Color):Color
+	{
+		return topL.color =
+			topC.color =
+			topR.color =
+			medL.color =
+			medC.color =
+			medR.color =
+			botL.color =
+			botC.color =
+			botR.color =
+			v;
+	}
+
+	public var alpha(default, set):Float;
+	inline function set_alpha(v:Float):Float
+	{
+		return topL.alpha =
+			topC.alpha =
+			topR.alpha =
+			medL.alpha =
+			medC.alpha =
+			medR.alpha =
+			botL.alpha =
+			botC.alpha =
+			botR.alpha =
+			v;
+	}
 
 	var source:ImageType;
 
@@ -99,7 +144,6 @@ class NineSlice extends Graphic
 			segment.y = this.y + y;
 			segment.scaleX = width / segment.width;
 			segment.scaleY = height / segment.height;
-			segment.smooth = this.smooth;
 			renderFunc(segment);
 		}
 	}
