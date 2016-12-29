@@ -316,6 +316,10 @@ class Text extends Image
 		{
 			matchStyles();
 		}
+		else
+		{
+			_field.setTextFormat(_format);
+		}
 
 		_field.width = _width;
 		_field.width = textWidth = Math.ceil(_field.textWidth + bufferMargin * 2);
