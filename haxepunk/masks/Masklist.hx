@@ -13,16 +13,19 @@ class Masklist extends Hitbox
 {
 	/**
 	 * Constructor.
-	 * @param	mask	Masks to add to the list.
+	 * @param	masks	Masks to add to the list.
 	 */
-	public function new(masks:Array<Dynamic>)
+	public function new(?masks:Array<Mask>)
 	{
 		super();
 		_masks = new Array<Mask>();
 		_temp = new Array<Mask>();
 		_count = 0;
 
-		for (m in masks) add(m);
+		if (masks != null)
+		{
+			for (m in masks) add(m);
+		}
 	}
 
 	/** @private Collide against a mask. */
