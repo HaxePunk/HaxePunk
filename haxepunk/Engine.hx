@@ -299,11 +299,6 @@ class Engine extends Sprite
 			HXP.console.log(["Warning: Using RenderMode.HARDWARE on flash/html5 target may result in corrupt graphics"]);
 			#end
 		}
-
-		// HTML 5 warning
-		#if (js && debug)
-		HXP.console.log(["Warning: the HTML 5 target is currently experimental"]);
-		#end
 	}
 
 	/** @private Framerate independent game loop. */
