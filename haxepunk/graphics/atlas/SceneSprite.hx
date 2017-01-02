@@ -1,6 +1,7 @@
 package haxepunk.graphics.atlas;
 
 import flash.display.BitmapData;
+import flash.display.BlendMode;
 import flash.display.Sprite;
 import flash.geom.Rectangle;
 import haxepunk.utils.Color;
@@ -30,7 +31,7 @@ class SceneSprite extends Sprite
 		if (scene.alpha > 0)
 		{
 			// draw the scene background
-			var command = getDrawCommand(null, false, BlendMode.Normal);
+			var command = getDrawCommand(null, false, BlendMode.ALPHA);
 			var sceneColor:Color = scene.color == null ? HXP.stage.color : scene.color;
 			var red = sceneColor.red,
 				green = sceneColor.green,

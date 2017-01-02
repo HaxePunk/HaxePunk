@@ -1,5 +1,6 @@
 package haxepunk.graphics.atlas;
 
+import flash.display.BlendMode;
 import flash.display.BitmapData;
 import flash.geom.Matrix;
 
@@ -69,7 +70,7 @@ class DrawCommand
 
 	public var texture:BitmapData;
 	public var smooth:Bool = false;
-	public var blend:BlendMode = BlendMode.Normal;
+	public var blend:BlendMode = BlendMode.ALPHA;
 
 	function new() {}
 

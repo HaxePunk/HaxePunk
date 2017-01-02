@@ -235,7 +235,7 @@ class HardwareRenderer
 			shader.bind();
 			var bufferChunkSize = shader.bufferChunkSize;
 
-			var blend:Int = drawCommand.blend;
+			var blend:BlendMode = drawCommand.blend;
 			var smooth:Bool = drawCommand.smooth;
 
 			var tx:Float, ty:Float, rx:Float, ry:Float, rw:Float, rh:Float, a:Float, b:Float, c:Float, d:Float,
@@ -336,18 +336,18 @@ class HardwareRenderer
 
 			switch (drawCommand.blend)
 			{
-				case BlendMode.Add:
+				case BlendMode.ADD:
 					GL.blendEquation(GL.FUNC_ADD);
-					GL.blendFunc(GL.ONE, GL.ONE);
-				case BlendMode.Multiply:
+					GL.blendFunc(GL.SRC_ALPHA, GL.ONE);
+				case BlendMode.MULTIPLY:
 					GL.blendEquation(GL.FUNC_ADD);
 					GL.blendFunc(GL.DST_COLOR, GL.ONE_MINUS_SRC_ALPHA);
-				case BlendMode.Screen:
+				case BlendMode.SCREEN:
 					GL.blendEquation(GL.FUNC_ADD);
 					GL.blendFunc(GL.ONE, GL.ONE_MINUS_SRC_COLOR);
-				case BlendMode.Subtract:
+				case BlendMode.SUBTRACT:
 					GL.blendEquation(GL.FUNC_REVERSE_SUBTRACT);
-					GL.blendFunc(GL.ONE, GL.ONE);
+					GL.blendFunc(GL.SRC_ALPHA, GL.ONE);
 				default:
 					GL.blendEquation(GL.FUNC_ADD);
 					GL.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
@@ -371,7 +371,9 @@ class HardwareRenderer
 			shader.unbind();
 		}
 
+#if debug
 		checkForGLErrors();
+#end
 	}
 
 	static inline function checkForGLErrors()

@@ -1,6 +1,7 @@
 package haxepunk.graphics.atlas;
 
 import flash.display.BitmapData;
+import flash.display.BlendMode;
 import flash.geom.Rectangle;
 import flash.geom.Point;
 import flash.geom.Matrix;
@@ -172,9 +173,11 @@ class AtlasData
 	 * @param  blue  Blue color value
 	 * @param  alpha Alpha value
 	 */
-	public inline function prepareTileMatrix(rect:Rectangle, layer:Int,
+	public inline function prepareTileMatrix(
+		rect:Rectangle, layer:Int,
 		tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
-		red:Float, green:Float, blue:Float, alpha:Float, ?smooth:Bool)
+		red:Float, green:Float, blue:Float, alpha:Float,
+		?smooth:Bool, ?blend:BlendMode)
 	{
 		if (smooth == null) smooth = Atlas.smooth;
 		var command = _scene.sprite.getDrawCommand(bitmapData, smooth, blend);
@@ -195,9 +198,11 @@ class AtlasData
 	 * @param  blue   Blue color value
 	 * @param  alpha  Alpha value
 	 */
-	public inline function prepareTile(rect:Rectangle, tx:Float, ty:Float, layer:Int,
+	public inline function prepareTile(
+		rect:Rectangle, tx:Float, ty:Float, layer:Int,
 		scaleX:Float, scaleY:Float, angle:Float,
-		red:Float, green:Float, blue:Float, alpha:Float, ?smooth:Bool)
+		red:Float, green:Float, blue:Float, alpha:Float,
+		?smooth:Bool, ?blend:BlendMode):Void
 	{
 		if (smooth == null) smooth = Atlas.smooth;
 
@@ -226,13 +231,16 @@ class AtlasData
 		command.addRect(rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, red, green, blue, alpha);
 	}
 
-	public function prepareTriangle(tx1:Float, ty1:Float, uvx1:Float, uvy1:Float, tx2:Float, ty2:Float, uvx2:Float, uvy2:Float, tx3:Float, ty3:Float, uvx3:Float, uvy3:Float, red:Float, green:Float, blue:Float, alpha:Float, ?smooth:Bool):Void
+	public function prepareTriangle(
+		tx1:Float, ty1:Float, uvx1:Float, uvy1:Float,
+		tx2:Float, ty2:Float, uvx2:Float, uvy2:Float,
+		tx3:Float, ty3:Float, uvx3:Float, uvy3:Float,
+		red:Float, green:Float, blue:Float, alpha:Float,
+		?smooth:Bool, ?blend:BlendMode):Void
 	{
 		var command = _scene.sprite.getDrawCommand(bitmapData, smooth, blend);
 		command.addTriangle(tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, red, alpha, green, blue);
 	}
-
-	public var blend:BlendMode = BlendMode.Normal;
 
 	// used for pooling
 	private var _name:String;

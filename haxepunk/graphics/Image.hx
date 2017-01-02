@@ -213,7 +213,7 @@ class Image extends Graphic
 			_point.y = _point.y * fsy;
 
 			// render without rotation
-			_region.draw(_point.x, _point.y, layer, sx * fsx * (_flipped ? -1 : 1), sy * fsy, angle, _red, _green, _blue, _alpha, smooth);
+			_region.draw(_point.x, _point.y, layer, sx * fsx * (_flipped ? -1 : 1), sy * fsy, angle, _red, _green, _blue, _alpha, smooth, blend);
 		}
 		else
 		{
@@ -232,7 +232,7 @@ class Image extends Graphic
 			var tx = (-originX * sx * cos + originY * sy * sin + originX + _point.x) * fsx;
 			var ty = (-originX * sx * sin - originY * sy * cos + originY + _point.y) * fsy;
 
-			_region.drawMatrix(tx, ty, a, b, c, d, layer, _red, _green, _blue, _alpha, smooth);
+			_region.drawMatrix(tx, ty, a, b, c, d, layer, _red, _green, _blue, _alpha, smooth, blend);
 		}
 	}
 

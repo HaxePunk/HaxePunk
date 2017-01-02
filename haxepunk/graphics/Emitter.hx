@@ -1,6 +1,7 @@
 package haxepunk.graphics;
 
 import flash.display.BitmapData;
+import flash.display.BlendMode;
 import flash.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Graphic;
@@ -16,6 +17,12 @@ import haxepunk.utils.Random;
  */
 class Emitter extends Graphic
 {
+	/**
+	 * Optional blend mode to use when drawing this image.
+	 * Use constants from the flash.display.BlendMode class.
+	 */
+	public var blend:BlendMode;
+
 	/**
 	 * Constructor. Sets the source image to use for newly added particle types.
 	 * @param	source			Source image.
@@ -184,6 +191,7 @@ class Emitter extends Graphic
 					_source.x = p.x(td) - point.x;
 					_source.y = p.y(td) - point.y;
 					_source.smooth = smooth;
+					_source.blend = blend;
 
 					renderFunc();
 				}
