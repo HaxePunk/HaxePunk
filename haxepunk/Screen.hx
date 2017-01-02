@@ -396,11 +396,11 @@ class Screen
 
 	/**
 	 * Cause the screen to shake for a specified length of time.
-	 * @param	magnitude	Number of pixels to shake in any direction.
 	 * @param	duration	Duration of shake effect, in seconds.
+	 * @param	magnitude	Number of pixels to shake in any direction.
 	 * @since	2.5.3
 	 */
-	public function shake(?magnitude:Int = 4, ?duration:Float = 0.5)
+	public function shake(?duration:Float = 0.5, ?magnitude:Int = 4)
 	{
 		if (_shakeTime < duration) _shakeTime = duration;
 		_shakeMagnitude = magnitude;
