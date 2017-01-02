@@ -32,6 +32,7 @@ class EntityList<T:Entity> extends Entity
 		entities.push(entity);
 		if (type != "") entity.type = type;
 		if (scene != null) scene.add(entity);
+		entity.layer = layer;
 		return entity;
 	}
 
@@ -105,6 +106,13 @@ class EntityList<T:Entity> extends Entity
 	{
 		if (value != "") for (entity in entities) entity.type = value;
 		return _type = value;
+	}
+
+	override function set_layer(value:Int):Int
+	{
+		var value = super.set_layer(value);
+		for (entity in entities) entity.layer = value;
+		return value;
 	}
 
 	/**
