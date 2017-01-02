@@ -239,7 +239,7 @@ class AtlasData
 		?smooth:Bool, ?blend:BlendMode):Void
 	{
 		var command = _scene.sprite.getDrawCommand(bitmapData, smooth, blend);
-		command.addTriangle(tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, red, alpha, green, blue);
+		command.addTriangle(tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, red, green, blue, alpha);
 	}
 
 	// used for pooling
