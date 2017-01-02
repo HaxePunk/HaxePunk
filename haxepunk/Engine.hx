@@ -313,14 +313,14 @@ class Engine extends Sprite
 		HXP.elapsed *= HXP.rate;
 		_last = _time;
 
+		// update input
+		Input.update();
+
 		// update loop
 		if (!paused) update();
 
 		// update console
 		if (HXP.consoleEnabled()) HXP.console.update();
-
-		// update input
-		Input.update();
 
 		// update timer
 		_time = _renderTime = Lib.getTimer();
