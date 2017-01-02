@@ -295,8 +295,8 @@ class Engine extends Sprite
 		}
 		else
 		{
-			#if ((flash || js) && debug)
-			HXP.console.log(["Warning: Using RenderMode.HARDWARE on flash/html5 target may result in corrupt graphics"]);
+			#if ((flash) && debug)
+			HXP.console.log(["Warning: Using RenderMode.HARDWARE on flash target may result in corrupt graphics"]);
 			#end
 		}
 	}
