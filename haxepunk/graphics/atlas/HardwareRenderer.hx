@@ -334,7 +334,9 @@ class HardwareRenderer
 			GL.bindBuffer(GL.ARRAY_BUFFER, glBuffer);
 			GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer);
 
-			switch (drawCommand.blend)
+			var blend = drawCommand.blend;
+			if (blend == null) blend = BlendMode.ALPHA;
+			switch (blend)
 			{
 				case BlendMode.ADD:
 					GL.blendEquation(GL.FUNC_ADD);

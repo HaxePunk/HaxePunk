@@ -48,8 +48,10 @@ class SceneSprite extends Sprite
 		Renderer.endFrame(scene);
 	}
 
-	public function getDrawCommand(texture:BitmapData, smooth:Bool, blend:BlendMode)
+	public function getDrawCommand(texture:BitmapData, smooth:Bool, ?blend:BlendMode)
 	{
+		if (blend == null) blend = BlendMode.ALPHA;
+
 		if (last != null && last.texture == texture && last.smooth == smooth && last.blend == blend)
 		{
 			return last;

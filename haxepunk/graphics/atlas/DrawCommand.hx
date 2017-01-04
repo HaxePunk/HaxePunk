@@ -36,8 +36,9 @@ private class RenderData
  */
 class DrawCommand
 {
-	public static function create(texture:BitmapData, smooth:Bool, blend:BlendMode)
+	public static function create(texture:BitmapData, smooth:Bool, ?blend:BlendMode)
 	{
+		if (blend == null) blend = BlendMode.ALPHA;
 		var command:DrawCommand;
 		if (_pool != null)
 		{

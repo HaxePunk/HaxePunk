@@ -46,7 +46,7 @@ class AtlasData
 	 * @param bd     BitmapData image to use for rendering
 	 * @param name   A reference to the image data, used with destroy and for setting rendering flags
 	 */
-	public function new(bd:BitmapData, ?name:String, ?flags:Int)
+	public function new(bd:BitmapData, ?name:String)
 	{
 		bitmapData = bd;
 
