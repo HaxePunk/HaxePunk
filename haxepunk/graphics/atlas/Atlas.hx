@@ -1,11 +1,11 @@
 package haxepunk.graphics.atlas;
 
+import flash.display.BlendMode;
 import flash.geom.Rectangle;
 import haxepunk.graphics.atlas.AtlasData;
 
 class Atlas
 {
-
 	/**
 	 * Whether or not to use antialiasing (default: false)
 	 */
