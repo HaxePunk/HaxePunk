@@ -317,6 +317,7 @@ class HardwareRenderer
 				var renderSession = renderer.renderSession;
 				GL.bindTexture(GL.TEXTURE_2D, texture.getTexture(renderSession.gl));
 				#elseif nme
+				if (!texture.premultipliedAlpha) texture.premultipliedAlpha = true;
 				GL.bindBitmapDataTexture(texture);
 				#end
 				if (smooth)
