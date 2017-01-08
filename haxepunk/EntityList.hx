@@ -25,11 +25,15 @@ class EntityList<T:Entity> extends Entity
 	/**
 	 * Add an Entity to this EntityList and its Scene.
 	 * @param	entity		The Entity to be added.
+	 * @param	index		Position to insert the Entity, default last.
 	 * @return	The Entity.
 	 */
-	public function add(entity:T):T
+	public function add(entity:T, index:Int=-1):T
 	{
-		entities.push(entity);
+		if (index < 0)
+			entities.push(entity);
+		else
+			entities.insert(index, entity);
 		if (type != "") entity.type = type;
 		if (scene != null) scene.add(entity);
 		entity.layer = layer;
