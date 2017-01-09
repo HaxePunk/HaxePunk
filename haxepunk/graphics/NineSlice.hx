@@ -34,7 +34,7 @@ class NineSlice extends Graphic
 			v;
 	}
 
-	public var color:Color;
+	public var color(default, set):Color;
 	inline function set_color(v:Color):Color
 	{
 		return topL.color =
