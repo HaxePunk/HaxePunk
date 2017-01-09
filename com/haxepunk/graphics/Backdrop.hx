@@ -100,7 +100,7 @@ class Backdrop extends Canvas
 		{
 			_point.y %= _textHeight * sy * fsy;
 			if (_point.y > 0) _point.y -= _textHeight * sy * fsy;
-			yi = Std.int(Math.ceil((HXP.screen.width - _point.x) / Std.int(_textWidth * sx * fsx)));
+			yi = Std.int(Math.ceil((HXP.screen.height - _point.y) / Std.int(_textHeight * sy * fsy)));
 		}
 
 		var px:Int = Std.int(_point.x), py:Int = Std.int(_point.y);

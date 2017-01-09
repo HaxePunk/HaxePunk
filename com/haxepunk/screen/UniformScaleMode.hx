@@ -3,8 +3,18 @@ package com.haxepunk.screen;
 @:enum
 abstract UniformScaleType(Int)
 {
+	/**
+	 * When the screen ratio changes, zoom in (show less of the game.)
+	 */
 	var ZoomIn = 0;
+	/**
+	 * When the screen ratio changes, zoom out (show more of the game.)
+	 */
 	var Expand = 1;
+	/**
+	 * When the screen ratio changes, zoom out and hide the overflow behind
+	 * black bars.
+	 */
 	var Letterbox = 2;
 }
 
