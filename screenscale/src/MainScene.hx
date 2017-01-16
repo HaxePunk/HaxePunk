@@ -1,13 +1,13 @@
-import com.haxepunk.HXP;
-import com.haxepunk.Entity;
-import com.haxepunk.Scene;
-import com.haxepunk.screen.ScaleMode;
-import com.haxepunk.screen.UniformScaleMode;
-import com.haxepunk.screen.FixedScaleMode;
-import com.haxepunk.utils.Input;
-import com.haxepunk.utils.Key;
-import com.haxepunk.graphics.Text;
-import com.haxepunk.graphics.Tilemap;
+import haxepunk.HXP;
+import haxepunk.Entity;
+import haxepunk.Scene;
+import haxepunk.screen.ScaleMode;
+import haxepunk.screen.UniformScaleMode;
+import haxepunk.screen.FixedScaleMode;
+import haxepunk.input.Input;
+import haxepunk.input.Key;
+import haxepunk.graphics.Text;
+import haxepunk.graphics.Tilemap;
 
 typedef ScaleModeInfo =
 {

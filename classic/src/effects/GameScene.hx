@@ -1,11 +1,12 @@
 package effects;
 
-import com.haxepunk.Entity;
-import com.haxepunk.HXP;
-import com.haxepunk.graphics.Backdrop;
-import com.haxepunk.graphics.Emitter;
-import com.haxepunk.graphics.atlas.TextureAtlas;
-import com.haxepunk.utils.Input;
+import haxepunk.Entity;
+import haxepunk.HXP;
+import haxepunk.graphics.Backdrop;
+import haxepunk.graphics.Emitter;
+import haxepunk.graphics.atlas.TextureAtlas;
+import haxepunk.input.Input;
+import haxepunk.utils.Random;
 
 class GameScene extends DemoScene
 {
@@ -40,7 +41,7 @@ class GameScene extends DemoScene
 #end
 	}
 
-	private function onTouch(touch:com.haxepunk.utils.Touch)
+	private function onTouch(touch:haxepunk.input.Touch)
 	{
 		smoke.emit("exhaust", touch.sceneX, touch.sceneY);
 	}
@@ -65,7 +66,7 @@ class GameScene extends DemoScene
 
 			if (Input.mousePressed)
 			{
-				smoke.setColor("exhaust", HXP.rand(16777215), HXP.rand(16777215));
+				smoke.setColor("exhaust", Random.randInt(16777215), Random.randInt(16777215));
 			}
 		}
 		super.update();

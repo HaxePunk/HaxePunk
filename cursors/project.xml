@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
-	<meta title="cursors" package="com.haxepunk.cursors" version="1.0.0" company="HaxePunk"/>
+	<meta title="cursors" package="haxepunk.cursors" version="1.0.0" company="HaxePunk"/>
 
 	<app file="Main" main="Main" path="bin"/>
 

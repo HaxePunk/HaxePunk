@@ -1,16 +1,16 @@
 package scenes;
 
-import com.haxepunk.graphics.Graphiclist;
-import com.haxepunk.graphics.Image;
-import com.haxepunk.graphics.Text;
-import com.haxepunk.HXP;
-import com.haxepunk.Entity;
-import com.haxepunk.graphics.atlas.TextureAtlas;
-import com.haxepunk.graphics.Tilemap;
-import com.haxepunk.graphics.Backdrop;
-import com.haxepunk.masks.Grid;
-import com.haxepunk.utils.Input;
-import com.haxepunk.Scene;
+import haxepunk.graphics.Graphiclist;
+import haxepunk.graphics.Image;
+import haxepunk.graphics.Text;
+import haxepunk.HXP;
+import haxepunk.Entity;
+import haxepunk.graphics.atlas.TextureAtlas;
+import haxepunk.graphics.Tilemap;
+import haxepunk.graphics.Backdrop;
+import haxepunk.masks.Grid;
+import haxepunk.input.Input;
+import haxepunk.Scene;
 import flash.Lib;
 import entities.Bunny;
 

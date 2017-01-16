@@ -1,9 +1,9 @@
 package entities;
 
-import com.haxepunk.Entity;
-import com.haxepunk.HXP;
-import com.haxepunk.graphics.Image;
-import com.haxepunk.Graphic;
+import haxepunk.Entity;
+import haxepunk.HXP;
+import haxepunk.graphics.Image;
+import haxepunk.Graphic;
 import flash.geom.Point;
 
 /**

@@ -1,10 +1,10 @@
-import com.haxepunk.Scene;
-import com.haxepunk.Entity;
-import com.haxepunk.graphics.Image;
-import com.haxepunk.HXP;
-import com.haxepunk.utils.Cursor;
-import com.haxepunk.utils.Input;
-import com.haxepunk.utils.Key;
+import haxepunk.Scene;
+import haxepunk.Entity;
+import haxepunk.graphics.Image;
+import haxepunk.HXP;
+import haxepunk.Cursor;
+import haxepunk.input.Input;
+import haxepunk.input.Key;
 
 class MainScene extends Scene
 {

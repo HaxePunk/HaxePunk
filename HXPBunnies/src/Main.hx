@@ -1,5 +1,5 @@
-import com.haxepunk.Engine;
-import com.haxepunk.HXP;
+import haxepunk.Engine;
+import haxepunk.HXP;
 import openfl.display.FPS;
 import flash.Lib;
 

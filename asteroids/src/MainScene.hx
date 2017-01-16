@@ -1,10 +1,10 @@
-import com.haxepunk.HXP;
-import com.haxepunk.Entity;
-import com.haxepunk.Scene;
-import com.haxepunk.graphics.Emitter;
-import com.haxepunk.utils.Input;
-import com.haxepunk.utils.Key;
-import com.haxepunk.utils.Ease;
+import haxepunk.HXP;
+import haxepunk.Entity;
+import haxepunk.Scene;
+import haxepunk.graphics.Emitter;
+import haxepunk.input.Input;
+import haxepunk.input.Key;
+import haxepunk.utils.Ease;
 
 
 class MainScene extends Scene

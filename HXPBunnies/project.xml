@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
-	<meta title="HXPBunnies" package="com.haxepunk.bunnymark" version="1.0.0" company="HaxePunk"/>
+	<meta title="HXPBunnies" package="haxepunk.bunnymark" version="1.0.0" company="HaxePunk"/>
 
 	<app file="HXPBunnies" main="Main" path="bin"/>
 

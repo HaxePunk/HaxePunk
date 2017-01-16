@@ -1,7 +1,8 @@
-import com.haxepunk.HXP;
-import com.haxepunk.Entity;
-import com.haxepunk.graphics.Spritemap;
-import com.haxepunk.graphics.Emitter;
+import haxepunk.HXP;
+import haxepunk.Entity;
+import haxepunk.graphics.Spritemap;
+import haxepunk.graphics.Emitter;
+import haxepunk.utils.MathUtil;
 
 
 class Asteroid extends Entity
@@ -63,8 +64,8 @@ class Asteroid extends Entity
 
 		angle += HXP.elapsed * dir * TURN_SPEED;
 		var moveSpeed = HXP.elapsed * MOVE_SPEED * (size + 1);
-		var moveX = Math.cos(angle * HXP.RAD);
-		var moveY = Math.sin(angle * HXP.RAD);
+		var moveX = Math.cos(angle * MathUtil.RAD);
+		var moveY = Math.sin(angle * MathUtil.RAD);
 
 		x += moveSpeed * moveX;
 		y += moveSpeed * moveY;

@@ -1,8 +1,9 @@
 package platformer.entities;
 
 import flash.geom.Point;
-import com.haxepunk.HXP;
-import com.haxepunk.Entity;
+import haxepunk.HXP;
+import haxepunk.Entity;
+import haxepunk.utils.MathUtil;
 
 class Physics extends Entity
 {
@@ -53,18 +54,18 @@ class Physics extends Entity
 	{
 		if (maxVelocity.x > 0 && Math.abs(velocity.x) > maxVelocity.x)
 		{
-			velocity.x = maxVelocity.x * HXP.sign(velocity.x);
+			velocity.x = maxVelocity.x * MathUtil.sign(velocity.x);
 		}
 
 		if (maxVelocity.y > 0 && Math.abs(velocity.y) > maxVelocity.y)
 		{
-			velocity.y = maxVelocity.y * HXP.sign(velocity.y);
+			velocity.y = maxVelocity.y * MathUtil.sign(velocity.y);
 		}
 	}
 
 	public override function moveCollideY(e:Entity):Bool
 	{
-		if (velocity.y * HXP.sign(gravity.y) > 0)
+		if (velocity.y * MathUtil.sign(gravity.y) > 0)
 		{
 			_onGround = true;
 		}

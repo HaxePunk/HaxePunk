@@ -1,8 +1,9 @@
-import com.haxepunk.HXP;
-import com.haxepunk.Entity;
-import com.haxepunk.graphics.Image;
-import com.haxepunk.graphics.Emitter;
-import com.haxepunk.graphics.Particle;
+import haxepunk.HXP;
+import haxepunk.Entity;
+import haxepunk.graphics.Image;
+import haxepunk.graphics.Emitter;
+import haxepunk.graphics.Particle;
+import haxepunk.utils.MathUtil;
 
 
 class Ship extends Entity
@@ -40,9 +41,9 @@ class Ship extends Entity
 		setHitbox(body.width, body.height, Std.int(body.width/2), Std.int(body.height/2));
 	}
 
-	@:access(com.haxepunk.graphics.Emitter)
-	@:access(com.haxepunk.graphics.Particle)
-	@:access(com.haxepunk.graphics.ParticleType)
+	@:access(haxepunk.graphics.Emitter)
+	@:access(haxepunk.graphics.Particle)
+	@:access(haxepunk.graphics.ParticleType)
 	override public function update()
 	{
 		super.update();
@@ -61,7 +62,7 @@ class Ship extends Entity
 		hit = cast collide("asteroid", x, y);
 		if (hit != null)
 		{
-			HXP.screen.shake(4, 0.1);
+			HXP.screen.shake(0.1,4);
 		}
 
 		while (p != null)
@@ -92,8 +93,8 @@ class Ship extends Entity
 		// speed up and move
 		velocity = Math.min(1, velocity + HXP.elapsed/ACCEL_TIME);
 		var moveSpeed = velocity * HXP.elapsed * MOVE_PER_SEC * dir;
-		x += moveSpeed * Math.cos(HXP.RAD*angle);
-		y += moveSpeed * Math.sin(HXP.RAD*angle);
+		x += moveSpeed * Math.cos(MathUtil.RAD*angle);
+		y += moveSpeed * Math.sin(MathUtil.RAD*angle);
 
 		// wrap around the screen
 		if (x < 0) x += HXP.width;
@@ -108,8 +109,8 @@ class Ship extends Entity
 	public function shoot()
 	{
 		if (_lastShot > 0) return;
-		var bx = width/2 * Math.cos(HXP.RAD*angle);
-		var by = height/2 * Math.sin(HXP.RAD*angle);
+		var bx = width/2 * Math.cos(MathUtil.RAD*angle);
+		var by = height/2 * Math.sin(MathUtil.RAD*angle);
 		bullet.emit("bullet", bx, by, angle);
 		_lastShot = 1;
 	}
