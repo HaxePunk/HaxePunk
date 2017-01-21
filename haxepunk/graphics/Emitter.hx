@@ -131,89 +131,80 @@ class Emitter extends Graphic
 		_particle = null;
 	}
 
-	private inline function renderParticles(renderFunc:Void->Void, point:Point, camera:Point)
+	function renderParticles(buffer:Bool, target:BitmapData, layer:Int, point:Point, camera:Point)
 	{
-		// quit if there are no particles
-		if (_particle == null)
-		{
-			return;
-		}
-		else
-		{
-			// particle info
-			var t:Float, pt:Float, td:Float,
-				atd:Float, std:Float, rtd:Float, ctd:Float,
-				p:Particle = _particle,
-				type:ParticleType;
+		var p:Particle = _particle;
 
-			// loop through the particles
-			while (p != null)
+		var t:Float,
+			pt:Float,
+			type:ParticleType,
+			td:Float,
+			atd:Float,
+			std:Float,
+			rtd:Float,
+			ctd:Float;
+
+		// loop through the particles
+		while (p != null)
+		{
+			// get time scale
+			t = p._time / p._duration;
+			if (p._firstDraw)
 			{
-				// get time scale
-				t = p._time / p._duration;
-				if (p._firstDraw)
-				{
-					p._ox = point.x;
-					p._oy = point.y;
-					p._firstDraw = false;
-				}
-
-				// get particle type
-				type = p._type;
-
-				// get position
-				td = (type._ease == null) ? t : type._ease(t);
-
-				var n:Int = type._trailLength;
-				while (n >= 0)
-				{
-					pt = p._time - n * type._trailDelay;
-					n -= 1;
-					t = pt / p._duration;
-					if (t < 0 || pt >= p._stopTime) continue;
-					td = type.ease(type._ease, t);
-					atd = type.ease(type._alphaEase, t);
-					std = type.ease(type._scaleEase, t);
-					rtd = type.ease(type._rotationEase, t);
-					ctd = type.ease(type._colorEase, t);
-
-					if (_animated)
-					{
-						var frame = Std.int(td * type._frames.length);
-						if (frame >= type._frames.length - 1) frame = type._frames.length - 1;
-						var spritemap:Spritemap = cast _source;
-						spritemap.frame = type._frames[frame];
-					}
-					_source.angle = p.angle(rtd);
-					_source.color = p.color(ctd);
-					_source.alpha = p.alpha(atd) * Math.pow(type._trailAlpha, n);
-					_source.scale = scale * p.scale(std);
-					_source.x = p.x(td) - point.x;
-					_source.y = p.y(td) - point.y;
-					_source.smooth = smooth;
-					_source.blend = blend;
-
-					renderFunc();
-				}
-
-				// get next particle
-				p = p._next;
+				p._ox = point.x;
+				p._oy = point.y;
+				p._firstDraw = false;
 			}
+
+			// get particle type
+			type = p._type;
+
+			_source.smooth = smooth;
+			_source.blend = blend;
+
+			var n:Int = type._trailLength;
+			while (n >= 0)
+			{
+				pt = p._time - (n--) * type._trailDelay;
+				t = pt / p._duration;
+				if (t < 0 || pt >= p._stopTime) continue;
+				td = type._ease(t);
+				atd = type._alphaEase(t);
+				std = type._scaleEase(t);
+				rtd = type._rotationEase(t);
+				ctd = type._colorEase(t);
+
+				if (_animated)
+				{
+					var frame = Std.int(td * type._frames.length);
+					if (frame >= type._frames.length - 1) frame = type._frames.length - 1;
+					var spritemap:Spritemap = cast _source;
+					spritemap.frame = type._frames[frame];
+				}
+				_source.angle = p.angle(rtd);
+				_source.color = p.color(ctd);
+				_source.alpha = p.alpha(atd) * Math.pow(type._trailAlpha, n);
+				_source.scale = scale * p.scale(std);
+				_source.x = p.x(td) - point.x;
+				_source.y = p.y(td) - point.y;
+
+				if (buffer) _source.render(target, point, camera);
+				else _source.renderAtlas(layer, point, camera);
+			}
+
+			// get next particle
+			p = p._next;
 		}
 	}
 
 	override public function render(target:BitmapData, point:Point, camera:Point)
 	{
-		renderParticles(function() _source.render(target, point, camera), point, camera);
-
-		super.render(target, point, camera);
+		renderParticles(true, target, -1, point, camera);
 	}
 
 	override public function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
-		renderParticles(function() _source.renderAtlas(layer, point, camera), point, camera);
-
-		super.renderAtlas(layer, point, camera);
+		renderParticles(false, null, layer, point, camera);
 	}
 
 	/**
@@ -434,21 +425,17 @@ class Emitter extends Graphic
 	public var smooth:Bool = true;
 
 	// Particle information.
-	private var _types:Map<String, ParticleType>;
-	private var _particle:Particle;
-	private var _cache:Particle;
+	var _types:Map<String, ParticleType>;
+	var _particle:Particle;
+	var _cache:Particle;
 
 	// Source information.
-	private var _source:Image;
-	private var _animated:Bool = false;
-	private var _width:Int;
-	private var _height:Int;
-	private var _frameWidth:Int;
-	private var _frameHeight:Int;
-	private var _frameCount:Int;
-	private var _frames:Array<AtlasRegion>;
-
-	// Drawing information.
-	private static var SIN(get, never):Float;
-	private static inline function get_SIN():Float return Math.PI / 2; 
+	var _source:Image;
+	var _animated:Bool = false;
+	var _width:Int;
+	var _height:Int;
+	var _frameWidth:Int;
+	var _frameHeight:Int;
+	var _frameCount:Int;
+	var _frames:Array<AtlasRegion>;
 }
