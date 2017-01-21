@@ -30,14 +30,14 @@ abstract Color(UInt) from UInt to UInt
 		}
 		else
 		{
-			var a:UInt = fromColor.a,
-				r:UInt = fromColor.r,
-				g:UInt = fromColor.g,
-				b:UInt = fromColor.b,
-				dA:UInt = toColor.a - a,
-				dR:UInt = toColor.r - r,
-				dG:UInt = toColor.g - g,
-				dB:UInt = toColor.b - b;
+			var a:Int = fromColor.a,
+				r:Int = fromColor.r,
+				g:Int = fromColor.g,
+				b:Int = fromColor.b,
+				dA:Int = toColor.a - a,
+				dR:Int = toColor.r - r,
+				dG:Int = toColor.g - g,
+				dB:Int = toColor.b - b;
 			a += Std.int(dA * t);
 			r += Std.int(dR * t);
 			g += Std.int(dG * t);
