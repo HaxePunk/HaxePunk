@@ -169,10 +169,10 @@ class Emitter extends Graphic
 				t = pt / p._duration;
 				if (t < 0 || pt >= p._stopTime) continue;
 				td = type._ease(t);
-				atd = type._alphaEase(t);
-				std = type._scaleEase(t);
-				rtd = type._rotationEase(t);
-				ctd = type._colorEase(t);
+				atd = type._alphaEase != null ? type._alphaEase(t) : t;
+				std = type._scaleEase != null ? type._scaleEase(t) : t;
+				rtd = type._rotationEase != null ? type._rotationEase(t) : t;
+				ctd = type._colorEase != null ? type._colorEase(t) : t;
 
 				if (_animated)
 				{
