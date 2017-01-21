@@ -35,7 +35,12 @@ class EntityList<T:Entity> extends Entity
 		else
 			entities.insert(index, entity);
 		if (type != "") entity.type = type;
-		if (scene != null) scene.add(entity);
+		if (scene != null)
+		{
+			scene.add(entity);
+		}
+		entity.x += x;
+		entity.y += y;
 		entity.layer = layer;
 		return entity;
 	}
@@ -48,7 +53,12 @@ class EntityList<T:Entity> extends Entity
 	public function remove(entity:T):T
 	{
 		entities.remove(entity);
-		if (scene != null) scene.remove(entity);
+		if (scene != null)
+		{
+			scene.remove(entity);
+		}
+		entity.x -= x;
+		entity.y -= y;
 		return entity;
 	}
 
