@@ -183,4 +183,15 @@ abstract Color(UInt) from UInt to UInt
 
 		return Std.int(Math.max(h, Math.max(s, v))) / 255;
 	}
+
+	/**
+	 * Shortcut to lerp between this color and another.
+	 *
+	 * @param	toColor		Second color.
+	 * @param	t			Interpolation value. Clamped to the range [0, 1].
+	 */
+	public inline function lerp(toColor:Color, t:Float = 1):Color
+	{
+		return colorLerp(this, toColor, t);
+	}
 }
