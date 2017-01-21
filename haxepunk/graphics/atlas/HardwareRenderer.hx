@@ -218,11 +218,11 @@ class HardwareRenderer
 	@:access(haxepunk.graphics.atlas.RenderData)
 	public static function render(drawCommand:DrawCommand, scene:Scene, rect:Rectangle):Void
 	{
-		if (colorShader == null) colorShader = new ColorShader();
-		if (textureShader == null) textureShader = new TextureShader();
-
 		if (drawCommand != null && drawCommand.dataCount > 0)
 		{
+			if (colorShader == null) colorShader = new ColorShader();
+			if (textureShader == null) textureShader = new TextureShader();
+
 			var shader:Shader;
 			if (drawCommand.texture == null)
 			{
@@ -307,7 +307,7 @@ class HardwareRenderer
 			}
 
 			var x0 = HXP.screen.x + rect.x, y0 = HXP.screen.y + rect.y;
-			var transformation = ortho(-x0, -x0 + HXP.stage.stageWidth, -y0 + HXP.stage.stageHeight, -y0, 1000, -1000);
+			var transformation = ortho(-x0, -x0 + HXP.screen.width, -y0 + HXP.screen.height, -y0, 1000, -1000);
 			GL.uniformMatrix4fv(shader.uniformIndex("uMatrix"), false, transformation);
 
 			if (texture != null)
@@ -364,7 +364,7 @@ class HardwareRenderer
 				GL.vertexAttribPointer(shader.attributeIndex("aTexCoord"), 2, GL.FLOAT, false, stride, 6 * FLOAT32_BYTES);
 			}
 
-			GL.scissor(Std.int(x0), Std.int(HXP.stage.stageHeight - y0 - rect.height), Std.int(rect.width), Std.int(rect.height));
+			GL.scissor(Std.int(x0), Std.int(HXP.screen.height - y0 - rect.height), Std.int(rect.width), Std.int(rect.height));
 			GL.enable(GL.SCISSOR_TEST);
 			GL.drawArrays(GL.TRIANGLES, 0, items * 3);
 			GL.disable(GL.SCISSOR_TEST);
