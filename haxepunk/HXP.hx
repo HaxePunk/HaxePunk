@@ -74,12 +74,13 @@ class HXP
 	public static var assignedFrameRate:Float;
 
 	/**
-	 * Time elapsed since the last frame (non-fixed framerate only).
+	 * Game time elapsed since the last frame. For fixed framerate, this will be
+	 * a constant 1/framerate.
 	 */
 	public static var elapsed:Float;
 
 	/**
-	 * Timescale applied to HXP.elapsed (non-fixed framerate only).
+	 * Timescale applied to HXP.elapsed.
 	 */
 	public static var rate:Float = 1;
 

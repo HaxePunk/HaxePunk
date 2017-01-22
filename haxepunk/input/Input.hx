@@ -426,19 +426,6 @@ class Input
 	@:dox(hide)
 	public static function update()
 	{
-		while (_pressNum > 0) _press[--_pressNum] = -1;
-		while (_releaseNum > 0) _release[--_releaseNum] = -1;
-		
-		if (mousePressed) mousePressed = false;
-		if (mouseReleased) mouseReleased = false;
-
-	#if !js
-		if (middleMousePressed) middleMousePressed = false;
-		if (middleMouseReleased) middleMouseReleased = false;
-		if (rightMousePressed) rightMousePressed = false;
-		if (rightMouseReleased) rightMouseReleased = false;
-	#end
-
 #if (openfl_legacy && (cpp || neko))
 		for (joystick in _joysticks) joystick.update();
 #end
@@ -457,6 +444,22 @@ class Input
 				}
 			}
 		}
+	}
+
+	public static function postUpdate()
+	{
+		while (_pressNum > 0) _press[--_pressNum] = -1;
+		while (_releaseNum > 0) _release[--_releaseNum] = -1;
+
+		if (mousePressed) mousePressed = false;
+		if (mouseReleased) mouseReleased = false;
+
+#if !js
+		if (middleMousePressed) middleMousePressed = false;
+		if (middleMouseReleased) middleMouseReleased = false;
+		if (rightMousePressed) rightMousePressed = false;
+		if (rightMouseReleased) rightMouseReleased = false;
+#end
 	}
 
 	private static function onKeyDown(e:KeyboardEvent = null)

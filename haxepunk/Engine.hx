@@ -8,7 +8,6 @@ import flash.display.StageScaleMode;
 import flash.events.Event;
 import flash.geom.Rectangle;
 import flash.Lib;
-import haxe.Timer;
 import haxepunk.utils.Draw;
 import haxepunk.input.Input;
 import haxepunk.utils.Random;
@@ -82,9 +81,7 @@ class Engine extends Sprite
 		maxElapsed = 0.0333;
 		maxFrameSkip = 5;
 		tickRate = 4;
-		_frameList = new Array<Int>();
-		_systemTime = _delta = _frameListSum = 0;
-		_frameLast = 0;
+		_frameList = new Array();
 
 		// on-stage event listener
 #if flash
@@ -185,7 +182,7 @@ class Engine extends Sprite
 	/**
 	 * Sets the game's stage properties. Override this to set them differently.
 	 */
-	private function setStageProperties()
+	function setStageProperties()
 	{
 		HXP.stage.frameRate = HXP.assignedFrameRate;
 		HXP.stage.align = StageAlign.TOP_LEFT;
@@ -228,7 +225,7 @@ class Engine extends Sprite
 	}
 
 	/** @private Event handler for stage resize */
-	private function resize()
+	function resize()
 	{
 		if (HXP.width == 0 || HXP.height == 0)
 		{
@@ -245,7 +242,7 @@ class Engine extends Sprite
 	}
 
 	/** @private Event handler for stage entry. */
-	private function onStage(?e:Event)
+	function onStage(?e:Event)
 	{
 		// remove event listener
 #if flash
@@ -271,20 +268,10 @@ class Engine extends Sprite
 
 		// start game loop
 		_rate = 1000 / HXP.assignedFrameRate;
-		if (HXP.fixed)
-		{
-			// fixed framerate
-			_skip = _rate * (maxFrameSkip + 1);
-			_last = _prev = Lib.getTimer();
-			_timer = new Timer(tickRate);
-			_timer.run = onTimer;
-		}
-		else
-		{
-			// nonfixed framerate
-			_last = Lib.getTimer();
-			addEventListener(Event.ENTER_FRAME, onEnterFrame);
-		}
+
+		// nonfixed framerate
+		_last = Lib.getTimer();
+		addEventListener(Event.ENTER_FRAME, onEnterFrame);
 
 		// Warnings when forcing RenderMode
 		if (HXP.renderMode == RenderMode.BUFFER)
@@ -302,25 +289,32 @@ class Engine extends Sprite
 	}
 
 	/** @private Framerate independent game loop. */
-	private function onEnterFrame(e:Event)
+	function onEnterFrame(e:Event)
 	{
-		// update timer
 		_time = _gameTime = Lib.getTimer();
 		HXP._systemTime = _time - _systemTime;
 		_updateTime = _time;
-		HXP.elapsed = (_time - _last) / 1000;
-		if (HXP.elapsed > maxElapsed) HXP.elapsed = maxElapsed;
-		HXP.elapsed *= HXP.rate;
+
+		// update timer
+		var elapsed = (_time - _last) / 1000;
+		if (HXP.fixed)
+		{
+			_elapsed += elapsed;
+			HXP.elapsed = 1 / HXP.assignedFrameRate;
+			while (_elapsed > HXP.elapsed)
+			{
+				_elapsed -= HXP.elapsed;
+				step();
+			}
+		}
+		else
+		{
+			HXP.elapsed = elapsed;
+			if (HXP.elapsed > maxElapsed) HXP.elapsed = maxElapsed;
+			HXP.elapsed *= HXP.rate;
+			step();
+		}
 		_last = _time;
-
-		// update input
-		Input.update();
-
-		// update loop
-		if (!paused) update();
-
-		// update console
-		if (HXP.consoleEnabled()) HXP.console.update();
 
 		// update timer
 		_time = _renderTime = Lib.getTimer();
@@ -336,60 +330,22 @@ class Engine extends Sprite
 		HXP._gameTime = _time - _gameTime;
 	}
 
-	/** @private Fixed framerate game loop. */
-	private function onTimer()
+	function step()
 	{
-		// update timer
-		_time = Lib.getTimer();
-		_delta += (_time - _last);
-		_last = _time;
-
-		// quit if a frame hasn't passed
-		if (_delta < _rate) return;
-
-		// update timer
-		_gameTime = Std.int(_time);
-		HXP._systemTime = _time - _systemTime;
+		// update input
+		Input.update();
 
 		// update loop
-		if (_delta > _skip) _delta = _skip;
-		while (_delta >= _rate)
-		{
-			HXP.elapsed = _rate * HXP.rate * 0.001;
+		if (!paused) update();
 
-			// update timer
-			_updateTime = _time;
-			_delta -= _rate;
-			_prev = _time;
+		// update console
+		if (HXP.consoleEnabled()) HXP.console.update();
 
-			// update loop
-			if (!paused) update();
-
-			// update console
-			if (HXP.consoleEnabled()) HXP.console.update();
-
-			// update input
-			Input.update();
-
-			// update timer
-			_time = Lib.getTimer();
-			HXP._updateTime = _time - _updateTime;
-		}
-
-		// update timer
-		_renderTime = _time;
-
-		// render loop
-		if (!paused) render();
-
-		// update timer
-		_time = _systemTime = Lib.getTimer();
-		HXP._renderTime = _time - _renderTime;
-		HXP._gameTime =  _time - _gameTime;
+		Input.postUpdate();
 	}
 
 	/** @private Switch scenes if they've changed. */
-	private inline function checkScene()
+	inline function checkScene()
 	{
 		if (_scene != null && _scenes.length > 0 && _scenes[_scenes.length - 1] != _scene)
 		{
@@ -436,8 +392,8 @@ class Engine extends Sprite
 	 * to switch, but won't actually do so until the end of the current frame.
 	 */
 	public var scene(get, set):Scene;
-	private inline function get_scene():Scene return _scene;
-	private function set_scene(value:Scene):Scene
+	inline function get_scene():Scene return _scene;
+	function set_scene(value:Scene):Scene
 	{
 		if (_scene == value) return value;
 		if (_scenes.length > 0)
@@ -449,28 +405,28 @@ class Engine extends Sprite
 	}
 
 	// Scene information.
-	private var _scene:Scene = new Scene();
-	private var _scenes:Array<Scene> = new Array<Scene>();
+	var _scene:Scene = new Scene();
+	var _scenes:Array<Scene> = new Array<Scene>();
 
 	// Timing information.
-	private var _delta:Float;
-	private var _time:Float;
-	private var _last:Float;
-	private var _timer:Timer;
-	private var	_rate:Float;
-	private var	_skip:Float;
-	private var _prev:Float;
+	var _delta:Float = 0;
+	var _time:Float = 0;
+	var _last:Float = 0;
+	var _rate:Float = 0;
+	var _skip:Float = 0;
+	var _prev:Float = 0;
+	var _elapsed:Float = 0;
 
 	// Debug timing information.
-	private var _updateTime:Float;
-	private var _renderTime:Float;
-	private var _gameTime:Float;
-	private var _systemTime:Float;
+	var _updateTime:Float = 0;
+	var _renderTime:Float = 0;
+	var _gameTime:Float = 0;
+	var _systemTime:Float = 0;
 
 	// FrameRate tracking.
-	private var _frameLast:Float;
-	private var _frameListSum:Int;
-	private var _frameList:Array<Int>;
+	var _frameLast:Float = 0;
+	var _frameListSum:Int = 0;
+	var _frameList:Array<Int>;
 
-	private var _scrollRect:Rectangle = new Rectangle();
+	var _scrollRect:Rectangle = new Rectangle();
 }

@@ -69,14 +69,13 @@ class Emitter extends Graphic
 		if (_particle == null) return;
 
 		// particle info
-		var e:Float = HXP.fixed ? 1 / HXP.assignedFrameRate : HXP.elapsed,
-			p:Particle = _particle,
+		var p:Particle = _particle,
 			n:Particle;
 
 		// loop through the particles
 		while (p != null)
 		{
-			p._time += e; // Update particle time elapsed
+			p._time += HXP.elapsed; // Update particle time elapsed
 
 			var type = p._type;
 			var t = p._time / p._duration;
