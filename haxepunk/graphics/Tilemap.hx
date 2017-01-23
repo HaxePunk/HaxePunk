@@ -446,8 +446,8 @@ class Tilemap extends Canvas
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;
 
-		var scalex:Float = HXP.screen.fullScaleX,
-			scaley:Float = HXP.screen.fullScaleY,
+		var fullScaleX:Float = HXP.screen.fullScaleX,
+			fullScaleY:Float = HXP.screen.fullScaleY,
 			tw:Int = Std.int(tileWidth),
 			th:Int = Std.int(tileHeight);
 
@@ -455,8 +455,8 @@ class Tilemap extends Canvas
 			scy = scale * scaleY;
 
 		// determine start and end tiles to draw (optimization)
-		var startx = Math.floor( -_point.x / (tw * scx)),
-			starty = Math.floor( -_point.y / (th * scy)),
+		var startx = Math.floor(-_point.x / (tw * scx)),
+			starty = Math.floor(-_point.y / (th * scy)),
 			destx = startx + 1 + Math.ceil(HXP.width / (tw * scx)),
 			desty = starty + 1 + Math.ceil(HXP.height / (th * scy));
 
@@ -470,34 +470,39 @@ class Tilemap extends Canvas
 		if (starty < 0) starty = 0;
 		if (desty > _rows) desty = _rows;
 
-		var wx:Float, sx:Float = (startx * tw * scx) * scalex,
-			wy:Float = (starty * th * scy) * scaley,
-			stepx:Float = tw * scx * scalex,
-			stepy:Float = th * scy * scaley,
+		var wx:Float, wy:Float, nx:Float, ny:Float,
+			sx:Float = (startx * tw * scx) * fullScaleX,
+			sy:Float = (starty * th * scy) * fullScaleY,
+			stepx:Float = tw * scx * fullScaleX,
+			stepy:Float = th * scy * fullScaleY,
 			tile:Int = 0;
 
-		_point.x = Std.int(_point.x * scalex);
-		_point.y = Std.int(_point.y * scaley);
+		_point.x = Math.floor(_point.x * fullScaleX);
+		_point.y = Math.floor(_point.y * fullScaleY);
+		wy = sy;
 		for (y in starty...desty)
 		{
-			wx = sx;
+			ny = sy + stepy * (y - starty + 1);
 			// ensure no vertical overlap between this and next tile
-			scy = (Math.floor(wy + stepy) - Math.floor(wy)) / tileHeight;
+			scy = (Math.floor(ny) - Math.floor(wy)) / tileHeight;
+			wx = sx;
 
 			for (x in startx...destx)
 			{
+				nx = sx + stepx * (x - startx + 1);
 				tile = _map[y % _rows][x % _columns];
 				if (tile >= 0)
 				{
 					// ensure no horizontal overlap between this and next tile
-					scx = (Math.floor(wx + stepx) - Math.floor(wx)) / tileWidth;
+					scx = (Math.floor(nx) - Math.floor(wx)) / tileWidth;
 
 					updateTileRect(tile);
 					_atlas.prepareTile(_tile, Math.floor(_point.x + wx), Math.floor(_point.y + wy), layer, scx, scy, 0, _red, _green, _blue, alpha, smooth);
 				}
-				wx += stepx;
+				wx = nx;
 			}
-			wy += stepy;
+
+			wy = ny;
 		}
 	}
 

@@ -108,10 +108,10 @@ class DrawCommand
 		}
 		else
 		{
-			uvx1 = (rx / texture.width);
-			uvy1 = (ry / texture.height);
-			uvx2 = ((rx + rw) / texture.width);
-			uvy2 = ((ry + rh) / texture.height);
+			uvx1 = ((rx + 0.5) / texture.width);
+			uvy1 = ((ry + 0.5) / texture.height);
+			uvx2 = ((rx + rw + 0.5) / texture.width);
+			uvy2 = ((ry + rh + 0.5) / texture.height);
 		}
 
 		var matrix = HXP.matrix;
