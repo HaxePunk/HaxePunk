@@ -20,5 +20,7 @@ class NullRenderer
 
 	public static function startFrame(scene:Scene) {}
 	public static function endFrame(scene:Scene) {}
+	public static function startScene(scene:Scene) {}
+	public static function flushScene(scene:Scene) {}
 }
 #end

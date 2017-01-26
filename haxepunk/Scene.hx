@@ -5,6 +5,7 @@ import flash.display.Sprite;
 import flash.geom.Point;
 import haxepunk.graphics.atlas.AtlasData;
 import haxepunk.graphics.atlas.SceneSprite;
+import haxepunk.graphics.atlas.Shader;
 import haxepunk.utils.MathUtil;
 
 /**
@@ -38,6 +39,14 @@ class Scene extends Tweener
 
 	public var width:Int = 0;
 	public var height:Int = 0;
+
+	/**
+	 * Array of shaders which will be used to process the final result of
+	 * rendering this scene. GL targets (desktop, mobile, HTML5) only.
+	 *
+	 * @since	4.0.0
+	 */
+	public var shaders:Null<Array<Shader>>;
 
 	/**
 	 * Constructor.

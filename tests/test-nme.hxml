@@ -13,6 +13,7 @@
 -D native
 -D linux
 -D desktop
+-D hardware_render
 -lib nme
 --remap flash:nme
 --remap openfl:nme
