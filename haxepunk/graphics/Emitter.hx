@@ -167,7 +167,7 @@ class Emitter extends Graphic
 				pt = p._time - (n--) * type._trailDelay;
 				t = pt / p._duration;
 				if (t < 0 || pt >= p._stopTime) continue;
-				td = type._ease(t);
+				td = type._ease != null ? type._ease(t) : t;
 				atd = type._alphaEase != null ? type._alphaEase(t) : t;
 				std = type._scaleEase != null ? type._scaleEase(t) : t;
 				rtd = type._rotationEase != null ? type._rotationEase(t) : t;
