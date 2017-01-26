@@ -2,11 +2,10 @@ package haxepunk.graphics.atlas;
 
 #if hardware_render
 import flash.geom.Rectangle;
-import openfl.display.BlendMode;
-import openfl.geom.Point;
-import openfl.gl.GL;
-import openfl.gl.GLBuffer;
-import openfl.gl.GLProgram;
+import flash.display.BlendMode;
+import flash.geom.Point;
+import flash.gl.GL;
+import flash.gl.GLBuffer;
 #if lime
 import lime.utils.Float32Array;
 #if !flash
@@ -18,58 +17,7 @@ import nme.utils.Float32Array;
 import haxepunk.HXP;
 
 @:dox(hide)
-private class Shader
-{
-	public var glProgram:GLProgram;
-	public var bufferChunkSize:Int = 0;
-
-	public function new(vertexSource:String, fragmentSource:String)
-	{
-		var vertexShader = GL.createShader(GL.VERTEX_SHADER);
-		GL.shaderSource(vertexShader, vertexSource);
-		GL.compileShader(vertexShader);
-		if (GL.getShaderParameter(vertexShader, GL.COMPILE_STATUS) == 0)
-			throw "Error compiling vertex shader: " +
-			GL.getShaderInfoLog(vertexShader);
-
-		var fragmentShader = GL.createShader(GL.FRAGMENT_SHADER);
-		GL.shaderSource(fragmentShader, fragmentSource);
-		GL.compileShader(fragmentShader);
-		if (GL.getShaderParameter(fragmentShader, GL.COMPILE_STATUS) == 0)
-			throw "Error compiling fragment shader: " +
-			GL.getShaderInfoLog(fragmentShader);
-
-		glProgram = GL.createProgram();
-		GL.attachShader(glProgram, fragmentShader);
-		GL.attachShader(glProgram, vertexShader);
-		GL.linkProgram(glProgram);
-		if (GL.getProgramParameter(glProgram, GL.LINK_STATUS) == 0)
-			throw "Unable to initialize the shader program.";
-	}
-
-	public function bind()
-	{
-		GL.useProgram(glProgram);
-	}
-
-	public function unbind()
-	{
-		GL.useProgram(null);
-	}
-
-	public inline function attributeIndex(name:String)
-	{
-		return GL.getAttribLocation(glProgram, name);
-	}
-
-	public inline function uniformIndex(name:String)
-	{
-		return GL.getUniformLocation(glProgram, name);
-	}
-}
-
-@:dox(hide)
-private class TextureShader extends Shader
+private class TextureShader extends BaseShader
 {
 	public static inline var VERTEX_SHADER =
 "// HaxePunk HardwareRenderer texture vertex shader
@@ -105,7 +53,7 @@ void main(void) {
 	if (color.a == 0.0) {
 		gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
 	} else {
-		gl_FragColor = vec4(color.rgb / color.a, color.a) * vColor;
+		gl_FragColor = color * vec4(vColor.rgb * vColor.a, vColor.a);
 	}
 }";
 
@@ -133,7 +81,7 @@ void main(void) {
 }
 
 @:dox(hide)
-private class ColorShader extends Shader
+private class ColorShader extends BaseShader
 {
 	public static inline var VERTEX_SHADER =
 "// HaxePunk HardwareRenderer color vertex shader
@@ -160,8 +108,7 @@ precision mediump float;
 varying vec4 vColor;
 
 void main(void) {
-	gl_FragColor = clamp(vColor, 0.0, 1.0);
-	//gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+	gl_FragColor = vColor;
 }";
 
 	public function new()
@@ -186,8 +133,7 @@ void main(void) {
 }
 
 /**
- * Rendering backend used for compatibility with OpenFL 4.0, which removed
- * support for drawTiles. Based on work by @Yanrishatum and @Beeblerox.
+ * OpenGL-based renderer. Based on work by @Yanrishatum and @Beeblerox.
  * @since	2.6.0
  */
 #if lime
@@ -200,8 +146,22 @@ class HardwareRenderer
 {
 	static inline var FLOAT32_BYTES:Int = #if lime Float32Array.BYTES_PER_ELEMENT #else Float32Array.SBYTES_PER_ELEMENT #end;
 
+	// builtin shaders used to render DrawCommands
 	static var colorShader:ColorShader;
 	static var textureShader:TextureShader;
+
+	// for render to texture
+	static var fb:FrameBuffer;
+	static var backFb:FrameBuffer;
+	static var postProcessBuffer:GLBuffer;
+	static var _vertices:Array<Float> = [
+		-1.0, -1.0, 0, 0,
+		1.0, -1.0, 1, 0,
+		-1.0,  1.0, 0, 1,
+		1.0, -1.0, 1, 0,
+		1.0,  1.0, 1, 1,
+		-1.0,  1.0, 0, 1
+	];
 
 	static inline function resize(length:Int, minChunks:Int, chunkSize:Int)
 	{
@@ -214,16 +174,29 @@ class HardwareRenderer
 	static var buffer:Float32Array;
 	static var glBuffer:GLBuffer;
 
+	static inline function init()
+	{
+		if (fb == null)
+		{
+			fb = new FrameBuffer();
+			backFb = new FrameBuffer();
+			colorShader = new ColorShader();
+			textureShader = new TextureShader();
+			glBuffer = GL.createBuffer();
+			postProcessBuffer = GL.createBuffer();
+			GL.bindBuffer(GL.ARRAY_BUFFER, postProcessBuffer);
+			GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(_vertices), GL.STATIC_DRAW);
+			GL.bindBuffer(GL.ARRAY_BUFFER, null);
+		}
+	}
+
 	@:access(haxepunk.graphics.atlas.DrawCommand)
 	@:access(haxepunk.graphics.atlas.RenderData)
 	public static function render(drawCommand:DrawCommand, scene:Scene, rect:Rectangle):Void
 	{
 		if (drawCommand != null && drawCommand.dataCount > 0)
 		{
-			if (colorShader == null) colorShader = new ColorShader();
-			if (textureShader == null) textureShader = new TextureShader();
-
-			var shader:Shader;
+			var shader:BaseShader;
 			if (drawCommand.texture == null)
 			{
 				shader = colorShader;
@@ -233,6 +206,7 @@ class HardwareRenderer
 				shader = textureShader;
 			}
 			shader.bind();
+
 			var bufferChunkSize = shader.bufferChunkSize;
 
 			var blend:BlendMode = drawCommand.blend;
@@ -241,11 +215,6 @@ class HardwareRenderer
 			var tx:Float, ty:Float, rx:Float, ry:Float, rw:Float, rh:Float, a:Float, b:Float, c:Float, d:Float,
 				uvx:Float = 0, uvy:Float = 0, uvx2:Float = 0, uvy2:Float = 0,
 				red:Float, green:Float, blue:Float, alpha:Float;
-
-			if (glBuffer == null)
-			{
-				glBuffer = GL.createBuffer();
-			}
 
 			// expand arrays if necessary
 			var bufferLength:Int = buffer == null ? 0 : buffer.length;
@@ -342,20 +311,20 @@ class HardwareRenderer
 			switch (blend)
 			{
 				case BlendMode.ADD:
-					GL.blendEquation(GL.FUNC_ADD);
-					GL.blendFunc(GL.SRC_ALPHA, GL.ONE);
+					GL.blendEquationSeparate(GL.FUNC_ADD, GL.FUNC_ADD);
+					GL.blendFuncSeparate(GL.ONE, GL.ONE, GL.ZERO, GL.ONE);
 				case BlendMode.MULTIPLY:
-					GL.blendEquation(GL.FUNC_ADD);
-					GL.blendFunc(GL.DST_COLOR, GL.ONE_MINUS_SRC_ALPHA);
+					GL.blendEquationSeparate(GL.FUNC_ADD, GL.FUNC_ADD);
+					GL.blendFuncSeparate(GL.DST_COLOR, GL.ONE_MINUS_SRC_ALPHA, GL.ZERO, GL.ONE);
 				case BlendMode.SCREEN:
-					GL.blendEquation(GL.FUNC_ADD);
-					GL.blendFunc(GL.ONE, GL.ONE_MINUS_SRC_COLOR);
+					GL.blendEquationSeparate(GL.FUNC_ADD, GL.FUNC_ADD);
+					GL.blendFuncSeparate(GL.ONE, GL.ONE_MINUS_SRC_COLOR, GL.ZERO, GL.ONE);
 				case BlendMode.SUBTRACT:
-					GL.blendEquation(GL.FUNC_REVERSE_SUBTRACT);
-					GL.blendFunc(GL.SRC_ALPHA, GL.ONE);
+					GL.blendEquationSeparate(GL.FUNC_REVERSE_SUBTRACT, GL.FUNC_ADD);
+					GL.blendFuncSeparate(GL.ONE, GL.ONE, GL.ZERO, GL.ONE);
 				default:
 					GL.blendEquation(GL.FUNC_ADD);
-					GL.blendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
+					GL.blendFunc(GL.ONE, GL.ONE_MINUS_SRC_ALPHA);
 			}
 
 			var stride = bufferChunkSize * FLOAT32_BYTES;
@@ -379,6 +348,78 @@ class HardwareRenderer
 #if debug
 		checkForGLErrors();
 #end
+	}
+
+	public static function startScene(scene:Scene)
+	{
+		init();
+
+		var postProcess:Array<Shader> = scene.shaders;
+		if (postProcess != null && postProcess.length > 0)
+		{
+			fb.bindFrameBuffer();
+		}
+		else
+		{
+			GL.bindFramebuffer(GL.FRAMEBUFFER, null);
+		}
+	}
+
+	public static function flushScene(scene:Scene)
+	{
+		var postProcess:Array<Shader> = scene.shaders;
+		if (postProcess != null)
+		{
+			for (i in 0 ... postProcess.length)
+			{
+				var last = i == postProcess.length - 1;
+				var shader = postProcess[i];
+				var renderTexture = fb.texture;
+
+				if (last)
+				{
+					// render to screen
+					GL.bindFramebuffer(GL.FRAMEBUFFER, null);
+				}
+				else
+				{
+					// render to texture
+					var oldFb = fb;
+					fb = backFb;
+					backFb = oldFb;
+					fb.bindFrameBuffer();
+				}
+				shader.bind();
+
+				GL.enableVertexAttribArray(shader.attributeIndex("aPosition"));
+				GL.enableVertexAttribArray(shader.attributeIndex("aTexCoord"));
+
+				GL.activeTexture(GL.TEXTURE0);
+				GL.bindTexture(GL.TEXTURE_2D, renderTexture);
+				GL.enable(GL.TEXTURE_2D);
+
+				GL.bindBuffer(GL.ARRAY_BUFFER, postProcessBuffer);
+				GL.vertexAttribPointer(shader.attributeIndex("aPosition"), 2, GL.FLOAT, false, 16, 0);
+				GL.vertexAttribPointer(shader.attributeIndex("aTexCoord"), 2, GL.FLOAT, false, 16, 8);
+				GL.uniform1i(shader.uniformIndex("uImage0"), 0);
+				GL.uniform2f(shader.uniformIndex("uResolution"), HXP.screen.width, HXP.screen.height);
+
+				GL.blendEquation(GL.FUNC_ADD);
+				GL.blendFunc(GL.ONE, GL.ONE_MINUS_SRC_ALPHA);
+				GL.drawArrays(GL.TRIANGLES, 0, 6);
+
+				GL.bindBuffer(GL.ARRAY_BUFFER, null);
+				GL.disable(GL.TEXTURE_2D);
+				GL.bindTexture(GL.TEXTURE_2D, null);
+
+				GL.disableVertexAttribArray(shader.attributeIndex("aPosition"));
+				GL.disableVertexAttribArray(shader.attributeIndex("aTexCoord"));
+
+				shader.unbind();
+
+				GL.bindFramebuffer(GL.FRAMEBUFFER, null);
+			}
+		}
 	}
 
 	static inline function checkForGLErrors()

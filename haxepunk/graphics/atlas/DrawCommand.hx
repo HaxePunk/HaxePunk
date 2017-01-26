@@ -34,6 +34,7 @@ private class RenderData
  * calls for the same texture, target and parameters. Based on work by
  * @Beeblerox.
  */
+@:dox(hide)
 class DrawCommand
 {
 	public static function create(texture:BitmapData, smooth:Bool, ?blend:BlendMode)
@@ -66,7 +67,21 @@ class DrawCommand
 		return px * m.b + py * m.d + m.ty;
 	}
 
-	static var _pool:DrawCommand;
+	static function _prePopulatePool(n:Int, m:Int)
+	{
+		for (i in 0 ... n)
+		{
+			var cmd = new DrawCommand();
+			for (i in 0 ... m)
+			{
+				cmd.addData(new RenderData());
+			}
+			cmd.recycle();
+		}
+		return _pool;
+	}
+
+	static var _pool:DrawCommand = _prePopulatePool(32, 4);
 	static var _dataPool:RenderData;
 
 	public var texture:BitmapData;

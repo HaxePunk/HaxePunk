@@ -35,11 +35,12 @@ class SceneSprite extends Sprite
 			var sceneColor:Color = scene.color == null ? HXP.stage.color : scene.color;
 			var red = sceneColor.red,
 				green = sceneColor.green,
-				blue = sceneColor.blue;
+				blue = sceneColor.blue,
+				alpha = scene.alpha;
 			var w = HXP.width * HXP.screen.fullScaleX,
 				h = HXP.height * HXP.screen.fullScaleY;
-			command.addTriangle(0, 0, 0, 0, w, 0, 0, 0, 0, h, 0, 0, red, green, blue, scene.alpha);
-			command.addTriangle(0, h, 0, 0, w, 0, 0, 0, w, h, 0, 0, red, green, blue, scene.alpha);
+			command.addTriangle(0, 0, 0, 0, w, 0, 0, 0, 0, h, 0, 0, red * alpha, green * alpha, blue * alpha, alpha);
+			command.addTriangle(0, h, 0, 0, w, 0, 0, 0, w, h, 0, 0, red * alpha, green * alpha, blue * alpha, alpha);
 		}
 	}
 
@@ -73,12 +74,14 @@ class SceneSprite extends Sprite
 	{
 		if (scene._drawn && scene.visible)
 		{
+			Renderer.startScene(scene);
 			var currentDraw:DrawCommand = draw;
 			while (currentDraw != null)
 			{
 				Renderer.render(currentDraw, scene, rect);
 				currentDraw = currentDraw._next;
 			}
+			Renderer.flushScene(scene);
 		}
 	}
 

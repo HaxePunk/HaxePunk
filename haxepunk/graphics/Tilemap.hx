@@ -439,17 +439,20 @@ class Tilemap extends Canvas
 		usePositions = u;
 	}
 
+	inline function floorX(x:Float) return Math.floor(x * HXP.screen.fullScaleX) / HXP.screen.fullScaleX;
+	inline function floorY(y:Float) return Math.floor(y * HXP.screen.fullScaleY) / HXP.screen.fullScaleY;
+
 	@:dox(hide)
 	override public function renderAtlas(layer:Int, point:Point, camera:Point)
 	{
-		// determine drawing location
-		_point.x = point.x + x - camera.x * scrollX;
-		_point.y = point.y + y - camera.y * scrollY;
-
 		var fullScaleX:Float = HXP.screen.fullScaleX,
 			fullScaleY:Float = HXP.screen.fullScaleY,
 			tw:Int = Std.int(tileWidth),
 			th:Int = Std.int(tileHeight);
+
+		// determine drawing location
+		_point.x = floorX(point.x) + floorX(x) - floorX(camera.x * scrollX);
+		_point.y = floorY(point.y) + floorY(y) - floorY(camera.y * scrollY);
 
 		var scx = scale * scaleX,
 			scy = scale * scaleY;
@@ -477,8 +480,8 @@ class Tilemap extends Canvas
 			stepy:Float = th * scy * fullScaleY,
 			tile:Int = 0;
 
-		_point.x = Math.floor(_point.x * fullScaleX);
-		_point.y = Math.floor(_point.y * fullScaleY);
+		_point.x *= fullScaleX;
+		_point.y *= fullScaleY;
 		wy = sy;
 		for (y in starty...desty)
 		{
