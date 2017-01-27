@@ -1,6 +1,7 @@
 package haxepunk.graphics;
 
 import flash.display.BitmapData;
+import flash.display.BlendMode;
 import flash.geom.Rectangle;
 import haxepunk.utils.Ease;
 import haxepunk.utils.MathUtil;
@@ -25,9 +26,10 @@ class ParticleType
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
 	 */
-	public function new(name:String, frames:Array<Int>, width:Int, frameWidth:Int, frameHeight:Int)
+	public function new(name:String, frames:Array<Int>, width:Int, frameWidth:Int, frameHeight:Int, ?blendMode:BlendMode)
 	{
 		_red = _green = _blue = _alpha = _scale = _trailLength = 1;
+		_blendMode = blendMode;
 		_redRange = _greenRange = _blueRange = _alphaRange = _scaleRange = _trailDelay = 0;
 		_trailAlpha = 1;
 		_startAngle = _spanAngle = _startAngleRange = _spanAngleRange = 0;
@@ -189,56 +191,57 @@ class ParticleType
 	}
 
 	// Particle information.
-	private var _name:String;
-	private var _frame:Rectangle;
-	private var _frames:Array<Int>;
+	var _name:String;
+	var _frame:Rectangle;
+	var _frames:Array<Int>;
+	var _blendMode:Null<BlendMode>;
 
 	// Motion information.
-	private var _angle:Float;
-	private var _angleRange:Float;
-	private var _distance:Float;
-	private var _distanceRange:Float;
-	private var _duration:Float;
-	private var _durationRange:Float;
-	private var _ease:EaseFunction;
-	private var _backwards:Bool;
+	var _angle:Float;
+	var _angleRange:Float;
+	var _distance:Float;
+	var _distanceRange:Float;
+	var _duration:Float;
+	var _durationRange:Float;
+	var _ease:EaseFunction;
+	var _backwards:Bool;
 
 	// Gravity information.
-	private var _gravity:Float;
-	private var _gravityRange:Float;
+	var _gravity:Float;
+	var _gravityRange:Float;
 
 	// Alpha information.
-	private var _alpha:Float;
-	private var _alphaRange:Float;
-	private var _alphaEase:EaseFunction;
+	var _alpha:Float;
+	var _alphaRange:Float;
+	var _alphaEase:EaseFunction;
 
 	// Scale information.
-	private var _scale:Float;
-	private var _scaleRange:Float;
-	private var _scaleEase:EaseFunction;
+	var _scale:Float;
+	var _scaleRange:Float;
+	var _scaleEase:EaseFunction;
 
 	// Rotation information.
-	private var _startAngle:Float;
-	private var _spanAngle:Float;
-	private var _startAngleRange:Float;
-	private var _spanAngleRange:Float;
-	private var _rotationEase:EaseFunction;
+	var _startAngle:Float;
+	var _spanAngle:Float;
+	var _startAngleRange:Float;
+	var _spanAngleRange:Float;
+	var _rotationEase:EaseFunction;
 
 	// Color information.
-	private var _red:Float;
-	private var _redRange:Float;
-	private var _green:Float;
-	private var _greenRange:Float;
-	private var _blue:Float;
-	private var _blueRange:Float;
-	private var _colorEase:EaseFunction;
+	var _red:Float;
+	var _redRange:Float;
+	var _green:Float;
+	var _greenRange:Float;
+	var _blue:Float;
+	var _blueRange:Float;
+	var _colorEase:EaseFunction;
 
 	// Trail information
-	private var _trailLength:Int;
-	private var _trailDelay:Float;
-	private var _trailAlpha:Float;
+	var _trailLength:Int;
+	var _trailDelay:Float;
+	var _trailAlpha:Float;
 
 	// Buffer information.
-	private var _buffer:BitmapData;
-	private var _bufferRect:Rectangle;
+	var _buffer:BitmapData;
+	var _bufferRect:Rectangle;
 }
