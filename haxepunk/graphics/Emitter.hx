@@ -159,7 +159,7 @@ class Emitter extends Graphic
 			type = p._type;
 
 			_source.smooth = smooth;
-			_source.blend = blend;
+			_source.blend = type._blendMode == null ? this.blend : type._blendMode;
 
 			var n:Int = type._trailLength;
 			while (n >= 0)
@@ -212,14 +212,14 @@ class Emitter extends Graphic
 	 * @param	frames		Array of frame indices for the particles to animate.
 	 * @return	A new ParticleType object.
 	 */
-	public function newType(name:String, frames:Array<Int> = null):ParticleType
+	public function newType(name:String, frames:Array<Int> = null, ?blendMode:BlendMode):ParticleType
 	{
 		var pt:ParticleType = _types.get(name);
 
 		if (pt != null)
 			throw "Cannot add multiple particle types of the same name";
 
-		pt = new ParticleType(name, frames, _width, _frameWidth, _frameHeight);
+		pt = new ParticleType(name, frames, _width, _frameWidth, _frameHeight, blendMode);
 		_types.set(name, pt);
 
 		return pt;
