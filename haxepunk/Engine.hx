@@ -300,8 +300,8 @@ class Engine extends Sprite
 		if (HXP.fixed)
 		{
 			_elapsed += elapsed;
-			if (_elapsed > maxElapsed) _elapsed = maxElapsed;
 			HXP.elapsed = 1 / HXP.assignedFrameRate;
+			if (_elapsed > HXP.elapsed * maxFrameSkip) _elapsed = HXP.elapsed * maxFrameSkip;
 			while (_elapsed > HXP.elapsed)
 			{
 				_elapsed -= HXP.elapsed;
