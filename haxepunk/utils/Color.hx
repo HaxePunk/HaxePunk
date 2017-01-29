@@ -111,7 +111,6 @@ abstract Color(UInt) from UInt to UInt
 		return (Std.int(0xff * a) << 24) | (this & 0xffffff);
 	}
 
-
 	/**
 	 * Finds the hue factor of a color.
 	 * @return The hue value (from 0 to 1).
@@ -182,6 +181,11 @@ abstract Color(UInt) from UInt to UInt
 		var v:Int = this & 0xFF;
 
 		return Std.int(Math.max(h, Math.max(s, v))) / 255;
+	}
+
+	public inline function getLuminance():Float
+	{
+		return (0.2126 * red + 0.7152 * green + 0.0722 * blue);
 	}
 
 	/**
