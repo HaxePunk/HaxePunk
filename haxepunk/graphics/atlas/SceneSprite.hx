@@ -26,7 +26,7 @@ class SceneSprite extends Sprite
 	{
 		if (draw != null) draw.recycle();
 		draw = last = null;
-		Renderer.startFrame(scene);
+		HXP.screen.renderer.startFrame(scene);
 
 		if (scene.alpha > 0)
 		{
@@ -46,7 +46,7 @@ class SceneSprite extends Sprite
 
 	public function endFrame()
 	{
-		Renderer.endFrame(scene);
+		HXP.screen.renderer.endFrame(scene);
 	}
 
 	public function getDrawCommand(texture:BitmapData, smooth:Bool, ?blend:BlendMode)
@@ -74,14 +74,14 @@ class SceneSprite extends Sprite
 	{
 		if (scene._drawn && scene.visible)
 		{
-			Renderer.startScene(scene);
+			HXP.screen.renderer.startScene(scene);
 			var currentDraw:DrawCommand = draw;
 			while (currentDraw != null)
 			{
-				Renderer.render(currentDraw, scene, rect);
+				HXP.screen.renderer.render(currentDraw, scene, rect);
 				currentDraw = currentDraw._next;
 			}
-			Renderer.flushScene(scene);
+			HXP.screen.renderer.flushScene(scene);
 		}
 	}
 

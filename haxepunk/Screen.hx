@@ -6,6 +6,7 @@ import flash.display.Sprite;
 import flash.filters.BitmapFilter;
 import flash.geom.Matrix;
 import haxepunk.graphics.atlas.Atlas;
+import haxepunk.graphics.atlas.Renderer;
 import haxepunk.graphics.Image;
 import haxepunk.screen.ScaleMode;
 import haxepunk.utils.MathUtil;
@@ -21,6 +22,11 @@ class Screen
 	 * Controls how the game scale changes when the window is resized.
 	 */
 	public var scaleMode:ScaleMode = new ScaleMode();
+
+	/**
+	 * For hardware rendering.
+	 */
+	public var renderer:Renderer = new Renderer();
 
 	/**
 	 * Constructor.

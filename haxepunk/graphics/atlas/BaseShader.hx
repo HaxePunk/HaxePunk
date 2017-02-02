@@ -15,11 +15,21 @@ class BaseShader
 	public var glProgram:GLProgram;
 	public var bufferChunkSize:Int = 0;
 
+	var vertexSource:String;
+	var fragmentSource:String;
+
 	var uniformIndices:Map<String, GLUniformLocation> = new Map();
 	var attributeIndices:Map<String, Int> = new Map();
 	var uniformValues:Map<String, Float> = new Map();
 
 	function new(vertexSource:String, fragmentSource:String)
+	{
+		this.vertexSource = vertexSource;
+		this.fragmentSource = fragmentSource;
+		build();
+	}
+
+	public function build()
 	{
 		var vertexShader = GL.createShader(GL.VERTEX_SHADER);
 		GL.shaderSource(vertexShader, vertexSource);
@@ -43,8 +53,20 @@ class BaseShader
 			throw "Unable to initialize the shader program.";
 	}
 
+	public function destroy()
+	{
+		for (key in uniformIndices.keys()) uniformIndices.remove(key);
+		for (key in attributeIndices.keys()) attributeIndices.remove(key);
+	}
+
 	public function bind()
 	{
+		if (GLUtils.invalid(glProgram))
+		{
+			destroy();
+			build();
+		}
+
 		GL.useProgram(glProgram);
 
 		for (name in uniformValues.keys())
