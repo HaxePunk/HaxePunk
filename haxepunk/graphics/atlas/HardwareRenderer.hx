@@ -146,14 +146,14 @@ class HardwareRenderer
 {
 	static inline var FLOAT32_BYTES:Int = #if lime Float32Array.BYTES_PER_ELEMENT #else Float32Array.SBYTES_PER_ELEMENT #end;
 
-	// builtin shaders used to render DrawCommands
-	static var colorShader:ColorShader;
-	static var textureShader:TextureShader;
+	static inline function resize(length:Int, minChunks:Int, chunkSize:Int)
+	{
+		return Std.int(Math.max(
+			Std.int(length * 2 / chunkSize),
+			minChunks
+		) * chunkSize);
+	}
 
-	// for render to texture
-	static var fb:FrameBuffer;
-	static var backFb:FrameBuffer;
-	static var postProcessBuffer:GLBuffer;
 	static var _vertices:Array<Float> = [
 		-1.0, -1.0, 0, 0,
 		1.0, -1.0, 1, 0,
@@ -163,36 +163,60 @@ class HardwareRenderer
 		-1.0,  1.0, 0, 1
 	];
 
-	static inline function resize(length:Int, minChunks:Int, chunkSize:Int)
+	static inline function checkForGLErrors()
 	{
-		return Std.int(Math.max(
-			Std.int(length * 2 / chunkSize),
-			minChunks
-		) * chunkSize);
+		var error = GL.getError();
+		if (error != GL.NO_ERROR)
+			trace("GL Error: " + error);
 	}
 
-	static var buffer:Float32Array;
-	static var glBuffer:GLBuffer;
-
-	static inline function init()
+	static inline function ortho(x0:Float, x1:Float, y0:Float, y1:Float, zNear:Float, zFar:Float):Float32Array
 	{
-		if (fb == null)
-		{
-			fb = new FrameBuffer();
-			backFb = new FrameBuffer();
-			colorShader = new ColorShader();
-			textureShader = new TextureShader();
-			glBuffer = GL.createBuffer();
-			postProcessBuffer = GL.createBuffer();
-			GL.bindBuffer(GL.ARRAY_BUFFER, postProcessBuffer);
-			GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(_vertices), GL.STATIC_DRAW);
-			GL.bindBuffer(GL.ARRAY_BUFFER, null);
-		}
+		var sx = 1.0 / (x1 - x0);
+		var sy = 1.0 / (y1 - y0);
+		var sz = 1.0 / (zFar - zNear);
+
+		var _data = _f32;
+		_data[0] = 2.0 * sx;
+		_data[1] = 0;
+		_data[2] = 0;
+		_data[3] = 0;
+		_data[4] = 0;
+		_data[5] = 2.0 * sy;
+		_data[6] = 0;
+		_data[7] = 0;
+		_data[8] = 0;
+		_data[9] = 0;
+		_data[10] = -2.0 * sz;
+		_data[11] = 0;
+		_data[12] = -(x0 + x1) * sx;
+		_data[13] = -(y0 + y1) * sy;
+		_data[14] = -(zNear + zFar) * sz;
+		_data[15] = 1;
+
+		return _f32;
 	}
+
+	static var _point:Point = new Point();
+	static var _f32:Float32Array = new Float32Array(16);
+
+	// builtin shaders used to render DrawCommands
+	var colorShader:ColorShader;
+	var textureShader:TextureShader;
+
+	// for render to texture
+	var fb:FrameBuffer;
+	var backFb:FrameBuffer;
+	var postProcessBuffer:GLBuffer;
+
+	var buffer:Float32Array;
+	var glBuffer:GLBuffer;
+
+	public function new() {}
 
 	@:access(haxepunk.graphics.atlas.DrawCommand)
 	@:access(haxepunk.graphics.atlas.RenderData)
-	public static function render(drawCommand:DrawCommand, scene:Scene, rect:Rectangle):Void
+	public function render(drawCommand:DrawCommand, scene:Scene, rect:Rectangle):Void
 	{
 		if (drawCommand != null && drawCommand.dataCount > 0)
 		{
@@ -350,9 +374,13 @@ class HardwareRenderer
 #end
 	}
 
-	public static function startScene(scene:Scene)
+	public function startScene(scene:Scene)
 	{
-		init();
+		if (GLUtils.invalid(glBuffer) || GLUtils.invalid(postProcessBuffer))
+		{
+			destroy();
+			init();
+		}
 
 		var postProcess:Array<Shader> = scene.shaders;
 		if (postProcess != null && postProcess.length > 0)
@@ -365,7 +393,7 @@ class HardwareRenderer
 		}
 	}
 
-	public static function flushScene(scene:Scene)
+	public function flushScene(scene:Scene)
 	{
 		var postProcess:Array<Shader> = scene.shaders;
 		if (postProcess != null)
@@ -422,44 +450,26 @@ class HardwareRenderer
 		}
 	}
 
-	static inline function checkForGLErrors()
+	public function startFrame(scene:Scene) {}
+	public function endFrame(scene:Scene) {}
+
+	inline function init()
 	{
-		var error = GL.getError();
-		if (error != GL.NO_ERROR)
-			trace("GL Error: " + error);
+		if (fb == null)
+		{
+			fb = new FrameBuffer();
+			backFb = new FrameBuffer();
+			colorShader = new ColorShader();
+			textureShader = new TextureShader();
+		}
+
+		glBuffer = GL.createBuffer();
+		postProcessBuffer = GL.createBuffer();
+		GL.bindBuffer(GL.ARRAY_BUFFER, postProcessBuffer);
+		GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(_vertices), GL.STATIC_DRAW);
+		GL.bindBuffer(GL.ARRAY_BUFFER, null);
 	}
 
-	static inline function ortho(x0:Float, x1:Float, y0:Float, y1:Float, zNear:Float, zFar:Float):Float32Array
-	{
-		var sx = 1.0 / (x1 - x0);
-		var sy = 1.0 / (y1 - y0);
-		var sz = 1.0 / (zFar - zNear);
-
-		var _data = _f32;
-		_data[0] = 2.0 * sx;
-		_data[1] = 0;
-		_data[2] = 0;
-		_data[3] = 0;
-		_data[4] = 0;
-		_data[5] = 2.0 * sy;
-		_data[6] = 0;
-		_data[7] = 0;
-		_data[8] = 0;
-		_data[9] = 0;
-		_data[10] = -2.0 * sz;
-		_data[11] = 0;
-		_data[12] = -(x0 + x1) * sx;
-		_data[13] = -(y0 + y1) * sy;
-		_data[14] = -(zNear + zFar) * sz;
-		_data[15] = 1;
-
-		return _f32;
-	}
-
-	public static function startFrame(scene:Scene) {}
-	public static function endFrame(scene:Scene) {}
-
-	static var _point:Point = new Point();
-	static var _f32:Float32Array = new Float32Array(16);
+	inline function destroy() {}
 }
 #end

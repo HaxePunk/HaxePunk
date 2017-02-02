@@ -17,16 +17,24 @@ class FrameBuffer
 	var _width:Int = 0;
 	var _height:Int = 0;
 
-	public function new()
+	public function new() {}
+
+	public function build()
 	{
 		framebuffer = GL.createFramebuffer();
-		rebuild();
+		resize();
+	}
+
+	public function destroy()
+	{
+		texture = null;
+		renderbuffer = null;
 	}
 
 	/**
 	 * Rebuilds the renderbuffer to match screen dimensions
 	 */
-	public function rebuild()
+	public function resize()
 	{
 		GL.bindFramebuffer(GL.FRAMEBUFFER, framebuffer);
 
@@ -68,9 +76,14 @@ class FrameBuffer
 
 	public function bindFrameBuffer()
 	{
-		if (HXP.screen.width != _width || HXP.screen.height != _height)
+		if (GLUtils.invalid(texture) || GLUtils.invalid(framebuffer) || GLUtils.invalid(renderbuffer))
 		{
-			rebuild();
+			destroy();
+			build();
+		}
+		else if (HXP.screen.width != _width || HXP.screen.height != _height)
+		{
+			resize();
 		}
 
 		GL.bindFramebuffer(GL.FRAMEBUFFER, framebuffer);

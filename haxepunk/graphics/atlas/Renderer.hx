@@ -13,14 +13,16 @@ typedef Renderer = NullRenderer;
 @:dox(hide)
 class NullRenderer
 {
-	public static function render(drawCommand:DrawCommand, scene:Scene, rect:Rectangle):Void
+	public function new() {}
+
+	public function render(drawCommand:DrawCommand, scene:Scene, rect:Rectangle):Void
 	{
 		throw "hardware rendering not supported on this platform";
 	}
 
-	public static function startFrame(scene:Scene) {}
-	public static function endFrame(scene:Scene) {}
-	public static function startScene(scene:Scene) {}
-	public static function flushScene(scene:Scene) {}
+	public function startFrame(scene:Scene) {}
+	public function endFrame(scene:Scene) {}
+	public function startScene(scene:Scene) {}
+	public function flushScene(scene:Scene) {}
 }
 #end
