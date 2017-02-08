@@ -123,7 +123,7 @@ class Graphic
 	/**
 	 * If the graphic should update.
 	 */
-	public var active:Bool;
+	public var active:Bool = false;
 
 	/**
 	 * If the graphic should render.
@@ -135,14 +135,14 @@ class Graphic
 	/**
 	 * X offset.
 	 */
-	@:isVar public var x(get, set):Float;
+	@:isVar public var x(get, set):Float = 0;
 	private inline function get_x():Float return x;
 	private inline function set_x(value:Float):Float return x = value;
 
 	/**
 	 * Y offset.
 	 */
-	@:isVar public var y(get, set):Float;
+	@:isVar public var y(get, set):Float = 0;
 	private inline function get_y():Float return y;
 	private inline function set_y(value:Float):Float return y = value;
 
@@ -151,39 +151,30 @@ class Graphic
 	 * Can be used for parallax effect, eg. Set to 0 to follow the camera,
 	 * 0.5 to move at half-speed of the camera, or 1 (default) to stay still.
 	 */
-	public var scrollX:Float;
+	public var scrollX:Float = 0;
 
 	/**
 	 * Y scrollfactor, effects how much the camera offsets the drawn graphic.
 	 * Can be used for parallax effect, eg. Set to 0 to follow the camera,
 	 * 0.5 to move at half-speed of the camera, or 1 (default) to stay still.
 	 */
-	public var scrollY:Float;
+	public var scrollY:Float = 0;
 
 	/**
 	 * If the graphic should render at its position relative to its parent Entity's position.
 	 */
-	public var relative:Bool;
+	public var relative:Bool = true;
 
 	/**
 	 * If we can blit the graphic or not (flash/html5)
 	 */
-	public var blit(default, null):Bool;
+	public var blit(default, null):Bool = false;
 
 	/**
 	 * Constructor.
 	 */
 	@:allow(haxepunk)
-	private function new()
-	{
-		active = false;
-		visible = true;
-		x = y = 0;
-		scrollX = scrollY = 1;
-		relative = true;
-		_scroll = true;
-		_point = new Point();
-	}
+	function new() {}
 
 	/**
 	 * Updates the graphic.
@@ -231,9 +222,9 @@ class Graphic
 	}
 
 	// Graphic information.
-	private var _scroll:Bool;
-	private var _point:Point;
-	private var _entity:Entity;
+	var _scroll:Bool = true;
+	var _point:Point = new Point();
+	var _entity:Entity;
 
-	private var _visible:Bool;
+	var _visible:Bool = true;
 }
