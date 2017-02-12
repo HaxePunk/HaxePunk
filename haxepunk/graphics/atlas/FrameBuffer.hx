@@ -12,7 +12,7 @@ class FrameBuffer
 	public var texture:GLTexture;
 
 	var framebuffer:GLFramebuffer;
-	var renderbuffer:GLRenderbuffer;
+	//var renderbuffer:GLRenderbuffer;
 
 	var _width:Int = 0;
 	var _height:Int = 0;
@@ -28,7 +28,7 @@ class FrameBuffer
 	public function destroy()
 	{
 		texture = null;
-		renderbuffer = null;
+		//renderbuffer = null;
 	}
 
 	/**
@@ -39,16 +39,16 @@ class FrameBuffer
 		GL.bindFramebuffer(GL.FRAMEBUFFER, framebuffer);
 
 		if (texture != null) GL.deleteTexture(texture);
-		if (renderbuffer != null) GL.deleteRenderbuffer(renderbuffer);
+		//if (renderbuffer != null) GL.deleteRenderbuffer(renderbuffer);
 
 		_width = HXP.screen.width;
 		_height = HXP.screen.height;
 		createTexture(_width, _height);
-		createRenderbuffer(_width, _height);
+		//createRenderbuffer(_width, _height);
 		GL.bindFramebuffer(GL.FRAMEBUFFER, null);
 	}
 
-	inline function createRenderbuffer(width:Int, height:Int)
+	/*inline function createRenderbuffer(width:Int, height:Int)
 	{
 		// Bind the renderbuffer and create a depth buffer
 		renderbuffer = GL.createRenderbuffer();
@@ -57,7 +57,7 @@ class FrameBuffer
 
 		// Specify renderbuffer as depth attachement
 		GL.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, renderbuffer);
-	}
+	}*/
 
 	inline function createTexture(width:Int, height:Int)
 	{
@@ -76,7 +76,7 @@ class FrameBuffer
 
 	public function bindFrameBuffer()
 	{
-		if (GLUtils.invalid(texture) || GLUtils.invalid(framebuffer) || GLUtils.invalid(renderbuffer))
+		if (GLUtils.invalid(texture) || GLUtils.invalid(framebuffer))
 		{
 			destroy();
 			build();
