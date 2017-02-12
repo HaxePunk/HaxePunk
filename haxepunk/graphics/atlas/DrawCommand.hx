@@ -3,28 +3,39 @@ package haxepunk.graphics.atlas;
 import flash.display.BlendMode;
 import flash.display.BitmapData;
 import flash.geom.Matrix;
+import flash.geom.Rectangle;
 
 @:allow(haxepunk.graphics.atlas.DrawCommand)
 private class RenderData
 {
 	public function new() {}
 
-	public var rx1:Float = 0;
-	public var ry1:Float = 0;
 	public var tx1:Float = 0;
 	public var ty1:Float = 0;
-	public var rx2:Float = 0;
-	public var ry2:Float = 0;
 	public var tx2:Float = 0;
 	public var ty2:Float = 0;
-	public var rx3:Float = 0;
-	public var ry3:Float = 0;
 	public var tx3:Float = 0;
 	public var ty3:Float = 0;
+	public var uvx1:Float = 0;
+	public var uvy1:Float = 0;
+	public var uvx2:Float = 0;
+	public var uvy2:Float = 0;
+	public var uvx3:Float = 0;
+	public var uvy3:Float = 0;
+
 	public var red:Float = 0;
 	public var blue:Float = 0;
 	public var green:Float = 0;
 	public var alpha:Float = 0;
+
+	public var x1(get, never):Float;
+	public inline function get_x1() return DrawCommandBatch.minOf3(tx1, tx2, tx3);
+	public var x2(get, never):Float;
+	public inline function get_x2() return DrawCommandBatch.maxOf3(tx1, tx2, tx3);
+	public var y1(get, never):Float;
+	public inline function get_y1() return DrawCommandBatch.minOf3(ty1, ty2, ty3);
+	public var y2(get, never):Float;
+	public inline function get_y2() return DrawCommandBatch.maxOf3(ty1, ty2, ty3);
 
 	var _next:RenderData;
 }
@@ -35,6 +46,7 @@ private class RenderData
  * @Beeblerox.
  */
 @:dox(hide)
+@:allow(haxepunk.graphics.atlas.DrawCommandBatch)
 class DrawCommand
 {
 	public static function create(texture:BitmapData, smooth:Bool, ?blend:BlendMode)
@@ -45,7 +57,7 @@ class DrawCommand
 		{
 			command = _pool;
 			_pool = _pool._next;
-			command._next = null;
+			command._prev = command._next = null;
 		}
 		else
 		{
@@ -55,16 +67,6 @@ class DrawCommand
 		command.smooth = smooth;
 		command.blend = blend;
 		return command;
-	}
-
-	static inline function matrixTransformX(m:Matrix, px:Float, py:Float):Float
-	{
-		return px * m.a + py * m.c + m.tx;
-	}
-
-	static inline function matrixTransformY(m:Matrix, px:Float, py:Float):Float
-	{
-		return px * m.b + py * m.d + m.ty;
 	}
 
 	static function _prePopulatePool(n:Int, m:Int)
@@ -87,6 +89,7 @@ class DrawCommand
 	public var texture:BitmapData;
 	public var smooth:Bool = false;
 	public var blend:BlendMode = BlendMode.ALPHA;
+	public var bounds:Rectangle = new Rectangle();
 
 	function new() {}
 
@@ -95,59 +98,21 @@ class DrawCommand
 		var data:RenderData = getData();
 		data.tx1 = tx1;
 		data.ty1 = ty1;
-		data.rx1 = uvx1;
-		data.ry1 = uvy1;
+		data.uvx1 = uvx1;
+		data.uvy1 = uvy1;
 		data.tx2 = tx2;
 		data.ty2 = ty2;
-		data.rx2 = uvx2;
-		data.ry2 = uvy2;
+		data.uvx2 = uvx2;
+		data.uvy2 = uvy2;
 		data.tx3 = tx3;
 		data.ty3 = ty3;
-		data.rx3 = uvx3;
-		data.ry3 = uvy3;
+		data.uvx3 = uvx3;
+		data.uvy3 = uvy3;
 		data.red = red;
 		data.green = green;
 		data.blue = blue;
 		data.alpha = alpha;
 		addData(data);
-	}
-
-	public inline function addRect(rx:Float, ry:Float, rw:Float, rh:Float, a:Float, b:Float, c:Float, d:Float, tx:Float, ty:Float, red:Float, green:Float, blue:Float, alpha:Float):Void
-	{
-		var uvx1:Float, uvy1:Float, uvx2:Float, uvy2:Float;
-		if (texture == null)
-		{
-			uvx1 = uvy1 = 0;
-			uvx2 = rw;
-			uvy2 = rh;
-		}
-		else
-		{
-			uvx1 = ((rx + 0.5) / texture.width);
-			uvy1 = ((ry + 0.5) / texture.height);
-			uvx2 = ((rx + rw + 0.5) / texture.width);
-			uvy2 = ((ry + rh + 0.5) / texture.height);
-		}
-
-		var matrix = HXP.matrix;
-		matrix.setTo(a, b, c, d, tx, ty);
-
-		inline function transformX(x, y) return matrixTransformX(matrix, x, y);
-		inline function transformY(x, y) return matrixTransformY(matrix, x, y);
-
-		addTriangle(
-			transformX(0, 0), transformY(0, 0), uvx1, uvy1,
-			transformX(rw, 0), transformY(rw, 0), uvx2, uvy1,
-			transformX(0, rh), transformY(0, rh), uvx1, uvy2,
-			red, green, blue, alpha
-		);
-
-		addTriangle(
-			transformX(0, rh), transformY(0, rh), uvx1, uvy2,
-			transformX(rw, 0), transformY(rw, 0), uvx2, uvy1,
-			transformX(rw, rh), transformY(rw, rh), uvx2, uvy2,
-			red, green, blue, alpha
-		);
 	}
 
 	public function recycle()
@@ -192,6 +157,29 @@ class DrawCommand
 		_lastData = data;
 
 		++dataCount;
+
+		// update bounds
+		var x1 = data.x1, x2 = data.x2, y1 = data.y1, y2 = data.y2;
+		if (bounds.width == 0)
+		{
+			bounds.x = x1;
+			bounds.right = x2;
+		}
+		else
+		{
+			if (x1 < bounds.left) bounds.left = x1;
+			if (x2 > bounds.right) bounds.right = x2;
+		}
+		if (bounds.height == 0)
+		{
+			bounds.y = y1;
+			bounds.bottom = y2;
+		}
+		else
+		{
+			if (y1 < bounds.top) bounds.top = y1;
+			if (y2 > bounds.bottom) bounds.bottom = y2;
+		}
 	}
 
 	inline function recycleData()
@@ -203,10 +191,12 @@ class DrawCommand
 			_dataPool = data;
 		}
 		data = _lastData = null;
+		bounds.setTo(0, 0, 0, 0);
 	}
 
 	var data:RenderData;
 	var dataCount:Int = 0;
 	var _lastData:RenderData;
+	var _prev:DrawCommand;
 	var _next:DrawCommand;
 }

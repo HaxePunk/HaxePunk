@@ -6,6 +6,7 @@ import flash.display.BlendMode;
 import flash.geom.Point;
 import flash.gl.GL;
 import flash.gl.GLBuffer;
+import flash.gl.GLFramebuffer;
 #if lime
 import lime.utils.Float32Array;
 #if !flash
@@ -155,12 +156,12 @@ class HardwareRenderer
 	}
 
 	static var _vertices:Array<Float> = [
-		-1.0, -1.0, 0, 0,
-		1.0, -1.0, 1, 0,
-		-1.0,  1.0, 0, 1,
-		1.0, -1.0, 1, 0,
-		1.0,  1.0, 1, 1,
-		-1.0,  1.0, 0, 1
+		-1.0, -1.0, 0, 1, 0, 0,
+		1.0, -1.0, 0, 1, 1, 0,
+		-1.0,  1.0, 0, 1, 0, 1,
+		1.0, -1.0, 0, 1, 1, 0,
+		1.0,  1.0, 0, 1, 1, 1,
+		-1.0,  1.0, 0, 1, 0, 1
 	];
 
 	static inline function checkForGLErrors()
@@ -211,8 +212,15 @@ class HardwareRenderer
 
 	var buffer:Float32Array;
 	var glBuffer:GLBuffer;
+	var final:Int;
+	var defaultFramebuffer:GLFramebuffer = null;
 
-	public function new() {}
+	public function new()
+	{
+#if ios
+		defaultFramebuffer = new GLFramebuffer(GL.version, GL.getParameter(GL.FRAMEBUFFER_BINDING));
+#end
+	}
 
 	@:access(haxepunk.graphics.atlas.DrawCommand)
 	@:access(haxepunk.graphics.atlas.RenderData)
@@ -267,8 +275,8 @@ class HardwareRenderer
 				buffer[bufferPos++] = data.alpha;
 				if (texture != null)
 				{
-					buffer[bufferPos++] = data.rx1;
-					buffer[bufferPos++] = data.ry1;
+					buffer[bufferPos++] = data.uvx1;
+					buffer[bufferPos++] = data.uvy1;
 				}
 
 				buffer[bufferPos++] = data.tx2;
@@ -279,8 +287,8 @@ class HardwareRenderer
 				buffer[bufferPos++] = data.alpha;
 				if (texture != null)
 				{
-					buffer[bufferPos++] = data.rx2;
-					buffer[bufferPos++] = data.ry2;
+					buffer[bufferPos++] = data.uvx2;
+					buffer[bufferPos++] = data.uvy2;
 				}
 
 				buffer[bufferPos++] = data.tx3;
@@ -291,8 +299,8 @@ class HardwareRenderer
 				buffer[bufferPos++] = data.alpha;
 				if (texture != null)
 				{
-					buffer[bufferPos++] = data.rx3;
-					buffer[bufferPos++] = data.ry3;
+					buffer[bufferPos++] = data.uvx3;
+					buffer[bufferPos++] = data.uvy3;
 				}
 
 				data = data._next;
@@ -389,7 +397,7 @@ class HardwareRenderer
 		}
 		else
 		{
-			GL.bindFramebuffer(GL.FRAMEBUFFER, null);
+			bindDefaultFramebuffer();
 		}
 	}
 
@@ -406,8 +414,7 @@ class HardwareRenderer
 
 				if (last)
 				{
-					// render to screen
-					GL.bindFramebuffer(GL.FRAMEBUFFER, null);
+					bindDefaultFramebuffer();
 				}
 				else
 				{
@@ -424,11 +431,11 @@ class HardwareRenderer
 
 				GL.activeTexture(GL.TEXTURE0);
 				GL.bindTexture(GL.TEXTURE_2D, renderTexture);
-				GL.enable(GL.TEXTURE_2D);
+				//GL.enable(GL.TEXTURE_2D);
 
 				GL.bindBuffer(GL.ARRAY_BUFFER, postProcessBuffer);
-				GL.vertexAttribPointer(shader.attributeIndex("aPosition"), 2, GL.FLOAT, false, 16, 0);
-				GL.vertexAttribPointer(shader.attributeIndex("aTexCoord"), 2, GL.FLOAT, false, 16, 8);
+				GL.vertexAttribPointer(shader.attributeIndex("aPosition"), 4, GL.FLOAT, false, 6 * FLOAT32_BYTES, 0);
+				GL.vertexAttribPointer(shader.attributeIndex("aTexCoord"), 2, GL.FLOAT, false, 6 * FLOAT32_BYTES, 4 * FLOAT32_BYTES);
 				GL.uniform1i(shader.uniformIndex("uImage0"), 0);
 				GL.uniform2f(shader.uniformIndex("uResolution"), HXP.screen.width, HXP.screen.height);
 
@@ -437,7 +444,7 @@ class HardwareRenderer
 				GL.drawArrays(GL.TRIANGLES, 0, 6);
 
 				GL.bindBuffer(GL.ARRAY_BUFFER, null);
-				GL.disable(GL.TEXTURE_2D);
+				//GL.disable(GL.TEXTURE_2D);
 				GL.bindTexture(GL.TEXTURE_2D, null);
 
 				GL.disableVertexAttribArray(shader.attributeIndex("aPosition"));
@@ -450,7 +457,10 @@ class HardwareRenderer
 		}
 	}
 
-	public function startFrame(scene:Scene) {}
+	public function startFrame(scene:Scene)
+	{
+		bindDefaultFramebuffer();
+	}
 	public function endFrame(scene:Scene) {}
 
 	inline function init()
@@ -468,6 +478,11 @@ class HardwareRenderer
 		GL.bindBuffer(GL.ARRAY_BUFFER, postProcessBuffer);
 		GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(_vertices), GL.STATIC_DRAW);
 		GL.bindBuffer(GL.ARRAY_BUFFER, null);
+	}
+
+	inline function bindDefaultFramebuffer()
+	{
+		GL.bindFramebuffer(GL.FRAMEBUFFER, defaultFramebuffer);
 	}
 
 	inline function destroy() {}

@@ -180,8 +180,8 @@ class AtlasData
 		?smooth:Bool, ?blend:BlendMode)
 	{
 		if (smooth == null) smooth = Atlas.smooth;
-		var command = _scene.sprite.getDrawCommand(bitmapData, smooth, blend);
-		command.addRect(rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, red, green, blue, alpha);
+		var batch = _scene.sprite.batch;
+		batch.addRect(bitmapData, smooth, blend, rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, red, green, blue, alpha);
 	}
 
 	/**
@@ -227,8 +227,8 @@ class AtlasData
 			d = cos * scaleY; // m11
 		}
 
-		var command = _scene.sprite.getDrawCommand(bitmapData, smooth, blend);
-		command.addRect(rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, red, green, blue, alpha);
+		var batch = _scene.sprite.batch;
+		batch.addRect(bitmapData, smooth, blend, rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, red, green, blue, alpha);
 	}
 
 	public function prepareTriangle(
@@ -238,14 +238,15 @@ class AtlasData
 		red:Float, green:Float, blue:Float, alpha:Float,
 		?smooth:Bool, ?blend:BlendMode):Void
 	{
-		var command = _scene.sprite.getDrawCommand(bitmapData, smooth, blend);
-		command.addTriangle(tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, red, green, blue, alpha);
+		var batch = _scene.sprite.batch;
+		batch.addTriangle(bitmapData, smooth, blend, tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, red, green, blue, alpha);
 	}
 
 	// used for pooling
-	private var _name:String;
+	var _name:String;
 
-	private static var _scene:Scene;
-	private static var _dataPool:Map<String, AtlasData> = new Map<String, AtlasData>();
-	private static var _uniqueId:Int = 0; // allows for unique names
+	static var _scene:Scene;
+	static var _dataPool:Map<String, AtlasData> = new Map<String, AtlasData>();
+	static var _uniqueId:Int = 0; // allows for unique names
+	static var _rect:Rectangle = new Rectangle();
 }
