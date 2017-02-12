@@ -124,8 +124,10 @@ class EntityList<T:Entity> extends Entity
 
 	override function set_layer(value:Int):Int
 	{
+		var originalLayer = layer;
 		var value = super.set_layer(value);
-		for (entity in entities) entity.layer = value;
+		for (entity in entities)
+			entity.layer = entity.layer - originalLayer + value;
 		return value;
 	}
 
