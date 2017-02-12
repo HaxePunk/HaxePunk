@@ -15,15 +15,15 @@ class Atlas
 	 * The width of this atlas
 	 */
 	public var width(get, never):Int;
-	private function get_width():Int return _data.width; 
+	function get_width():Int return _data.width;
 
 	/**
 	 * The height of this atlas
 	 */
 	public var height(get, never):Int;
-	private function get_height():Int return _data.height; 
+	function get_height():Int return _data.height;
 
-	private function new(source:AtlasDataType)
+	function new(?source:AtlasDataType)
 	{
 		_data = source;
 	}
@@ -73,7 +73,7 @@ class Atlas
 	 * How many Atlases are active.
 	 */
 	// public static var count(get, never):Int;
-	// private static inline function get_count():Int return _atlases.length; 
+	// static inline function get_count():Int return _atlases.length;
 
-	private var _data:AtlasData;
+	var _data:AtlasData;
 }
