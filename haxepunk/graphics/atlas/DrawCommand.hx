@@ -5,6 +5,7 @@ import flash.display.BitmapData;
 import flash.geom.Rectangle;
 
 @:allow(haxepunk.graphics.atlas.DrawCommand)
+@:allow(haxepunk.graphics.atlas.DrawCommandBatch)
 private class RenderData
 {
 	public function new() {}
@@ -35,6 +36,61 @@ private class RenderData
 	public inline function get_y1() return DrawCommandBatch.minOf3(ty1, ty2, ty3);
 	public var y2(get, never):Float;
 	public inline function get_y2() return DrawCommandBatch.maxOf3(ty1, ty2, ty3);
+
+	public inline function intersectsTriangle(x1:Float, y1:Float, x2:Float, y2:Float, x3:Float, y3:Float):Bool
+	{
+		return (
+			linesIntersect(x1, y1, x2, y2, tx1, ty1, tx2, ty2) ||
+			linesIntersect(x2, y2, x3, y3, tx1, ty1, tx2, ty2) ||
+			linesIntersect(x1, y1, x3, y3, tx1, ty1, tx2, ty2) ||
+			linesIntersect(x1, y1, x2, y2, tx2, ty2, tx3, ty3) ||
+			linesIntersect(x2, y2, x3, y3, tx2, ty2, tx3, ty3) ||
+			linesIntersect(x1, y1, x3, y3, tx2, ty2, tx3, ty3) ||
+			linesIntersect(x1, y1, x2, y2, tx1, ty1, tx3, ty3) ||
+			linesIntersect(x2, y2, x3, y3, tx1, ty1, tx3, ty3) ||
+			linesIntersect(x1, y1, x3, y3, tx1, ty1, tx3, ty3) ||
+			triangleContains(x1, y1, x2, y2, x3, y3, tx1, ty1) ||
+			triangleContains(x1, y1, x2, y2, x3, y3, tx2, ty2) ||
+			triangleContains(x1, y1, x2, y2, x3, y3, tx3, ty3) ||
+			triangleContains(tx1, ty1, tx2, ty2, tx3, ty3, x1, y1) ||
+			triangleContains(tx1, ty1, tx2, ty2, tx3, ty3, x2, y2) ||
+			triangleContains(tx1, ty1, tx2, ty2, tx3, ty3, x3, y3)
+		);
+	}
+
+	static inline function linesIntersect(x11:Float, y11:Float, x12:Float, y12:Float, x21:Float, y21:Float, x22:Float, y22:Float):Bool
+	{
+		var d = ((y22 - y21) * (x12 - x11)) - ((x22 - x21) * (y12 - y11));
+		if (d != 0)
+		{
+			var ua = (((x22 - x21) * (y11 - y21)) - ((y22 - y21) * (x11 - x21))) / d,
+				ub = (((x12 - x11) * (y11 - y21)) - ((y12 - y11) * (x11 - x21))) / d;
+			if (ua >= 0 && ua <= 1 && ua >= 0 && ua <= 1) d = 0;
+		}
+		return d == 0;
+	}
+
+	static inline function triangleContains(x1:Float, y1:Float, x2:Float, y2:Float, x3:Float, y3:Float, px:Float, py:Float)
+	{
+		var v0x = x3 - x1,
+			v0y = y3 - y1,
+			v1x = x2 - x1,
+			v1y = y2 - y1,
+			v2x = px - x1,
+			v2y = py - y1;
+		var u = cross(v2x, v2y, v0x, v0y),
+			v = cross(v1x, v1y, v2x, v2y),
+			d = cross(v1x, v1y, v0x, v0y);
+		if (d < 0)
+		{
+			u = -u;
+			v = -v;
+			d = -d;
+		}
+		return u >= 0 && v >= 0 && (u + v) <= d;
+	}
+
+	static inline function cross(ux:Float, uy:Float, vx:Float, vy:Float):Float return ux * vy - uy * vx;
 
 	var _next:RenderData;
 }
@@ -92,26 +148,34 @@ class DrawCommand
 
 	function new() {}
 
+	public inline function match(texture:BitmapData, smooth:Bool, blend:BlendMode):Bool
+	{
+		return this.texture == texture && this.smooth == smooth && this.blend == blend;
+	}
+
 	public inline function addTriangle(tx1:Float, ty1:Float, uvx1:Float, uvy1:Float, tx2:Float, ty2:Float, uvx2:Float, uvy2:Float, tx3:Float, ty3:Float, uvx3:Float, uvy3:Float, red:Float, green:Float, blue:Float, alpha:Float):Void
 	{
-		var data:RenderData = getData();
-		data.tx1 = tx1;
-		data.ty1 = ty1;
-		data.uvx1 = uvx1;
-		data.uvy1 = uvy1;
-		data.tx2 = tx2;
-		data.ty2 = ty2;
-		data.uvx2 = uvx2;
-		data.uvy2 = uvy2;
-		data.tx3 = tx3;
-		data.ty3 = ty3;
-		data.uvx3 = uvx3;
-		data.uvy3 = uvy3;
-		data.red = red;
-		data.green = green;
-		data.blue = blue;
-		data.alpha = alpha;
-		addData(data);
+		if (alpha > 0)
+		{
+			var data:RenderData = getData();
+			data.tx1 = tx1;
+			data.ty1 = ty1;
+			data.uvx1 = uvx1;
+			data.uvy1 = uvy1;
+			data.tx2 = tx2;
+			data.ty2 = ty2;
+			data.uvx2 = uvx2;
+			data.uvy2 = uvy2;
+			data.tx3 = tx3;
+			data.ty3 = ty3;
+			data.uvx3 = uvx3;
+			data.uvy3 = uvy3;
+			data.red = red;
+			data.green = green;
+			data.blue = blue;
+			data.alpha = alpha;
+			addData(data);
+		}
 	}
 
 	public function recycle()

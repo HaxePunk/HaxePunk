@@ -45,7 +45,7 @@ class AtlasRegion
 	public function clip(clipRect:Rectangle, ?center:Point):AtlasRegion
 	{
 		// make a copy of clipRect, to avoid modifying the original
-		var clipRectCopy = new Rectangle( clipRect.x, clipRect.y, clipRect.width, clipRect.height );
+		var clipRectCopy = clipRect.clone();
 
 		// only clip within the current region
 		if (clipRectCopy.x + clipRectCopy.width > _rect.width)

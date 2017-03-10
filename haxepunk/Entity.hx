@@ -9,7 +9,7 @@ import haxepunk.utils.MathUtil;
 
 /**
  * Abstract representing either a `String` or a `Array<String>`.
- * 
+ *
  * Conversion is automatic, no need to use this.
  */
 abstract SolidType(Either<String, Array<String>>)
@@ -31,7 +31,9 @@ class Entity extends Tweener
 	/**
 	 * If the Entity should render.
 	 */
-	public var visible:Bool = true;
+	@:isVar public var visible(get, set):Bool = true;
+	function get_visible() return visible;
+	function set_visible(v:Bool) return visible = v;
 
 	/**
 	 * If the Entity should respond to collision checks.
@@ -42,14 +44,14 @@ class Entity extends Tweener
 	 * X position of the Entity in the Scene.
 	 */
 	@:isVar public var x(get, set):Float = 0;
-	private function get_x():Float
+	function get_x():Float
 	{
 		if (followCamera)
 			return x + HXP.camera.x;
 		else
 			return x;
 	}
-	private function set_x(v:Float):Float
+	function set_x(v:Float):Float
 	{
 		return x = v;
 	}
@@ -58,14 +60,14 @@ class Entity extends Tweener
 	 * Y position of the Entity in the Scene.
 	 */
 	@:isVar public var y(get, set):Float = 0;
-	private function get_y():Float
+	function get_y():Float
 	{
 		if (followCamera)
 			return y + HXP.camera.y;
 		else
 			return y;
 	}
-	private function set_y(v:Float):Float
+	function set_y(v:Float):Float
 	{
 		return y = v;
 	}
