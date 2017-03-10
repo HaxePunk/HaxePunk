@@ -131,6 +131,13 @@ class EntityList<T:Entity> extends Entity
 		return value;
 	}
 
+	override function set_visible(v:Bool):Bool
+	{
+		for (entity in entities)
+			entity.visible = v;
+		return visible = v;
+	}
+
 	/**
 	 * Returns a new Entity, or a stored recycled Entity if one exists.
 	 * @param	addToScene			Add it to the Scene immediately.
