@@ -1,9 +1,7 @@
 language: haxe
 
 haxe:
-  - 3.2.1
-  - 3.3.0-rc.1
-  - development
+  - 3.4.1
 
 matrix:
   allow_failures:
@@ -22,6 +20,9 @@ env:
   - TARGET=neko COMMAND=openfl OPENFL=4.6.0 LIME=3.6.2 TEST=openfl4 DOCS=1
   - TARGET=cpp COMMAND=openfl OPENFL=4.6.0 LIME=3.6.2
   - TARGET=html5 COMMAND=openfl OPENFL=4.6.0 LIME=3.6.2
+  - TARGET=neko COMMAND=openfl OPENFL=4.9.1 LIME=4.0.1 TEST=openfl4
+  - TARGET=cpp COMMAND=openfl OPENFL=4.9.1 LIME=4.0.1
+  - TARGET=html5 COMMAND=openfl OPENFL=4.9.1 LIME=4.0.1
 
 sudo: false
 
