@@ -1,6 +1,7 @@
 package haxepunk.graphics.atlas;
 
 #if hardware_render
+import haxe.PosInfos;
 import flash.geom.Rectangle;
 import flash.display.BlendMode;
 import flash.geom.Point;
@@ -164,11 +165,17 @@ class HardwareRenderer
 		-1.0,  1.0, 0, 1, 0, 1
 	];
 
-	static inline function checkForGLErrors()
+	static inline function checkForGLErrors(?posInfos:PosInfos)
 	{
+		#if gl_debug
+		var error = GL.getError();
+		if (error != GL.NO_ERROR)
+			throw "GL ERROR: " + error;
+		#elseif debug
 		var error = GL.getError();
 		if (error != GL.NO_ERROR)
 			trace("GL Error: " + error);
+		#end
 	}
 
 	static inline function ortho(x0:Float, x1:Float, y0:Float, y1:Float, zNear:Float, zFar:Float):Float32Array
@@ -226,6 +233,8 @@ class HardwareRenderer
 	@:access(haxepunk.graphics.atlas.RenderData)
 	public function render(drawCommand:DrawCommand, scene:Scene, rect:Rectangle):Void
 	{
+		checkForGLErrors();
+
 		if (drawCommand != null && drawCommand.dataCount > 0)
 		{
 			var shader:BaseShader;
@@ -256,7 +265,11 @@ class HardwareRenderer
 				buffer = new Float32Array(resize(bufferLength, items, bufferChunkSize * 3));
 
 				GL.bindBuffer(GL.ARRAY_BUFFER, glBuffer);
+				#if (lime >= "4.0.0")
+				GL.bufferData(GL.ARRAY_BUFFER, buffer.length * FLOAT32_BYTES, buffer, GL.DYNAMIC_DRAW);
+				#else
 				GL.bufferData(GL.ARRAY_BUFFER, buffer, GL.DYNAMIC_DRAW);
+				#end
 			}
 
 			var bufferPos:Int = 0;
@@ -309,7 +322,13 @@ class HardwareRenderer
 
 			var x0 = HXP.screen.x + rect.x, y0 = HXP.screen.y + rect.y;
 			var transformation = ortho(-x0, -x0 + HXP.screen.width, -y0 + HXP.screen.height, -y0, 1000, -1000);
+			#if (lime >= "4.0.0")
+			GL.uniformMatrix4fv(shader.uniformIndex("uMatrix"), 1, false, transformation);
+			#else
 			GL.uniformMatrix4fv(shader.uniformIndex("uMatrix"), false, transformation);
+			#end
+
+			checkForGLErrors();
 
 			if (texture != null)
 			{
@@ -335,8 +354,16 @@ class HardwareRenderer
 				GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
 			}
 
+			checkForGLErrors();
+
 			GL.bindBuffer(GL.ARRAY_BUFFER, glBuffer);
+			#if (lime >= "4.0.0")
+			GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer.length * FLOAT32_BYTES, buffer);
+			#else
 			GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer);
+			#end
+
+			checkForGLErrors();
 
 			var blend = drawCommand.blend;
 			if (blend == null) blend = BlendMode.ALPHA;
@@ -372,14 +399,14 @@ class HardwareRenderer
 			GL.drawArrays(GL.TRIANGLES, 0, items * 3);
 			GL.disable(GL.SCISSOR_TEST);
 
+			checkForGLErrors();
+
 			GL.bindBuffer(GL.ARRAY_BUFFER, null);
 
 			shader.unbind();
 		}
 
-#if debug
 		checkForGLErrors();
-#end
 	}
 
 	public function startScene(scene:Scene)
@@ -476,7 +503,12 @@ class HardwareRenderer
 		glBuffer = GL.createBuffer();
 		postProcessBuffer = GL.createBuffer();
 		GL.bindBuffer(GL.ARRAY_BUFFER, postProcessBuffer);
-		GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(_vertices), GL.STATIC_DRAW);
+		var v = new Float32Array(_vertices);
+		#if (lime >= "4.0.0")
+		GL.bufferData(GL.ARRAY_BUFFER, v.length * FLOAT32_BYTES, v, GL.STATIC_DRAW);
+		#else
+		GL.bufferData(GL.ARRAY_BUFFER, v, GL.STATIC_DRAW);
+		#end
 		GL.bindBuffer(GL.ARRAY_BUFFER, null);
 	}
 
