@@ -1,6 +1,5 @@
 package haxepunk.utils;
 
-
 /**
  * An abstract with various color utility functions.
  * @since	4.0.0
@@ -56,7 +55,17 @@ abstract Color(UInt) from UInt to UInt
 	 */
 	public static inline function getColorRGB(r:Int=0, g:Int=0, b:Int=0):Color
 	{
-		return r << 16 | g << 8 | b;
+		return (r & 0xff) << 16 | (g & 0xff) << 8 | (b & 0xff);
+	}
+
+	public static inline function getColorRGBFloat(r:Float, g:Float, b:Float):Color
+	{
+		inline function intColor(v:Float):Color
+		{
+			var c = Std.int(v * 0x100);
+			return c < 0 ? 0 : (c > 0xff ? 0xff : c);
+		}
+		return getColorRGB(intColor(r), intColor(g), intColor(b));
 	}
 
 	/**
@@ -197,5 +206,10 @@ abstract Color(UInt) from UInt to UInt
 	public inline function lerp(toColor:Color, t:Float = 1):Color
 	{
 		return colorLerp(this, toColor, t);
+	}
+
+	public inline function multiply(other:Color):Color
+	{
+		return getColorRGBFloat(red * other.red, green * other.green, blue * other.blue);
 	}
 }
