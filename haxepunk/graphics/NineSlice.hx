@@ -19,6 +19,12 @@ class NineSlice extends Graphic
 	public var height:Float;
 	public var clipRect:Rectangle;
 
+	/**
+	 * If false, the borders will always be drawn at their native resolution,
+	 * regardless of screen scale.
+	 */
+	public var scaleBorder:Bool = false;
+
 	public var smooth(default, set):Bool;
 	inline function set_smooth(v:Bool)
 	{
@@ -115,11 +121,22 @@ class NineSlice extends Graphic
 	 */
 	function renderSegments(renderFunc:Image -> Void)
 	{
-		var leftWidth:Float = Std.int(_sliceRect.left / HXP.screen.fullScaleX),
-			rightWidth:Float = Std.int((source.width - _sliceRect.width) / HXP.screen.fullScaleX),
-			centerWidth:Float = Std.int(width - leftWidth - rightWidth);
-		var topHeight:Float = Std.int(_sliceRect.top / HXP.screen.fullScaleY),
-			bottomHeight:Float = Std.int((source.height - _sliceRect.height) / HXP.screen.fullScaleY),
+		var leftWidth:Float, rightWidth:Float, topHeight:Float, bottomHeight:Float;
+		if (scaleBorder)
+		{
+			leftWidth = Std.int(_sliceRect.left * HXP.screen.fullScaleX) / HXP.screen.fullScaleX;
+			rightWidth = Std.int((source.width - _sliceRect.width) * HXP.screen.fullScaleX) / HXP.screen.fullScaleX;
+			topHeight = Std.int(_sliceRect.top * HXP.screen.fullScaleY) / HXP.screen.fullScaleY;
+			bottomHeight = Std.int((source.height - _sliceRect.height) * HXP.screen.fullScaleY) / HXP.screen.fullScaleY;
+		}
+		else
+		{
+			leftWidth = Std.int(_sliceRect.left) / HXP.screen.fullScaleX;
+			rightWidth = Std.int(source.width - _sliceRect.width) / HXP.screen.fullScaleX;
+			topHeight = Std.int(_sliceRect.top) / HXP.screen.fullScaleY;
+			bottomHeight = Std.int(source.height - _sliceRect.height) / HXP.screen.fullScaleY;
+		}
+		var centerWidth:Float = Std.int(width - leftWidth - rightWidth),
 			centerHeight:Float = Std.int(height - topHeight - bottomHeight);
 
 		var leftX = 0, centerX = leftWidth, rightX = leftWidth + centerWidth,
