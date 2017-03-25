@@ -255,7 +255,11 @@ class HardwareRenderer
 				buffer = new Float32Array(resize(bufferLength, items, bufferChunkSize * 3));
 
 				GL.bindBuffer(GL.ARRAY_BUFFER, glBuffer);
+				#if (lime >= "4.0.0")
+				GL.bufferData(GL.ARRAY_BUFFER, buffer.length * FLOAT32_BYTES, buffer, GL.DYNAMIC_DRAW);
+				#else
 				GL.bufferData(GL.ARRAY_BUFFER, buffer, GL.DYNAMIC_DRAW);
+				#end
 			}
 
 			var bufferPos:Int = 0;
@@ -308,7 +312,11 @@ class HardwareRenderer
 
 			var x0 = HXP.screen.x + rect.x, y0 = HXP.screen.y + rect.y;
 			var transformation = ortho(-x0, -x0 + HXP.stage.stageWidth, -y0 + HXP.stage.stageHeight, -y0, 1000, -1000);
+			#if (lime >= "4.0.0")
+			GL.uniformMatrix4fv(shader.uniformIndex("uMatrix"), 1, false, transformation);
+			#else
 			GL.uniformMatrix4fv(shader.uniformIndex("uMatrix"), false, transformation);
+			#end
 
 			if (texture != null)
 			{
@@ -333,7 +341,11 @@ class HardwareRenderer
 			}
 
 			GL.bindBuffer(GL.ARRAY_BUFFER, glBuffer);
+			#if (lime >= "4.0.0")
+			GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer.length * FLOAT32_BYTES, buffer);
+			#else
 			GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer);
+			#end
 
 			switch (drawCommand.blend)
 			{
