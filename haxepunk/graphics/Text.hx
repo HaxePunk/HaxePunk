@@ -71,7 +71,7 @@ typedef BorderOptions =
 
 /**
  * Abstract representing either a `TextFormat` or a `TextOptions`.
- * 
+ *
  * Conversion is automatic, no need to use this.
  */
 @:dox(hide)
@@ -86,7 +86,7 @@ abstract StyleType(TextFormat)
 	{
 		var format = new TextFormat();
 		var fields = Type.getInstanceFields(TextFormat);
-		
+
 		for (key in Reflect.fields(object))
 		{
 			if (HXP.indexOf(fields, key) > -1)
@@ -250,9 +250,9 @@ class Text extends Image
 
 	/**
 	 * Add a style for a subset of the text, for use with the richText property.
-	 * 
+	 *
 	 * Usage:
-	 * 
+	 *
 	 * ```
 	 * text.addStyle("red", {color: 0xFF0000});
 	 * text.addStyle("big", {size: text.size * 2, bold: true});
@@ -513,7 +513,7 @@ class Text extends Image
 
 	/**
 	 * Rich-text string with markup.
-	 * 
+	 *
 	 * Use `Text.addStyle` to control the appearance of marked-up text.
 	 */
 	public var richText(get, set):String;
@@ -537,10 +537,10 @@ class Text extends Image
 		return value;
 	}
 
-	/** 
+	/**
 	 * Gets the specified property, by also inspecting the underlying TextField and TextFormat objects.
 	 * Returns null if the property doesn't exist.
-	 */ 
+	 */
 	public function getTextProperty(name:String):Dynamic
 	{
 		var value = Reflect.getProperty(this, name);
@@ -548,35 +548,35 @@ class Text extends Image
 		if (value == null) value = Reflect.getProperty(_format, name);
 		return value;
 	}
-	
-	/** 
+
+	/**
 	 * Sets the specified property, by also inspecting the underlying TextField and TextFormat objects.
 	 * Returns true if the property has been found and set, false otherwise.
-	 */ 
+	 */
 	public function setTextProperty(name:String, value:Dynamic):Bool
 	{
 		var propertyFound:Bool = false;
-		
+
 		// chain of try-catch: ugly but Reflect.hasField doesn't work with non-anon structs
 		try // on this Text
 		{
 			Reflect.setProperty(this, name, value);
 			return true; // exit early to avoid calling update twice
-		} 
-		catch (e:Dynamic) 
+		}
+		catch (e:Dynamic)
 		{
 			try // on TextField
 			{
 				Reflect.setProperty(_field, name, value);
 				propertyFound = true;
-			} 
-			catch (e:Dynamic) 
+			}
+			catch (e:Dynamic)
 			{
 				try // on TextFormat
 				{
 					Reflect.setProperty(_format, name, value);
 					propertyFound = true;
-				} 
+				}
 				catch (e:Dynamic) {}
 			}
 		}

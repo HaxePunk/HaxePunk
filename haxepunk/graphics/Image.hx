@@ -66,12 +66,12 @@ class Image extends Graphic
 	 * Use constants from the flash.display.BlendMode class.
 	 */
 	public var blend:BlendMode;
-	
+
 	/**
 	 * tintMode value to tint in multiply mode.
 	 */
 	public static inline var TINTING_MULTIPLY:Float = 0.0;
-	
+
 	/**
 	 * tintMode value to tint in colorize mode.
 	 */
@@ -407,17 +407,17 @@ class Image extends Graphic
 				return updateBuffer();
 			}
 		}
-		
+
 		_tint = _colorTransform;
-		
+
 		_tint.redMultiplier = _tintMode * (1.0 - _tintFactor) + (1 - _tintMode) * (_tintFactor * ((_color >> 16 & 0xFF) / 255 - 1) + 1);
 		_tint.greenMultiplier = _tintMode * (1.0 - _tintFactor) + (1 - _tintMode) * (_tintFactor * ((_color >>  8 & 0xFF) / 255 - 1) + 1);
 		_tint.blueMultiplier = _tintMode * (1.0 - _tintFactor) + (1 - _tintMode) * (_tintFactor * ((_color		& 0xFF) / 255 - 1) + 1);
-		
+
 		_tint.redOffset = _color.r * _tintFactor * _tintMode;
 		_tint.greenOffset = _color.g * _tintFactor * _tintMode;
 		_tint.blueOffset = _color.b * _tintFactor * _tintMode;
-		
+
 		_tint.alphaMultiplier = _alpha;
 		updateBuffer();
 	}
@@ -462,15 +462,15 @@ class Image extends Graphic
 		if (blit) updateColorTransform();
 		return _color;
 	}
-	
+
 	/**
 	 * The amount the image will be tinted, suggested values from
 	 * 0 to 1. 0 Means no change, 1 is full color tint.
-	 * 
+	 *
 	 * <p>Only works with blit mode.</p>
-	 * 
+	 *
 	 * <p>You can get cool, weird effects if setting this value outside the 0-1 value range.</p>
-	 * 
+	 *
 	 * @default 1.
 	 */
 	public var tinting(get, set):Float;
@@ -482,14 +482,14 @@ class Image extends Graphic
 		updateColorTransform();
 		return _tintFactor;
 	}
-	
+
 	/**
 	 * The tint mode - multiply or colorize.
-	 * 
+	 *
 	 * <p>Only works with blit mode.</p>
-	 * 
+	 *
 	 * <p>You can get cool, weird effects if this value is not either 0 or 1.</p>
-	 * 
+	 *
 	 * @default Image.TINTING_MULTIPLY
 	 */
 	public var tintMode(get, set):Float;
@@ -535,7 +535,7 @@ class Image extends Graphic
 			_flip = temp;
 			updateBuffer();
 		}
-		
+
 		return _flipped;
 	}
 
