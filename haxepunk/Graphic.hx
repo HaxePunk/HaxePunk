@@ -9,7 +9,7 @@ import flash.geom.Point;
 
 /**
  * Abstract representing either a `String`, a `TileAtlas` or a `BitmapData`.
- * 
+ *
  * Conversion is automatic, no need to use this.
  */
 abstract TileType(Either<BitmapData, TileAtlas>)
@@ -40,7 +40,7 @@ abstract TileType(Either<BitmapData, TileAtlas>)
 
 /**
  * Abstract representing either a `String`, a `TileAtlas`, a `BitmapData` or a `AtlasRegion`.
- * 
+ *
  * Conversion is automatic, no need to use this.
  */
 abstract ImageType(Either<BitmapData, AtlasRegion>)
@@ -168,7 +168,7 @@ class Graphic
 	/**
 	 * If we can blit the graphic or not (flash/html5)
 	 */
-	public var blit(default, null):Bool = false;
+	public var blit(default, null):Bool;
 
 	/**
 	 * Constructor.
