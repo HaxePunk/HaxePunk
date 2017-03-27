@@ -151,14 +151,14 @@ class Graphic
 	 * Can be used for parallax effect, eg. Set to 0 to follow the camera,
 	 * 0.5 to move at half-speed of the camera, or 1 (default) to stay still.
 	 */
-	public var scrollX:Float = 0;
+	public var scrollX:Float = 1;
 
 	/**
 	 * Y scrollfactor, effects how much the camera offsets the drawn graphic.
 	 * Can be used for parallax effect, eg. Set to 0 to follow the camera,
 	 * 0.5 to move at half-speed of the camera, or 1 (default) to stay still.
 	 */
-	public var scrollY:Float = 0;
+	public var scrollY:Float = 1;
 
 	/**
 	 * If the graphic should render at its position relative to its parent Entity's position.
@@ -194,7 +194,7 @@ class Graphic
 	 * @param  camera     The camera offset.
 	 */
 	@:dox(hide)
-	public function render(target:BitmapData, point:Point, camera:Point) {}
+	public function render(target:BitmapData, point:Point, camera:Camera) {}
 
 	/**
 	 * Renders the graphic as an atlas.
@@ -203,7 +203,7 @@ class Graphic
 	 * @param  camera     The camera offset.
 	 */
 	@:dox(hide)
-	public function renderAtlas(layer:Int, point:Point, camera:Point) {}
+	public function renderAtlas(layer:Int, point:Point, camera:Camera) {}
 
 	/**
 	 * Pause updating this graphic.

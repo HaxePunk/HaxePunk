@@ -388,7 +388,7 @@ class BitmapText extends Graphic
 	}
 
 	@:dox(hide)
-	override public function render(target:BitmapData, point:Point, camera:Point)
+	override public function render(target:BitmapData, point:Point, camera:Camera)
 	{
 		// determine drawing location
 		var fontScale = size / _font.fontSize;
@@ -410,7 +410,7 @@ class BitmapText extends Graphic
 	}
 
 	@:dox(hide)
-	override public function renderAtlas(layer:Int, point:Point, camera:Point)
+	override public function renderAtlas(layer:Int, point:Point, camera:Camera)
 	{
 		// determine drawing location
 		var fontScale = size / _font.fontSize;

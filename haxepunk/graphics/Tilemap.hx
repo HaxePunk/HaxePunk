@@ -443,7 +443,7 @@ class Tilemap extends Canvas
 	inline function floorY(y:Float) return Math.floor(y * HXP.screen.fullScaleY) / HXP.screen.fullScaleY;
 
 	@:dox(hide)
-	override public function renderAtlas(layer:Int, point:Point, camera:Point)
+	override public function renderAtlas(layer:Int, point:Point, camera:Camera)
 	{
 		var fullScaleX:Float = HXP.screen.fullScaleX,
 			fullScaleY:Float = HXP.screen.fullScaleY,
@@ -553,13 +553,13 @@ class Tilemap extends Canvas
 	 * The tile width.
 	 */
 	public var tileWidth(get, never):Int;
-	private inline function get_tileWidth():Int return Std.int(_tile.width); 
+	private inline function get_tileWidth():Int return Std.int(_tile.width);
 
 	/**
 	 * The tile height.
 	 */
 	public var tileHeight(get, never):Int;
-	private inline function get_tileHeight():Int return Std.int(_tile.height); 
+	private inline function get_tileHeight():Int return Std.int(_tile.height);
 
 	/**
 	 * The tile horizontal spacing of tile.
@@ -575,26 +575,26 @@ class Tilemap extends Canvas
 	 * How many tiles the tilemap has.
 	 */
 	public var tileCount(get, never):Int;
-	private inline function get_tileCount():Int return _setCount; 
+	private inline function get_tileCount():Int return _setCount;
 
 	/**
 	 * How many columns the tilemap has.
 	 */
 	public var columns(get, null):Int;
-	private inline function get_columns():Int return _columns; 
+	private inline function get_columns():Int return _columns;
 
 	/**
 	 * How many rows the tilemap has.
 	 */
 	public var rows(get, null):Int;
-	private inline function get_rows():Int return _rows; 
+	private inline function get_rows():Int return _rows;
 
 	/**
 	 * If false, whenever you call setTile or one of the load methods, clears the affected Tilemap areas before redrawing.
 	 * Only used on Flash targets and with tilesets that contain transparency.
 	 */
 	public var opaqueTiles(get, null):Bool;
-	private inline function get_opaqueTiles():Bool return _opaqueTiles; 
+	private inline function get_opaqueTiles():Bool return _opaqueTiles;
 
 	/** Default value: false if HXP.stage.quality is LOW, true otherwise. */
 	public var smooth:Bool;

@@ -94,7 +94,7 @@ class Canvas extends Graphic
 
 	/** @private Renders the canvas. */
 	@:dox(hide)
-	override public function render(target:BitmapData, point:Point, camera:Point)
+	override public function render(target:BitmapData, point:Point, camera:Camera)
 	{
 		var sx = scale * scaleX,
 			sy = scale * scaleY;
@@ -322,7 +322,7 @@ class Canvas extends Graphic
 		{
 			_point.x = x - xx;
 			_point.y = y - yy;
-			source.render(buffer, _point, HXP.zero);
+			source.render(buffer, _point, HXP.zeroCamera);
 			xx += _maxWidth;
 			if (xx >= _width)
 			{
@@ -364,7 +364,7 @@ class Canvas extends Graphic
 	 * Change the opacity of the Canvas, a value from 0 to 1.
 	 */
 	public var alpha(get, set):Float;
-	private function get_alpha():Float return _alpha; 
+	private function get_alpha():Float return _alpha;
 	private function set_alpha(value:Float):Float
 	{
 		if (value < 0) value = 0;
@@ -399,13 +399,13 @@ class Canvas extends Graphic
 	 * Width of the canvas.
 	 */
 	public var width(get, null):Int;
-	private function get_width():Int return _width; 
+	private function get_width():Int return _width;
 
 	/**
 	 * Height of the canvas.
 	 */
 	public var height(get, null):Int;
-	private function get_height():Int return _height; 
+	private function get_height():Int return _height;
 
 	// Buffer information.
 	private var _buffers:Array<BitmapData>;

@@ -130,7 +130,7 @@ class Emitter extends Graphic
 		_particle = null;
 	}
 
-	function renderParticles(buffer:Bool, target:BitmapData, layer:Int, point:Point, camera:Point)
+	function renderParticles(buffer:Bool, target:BitmapData, layer:Int, point:Point, camera:Camera)
 	{
 		var p:Particle = _particle;
 
@@ -196,12 +196,12 @@ class Emitter extends Graphic
 		}
 	}
 
-	override public function render(target:BitmapData, point:Point, camera:Point)
+	override public function render(target:BitmapData, point:Point, camera:Camera)
 	{
 		renderParticles(true, target, -1, point, camera);
 	}
 
-	override public function renderAtlas(layer:Int, point:Point, camera:Point)
+	override public function renderAtlas(layer:Int, point:Point, camera:Camera)
 	{
 		renderParticles(false, null, layer, point, camera);
 	}

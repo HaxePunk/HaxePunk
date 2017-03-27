@@ -165,12 +165,12 @@ class NineSlice extends Graphic
 		}
 	}
 
-	override public function render(target:BitmapData, point:Point, camera:Point)
+	override public function render(target:BitmapData, point:Point, camera:Camera)
 	{
 		renderSegments(function(segment:Image) segment.render(target, point, camera));
 	}
 
-	override public function renderAtlas(layer:Int, point:Point, camera:Point)
+	override public function renderAtlas(layer:Int, point:Point, camera:Camera)
 	{
 		renderSegments(function(segment:Image) segment.renderAtlas(layer, point, camera));
 	}

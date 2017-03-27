@@ -76,7 +76,7 @@ class Imagemask extends Pixelmask
 		_height = Math.ceil(r.height);
 
 		_data = new BitmapData(_width, _height, true, 0x00000000);
-		_source.render(_data, new Point(-_x, -_y), new Point(0, 0));
+		_source.render(_data, new Camera(-_x, -_y), new Camera(0, 0));
 
 		super.update();
 	}
@@ -116,7 +116,7 @@ class Imagemask extends Pixelmask
 
 		return r;
 	}
-	
+
 	/** @private Collide against a Pixelmask or an Imagemask. */
 	override private function collidePixelmask(other:Pixelmask):Bool
 	{
@@ -130,7 +130,7 @@ class Imagemask extends Pixelmask
 			var rect = getBounds();
 			rect.x += _parent.x;
 			rect.y += _parent.y;
-			
+
 			if (Std.instance(other, Imagemask) != null) // 'other' inherits from Imagemask
 			{
 				_rect = cast(other, Imagemask).getBounds();
@@ -144,7 +144,7 @@ class Imagemask extends Pixelmask
 				_rect.width = other.width;
 				_rect.height = other.height;
 			}
-			
+
 			var intersect = rect.intersection(_rect);
 
 			if (intersect.isEmpty())
@@ -170,7 +170,7 @@ class Imagemask extends Pixelmask
 			return false;
 		#end
 	}
-	
+
 	/**
 	 * Current Image mask.
 	 */

@@ -49,24 +49,21 @@ class UniformScaleMode extends ScaleMode
 			if (scale < 1) scale = 1;
 		}
 
-		HXP.screen.scaleX = HXP.screen.scaleY = scale;
-		if (expand)
+		HXP.screen.scale = scale;
+		HXP.screen.scaleX = HXP.screen.scaleY = 1;
+		switch (type)
 		{
-			// fill the window and offset the camera
-			HXP.screen.x = HXP.screen.y = 0;
-			HXP.screen.offsetX = Std.int((stageWidth - baseWidth * scale) / 2);
-			HXP.screen.offsetY = Std.int((stageHeight - baseHeight * scale) / 2);
-			HXP.screen.width = stageWidth;
-			HXP.screen.height = stageHeight;
-		}
-		else
-		{
-			// visible area may not match the window
-			HXP.screen.offsetX = HXP.screen.offsetY = 0;
-			HXP.screen.width = Std.int(Math.ceil(baseWidth * scale));
-			HXP.screen.height = Std.int(Math.ceil(baseHeight * scale));
-			HXP.screen.x = Std.int((stageWidth - HXP.screen.width) / 2);
-			HXP.screen.y = Std.int((stageHeight - HXP.screen.height) / 2);
+			case Letterbox:
+				// fill only part of the window
+				HXP.screen.width = Std.int(baseWidth * scale);
+				HXP.screen.height = Std.int(baseHeight * scale);
+				HXP.screen.x = Std.int((stageWidth - HXP.screen.width) / 2);
+				HXP.screen.y = Std.int((stageHeight - HXP.screen.height) / 2);
+			case Expand, ZoomIn:
+				// fill the window
+				HXP.screen.x = HXP.screen.y = 0;
+				HXP.screen.width = stageWidth;
+				HXP.screen.height = stageHeight;
 		}
 	}
 }

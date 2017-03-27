@@ -663,7 +663,7 @@ class Text extends Image
 	var bufferMargin(get, null):Float;
 	inline function get_bufferMargin() return 2 + (border == null ? 0 : border.size);
 
-	override public function render(target:BitmapData, point:Point, camera:Point)
+	override public function render(target:BitmapData, point:Point, camera:Camera)
 	{
 		if (_needsUpdate) updateTextBuffer();
 
@@ -682,7 +682,7 @@ class Text extends Image
 		super.render(target, point, camera);
 	}
 
-	override public function renderAtlas(layer:Int, point:Point, camera:Point)
+	override public function renderAtlas(layer:Int, point:Point, camera:Camera)
 	{
 		if (_needsUpdate) updateTextBuffer();
 

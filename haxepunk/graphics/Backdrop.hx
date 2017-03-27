@@ -51,7 +51,7 @@ class Backdrop extends Canvas
 
 	/** Renders the Backdrop. */
 	@:dox(hide)
-	override public function render(target:BitmapData, point:Point, camera:Point)
+	override public function render(target:BitmapData, point:Point, camera:Camera)
 	{
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;
@@ -73,12 +73,12 @@ class Backdrop extends Canvas
 
 		_x = x; _y = y;
 		x = y = 0;
-		super.render(target, _point, HXP.zero);
+		super.render(target, _point, HXP.zeroCamera);
 		x = _x; y = _y;
 	}
 
 	@:dox(hide)
-	override public function renderAtlas(layer:Int, point:Point, camera:Point)
+	override public function renderAtlas(layer:Int, point:Point, camera:Camera)
 	{
 		_point.x = point.x + x - camera.x * scrollX;
 		_point.y = point.y + y - camera.y * scrollY;

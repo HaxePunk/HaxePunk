@@ -35,7 +35,7 @@ class Scene extends Tweener
 	/**
 	 * Point used to determine drawing offset in the render loop.
 	 */
-	public var camera:Point;
+	public var camera:Camera;
 
 	public var width:Int = 0;
 	public var height:Int = 0;
@@ -55,7 +55,7 @@ class Scene extends Tweener
 	{
 		super();
 		visible = true;
-		camera = new Point();
+		camera = new Camera();
 		sprite = new SceneSprite(this);
 
 		_layerList = new Array<Int>();
@@ -124,6 +124,9 @@ class Scene extends Tweener
 			}
 			if (e.graphic != null && e.graphic.active) e.graphic.update();
 		}
+
+		// update the camera
+		camera.update();
 
 		// updates the cursor
 		if (HXP.cursor != null && HXP.cursor.active)
@@ -297,11 +300,11 @@ class Scene extends Tweener
 
 	/**
 	 * Returns a new Entity, or a stored recycled Entity if one exists.
-	 * 
+	 *
 	 * **Note**: The constructor is only called when creating a new entity,
 	 * when using a recycled one the constructor (with constructorsArgs)
 	 * isn't called. Instead use a function to initialize your entities.
-	 * 
+	 *
 	 * @param	classType			The Class of the Entity you want to add.
 	 * @param	addToScene			Add it to the Scene immediately.
 	 * @param	constructorsArgs	List of the entity constructor arguments (optional).
