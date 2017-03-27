@@ -39,8 +39,7 @@ class EntityList<T:Entity> extends Entity
 		{
 			scene.add(entity);
 		}
-		entity.x += x;
-		entity.y += y;
+		entity.parent = this;
 		entity.layer = layer;
 		return entity;
 	}
@@ -57,8 +56,7 @@ class EntityList<T:Entity> extends Entity
 		{
 			scene.remove(entity);
 		}
-		entity.x -= x;
-		entity.y -= y;
+		entity.parent = null;
 		return entity;
 	}
 
@@ -100,20 +98,6 @@ class EntityList<T:Entity> extends Entity
 			}
 		}
 		super.removed();
-	}
-
-	override function set_x(v:Float):Float
-	{
-		var diff = v - x;
-		for (entity in entities) entity.x += diff;
-		return x = v;
-	}
-
-	override function set_y(v:Float):Float
-	{
-		var diff = v - y;
-		for (entity in entities) entity.y += diff;
-		return y = v;
 	}
 
 	override function set_type(value:String):String
