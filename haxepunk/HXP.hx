@@ -108,7 +108,8 @@ class HXP
 	/**
 	 * Point used to determine drawing offset in the render loop.
 	 */
-	public static var camera:Point = new Point();
+	public static var camera(get, never):Camera;
+	static inline function get_camera() return scene == null ? null : scene.camera;
 
 	/**
 	 * Global tweener for tweening between multiple scenes
@@ -202,8 +203,8 @@ class HXP
 	 * to switch, but won't actually do so until the end of the current frame.
 	 */
 	public static var scene(get, set):Scene;
-	private static inline function get_scene():Scene return engine.scene; 
-	private static inline function set_scene(value:Scene):Scene return engine.scene = value; 
+	private static inline function get_scene():Scene return engine.scene;
+	private static inline function set_scene(value:Scene):Scene return engine.scene = value;
 
 	/**
 	 * Resize the screen.
@@ -259,7 +260,7 @@ class HXP
 	 * Toggles between windowed and fullscreen modes
 	 */
 	public static var fullscreen(get, set):Bool;
-	private static inline function get_fullscreen():Bool return HXP.stage.displayState == StageDisplayState.FULL_SCREEN; 
+	private static inline function get_fullscreen():Bool return HXP.stage.displayState == StageDisplayState.FULL_SCREEN;
 	private static inline function set_fullscreen(value:Bool):Bool
 	{
 		if (value) HXP.stage.displayState = StageDisplayState.FULL_SCREEN;
@@ -271,7 +272,7 @@ class HXP
 	 * Global volume factor for all sounds, a value from 0 to 1.
 	 */
 	public static var volume(get, set):Float;
-	private static inline function get_volume():Float return _volume; 
+	private static inline function get_volume():Float return _volume;
 	private static function set_volume(value:Float):Float
 	{
 		if (value < 0) value = 0;
@@ -291,7 +292,7 @@ class HXP
 	 * Panning only applies to mono sounds. It is ignored on stereo.
 	 */
 	public static var pan(get, set):Float;
-	private static inline function get_pan():Float return _pan; 
+	private static inline function get_pan():Float return _pan;
 	private static function set_pan(value:Float):Float
 	{
 		if (value < -1) value = -1;
@@ -689,6 +690,7 @@ class HXP
 	@:dox(hide) public static var point:Point = new Point();
 	@:dox(hide) public static var point2:Point = new Point();
 	@:dox(hide) public static var zero:Point = new Point();
+	@:dox(hide) public static var zeroCamera:Camera = new Camera();
 	@:dox(hide) public static var rect:Rectangle = new Rectangle();
 	@:dox(hide) public static var matrix:Matrix = new Matrix();
 	@:dox(hide) public static var sprite:Sprite = new Sprite();

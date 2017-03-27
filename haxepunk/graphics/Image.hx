@@ -150,7 +150,7 @@ class Image extends Graphic
 
 	/** Renders the image. */
 	@:dox(hide)
-	override public function render(target:BitmapData, point:Point, camera:Point)
+	override public function render(target:BitmapData, point:Point, camera:Camera)
 	{
 		var sx = scale * scaleX,
 			sy = scale * scaleY;
@@ -184,7 +184,7 @@ class Image extends Graphic
 	}
 
 	@:dox(hide)
-	override public function renderAtlas(layer:Int, point:Point, camera:Point)
+	override public function renderAtlas(layer:Int, point:Point, camera:Camera)
 	{
 		var sx = scale * scaleX,
 			sy = scale * scaleY,

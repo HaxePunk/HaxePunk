@@ -15,7 +15,7 @@ import haxepunk.utils.Random;
 /**
  * Main game Sprite class, added to the Flash Stage.
  * Manages the game loop.
- * 
+ *
  * Your main class **needs** to extends this.
  */
 class Engine extends Sprite
@@ -357,7 +357,6 @@ class Engine extends Sprite
 			_scene = _scenes[_scenes.length - 1];
 
 			addChild(_scene.sprite);
-			HXP.camera = _scene.camera;
 			_scene.updateLists();
 			_scene.begin();
 			_scene.updateLists();

@@ -19,7 +19,7 @@ class Graphiclist extends Graphic
 	{
 		_graphics = new Array<Graphic>();
 		_temp = new Array<Graphic>();
-		_camera = new Point();
+		_camera = new Camera();
 		_count = 0;
 
 		super();
@@ -47,12 +47,12 @@ class Graphiclist extends Graphic
 	 */
 	@:arrayAccess
 	public function get(i:Int):Graphic
-	{	
+	{
 		if ( i >= _graphics.length || i < 0 ) throw "Index out of bounds.";
 		else return _graphics[i];
 	}
 
-	private inline function renderList(renderFunc:Graphic->Void, point:Point, camera:Point)
+	private inline function renderList(renderFunc:Graphic->Void, point:Point, camera:Camera)
 	{
 		point.x += x;
 		point.y += y;
@@ -78,14 +78,14 @@ class Graphiclist extends Graphic
 
 	/** @private Renders the Graphics in the list. */
 	@:dox(hide)
-	override public function render(target:BitmapData, point:Point, camera:Point)
+	override public function render(target:BitmapData, point:Point, camera:Camera)
 	{
 		renderList(function(g:Graphic) g.render(target, _point, _camera), point, camera);
 	}
 
 	/** @private Renders the Graphics in the list. */
 	@:dox(hide)
-	override public function renderAtlas(layer:Int, point:Point, camera:Point)
+	override public function renderAtlas(layer:Int, point:Point, camera:Camera)
 	{
 		renderList(function(g:Graphic) g.renderAtlas(layer, _point, _camera), point, camera);
 	}
@@ -168,13 +168,13 @@ class Graphiclist extends Graphic
 	 * All Graphics in this list.
 	 */
 	public var children(get, null):Array<Graphic>;
-	private function get_children():Array<Graphic> return _graphics; 
+	private function get_children():Array<Graphic> return _graphics;
 
 	/**
 	 * Amount of Graphics in this list.
 	 */
 	public var count(get, null):Int;
-	private function get_count():Int return _count; 
+	private function get_count():Int return _count;
 
 	/**
 	 * Check if the Graphiclist should update.
@@ -196,5 +196,5 @@ class Graphiclist extends Graphic
 	private var _graphics:Array<Graphic>;
 	private var _temp:Array<Graphic>;
 	private var _count:Int;
-	private var _camera:Point;
+	private var _camera:Camera;
 }
