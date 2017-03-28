@@ -55,6 +55,6 @@ class AngleTween extends Tween
 	}
 	
 	// Tween information.
-	private var _start:Float;
-	private var _range:Float;
+	var _start:Float;
+	var _range:Float;
 }

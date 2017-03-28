@@ -29,7 +29,7 @@ class TiledSpritemap extends Spritemap
 	}
 
 	/** @private Creates the buffer. */
-	override private function createBuffer()
+	override function createBuffer()
 	{
 		if (_imageWidth == 0) _imageWidth = Std.int(_sourceRect.width);
 		if (_imageHeight == 0) _imageHeight = Std.int(_sourceRect.height);
@@ -110,8 +110,8 @@ class TiledSpritemap extends Spritemap
 	 * The x-offset of the texture.
 	 */
 	public var offsetX(get, set):Float;
-	private function get_offsetX():Float return _offsetX; 
-	private function set_offsetX(value:Float):Float
+	function get_offsetX():Float return _offsetX; 
+	function set_offsetX(value:Float):Float
 	{
 		if (_offsetX == value) return value;
 		_offsetX = value;
@@ -123,8 +123,8 @@ class TiledSpritemap extends Spritemap
 	 * The y-offset of the texture.
 	 */
 	public var offsetY(get, set):Float;
-	private function get_offsetY():Float return _offsetY; 
-	private function set_offsetY(value:Float):Float
+	function get_offsetY():Float return _offsetY; 
+	function set_offsetY(value:Float):Float
 	{
 		if (_offsetY == value) return value;
 		_offsetY = value;
@@ -145,9 +145,9 @@ class TiledSpritemap extends Spritemap
 		updateBuffer();
 	}
 
-	private var _graphics:Graphics;
-	private var _imageWidth:Int;
-	private var _imageHeight:Int;
-	private var _offsetX:Float;
-	private var _offsetY:Float;
+	var _graphics:Graphics;
+	var _imageWidth:Int;
+	var _imageHeight:Int;
+	var _offsetX:Float;
+	var _offsetY:Float;
 }

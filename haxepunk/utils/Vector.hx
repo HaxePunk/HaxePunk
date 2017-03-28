@@ -15,12 +15,12 @@ abstract Vector(Point)
 	}
 
 	public var x(get, set):Float;
-	private inline function get_x():Float return this.x; 
-	private inline function set_x(value:Float):Float return this.x = value; 
+	inline function get_x():Float return this.x; 
+	inline function set_x(value:Float):Float return this.x = value; 
 
 	public var y(get, set):Float;
-	private inline function get_y():Float return this.y; 
-	private inline function set_y(value:Float):Float return this.y = value; 
+	inline function get_y():Float return this.y; 
+	inline function set_y(value:Float):Float return this.y = value; 
 
 	public inline function dot(b:Vector):Float
 	{
@@ -60,19 +60,19 @@ abstract Vector(Point)
 	}
 
 	public var squareLength(get, never):Float;
-	private inline function get_squareLength():Float
+	inline function get_squareLength():Float
 	{
 		return x * x + y * y;
 	}
 
 	public var length(get, never):Float;
-	private inline function get_length():Float
+	inline function get_length():Float
 	{
 		return Math.sqrt(squareLength);
 	}
 
 	public var angle(get, never):Float;
-	private inline function get_angle():Float
+	inline function get_angle():Float
 	{
 		return Math.atan2(y, x);
 	}

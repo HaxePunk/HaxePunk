@@ -630,7 +630,7 @@ class Image extends Graphic
 	// Flipped image information.
 	var _flipped:Bool;
 	var _flip:BitmapData;
-	private static var _flips:Map<BitmapData, BitmapData> = new Map<BitmapData, BitmapData>();
+	static var _flips:Map<BitmapData, BitmapData> = new Map<BitmapData, BitmapData>();
 
 	var _scale:Float;
 }

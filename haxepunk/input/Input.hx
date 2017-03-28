@@ -124,7 +124,7 @@ class Input
 	 * If the mouse wheel was moved this frame, this was the delta.
 	 */
 	public static var mouseWheelDelta(get, never):Int;
-	private static function get_mouseWheelDelta():Int
+	static function get_mouseWheelDelta():Int
 	{
 		if (mouseWheel)
 		{
@@ -154,7 +154,7 @@ class Input
 	 * X position of the mouse on the screen.
 	 */
 	public static var mouseX(get, never):Int;
-	private static function get_mouseX():Int
+	static function get_mouseX():Int
 	{
 		return HXP.screen.mouseX;
 	}
@@ -163,7 +163,7 @@ class Input
 	 * Y position of the mouse on the screen.
 	 */
 	public static var mouseY(get, never):Int;
-	private static function get_mouseY():Int
+	static function get_mouseY():Int
 	{
 		return HXP.screen.mouseY;
 	}
@@ -172,7 +172,7 @@ class Input
 	 * The absolute mouse x position on the screen (unscaled).
 	 */
 	public static var mouseFlashX(get, never):Int;
-	private static function get_mouseFlashX():Int
+	static function get_mouseFlashX():Int
 	{
 		return Std.int(HXP.stage.mouseX - HXP.screen.x);
 	}
@@ -181,7 +181,7 @@ class Input
 	 * The absolute mouse y position on the screen (unscaled).
 	 */
 	public static var mouseFlashY(get, never):Int;
-	private static function get_mouseFlashY():Int
+	static function get_mouseFlashY():Int
 	{
 		return Std.int(HXP.stage.mouseY - HXP.screen.y);
 	}
@@ -277,10 +277,10 @@ class Input
 	}
 
 	public static var touches(get, never):Map<Int, Touch>;
-	private static inline function get_touches():Map<Int, Touch> return _touches; 
+	static inline function get_touches():Map<Int, Touch> return _touches; 
 
 	public static var touchOrder(get, never):Array<Int>;
-	private static inline function get_touchOrder():Array<Int> return _touchOrder; 
+	static inline function get_touchOrder():Array<Int> return _touchOrder; 
 
 	/**
 	 * Returns a joystick object (creates one if not connected)
@@ -302,7 +302,7 @@ class Input
 	 * Returns the number of connected joysticks
 	 */
 	public static var joysticks(get, never):Int;
-	private static function get_joysticks():Int
+	static function get_joysticks():Int
 	{
 		var count:Int = 0;
 		for (joystick in _joysticks)
@@ -462,7 +462,7 @@ class Input
 #end
 	}
 
-	private static function onKeyDown(e:KeyboardEvent = null)
+	static function onKeyDown(e:KeyboardEvent = null)
 	{
 		var code:Int = keyCode(e);
 		if (code == -1) // No key
@@ -491,7 +491,7 @@ class Input
 		}
 	}
 
-	private static function onKeyUp(e:KeyboardEvent = null)
+	static function onKeyUp(e:KeyboardEvent = null)
 	{
 		var code:Int = keyCode(e);
 		if (code == -1) // No key
@@ -505,7 +505,7 @@ class Input
 		}
 	}
 
-	private static function keyCode(e:KeyboardEvent):Int
+	static function keyCode(e:KeyboardEvent):Int
 	{
 	#if (flash || js)
 		return e.keyCode;
@@ -519,7 +519,7 @@ class Input
 	#end
 	}
 
-	private static function onMouseDown(e:MouseEvent)
+	static function onMouseDown(e:MouseEvent)
 	{
 		if (!mouseDown)
 		{
@@ -529,21 +529,21 @@ class Input
 		}
 	}
 
-	private static function onMouseUp(e:MouseEvent)
+	static function onMouseUp(e:MouseEvent)
 	{
 		mouseDown = false;
 		mouseUp = true;
 		mouseReleased = true;
 	}
 
-	private static function onMouseWheel(e:MouseEvent)
+	static function onMouseWheel(e:MouseEvent)
 	{
 		mouseWheel = true;
 		_mouseWheelDelta = e.delta;
 	}
 
 #if !js
-	private static function onMiddleMouseDown(e:MouseEvent)
+	static function onMiddleMouseDown(e:MouseEvent)
 	{
 		if (!middleMouseDown)
 		{
@@ -553,14 +553,14 @@ class Input
 		}
 	}
 
-	private static function onMiddleMouseUp(e:MouseEvent)
+	static function onMiddleMouseUp(e:MouseEvent)
 	{
 		middleMouseDown = false;
 		middleMouseUp = true;
 		middleMouseReleased = true;
 	}
 
-	private static function onRightMouseDown(e:MouseEvent)
+	static function onRightMouseDown(e:MouseEvent)
 	{
 		if (!rightMouseDown)
 		{
@@ -570,7 +570,7 @@ class Input
 		}
 	}
 
-	private static function onRightMouseUp(e:MouseEvent)
+	static function onRightMouseUp(e:MouseEvent)
 	{
 		rightMouseDown = false;
 		rightMouseUp = true;
@@ -578,14 +578,14 @@ class Input
 	}
 #end
 
-	private static function onTouchBegin(e:TouchEvent)
+	static function onTouchBegin(e:TouchEvent)
 	{
 		var touchPoint = new Touch(e.stageX / HXP.screen.fullScaleX, e.stageY / HXP.screen.fullScaleY, e.touchPointID);
 		_touches.set(e.touchPointID, touchPoint);
 		_touchOrder.push(e.touchPointID);
 	}
 
-	private static function onTouchMove(e:TouchEvent)
+	static function onTouchMove(e:TouchEvent)
 	{
 		// maybe we missed the begin event sometimes?
 		if (_touches.exists(e.touchPointID))
@@ -596,7 +596,7 @@ class Input
 		}
 	}
 
-	private static function onTouchEnd(e:TouchEvent)
+	static function onTouchEnd(e:TouchEvent)
 	{
 		if (_touches.exists(e.touchPointID))
 		{
@@ -606,7 +606,7 @@ class Input
 
 #if (openfl_legacy && (cpp || neko))
 
-	private static function onJoyAxisMove(e:JoystickEvent)
+	static function onJoyAxisMove(e:JoystickEvent)
 	{
 	#if ouya
 		var joy:Joystick = joystick(OuyaController.getPlayerNumByDeviceId(e.device));
@@ -618,7 +618,7 @@ class Input
 		joy.axis = e.axis;
 	}
 
-	private static function onJoyBallMove(e:JoystickEvent)
+	static function onJoyBallMove(e:JoystickEvent)
 	{
 	#if ouya
 		var joy:Joystick = joystick(OuyaController.getPlayerNumByDeviceId(e.device));
@@ -631,7 +631,7 @@ class Input
 		joy.ball.y = (Math.abs(e.y) < Joystick.deadZone) ? 0 : e.y;
 	}
 
-	private static function onJoyButtonDown(e:JoystickEvent)
+	static function onJoyButtonDown(e:JoystickEvent)
 	{
 	#if ouya
 		var joy:Joystick = joystick(OuyaController.getPlayerNumByDeviceId(e.device));
@@ -642,7 +642,7 @@ class Input
 		joy.buttons.set(e.id, BUTTON_PRESSED);
 	}
 
-	private static function onJoyButtonUp(e:JoystickEvent)
+	static function onJoyButtonUp(e:JoystickEvent)
 	{
 	#if ouya
 		var joy:Joystick = joystick(OuyaController.getPlayerNumByDeviceId(e.device));
@@ -653,7 +653,7 @@ class Input
 		joy.buttons.set(e.id, BUTTON_RELEASED);
 	}
 
-	private static function onJoyHatMove(e:JoystickEvent)
+	static function onJoyHatMove(e:JoystickEvent)
 	{
 	#if ouya
 		var joy:Joystick = joystick(OuyaController.getPlayerNumByDeviceId(e.device));
@@ -667,19 +667,19 @@ class Input
 
 #end
 
-	private static inline var kKeyStringMax = 100;
+	static inline var kKeyStringMax = 100;
 
-	private static var _enabled:Bool = false;
-	private static var _key:Map<Int, Bool> = new Map<Int, Bool>();
-	private static var _keyNum:Int = 0;
-	private static var _press:Array<Int> = new Array<Int>();
-	private static var _pressNum:Int = 0;
-	private static var _release:Array<Int> = new Array<Int>();
-	private static var _releaseNum:Int = 0;
-	private static var _mouseWheelDelta:Int = 0;
-	private static var _touches:Map<Int, Touch> = new Map<Int, Touch>();
-	private static var _touchOrder:Array<Int> = new Array();
-	private static var _joysticks:Map<Int, Joystick> = new Map<Int, Joystick>();
-	private static var _control:Map<String, Array<Int>> = new Map<String, Array<Int>>();
-	private static var _nativeCorrection:Map<String, Int> = new Map<String, Int>();
+	static var _enabled:Bool = false;
+	static var _key:Map<Int, Bool> = new Map<Int, Bool>();
+	static var _keyNum:Int = 0;
+	static var _press:Array<Int> = new Array<Int>();
+	static var _pressNum:Int = 0;
+	static var _release:Array<Int> = new Array<Int>();
+	static var _releaseNum:Int = 0;
+	static var _mouseWheelDelta:Int = 0;
+	static var _touches:Map<Int, Touch> = new Map<Int, Touch>();
+	static var _touchOrder:Array<Int> = new Array();
+	static var _joysticks:Map<Int, Joystick> = new Map<Int, Joystick>();
+	static var _control:Map<String, Array<Int>> = new Map<String, Array<Int>>();
+	static var _nativeCorrection:Map<String, Int> = new Map<String, Int>();
 }

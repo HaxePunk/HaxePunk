@@ -39,7 +39,7 @@ class VisibleLabel extends Sprite
 	}
 
 	public var display(default, set):Bool = true;
-	private function set_display(value:Bool):Bool
+	function set_display(value:Bool):Bool
 	{
 		if (value != display)
 		{
@@ -58,14 +58,14 @@ class VisibleLabel extends Sprite
 		return value;
 	}
 
-	private function onClick(e:MouseEvent)
+	function onClick(e:MouseEvent)
 	{
 		display = !display;
 	}
 
-	private var active:Bitmap;
-	private var inactive:Bitmap;
-	private var label:TextField;
+	var active:Bitmap;
+	var inactive:Bitmap;
+	var label:TextField;
 
 }
 
@@ -78,7 +78,7 @@ class MaskLabel extends VisibleLabel
 		label.text = "Masks";
 	}
 
-	override private function onClick(e:MouseEvent)
+	override function onClick(e:MouseEvent)
 	{
 		super.onClick(e);
 		HXP.console.debugDraw = display;
@@ -101,13 +101,13 @@ class LayerLabel extends VisibleLabel
 	}
 
 	public var count(never, set):Int;
-	private function set_count(value:Int):Int
+	function set_count(value:Int):Int
 	{
 		label.text = 'Layer $layer [$value]';
 		return value;
 	}
 
-	override private function onClick(e:MouseEvent)
+	override function onClick(e:MouseEvent)
 	{
 		super.onClick(e);
 		HXP.scene.showLayer(layer, display);
@@ -145,7 +145,7 @@ class LayerList extends Sprite
 		_labels = new IntMap<LayerLabel>();
 	}
 
-	private function layerSort(a:Int, b:Int):Int
+	function layerSort(a:Int, b:Int):Int
 	{
 		return a - b;
 	}
@@ -196,7 +196,7 @@ class LayerList extends Sprite
 		_maskLabel.y = i++ * 20 + 5;
 	}
 
-	private var _labels:IntMap<LayerLabel>;
-	private var _maskLabel:MaskLabel;
-	private var _textFormat:TextFormat;
+	var _labels:IntMap<LayerLabel>;
+	var _maskLabel:MaskLabel;
+	var _textFormat:TextFormat;
 }

@@ -62,7 +62,7 @@ class Polygon extends Hitbox
 	/**
 	 * Checks for collisions with an Entity.
 	 */
-	override private function collideMask(other:Mask):Bool
+	override function collideMask(other:Mask):Bool
 	{
 		var offset:Float,
 			offsetX:Float = _parent.x + _x - other._parent.x,
@@ -117,7 +117,7 @@ class Polygon extends Hitbox
 	/**
 	 * Checks for collisions with a Hitbox.
 	 */
-	override private function collideHitbox(hitbox:Hitbox):Bool
+	override function collideHitbox(hitbox:Hitbox):Bool
 	{
 		var offset:Float,
 			offsetX:Float = _parent.x + _x - hitbox._parent.x,
@@ -175,7 +175,7 @@ class Polygon extends Hitbox
 	 *
 	 * Internally sets up an Hitbox out of each solid Grid tile and uses that for collision check.
 	 */
-	private function collideGrid(grid:Grid):Bool
+	function collideGrid(grid:Grid):Bool
 	{
 		var tileW:Int = grid.tileWidth;
 		var tileH:Int = grid.tileHeight;
@@ -209,7 +209,7 @@ class Polygon extends Hitbox
 	/**
 	 * Checks for collision with a circle.
 	 */
-	private function collideCircle(circle:Circle):Bool
+	function collideCircle(circle:Circle):Bool
 	{
 		var edgesCrossed:Int = 0;
 		var p1:Vector, p2:Vector;
@@ -291,7 +291,7 @@ class Polygon extends Hitbox
 	/**
 	 * Checks for collision with a polygon.
 	 */
-	private function collidePolygon(other:Polygon):Bool
+	function collidePolygon(other:Polygon):Bool
 	{
 		var offset:Float;
 		var offsetX:Float = _parent.x + _x - other._parent.x - other._x;
@@ -388,8 +388,8 @@ class Polygon extends Hitbox
 	 * Rotation angle (in degrees) of the polygon (rotates around origin point).
 	 */
 	public var angle(get, set):Float;
-	private inline function get_angle():Float return _angle; 
-	private function set_angle(value:Float):Float
+	inline function get_angle():Float return _angle; 
+	function set_angle(value:Float):Float
 	{
 		if (value != _angle)
 		{
@@ -406,8 +406,8 @@ class Polygon extends Hitbox
 	 * to make sure the axes update as well.
 	 */
 	public var points(get, set):Array<Vector>;
-	private inline function get_points():Array<Vector> return _points; 
-	private function set_points(value:Array<Vector>):Array<Vector>
+	inline function get_points():Array<Vector> return _points; 
+	function set_points(value:Array<Vector>):Array<Vector>
 	{
 		if (_points != value)
 		{
@@ -499,7 +499,7 @@ class Polygon extends Hitbox
 		return new Polygon(p);
 	}
 
-	private function rotate(angleDelta:Float):Void
+	function rotate(angleDelta:Float):Void
 	{
 		_angle += angleDelta;
 
@@ -529,7 +529,7 @@ class Polygon extends Hitbox
 		}
 	}
 
-	private function generateAxes():Void
+	function generateAxes():Void
 	{
 		_axes = new Array<Vector>();
 
@@ -559,7 +559,7 @@ class Polygon extends Hitbox
 		}
 	}
 
-	private function removeDuplicateAxes():Void
+	function removeDuplicateAxes():Void
 	{
 		var i = _axes.length - 1;
 		var j = i - 1;
@@ -584,7 +584,7 @@ class Polygon extends Hitbox
 		}
 	}
 
-	private function updateAxes():Void
+	function updateAxes():Void
 	{
 		generateAxes();
 		removeDuplicateAxes();
@@ -592,17 +592,17 @@ class Polygon extends Hitbox
 	}
 
 	// Hitbox information.
-	private var _angle:Float;
-	private var _points:Array<Vector>;
-	private var _axes:Array<Vector>;
+	var _angle:Float;
+	var _points:Array<Vector>;
+	var _axes:Array<Vector>;
 
-	private var _fakeEntity:Entity;				// used for Grid and Pixelmask collision
-	private var _fakeTileHitbox:Hitbox;			// used for Grid collision
+	var _fakeEntity:Entity;				// used for Grid and Pixelmask collision
+	var _fakeTileHitbox:Hitbox;			// used for Grid collision
 
-	private static var EPSILON = 0.000000001;	// used for axes comparison in removeDuplicateAxes
+	static var EPSILON = 0.000000001;	// used for axes comparison in removeDuplicateAxes
 
-	private static var firstProj = new Projection();
-	private static var secondProj = new Projection();
+	static var firstProj = new Projection();
+	static var secondProj = new Projection();
 
 	@:dox(hide)
 	public static var vertical = new Vector(0, 1);

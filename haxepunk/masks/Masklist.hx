@@ -40,7 +40,7 @@ class Masklist extends Hitbox
 	}
 
 	/** @private Collide against a Masklist. */
-	override private function collideMasklist(other:Masklist):Bool
+	override function collideMasklist(other:Masklist):Bool
 	{
 		for (a in _masks)
 		{
@@ -196,10 +196,10 @@ class Masklist extends Hitbox
 	 * Amount of Masks in the list.
 	 */
 	public var count(get, null):Int;
-	private function get_count():Int return _count; 
+	function get_count():Int return _count; 
 
 	// List information.
-	private var _masks:Array<Mask>;
-	private var _temp:Array<Mask>;
-	private var _count:Int;
+	var _masks:Array<Mask>;
+	var _temp:Array<Mask>;
+	var _count:Int;
 }

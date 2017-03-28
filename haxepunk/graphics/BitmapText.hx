@@ -118,11 +118,11 @@ class BitmapText extends Graphic
 		smooth = (HXP.stage.quality != LOW);
 	}
 
-	private var _red:Float;
-	private var _green:Float;
-	private var _blue:Float;
+	var _red:Float;
+	var _green:Float;
+	var _blue:Float;
 	public var color(default, set):Color;
-	private function set_color(value:Color):Int
+	function set_color(value:Color):Int
 	{
 		value &= 0xFFFFFF;
 		if (color == value) return value;
@@ -134,7 +134,7 @@ class BitmapText extends Graphic
 	}
 
 	public var alpha(default, set):Float=1;
-	private function set_alpha(value:Float)
+	function set_alpha(value:Float)
 	{
 		alpha = value;
 		updateColor();
@@ -146,7 +146,7 @@ class BitmapText extends Graphic
 	 * Called automatically to update the ColorTransform object whenever color
 	 * or alpha is set.
 	 */
-	private function updateColor()
+	function updateColor()
 	{
 		// update _colorTransform if blitting
 		_red = color.red;
@@ -163,7 +163,7 @@ class BitmapText extends Graphic
 	}
 
 	public var text(default, set):String;
-	private function set_text(text:String):String
+	function set_text(text:String):String
 	{
 		this.text = text;
 		var _oldLines:Array<String> = null;
@@ -325,7 +325,7 @@ class BitmapText extends Graphic
 	 * Loops through the text, drawing each character on each line.
 	 * @param renderFunction    Function to render each character.
 	 */
-	private inline function renderFont(?renderFunction:RenderFunction)
+	inline function renderFont(?renderFunction:RenderFunction)
 	{
 		// loop through the text one character at a time, calling the supplied
 		// rendering function for each character
@@ -434,10 +434,10 @@ class BitmapText extends Graphic
 	/** Default value: false if HXP.stage.quality is LOW, true otherwise. */
 	public var smooth:Bool;
 
-	private var _buffer:BitmapData;
-	private var _set:BitmapData;
-	private var _font:BitmapFontAtlas;
-	private var _matrix:Matrix;
-	private var _colorTransform:ColorTransform;
+	var _buffer:BitmapData;
+	var _set:BitmapData;
+	var _font:BitmapFontAtlas;
+	var _matrix:Matrix;
+	var _colorTransform:ColorTransform;
 
 }

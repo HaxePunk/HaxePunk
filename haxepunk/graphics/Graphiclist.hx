@@ -52,7 +52,7 @@ class Graphiclist extends Graphic
 		else return _graphics[i];
 	}
 
-	private inline function renderList(renderFunc:Graphic->Void, point:Point, camera:Camera)
+	inline function renderList(renderFunc:Graphic->Void, point:Point, camera:Camera)
 	{
 		point.x += x;
 		point.y += y;
@@ -168,18 +168,18 @@ class Graphiclist extends Graphic
 	 * All Graphics in this list.
 	 */
 	public var children(get, null):Array<Graphic>;
-	private function get_children():Array<Graphic> return _graphics;
+	function get_children():Array<Graphic> return _graphics;
 
 	/**
 	 * Amount of Graphics in this list.
 	 */
 	public var count(get, null):Int;
-	private function get_count():Int return _count;
+	function get_count():Int return _count;
 
 	/**
 	 * Check if the Graphiclist should update.
 	 */
-	private function updateCheck()
+	function updateCheck()
 	{
 		active = false;
 		for (g in _graphics)
@@ -193,8 +193,8 @@ class Graphiclist extends Graphic
 	}
 
 	// List information.
-	private var _graphics:Array<Graphic>;
-	private var _temp:Array<Graphic>;
-	private var _count:Int;
-	private var _camera:Camera;
+	var _graphics:Array<Graphic>;
+	var _temp:Array<Graphic>;
+	var _count:Int;
+	var _camera:Camera;
 }

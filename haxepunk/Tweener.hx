@@ -12,7 +12,7 @@ class Tweener
 	public var autoClear:Bool;
 
 	@:allow(haxepunk)
-	private function new()
+	function new()
 	{
 		active = true;
 		autoClear = false;
@@ -114,7 +114,7 @@ class Tweener
 
 	/** If there is at least a tween. */
 	public var hasTween(get, never):Bool;
-	private function get_hasTween():Bool return (_tween != null); 
+	function get_hasTween():Bool return (_tween != null); 
 
-	private var _tween:Tween;
+	var _tween:Tween;
 }

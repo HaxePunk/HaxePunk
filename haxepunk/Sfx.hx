@@ -145,7 +145,7 @@ class Sfx
 	}
 
 	/** @private Event handler for sound completion. */
-	private function onComplete(e:Event = null)
+	function onComplete(e:Event = null)
 	{
 		if (_looping) loop(_volume, _pan);
 		else stop();
@@ -155,7 +155,7 @@ class Sfx
 	}
 
 	/** @private Add the sound to a list of those currently playing. */
-	private function addPlaying()
+	function addPlaying()
 	{
 		var list:Array<Sfx>;
 		if (!_typePlaying.exists(_type))
@@ -171,7 +171,7 @@ class Sfx
 	}
 
 	/** @private Removes the sound from the list of those currently playing. */
-	private function removePlaying()
+	function removePlaying()
 	{
 		if (_typePlaying.exists(_type))
 		{
@@ -183,8 +183,8 @@ class Sfx
 	 * Alter the volume factor (a value from 0 to 1) of the sound during playback.
 	 */
 	public var volume(get, set):Float;
-	private function get_volume():Float return _volume; 
-	private function set_volume(value:Float):Float
+	function get_volume():Float return _volume; 
+	function set_volume(value:Float):Float
 	{
 		if (value < 0) value = 0;
 		if (_channel == null) return value;
@@ -202,8 +202,8 @@ class Sfx
 	 * Panning only applies to mono sounds. It is ignored on stereo.
 	 */
 	public var pan(get, set):Float;
-	private function get_pan():Float return _pan; 
-	private function set_pan(value:Float):Float
+	function get_pan():Float return _pan; 
+	function set_pan(value:Float):Float
 	{
 		value = MathUtil.clamp(value, -1, 1);
 		if (_channel == null) return value;
@@ -220,8 +220,8 @@ class Sfx
 	 * sounds to mute or pan en masse.
 	 */
 	public var type(get, set):String;
-	private function get_type():String return _type; 
-	private function set_type(value:String):String
+	function get_type():String return _type; 
+	function set_type(value:String):String
 	{
 		if (_type == value) return value;
 		if (playing)
@@ -244,19 +244,19 @@ class Sfx
 	 * If the sound is currently playing.
 	 */
 	public var playing(get, null):Bool;
-	private inline function get_playing():Bool return _channel != null; 
+	inline function get_playing():Bool return _channel != null; 
 
 	/**
 	 * Position of the currently playing sound, in seconds.
 	 */
 	public var position(get, null):Float;
-	private function get_position():Float return (playing ? _channel.position : _position) / 1000; 
+	function get_position():Float return (playing ? _channel.position : _position) / 1000; 
 
 	/**
 	 * Length of the sound, in seconds.
 	 */
 	public var length(get, null):Float;
-	private function get_length():Float return _sound.length / 1000; 
+	function get_length():Float return _sound.length / 1000; 
 
 	/**
 	 * Return a sound type's pan setting. 
@@ -384,19 +384,19 @@ class Sfx
 	}
 
 	// Sound infromation.
-	private var _type:String;
-	private var _volume:Float = 1;
-	private var _pan:Float = 0;
-	private var _filteredVol:Float;
-	private var _filteredPan:Float;
-	private var _sound:Sound;
-	private var _channel:SoundChannel;
-	private var _transform:SoundTransform;
-	private var _position:Float = 0;
-	private var _looping:Bool;
+	var _type:String;
+	var _volume:Float = 1;
+	var _pan:Float = 0;
+	var _filteredVol:Float;
+	var _filteredPan:Float;
+	var _sound:Sound;
+	var _channel:SoundChannel;
+	var _transform:SoundTransform;
+	var _position:Float = 0;
+	var _looping:Bool;
 
 	// Stored Sound objects.
-	private static var _sounds:Map<String, Sound> = new Map<String, Sound>();
-	private static var _typePlaying:Map<String, Array<Sfx>> = new Map<String, Array<Sfx>>();
-	private static var _typeTransforms:Map<String, SoundTransform> = new Map<String, SoundTransform>();
+	static var _sounds:Map<String, Sound> = new Map<String, Sound>();
+	static var _typePlaying:Map<String, Array<Sfx>> = new Map<String, Array<Sfx>>();
+	static var _typeTransforms:Map<String, SoundTransform> = new Map<String, SoundTransform>();
 }

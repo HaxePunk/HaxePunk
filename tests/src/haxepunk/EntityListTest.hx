@@ -62,5 +62,5 @@ class EntityListTest extends TestSuite
 		Assert.areEqual(40.0, child2.x);
 	}
 
-	private var scene:Scene;
+	var scene:Scene;
 }

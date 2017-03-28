@@ -155,15 +155,15 @@ class Joystick
 	 * If the joystick is currently connected.
 	 */
 	public var connected(get, set):Bool;
-	private function get_connected():Bool return _timeout > 0; 
-	private function set_connected(value:Bool):Bool
+	function get_connected():Bool return _timeout > 0; 
+	function set_connected(value:Bool):Bool
 	{
 		if (value) _timeout = 3; // 3 seconds to timeout
 		else _timeout = 0;
 		return value;
 	}
 
-	private var _timeout:Float;
+	var _timeout:Float;
 
 }
 

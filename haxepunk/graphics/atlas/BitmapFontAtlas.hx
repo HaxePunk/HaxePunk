@@ -222,7 +222,7 @@ class BitmapFontAtlas extends TextureAtlas
 		return atlas;
 	}
 
-	private function new(source:AtlasDataType)
+	function new(source:AtlasDataType)
 	{
 		super(source);
 		glyphData = new Map();
@@ -244,6 +244,6 @@ class BitmapFontAtlas extends TextureAtlas
 		}
 	}
 
-	private static var _fonts:Map<String, BitmapFontAtlas>;
-	private static var _DEFAULT_GLYPHS:String = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+	static var _fonts:Map<String, BitmapFontAtlas>;
+	static var _DEFAULT_GLYPHS:String = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 }

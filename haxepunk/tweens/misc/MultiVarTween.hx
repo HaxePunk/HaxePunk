@@ -77,8 +77,8 @@ class MultiVarTween extends Tween
 	}
 
 	// Tween information.
-	private var _object:Dynamic;
-	private var _vars:Array<String>;
-	private var _start:Array<Float>;
-	private var _range:Array<Float>;
+	var _object:Dynamic;
+	var _vars:Array<String>;
+	var _start:Array<Float>;
+	var _range:Array<Float>;
 }

@@ -44,6 +44,6 @@ class Fader extends Tween
 	}
 	
 	// Fader information.
-	private var _start:Float;
-	private var _range:Float;
+	var _start:Float;
+	var _range:Float;
 }

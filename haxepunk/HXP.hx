@@ -137,7 +137,7 @@ class HXP
 	public static var orientations:Array<Int> = [];
 
 	public static var cursor(default, set):Cursor;
-	private static inline function set_cursor(cursor:Cursor = null):Cursor
+	static inline function set_cursor(cursor:Cursor = null):Cursor
 	{
 		if (HXP.cursor == cursor) return cursor;
 		if (cursor == null) Mouse.show();
@@ -149,7 +149,7 @@ class HXP
 	 * Defines how to render the scene
 	 */
 	public static var renderMode(default, set):RenderMode;
-	private static inline function set_renderMode(value:RenderMode):RenderMode
+	static inline function set_renderMode(value:RenderMode):RenderMode
 	{
 		renderMode = value;
 
@@ -168,11 +168,11 @@ class HXP
 	 * The choose function randomly chooses and returns one of the provided values.
 	 */
 	public static var choose(get, null):Dynamic;
-	private static function get_choose():Dynamic
+	static function get_choose():Dynamic
 	{
 		return Reflect.makeVarArgs(_choose);
 	}
-	private static inline function _choose(objs:Array<Dynamic>):Dynamic
+	static inline function _choose(objs:Array<Dynamic>):Dynamic
 	{
 		if (objs == null || objs.length == 0)
 		{
@@ -203,8 +203,8 @@ class HXP
 	 * to switch, but won't actually do so until the end of the current frame.
 	 */
 	public static var scene(get, set):Scene;
-	private static inline function get_scene():Scene return engine.scene;
-	private static inline function set_scene(value:Scene):Scene return engine.scene = value;
+	static inline function get_scene():Scene return engine.scene;
+	static inline function set_scene(value:Scene):Scene return engine.scene = value;
 
 	/**
 	 * Resize the screen.
@@ -260,8 +260,8 @@ class HXP
 	 * Toggles between windowed and fullscreen modes
 	 */
 	public static var fullscreen(get, set):Bool;
-	private static inline function get_fullscreen():Bool return HXP.stage.displayState == StageDisplayState.FULL_SCREEN;
-	private static inline function set_fullscreen(value:Bool):Bool
+	static inline function get_fullscreen():Bool return HXP.stage.displayState == StageDisplayState.FULL_SCREEN;
+	static inline function set_fullscreen(value:Bool):Bool
 	{
 		if (value) HXP.stage.displayState = StageDisplayState.FULL_SCREEN;
 		else HXP.stage.displayState = StageDisplayState.NORMAL;
@@ -272,8 +272,8 @@ class HXP
 	 * Global volume factor for all sounds, a value from 0 to 1.
 	 */
 	public static var volume(get, set):Float;
-	private static inline function get_volume():Float return _volume;
-	private static function set_volume(value:Float):Float
+	static inline function get_volume():Float return _volume;
+	static function set_volume(value:Float):Float
 	{
 		if (value < 0) value = 0;
 		if (_volume == value) return value;
@@ -292,8 +292,8 @@ class HXP
 	 * Panning only applies to mono sounds. It is ignored on stereo.
 	 */
 	public static var pan(get, set):Float;
-	private static inline function get_pan():Float return _pan;
-	private static function set_pan(value:Float):Float
+	static inline function get_pan():Float return _pan;
+	static function set_pan(value:Float):Float
 	{
 		if (value < -1) value = -1;
 		if (value > 1) value = 1;
@@ -487,7 +487,7 @@ class HXP
 	 * The global Console object.
 	 */
 	public static var console(get, never):Console;
-	private static inline function get_console():Console
+	static inline function get_console():Console
 	{
 		if (_console == null) _console = new Console();
 		return _console;
@@ -654,30 +654,30 @@ class HXP
 	}
 
 	public static var time(null, set):Float;
-	private static inline function set_time(value:Float):Float
+	static inline function set_time(value:Float):Float
 	{
 		_time = value;
 		return _time;
 	}
 
 	// Console information.
-	private static var _console:Console;
+	static var _console:Console;
 
 	// Time information.
-	private static var _time:Float;
+	static var _time:Float;
 	@:dox(hide) public static var _updateTime:Float;
 	@:dox(hide) public static var _renderTime:Float;
 	@:dox(hide) public static var _gameTime:Float;
 	@:dox(hide) public static var _systemTime:Float;
 
 	// Bitmap storage.
-	private static var _bitmap:Map<String, BitmapData> = new Map<String, BitmapData>();
+	static var _bitmap:Map<String, BitmapData> = new Map<String, BitmapData>();
 
 	// Volume control.
-	private static var _volume:Float = 1;
-	private static var _pan:Float = 0;
+	static var _volume:Float = 1;
+	static var _pan:Float = 0;
 	#if flash
-	private static var _soundTransform:SoundTransform = new SoundTransform();
+	static var _soundTransform:SoundTransform = new SoundTransform();
 	#end
 
 	// Global Flash objects.

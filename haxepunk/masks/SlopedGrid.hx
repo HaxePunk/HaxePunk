@@ -132,7 +132,7 @@ class SlopedGrid extends Hitbox
 	 * @return If the point collides with a slope
 	 */
 	@:allow(haxepunk.masks.Circle)
-	private inline function collidePointInSlope(x1:Float, y1:Float, px:Float, py:Float, tile:Tile):Bool
+	inline function collidePointInSlope(x1:Float, y1:Float, px:Float, py:Float, tile:Tile):Bool
 	{
 		y1 += tile.yOffset;
 
@@ -212,7 +212,7 @@ class SlopedGrid extends Hitbox
 		setTile(column, row, Empty);
 	}
 
-	private inline function checkTile(column:Int, row:Int):Bool
+	inline function checkTile(column:Int, row:Int):Bool
 	{
 		// check that tile is valid
 		return (column >= 0 && column < columns && row >= 0 && row < rows);
@@ -288,13 +288,13 @@ class SlopedGrid extends Hitbox
 	 * The tile width.
 	 */
 	public var tileWidth(get, never):Int;
-	private inline function get_tileWidth():Int return Std.int(_tile.width); 
+	inline function get_tileWidth():Int return Std.int(_tile.width); 
 
 	/**
 	 * The tile height.
 	 */
 	public var tileHeight(get, never):Int;
-	private inline function get_tileHeight():Int return Std.int(_tile.height); 
+	inline function get_tileHeight():Int return Std.int(_tile.height); 
 
 	/**
 	 * How many columns the grid has
@@ -311,7 +311,7 @@ class SlopedGrid extends Hitbox
 	 */
 	public var data(default, null):Array<Array<Tile>>;
 
-	private function collideBox(opx:Float, opy:Float, opw:Float, oph:Float, px:Float, py:Float):Bool
+	function collideBox(opx:Float, opy:Float, opw:Float, oph:Float, px:Float, py:Float):Bool
 	{
 		_rect.x = opx - px;
 		_rect.y = opy - py;
@@ -365,7 +365,7 @@ class SlopedGrid extends Hitbox
 	}
 
 	/** @private Collides against an Entity. */
-	override private function collideMask(other:Mask):Bool
+	override function collideMask(other:Mask):Bool
 	{
 		var x:Float = _x + _parent.x, 
 			y:Float = _y + _parent.y;
@@ -377,7 +377,7 @@ class SlopedGrid extends Hitbox
 	}
 
 	/** @private Collides against a Hitbox. */
-	override private function collideHitbox(other:Hitbox):Bool
+	override function collideHitbox(other:Hitbox):Bool
 	{
 		var x:Float = _x + _parent.x, 
 			y:Float = _y + _parent.y,
@@ -534,10 +534,10 @@ class SlopedGrid extends Hitbox
 	}
 
 	// Grid information.
-	private var _tile:Rectangle;
-	private var _rect:Rectangle;
-	private var _point:Point;
-	private var _point2:Point;
+	var _tile:Rectangle;
+	var _rect:Rectangle;
+	var _point:Point;
+	var _point2:Point;
 
-	private static var _emptyTile:Tile = { type: Empty }; // prevent recreation of empty tile
+	static var _emptyTile:Tile = { type: Empty }; // prevent recreation of empty tile
 }

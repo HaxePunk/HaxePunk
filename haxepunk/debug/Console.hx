@@ -49,7 +49,7 @@ class Console
 	public var toggleKey:Int;
 
 	@:allow(haxepunk)
-	private function new()
+	function new()
 	{
 		init();
 
@@ -57,7 +57,7 @@ class Console
 	}
 
 	// Initialize variables
-	private function init()
+	function init()
 	{
 		// Console display objects.
 		_sprite = new Sprite();
@@ -115,7 +115,7 @@ class Console
 		WATCH_LIST = ["x", "y"];
 	}
 
-	private function traceLog(v:Dynamic, ?infos:PosInfos)
+	function traceLog(v:Dynamic, ?infos:PosInfos)
 	{
 		var log:String = infos.className + "(" + infos.lineNumber + "): " + Std.string(v);
 		LOG.push(log);
@@ -410,8 +410,8 @@ class Console
 	 * If the console should be visible.
 	 */
 	public var visible(get, set):Bool;
-	private function get_visible():Bool return _sprite.visible; 
-	private function set_visible(value:Bool):Bool
+	function get_visible():Bool return _sprite.visible; 
+	function set_visible(value:Bool):Bool
 	{
 		_sprite.visible = value;
 		if (_enabled && value) updateLog();
@@ -422,7 +422,7 @@ class Console
 	 * Allows masks to be turned on and off in the console
 	 */
 	public var debugDraw(default, set):Bool = true;
-	private function set_debugDraw(value:Bool):Bool
+	function set_debugDraw(value:Bool):Bool
 	{
 		debugDraw = value;
 		updateEntityLists(false);
@@ -539,8 +539,8 @@ class Console
 	 * If the Console is currently in paused mode.
 	 */
 	public var paused(get, set):Bool;
-	private function get_paused():Bool return _paused; 
-	private function set_paused(value:Bool):Bool
+	function get_paused():Bool return _paused; 
+	function set_paused(value:Bool):Bool
 	{
 		// Quit if the console isn't enabled.
 		if (!_enabled) return false;
@@ -586,8 +586,8 @@ class Console
 	 * If the Console is currently in debug mode.
 	 */
 	public var debug(get, set):Bool;
-	private function get_debug():Bool return _debug; 
-	private function set_debug(value:Bool):Bool
+	function get_debug():Bool return _debug; 
+	function set_debug(value:Bool):Bool
 	{
 		// Quit if the console isn't enabled.
 		if (!_enabled) return false;
@@ -605,7 +605,7 @@ class Console
 	}
 
 	/** @private Steps the frame ahead. */
-	private function stepFrame()
+	function stepFrame()
 	{
 		HXP.engine.update();
 		updateEntityCount();
@@ -614,7 +614,7 @@ class Console
 	}
 
 	/** @private Starts Entity dragging. */
-	private function startDragging()
+	function startDragging()
 	{
 		_dragging = true;
 		_entRect.x = Input.mouseX;
@@ -622,7 +622,7 @@ class Console
 	}
 
 	/** @private Updates Entity dragging. */
-	private function updateDragging()
+	function updateDragging()
 	{
 		moveSelected(Std.int(Input.mouseX - _entRect.x), Std.int(Input.mouseY - _entRect.y));
 		_entRect.x = Input.mouseX;
@@ -631,7 +631,7 @@ class Console
 	}
 
 	/** @private Move the selected Entitites by the amount. */
-	private function moveSelected(xDelta:Int, yDelta:Int)
+	function moveSelected(xDelta:Int, yDelta:Int)
 	{
 		for (e in SELECT_LIST)
 		{
@@ -644,7 +644,7 @@ class Console
 	}
 
 	/** @private Starts camera panning. */
-	private function startPanning()
+	function startPanning()
 	{
 		_panning = true;
 		_entRect.x = Input.mouseX;
@@ -652,7 +652,7 @@ class Console
 	}
 
 	/** @private Updates camera panning. */
-	private function updatePanning()
+	function updatePanning()
 	{
 		if (Input.mouseReleased) _panning = false;
 		panCamera(Std.int(_entRect.x - Input.mouseX), Std.int(_entRect.y - Input.mouseY));
@@ -661,7 +661,7 @@ class Console
 	}
 
 	/** @private Pans the camera. */
-	private function panCamera(xDelta:Int, yDelta:Int)
+	function panCamera(xDelta:Int, yDelta:Int)
 	{
 		HXP.camera.x += xDelta;
 		HXP.camera.y += yDelta;
@@ -671,7 +671,7 @@ class Console
 	}
 
 	/** @private Sets the camera position. */
-	private function setCamera(x:Int, y:Int)
+	function setCamera(x:Int, y:Int)
 	{
 		HXP.camera.x = x;
 		HXP.camera.y = y;
@@ -681,7 +681,7 @@ class Console
 	}
 
 	/** @private Starts Entity selection. */
-	private function startSelection()
+	function startSelection()
 	{
 		_selecting = true;
 		_entRect.x = Input.mouseFlashX;
@@ -691,7 +691,7 @@ class Console
 	}
 
 	/** @private Updates Entity selection. */
-	private function updateSelection()
+	function updateSelection()
 	{
 		_entRect.width = Input.mouseFlashX - _entRect.x;
 		_entRect.height = Input.mouseFlashY - _entRect.y;
@@ -711,7 +711,7 @@ class Console
 	}
 
 	/** @private Selects the Entitites in the rectangle. */
-	private function selectEntities(rect:Rectangle)
+	function selectEntities(rect:Rectangle)
 	{
 		if (rect.width < 0) rect.x -= (rect.width = -rect.width);
 		else if (rect.width == 0) rect.width = 1;
@@ -748,7 +748,7 @@ class Console
 	}
 
 	/** @private Selects all entities on screen. */
-	private function selectAll()
+	function selectAll()
 	{
 		// capture number selected before clearing selection list
 		var numSelected = SELECT_LIST.length;
@@ -763,13 +763,13 @@ class Console
 	}
 
 	/** @private Starts log text scrolling. */
-	private function startScrolling()
+	function startScrolling()
 	{
 		if (LOG.length > _logLines) _scrolling = _logBarGlobal.contains(Input.mouseFlashX, Input.mouseFlashY);
 	}
 
 	/** @private Updates log text scrolling. */
-	private function updateScrolling()
+	function updateScrolling()
 	{
 		_scrolling = Input.mouseDown;
 		_logScroll = MathUtil.scaleClamp(Input.mouseFlashY, _logBarGlobal.y, _logBarGlobal.bottom, 0, 1);
@@ -777,7 +777,7 @@ class Console
 	}
 
 	/** @private Moves Entities with the arrow keys. */
-	private function updateKeyMoving()
+	function updateKeyMoving()
 	{
 		HXP.point.x = (Input.pressed(Key.RIGHT) ? 1 : 0) - (Input.pressed(Key.LEFT) ? 1 : 0);
 		HXP.point.y = (Input.pressed(Key.DOWN) ? 1 : 0) - (Input.pressed(Key.UP) ? 1 : 0);
@@ -785,7 +785,7 @@ class Console
 	}
 
 	/** @private Pans the camera with the arrow keys. */
-	private function updateKeyPanning()
+	function updateKeyPanning()
 	{
 		HXP.point.x = (Input.check(Key.RIGHT) ? 1 : 0) - (Input.check(Key.LEFT) ? 1 : 0);
 		HXP.point.y = (Input.check(Key.DOWN) ? 1 : 0) - (Input.check(Key.UP) ? 1 : 0);
@@ -793,7 +793,7 @@ class Console
 	}
 
 	/** @private Update the Entity list information. */
-	private function updateEntityLists(fetchList:Bool = true)
+	function updateEntityLists(fetchList:Bool = true)
 	{
 		// If the list should be re-populated.
 		if (fetchList)
@@ -826,7 +826,7 @@ class Console
 	}
 
 	/** @private Renders the Entities positions and hitboxes. */
-	private function renderEntities()
+	function renderEntities()
 	{
 		var e:Entity;
 		// If debug mode is on.
@@ -877,7 +877,7 @@ class Console
 	}
 
 	/** @private Updates the log window. */
-	private function updateLog()
+	function updateLog()
 	{
 		_logHeight = height - 60;
 		_logBar.height = _logHeight - 8;
@@ -981,7 +981,7 @@ class Console
 	}
 
 	/** @private Update the FPS/frame timing panel text. */
-	private function updateFPSRead()
+	function updateFPSRead()
 	{
 		_fpsReadText.text = "FPS: " + Std.int(HXP.frameRate);
 		_fpsInfoText0.text =
@@ -997,7 +997,7 @@ class Console
 	}
 
 	/** @private Update the debug panel text. */
-	private function updateDebugRead()
+	function updateDebugRead()
 	{
 		var str:String;
 		// Find out the screen size and set the text.
@@ -1056,13 +1056,13 @@ class Console
 	}
 
 	/** @private Updates the Entity count text. */
-	private function updateEntityCount()
+	function updateEntityCount()
 	{
 		_entReadText.text = Std.string(HXP.scene.count) + " Entities";
 	}
 
 	/** @private Updates the Button panel. */
-	private function updateButtons()
+	function updateButtons()
 	{
 		// Button visibility.
 		_butRead.x = (width >= BIG_WIDTH_THRESHOLD ? _fpsInfo.x + _fpsInfoText0.width + _fpsInfoText1.width + Std.int((_entRead.x - (_fpsInfo.x + _fpsInfoText0.width + _fpsInfoText1.width)) / 2) - 30 : 160 + 20);
@@ -1102,7 +1102,7 @@ class Console
 	}
 
 	/** @private Gets a TextFormat object with the formatting. */
-	private function format(size:Int = 16, color:Color = 0xFFFFFF, align:String = "left"):TextFormat
+	function format(size:Int = 16, color:Color = 0xFFFFFF, align:String = "left"):TextFormat
 	{
 		_format.size = size;
 		_format.color = color;
@@ -1124,87 +1124,87 @@ class Console
 	 * Get the unscaled screen width for the Console.
 	 */
 	public var width(get, never):Int;
-	private function get_width():Int return HXP.windowWidth; 
+	function get_width():Int return HXP.windowWidth; 
 
 	/**
 	 * Get the unscaled screen height for the Console.
 	 */
 	public var height(get, never):Int;
-	private function get_height():Int return HXP.windowHeight; 
+	function get_height():Int return HXP.windowHeight; 
 
 	// Console state information.
-	private var _enabled:Bool;
-	private var _visible:Bool;
-	private var _paused:Bool;
-	private var _debug:Bool;
-	private var _scrolling:Bool;
-	private var _selecting:Bool;
-	private var _dragging:Bool;
-	private var _panning:Bool;
+	var _enabled:Bool;
+	var _visible:Bool;
+	var _paused:Bool;
+	var _debug:Bool;
+	var _scrolling:Bool;
+	var _selecting:Bool;
+	var _dragging:Bool;
+	var _panning:Bool;
 
 	// Console display objects.
-	private var _sprite:Sprite;
-	private var _format:TextFormat;
-	private var _back:Bitmap;
+	var _sprite:Sprite;
+	var _format:TextFormat;
+	var _back:Bitmap;
 
 	// FPS panel information.
-	private var _fpsRead:Sprite;
-	private var _fpsReadText:TextField;
-	private var _fpsInfo:Sprite;
-	private var _fpsInfoText0:TextField;
-	private var _fpsInfoText1:TextField;
-	private var _memReadText:TextField;
+	var _fpsRead:Sprite;
+	var _fpsReadText:TextField;
+	var _fpsInfo:Sprite;
+	var _fpsInfoText0:TextField;
+	var _fpsInfoText1:TextField;
+	var _memReadText:TextField;
 
 	// Layer panel information
-	private var _layerList:LayerList;
+	var _layerList:LayerList;
 
 	// Output panel information.
-	private var _logRead:Sprite;
-	private var _logReadText0:TextField;
-	private var _logReadText1:TextField;
-	private var _logHeight:Int;
-	private var _logBar:Rectangle;
-	private var _logBarGlobal:Rectangle;
-	private var _logScroll:Float;
+	var _logRead:Sprite;
+	var _logReadText0:TextField;
+	var _logReadText1:TextField;
+	var _logHeight:Int;
+	var _logBar:Rectangle;
+	var _logBarGlobal:Rectangle;
+	var _logScroll:Float;
 
 	// Entity count panel information.
-	private var _entRead:Sprite;
-	private var _entReadText:TextField;
+	var _entRead:Sprite;
+	var _entReadText:TextField;
 
 	// Debug panel information.
-	private var _debRead:Sprite;
-	private var _debReadText0:TextField;
-	private var _debReadText1:TextField;
+	var _debRead:Sprite;
+	var _debReadText0:TextField;
+	var _debReadText1:TextField;
 
 	// Button panel information
-	private var _butRead:Sprite;
-	private var _butDebug:Bitmap;
-	private var _butOutput:Bitmap;
-	private var _butPlay:Bitmap;
-	private var _butPause:Bitmap;
-	private var _butStep:Bitmap;
+	var _butRead:Sprite;
+	var _butDebug:Bitmap;
+	var _butOutput:Bitmap;
+	var _butPlay:Bitmap;
+	var _butPause:Bitmap;
+	var _butStep:Bitmap;
 
-	private var _bmpLogo:Bitmap;
+	var _bmpLogo:Bitmap;
 
 	// Entity selection information.
-	private var _entScreen:Sprite;
-	private var _entSelect:Sprite;
-	private var _entRect:Rectangle;
+	var _entScreen:Sprite;
+	var _entSelect:Sprite;
+	var _entRect:Rectangle;
 
 	// Log information.
-	private var _logLines:Int;
-	private var LOG:Array<String>;
+	var _logLines:Int;
+	var LOG:Array<String>;
 
 	// Entity lists.
-	private var LAYER_LIST:IntMap<Int>;
-	private var ENTITY_LIST:Array<Entity>;
-	private var SCREEN_LIST:Array<Entity>;
-	private var SELECT_LIST:Array<Entity>;
+	var LAYER_LIST:IntMap<Int>;
+	var ENTITY_LIST:Array<Entity>;
+	var SCREEN_LIST:Array<Entity>;
+	var SELECT_LIST:Array<Entity>;
 
 	// Watch information.
-	private var WATCH_LIST:Array<String>;
+	var WATCH_LIST:Array<String>;
 
 	// Switch to small text in debug if console width > this threshold.
-	private static inline var BIG_WIDTH_THRESHOLD:Int = 420;
+	static inline var BIG_WIDTH_THRESHOLD:Int = 420;
 
 }

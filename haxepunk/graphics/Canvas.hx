@@ -336,8 +336,8 @@ class Canvas extends Graphic
 	 * The tinted color of the Canvas. Use 0xFFFFFF to draw the it normally.
 	 */
 	public var color(get, set):Color;
-	private function get_color():Color return _color;
-	private function set_color(value:Color):Color
+	function get_color():Color return _color;
+	function set_color(value:Color):Color
 	{
 		value &= 0xFFFFFF;
 		if (_color == value) return _color;
@@ -364,8 +364,8 @@ class Canvas extends Graphic
 	 * Change the opacity of the Canvas, a value from 0 to 1.
 	 */
 	public var alpha(get, set):Float;
-	private function get_alpha():Float return _alpha;
-	private function set_alpha(value:Float):Float
+	function get_alpha():Float return _alpha;
+	function set_alpha(value:Float):Float
 	{
 		if (value < 0) value = 0;
 		if (value > 1) value = 1;
@@ -399,39 +399,39 @@ class Canvas extends Graphic
 	 * Width of the canvas.
 	 */
 	public var width(get, null):Int;
-	private function get_width():Int return _width;
+	function get_width():Int return _width;
 
 	/**
 	 * Height of the canvas.
 	 */
 	public var height(get, null):Int;
-	private function get_height():Int return _height;
+	function get_height():Int return _height;
 
 	// Buffer information.
-	private var _buffers:Array<BitmapData>;
-	private var _midBuffers:Array<BitmapData>;
-	private var _redrawBuffers:Bool=false;
-	private var _width:Int;
-	private var _height:Int;
-	private var _maxWidth:Int = 4000;
-	private var _maxHeight:Int = 4000;
+	var _buffers:Array<BitmapData>;
+	var _midBuffers:Array<BitmapData>;
+	var _redrawBuffers:Bool=false;
+	var _width:Int;
+	var _height:Int;
+	var _maxWidth:Int = 4000;
+	var _maxHeight:Int = 4000;
 
 	// Color tinting information.
-	private var _color:Color;
-	private var _alpha:Float;
-	private var _tint:ColorTransform;
-	private var _colorTransform:ColorTransform;
-	private var _matrix:Matrix;
-	private var _red:Float;
-	private var _green:Float;
-	private var _blue:Float;
+	var _color:Color;
+	var _alpha:Float;
+	var _tint:ColorTransform;
+	var _colorTransform:ColorTransform;
+	var _matrix:Matrix;
+	var _red:Float;
+	var _green:Float;
+	var _blue:Float;
 
 	// Canvas reference information.
-	private var _ref:BitmapData;
-	private var _refWidth:Int;
-	private var _refHeight:Int;
+	var _ref:BitmapData;
+	var _refWidth:Int;
+	var _refHeight:Int;
 
 	// Global objects.
-	private var _rect:Rectangle;
-	private var _graphics:Graphics;
+	var _rect:Rectangle;
+	var _graphics:Graphics;
 }

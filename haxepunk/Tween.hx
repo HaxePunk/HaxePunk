@@ -102,7 +102,7 @@ class Tween extends EventDispatcher
 	}
 
 	/** @private Called when the Tween completes. */
-	private function finish()
+	function finish()
 	{
 		switch (_type)
 		{
@@ -140,22 +140,22 @@ class Tween extends EventDispatcher
 
 	/** Progression of the tween, between 0 and 1. */
 	public var percent(get, set):Float;
-	private function get_percent():Float return (forward ? _time : (_target - _time)) / _target;
-	private function set_percent(value:Float):Float return _time = _target * value;
+	function get_percent():Float return (forward ? _time : (_target - _time)) / _target;
+	function set_percent(value:Float):Float return _time = _target * value;
 
 	public var scale(get, null):Float;
-	private function get_scale():Float return _t; 
+	function get_scale():Float return _t; 
 
-	private var _type:TweenType;
-	private var _ease:Float -> Float;
-	private var _t:Float;
+	var _type:TweenType;
+	var _ease:Float -> Float;
+	var _t:Float;
 
-	private var _time:Float;
-	private var _target:Float;
+	var _time:Float;
+	var _target:Float;
 
-	private var _callback:Dynamic -> Void;
-	private var _finish:Bool;
-	private var _parent:Tweener;
-	private var _prev:Tween;
-	private var _next:Tween;
+	var _callback:Dynamic -> Void;
+	var _finish:Bool;
+	var _parent:Tweener;
+	var _prev:Tween;
+	var _next:Tween;
 }

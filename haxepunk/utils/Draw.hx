@@ -67,7 +67,7 @@ class Draw
 		_graphics.clear();
 	}
 
-	private static inline function drawToScreen()
+	static inline function drawToScreen()
 	{
 		if (blend == null)
 		{
@@ -477,9 +477,9 @@ class Draw
 	}
 
 	// Drawing information.
-	private static var _target:BitmapData;
-	private static var _camera:Camera;
-	private static var _graphics:Graphics;
-	private static var _rect:Rectangle;
-	private static var _matrix:Matrix = new Matrix();
+	static var _target:BitmapData;
+	static var _camera:Camera;
+	static var _graphics:Graphics;
+	static var _rect:Rectangle;
+	static var _matrix:Matrix = new Matrix();
 }

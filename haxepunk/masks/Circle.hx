@@ -35,7 +35,7 @@ class Circle extends Hitbox
 	}
 
 	/** @private Collides against an Entity. */
-	override private function collideMask(other:Mask):Bool
+	override function collideMask(other:Mask):Bool
 	{
 		var distanceX = Math.abs(_parent.x + _x - other._parent.x - other._parent.width * 0.5),
 			distanceY = Math.abs(_parent.y + _y - other._parent.y - other._parent.height * 0.5);
@@ -55,14 +55,14 @@ class Circle extends Hitbox
 		return distanceToCorner <= _squaredRadius;
 	}
 
-	private function collideCircle(other:Circle):Bool
+	function collideCircle(other:Circle):Bool
 	{
 		var dx:Float = (_parent.x + _x) - (other._parent.x + other._x);
 		var dy:Float = (_parent.y + _y) - (other._parent.y + other._y);
 		return (dx * dx + dy * dy) < Math.pow(_radius + other._radius, 2);
 	}
 
-	private inline function collideGridTile(mx:Float, my:Float, hTileWidth:Float, hTileHeight:Float, thisX:Float, thisY:Float)
+	inline function collideGridTile(mx:Float, my:Float, hTileWidth:Float, hTileHeight:Float, thisX:Float, thisY:Float)
 	{
 		var collide = false;
 		var dx = Math.abs(thisX - mx);
@@ -90,7 +90,7 @@ class Circle extends Hitbox
 		return collide;
 	}
 
-	private function collideGrid(other:Grid):Bool
+	function collideGrid(other:Grid):Bool
 	{
 		var thisX:Float = _x + _parent.x,
 			thisY:Float = _y + _parent.y;
@@ -133,7 +133,7 @@ class Circle extends Hitbox
 		return false;
 	}
 
-	private function collideSlopedGrid(other:SlopedGrid):Bool
+	function collideSlopedGrid(other:SlopedGrid):Bool
 	{
 		var thisX:Float = _x + _parent.x,
 			thisY:Float = _y + _parent.y;
@@ -213,7 +213,7 @@ class Circle extends Hitbox
 	}
 
 	/** @private Collides against a Hitbox. */
-	override private function collideHitbox(other:Hitbox):Bool
+	override function collideHitbox(other:Hitbox):Bool
 	{
 		var _otherHalfWidth:Float = other._width * 0.5;
 		var _otherHalfHeight:Float = other._height * 0.5;
@@ -258,15 +258,15 @@ class Circle extends Hitbox
 		graphics.drawCircle((_parent.x + _x - HXP.camera.x) * scaleX, (_parent.y + _y - HXP.camera.y) * scaleY, radius * scaleX);
 	}
 
-	override private function get_x():Int return _x - _radius; 
-	override private function get_y():Int return _y - _radius; 
+	override function get_x():Int return _x - _radius; 
+	override function get_y():Int return _y - _radius; 
 
 	/**
 	 * Radius.
 	 */
 	public var radius(get, set):Int;
-	private inline function get_radius():Int return _radius; 
-	private function set_radius(value:Int):Int
+	inline function get_radius():Int return _radius; 
+	function set_radius(value:Int):Int
 	{
 		if (_radius == value) return value;
 		_radius = value;
@@ -295,6 +295,6 @@ class Circle extends Hitbox
 	}
 
 	// Hitbox information.
-	private var _radius:Int;
-	private var _squaredRadius:Int; //Set automatically through the setter for radius
+	var _radius:Int;
+	var _squaredRadius:Int; //Set automatically through the setter for radius
 }

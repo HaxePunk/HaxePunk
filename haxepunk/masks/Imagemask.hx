@@ -118,7 +118,7 @@ class Imagemask extends Pixelmask
 	}
 
 	/** @private Collide against a Pixelmask or an Imagemask. */
-	override private function collidePixelmask(other:Pixelmask):Bool
+	override function collidePixelmask(other:Pixelmask):Bool
 	{
 		#if flash
 			_point.x = _parent.x + _x;
@@ -174,5 +174,5 @@ class Imagemask extends Pixelmask
 	/**
 	 * Current Image mask.
 	 */
-	private var _source:Image;
+	var _source:Image;
 }

@@ -114,18 +114,18 @@ class SlopedGridTest extends TestSuite
 	}
 
 	@:access(haxepunk.masks.Hitbox)
-	private inline function collideBox(box:Hitbox, x:Int, y:Int):Bool
+	inline function collideBox(box:Hitbox, x:Int, y:Int):Bool
 	{
 		box._x = x; box._y = y;
 		return grid.collideHitbox(box);
 	}
 
 	@:access(haxepunk.masks.Circle)
-	private inline function collideCircle(circle:Circle, x:Int, y:Int):Bool
+	inline function collideCircle(circle:Circle, x:Int, y:Int):Bool
 	{
 		circle._x = x; circle._y = y;
 		return circle.collideSlopedGrid(grid);
 	}
 
-	private var grid:SlopedGrid;
+	var grid:SlopedGrid;
 }
