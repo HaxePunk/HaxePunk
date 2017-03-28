@@ -157,12 +157,12 @@ class SceneTest extends TestSuite
 	}
 
 	@:access(haxepunk.Scene)
-	private function countRecycled(scene:Scene)
+	function countRecycled(scene:Scene)
 	{
 		var i:Int = 0;
 		for (r in scene._recycled) i++;
 		return i;
 	}
 
-	private var scene:Scene;
+	var scene:Scene;
 }

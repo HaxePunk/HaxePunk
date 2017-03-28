@@ -37,7 +37,7 @@ class CollideTest extends TestSuite
 		Assert.isTrue(hitbox.x == 40 && hitbox.y == 30);
 	}
 
-	private var scene:Scene;
-	private var hitbox:Entity;
-	private var circle:Entity;
+	var scene:Scene;
+	var hitbox:Entity;
+	var circle:Entity;
 }

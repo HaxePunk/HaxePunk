@@ -96,7 +96,7 @@ class Grid extends Hitbox
 	 * @param	y			Tile row.
 	 * @param	solid		If the tile should be solid.
 	 */
-	private function setTileXY(x:Int = 0, y:Int = 0, solid:Bool = true)
+	function setTileXY(x:Int = 0, y:Int = 0, solid:Bool = true)
 	{
 		if (!checkTile(x, y)) return;
 		data[y][x] = solid;
@@ -112,7 +112,7 @@ class Grid extends Hitbox
 		setTile(column, row, false);
 	}
 
-	private inline function checkTile(column:Int, row:Int):Bool
+	inline function checkTile(column:Int, row:Int):Bool
 	{
 		// check that tile is valid
 		return !(column < 0 || column > columns - 1 || row < 0 || row > rows - 1);
@@ -141,7 +141,7 @@ class Grid extends Hitbox
 	 * @param	row			Tile row.
 	 * @return	tile value.
 	*/
-	private function getTileXY(x:Int = 0, y:Int = 0):Bool
+	function getTileXY(x:Int = 0, y:Int = 0):Bool
 	{
 		if (!checkTile(x, y)) return false;
 		return data[y][x];
@@ -271,13 +271,13 @@ class Grid extends Hitbox
 	 * The tile width.
 	 */
 	public var tileWidth(get, never):Int;
-	private inline function get_tileWidth():Int return Std.int(_tile.width); 
+	inline function get_tileWidth():Int return Std.int(_tile.width); 
 
 	/**
 	 * The tile height.
 	 */
 	public var tileHeight(get, never):Int;
-	private inline function get_tileHeight():Int return Std.int(_tile.height); 
+	inline function get_tileHeight():Int return Std.int(_tile.height); 
 
 	/**
 	 * How many columns the grid has
@@ -295,7 +295,7 @@ class Grid extends Hitbox
 	public var data(default, null):Array<Array<Bool>>;
 
 	/** @private Collides against an Entity. */
-	override private function collideMask(other:Mask):Bool
+	override function collideMask(other:Mask):Bool
 	{
 		var rectX:Int, rectY:Int, pointX:Int, pointY:Int;
 		_rect.x = other._parent.x - other._parent.originX - _parent.x + _parent.originX;
@@ -319,7 +319,7 @@ class Grid extends Hitbox
 	}
 
 	/** @private Collides against a Hitbox. */
-	override private function collideHitbox(other:Hitbox):Bool
+	override function collideHitbox(other:Hitbox):Bool
 	{
 		var rectX:Int, rectY:Int, pointX:Int, pointY:Int;
 		_rect.x = other._parent.x - other._x - _parent.x + _x;
@@ -343,7 +343,7 @@ class Grid extends Hitbox
 	}
 
 	/** @private Collides against a Pixelmask. */
-	private function collidePixelmask(other:Pixelmask):Bool
+	function collidePixelmask(other:Pixelmask):Bool
 	{
 #if flash
 		var x1:Int = Std.int(other._parent.x + other.x - _parent.x - _x),
@@ -425,7 +425,7 @@ class Grid extends Hitbox
 	}
 
 	/** @private Collides against a Grid. */
-	private function collideGrid(other:Grid):Bool
+	function collideGrid(other:Grid):Bool
 	{
 		// Find the X edges
 		var ax1:Float = _parent.x + _x;
@@ -607,8 +607,8 @@ class Grid extends Hitbox
 	}
 
 	// Grid information.
-	private var _tile:Rectangle;
-	private var _rect:Rectangle;
-	private var _point:Point;
-	private var _point2:Point;
+	var _tile:Rectangle;
+	var _rect:Rectangle;
+	var _point:Point;
+	var _point2:Point;
 }

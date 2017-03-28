@@ -63,5 +63,5 @@ class TileAtlas extends Atlas
 		}
 	}
 
-	private var _regions:Array<AtlasRegion>;
+	var _regions:Array<AtlasRegion>;
 }

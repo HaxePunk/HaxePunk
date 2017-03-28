@@ -318,8 +318,8 @@ class Spritemap extends Image
 	 * animations playing will be stopped to force the frame.
 	 */
 	public var frame(get, set):Int;
-	private function get_frame():Int return _frame; 
-	private function set_frame(value:Int):Int
+	function get_frame():Int return _frame; 
+	function set_frame(value:Int):Int
 	{
 		_anim = null;
 		value %= _frameCount;
@@ -334,8 +334,8 @@ class Spritemap extends Image
 	 * Current index of the playing animation.
 	 */
 	public var index(get, set):Int;
-	private function get_index():Int return _anim != null ? _index : 0; 
-	private function set_index(value:Int):Int
+	function get_index():Int return _anim != null ? _index : 0; 
+	function set_index(value:Int):Int
 	{
 		if (_anim == null) return 0;
 		value %= _anim.frameCount;
@@ -355,37 +355,37 @@ class Spritemap extends Image
 	 * The amount of frames in the Spritemap.
 	 */
 	public var frameCount(get, null):Int;
-	private function get_frameCount():Int return _frameCount; 
+	function get_frameCount():Int return _frameCount; 
 
 	/**
 	 * Columns in the Spritemap.
 	 */
 	public var columns(get, null):Int;
-	private function get_columns():Int return _columns; 
+	function get_columns():Int return _columns; 
 
 	/**
 	 * Rows in the Spritemap.
 	 */
 	public var rows(get, null):Int;
-	private function get_rows():Int return _rows; 
+	function get_rows():Int return _rows; 
 
 	/**
 	 * The currently playing animation.
 	 */
 	public var currentAnim(get, null):String;
-	private function get_currentAnim():String return (_anim != null) ? _anim.name : ""; 
+	function get_currentAnim():String return (_anim != null) ? _anim.name : ""; 
 
 	// Spritemap information.
-	private var _rect:Rectangle;
-	private var _width:Int;
-	private var _height:Int;
-	private var _columns:Int;
-	private var _rows:Int;
-	private var _frameCount:Int;
-	private var _anims:Map<String, Animation>;
-	private var _anim:Animation;
-	private var _index:Int;
-	private var _frame:Int;
-	private var _timer:Float;
-	private var _atlas:TileAtlas;
+	var _rect:Rectangle;
+	var _width:Int;
+	var _height:Int;
+	var _columns:Int;
+	var _rows:Int;
+	var _frameCount:Int;
+	var _anims:Map<String, Animation>;
+	var _anim:Animation;
+	var _index:Int;
+	var _frame:Int;
+	var _timer:Float;
+	var _atlas:TileAtlas;
 }

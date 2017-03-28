@@ -16,11 +16,11 @@ class Mask
 	 * The parent Entity of this mask.
 	 */
 	public var parent(get, set):Entity;
-	private inline function get_parent():Entity
+	inline function get_parent():Entity
 	{
 		return _parent != Entity._EMPTY ? _parent : null;
 	}
-	private function set_parent(value:Entity):Entity
+	function set_parent(value:Entity):Entity
 	{
 		if (value == null) _parent = Entity._EMPTY;
 		else _parent = value; update();
@@ -36,7 +36,7 @@ class Mask
 	 * Constructor.
 	 */
 	@:allow(haxepunk)
-	private function new()
+	function new()
 	{
 		_parent = Entity._EMPTY;
 		_class = Type.getClassName(Type.getClass(this));
@@ -62,7 +62,7 @@ class Mask
 	}
 
 	/** @private Collide against an Entity. */
-	private function collideMask(other:Mask):Bool
+	function collideMask(other:Mask):Bool
 	{
 		return _parent.x - _parent.originX + _parent.width > other._parent.x - other._parent.originX
 			&& _parent.y - _parent.originY + _parent.height > other._parent.y - other._parent.originY
@@ -70,7 +70,7 @@ class Mask
 			&& _parent.y - _parent.originY < other._parent.y - other._parent.originY + other._parent.height;
 	}
 
-	private function collideMasklist(other:Masklist):Bool
+	function collideMasklist(other:Masklist):Bool
 	{
 		return other.collide(this);
 	}
@@ -121,7 +121,7 @@ class Mask
 	}
 
 	// Mask information.
-	private var _class:String;
-	private var _check:Map<String, Dynamic -> Bool>;
-	private var _parent:Entity;
+	var _class:String;
+	var _check:Map<String, Dynamic -> Bool>;
+	var _parent:Entity;
 }

@@ -68,7 +68,7 @@ class SfxFader extends Tween
 	}
 
 	/** @private When the tween completes. */
-	override private function finish()
+	override function finish()
 	{
 		super.finish();
 		if (_crossSfx != null)
@@ -83,13 +83,13 @@ class SfxFader extends Tween
 	 * The current Sfx this object is effecting.
 	 */
 	public var sfx(get, null):Sfx;
-	private function get_sfx():Sfx return _sfx; 
+	function get_sfx():Sfx return _sfx; 
 
 	// Fader information.
-	private var _sfx:Sfx;
-	private var _start:Float;
-	private var _range:Float;
-	private var _crossSfx:Sfx;
-	private var _crossRange:Float;
-	private var _complete:Dynamic -> Void;
+	var _sfx:Sfx;
+	var _start:Float;
+	var _range:Float;
+	var _crossSfx:Sfx;
+	var _crossRange:Float;
+	var _complete:Dynamic -> Void;
 }

@@ -37,7 +37,7 @@ class Animation
 
 	@:dox(hide)
 	public var parent(null, set):Spritemap;
-	private function set_parent(value:Spritemap):Spritemap return _parent = value;
+	function set_parent(value:Spritemap):Spritemap return _parent = value;
 
 	/**
 	 * Name of the animation.
@@ -64,5 +64,5 @@ class Animation
 	 */
 	public var loop(default, null):Bool;
 
-	private var _parent:Spritemap;
+	var _parent:Spritemap;
 }

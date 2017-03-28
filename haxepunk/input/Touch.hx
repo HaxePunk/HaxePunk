@@ -47,19 +47,19 @@ class Touch
 	 * The touch x-axis coord in the scene.
 	 */
 	public var sceneX(get, never):Float;
-	private inline function get_sceneX():Float return x + HXP.camera.x;
+	inline function get_sceneX():Float return x + HXP.camera.x;
 
 	/**
 	 * The touch y-axis coord in the scene.
 	 */
 	public var sceneY(get, never):Float;
-	private inline function get_sceneY():Float return y + HXP.camera.y;
+	inline function get_sceneY():Float return y + HXP.camera.y;
 
 	/**
 	 * If the touch was pressed this frame.
 	 */
 	public var pressed(get, never):Bool;
-	private inline function get_pressed():Bool return time == 0;
+	inline function get_pressed():Bool return time == 0;
 
 	/**
 	 * Not implemented yet. Always return false.

@@ -8,8 +8,8 @@ import openfl.events.Event;
 class NMEPreloader extends Sprite {
 	
 	
-	private var outline:Sprite;
-	private var progress:Sprite;
+	var outline:Sprite;
+	var progress:Sprite;
 	
 	
 	public function new () {

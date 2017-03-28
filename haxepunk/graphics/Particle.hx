@@ -46,27 +46,27 @@ class Particle
 	public function new() {}
 
 	// Particle information.
-	private var _type:ParticleType;
-	private var _time:Float = 0;
-	private var _stopTime:Float = 0;
-	private var _duration:Float = 0;
+	var _type:ParticleType;
+	var _time:Float = 0;
+	var _stopTime:Float = 0;
+	var _duration:Float = 0;
 
 	// Motion information.
-	private var _x:Float = 0;
-	private var _y:Float = 0;
-	private var _moveX:Float = 0;
-	private var _moveY:Float = 0;
-	private var _angle:Float = 0;
-	private var _firstDraw:Bool = false;
-	private var _ox:Float = 0;
-	private var _oy:Float = 0;
-	private var _startAngle:Float = 0;
-	private var _spanAngle:Float = 0;
+	var _x:Float = 0;
+	var _y:Float = 0;
+	var _moveX:Float = 0;
+	var _moveY:Float = 0;
+	var _angle:Float = 0;
+	var _firstDraw:Bool = false;
+	var _ox:Float = 0;
+	var _oy:Float = 0;
+	var _startAngle:Float = 0;
+	var _spanAngle:Float = 0;
 
 	// Gravity information.
-	private var _gravity:Float = 0;
+	var _gravity:Float = 0;
 
 	// List information.
-	private var _prev:Particle;
-	private var _next:Particle;
+	var _prev:Particle;
+	var _next:Particle;
 }

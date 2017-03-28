@@ -100,7 +100,7 @@ class Data
 	}
 
 	/** @private Loads the data file, or return it if you're loading the same one. */
-	private static function loadData(file:String):Dynamic
+	static function loadData(file:String):Dynamic
 	{
 		if (file == null) file = DEFAULT_FILE;
 		if (id != "") _shared = SharedObject.getLocal(PREFIX + "/" + id + "/" + file, "/");
@@ -109,10 +109,10 @@ class Data
 	}
 
 	// Data information.
-	private static var _shared:SharedObject;
-	private static var _dir:String;
-	private static var _data:Map<String, Dynamic> = new Map<String, Dynamic>();
-	private static inline var PREFIX:String = "HaxePunk";
-	private static inline var DEFAULT_FILE:String = "_file";
-	private static inline var SIZE:Int = 10000;
+	static var _shared:SharedObject;
+	static var _dir:String;
+	static var _data:Map<String, Dynamic> = new Map<String, Dynamic>();
+	static inline var PREFIX:String = "HaxePunk";
+	static inline var DEFAULT_FILE:String = "_file";
+	static inline var SIZE:Int = 10000;
 }

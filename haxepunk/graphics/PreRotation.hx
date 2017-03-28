@@ -110,16 +110,16 @@ class PreRotation extends Image
 	}
 
 	// Rotation information.
-	private var _width:Int;
-	private var _frame:Rectangle;
-	private var _frameCount:Int;
-	private var _last:Int;
-	private var _current:Int;
+	var _width:Int;
+	var _frame:Rectangle;
+	var _frameCount:Int;
+	var _last:Int;
+	var _current:Int;
 
 	// Global information.
-	private static var _rotated:Map<String, BitmapData> = new Map<String, BitmapData>();
-	private static var _sizes:Map<String, Int> = new Map<String, Int>();
+	static var _rotated:Map<String, BitmapData> = new Map<String, BitmapData>();
+	static var _sizes:Map<String, Int> = new Map<String, Int>();
 
-	private static inline var _MAX_WIDTH:Int = 3000;
-	private static inline var _MAX_HEIGHT:Int = 4000;
+	static inline var _MAX_WIDTH:Int = 3000;
+	static inline var _MAX_HEIGHT:Int = 4000;
 }

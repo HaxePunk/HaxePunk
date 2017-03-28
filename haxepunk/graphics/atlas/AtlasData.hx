@@ -15,7 +15,7 @@ import haxepunk.utils.MathUtil;
  */
 abstract AtlasDataType(AtlasData)
 {
-	private inline function new(data:AtlasData) this = data;
+	inline function new(data:AtlasData) this = data;
 	@:dox(hide) @:to public inline function toAtlasData():AtlasData return this;
 
 	@:dox(hide) @:from public static inline function fromString(s:String)
@@ -118,7 +118,7 @@ class AtlasData
 	 * @param	scene	The scene object to set
 	 */
 	@:allow(haxepunk.Scene)
-	private static inline function startScene(scene:Scene):Void
+	static inline function startScene(scene:Scene):Void
 	{
 		_scene = scene;
 	}

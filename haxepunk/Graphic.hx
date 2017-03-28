@@ -14,7 +14,7 @@ import flash.geom.Point;
  */
 abstract TileType(Either<BitmapData, TileAtlas>)
 {
-	private inline function new(e:Either<BitmapData, TileAtlas>) this = e;
+	inline function new(e:Either<BitmapData, TileAtlas>) this = e;
 	@:dox(hide) public var type(get, never):Either<BitmapData, TileAtlas>;
 	@:to inline function get_type() return this;
 
@@ -45,7 +45,7 @@ abstract TileType(Either<BitmapData, TileAtlas>)
  */
 abstract ImageType(Either<BitmapData, AtlasRegion>)
 {
-	private inline function new(e:Either<BitmapData, AtlasRegion>) this = e;
+	inline function new(e:Either<BitmapData, AtlasRegion>) this = e;
 	@:dox(hide) public var type(get, never):Either<BitmapData, AtlasRegion>;
 	@:to inline function get_type() return this;
 
@@ -100,7 +100,7 @@ abstract ImageType(Either<BitmapData, AtlasRegion>)
  */
 abstract ImageOrTileType(Either<ImageType, TileType>)
 {
-	private inline function new(e:Either<ImageType, TileType>) this = e;
+	inline function new(e:Either<ImageType, TileType>) this = e;
 	@:dox(hide) public var type(get, never):Either<ImageType, TileType>;
 	@:to inline function get_type() return this;
 
@@ -129,22 +129,22 @@ class Graphic
 	 * If the graphic should render.
 	 */
 	public var visible(get, set):Bool;
-	private inline function get_visible():Bool return _visible;
-	private inline function set_visible(value:Bool):Bool return _visible = value;
+	inline function get_visible():Bool return _visible;
+	inline function set_visible(value:Bool):Bool return _visible = value;
 
 	/**
 	 * X offset.
 	 */
 	@:isVar public var x(get, set):Float = 0;
-	private inline function get_x():Float return x;
-	private inline function set_x(value:Float):Float return x = value;
+	inline function get_x():Float return x;
+	inline function set_x(value:Float):Float return x = value;
 
 	/**
 	 * Y offset.
 	 */
 	@:isVar public var y(get, set):Float = 0;
-	private inline function get_y():Float return y;
-	private inline function set_y(value:Float):Float return y = value;
+	inline function get_y():Float return y;
+	inline function set_y(value:Float):Float return y = value;
 
 	/**
 	 * X scrollfactor, effects how much the camera offsets the drawn graphic.

@@ -410,7 +410,7 @@ class Tilemap extends Canvas
 	}
 
 	/** @private Used by shiftTiles to update a rectangle of tiles from the tilemap. */
-	private function updateRect(rect:Rectangle, clear:Bool)
+	function updateRect(rect:Rectangle, clear:Bool)
 	{
 		var x:Int = Std.int(rect.x),
 			y:Int = Std.int(rect.y),
@@ -537,14 +537,14 @@ class Tilemap extends Canvas
 	}
 
 	/** @private Sets the _tile convenience rect to the x/y position of the supplied tile. Assumes _tile has the correct tile width/height set. Respects tile spacing. */
-	private inline function updateTileRect(index:Int)
+	inline function updateTileRect(index:Int)
 	{
 		_tile.x = getX(index) * (_tile.width + tileSpacingWidth);
 		_tile.y = getY(index) * (_tile.height + tileSpacingHeight);
 	}
 
 	/** @private Used by shiftTiles to update a tile from the tilemap. */
-	private function updateTile(column:Int, row:Int)
+	function updateTile(column:Int, row:Int)
 	{
 		setTile(column, row, _map[row % _rows][column % _columns]);
 	}
@@ -553,13 +553,13 @@ class Tilemap extends Canvas
 	 * The tile width.
 	 */
 	public var tileWidth(get, never):Int;
-	private inline function get_tileWidth():Int return Std.int(_tile.width);
+	inline function get_tileWidth():Int return Std.int(_tile.width);
 
 	/**
 	 * The tile height.
 	 */
 	public var tileHeight(get, never):Int;
-	private inline function get_tileHeight():Int return Std.int(_tile.height);
+	inline function get_tileHeight():Int return Std.int(_tile.height);
 
 	/**
 	 * The tile horizontal spacing of tile.
@@ -575,41 +575,41 @@ class Tilemap extends Canvas
 	 * How many tiles the tilemap has.
 	 */
 	public var tileCount(get, never):Int;
-	private inline function get_tileCount():Int return _setCount;
+	inline function get_tileCount():Int return _setCount;
 
 	/**
 	 * How many columns the tilemap has.
 	 */
 	public var columns(get, null):Int;
-	private inline function get_columns():Int return _columns;
+	inline function get_columns():Int return _columns;
 
 	/**
 	 * How many rows the tilemap has.
 	 */
 	public var rows(get, null):Int;
-	private inline function get_rows():Int return _rows;
+	inline function get_rows():Int return _rows;
 
 	/**
 	 * If false, whenever you call setTile or one of the load methods, clears the affected Tilemap areas before redrawing.
 	 * Only used on Flash targets and with tilesets that contain transparency.
 	 */
 	public var opaqueTiles(get, null):Bool;
-	private inline function get_opaqueTiles():Bool return _opaqueTiles;
+	inline function get_opaqueTiles():Bool return _opaqueTiles;
 
 	/** Default value: false if HXP.stage.quality is LOW, true otherwise. */
 	public var smooth:Bool;
 
 	// Tilemap information.
-	private var _map:Array<Array<Int>>;
-	private var _columns:Int;
-	private var _rows:Int;
+	var _map:Array<Array<Int>>;
+	var _columns:Int;
+	var _rows:Int;
 
 	// Tileset information.
-	private var _opaqueTiles:Bool;
-	private var _set:BitmapData;
-	private var _atlas:TileAtlas;
-	private var _setColumns:Int;
-	private var _setRows:Int;
-	private var _setCount:Int;
-	private var _tile:Rectangle;
+	var _opaqueTiles:Bool;
+	var _set:BitmapData;
+	var _atlas:TileAtlas;
+	var _setColumns:Int;
+	var _setRows:Int;
+	var _setCount:Int;
+	var _tile:Rectangle;
 }

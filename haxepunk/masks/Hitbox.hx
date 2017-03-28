@@ -31,7 +31,7 @@ class Hitbox extends Mask
 	}
 
 	/** @private Collides against an Entity. */
-	override private function collideMask(other:Mask):Bool
+	override function collideMask(other:Mask):Bool
 	{
 		var px:Float = _x + _parent.x, 
 			py:Float = _y + _parent.y;
@@ -46,7 +46,7 @@ class Hitbox extends Mask
 	}
 
 	/** @private Collides against a Hitbox. */
-	private function collideHitbox(other:Hitbox):Bool
+	function collideHitbox(other:Hitbox):Bool
 	{
 		var px:Float = _x + _parent.x, 
 			py:Float = _y + _parent.y;
@@ -64,8 +64,8 @@ class Hitbox extends Mask
 	 * X offset.
 	 */
 	public var x(get, set):Int;
-	private function get_x():Int return _x; 
-	private function set_x(value:Int):Int
+	function get_x():Int return _x; 
+	function set_x(value:Int):Int
 	{
 		if (_x == value) return value;
 		_x = value;
@@ -78,8 +78,8 @@ class Hitbox extends Mask
 	 * Y offset.
 	 */
 	public var y(get, set):Int;
-	private function get_y():Int return _y; 
-	private function set_y(value:Int):Int
+	function get_y():Int return _y; 
+	function set_y(value:Int):Int
 	{
 		if (_y == value) return value;
 		_y = value;
@@ -92,8 +92,8 @@ class Hitbox extends Mask
 	 * Width.
 	 */
 	public var width(get, set):Int;
-	private function get_width():Int return _width; 
-	private function set_width(value:Int):Int
+	function get_width():Int return _width; 
+	function set_width(value:Int):Int
 	{
 		if (_width == value) return value;
 		_width = value;
@@ -106,8 +106,8 @@ class Hitbox extends Mask
 	 * Height.
 	 */
 	public var height(get, set):Int;
-	private function get_height():Int return _height; 
-	private function set_height(value:Int):Int
+	function get_height():Int return _height; 
+	function set_height(value:Int):Int
 	{
 		if (_height == value) return value;
 		_height = value;
@@ -181,8 +181,8 @@ class Hitbox extends Mask
 	}
 	
 	// Hitbox information.
-	private var _width:Int = 0;
-	private var _height:Int = 0;
-	private var _x:Int = 0;
-	private var _y:Int = 0;
+	var _width:Int = 0;
+	var _height:Int = 0;
+	var _x:Int = 0;
+	var _y:Int = 0;
 }

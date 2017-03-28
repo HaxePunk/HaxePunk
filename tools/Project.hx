@@ -15,7 +15,7 @@ class Project
 	public var height:String;
 	public var frameRate:String;
 
-	private function new()
+	function new()
 	{
 		// defaults
 		projectName  = "";
@@ -85,7 +85,7 @@ class Project
 		project.make(path, whiteList);
 	}
 
-	private function make(path:String, whiteList:Array<String>)
+	function make(path:String, whiteList:Array<String>)
 	{
 		path = createDirectory(path);
 
@@ -155,7 +155,7 @@ class Project
 	/**
 	 * Creates a directory if it doesn't already exist
 	 */
-	private function createDirectory(path:String):String
+	function createDirectory(path:String):String
 	{
 		path = new Path(path).dir;
 
@@ -167,7 +167,7 @@ class Project
 		return path;
 	}
 
-	private function replaceTemplateVars(text:String):String
+	function replaceTemplateVars(text:String):String
 	{
 		text = StringTools.replace(text, "{{PROJECT_NAME}}", projectName);
 		text = StringTools.replace(text, "{{PROJECT_CLASS}}", projectClass);

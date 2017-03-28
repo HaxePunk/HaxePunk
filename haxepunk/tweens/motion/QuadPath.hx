@@ -109,7 +109,7 @@ class QuadPath extends Motion
 	}
 
 	/** @private Updates the path, preparing the curve. */
-	private function updatePath()
+	function updatePath()
 	{
 		if (_points.length < 3)
 			throw "A QuadPath must have at least 3 points to operate.";
@@ -165,10 +165,10 @@ class QuadPath extends Motion
 	 * Amount of points on the path.
 	 */
 	public var pointCount(get, null):Float;
-	private function get_pointCount():Float return _points.length; 
+	function get_pointCount():Float return _points.length; 
 
 	/** @private Calculates the lenght of the curve. */
-	private function curveLength(start:Point, control:Point, finish:Point):Float
+	function curveLength(start:Point, control:Point, finish:Point):Float
 	{
 		var a:Point = HXP.point,
 			b:Point = HXP.point2;
@@ -188,19 +188,19 @@ class QuadPath extends Motion
 	}
 
 	// Path information.
-	private var _points:Array<Point>;
-	private var _distance:Float;
-	private var _speed:Float;
-	private var _index:Int;
+	var _points:Array<Point>;
+	var _distance:Float;
+	var _speed:Float;
+	var _index:Int;
 
 	// Curve information.
-	private var _updateCurve:Bool;
-	private var _curve:Array<Point>;
-	private var _curveT:Array<Float>;
-	private var _curveD:Array<Float>;
+	var _updateCurve:Bool;
+	var _curve:Array<Point>;
+	var _curveT:Array<Float>;
+	var _curveD:Array<Float>;
 
 	// Curve points.
-	private var _a:Point;
-	private var _b:Point;
-	private var _c:Point;
+	var _a:Point;
+	var _b:Point;
+	var _c:Point;
 }

@@ -156,7 +156,7 @@ class Scene extends Tweener
 	/**
 	 * Sorts layer from highest value to lowest
 	 */
-	private function layerSort(a:Int, b:Int):Int
+	function layerSort(a:Int, b:Int):Int
 	{
 		return b - a;
 	}
@@ -196,7 +196,7 @@ class Scene extends Tweener
 	 * X position of the mouse in the Scene.
 	 */
 	public var mouseX(get, null):Int;
-	private inline function get_mouseX():Int
+	inline function get_mouseX():Int
 	{
 		return Std.int(HXP.screen.mouseX + camera.x);
 	}
@@ -205,7 +205,7 @@ class Scene extends Tweener
 	 * Y position of the mouse in the scene.
 	 */
 	public var mouseY(get, null):Int;
-	private inline function get_mouseY():Int
+	inline function get_mouseY():Int
 	{
 		return Std.int(HXP.screen.mouseY + camera.y);
 	}
@@ -818,7 +818,7 @@ class Scene extends Tweener
 	 * How many Entities are in the Scene.
 	 */
 	public var count(get, never):Int;
-	private inline function get_count():Int return _update.length;
+	inline function get_count():Int return _update.length;
 
 	/**
 	 * Returns the amount of Entities of the type are in the Scene.
@@ -854,13 +854,13 @@ class Scene extends Tweener
 	 * The first Entity in the Scene.
 	 */
 	public var first(get, null):Entity;
-	private inline function get_first():Entity return _update.first();
+	inline function get_first():Entity return _update.first();
 
 	/**
 	 * How many Entity layers the Scene has.
 	 */
 	public var layers(get, null):Int;
-	private inline function get_layers():Int return _layerList.length;
+	inline function get_layers():Int return _layerList.length;
 
 	/**
 	 * A list of Entity objects of the type.
@@ -910,7 +910,7 @@ class Scene extends Tweener
 	 * The Entity that will be rendered first by the Scene.
 	 */
 	public var farthest(get, null):Entity;
-	private function get_farthest():Entity
+	function get_farthest():Entity
 	{
 		if (_layerList.length == 0) return null;
 		return _layers.get(_layerList[_layerList.length - 1]).last();
@@ -920,7 +920,7 @@ class Scene extends Tweener
 	 * The Entity that will be rendered last by the scene.
 	 */
 	public var nearest(get, null):Entity;
-	private function get_nearest():Entity
+	function get_nearest():Entity
 	{
 		if (_layerList.length == 0) return null;
 		return _layers.get(_layerList[0]).first();
@@ -930,7 +930,7 @@ class Scene extends Tweener
 	 * The layer that will be rendered first by the Scene.
 	 */
 	public var layerFarthest(get, null):Int;
-	private function get_layerFarthest():Int
+	function get_layerFarthest():Int
 	{
 		if (_layerList.length == 0) return 0;
 		return _layerList[_layerList.length - 1];
@@ -940,7 +940,7 @@ class Scene extends Tweener
 	 * The layer that will be rendered last by the Scene.
 	 */
 	public var layerNearest(get, null):Int;
-	private function get_layerNearest():Int
+	function get_layerNearest():Int
 	{
 		if (_layerList.length == 0) return 0;
 		return _layerList[0];
@@ -950,7 +950,7 @@ class Scene extends Tweener
 	 * How many different types have been added to the Scene.
 	 */
 	public var uniqueTypes(get, null):Int;
-	private inline function get_uniqueTypes():Int
+	inline function get_uniqueTypes():Int
 	{
 		var i:Int = 0;
 		for (type in _types) i++;
@@ -1097,7 +1097,7 @@ class Scene extends Tweener
 	}
 
 	/** @private Adds Entity to the update list. */
-	private function addUpdate(e:Entity)
+	function addUpdate(e:Entity)
 	{
 		// add to update list
 		_update.add(e);
@@ -1106,7 +1106,7 @@ class Scene extends Tweener
 	}
 
 	/** @private Removes Entity from the update list. */
-	private function removeUpdate(e:Entity)
+	function removeUpdate(e:Entity)
 	{
 		_update.remove(e);
 		_classCount.set(e._class, _classCount.get(e._class) - 1); // decrement
@@ -1114,7 +1114,7 @@ class Scene extends Tweener
 
 	/** @private Adds Entity to the render list. */
 	@:allow(haxepunk.Entity)
-	private function addRender(e:Entity)
+	function addRender(e:Entity)
 	{
 		var list:List<Entity>;
 		if (_layers.exists(e._layer))
@@ -1141,7 +1141,7 @@ class Scene extends Tweener
 
 	/** @private Removes Entity from the render list. */
 	@:allow(haxepunk.Entity)
-	private function removeRender(e:Entity)
+	function removeRender(e:Entity)
 	{
 		var list = _layers.get(e._layer);
 		list.remove(e);
@@ -1154,7 +1154,7 @@ class Scene extends Tweener
 
 	/** @private Adds Entity to the type list. */
 	@:allow(haxepunk.Entity)
-	private function addType(e:Entity)
+	function addType(e:Entity)
 	{
 		var list:List<Entity>;
 		// add to type list
@@ -1172,7 +1172,7 @@ class Scene extends Tweener
 
 	/** @private Removes Entity from the type list. */
 	@:allow(haxepunk.Entity)
-	private function removeType(e:Entity)
+	function removeType(e:Entity)
 	{
 		if (!_types.exists(e._type)) return;
 		var list = _types.get(e._type);
@@ -1185,20 +1185,20 @@ class Scene extends Tweener
 
 	/** @private Register the entities instance name. */
 	@:allow(haxepunk.Entity)
-	private inline function registerName(e:Entity)
+	inline function registerName(e:Entity)
 	{
 		_entityNames.set(e._name, e);
 	}
 
 	/** @private Unregister the entities instance name. */
 	@:allow(haxepunk.Entity)
-	private inline function unregisterName(e:Entity):Void
+	inline function unregisterName(e:Entity):Void
 	{
 		_entityNames.remove(e._name);
 	}
 
 	/** @private Calculates the squared distance between two rectangles. */
-	private static function squareRects(x1:Float, y1:Float, w1:Float, h1:Float, x2:Float, y2:Float, w2:Float, h2:Float):Float
+	static function squareRects(x1:Float, y1:Float, w1:Float, h1:Float, x2:Float, y2:Float, w2:Float, h2:Float):Float
 	{
 		if (x1 < x2 + w2 && x2 < x1 + w1)
 		{
@@ -1221,7 +1221,7 @@ class Scene extends Tweener
 	}
 
 	/** @private Calculates the squared distance between a rectangle and a point. */
-	private static function squarePointRect(px:Float, py:Float, rx:Float, ry:Float, rw:Float, rh:Float):Float
+	static function squarePointRect(px:Float, py:Float, rx:Float, ry:Float, rw:Float, rh:Float):Float
 	{
 		if (px >= rx && px <= rx + rw)
 		{

@@ -22,5 +22,5 @@ class Setup
 		}
 	}
 
-	private static inline var OPENFL = "lime";
+	static inline var OPENFL = "lime";
 }

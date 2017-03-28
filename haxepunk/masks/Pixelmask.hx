@@ -54,7 +54,7 @@ class Pixelmask extends Hitbox
 	}
 
 	/** @private Collide against an Entity. */
-	override private function collideMask(other:Mask):Bool
+	override function collideMask(other:Mask):Bool
 	{
 		_point.x = _parent.x + _x;
 		_point.y = _parent.y + _y;
@@ -86,7 +86,7 @@ class Pixelmask extends Hitbox
 	}
 
 	/** @private Collide against a Hitbox. */
-	override private function collideHitbox(other:Hitbox):Bool
+	override function collideHitbox(other:Hitbox):Bool
 	{
 		_point.x = _parent.x + _x;
 		_point.y = _parent.y + _y;
@@ -118,7 +118,7 @@ class Pixelmask extends Hitbox
 	}
 
 	/** @private Collide against a Pixelmask. */
-	private function collidePixelmask(other:Pixelmask):Bool
+	function collidePixelmask(other:Pixelmask):Bool
 	{
 		#if flash
 			_point.x = _parent.x + _x;
@@ -164,8 +164,8 @@ class Pixelmask extends Hitbox
 	 * Current BitmapData mask.
 	 */
 	public var data(get, set):BitmapData;
-	private function get_data():BitmapData return _data; 
-	private function set_data(value:BitmapData):BitmapData
+	function get_data():BitmapData return _data; 
+	function set_data(value:BitmapData):BitmapData
 	{
 		_data = value;
 		_width = value.width;
@@ -175,10 +175,10 @@ class Pixelmask extends Hitbox
 	}
 
 	// Pixelmask information.
-	private var _data:BitmapData;
+	var _data:BitmapData;
 
 	// Global objects.
-	private var _rect:Rectangle;
-	private var _point:Point;
-	private var _point2:Point;
+	var _rect:Rectangle;
+	var _point:Point;
+	var _point2:Point;
 }

@@ -147,6 +147,6 @@ class CLI
 		new CLI();
 	}
 
-	private static var colorize:Bool = true;
+	static var colorize:Bool = true;
 
 }

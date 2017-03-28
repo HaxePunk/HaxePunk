@@ -116,5 +116,5 @@ class Preloader extends #if (openfl >= "4.4.1") openfl.display.Preloader.Default
 		return cropped;
 	}
 
-	private var scaleIncrement:Float;
+	var scaleIncrement:Float;
 }
