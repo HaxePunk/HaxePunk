@@ -41,6 +41,27 @@ class Engine extends Sprite
 	public var tickRate:Int;
 
 	/**
+	 * Invoked before the update cycle begins each frame.
+	 */
+	public var preUpdate:Signal = new Signal();
+	/**
+	 * Invoked after update cycle.
+	 */
+	public var postUpdate:Signal = new Signal();
+	/**
+	 * Invoked before rendering begins each frame.
+	 */
+	public var preRender:Signal = new Signal();
+	/**
+	 * Invoked after rendering completes.
+	 */
+	public var postRender:Signal = new Signal();
+	/**
+	 * Invoked after the screen is resized.
+	 */
+	public var resize:Signal = new Signal();
+
+	/**
 	 * Constructor. Defines startup information about your game.
 	 * @param	width			The width of your game.
 	 * @param	height			The height of your game.
@@ -113,8 +134,14 @@ class Engine extends Sprite
 	 */
 	public function update()
 	{
+		if (HXP.screen.needsResize) HXP.resize(HXP.windowWidth, HXP.windowHeight);
+		HXP.screen.update();
+
 		_scene.updateLists();
 		checkScene();
+
+		preUpdate.invoke();
+
 		if (HXP.tweener.active && HXP.tweener.hasTween) HXP.tweener.updateTweens();
 		if (_scene.active)
 		{
@@ -122,7 +149,8 @@ class Engine extends Sprite
 			_scene.update();
 		}
 		_scene.updateLists(false);
-		HXP.screen.update();
+
+		postUpdate.invoke();
 	}
 
 	/**
@@ -131,11 +159,11 @@ class Engine extends Sprite
 	@:dox(hide)
 	public function render()
 	{
-		if (HXP.screen.needsResize) HXP.resize(HXP.windowWidth, HXP.windowHeight);
-
 		// timing stuff
 		var t:Float = Lib.getTimer();
 		if (_frameLast == 0) _frameLast = Std.int(t);
+
+		preRender.invoke();
 
 		// render loop
 		if (HXP.renderMode == RenderMode.BUFFER)
@@ -171,6 +199,8 @@ class Engine extends Sprite
 			HXP.screen.redraw();
 		}
 
+		postRender.invoke();
+
 		// more timing stuff
 		t = Lib.getTimer();
 		_frameListSum += (_frameList[_frameList.length] = Std.int(t - _frameLast));
@@ -192,10 +222,10 @@ class Engine extends Sprite
 		HXP.stage.scaleMode = StageScaleMode.NO_SCALE;
 		HXP.stage.displayState = StageDisplayState.NORMAL;
 
-		resize(); // call resize once to initialize the screen
+		_resize(); // call resize once to initialize the screen
 
 		// set resize event
-		HXP.stage.addEventListener(Event.RESIZE, function (e:Event) resize());
+		HXP.stage.addEventListener(Event.RESIZE, function (e:Event) _resize());
 
 		HXP.stage.addEventListener(Event.ACTIVATE, function (e:Event)
 		{
@@ -218,14 +248,14 @@ class Engine extends Sprite
 			var tmp = HXP.height;
 			HXP.height = HXP.width;
 			HXP.width = tmp;
-			resize();
+			_resize();
 			return true;
 		}
 #end
 	}
 
 	/** @private Event handler for stage resize */
-	function resize()
+	function _resize()
 	{
 		if (HXP.width == 0 || HXP.height == 0)
 		{
@@ -239,6 +269,8 @@ class Engine extends Sprite
 		_scrollRect.width = HXP.screen.width;
 		_scrollRect.height = HXP.screen.height;
 		scrollRect = _scrollRect;
+
+		resize.invoke();
 	}
 
 	/** @private Event handler for stage entry. */

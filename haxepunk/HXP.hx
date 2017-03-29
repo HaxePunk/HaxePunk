@@ -221,7 +221,7 @@ class HXP
 		HXP.halfHeight = HXP.height / 2;
 		HXP.bounds.width = width;
 		HXP.bounds.height = height;
-		HXP.scene.resize();
+		HXP.scene._resize();
 	}
 
 	/**
