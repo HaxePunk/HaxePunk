@@ -34,7 +34,7 @@ class GameScene extends DemoScene
 		createBox(128, 196, 400, 50, 0xFF00FFFF);
 	}
 
-	private function createBox(x:Int, y:Int, w:Int, h:Int, color:Int = 0xFFFFFFFF):Entity
+	function createBox(x:Int, y:Int, w:Int, h:Int, color:Int = 0xFFFFFFFF):Entity
 	{
 		var e:Entity = new Entity(x, y);
 		var image = Image.createRect(w, h, color);
@@ -45,7 +45,7 @@ class GameScene extends DemoScene
 		return e;
 	}
 
-	private function createCircle(x:Int, y:Int, radius:Int, color:Int = 0xFFFFFFFF):Entity
+	function createCircle(x:Int, y:Int, radius:Int, color:Int = 0xFFFFFFFF):Entity
 	{
 		var e:Entity = new Entity(x, y);
 		e.graphic = Image.createCircle(radius, color);
@@ -55,7 +55,7 @@ class GameScene extends DemoScene
 		return e;
 	}
 
-	private function createGrid(x:Int, y:Int, tileWidth:Int, tileHeight:Int, tiles:Array<Array<Int>>, color: Int = 0xFFFFFFFF):Entity
+	function createGrid(x:Int, y:Int, tileWidth:Int, tileHeight:Int, tiles:Array<Array<Int>>, color: Int = 0xFFFFFFFF):Entity
 	{
 		var width:Int = tiles[0].length;
 		var height:Int = tiles.length;

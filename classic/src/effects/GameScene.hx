@@ -41,7 +41,7 @@ class GameScene extends DemoScene
 #end
 	}
 
-	private function onTouch(touch:haxepunk.input.Touch)
+	function onTouch(touch:haxepunk.input.Touch)
 	{
 		smoke.emit("exhaust", touch.sceneX, touch.sceneY);
 	}
@@ -72,9 +72,9 @@ class GameScene extends DemoScene
 		super.update();
 	}
 
-	private var atlas:TextureAtlas;
-	private var backdrop:Backdrop;
-	private var smokeEntity:Entity;
-	private var smoke:Emitter;
+	var atlas:TextureAtlas;
+	var backdrop:Backdrop;
+	var smokeEntity:Entity;
+	var smoke:Emitter;
 
 }

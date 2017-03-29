@@ -39,7 +39,7 @@ class DemoScene extends Scene
 		tapTime = 0;
 	}
 
-	private function loadScene():Bool
+	function loadScene():Bool
 	{
 		var classDef = Type.resolveClass(_scenes[_currentScene]);
 		if (classDef == null) return false;
@@ -51,7 +51,7 @@ class DemoScene extends Scene
 		return true;
 	}
 
-	private inline function nextScene()
+	inline function nextScene()
 	{
 		_currentScene -= 1;
 		if (_currentScene < 0)
@@ -60,7 +60,7 @@ class DemoScene extends Scene
 		loadScene();
 	}
 
-	private inline function previousScene()
+	inline function previousScene()
 	{
 		_currentScene += 1;
 		if (_currentScene > _scenes.length - 1)
@@ -97,11 +97,11 @@ class DemoScene extends Scene
 		super.update();
 	}
 
-	private var overlayText:Text;
-	private var tapTime:Float;
+	var overlayText:Text;
+	var tapTime:Float;
 
-	private static var _currentScene:Int = 0;
-	private static var _scenes:Array<String> = [
+	static var _currentScene:Int = 0;
+	static var _scenes:Array<String> = [
 		'masks.GameScene',
 		'masks.SlopedScene',
 		'effects.GameScene',

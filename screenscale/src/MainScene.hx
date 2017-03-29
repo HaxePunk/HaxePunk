@@ -25,6 +25,10 @@ class MainScene extends Scene
 			description: "Default scale mode: Stretches to fill the screen.",
 		},
 		{
+			mode: new ScaleMode(true),
+			description: "Default scale mode (integer): Stretches to fill the screen, constrains scale to integer values.",
+		},
+		{
 			mode: new FixedScaleMode(),
 			description: "Fixed scale mode: Doesn't stretch on resize.",
 		},
@@ -33,12 +37,24 @@ class MainScene extends Scene
 			description: "Uniform (Letterbox): Cuts off extra space."
 		},
 		{
-		mode: new UniformScaleMode(UniformScaleType.ZoomIn),
-		description: "Uniform (ZoomIn): Uses whole screen, zooms in when X/Y ratio is uneven."
+			mode: new UniformScaleMode(UniformScaleType.Letterbox, true),
+			description: "Uniform (Letterbox, integer): Cuts off extra space."
+		},
+		{
+			mode: new UniformScaleMode(UniformScaleType.ZoomIn),
+			description: "Uniform (ZoomIn): Uses whole screen, zooms in when X/Y ratio is uneven."
+		},
+		{
+			mode: new UniformScaleMode(UniformScaleType.ZoomIn, true),
+			description: "Uniform (ZoomIn, integer): Uses whole screen, zooms in when X/Y ratio is uneven."
 		},
 		{
 			mode: new UniformScaleMode(UniformScaleType.Expand),
 			description: "Uniform (Expand): Uses whole screen, zooms out when X/Y ratio is uneven."
+		},
+		{
+			mode: new UniformScaleMode(UniformScaleType.Expand, true),
+			description: "Uniform (Expand, integer): Uses whole screen, zooms out when X/Y ratio is uneven."
 		},
 	];
 	var scaleModeIndex:Int = 0;

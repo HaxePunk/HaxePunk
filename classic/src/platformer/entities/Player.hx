@@ -49,7 +49,7 @@ class Player extends Physics
 		Input.define("jump", [Key.W, Key.SPACE, Key.UP]);
 	}
 
-	private function doJump()
+	function doJump()
 	{
 		if (!onGround) return;
 		switch (jumpStyle)
@@ -64,7 +64,7 @@ class Player extends Physics
 		}
 	}
 
-	private function switchJumpStyle()
+	function switchJumpStyle()
 	{
 		switch (jumpStyle)
 		{
@@ -129,7 +129,7 @@ class Player extends Physics
 		}
 	}
 
-	private function setAnimation()
+	function setAnimation()
 	{
 		var anim:String = "norm_";
 		if (gravity.y < 0)
@@ -154,10 +154,10 @@ class Player extends Physics
 		}
 	}
 
-	private var sprite:Spritemap;
+	var sprite:Spritemap;
 
-	private static var jumpStyle:JumpStyle = Normal;
-	private static inline var kMoveSpeed:Float = 0.8;
-	private static inline var kJumpForce:Int = 20;
+	static var jumpStyle:JumpStyle = Normal;
+	static inline var kMoveSpeed:Float = 0.8;
+	static inline var kJumpForce:Int = 20;
 
 }

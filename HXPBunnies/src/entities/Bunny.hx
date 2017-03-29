@@ -61,8 +61,8 @@ class BunnyImage extends Image
 		super.update();
 	}
 
-	private static var maxX:Int = 320;
-	private static var maxY:Int = 480;
-	private static inline var gravity:Int = 5;
+	static var maxX:Int = 320;
+	static var maxY:Int = 480;
+	static inline var gravity:Int = 5;
 
 }

@@ -12,7 +12,7 @@ import platformer.entities.Player;
 class GameScene extends DemoScene
 {
 
-	private static var map:Array<Array<Int>> = [
+	static var map:Array<Array<Int>> = [
 		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 		[1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1],
 		[1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1],
@@ -94,8 +94,8 @@ class GameScene extends DemoScene
 		super.update();
 	}
 
-	private var player:Player;
-	private var backdrop:Backdrop;
-	private var atlas:TextureAtlas;
+	var player:Player;
+	var backdrop:Backdrop;
+	var atlas:TextureAtlas;
 
 }

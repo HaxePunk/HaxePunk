@@ -80,7 +80,7 @@ class SlopedScene extends DemoScene
 		super.update();
 	}
 
-	private var entity:Entity;
-	private var image:Image;
+	var entity:Entity;
+	var image:Image;
 
 }

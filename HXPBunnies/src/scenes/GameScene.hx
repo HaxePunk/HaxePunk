@@ -16,20 +16,20 @@ import entities.Bunny;
 
 class GameScene extends Scene
 {
-	private var backdrop:Backdrop;
-	private var pirate:Image;
-	private var gravity:Float;
-	private var incBunnies:Int;
-	private var atlas:TextureAtlas;
-	private var numBunnies:Int;
+	var backdrop:Backdrop;
+	var pirate:Image;
+	var gravity:Float;
+	var incBunnies:Int;
+	var atlas:TextureAtlas;
+	var numBunnies:Int;
 
-	private var bunnies:Array<BunnyImage>;
-	private var bunnyImage:BunnyImage;
-	private var bunny:Entity;
-	private var bunnyList:Graphiclist;
+	var bunnies:Array<BunnyImage>;
+	var bunnyImage:BunnyImage;
+	var bunny:Entity;
+	var bunnyList:Graphiclist;
 
-	private var tapTime:Float;
-	private var overlayText:Text;
+	var tapTime:Float;
+	var overlayText:Text;
 
 	public function new()
 	{
@@ -76,7 +76,7 @@ class GameScene extends Scene
 		add(overlay);
 	}
 
-	private function addBunnies(numToAdd:Int):Void
+	function addBunnies(numToAdd:Int):Void
 	{
 		var image = #if flash "gfx/wabbit_alpha.png" #else atlas.getRegion("bunny.png") #end;
 		for (i in 0...(numToAdd))
@@ -115,7 +115,7 @@ class GameScene extends Scene
 		super.update();
 	}
 
-	private function addSomeBunnies():Void
+	function addSomeBunnies():Void
 	{
 		var more:Int = numBunnies + incBunnies;
 		addBunnies(more - numBunnies);

@@ -30,7 +30,7 @@ class Physics extends Entity
 	}
 
 	public var onGround(get_onGround, null): Bool;
-	private function get_onGround():Bool { return _onGround; }
+	function get_onGround():Bool { return _onGround; }
 
 	override public function update()
 	{
@@ -50,7 +50,7 @@ class Physics extends Entity
 		velocity.y += gravity.y;
 	}
 
-	private function checkMaxVelocity()
+	function checkMaxVelocity()
 	{
 		if (maxVelocity.x > 0 && Math.abs(velocity.x) > maxVelocity.x)
 		{
@@ -85,7 +85,7 @@ class Physics extends Entity
 		return true;
 	}
 
-	private function applyVelocity()
+	function applyVelocity()
 	{
 		var i:Int;
 
@@ -94,6 +94,6 @@ class Physics extends Entity
 		moveBy(velocity.x, velocity.y, solid, true);
 	}
 
-	private var _onGround:Bool;
+	var _onGround:Bool;
 
 }
