@@ -49,6 +49,27 @@ class Scene extends Tweener
 	public var shaders:Null<Array<Shader>>;
 
 	/**
+	 * Invoked before the update cycle begins each frame.
+	 */
+	public var preUpdate:Signal = new Signal();
+	/**
+	 * Invoked after update cycle.
+	 */
+	public var postUpdate:Signal = new Signal();
+	/**
+	 * Invoked before rendering begins each frame.
+	 */
+	public var preRender:Signal = new Signal();
+	/**
+	 * Invoked after rendering completes.
+	 */
+	public var postRender:Signal = new Signal();
+	/**
+	 * Invoked after this scene is resized.
+	 */
+	public var resize:Signal = new Signal();
+
+	/**
 	 * Constructor.
 	 */
 	public function new()
@@ -84,7 +105,8 @@ class Scene extends Tweener
 	 */
 	public function end() {}
 
-	public function resize()
+	@:allow(haxepunk.HXP)
+	function _resize()
 	{
 		if (width != HXP.width || height != HXP.height)
 		{
@@ -94,6 +116,7 @@ class Scene extends Tweener
 			{
 				e.resized();
 			}
+			resize.invoke();
 		}
 	}
 
@@ -114,6 +137,8 @@ class Scene extends Tweener
 	 */
 	override public function update()
 	{
+		preUpdate.invoke();
+
 		// update the entities
 		for (e in _update)
 		{
@@ -133,6 +158,8 @@ class Scene extends Tweener
 		{
 			HXP.cursor.update();
 		}
+
+		postUpdate.invoke();
 	}
 
 	/**
@@ -168,6 +195,7 @@ class Scene extends Tweener
 	 */
 	public function render()
 	{
+		preRender.invoke();
 		sprite.startFrame();
 
 		if (HXP.renderMode == RenderMode.HARDWARE)
@@ -190,6 +218,7 @@ class Scene extends Tweener
 		}
 
 		sprite.endFrame();
+		postRender.invoke();
 	}
 
 	/**
