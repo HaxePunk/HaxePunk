@@ -62,7 +62,7 @@ import haxepunk.utils.Data;
 import haxepunk.utils.Draw;
 import haxepunk.utils.Ease;
 import haxepunk.input.Input;
-import haxepunk.input.Joystick;
+import haxepunk.input.Gamepad;
 import haxepunk.input.Key;
 import haxepunk.input.Touch;
 

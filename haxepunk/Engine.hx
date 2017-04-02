@@ -60,6 +60,14 @@ class Engine extends Sprite
 	 * Invoked after the screen is resized.
 	 */
 	public var resize:Signal = new Signal();
+	/**
+	 * Invoked when input is received.
+	 */
+	public var inputPressed:Signals = new Signals();
+	/**
+	 * Invoked when input is received.
+	 */
+	public var inputReleased:Signals = new Signals();
 
 	/**
 	 * Constructor. Defines startup information about your game.

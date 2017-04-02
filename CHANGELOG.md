@@ -14,6 +14,14 @@ Major release; see MIGRATION.md for migration guide.
 * [bendmorris] Gradually display BitmapText
 * [bendmorris] ColoredRect graphic
 * [bendmorris] Signals
+* [bendmorris] Per-Scene shaders
+* [bendmorris] libgdx texture packer support
+* [bendmorris] Signals implementation with Engine- and Scene-level signals
+* [bendmorris] Unified input handling system
+
+v2.6.1
+------------------------------
+* [bendmorris] Lime 4 support
 
 v2.6.0
 ------------------------------

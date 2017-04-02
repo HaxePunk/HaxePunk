@@ -49,25 +49,33 @@ class Scene extends Tweener
 	public var shaders:Null<Array<SceneShader>>;
 
 	/**
-	 * Invoked before the update cycle begins each frame.
+	 * Invoked before this Scene's update cycle begins each frame.
 	 */
 	public var preUpdate:Signal = new Signal();
 	/**
-	 * Invoked after update cycle.
+	 * Invoked after this Scene's update cycle.
 	 */
 	public var postUpdate:Signal = new Signal();
 	/**
-	 * Invoked before rendering begins each frame.
+	 * Invoked before rendering begins for this Scene each frame.
 	 */
 	public var preRender:Signal = new Signal();
 	/**
-	 * Invoked after rendering completes.
+	 * Invoked after rendering this Scene completes.
 	 */
 	public var postRender:Signal = new Signal();
 	/**
-	 * Invoked after this scene is resized.
+	 * Invoked after this Scene is resized.
 	 */
 	public var resize:Signal = new Signal();
+	/**
+	 * Invoked when input is received while this Scene is active.
+	 */
+	public var inputPressed:Signals = new Signals();
+	/**
+	 * Invoked when input is received while this Scene is active.
+	 */
+	public var inputReleased:Signals = new Signals();
 
 	/**
 	 * Constructor.

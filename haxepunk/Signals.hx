@@ -8,20 +8,14 @@ class Signals implements Dynamic<Signal>
 
 	public inline function exists(field:String) return signals.exists(field);
 
-	public inline function invokeIf(field:String)
+	public inline function invoke(field:String)
 	{
-		if (exists(field))
-		{
-			signals[field].invoke();
-		}
+		if (exists(field)) signals[field].invoke();
 	}
 
-	function resolve(field:String):Signal
+	public function resolve(field:String):Signal
 	{
-		if (!signals.exists(field))
-		{
-			signals[field] = new Signal();
-		}
+		if (!exists(field)) signals[field] = new Signal();
 		return signals[field];
 	}
 }

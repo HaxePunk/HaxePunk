@@ -57,7 +57,7 @@ class Spritemap extends Image
 	/**
 	 * Callback function for animation end.
 	 */
-	public var endAnimation:Signal = new Signal();
+	public var endAnimation:TypedSignal<Animation> = new TypedSignal();
 
 	/**
 	 * Animation speed factor, alter this to speed up/slow down all animations.
@@ -123,14 +123,14 @@ class Spritemap extends Image
 					{
 						_index = anim.getLastFrame(reverse);
 						anim.end.invoke();
-						endAnimation.invoke();
+						endAnimation.invoke(anim);
 					}
 					else
 					{
 						_index = anim.getFirstFrame(reverse);
 						anim.end.invoke();
-						endAnimation.invoke();
 						complete = true;
+						endAnimation.invoke(anim);
 						break;
 					}
 				}

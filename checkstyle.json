@@ -29,14 +29,6 @@
             }
         },
         {
-            "type": "ConstantName",
-            "props": {
-                "severity": "INFO",
-                "format": "^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$",
-                "tokens": ["INLINE"]
-            }
-        },
-        {
             "type": "EmptyLines",
             "props": {
                 "max": 1,
