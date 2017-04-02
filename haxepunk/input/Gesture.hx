@@ -3,7 +3,6 @@ package haxepunk.input;
 import haxepunk.HXP;
 import haxepunk.utils.MathUtil;
 
-
 /**
  * Gesture input. Used to support complex touch input such as swipes,
  * pinch/zoom, and long or quick taps.
@@ -236,8 +235,8 @@ abstract Gesture(Int) from Int to Int
 			gesture.update();
 		}
 
-		var touches = Input.touches;
-		var touchOrder = Input.touchOrder;
+		var touches = Touch.touches;
+		var touchOrder = Touch.touchOrder;
 		var touchCount:Int = 0;
 		for (touch in touchOrder)
 		{
@@ -272,9 +271,9 @@ abstract Gesture(Int) from Int to Int
 					mode = READY;
 					var touch:Touch = getTouch(touches, touchOrder, 0);
 					var t:Int = (touch.time < longPressTime) ? TAP : LONG_PRESS;
-					
+
 					if (t == TAP && _lastTap > 0) t = DOUBLE_TAP;
-					
+
 					if (!check(t))
 					{
 						start(t, touch.x, touch.y);
