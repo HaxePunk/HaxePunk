@@ -11,6 +11,4 @@ class {{PROJECT_CLASS}} extends Engine
 #end
 		HXP.scene = new MainScene();
 	}
-
-	public static function main new {{PROJECT_CLASS}}();
 }
