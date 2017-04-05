@@ -54,7 +54,7 @@ class Entity extends Tweener
 	function get_x():Float
 	{
 		var parentX:Float = (parent == null) ? 0 : parent.x;
-		return parentX + x + (followCamera ? HXP.camera.x : 0);
+		return parentX + x + (followCamera ? camera.x : 0);
 	}
 	function set_x(v:Float):Float
 	{
@@ -69,7 +69,7 @@ class Entity extends Tweener
 	function get_y():Float
 	{
 		var parentY:Float = (parent == null) ? 0 : parent.y;
-		return parentY + y + (followCamera ? HXP.camera.y : 0);
+		return parentY + y + (followCamera ? camera.y : 0);
 	}
 	function set_y(v:Float):Float
 	{
@@ -128,6 +128,9 @@ class Entity extends Tweener
 	 * The BitmapData target to draw the Entity to. Leave as null to render to the current screen buffer (default).
 	 */
 	public var renderTarget:BitmapData;
+
+	public var camera(get, never):Camera;
+	inline function get_camera() return (scene == null) ? HXP.camera : scene.camera;
 
 	/**
 	 * Constructor. Can be used to place the Entity and assign a graphic and mask.
