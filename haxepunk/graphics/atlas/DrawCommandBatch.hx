@@ -118,7 +118,11 @@ class DrawCommandBatch
 		return command;
 	}
 
-	public inline function addRect(texture:BitmapData, smooth:Bool, blend:BlendMode, uvx:Float, uvy:Float, rw:Float, rh:Float, a:Float, b:Float, c:Float, d:Float, tx:Float, ty:Float, red:Float, green:Float, blue:Float, alpha:Float):Void
+	public inline function addRect(texture:BitmapData, smooth:Bool, blend:BlendMode,
+		rx:Float, ry:Float, rw:Float, rh:Float,
+		a:Float, b:Float, c:Float, d:Float,
+		tx:Float, ty:Float,
+		red:Float, green:Float, blue:Float, alpha:Float):Void
 	{
 		var uvx1:Float, uvy1:Float, uvx2:Float, uvy2:Float;
 		if (texture == null)
@@ -129,10 +133,12 @@ class DrawCommandBatch
 		}
 		else
 		{
-			uvx1 = ((uvx + 0.5) / texture.width);
-			uvy1 = ((uvy + 0.5) / texture.height);
-			uvx2 = ((uvx + rw + 0.5) / texture.width);
-			uvy2 = ((uvy + rh + 0.5) / texture.height);
+			// linear filter requires half pixel offset
+			var offset = smooth ? 0.5 : 0;
+			uvx1 = (rx + offset) / texture.width;
+			uvy1 = (ry + offset) / texture.height;
+			uvx2 = (rx + rw - offset) / texture.width;
+			uvy2 = (ry + rh - offset) / texture.height;
 		}
 
 		var matrix = HXP.matrix;
