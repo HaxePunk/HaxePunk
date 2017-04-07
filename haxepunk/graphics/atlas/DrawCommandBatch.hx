@@ -129,10 +129,10 @@ class DrawCommandBatch
 		}
 		else
 		{
-			uvx1 = ((uvx + 0.5) / texture.width);
-			uvy1 = ((uvy + 0.5) / texture.height);
-			uvx2 = ((uvx + rw + 0.5) / texture.width);
-			uvy2 = ((uvy + rh + 0.5) / texture.height);
+			uvx1 = (uvx / texture.width);
+			uvy1 = (uvy / texture.height);
+			uvx2 = ((uvx + rw) / texture.width);
+			uvy2 = ((uvy + rh) / texture.height);
 		}
 
 		var matrix = HXP.matrix;
