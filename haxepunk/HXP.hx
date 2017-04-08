@@ -453,7 +453,7 @@ class HXP
 	 *
 	 * @return	The BitmapData.
 	 */
-	public static function createBitmap(width:Int, height:Int, ?transparent:Bool = false, ?color:Color = 0):BitmapData
+	public static function createBitmap(width:Int, height:Int, transparent:Bool = false, color:Color = Color.Black):BitmapData
 	{
 #if flash
 	#if flash8
