@@ -139,7 +139,7 @@ class AtlasRegion
 	 *
 	 * @return	String version of the object.
 	 */
-	public function toString():String
+	public inline function toString():String
 	{
 		return "[AtlasRegion " + _rect + "]";
 	}
