@@ -209,11 +209,8 @@ class Image extends Graphic
 				_point.x += _sourceRect.width * sx;
 			}
 
-			_point.x = _point.x * fsx;
-			_point.y = _point.y * fsy;
-
 			// render without rotation
-			_region.draw(_point.x, _point.y, layer, sx * fsx * (_flipped ? -1 : 1), sy * fsy, angle, _red, _green, _blue, _alpha, smooth, blend);
+			_region.draw(_point.x * fsx, _point.y * fsy, layer, sx * fsx * (_flipped ? -1 : 1), sy * fsy, angle, _red, _green, _blue, _alpha, smooth, blend);
 		}
 		else
 		{

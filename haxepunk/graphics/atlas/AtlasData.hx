@@ -10,7 +10,7 @@ import haxepunk.utils.MathUtil;
 
 /**
  * Abstract representing either a `String`, a `AtlasData` or a `BitmapData`.
- * 
+ *
  * Conversion is automatic, no need to use this.
  */
 abstract AtlasDataType(AtlasData)
@@ -40,9 +40,9 @@ class AtlasData
 
 	/**
 	 * Creates a new AtlasData class
-	 * 
+	 *
 	 * **NOTE**: Only create one instance of AtlasData per name. An error will be thrown if you try to create a duplicate.
-	 * 
+	 *
 	 * @param bd     BitmapData image to use for rendering
 	 * @param name   A reference to the image data, used with destroy and for setting rendering flags
 	 */
@@ -95,9 +95,9 @@ class AtlasData
 	 * String representation of AtlasData
 	 * @return the name of the AtlasData
 	 */
-	public function toString():String
+	public inline function toString():String
 	{
-		return (_name == null ? "AtlasData" : _name); 
+		return (_name == null ? "AtlasData" : _name);
 	}
 
 	/**

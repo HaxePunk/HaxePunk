@@ -29,7 +29,7 @@ class Tilemap extends Canvas
 	 * @param	tileSpacingHeight	Tile vertical spacing.
 	 * @param	opaqueTiles			Indicates if this tileset contains only opaque tiles (defaults to true). Only used in Flash .
 	 */
-	public function new(tileset:TileType, width:Int, height:Int, tileWidth:Int, tileHeight:Int, ?tileSpacingWidth:Int=0, ?tileSpacingHeight:Int=0, ?opaqueTiles:Bool=true)
+	public function new(tileset:TileType, width:Int, height:Int, tileWidth:Int, tileHeight:Int, tileSpacingWidth:Int=0, tileSpacingHeight:Int=0, opaqueTiles:Bool=true)
 	{
 		_rect = HXP.rect;
 

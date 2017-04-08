@@ -3,6 +3,7 @@ package haxepunk.graphics.atlas;
 #if hardware_render
 import haxe.PosInfos;
 import flash.geom.Rectangle;
+import flash.display.BitmapData;
 import flash.display.BlendMode;
 import flash.geom.Point;
 import flash.gl.GL;
@@ -21,7 +22,7 @@ import haxepunk.HXP;
 @:dox(hide)
 private class TextureShader extends BaseShader
 {
-	public static inline var VERTEX_SHADER =
+	public static var VERTEX_SHADER =
 "// HaxePunk HardwareRenderer texture vertex shader
 #ifdef GL_ES
 precision mediump float;
@@ -40,7 +41,7 @@ void main(void) {
 	gl_Position = uMatrix * aPosition;
 }";
 
-	public static inline var FRAGMENT_SHADER =
+	public static var FRAGMENT_SHADER =
 "// HaxePunk HardwareRenderer texture fragment shader
 #ifdef GL_ES
 precision mediump float;
@@ -85,7 +86,7 @@ void main(void) {
 @:dox(hide)
 private class ColorShader extends BaseShader
 {
-	public static inline var VERTEX_SHADER =
+	public static var VERTEX_SHADER =
 "// HaxePunk HardwareRenderer color vertex shader
 #ifdef GL_ES
 precision mediump float;
@@ -101,7 +102,7 @@ void main(void) {
 	gl_Position = uMatrix * aPosition;
 }";
 
-	public static inline var FRAGMENT_SHADER =
+	public static var FRAGMENT_SHADER =
 "// HaxePunk HardwareRenderer color fragment shader
 #ifdef GL_ES
 precision mediump float;
@@ -178,35 +179,118 @@ class HardwareRenderer
 		#end
 	}
 
-	static inline function ortho(x0:Float, x1:Float, y0:Float, y1:Float, zNear:Float, zFar:Float):Float32Array
+	static inline function ortho(x0:Float, x1:Float, y0:Float, y1:Float, zNear:Float, zFar:Float)
 	{
 		var sx = 1.0 / (x1 - x0);
 		var sy = 1.0 / (y1 - y0);
 		var sz = 1.0 / (zFar - zNear);
+		_ortho[0] = 2.0 * sx;
+		_ortho[5] = 2.0 * sy;
+		_ortho[10] = -2.0 * sz;
+		_ortho[12] = -(x0 + x1) * sx;
+		_ortho[13] = -(y0 + y1) * sy;
+		_ortho[14] = -(zNear + zFar) * sz;
+	}
 
-		var _data = _f32;
-		_data[0] = 2.0 * sx;
-		_data[1] = 0;
-		_data[2] = 0;
-		_data[3] = 0;
-		_data[4] = 0;
-		_data[5] = 2.0 * sy;
-		_data[6] = 0;
-		_data[7] = 0;
-		_data[8] = 0;
-		_data[9] = 0;
-		_data[10] = -2.0 * sz;
-		_data[11] = 0;
-		_data[12] = -(x0 + x1) * sx;
-		_data[13] = -(y0 + y1) * sy;
-		_data[14] = -(zNear + zFar) * sz;
-		_data[15] = 1;
+	static inline function setBlendMode(blend:BlendMode)
+	{
+		switch (blend)
+		{
+			case BlendMode.ADD:
+				GL.blendEquationSeparate(GL.FUNC_ADD, GL.FUNC_ADD);
+				GL.blendFuncSeparate(GL.ONE, GL.ONE, GL.ZERO, GL.ONE);
+			case BlendMode.MULTIPLY:
+				GL.blendEquationSeparate(GL.FUNC_ADD, GL.FUNC_ADD);
+				GL.blendFuncSeparate(GL.DST_COLOR, GL.ONE_MINUS_SRC_ALPHA, GL.ZERO, GL.ONE);
+			case BlendMode.SCREEN:
+				GL.blendEquationSeparate(GL.FUNC_ADD, GL.FUNC_ADD);
+				GL.blendFuncSeparate(GL.ONE, GL.ONE_MINUS_SRC_COLOR, GL.ZERO, GL.ONE);
+			case BlendMode.SUBTRACT:
+				GL.blendEquationSeparate(GL.FUNC_REVERSE_SUBTRACT, GL.FUNC_ADD);
+				GL.blendFuncSeparate(GL.ONE, GL.ONE, GL.ZERO, GL.ONE);
+			default:
+				GL.blendEquation(GL.FUNC_ADD);
+				GL.blendFunc(GL.ONE, GL.ONE_MINUS_SRC_ALPHA);
+		}
+	}
 
-		return _f32;
+	static inline function bindTexture(texture:BitmapData, smooth:Bool)
+	{
+		#if (lime && !flash)
+		var renderer:GLRenderer = cast HXP.stage.__renderer;
+		var renderSession = renderer.renderSession;
+		GL.bindTexture(GL.TEXTURE_2D, texture.getTexture(renderSession.gl));
+		#elseif nme
+		if (!texture.premultipliedAlpha) texture.premultipliedAlpha = true;
+		GL.bindBitmapDataTexture(texture);
+		#end
+		if (smooth)
+		{
+			GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
+			GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
+		}
+		else
+		{
+			GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
+			GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
+		}
+		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
+		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
+	}
+
+	@:access(haxepunk.graphics.atlas.DrawCommand)
+	@:access(haxepunk.graphics.atlas.RenderData)
+	static inline function prepareBuffer(drawCommand:DrawCommand, texture:BitmapData, buffer:Float32Array):Int
+	{
+		var bufferPos:Int = -1;
+		var dataCount:Int = 0;
+		var data = drawCommand.data;
+		while (data != null)
+		{
+			buffer[++bufferPos] = data.tx1;
+			buffer[++bufferPos] = data.ty1;
+			buffer[++bufferPos] = data.red;
+			buffer[++bufferPos] = data.green;
+			buffer[++bufferPos] = data.blue;
+			buffer[++bufferPos] = data.alpha;
+			if (texture != null)
+			{
+				buffer[++bufferPos] = data.uvx1;
+				buffer[++bufferPos] = data.uvy1;
+			}
+
+			buffer[++bufferPos] = data.tx2;
+			buffer[++bufferPos] = data.ty2;
+			buffer[++bufferPos] = data.red;
+			buffer[++bufferPos] = data.green;
+			buffer[++bufferPos] = data.blue;
+			buffer[++bufferPos] = data.alpha;
+			if (texture != null)
+			{
+				buffer[++bufferPos] = data.uvx2;
+				buffer[++bufferPos] = data.uvy2;
+			}
+
+			buffer[++bufferPos] = data.tx3;
+			buffer[++bufferPos] = data.ty3;
+			buffer[++bufferPos] = data.red;
+			buffer[++bufferPos] = data.green;
+			buffer[++bufferPos] = data.blue;
+			buffer[++bufferPos] = data.alpha;
+			if (texture != null)
+			{
+				buffer[++bufferPos] = data.uvx3;
+				buffer[++bufferPos] = data.uvy3;
+			}
+
+			data = data._next;
+			++dataCount;
+		}
+		return dataCount;
 	}
 
 	static var _point:Point = new Point();
-	static var _f32:Float32Array = new Float32Array(16);
+	static var _ortho:Float32Array;
 
 	// builtin shaders used to render DrawCommands
 	var colorShader:ColorShader;
@@ -219,7 +303,6 @@ class HardwareRenderer
 
 	var buffer:Float32Array;
 	var glBuffer:GLBuffer;
-	var final:Int;
 	var defaultFramebuffer:GLFramebuffer = null;
 
 	public function new()
@@ -227,13 +310,21 @@ class HardwareRenderer
 #if ios
 		defaultFramebuffer = new GLFramebuffer(GL.version, GL.getParameter(GL.FRAMEBUFFER_BINDING));
 #end
+		if (_ortho == null)
+		{
+			_ortho = new Float32Array(16);
+			for (i in 0 ... 15)
+			{
+				_ortho[i] = 0;
+			}
+			_ortho[15] = 1;
+		}
 	}
 
 	@:access(haxepunk.graphics.atlas.DrawCommand)
-	@:access(haxepunk.graphics.atlas.RenderData)
 	public function render(drawCommand:DrawCommand, scene:Scene, rect:Rectangle):Void
 	{
-		checkForGLErrors();
+		#if (gl_debug || debug) checkForGLErrors(); #end
 
 		if (drawCommand != null && drawCommand.dataCount > 0)
 		{
@@ -248,113 +339,43 @@ class HardwareRenderer
 			}
 			shader.bind();
 
-			var bufferChunkSize = shader.bufferChunkSize;
+			var bufferChunkSize:Int = shader.bufferChunkSize;
 
 			var blend:BlendMode = drawCommand.blend;
 			var smooth:Bool = drawCommand.smooth;
 
-			var tx:Float, ty:Float, rx:Float, ry:Float, rw:Float, rh:Float, a:Float, b:Float, c:Float, d:Float,
-				uvx:Float = 0, uvy:Float = 0, uvx2:Float = 0, uvy2:Float = 0,
-				red:Float, green:Float, blue:Float, alpha:Float;
-
 			// expand arrays if necessary
 			var bufferLength:Int = buffer == null ? 0 : buffer.length;
-			var items = drawCommand.dataCount;
+			var items:Int = drawCommand.dataCount;
 			if (bufferLength < items * bufferChunkSize * 3)
 			{
 				buffer = new Float32Array(resize(bufferLength, items, bufferChunkSize * 3));
 
 				GL.bindBuffer(GL.ARRAY_BUFFER, glBuffer);
 				#if (lime >= "4.0.0")
-				GL.bufferData(GL.ARRAY_BUFFER, buffer.length * FLOAT32_BYTES, buffer, GL.DYNAMIC_DRAW);
+				GL.bufferData(GL.ARRAY_BUFFER, buffer.length * FLOAT32_BYTES, 0, GL.DYNAMIC_DRAW);
 				#else
-				GL.bufferData(GL.ARRAY_BUFFER, buffer, GL.DYNAMIC_DRAW);
+				GL.bufferData(GL.ARRAY_BUFFER, null, GL.DYNAMIC_DRAW);
 				#end
 			}
 
-			var bufferPos:Int = 0;
-			var texture = drawCommand.texture;
-			var data = drawCommand.data;
-			var x0:Float, y0:Float;
+			var texture:BitmapData = drawCommand.texture;
+			var dataCount:Int = prepareBuffer(drawCommand, texture, buffer);
 
-			var dataCount:Int = 0;
-			while (data != null)
-			{
-				buffer[bufferPos++] = data.tx1;
-				buffer[bufferPos++] = data.ty1;
-				buffer[bufferPos++] = data.red;
-				buffer[bufferPos++] = data.green;
-				buffer[bufferPos++] = data.blue;
-				buffer[bufferPos++] = data.alpha;
-				if (texture != null)
-				{
-					buffer[bufferPos++] = data.uvx1;
-					buffer[bufferPos++] = data.uvy1;
-				}
-
-				buffer[bufferPos++] = data.tx2;
-				buffer[bufferPos++] = data.ty2;
-				buffer[bufferPos++] = data.red;
-				buffer[bufferPos++] = data.green;
-				buffer[bufferPos++] = data.blue;
-				buffer[bufferPos++] = data.alpha;
-				if (texture != null)
-				{
-					buffer[bufferPos++] = data.uvx2;
-					buffer[bufferPos++] = data.uvy2;
-				}
-
-				buffer[bufferPos++] = data.tx3;
-				buffer[bufferPos++] = data.ty3;
-				buffer[bufferPos++] = data.red;
-				buffer[bufferPos++] = data.green;
-				buffer[bufferPos++] = data.blue;
-				buffer[bufferPos++] = data.alpha;
-				if (texture != null)
-				{
-					buffer[bufferPos++] = data.uvx3;
-					buffer[bufferPos++] = data.uvy3;
-				}
-
-				data = data._next;
-				dataCount++;
-			}
-
-			var x0 = HXP.screen.x, y0 = HXP.screen.y;
-			var transformation = ortho(-x0, -x0 + HXP.windowWidth, -y0 + HXP.windowHeight, -y0, 1000, -1000);
+			var x0:Int = Std.int(HXP.screen.x),
+				y0:Int = Std.int(HXP.screen.y);
+			ortho(-x0, -x0 + HXP.windowWidth, -y0 + HXP.windowHeight, -y0, 1000, -1000);
 			#if (lime >= "4.0.0")
-			GL.uniformMatrix4fv(shader.uniformIndex("uMatrix"), 1, false, transformation);
+			GL.uniformMatrix4fv(shader.uniformIndex("uMatrix"), 1, false, _ortho);
 			#else
-			GL.uniformMatrix4fv(shader.uniformIndex("uMatrix"), false, transformation);
+			GL.uniformMatrix4fv(shader.uniformIndex("uMatrix"), false, _ortho);
 			#end
 
-			checkForGLErrors();
+			#if (gl_debug || debug) checkForGLErrors(); #end
 
-			if (texture != null)
-			{
-				#if (lime && !flash)
-				var renderer:GLRenderer = cast HXP.stage.__renderer;
-				var renderSession = renderer.renderSession;
-				GL.bindTexture(GL.TEXTURE_2D, texture.getTexture(renderSession.gl));
-				#elseif nme
-				if (!texture.premultipliedAlpha) texture.premultipliedAlpha = true;
-				GL.bindBitmapDataTexture(texture);
-				#end
-				if (smooth)
-				{
-					GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
-					GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
-				}
-				else
-				{
-					GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
-					GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
-				}
-				GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
-				GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
-			}
+			if (texture != null) bindTexture(texture, smooth);
 
-			checkForGLErrors();
+			#if (gl_debug || debug) checkForGLErrors(); #end
 
 			GL.bindBuffer(GL.ARRAY_BUFFER, glBuffer);
 			#if (lime >= "4.0.0")
@@ -363,28 +384,11 @@ class HardwareRenderer
 			GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer);
 			#end
 
-			checkForGLErrors();
+			#if (gl_debug || debug) checkForGLErrors(); #end
 
 			var blend = drawCommand.blend;
 			if (blend == null) blend = BlendMode.ALPHA;
-			switch (blend)
-			{
-				case BlendMode.ADD:
-					GL.blendEquationSeparate(GL.FUNC_ADD, GL.FUNC_ADD);
-					GL.blendFuncSeparate(GL.ONE, GL.ONE, GL.ZERO, GL.ONE);
-				case BlendMode.MULTIPLY:
-					GL.blendEquationSeparate(GL.FUNC_ADD, GL.FUNC_ADD);
-					GL.blendFuncSeparate(GL.DST_COLOR, GL.ONE_MINUS_SRC_ALPHA, GL.ZERO, GL.ONE);
-				case BlendMode.SCREEN:
-					GL.blendEquationSeparate(GL.FUNC_ADD, GL.FUNC_ADD);
-					GL.blendFuncSeparate(GL.ONE, GL.ONE_MINUS_SRC_COLOR, GL.ZERO, GL.ONE);
-				case BlendMode.SUBTRACT:
-					GL.blendEquationSeparate(GL.FUNC_REVERSE_SUBTRACT, GL.FUNC_ADD);
-					GL.blendFuncSeparate(GL.ONE, GL.ONE, GL.ZERO, GL.ONE);
-				default:
-					GL.blendEquation(GL.FUNC_ADD);
-					GL.blendFunc(GL.ONE, GL.ONE_MINUS_SRC_ALPHA);
-			}
+			setBlendMode(blend);
 
 			var stride = bufferChunkSize * FLOAT32_BYTES;
 			GL.vertexAttribPointer(shader.attributeIndex("aPosition"), 2, GL.FLOAT, false, stride, 0);
@@ -399,14 +403,14 @@ class HardwareRenderer
 			GL.drawArrays(GL.TRIANGLES, 0, items * 3);
 			GL.disable(GL.SCISSOR_TEST);
 
-			checkForGLErrors();
+			#if (gl_debug || debug) checkForGLErrors(); #end
 
 			GL.bindBuffer(GL.ARRAY_BUFFER, null);
 
 			shader.unbind();
-		}
 
-		checkForGLErrors();
+			#if (gl_debug || debug) checkForGLErrors(); #end
+		}
 	}
 
 	public function startScene(scene:Scene)

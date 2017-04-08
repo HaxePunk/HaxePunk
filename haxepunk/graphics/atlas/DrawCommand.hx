@@ -1,32 +1,35 @@
 package haxepunk.graphics.atlas;
 
+import haxe.ds.Vector;
 import flash.display.BlendMode;
 import flash.display.BitmapData;
 import flash.geom.Rectangle;
 
 @:allow(haxepunk.graphics.atlas.DrawCommand)
 @:allow(haxepunk.graphics.atlas.DrawCommandBatch)
+@:allow(haxepunk.graphics.atlas.HardwareRenderer)
 private class RenderData
 {
 	public function new() {}
 
-	public var tx1:Float = 0;
-	public var ty1:Float = 0;
-	public var tx2:Float = 0;
-	public var ty2:Float = 0;
-	public var tx3:Float = 0;
-	public var ty3:Float = 0;
-	public var uvx1:Float = 0;
-	public var uvy1:Float = 0;
-	public var uvx2:Float = 0;
-	public var uvy2:Float = 0;
-	public var uvx3:Float = 0;
-	public var uvy3:Float = 0;
+	var _data:Vector<Float> = new Vector(16);
 
-	public var red:Float = 0;
-	public var blue:Float = 0;
-	public var green:Float = 0;
-	public var alpha:Float = 0;
+	public var tx1(get, set):Float; inline function get_tx1() return _data[0]; inline function set_tx1(v:Float) return _data[0] = v;
+	public var ty1(get, set):Float; inline function get_ty1() return _data[1]; inline function set_ty1(v:Float) return _data[1] = v;
+	public var uvx1(get, set):Float; inline function get_uvx1() return _data[2]; inline function set_uvx1(v:Float) return _data[2] = v;
+	public var uvy1(get, set):Float; inline function get_uvy1() return _data[3]; inline function set_uvy1(v:Float) return _data[3] = v;
+	public var tx2(get, set):Float; inline function get_tx2() return _data[4]; inline function set_tx2(v:Float) return _data[4] = v;
+	public var ty2(get, set):Float; inline function get_ty2() return _data[5]; inline function set_ty2(v:Float) return _data[5] = v;
+	public var uvx2(get, set):Float; inline function get_uvx2() return _data[6]; inline function set_uvx2(v:Float) return _data[6] = v;
+	public var uvy2(get, set):Float; inline function get_uvy2() return _data[7]; inline function set_uvy2(v:Float) return _data[7] = v;
+	public var tx3(get, set):Float; inline function get_tx3() return _data[8]; inline function set_tx3(v:Float) return _data[8] = v;
+	public var ty3(get, set):Float; inline function get_ty3() return _data[9]; inline function set_ty3(v:Float) return _data[9] = v;
+	public var uvx3(get, set):Float; inline function get_uvx3() return _data[10]; inline function set_uvx3(v:Float) return _data[10] = v;
+	public var uvy3(get, set):Float; inline function get_uvy3() return _data[11]; inline function set_uvy3(v:Float) return _data[11] = v;
+	public var red(get, set):Float; inline function get_red() return _data[12]; inline function set_red(v:Float) return _data[12] = v;
+	public var green(get, set):Float; inline function get_green() return _data[13]; inline function set_green(v:Float) return _data[13] = v;
+	public var blue(get, set):Float; inline function get_blue() return _data[14]; inline function set_blue(v:Float) return _data[14] = v;
+	public var alpha(get, set):Float; inline function get_alpha() return _data[15]; inline function set_alpha(v:Float) return _data[15] = v;
 
 	public var x1(get, never):Float;
 	public inline function get_x1() return DrawCommandBatch.minOf3(tx1, tx2, tx3);
@@ -144,7 +147,9 @@ class DrawCommand
 	public var texture:BitmapData;
 	public var smooth:Bool = false;
 	public var blend:BlendMode = BlendMode.ALPHA;
+	#if render_batch
 	public var bounds:Rectangle = new Rectangle();
+	#end
 
 	function new() {}
 
@@ -221,6 +226,7 @@ class DrawCommand
 
 		++dataCount;
 
+		#if render_batch
 		// update bounds
 		var x1 = data.x1, x2 = data.x2, y1 = data.y1, y2 = data.y2;
 		if (bounds.width == 0)
@@ -243,6 +249,7 @@ class DrawCommand
 			if (y1 < bounds.top) bounds.top = y1;
 			if (y2 > bounds.bottom) bounds.bottom = y2;
 		}
+		#end
 	}
 
 	inline function recycleData()
@@ -254,7 +261,9 @@ class DrawCommand
 			_dataPool = data;
 		}
 		data = _lastData = null;
+		#if render_batch
 		bounds.setTo(0, 0, 0, 0);
+		#end
 	}
 
 	var data:RenderData;

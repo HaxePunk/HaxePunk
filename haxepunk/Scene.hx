@@ -1153,7 +1153,7 @@ class Scene extends Tweener
 		else
 		{
 			// Create new layer with entity.
-			list = new List<Entity>();
+			list = _pooledEntityLists.length > 0 ? _pooledEntityLists.pop() : new List<Entity>();
 			_layers.set(e._layer, list);
 
 			if (_layerList.length == 0)
@@ -1178,6 +1178,7 @@ class Scene extends Tweener
 		{
 			_layerList.remove(e._layer);
 			_layers.remove(e._layer);
+			_pooledEntityLists.push(list);
 		}
 	}
 
@@ -1193,7 +1194,7 @@ class Scene extends Tweener
 		}
 		else
 		{
-			list = new List<Entity>();
+			list = _pooledEntityLists.length > 0 ? _pooledEntityLists.pop() : new List<Entity>();
 			_types.set(e._type, list);
 		}
 		list.push(e);
@@ -1209,6 +1210,7 @@ class Scene extends Tweener
 		if (list.length == 0)
 		{
 			_types.remove(e._type);
+			_pooledEntityLists.push(list);
 		}
 	}
 
@@ -1294,4 +1296,6 @@ class Scene extends Tweener
 
 	@:allow(haxepunk.Engine)
 	var _drawn:Bool = false;
+
+	static var _pooledEntityLists:Array<List<Entity>> = new Array();
 }

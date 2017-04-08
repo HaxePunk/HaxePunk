@@ -36,7 +36,7 @@ class DrawCommandBatch
 		head = last = null;
 	}
 
-	public function getDrawCommand(texture:BitmapData, smooth:Bool, blend:BlendMode, ?x1:Float, ?y1:Float, ?x2:Float, ?y2:Float, ?x3:Float, ?y3:Float)
+	public function getDrawCommand(texture:BitmapData, smooth:Bool, blend:BlendMode, x1:Float=0, y1:Float=0, x2:Float=0, y2:Float=0, x3:Float=0, y3:Float=0)
 	{
 		if (blend == null) blend = BlendMode.ALPHA;
 
@@ -45,7 +45,8 @@ class DrawCommandBatch
 			// we can reuse the most recent draw call
 			return last;
 		}
-		else if (x1 != null && y1 != null && x2 != null && y2 != null)
+		#if render_batch
+		else if (x1 != 0 && y1 != 0 && x2 != 0 && y2 != 0)
 		{
 			// look back to see if we can add this to a previous draw call
 			var rx1 = minOf3(x1, x2, x3),
@@ -102,6 +103,7 @@ class DrawCommandBatch
 				}
 			}
 		}
+		#end
 
 		var command = DrawCommand.create(texture, smooth, blend);
 		if (last == null)

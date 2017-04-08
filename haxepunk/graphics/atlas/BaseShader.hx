@@ -20,6 +20,7 @@ class BaseShader
 
 	var uniformIndices:Map<String, GLUniformLocation> = new Map();
 	var attributeIndices:Map<String, Int> = new Map();
+	var uniformNames:Array<String> = new Array();
 	var uniformValues:Map<String, Float> = new Map();
 
 	function new(vertexSource:String, fragmentSource:String)
@@ -34,23 +35,29 @@ class BaseShader
 		var vertexShader = GL.createShader(GL.VERTEX_SHADER);
 		GL.shaderSource(vertexShader, vertexSource);
 		GL.compileShader(vertexShader);
+		#if gl_debug
 		if (GL.getShaderParameter(vertexShader, GL.COMPILE_STATUS) == 0)
 			throw "Error compiling vertex shader: " +
 			GL.getShaderInfoLog(vertexShader);
+		#end
 
 		var fragmentShader = GL.createShader(GL.FRAGMENT_SHADER);
 		GL.shaderSource(fragmentShader, fragmentSource);
 		GL.compileShader(fragmentShader);
+		#if gl_debug
 		if (GL.getShaderParameter(fragmentShader, GL.COMPILE_STATUS) == 0)
 			throw "Error compiling fragment shader: " +
 			GL.getShaderInfoLog(fragmentShader);
+		#end
 
 		glProgram = GL.createProgram();
 		GL.attachShader(glProgram, fragmentShader);
 		GL.attachShader(glProgram, vertexShader);
 		GL.linkProgram(glProgram);
+		#if gl_debug
 		if (GL.getProgramParameter(glProgram, GL.LINK_STATUS) == 0)
 			throw "Unable to initialize the shader program.";
+		#end
 	}
 
 	public function destroy()
@@ -69,7 +76,7 @@ class BaseShader
 
 		GL.useProgram(glProgram);
 
-		for (name in uniformValues.keys())
+		for (name in uniformNames)
 		{
 			GL.uniform1f(uniformIndex(name), uniformValues[name]);
 		}
@@ -109,6 +116,10 @@ class BaseShader
 	 */
 	public inline function setUniform(name:String, value:Float)
 	{
+		if (!uniformValues.exists(name))
+		{
+			uniformNames.push(name);
+		}
 		uniformValues[name] = value;
 	}
 }
