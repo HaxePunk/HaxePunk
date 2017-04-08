@@ -16,7 +16,7 @@ class Camera extends Point
 	 * Camera will keep the target in the specified part of the screen.
 	 * @since 4.0.0
 	 */
-	public function anchor(?target:Position, ?anchorX:Float = 0.5, ?anchorY:Float = 0.5)
+	public function anchor(?target:Position, anchorX:Float = 0.5, anchorY:Float = 0.5)
 	{
 		anchorTarget = target;
 		this.anchorX = anchorX;

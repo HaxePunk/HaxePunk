@@ -69,7 +69,7 @@ class Engine extends Sprite
 	 * @param	fixed			If a fixed-framerate should be used.
 	 * @param   renderMode      Overrides the default render mode for this target
 	 */
-	public function new(width:Int = 0, height:Int = 0, frameRate:Float = 60, fixed:Bool = false, ?renderMode:RenderMode)
+	public function new(width:Int = 0, height:Int = 0, frameRate:Float = 60, fixed:Bool = false, renderMode:RenderMode = #if flash RenderMode.BUFFER #else RenderMode.HARDWARE #end)
 	{
 		super();
 
@@ -83,14 +83,7 @@ class Engine extends Sprite
 		HXP.width = width;
 		HXP.height = height;
 
-		if (renderMode != null)
-		{
-			HXP.renderMode = renderMode;
-		}
-		else
-		{
-			HXP.renderMode = #if (flash) RenderMode.BUFFER #else RenderMode.HARDWARE #end;
-		}
+		HXP.renderMode = renderMode;
 
 		// miscellaneous startup stuff
 		if (Random.randomSeed == 0) Random.randomizeSeed();
