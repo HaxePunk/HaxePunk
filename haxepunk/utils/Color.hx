@@ -212,4 +212,10 @@ abstract Color(UInt) from UInt to UInt
 	{
 		return getColorRGBFloat(red * other.red, green * other.green, blue * other.blue);
 	}
+
+	public inline function toARGB(alpha:Float):UInt
+	{
+		alpha = alpha < 0 ? 0 : (alpha > 1 ? 1 : alpha);
+		return (Std.int(0xff * alpha) << 24) | this;
+	}
 }
