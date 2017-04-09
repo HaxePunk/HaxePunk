@@ -63,7 +63,7 @@ abstract Color(UInt) from UInt to UInt
 		inline function intColor(v:Float):Color
 		{
 			var c = Std.int(v * 0x100);
-			return c < 0 ? 0 : (c > 0xff ? 0xff : c);
+			return MathUtil.iclamp(c, 0, 0xff);
 		}
 		return getColorRGB(intColor(r), intColor(g), intColor(b));
 	}
@@ -215,7 +215,7 @@ abstract Color(UInt) from UInt to UInt
 
 	public inline function toARGB(alpha:Float):UInt
 	{
-		alpha = alpha < 0 ? 0 : (alpha > 1 ? 1 : alpha);
+		alpha = MathUtil.clamp(alpha, 0, 1);
 		return (Std.int(0xff * alpha) << 24) | this;
 	}
 }
