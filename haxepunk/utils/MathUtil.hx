@@ -1,7 +1,5 @@
 package haxepunk.utils;
 
-import flash.geom.Point;
-
 /**
  * This class is for math utility functions previously stored in HXP.
  * @since	4.0.0
@@ -387,5 +385,5 @@ class MathUtil
 	public static inline function pow(v:Float, p:Float) return std.Math.pow(v, p);
 	public static inline function log(v:Float) return std.Math.log(v);
 
-	static var point:Point = new Point();
+	static var point:Position = new Position();
 }
