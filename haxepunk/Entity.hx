@@ -1,7 +1,7 @@
 package haxepunk;
 
-import flash.display.BitmapData;
-import flash.geom.Point;
+import openfl.display.BitmapData;
+import openfl.geom.Point;
 import haxe.ds.Either;
 import haxepunk.ds.OneOf;
 import haxepunk.graphics.Graphiclist;

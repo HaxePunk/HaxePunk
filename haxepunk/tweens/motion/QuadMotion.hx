@@ -3,7 +3,7 @@
 import haxepunk.Tween;
 import haxepunk.HXP;
 import haxepunk.utils.Ease;
-import flash.geom.Point;
+import openfl.geom.Point;
 
 /**
  * Determines motion along a quadratic curve.

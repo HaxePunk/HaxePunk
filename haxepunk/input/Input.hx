@@ -1,11 +1,11 @@
 package haxepunk.input;
 
-import flash.events.KeyboardEvent;
-import flash.events.MouseEvent;
-import flash.events.TouchEvent;
-import flash.ui.Keyboard;
-import flash.ui.Multitouch;
-import flash.ui.MultitouchInputMode;
+import openfl.events.KeyboardEvent;
+import openfl.events.MouseEvent;
+import openfl.events.TouchEvent;
+import openfl.ui.Keyboard;
+import openfl.ui.Multitouch;
+import openfl.ui.MultitouchInputMode;
 import haxe.ds.Either;
 import haxepunk.HXP;
 import haxepunk.ds.OneOf;

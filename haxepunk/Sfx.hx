@@ -1,9 +1,9 @@
 package haxepunk;
 
-import flash.events.Event;
-import flash.media.Sound;
-import flash.media.SoundChannel;
-import flash.media.SoundTransform;
+import openfl.events.Event;
+import openfl.media.Sound;
+import openfl.media.SoundChannel;
+import openfl.media.SoundTransform;
 import openfl.Assets;
 import haxepunk.utils.MathUtil;
 
@@ -252,7 +252,7 @@ class Sfx
 
 	/**
 	 * Return a sound type's pan setting.
-	 * On non-flash targets, this factors in global panning. See `HXP.pan`.
+	 * This factors in global panning. See `HXP.pan`.
 	 *
 	 * @param	type	The type to get the pan from.
 	 *
@@ -272,7 +272,7 @@ class Sfx
 
 	/**
 	 * Return a sound type's volume setting.
-	 * On non-flash targets, this factors in global volume. See `HXP.volume`.
+	 * This factors in global volume. See `HXP.volume`.
 	 *
 	 * @param	type	The type to get the volume from.
 	 *

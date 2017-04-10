@@ -1,8 +1,8 @@
 package haxepunk.graphics.atlas;
 
-import flash.display.BlendMode;
-import flash.display.Sprite;
-import flash.geom.Rectangle;
+import openfl.display.BlendMode;
+import openfl.display.Sprite;
+import openfl.geom.Rectangle;
 import haxepunk.utils.Color;
 
 @:access(haxepunk.Scene)

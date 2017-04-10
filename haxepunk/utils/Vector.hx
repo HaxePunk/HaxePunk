@@ -1,6 +1,6 @@
 package haxepunk.utils;
 
-import flash.geom.Point;
+import openfl.geom.Point;
 
 
 @:dox(hide)
@@ -8,19 +8,19 @@ abstract Vector(Point)
 {
 	public inline function new(x:Float = 0, y:Float = 0) this = new Point(x, y);
 
-	@:to public function toPoint():Point return this; 
+	@:to public function toPoint():Point return this;
 	@:from public static function fromPoint(point:Point):Vector
 	{
 		return new Vector(point.x, point.y);
 	}
 
 	public var x(get, set):Float;
-	inline function get_x():Float return this.x; 
-	inline function set_x(value:Float):Float return this.x = value; 
+	inline function get_x():Float return this.x;
+	inline function set_x(value:Float):Float return this.x = value;
 
 	public var y(get, set):Float;
-	inline function get_y():Float return this.y; 
-	inline function set_y(value:Float):Float return this.y = value; 
+	inline function get_y():Float return this.y;
+	inline function set_y(value:Float):Float return this.y = value;
 
 	public inline function dot(b:Vector):Float
 	{

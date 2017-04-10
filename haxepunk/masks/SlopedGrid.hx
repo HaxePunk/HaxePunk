@@ -1,8 +1,8 @@
 package haxepunk.masks;
 
-import flash.display.Graphics;
-import flash.geom.Point;
-import flash.geom.Rectangle;
+import openfl.display.Graphics;
+import openfl.geom.Point;
+import openfl.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.Mask;
 import haxepunk.utils.MathUtil;
@@ -98,7 +98,7 @@ class SlopedGrid extends Hitbox
 	 */
 	public function collidePoint(cx:Float, cy:Float):Bool
 	{
-		var px:Float = _x + _parent.x, 
+		var px:Float = _x + _parent.x,
 			py:Float = _y + _parent.y;
 
 		var column = Std.int((cx - px) / _tile.width),
@@ -288,13 +288,13 @@ class SlopedGrid extends Hitbox
 	 * The tile width.
 	 */
 	public var tileWidth(get, never):Int;
-	inline function get_tileWidth():Int return Std.int(_tile.width); 
+	inline function get_tileWidth():Int return Std.int(_tile.width);
 
 	/**
 	 * The tile height.
 	 */
 	public var tileHeight(get, never):Int;
-	inline function get_tileHeight():Int return Std.int(_tile.height); 
+	inline function get_tileHeight():Int return Std.int(_tile.height);
 
 	/**
 	 * How many columns the grid has
@@ -367,9 +367,9 @@ class SlopedGrid extends Hitbox
 	/** @private Collides against an Entity. */
 	override function collideMask(other:Mask):Bool
 	{
-		var x:Float = _x + _parent.x, 
+		var x:Float = _x + _parent.x,
 			y:Float = _y + _parent.y;
-			
+
 		return collideBox(other._parent.x - other._parent.originX,
 				other._parent.y - other._parent.originY,
 				other._parent.width, other._parent.height,
@@ -379,11 +379,11 @@ class SlopedGrid extends Hitbox
 	/** @private Collides against a Hitbox. */
 	override function collideHitbox(other:Hitbox):Bool
 	{
-		var x:Float = _x + _parent.x, 
+		var x:Float = _x + _parent.x,
 			y:Float = _y + _parent.y,
-			ox:Float = other._x + other._parent.x, 
+			ox:Float = other._x + other._parent.x,
 			oy:Float = other._y + other._parent.y;
-		
+
 		return collideBox(ox, oy, other._width, other._height, x, y);
 	}
 

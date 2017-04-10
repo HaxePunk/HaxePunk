@@ -1,8 +1,8 @@
 package haxepunk.graphics;
 
-import flash.display.BitmapData;
-import flash.display.BlendMode;
-import flash.geom.Rectangle;
+import openfl.display.BitmapData;
+import openfl.display.BlendMode;
+import openfl.geom.Rectangle;
 import haxepunk.utils.Ease;
 import haxepunk.utils.MathUtil;
 

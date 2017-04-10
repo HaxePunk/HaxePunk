@@ -6,8 +6,8 @@ import haxepunk.masks.Grid;
 import haxepunk.masks.SlopedGrid;
 import haxepunk.utils.Projection;
 import haxepunk.utils.Vector;
-import flash.display.Graphics;
-import flash.geom.Point;
+import openfl.display.Graphics;
+import openfl.geom.Point;
 
 /**
  * Uses circular area to determine collision.
@@ -258,14 +258,14 @@ class Circle extends Hitbox
 		graphics.drawCircle((_parent.x + _x - HXP.camera.x) * scaleX, (_parent.y + _y - HXP.camera.y) * scaleY, radius * scaleX);
 	}
 
-	override function get_x():Int return _x - _radius; 
-	override function get_y():Int return _y - _radius; 
+	override function get_x():Int return _x - _radius;
+	override function get_y():Int return _y - _radius;
 
 	/**
 	 * Radius.
 	 */
 	public var radius(get, set):Int;
-	inline function get_radius():Int return _radius; 
+	inline function get_radius():Int return _radius;
 	function set_radius(value:Int):Int
 	{
 		if (_radius == value) return value;

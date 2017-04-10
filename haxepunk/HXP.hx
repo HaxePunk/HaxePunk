@@ -1,13 +1,13 @@
 package haxepunk;
 
 import haxe.Timer;
-import flash.display.BitmapData;
-import flash.display.Sprite;
-import flash.display.Stage;
-import flash.display.StageDisplayState;
-import flash.geom.Matrix;
-import flash.geom.Point;
-import flash.geom.Rectangle;
+import openfl.display.BitmapData;
+import openfl.display.Sprite;
+import openfl.display.Stage;
+import openfl.display.StageDisplayState;
+import openfl.geom.Matrix;
+import openfl.geom.Point;
+import openfl.geom.Rectangle;
 import openfl.ui.Mouse;
 import haxepunk.Tween.TweenType;
 import haxepunk.debug.Console;
@@ -575,7 +575,7 @@ class HXP
 	}
 
 	/**
-	 * Resize the stage, not available on flash or html5.
+	 * Resize the stage, not available on html5.
 	 *
 	 * @param	width	New width.
 	 * @param	height	New height.

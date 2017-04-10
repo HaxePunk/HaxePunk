@@ -1,6 +1,6 @@
 package haxepunk.graphics.atlas;
 
-import flash.geom.Rectangle;
+import openfl.geom.Rectangle;
 import haxepunk.Scene;
 
 @:dox(hide)

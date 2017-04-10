@@ -1,6 +1,6 @@
 package haxepunk.masks;
 
-import flash.display.Graphics;
+import openfl.display.Graphics;
 import haxepunk.Entity;
 import haxepunk.HXP;
 import haxepunk.Mask;
@@ -155,10 +155,10 @@ class Masklist extends Hitbox
 		r = b = MathUtil.INT_MIN_VALUE;
 		var h:Hitbox;
 		var p:Polygon;
-		
+
 		for (m in _masks)
 		{
-			if (Std.is(m, Polygon)) 
+			if (Std.is(m, Polygon))
 			{
 				p = cast m;
 				if (p != null)
@@ -168,7 +168,7 @@ class Masklist extends Hitbox
 					if (p.maxX > r) r = p.maxX;
 					if (p.maxY > b) b = p.maxY;
 				}
-			} 
+			}
 			else if ((h = cast(m, Hitbox)) != null)
 			{
 				if (h.x < l) l = h.x;
@@ -196,7 +196,7 @@ class Masklist extends Hitbox
 	 * Amount of Masks in the list.
 	 */
 	public var count(get, null):Int;
-	function get_count():Int return _count; 
+	function get_count():Int return _count;
 
 	// List information.
 	var _masks:Array<Mask>;

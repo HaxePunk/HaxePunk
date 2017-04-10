@@ -1,7 +1,7 @@
 package haxepunk;
 
 import haxepunk.tweens.TweenEvent;
-import flash.events.EventDispatcher;
+import openfl.events.EventDispatcher;
 
 /**
  * The type of the tween.
@@ -13,10 +13,10 @@ enum TweenType
 	 * be started again with the start() method.
 	 */
 	Persist;
-	
+
 	/** The tween will loop. */
 	Looping;
-	
+
 	/** The tween will be removed after it ended. */
 	OneShot;
 
@@ -119,7 +119,7 @@ class Tween extends EventDispatcher
 		}
 		_finish = false;
 		dispatchEvent(new TweenEvent(TweenEvent.FINISH));
-		
+
 		if (_type == TweenType.OneShot && _callback != null)
 		{
 			removeEventListener(TweenEvent.FINISH, _callback);
@@ -144,7 +144,7 @@ class Tween extends EventDispatcher
 	function set_percent(value:Float):Float return _time = _target * value;
 
 	public var scale(get, null):Float;
-	function get_scale():Float return _t; 
+	function get_scale():Float return _t;
 
 	var _type:TweenType;
 	var _ease:Float -> Float;

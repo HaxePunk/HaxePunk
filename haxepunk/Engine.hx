@@ -1,19 +1,19 @@
 package haxepunk;
 
-import flash.display.Sprite;
-import flash.display.StageAlign;
-import flash.display.StageDisplayState;
-import flash.display.StageQuality;
-import flash.display.StageScaleMode;
-import flash.events.Event;
-import flash.geom.Rectangle;
-import flash.Lib;
+import openfl.display.Sprite;
+import openfl.display.StageAlign;
+import openfl.display.StageDisplayState;
+import openfl.display.StageQuality;
+import openfl.display.StageScaleMode;
+import openfl.events.Event;
+import openfl.geom.Rectangle;
+import openfl.Lib;
 import haxepunk.utils.Draw;
 import haxepunk.input.Input;
 import haxepunk.utils.Random;
 
 /**
- * Main game Sprite class, added to the Flash Stage.
+ * Main game Sprite class, added to the Stage.
  * Manages the game loop.
  *
  * Your main class **needs** to extends this.
@@ -215,7 +215,7 @@ class Engine extends Sprite
 			_scene.focusLost();
 		});
 
-#if (!(flash || html5) && openfl_legacy)
+#if (!html5 && openfl_legacy)
 		flash.display.Stage.shouldRotateInterface = function(orientation:Int):Bool
 		{
 			if (HXP.indexOf(HXP.orientations, orientation) == -1) return false;
