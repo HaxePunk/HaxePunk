@@ -78,9 +78,9 @@ class Graphiclist extends Graphic
 
 	/** @private Renders the Graphics in the list. */
 	@:dox(hide)
-	override public function renderAtlas(layer:Int, point:Point, camera:Camera)
+	override public function render(layer:Int, point:Point, camera:Camera)
 	{
-		renderList(function(g:Graphic) g.renderAtlas(layer, _point, _camera), point, camera);
+		renderList(function(g:Graphic) g.render(layer, _point, _camera), point, camera);
 	}
 
 	/**

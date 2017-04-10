@@ -129,7 +129,7 @@ class Emitter extends Graphic
 		_particle = null;
 	}
 
-	override public function renderAtlas(layer:Int, point:Point, camera:Camera)
+	override public function render(layer:Int, point:Point, camera:Camera)
 	{
 		var p:Particle = _particle;
 
@@ -186,7 +186,7 @@ class Emitter extends Graphic
 				_source.x = p.x(td) - point.x;
 				_source.y = p.y(td) - point.y;
 
-				_source.renderAtlas(layer, point, camera);
+				_source.render(layer, point, camera);
 			}
 
 			// get next particle
