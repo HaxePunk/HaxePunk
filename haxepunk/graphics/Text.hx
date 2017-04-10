@@ -670,6 +670,7 @@ class Text extends Image
 	var _field:TextField;
 	var _format:TextFormat;
 	var _styles:StringMap<TextFormat>;
+	var _source:BitmapData;
 	var _buffer:BitmapData;
 	var _bufferRect:Rectangle;
 

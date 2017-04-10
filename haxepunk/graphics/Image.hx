@@ -35,9 +35,7 @@ class Image extends Graphic
 	/**
 	 * Scale of the image, effects both x and y scale.
 	 */
-	public var scale(get, set):Float;
-	inline function get_scale():Float return _scale;
-	inline function set_scale(value:Float):Float return _scale = value;
+	public var scale:Float;
 
 	/**
 	 * X scale of the image.
@@ -106,7 +104,6 @@ class Image extends Graphic
 		flipped = false;
 		_color = 0x00FFFFFF;
 		_red = _green = _blue = 1;
-		_matrix = HXP.matrix;
 	}
 
 	@:dox(hide)
@@ -381,19 +378,13 @@ class Image extends Graphic
 	inline function get_clipRect():Rectangle return _sourceRect;
 
 	// Source and buffer information.
-	var _source:BitmapData;
 	var _sourceRect:Rectangle;
-	var _bitmap:Bitmap;
 	var _region:AtlasRegion;
 
 	// Color and alpha information.
 	var _alpha:Float;
 	var _color:Color;
-	var _colorTransform:ColorTransform;
-	var _matrix:Matrix;
 	var _red:Float;
 	var _green:Float;
 	var _blue:Float;
-
-	var _scale:Float;
 }
