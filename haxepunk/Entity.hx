@@ -2,7 +2,8 @@ package haxepunk;
 
 import openfl.display.BitmapData;
 import openfl.geom.Point;
-import haxe.ds.Either;
+import haxe.ds.Either.Left;
+import haxe.ds.Either.Right;
 import haxepunk.ds.OneOf;
 import haxepunk.graphics.Graphiclist;
 import haxepunk.utils.MathUtil;
