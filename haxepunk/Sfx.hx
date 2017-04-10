@@ -44,7 +44,7 @@ class Sfx
 		else
 		{
 			var className:String = Type.getClassName(Type.getClass(source));
-			
+
 			if (StringTools.endsWith(className, "media.Sound"))
 			{
 				// used for loading sound runtime (data-driven for test and debug)
@@ -86,11 +86,7 @@ class Sfx
 		_filteredVol = Math.max(0, _volume * getVolume(_type));
 		_transform.pan = _filteredPan;
 		_transform.volume = _filteredVol;
-#if flash
-		_channel = _sound.play(0, 0, _transform);
-#else
 		_channel = _sound.play(0, loop ? -1 : 0, _transform);
-#end
 		if (playing)
 		{
 			addPlaying();
@@ -131,11 +127,7 @@ class Sfx
 	 */
 	public function resume()
 	{
-#if flash
-		_channel = _sound.play(_position, 0, _transform);
-#else
 		_channel = _sound.play(_position, _looping ? -1 : 0, _transform);
-#end
 		if (playing)
 		{
 			addPlaying();
@@ -183,7 +175,7 @@ class Sfx
 	 * Alter the volume factor (a value from 0 to 1) of the sound during playback.
 	 */
 	public var volume(get, set):Float;
-	function get_volume():Float return _volume; 
+	function get_volume():Float return _volume;
 	function set_volume(value:Float):Float
 	{
 		if (value < 0) value = 0;
@@ -202,7 +194,7 @@ class Sfx
 	 * Panning only applies to mono sounds. It is ignored on stereo.
 	 */
 	public var pan(get, set):Float;
-	function get_pan():Float return _pan; 
+	function get_pan():Float return _pan;
 	function set_pan(value:Float):Float
 	{
 		value = MathUtil.clamp(value, -1, 1);
@@ -220,7 +212,7 @@ class Sfx
 	 * sounds to mute or pan en masse.
 	 */
 	public var type(get, set):String;
-	function get_type():String return _type; 
+	function get_type():String return _type;
 	function set_type(value:String):String
 	{
 		if (_type == value) return value;
@@ -244,22 +236,22 @@ class Sfx
 	 * If the sound is currently playing.
 	 */
 	public var playing(get, null):Bool;
-	inline function get_playing():Bool return _channel != null; 
+	inline function get_playing():Bool return _channel != null;
 
 	/**
 	 * Position of the currently playing sound, in seconds.
 	 */
 	public var position(get, null):Float;
-	function get_position():Float return (playing ? _channel.position : _position) / 1000; 
+	function get_position():Float return (playing ? _channel.position : _position) / 1000;
 
 	/**
 	 * Length of the sound, in seconds.
 	 */
 	public var length(get, null):Float;
-	function get_length():Float return _sound.length / 1000; 
+	function get_length():Float return _sound.length / 1000;
 
 	/**
-	 * Return a sound type's pan setting. 
+	 * Return a sound type's pan setting.
 	 * On non-flash targets, this factors in global panning. See `HXP.pan`.
 	 *
 	 * @param	type	The type to get the pan from.
@@ -275,11 +267,7 @@ class Sfx
 			if (transform != null)
 			result = transform.pan;
 		}
-		#if flash
-		return result;
-		#else
 		return result + HXP.pan;
-		#end
 	}
 
 	/**
@@ -299,11 +287,7 @@ class Sfx
 			if (transform != null)
 				result = transform.volume;
 		}
-		#if flash
-		return result;
-		#else
 		return result * HXP.volume;
-		#end
 	}
 
 	/**

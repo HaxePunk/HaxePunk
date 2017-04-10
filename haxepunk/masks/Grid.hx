@@ -271,13 +271,13 @@ class Grid extends Hitbox
 	 * The tile width.
 	 */
 	public var tileWidth(get, never):Int;
-	inline function get_tileWidth():Int return Std.int(_tile.width); 
+	inline function get_tileWidth():Int return Std.int(_tile.width);
 
 	/**
 	 * The tile height.
 	 */
 	public var tileHeight(get, never):Int;
-	inline function get_tileHeight():Int return Std.int(_tile.height); 
+	inline function get_tileHeight():Int return Std.int(_tile.height);
 
 	/**
 	 * How many columns the grid has
@@ -345,47 +345,6 @@ class Grid extends Hitbox
 	/** @private Collides against a Pixelmask. */
 	function collidePixelmask(other:Pixelmask):Bool
 	{
-#if flash
-		var x1:Int = Std.int(other._parent.x + other.x - _parent.x - _x),
-			y1:Int = Std.int(other._parent.y + other.y - _parent.y - _y),
-			x2:Int = Std.int((x1 + other.width - 1) / _tile.width),
-			y2:Int = Std.int((y1 + other.height - 1) / _tile.height);
-		_point.x = x1;
-		_point.y = y1;
-		x1 = Std.int(x1 / _tile.width);
-		y1 = Std.int(y1 / _tile.height);
-		_tile.x = x1 * _tile.width;
-		_tile.y = y1 * _tile.height;
-		var xx:Int = x1;
-		while (y1 <= y2)
-		{
-			if (y1 < 0 || y1 >= data.length)
-			{
-				y1++;
-				continue;
-			}
-
-			while (x1 <= x2)
-			{
-				if (x1 < 0 || x1 >= data[0].length)
-				{
-					x1++;
-					continue;
-				}
-
-				if (data[y1][x1])
-				{
-					if (other.data.hitTest(_point, 1, _tile)) return true;
-				}
-				x1++;
-				_tile.x += _tile.width;
-			}
-			x1 = xx;
-			y1++;
-			_tile.x = x1 * _tile.width;
-			_tile.y += _tile.height;
-		}
-#else
 		_point.x = _parent.x + _x - _parent.originX;
 		_point.y = _parent.y + _y - _parent.originY;
 		if (Std.instance(other, Imagemask) != null) // 'other' inherits from Imagemask
@@ -401,14 +360,14 @@ class Grid extends Hitbox
 			_rect.width = other.width;
 			_rect.height = other.height;
 		}
-		
+
 		var r1 = new Rectangle(_point.x, _point.y, _width, _height);
-		
+
 		var intersect = r1.intersection(_rect);
-		
+
 		if (intersect.isEmpty())
 			return false;
-		
+
 		for (dx in Math.floor(intersect.x - _rect.x) ...Math.floor(intersect.x - _rect.x + intersect.width))
 		{
 			for (dy in Math.floor(intersect.y - _rect.y) ...Math.floor(intersect.y - _rect.y + intersect.height))
@@ -420,7 +379,6 @@ class Grid extends Hitbox
 				}
 			}
 		}
-#end
 		return false;
 	}
 

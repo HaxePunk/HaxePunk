@@ -24,21 +24,21 @@ import haxepunk.utils.MathUtil;
 
 /**
  * If the console should capture the trace() function calls.
- * 
+ *
  * To be passed to `Console.enable`.
  */
 enum TraceCapture
 {
 	/** Traces won't be captured. */
 	No;
-	
+
 	/** The console will capture the traces. */
 	Yes;
 }
 
 /**
  * Console used for debugging, shows entities and their masks.
- * 
+ *
  * Use `HXP.console`.enable to enable it.
  */
 class Console
@@ -243,9 +243,6 @@ class Console
 		_sprite.addChild(_entRead);
 		_entRead.addChild(_entReadText);
 		_entReadText.defaultTextFormat = format(16, 0xFFFFFF, "right");
-#if flash
-		_entReadText.embedFonts = true;
-#end
 		_entReadText.width = 100;
 		_entReadText.height = 20;
 		_entRead.x = width - _entReadText.width;
@@ -253,19 +250,12 @@ class Console
 		// The entity count panel.
 		_entRead.graphics.clear();
 		_entRead.graphics.beginFill(0, .5);
-#if flash
-		_entRead.graphics.drawRoundRectComplex(0, 0, _entReadText.width, 20, 0, 0, 20, 0);
-#else
 		_entRead.graphics.drawRoundRect(0, -20, _entReadText.width + 20, 40, 40, 40);
-#end
 
 		// The FPS text.
 		_sprite.addChild(_fpsRead);
 		_fpsRead.addChild(_fpsReadText);
 		_fpsReadText.defaultTextFormat = format(16);
-#if flash
-		_fpsReadText.embedFonts = true;
-#end
 		_fpsReadText.width = 70;
 		_fpsReadText.height = 20;
 		_fpsReadText.x = 2;
@@ -274,11 +264,7 @@ class Console
 		// The FPS and frame timing panel.
 		_fpsRead.graphics.clear();
 		_fpsRead.graphics.beginFill(0, .75);
-#if flash
-		_fpsRead.graphics.drawRoundRectComplex(0, 0, big ? 320 : 160, 20, 0, 0, 0, 20);
-#else
 		_fpsRead.graphics.drawRoundRect(-20, -20, big ? 320 + 20 : 160 + 20, 40, 40, 40);
-#end
 
 		_sprite.addChild(_layerList);
 
@@ -288,10 +274,6 @@ class Console
 		_fpsInfo.addChild(_fpsInfoText1);
 		_fpsInfoText0.defaultTextFormat = format(8, 0xAAAAAA);
 		_fpsInfoText1.defaultTextFormat = format(8, 0xAAAAAA);
-#if flash
-		_fpsInfoText0.embedFonts = true;
-		_fpsInfoText1.embedFonts = true;
-#end
 		_fpsInfoText0.width = _fpsInfoText1.width = 60;
 		_fpsInfoText0.height = _fpsInfoText1.height = 20;
 		_fpsInfo.x = 75;
@@ -315,10 +297,6 @@ class Console
 		_logRead.addChild(_logReadText1);
 		_logReadText0.defaultTextFormat = format(16, 0xFFFFFF);
 		_logReadText1.defaultTextFormat = format(big ? 16 : 8, 0xFFFFFF);
-#if flash
-		_logReadText0.embedFonts = true;
-		_logReadText1.embedFonts = true;
-#end
 		_logReadText0.selectable = false;
 		_logReadText0.width = 80;
 		_logReadText0.height = 20;
@@ -339,10 +317,6 @@ class Console
 		_debRead.addChild(_debReadText1);
 		_debReadText0.defaultTextFormat = format(16, 0xFFFFFF);
 		_debReadText1.defaultTextFormat = format(8, 0xFFFFFF);
-#if flash
-		_debReadText0.embedFonts = true;
-		_debReadText1.embedFonts = true;
-#end
 		_debReadText0.selectable = false;
 		_debReadText0.width = 80;
 		_debReadText0.height = 20;
@@ -367,11 +341,7 @@ class Console
 		// The button panel.
 		_butRead.graphics.clear();
 		_butRead.graphics.beginFill(0, .75);
-#if flash
-		_butRead.graphics.drawRoundRectComplex(-20, 0, 100, 20, 0, 0, 20, 20);
-#else
 		_butRead.graphics.drawRoundRect(-20, -20, 100, 40, 40, 40);
-#end
 		debug = true;
 
 		// redraws the logo
@@ -410,7 +380,7 @@ class Console
 	 * If the console should be visible.
 	 */
 	public var visible(get, set):Bool;
-	function get_visible():Bool return _sprite.visible; 
+	function get_visible():Bool return _sprite.visible;
 	function set_visible(value:Bool):Bool
 	{
 		_sprite.visible = value;
@@ -536,7 +506,7 @@ class Console
 	 * If the Console is currently in paused mode.
 	 */
 	public var paused(get, set):Bool;
-	function get_paused():Bool return _paused; 
+	function get_paused():Bool return _paused;
 	function set_paused(value:Bool):Bool
 	{
 		// Quit if the console isn't enabled.
@@ -583,7 +553,7 @@ class Console
 	 * If the Console is currently in debug mode.
 	 */
 	public var debug(get, set):Bool;
-	function get_debug():Bool return _debug; 
+	function get_debug():Bool return _debug;
 	function set_debug(value:Bool):Bool
 	{
 		// Quit if the console isn't enabled.
@@ -887,24 +857,16 @@ class Console
 			_logRead.y = 40;
 			_logRead.graphics.clear();
 			_logRead.graphics.beginFill(0, .75);
-#if flash
-			_logRead.graphics.drawRoundRectComplex(0, 0, _logReadText0.width, 20, 0, 20, 0, 0);
-#else
 			_logRead.graphics.drawRect(0, 0, _logReadText0.width - 20, 20);
 			_logRead.graphics.moveTo(_logReadText0.width, 20);
 			_logRead.graphics.lineTo(_logReadText0.width - 20, 20);
 			_logRead.graphics.lineTo(_logReadText0.width - 20, 0);
 			_logRead.graphics.curveTo(_logReadText0.width, 0, _logReadText0.width, 20);
-#end
 			_logRead.graphics.drawRect(0, 20, width, _logHeight);
 
 			// Draw the log scrollbar.
 			_logRead.graphics.beginFill(0x202020, 1);
-#if flash
-			_logRead.graphics.drawRoundRectComplex(_logBar.x, _logBar.y, _logBar.width, _logBar.height, 8, 8, 8, 8);
-#else
 			_logRead.graphics.drawRoundRect(_logBar.x, _logBar.y, _logBar.width, _logBar.height, 16, 16);
-#end
 
 			// If the log has more lines than the display limit.
 			if (LOG.length > _logLines)
@@ -912,11 +874,7 @@ class Console
 				// Draw the log scrollbar handle.
 				_logRead.graphics.beginFill(0xFFFFFF, 1);
 				var y:Int = Std.int(_logBar.y + 2 + (_logBar.height - 16) * _logScroll);
-#if flash
-				_logRead.graphics.drawRoundRectComplex(_logBar.x + 2, y, 12, 12, 6, 6, 6, 6);
-#else
 				_logRead.graphics.drawRoundRect(_logBar.x + 2, y, 12, 12, 12, 12);
-#end
 			}
 
 			// Display the log text lines.
@@ -950,15 +908,11 @@ class Console
 			_logReadText1.height = 20;
 			_logRead.graphics.clear();
 			_logRead.graphics.beginFill(0, .75);
-#if flash
-			_logRead.graphics.drawRoundRectComplex(0, 0, _logReadText0.width, 20, 0, 20, 0, 0);
-#else
 			_logRead.graphics.drawRect(0, 0, _logReadText0.width - 20, 20);
 			_logRead.graphics.moveTo(_logReadText0.width, 20);
 			_logRead.graphics.lineTo(_logReadText0.width - 20, 20);
 			_logRead.graphics.lineTo(_logReadText0.width - 20, 0);
 			_logRead.graphics.curveTo(_logReadText0.width, 0, _logReadText0.width, 20);
-#end
 			_logRead.graphics.drawRect(0, 20, width, 20);
 
 			// Draw the single-line log text with the latests logged text.
@@ -1017,11 +971,7 @@ class Console
 				s += "\n\n- " + Type.getClassName(Type.getClass(e)) + " -\n";
 				for (str in WATCH_LIST)
 				{
-#if flash
-					var field = Reflect.getProperty(e, str);
-#else
 					var field = Reflect.field(e, str);
-#end
 					if (field != null)
 					{
 						s += "\n" + str + ": " + Std.string(field);
@@ -1040,17 +990,12 @@ class Console
 		_debRead.y = Std.int(height - _debReadText1.height);
 		_debRead.graphics.clear();
 		_debRead.graphics.beginFill(0, .75);
-#if flash
-		_debRead.graphics.drawRoundRectComplex(0, 0, _debReadText0.width, 20, 0, 20, 0, 0);
-		_debRead.graphics.drawRoundRectComplex(0, 20, _debReadText1.width + 20, height - _debRead.y - 20, 0, 20, 0, 0);
-#else
 		_debRead.graphics.drawRect(0, 0, _debReadText0.width - 20, 20);
 		_debRead.graphics.moveTo(_debReadText0.width, 20);
 		_debRead.graphics.lineTo(_debReadText0.width - 20, 20);
 		_debRead.graphics.lineTo(_debReadText0.width - 20, 0);
 		_debRead.graphics.curveTo(_debReadText0.width, 0, _debReadText0.width, 20);
 		_debRead.graphics.drawRoundRect(-20, 20, _debReadText1.width + 40, height - _debRead.y, 40, 40);
-#end
 	}
 
 	/** @private Updates the Entity count text. */
@@ -1122,13 +1067,13 @@ class Console
 	 * Get the unscaled screen width for the Console.
 	 */
 	public var width(get, never):Int;
-	function get_width():Int return HXP.windowWidth; 
+	function get_width():Int return HXP.windowWidth;
 
 	/**
 	 * Get the unscaled screen height for the Console.
 	 */
 	public var height(get, never):Int;
-	function get_height():Int return HXP.windowHeight; 
+	function get_height():Int return HXP.windowHeight;
 
 	// Console state information.
 	var _enabled:Bool;

@@ -2,13 +2,6 @@ package haxepunk.graphics.atlas;
 
 import openfl.Assets;
 
-#if flash
-class Shader
-{
-	public static function fromAsset(_:String) throw "shaders are not supported on Flash";
-	public function new(_:String) throw "shaders are not supported on Flash";
-}
-#else
 /**
  * Used to create a custom shader.
  */
@@ -44,4 +37,3 @@ void main() {
 		super(DEFAULT_VERTEX_SHADER, fragmentSource);
 	}
 }
-#end

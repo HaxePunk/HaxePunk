@@ -26,9 +26,6 @@ class VisibleLabel extends Sprite
 
 		label.x = 24;
 		label.y = 2;
-#if flash
-		label.embedFonts = true;
-#end
 
 		this.x = 6;
 

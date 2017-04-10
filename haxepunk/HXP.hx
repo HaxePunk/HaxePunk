@@ -8,10 +8,6 @@ import flash.display.StageDisplayState;
 import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-#if flash
-import flash.media.SoundMixer;
-#end
-import flash.media.SoundTransform;
 import openfl.ui.Mouse;
 import haxepunk.Tween.TweenType;
 import haxepunk.debug.Console;
@@ -248,12 +244,7 @@ class HXP
 		if (value < 0) value = 0;
 		if (_volume == value) return value;
 		_volume = value;
-		#if flash
-		_soundTransform.volume = value;
-		SoundMixer.soundTransform = _soundTransform;
-		#else
 		Sfx.onGlobalUpdated(false);
-		#end
 		return _volume;
 	}
 
@@ -269,12 +260,7 @@ class HXP
 		if (value > 1) value = 1;
 		if (_pan == value) return value;
 		_pan = value;
-		#if flash
-		_soundTransform.pan = value;
-		SoundMixer.soundTransform = _soundTransform;
-		#else
 		Sfx.onGlobalUpdated(true);
-		#end
 		return _pan;
 	}
 
@@ -291,12 +277,10 @@ class HXP
 	{
 		#if (haxe_ver >= 3.1)
 		return arr.indexOf(v);
+		#elseif js
+		return untyped arr.indexOf(v);
 		#else
-			#if (flash || js)
-			return untyped arr.indexOf(v);
-			#else
-			return std.Lambda.indexOf(arr, v);
-			#end
+		return std.Lambda.indexOf(arr, v);
 		#end
 	}
 
@@ -425,19 +409,6 @@ class HXP
 	 */
 	public static function createBitmap(width:Int, height:Int, transparent:Bool = false, color:Color = Color.Black):BitmapData
 	{
-#if flash
-	#if flash8
-		var sizeError:Bool = (width > 2880 || height > 2880);
-	#else
-		var sizeError:Bool = (width * height > 16777215 || width > 8191 || height > 8191); // flash 10 requires size to be under 16,777,215
-	#end
-		if (sizeError)
-		{
-			trace("BitmapData is too large (" + width + ", " + height + ")");
-			return null;
-		}
-#end // flash
-
 		return new BitmapData(width, height, transparent, color);
 	}
 
@@ -646,12 +617,8 @@ class HXP
 	// Volume control.
 	static var _volume:Float = 1;
 	static var _pan:Float = 0;
-	#if flash
-	static var _soundTransform:SoundTransform = new SoundTransform();
-	#end
 
-	// Global Flash objects.
-	/** The flash stage. */
+	/** The stage. */
 	public static var stage:Stage;
 	/** The Engine instance. */
 	public static var engine:Engine;
