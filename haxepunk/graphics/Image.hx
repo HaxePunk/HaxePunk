@@ -103,7 +103,7 @@ class Image extends Graphic
 		originX = originY = 0;
 
 		_alpha = 1;
-		_flipped = false;
+		flipped = false;
 		_color = 0x00FFFFFF;
 		_red = _green = _blue = 1;
 		_matrix = HXP.matrix;
@@ -130,13 +130,13 @@ class Image extends Graphic
 				_point.y = (point.y + y - originY * sy - camera.y * scrollY);
 			}
 
-			if (_flipped)
+			if (flipped)
 			{
 				_point.x += _sourceRect.width * sx;
 			}
 
 			// render without rotation
-			_region.draw(_point.x * fsx, _point.y * fsy, layer, sx * fsx * (_flipped ? -1 : 1), sy * fsy, angle, _red, _green, _blue, _alpha, smooth, blend);
+			_region.draw(_point.x * fsx, _point.y * fsy, layer, sx * fsx * (flipped ? -1 : 1), sy * fsy, angle, _red, _green, _blue, _alpha, smooth, blend);
 		}
 		else
 		{
@@ -394,11 +394,6 @@ class Image extends Graphic
 	var _red:Float;
 	var _green:Float;
 	var _blue:Float;
-
-	// Flipped image information.
-	var _flipped:Bool;
-	var _flip:BitmapData;
-	static var _flips:Map<BitmapData, BitmapData> = new Map<BitmapData, BitmapData>();
 
 	var _scale:Float;
 }
