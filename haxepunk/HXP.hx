@@ -34,11 +34,6 @@ class HXP
 	public static inline var VERSION:String = HaxelibInfo.version;
 
 	/**
-	 * Deprecated, use 0 instead. The color black (as an Int).
-	 */
-	@:deprecated public static inline var blackColor:Color = 0x00000000;
-
-	/**
 	 * Width of the game.
 	 */
 	public static var width:Int;

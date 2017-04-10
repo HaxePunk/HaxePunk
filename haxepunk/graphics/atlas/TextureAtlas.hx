@@ -73,11 +73,11 @@ class TextureAtlas extends Atlas
 	 *
 	 * @return	The retrieved region.
 	 */
-	public function getRegion(name:String):AtlasRegion
+	public inline function getRegion(name:String):AtlasRegion
 	{
 		if (_regions.exists(name))
 			return _regions.get(name);
-			
+
 		throw 'Region has not been defined yet "$name".';
 	}
 
