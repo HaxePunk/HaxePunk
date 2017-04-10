@@ -2,6 +2,7 @@ package haxepunk.graphics;
 
 import flash.display.BitmapData;
 import flash.geom.Point;
+import haxe.ds.Either;
 import haxepunk.graphics.atlas.AtlasRegion;
 import haxepunk.HXP;
 import haxepunk.Graphic;
@@ -21,7 +22,7 @@ class Backdrop extends Canvas
 	 */
 	public function new(source:ImageType, repeatX:Bool = true, repeatY:Bool = true, screenScale:Float = 1.)
 	{
-		switch (source.type)
+		switch (source)
 		{
 			case Left(bitmap):
 				blit = true;

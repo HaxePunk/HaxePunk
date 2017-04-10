@@ -2,24 +2,12 @@ package haxepunk;
 
 import flash.display.BitmapData;
 import flash.geom.Point;
+import haxe.ds.Either;
+import haxepunk.ds.OneOf;
 import haxepunk.graphics.Graphiclist;
-import haxepunk.ds.Either;
 import haxepunk.utils.MathUtil;
 
-
-/**
- * Abstract representing either a `String` or a `Array<String>`.
- *
- * Conversion is automatic, no need to use this.
- */
-abstract SolidType(Either<String, Array<String>>)
-{
-	@:dox(hide) public inline function new( e:Either<String, Array<String>> ) this = e;
-	@:dox(hide) public var type(get, never):Either<String, Array<String>>;
-	@:to inline function get_type() return this;
-	@:from static function fromLeft(v:String) return new SolidType(Left(v));
-	@:from static function fromRight(v:Array<String>) return new SolidType(Right(v));
-}
+typedef SolidType = OneOf<String, Array<String>>;
 
 /**
  * Main game Entity class updated by `Scene`.
@@ -270,9 +258,7 @@ class Entity extends Tweener
 	 */
 	public function collideTypes(types:SolidType, x:Float, y:Float):Entity
 	{
-		if (_scene == null) return null;
-
-		switch (types.type)
+		switch (types)
 		{
 			case Left(s):
 				return collide(s, x, y);

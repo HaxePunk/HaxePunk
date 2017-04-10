@@ -10,6 +10,7 @@ import flash.geom.Rectangle;
 import flash.display.Graphics;
 import flash.display.JointStyle;
 import flash.display.LineScaleMode;
+import haxe.ds.Either;
 import haxepunk.Camera;
 import haxepunk.Graphic;
 import haxepunk.HXP;
@@ -90,7 +91,7 @@ class Image extends Graphic
 		// check if the _source or _region were set in a higher class
 		if (source != null)
 		{
-			switch (source.type)
+			switch (source)
 			{
 				case Left(bitmap):
 					blit = true;

@@ -6,8 +6,9 @@ import flash.events.TouchEvent;
 import flash.ui.Keyboard;
 import flash.ui.Multitouch;
 import flash.ui.MultitouchInputMode;
+import haxe.ds.Either;
 import haxepunk.HXP;
-import haxepunk.ds.Either;
+import haxepunk.ds.OneOf;
 import openfl.ui.Mouse;
 
 #if (openfl_legacy && (cpp || neko))
@@ -19,19 +20,7 @@ import tv.ouya.console.api.OuyaController;
 import openfl.utils.JNI;
 #end
 
-/**
- * Abstract representing either a `String` or a `Int`.
- * 
- * Conversion is automatic, no need to use this.
- */
-abstract InputType(Either<String, Int>)
-{
-	@:dox(hide) public inline function new(e:Either<String, Int>) this = e;
-	@:dox(hide) public var type(get, never):Either<String, Int>;
-	@:to inline function get_type() return this;
-	@:from static function fromLeft(v:String) return new InputType(Left(v));
-	@:from static function fromRight(v:Int) return new InputType(Right(v));
-}
+typedef InputType = OneOf<String, Int>;
 
 /**
  * Manage the different inputs.
@@ -203,7 +192,7 @@ class Input
 	 */
 	public static function check(input:InputType):Bool
 	{
-		switch (input.type)
+		switch (input)
 		{
 			case Left(s):
 #if debug
@@ -232,7 +221,7 @@ class Input
 	 */
 	public static function pressed(input:InputType):Bool
 	{
-		switch (input.type)
+		switch (input)
 		{
 			case Left(s):
 				if (_control.exists(s))
@@ -255,7 +244,7 @@ class Input
 	 */
 	public static function released(input:InputType):Bool
 	{
-		switch (input.type)
+		switch (input)
 		{
 			case Left(s):
 				for (key in _control.get(s))
@@ -277,10 +266,10 @@ class Input
 	}
 
 	public static var touches(get, never):Map<Int, Touch>;
-	static inline function get_touches():Map<Int, Touch> return _touches; 
+	static inline function get_touches():Map<Int, Touch> return _touches;
 
 	public static var touchOrder(get, never):Array<Int>;
-	static inline function get_touchOrder():Array<Int> return _touchOrder; 
+	static inline function get_touchOrder():Array<Int> return _touchOrder;
 
 	/**
 	 * Returns a joystick object (creates one if not connected)
@@ -432,9 +421,9 @@ class Input
 		if (multiTouchSupported)
 		{
 			for (touch in _touches) touch.update();
-			
+
 			if (Gesture.enabled) Gesture.update();
-			
+
 			for (touch in _touches)
 			{
 				if (touch.released && !touch.pressed)

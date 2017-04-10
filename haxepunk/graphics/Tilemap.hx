@@ -3,6 +3,7 @@ package haxepunk.graphics;
 import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Rectangle;
+import haxe.ds.Either;
 import haxepunk.Graphic;
 import haxepunk.HXP;
 import haxepunk.graphics.atlas.TileAtlas;
@@ -70,7 +71,7 @@ class Tilemap extends Canvas
 		}
 
 		// load the tileset graphic
-		switch (tileset.type)
+		switch (tileset)
 		{
 			case Left(bd):
 				blit = true;
