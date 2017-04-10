@@ -22,60 +22,14 @@ class Backdrop extends Canvas
 	 */
 	public function new(source:ImageType, repeatX:Bool = true, repeatY:Bool = true, screenScale:Float = 1.)
 	{
-		switch (source)
-		{
-			case Left(bitmap):
-				blit = true;
-				_source = bitmap;
-				_textWidth = _source.width;
-				_textHeight = _source.height;
-			case Right(region):
-				blit = false;
-				_region = region;
-				_textWidth = Std.int(region.width);
-				_textHeight = Std.int(region.height);
-		}
+		_region = source;
+		_textWidth = Std.int(_region.width);
+		_textHeight = Std.int(_region.height);
 
 		_repeatX = repeatX;
 		_repeatY = repeatY;
 
 		super(Std.int(HXP.width * (repeatX ? 1 : 0) * screenScale) + _textWidth, Std.int(HXP.height * (repeatY ? 1 : 0) * screenScale) + _textHeight);
-
-		if (blit)
-		{
-			HXP.rect.x = HXP.rect.y = 0;
-			HXP.rect.width = _width;
-			HXP.rect.height = _height;
-			fillTexture(HXP.rect, _source);
-		}
-	}
-
-	/** Renders the Backdrop. */
-	@:dox(hide)
-	override public function render(target:BitmapData, point:Point, camera:Camera)
-	{
-		_point.x = point.x + x - camera.x * scrollX;
-		_point.y = point.y + y - camera.y * scrollY;
-
-		var sx = scale * scaleX * HXP.screen.fullScaleX,
-			sy = scale * scaleY * HXP.screen.fullScaleY;
-
-		if (_repeatX)
-		{
-			_point.x %= _textWidth * sx;
-			if (_point.x > 0) _point.x -= _textWidth * sx;
-		}
-
-		if (_repeatY)
-		{
-			_point.y %= _textHeight * sy;
-			if (_point.y > 0) _point.y -= _textHeight * sy;
-		}
-
-		_x = x; _y = y;
-		x = y = 0;
-		super.render(target, _point, HXP.zeroCamera);
-		x = _x; y = _y;
 	}
 
 	@:dox(hide)
@@ -121,12 +75,9 @@ class Backdrop extends Canvas
 	}
 
 	// Backdrop information.
-	var _source:BitmapData;
 	var _region:AtlasRegion;
 	var _textWidth:Int;
 	var _textHeight:Int;
 	var _repeatX:Bool;
 	var _repeatY:Bool;
-	var _x:Float;
-	var _y:Float;
 }

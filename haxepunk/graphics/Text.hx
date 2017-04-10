@@ -5,6 +5,7 @@ import flash.display.BitmapData;
 import flash.geom.ColorTransform;
 import flash.geom.Matrix;
 import flash.geom.Point;
+import flash.geom.Rectangle;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
@@ -224,20 +225,10 @@ class Text extends Image
 		_height = (height == 0 ? Std.int(_field.textHeight + 4) : height);
 
 		var source = HXP.createBitmap(_width, _height, true);
-		if (HXP.renderMode == RenderMode.HARDWARE)
-		{
-			_source = source;
-			_sourceRect = source.rect;
-			_region = Atlas.loadImageAsRegion(_source);
-			blit = true;
-			super();
-		}
-		else
-		{
-			super(source);
-		}
-
-		blit = HXP.renderMode == RenderMode.BUFFER;
+		_source = source;
+		_sourceRect = source.rect;
+		_region = Atlas.loadImageAsRegion(_source);
+		super();
 
 		this.x = x;
 		this.y = y;
@@ -263,12 +254,6 @@ class Text extends Image
 	{
 		_styles.set(tagName, params);
 		if (_richText != null) _needsUpdate = true;
-	}
-
-	override function updateColorTransform():Void
-	{
-		super.updateColorTransform();
-		if (_tint != null) _tint.alphaMultiplier = 1;
 	}
 
 	function matchStyles()
@@ -345,17 +330,14 @@ class Text extends Image
 		_field.height = _height;
 
 		updateBuffer(true);
-		if (!blit)
+		if (border != null && border.alpha > 0)
 		{
-			if (border != null && border.alpha > 0)
-			{
-				_borderSource.draw(_borderBuffer);
-			}
-			_source.draw(_buffer);
+			_borderSource.draw(_borderBuffer);
 		}
+		_source.draw(_buffer);
 	}
 
-	override function createBuffer()
+	function createBuffer()
 	{
 		if (_buffer != null) _buffer.dispose();
 		_buffer = HXP.createBitmap(
@@ -378,7 +360,7 @@ class Text extends Image
 	 * Updates the image buffer.
 	 */
 	@:dox(hide)
-	override public function updateBuffer(clearBefore:Bool = false)
+	public function updateBuffer(clearBefore:Bool = false)
 	{
 		if (clearBefore)
 		{
@@ -436,7 +418,7 @@ class Text extends Image
 			}
 		}
 
-		_buffer.draw(_field, _matrix, _tint);
+		_buffer.draw(_field, _matrix);
 	}
 
 	/**
@@ -476,19 +458,16 @@ class Text extends Image
 
 			createBuffer();
 
-			if (!blit)
+			if (_region != null)
 			{
-				if (_region != null)
-				{
-					_region.destroy();
-				}
-				_region = Atlas.loadImageAsRegion(_source);
+				_region.destroy();
+			}
+			_region = Atlas.loadImageAsRegion(_source);
 
-				if (_borderRegion != null)
-				{
-					_borderRegion.destroy();
-					_borderRegion = Atlas.loadImageAsRegion(_borderSource);
-				}
+			if (_borderRegion != null)
+			{
+				_borderRegion.destroy();
+				_borderRegion = Atlas.loadImageAsRegion(_borderSource);
 			}
 		}
 		if (redraw) updateBuffer();
@@ -503,10 +482,6 @@ class Text extends Image
 	{
 		if (_text == value && _richText == null) return value;
 		_field.text = _text = value;
-		if (_richText != null)
-		{
-			updateColorTransform();
-		}
 		_needsUpdate = true;
 		return value;
 	}
@@ -528,7 +503,6 @@ class Text extends Image
 		{
 			_format.color = 0xFFFFFF;
 			_red = _green = _blue = 1;
-			updateColorTransform();
 		}
 		else
 		{
@@ -663,25 +637,6 @@ class Text extends Image
 	var bufferMargin(get, null):Float;
 	inline function get_bufferMargin() return 2 + (border == null ? 0 : border.size);
 
-	override public function render(target:BitmapData, point:Point, camera:Camera)
-	{
-		if (_needsUpdate) updateTextBuffer();
-
-		if (border != null && border.alpha > 0)
-		{
-			// draw the border first
-			var textBuffer = _buffer,
-				textTint = _tint;
-			_buffer = _bitmap.bitmapData = _borderBuffer;
-			_tint = _borderTint;
-			super.render(target, point, camera);
-			_buffer = _bitmap.bitmapData = textBuffer;
-			_tint = textTint;
-		}
-
-		super.render(target, point, camera);
-	}
-
 	override public function renderAtlas(layer:Int, point:Point, camera:Camera)
 	{
 		if (_needsUpdate) updateTextBuffer();
@@ -718,6 +673,8 @@ class Text extends Image
 	var _field:TextField;
 	var _format:TextFormat;
 	var _styles:StringMap<TextFormat>;
+	var _buffer:BitmapData;
+	var _bufferRect:Rectangle;
 
 	var _offset:Point = new Point();
 	var _whiteTint:ColorTransform = new ColorTransform(1, 1, 1, 1, 0xff, 0xff, 0xff, 1);

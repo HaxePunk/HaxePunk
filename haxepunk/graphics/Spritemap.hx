@@ -44,32 +44,18 @@ class Spritemap extends Image
 		_timer = _frame = 0;
 
 		_rect = new Rectangle(0, 0, frameWidth, frameHeight);
-		switch (source)
+		_atlas = source;
+
+		if (frameWidth > _atlas.width || frameHeight > _atlas.height)
 		{
-			case Left(bd):
-				super(bd, _rect);
-			case Right(atlas):
-				_atlas = atlas;
-
-				if (frameWidth > _atlas.width || frameHeight > _atlas.height)
-				{
-					throw "Frame width and height can't be bigger than the source image dimension.";
-				}
-
-				_atlas.prepare(frameWidth == 0 ? Std.int(_atlas.width) : frameWidth, frameHeight == 0 ? Std.int(_atlas.height) : frameHeight);
-				super(atlas.getRegion(_frame), _rect);
+			throw "Frame width and height can't be bigger than the source image dimension.";
 		}
 
-		if (blit)
-		{
-			_width = _source.width;
-			_height = _source.height;
-		}
-		else
-		{
-			_width = Std.int(_atlas.width);
-			_height = Std.int(_atlas.height);
-		}
+		_atlas.prepare(frameWidth == 0 ? Std.int(_atlas.width) : frameWidth, frameHeight == 0 ? Std.int(_atlas.height) : frameHeight);
+		super(_atlas.getRegion(_frame), _rect);
+
+		_width = Std.int(_atlas.width);
+		_height = Std.int(_atlas.height);
 		if (frameWidth == 0) _rect.width = _width;
 		if (frameHeight == 0) _rect.height = _height;
 
@@ -89,25 +75,9 @@ class Spritemap extends Image
 	 * Updates the spritemap's buffer.
 	 */
 	@:dox(hide)
-	override public function updateBuffer(clearBefore:Bool = false)
+	public function updateBuffer()
 	{
-		if (blit)
-		{
-			// get position of the current frame
-			if (_width > 0 && _height > 0)
-			{
-				_rect.x = _rect.width * (_frame % _columns);
-				_rect.y = _rect.height * Std.int(_frame / _columns);
-				if (_flipped) _rect.x = (_width - _rect.width) - _rect.x;
-			}
-
-			// update the buffer
-			super.updateBuffer(clearBefore);
-		}
-		else
-		{
-			_region = _atlas.getRegion(_frame);
-		}
+		_region = _atlas.getRegion(_frame);
 	}
 
 	/** @private Updates the animation. */

@@ -85,12 +85,6 @@ class HXP
 	public static var screen:Screen;
 
 	/**
-	 * The current screen buffer, drawn to in the render loop.
-	 * Only available for flash, html5 and buffer rendermode, null otherwise.
-	 */
-	public static var buffer:BitmapData;
-
-	/**
 	 * A rectangle representing the size of the screen.
 	 */
 	public static var bounds:Rectangle;
@@ -138,25 +132,6 @@ class HXP
 		if (cursor == null) Mouse.show();
 		else Mouse.hide();
 		return HXP.cursor = cursor;
-	}
-
-	/**
-	 * Defines how to render the scene
-	 */
-	public static var renderMode(default, set):RenderMode;
-	static inline function set_renderMode(value:RenderMode):RenderMode
-	{
-		renderMode = value;
-
-		// recreate screen for buffer rendering
-		if (HXP.screen == null)
-		{
-			HXP.screen = new Screen();
-		}
-		else
-			HXP.screen.init();
-
-		return value;
 	}
 
 	/**

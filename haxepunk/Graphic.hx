@@ -12,25 +12,19 @@ import flash.geom.Point;
  *
  * Conversion is automatic, no need to use this.
  */
-abstract TileType(Either<BitmapData, TileAtlas>) from Either<BitmapData, TileAtlas>
+abstract TileType(TileAtlas) from TileAtlas to TileAtlas
 {
 	@:dox(hide) @:from public static inline function fromString(tileset:String):TileType
 	{
-		if (HXP.renderMode == RenderMode.HARDWARE)
-			return Right(new TileAtlas(tileset));
-		else
-			return Left(HXP.getBitmap(tileset));
+		return new TileAtlas(tileset);
 	}
 	@:dox(hide) @:from public static inline function fromTileAtlas(atlas:TileAtlas):TileType
 	{
-		return Right(atlas);
+		return atlas;
 	}
 	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData):TileType
 	{
-		if (HXP.renderMode == RenderMode.HARDWARE)
-			return Right(new TileAtlas(bd));
-		else
-			return Left(bd);
+		return new TileAtlas(bd);
 	}
 }
 
@@ -39,49 +33,35 @@ abstract TileType(Either<BitmapData, TileAtlas>) from Either<BitmapData, TileAtl
  *
  * Conversion is automatic, no need to use this.
  */
-abstract ImageType(Either<BitmapData, AtlasRegion>) from Either<BitmapData, AtlasRegion>
+abstract ImageType(AtlasRegion) from AtlasRegion to AtlasRegion
 {
 	@:dox(hide) @:from public static inline function fromString(s:String):ImageType
 	{
-		if (HXP.renderMode == RenderMode.HARDWARE)
-			return Right(Atlas.loadImageAsRegion(s));
-		else
-			return Left(HXP.getBitmap(s));
+		return Atlas.loadImageAsRegion(s);
 	}
 	@:dox(hide) @:from public static inline function fromTileAtlas(atlas:TileAtlas):ImageType
 	{
-		return Right(atlas.getRegion(0));
+		return atlas.getRegion(0);
 	}
 	@:dox(hide) @:from public static inline function fromAtlasRegion(region:AtlasRegion):ImageType
 	{
-		return Right(region);
+		return region;
 	}
 	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData):ImageType
 	{
-		if (HXP.renderMode == RenderMode.HARDWARE)
-			return Right(Atlas.loadImageAsRegion(bd));
-		else
-			return Left(bd);
+		return Atlas.loadImageAsRegion(bd);
 	}
 
 	public var width(get, never):Int;
 	inline function get_width()
 	{
-		return Std.int(switch (this)
-		{
-			case Left(b): b.width;
-			case Right(a): a.width;
-		});
+		return Std.int(this.width);
 	}
 
 	public var height(get, never):Int;
 	inline function get_height()
 	{
-		return Std.int(switch (this)
-		{
-			case Left(b): b.height;
-			case Right(a): a.height;
-		});
+		return Std.int(this.height);
 	}
 }
 
@@ -158,11 +138,6 @@ class Graphic
 	public var relative:Bool = true;
 
 	/**
-	 * If we can blit the graphic or not (flash/html5)
-	 */
-	public var blit(default, null):Bool;
-
-	/**
 	 * Constructor.
 	 */
 	@:allow(haxepunk)
@@ -178,15 +153,6 @@ class Graphic
 	 * Removes the graphic from the scene
 	 */
 	public function destroy() {}
-
-	/**
-	 * Renders the graphic to the screen buffer.
-	 * @param  target     The buffer to draw to.
-	 * @param  point      The position to draw the graphic.
-	 * @param  camera     The camera offset.
-	 */
-	@:dox(hide)
-	public function render(target:BitmapData, point:Point, camera:Camera) {}
 
 	/**
 	 * Renders the graphic as an atlas.

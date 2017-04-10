@@ -50,10 +50,6 @@ class Screen
 		{
 			HXP.engine.removeChild(_sprite);
 		}
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			HXP.engine.addChild(_sprite);
-		}
 	}
 
 	/** @private Re-applies transformation matrix. */
@@ -95,34 +91,8 @@ class Screen
 		width = HXP.width = Std.int(HXP.screen.width / HXP.screen.fullScaleX);
 		height = HXP.height = Std.int(HXP.screen.height / HXP.screen.fullScaleY);
 
-		if (HXP.renderMode == RenderMode.BUFFER &&
-			(_bitmap.length == 0 || width != oldWidth || height != oldHeight))
-		{
-			disposeBitmap(_bitmap[0]);
-			disposeBitmap(_bitmap[1]);
-
-			_bitmap[0] = new Bitmap(HXP.createBitmap(width, height, true), PixelSnapping.NEVER);
-			_bitmap[1] = new Bitmap(HXP.createBitmap(width, height, true), PixelSnapping.NEVER);
-
-			_sprite.addChild(_bitmap[0]).visible = true;
-			_sprite.addChild(_bitmap[1]).visible = false;
-			HXP.buffer = _bitmap[0].bitmapData;
-		}
-
 		_current = 0;
 		needsResize = false;
-	}
-
-	/**
-	 * Swaps screen buffers.
-	 */
-	public function swap()
-	{
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			_current = 1 - _current;
-			HXP.buffer = _bitmap[_current].bitmapData;
-		}
 	}
 
 	/**
@@ -132,28 +102,6 @@ class Screen
 	public function addFilter(filter:Array<BitmapFilter>)
 	{
 		_sprite.filters = filter;
-	}
-
-	/**
-	 * Refreshes the screen.
-	 */
-	public function refresh()
-	{
-		// refreshes the screen
-		HXP.buffer.fillRect(HXP.bounds, 0xFF000000 | HXP.stage.color);
-	}
-
-	/**
-	 * Redraws the screen.
-	 */
-	public function redraw()
-	{
-		// refresh the buffers
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			_bitmap[_current].visible = true;
-			_bitmap[1 - _current].visible = false;
-		}
 	}
 
 	@:dox(hide)
@@ -279,26 +227,11 @@ class Screen
 	public var smoothing(get, set):Bool;
 	function get_smoothing():Bool
 	{
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			return _bitmap[0].smoothing;
-		}
-		else
-		{
-			return Atlas.smooth;
-		}
+		return Atlas.smooth;
 	}
 	function set_smoothing(value:Bool):Bool
 	{
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			_bitmap[0].smoothing = _bitmap[1].smoothing = value;
-		}
-		else
-		{
-			Atlas.smooth = value;
-		}
-		return value;
+		return Atlas.smooth = value;
 	}
 
 	/**
@@ -322,23 +255,6 @@ class Screen
 	 */
 	public var mouseY(get, null):Int;
 	function get_mouseY():Int return Std.int(_sprite.mouseY);
-
-	/**
-	 * Captures the current screen as an Image object.
-	 * Will only work in buffer rendermode (flash or html5).
-	 * @return	A new Image object.
-	 */
-	public function capture():Image
-	{
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			return new Image(_bitmap[_current].bitmapData.clone());
-		}
-		else
-		{
-			throw "Screen.capture only supported with buffer rendering";
-		}
-	}
 
 	/**
 	 * Cause the screen to shake for a specified length of time.

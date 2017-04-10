@@ -67,9 +67,8 @@ class Engine extends Sprite
 	 * @param	height			The height of your game.
 	 * @param	frameRate		The game framerate, in frames per second.
 	 * @param	fixed			If a fixed-framerate should be used.
-	 * @param   renderMode      Overrides the default render mode for this target
 	 */
-	public function new(width:Int = 0, height:Int = 0, frameRate:Float = 60, fixed:Bool = false, renderMode:RenderMode = #if flash RenderMode.BUFFER #else RenderMode.HARDWARE #end)
+	public function new(width:Int = 0, height:Int = 0, frameRate:Float = 60, fixed:Bool = false)
 	{
 		super();
 
@@ -83,7 +82,7 @@ class Engine extends Sprite
 		HXP.width = width;
 		HXP.height = height;
 
-		HXP.renderMode = renderMode;
+		HXP.screen = new Screen();
 
 		// miscellaneous startup stuff
 		if (Random.randomSeed == 0) Random.randomizeSeed();
@@ -158,14 +157,6 @@ class Engine extends Sprite
 
 		preRender.invoke();
 
-		// render loop
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			HXP.screen.swap();
-			HXP.screen.refresh();
-		}
-		Draw.resetTarget();
-
 		if (_scenes.length > 0)
 		{
 			// find the last visible scene, falling through transparent scenes
@@ -185,11 +176,6 @@ class Engine extends Sprite
 				scene._drawn = true;
 				if (scene.visible) scene.render();
 			}
-		}
-
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			HXP.screen.redraw();
 		}
 
 		postRender.invoke();
@@ -297,20 +283,6 @@ class Engine extends Sprite
 		// nonfixed framerate
 		_last = Lib.getTimer();
 		addEventListener(Event.ENTER_FRAME, onEnterFrame);
-
-		// Warnings when forcing RenderMode
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			#if (!(flash || js) && debug)
-			HXP.console.log(["Warning: Using RenderMode.BUFFER on native target may result in bad performance"]);
-			#end
-		}
-		else
-		{
-			#if ((flash) && debug)
-			HXP.console.log(["Warning: Using RenderMode.HARDWARE on flash target may result in corrupt graphics"]);
-			#end
-		}
 	}
 
 	/** @private Framerate independent game loop. */

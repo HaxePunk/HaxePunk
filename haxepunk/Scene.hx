@@ -197,9 +197,7 @@ class Scene extends Tweener
 	{
 		preRender.invoke();
 		sprite.startFrame();
-
-		if (HXP.renderMode == RenderMode.HARDWARE)
-			AtlasData.startScene(this);
+		AtlasData.startScene(this);
 
 		// render the entities in order of depth
 		for (layer in _layerList)

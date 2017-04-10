@@ -78,13 +78,6 @@ class Graphiclist extends Graphic
 
 	/** @private Renders the Graphics in the list. */
 	@:dox(hide)
-	override public function render(target:BitmapData, point:Point, camera:Camera)
-	{
-		renderList(function(g:Graphic) g.render(target, _point, _camera), point, camera);
-	}
-
-	/** @private Renders the Graphics in the list. */
-	@:dox(hide)
 	override public function renderAtlas(layer:Int, point:Point, camera:Camera)
 	{
 		renderList(function(g:Graphic) g.renderAtlas(layer, _point, _camera), point, camera);
@@ -109,10 +102,6 @@ class Graphiclist extends Graphic
 	public function add(graphic:Graphic):Graphic
 	{
 		if (graphic == null) return graphic;
-
-		// set blit mode on first add
-		if (_count == 0) blit = graphic.blit;
-		else if (blit != graphic.blit) throw "Can't add graphic objects with different render methods.";
 
 		_graphics[_count++] = graphic;
 		if (!active) active = graphic.active;
