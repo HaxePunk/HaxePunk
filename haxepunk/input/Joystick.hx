@@ -1,6 +1,6 @@
 package haxepunk.input;
 
-import flash.geom.Point;
+import openfl.geom.Point;
 import haxepunk.HXP;
 
 enum JoyButtonState
@@ -13,10 +13,10 @@ enum JoyButtonState
 
 /**
  * A joystick.
- * 
+ *
  * Get one using `Input.joystick`.
- * 
- * Currently doesn't work with flash and html5 targets.
+ *
+ * Currently doesn't work with html5 target.
  */
 class Joystick
 {
@@ -155,7 +155,7 @@ class Joystick
 	 * If the joystick is currently connected.
 	 */
 	public var connected(get, set):Bool;
-	function get_connected():Bool return _timeout > 0; 
+	function get_connected():Bool return _timeout > 0;
 	function set_connected(value:Bool):Bool
 	{
 		if (value) _timeout = 3; // 3 seconds to timeout
@@ -250,7 +250,7 @@ class OUYA_GAMEPAD
 	public static inline var DPAD_DOWN:Int = 9;
 	public static inline var DPAD_LEFT:Int = 10;
 	public static inline var DPAD_RIGHT:Int = 11;
-	
+
 	/**
 	 * The Home button only works on the Ouya-console
 	 */
@@ -284,14 +284,14 @@ class XBOX_GAMEPAD
 	public static inline var START_BUTTON:Int = 8;
 	public static inline var LEFT_ANALOGUE_BUTTON:Int = 6;
 	public static inline var RIGHT_ANALOGUE_BUTTON:Int = 7;
-	
+
 	public static inline var XBOX_BUTTON:Int = 10;
 
 	public static inline var DPAD_UP:Int = 11;
 	public static inline var DPAD_DOWN:Int = 12;
 	public static inline var DPAD_LEFT:Int = 13;
 	public static inline var DPAD_RIGHT:Int = 14;
-	
+
 	/**
 	 * Axis array indicies
 	 */
@@ -317,7 +317,7 @@ class XBOX_GAMEPAD
 	public static inline var DPAD_DOWN:Int = 1;
 	public static inline var DPAD_LEFT:Int = 2;
 	public static inline var DPAD_RIGHT:Int = 3;
-	
+
 	/**
 	 * Axis array indicies
 	 */
@@ -341,14 +341,14 @@ class XBOX_GAMEPAD
 	public static inline var START_BUTTON:Int = 7;
 	public static inline var LEFT_ANALOGUE_BUTTON:Int = 9;
 	public static inline var RIGHT_ANALOGUE_BUTTON:Int = 10;
-	
+
 	public static inline var XBOX_BUTTON:Int = 8;
-	
+
 	public static inline var DPAD_UP:Int = 13;
 	public static inline var DPAD_DOWN:Int = 14;
 	public static inline var DPAD_LEFT:Int = 11;
 	public static inline var DPAD_RIGHT:Int = 12;
-	
+
 	/**
 	 * Axis array indicies
 	 */
@@ -372,12 +372,12 @@ class XBOX_GAMEPAD
 	public static inline var START_BUTTON:Int = 12;
 	public static inline var LEFT_ANALOGUE_BUTTON:Int = 10;
 	public static inline var RIGHT_ANALOGUE_BUTTON:Int = 11;
-	
+
 	public static inline var DPAD_UP:Int = 0;
 	public static inline var DPAD_DOWN:Int = 1;
 	public static inline var DPAD_LEFT:Int = 2;
 	public static inline var DPAD_RIGHT:Int = 3;
-	
+
 	/**
 	 * Keep in mind that if TRIGGER axis returns value > 0 then LT is being pressed, and if it's < 0 then RT is being pressed
 	 */
@@ -405,14 +405,14 @@ class XBOX_GAMEPAD
 	public static inline var START_BUTTON:Int = 4;
 	public static inline var LEFT_ANALOGUE_BUTTON:Int = 6;
 	public static inline var RIGHT_ANALOGUE_BUTTON:Int = 7;
-	
+
 	public static inline var XBOX_BUTTON:Int = 14;
-	
+
 	public static inline var DPAD_UP:Int = 0;
 	public static inline var DPAD_DOWN:Int = 1;
 	public static inline var DPAD_LEFT:Int = 2;
 	public static inline var DPAD_RIGHT:Int = 3;
-	
+
 	/**
 	 * Axis array indicies
 	 */

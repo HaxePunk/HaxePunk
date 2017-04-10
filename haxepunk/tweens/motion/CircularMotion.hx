@@ -1,6 +1,6 @@
 ﻿package haxepunk.tweens.motion;
 
-import flash.geom.Point;
+import openfl.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Tween;
 import haxepunk.utils.Ease;
@@ -88,7 +88,7 @@ class CircularMotion extends Motion
 	 * The circumference of the current circle motion.
 	 */
 	public var circumference(get, never):Float;
-	function get_circumference():Float return _radius * _CIRC; 
+	function get_circumference():Float return _radius * _CIRC;
 
 	// Circle information.
 	var _centerX:Float;

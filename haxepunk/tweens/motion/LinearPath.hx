@@ -1,7 +1,7 @@
 package haxepunk.tweens.motion;
 
 import haxepunk.Tween;
-import flash.geom.Point;
+import openfl.geom.Point;
 
 /**
  * Determines linear motion along a set of points.
@@ -132,7 +132,7 @@ class LinearPath extends Motion
 	 * How many points are on the path.
 	 */
 	public var pointCount(get, never):Float;
-	function get_pointCount():Float return _points.length; 
+	function get_pointCount():Float return _points.length;
 
 	// Path information.
 	var _points:Array<Point>;

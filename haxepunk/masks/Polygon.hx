@@ -9,8 +9,8 @@ import haxepunk.masks.Hitbox;
 import haxepunk.utils.Projection;
 import haxepunk.utils.Vector;
 import haxepunk.utils.MathUtil;
-import flash.display.Graphics;
-import flash.geom.Point;
+import openfl.display.Graphics;
+import openfl.geom.Point;
 
 
 /**
@@ -388,7 +388,7 @@ class Polygon extends Hitbox
 	 * Rotation angle (in degrees) of the polygon (rotates around origin point).
 	 */
 	public var angle(get, set):Float;
-	inline function get_angle():Float return _angle; 
+	inline function get_angle():Float return _angle;
 	function set_angle(value:Float):Float
 	{
 		if (value != _angle)
@@ -406,7 +406,7 @@ class Polygon extends Hitbox
 	 * to make sure the axes update as well.
 	 */
 	public var points(get, set):Array<Vector>;
-	inline function get_points():Array<Vector> return _points; 
+	inline function get_points():Array<Vector> return _points;
 	function set_points(value:Array<Vector>):Array<Vector>
 	{
 		if (_points != value)

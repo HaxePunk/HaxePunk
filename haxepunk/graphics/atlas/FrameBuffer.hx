@@ -1,10 +1,10 @@
 package haxepunk.graphics.atlas;
 
 #if hardware_render
-import flash.gl.GL;
-import flash.gl.GLFramebuffer;
-//import flash.gl.GLRenderbuffer;
-import flash.gl.GLTexture;
+import openfl.gl.GL;
+import openfl.gl.GLFramebuffer;
+//import openfl.gl.GLRenderbuffer;
+import openfl.gl.GLTexture;
 
 @:dox(hide)
 class FrameBuffer

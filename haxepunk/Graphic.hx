@@ -4,8 +4,8 @@ import haxe.ds.Either;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.TileAtlas;
 import haxepunk.graphics.atlas.AtlasRegion;
-import flash.display.BitmapData;
-import flash.geom.Point;
+import openfl.display.BitmapData;
+import openfl.geom.Point;
 
 /**
  * Abstract representing either a `String`, a `TileAtlas` or a `BitmapData`.

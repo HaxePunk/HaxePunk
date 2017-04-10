@@ -1,9 +1,9 @@
 package haxepunk.graphics.atlas;
 
-import flash.display.BitmapData;
-import flash.display.BlendMode;
-import flash.geom.Matrix;
-import flash.geom.Rectangle;
+import openfl.display.BitmapData;
+import openfl.display.BlendMode;
+import openfl.geom.Matrix;
+import openfl.geom.Rectangle;
 
 @:dox(hide)
 class DrawCommandBatch

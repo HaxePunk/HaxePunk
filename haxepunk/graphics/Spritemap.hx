@@ -1,6 +1,6 @@
 package haxepunk.graphics;
 
-import flash.geom.Rectangle;
+import openfl.geom.Rectangle;
 import haxe.ds.Either;
 import haxepunk.HXP;
 import haxepunk.Graphic;

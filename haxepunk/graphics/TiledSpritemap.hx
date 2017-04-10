@@ -1,7 +1,7 @@
 package haxepunk.graphics;
 
-import flash.display.Graphics;
-import flash.geom.Point;
+import openfl.display.Graphics;
+import openfl.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Graphic;
 

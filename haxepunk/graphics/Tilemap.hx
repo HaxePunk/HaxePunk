@@ -1,23 +1,54 @@
 package haxepunk.graphics;
 
-import flash.display.BitmapData;
-import flash.geom.Point;
-import flash.geom.Rectangle;
+import openfl.display.BitmapData;
+import openfl.geom.Point;
+import openfl.geom.Rectangle;
 import haxe.ds.Either;
 import haxepunk.Graphic;
 import haxepunk.HXP;
 import haxepunk.graphics.atlas.TileAtlas;
 import haxepunk.masks.Grid;
+import haxepunk.utils.Color;
 
 /**
- * A canvas to which Tiles can be drawn for fast multiple tile rendering.
+ * A rendered grid of tiles.
  */
-class Tilemap extends Canvas
+class Tilemap extends Graphic
 {
 	/**
 	 * If x/y positions should be used instead of columns/rows.
 	 */
 	public var usePositions:Bool;
+
+	/**
+	 * Rotation of the tilemap, in degrees.
+	 */
+	public var angle:Float = 0;
+
+	/**
+	 * Scale of the tilemap, effects both x and y scale.
+	 */
+	public var scale:Float = 1;
+
+	/**
+	 * X scale of the tilemap.
+	 */
+	public var scaleX:Float = 1;
+
+	/**
+	 * Y scale of the tilemap.
+	 */
+	public var scaleY:Float = 1;
+
+	/**
+	 * Width of the tilemap.
+	 */
+	public var width(default, null):Int;
+
+	/**
+	 * Height of the tilemap.
+	 */
+	public var height(default, null):Int;
 
 	/**
 	 * Constructor.
@@ -31,13 +62,14 @@ class Tilemap extends Canvas
 	 */
 	public function new(tileset:TileType, width:Int, height:Int, tileWidth:Int, tileHeight:Int, tileSpacingWidth:Int=0, tileSpacingHeight:Int=0)
 	{
-		_rect = HXP.rect;
-
 		// set some tilemap information
-		_width = width - (width % tileWidth);
-		_height = height - (height % tileHeight);
-		_columns = Std.int(_width / tileWidth);
-		_rows = Std.int(_height / tileHeight);
+		super();
+		this.width = width - (width % tileWidth);
+		this.height = height - (height % tileHeight);
+		color = 0xFFFFFF;
+		alpha = 1;
+		_columns = Std.int(this.width / tileWidth);
+		_rows = Std.int(this.height / tileHeight);
 
 		this.tileSpacingWidth = tileSpacingWidth;
 		this.tileSpacingHeight = tileSpacingHeight;
@@ -45,16 +77,8 @@ class Tilemap extends Canvas
 		if (_columns == 0 || _rows == 0)
 			throw "Cannot create a bitmapdata of width/height = 0";
 
-		// create the canvas
-#if neko
-		_maxWidth = 4000 - 4000 % tileWidth;
-		_maxHeight = 4000 - 4000 % tileHeight;
-#else
 		_maxWidth -= _maxWidth % tileWidth;
 		_maxHeight -= _maxHeight % tileHeight;
-#end
-
-		super(_width, _height);
 
 		// initialize map
 		_tile = new Rectangle(0, 0, tileWidth, tileHeight);
@@ -472,6 +496,34 @@ class Tilemap extends Canvas
 	}
 
 	/**
+	 * The tinted color of the Canvas. Use 0xFFFFFF to draw the it normally.
+	 */
+	public var color(get, set):Color;
+	function get_color():Color return _color;
+	function set_color(value:Color):Color
+	{
+		value &= 0xFFFFFF;
+		if (_color == value) return _color;
+		_color = value;
+		_red = color.red;
+		_green = color.green;
+		_blue = color.blue;
+		return _color;
+	}
+
+	/**
+	 * Change the opacity of the Canvas, a value from 0 to 1.
+	 */
+	public var alpha(get, set):Float;
+	function get_alpha():Float return _alpha;
+	function set_alpha(value:Float):Float
+	{
+		if (value < 0) value = 0;
+		else if (value > 1) value = 1;
+		return _alpha = value;
+	}
+
+	/**
 	 * The tile width.
 	 */
 	public var tileWidth(get, never):Int;
@@ -518,6 +570,16 @@ class Tilemap extends Canvas
 	var _map:Array<Array<Int>>;
 	var _columns:Int;
 	var _rows:Int;
+
+	var _maxWidth:Int = 4000;
+	var _maxHeight:Int = 4000;
+
+	// Color tinting information.
+	var _color:Color;
+	var _alpha:Float;
+	var _red:Float;
+	var _green:Float;
+	var _blue:Float;
 
 	// Tileset information.
 	var _set:BitmapData;

@@ -2,7 +2,7 @@
 
 import haxepunk.Tween;
 import haxepunk.utils.Ease;
-import flash.geom.Point;
+import openfl.geom.Point;
 
 /**
  * A series of points which will determine a path from the
@@ -165,7 +165,7 @@ class QuadPath extends Motion
 	 * Amount of points on the path.
 	 */
 	public var pointCount(get, null):Float;
-	function get_pointCount():Float return _points.length; 
+	function get_pointCount():Float return _points.length;
 
 	/** @private Calculates the lenght of the curve. */
 	function curveLength(start:Point, control:Point, finish:Point):Float

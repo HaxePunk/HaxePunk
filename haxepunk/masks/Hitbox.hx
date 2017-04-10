@@ -3,8 +3,8 @@ package haxepunk.masks;
 import haxepunk.Mask;
 import haxepunk.utils.Projection;
 import haxepunk.utils.Vector;
-import flash.display.Graphics;
-import flash.geom.Point;
+import openfl.display.Graphics;
+import openfl.geom.Point;
 import haxepunk.masks.Polygon;
 
 /** Uses parent's hitbox to determine collision.
@@ -33,7 +33,7 @@ class Hitbox extends Mask
 	/** @private Collides against an Entity. */
 	override function collideMask(other:Mask):Bool
 	{
-		var px:Float = _x + _parent.x, 
+		var px:Float = _x + _parent.x,
 			py:Float = _y + _parent.y;
 
 		var ox = other._parent.originX + other._parent.x,
@@ -48,10 +48,10 @@ class Hitbox extends Mask
 	/** @private Collides against a Hitbox. */
 	function collideHitbox(other:Hitbox):Bool
 	{
-		var px:Float = _x + _parent.x, 
+		var px:Float = _x + _parent.x,
 			py:Float = _y + _parent.y;
 
-		var ox:Float = other._x + other._parent.x, 
+		var ox:Float = other._x + other._parent.x,
 			oy:Float = other._y + other._parent.y;
 
 		return px + _width > ox
@@ -64,7 +64,7 @@ class Hitbox extends Mask
 	 * X offset.
 	 */
 	public var x(get, set):Int;
-	function get_x():Int return _x; 
+	function get_x():Int return _x;
 	function set_x(value:Int):Int
 	{
 		if (_x == value) return value;
@@ -78,7 +78,7 @@ class Hitbox extends Mask
 	 * Y offset.
 	 */
 	public var y(get, set):Int;
-	function get_y():Int return _y; 
+	function get_y():Int return _y;
 	function set_y(value:Int):Int
 	{
 		if (_y == value) return value;
@@ -92,7 +92,7 @@ class Hitbox extends Mask
 	 * Width.
 	 */
 	public var width(get, set):Int;
-	function get_width():Int return _width; 
+	function get_width():Int return _width;
 	function set_width(value:Int):Int
 	{
 		if (_width == value) return value;
@@ -106,7 +106,7 @@ class Hitbox extends Mask
 	 * Height.
 	 */
 	public var height(get, set):Int;
-	function get_height():Int return _height; 
+	function get_height():Int return _height;
 	function set_height(value:Int):Int
 	{
 		if (_height == value) return value;
@@ -142,7 +142,7 @@ class Hitbox extends Mask
 			graphics.drawRect((parent.x - HXP.camera.x + x) * scaleX, (parent.y - HXP.camera.y + y) * scaleY, width * scaleX, height * scaleY);
 		}
 	}
-	
+
 	@:dox(hide)
 	override public function project(axis:Vector, projection:Projection):Void
 	{
@@ -179,7 +179,7 @@ class Hitbox extends Mask
 		projection.min = min;
 		projection.max = max;
 	}
-	
+
 	// Hitbox information.
 	var _width:Int = 0;
 	var _height:Int = 0;

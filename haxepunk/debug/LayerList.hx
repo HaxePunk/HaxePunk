@@ -1,11 +1,11 @@
 package haxepunk.debug;
 
 import haxe.ds.IntMap;
-import flash.display.Bitmap;
-import flash.display.Sprite;
-import flash.events.MouseEvent;
-import flash.text.TextField;
-import flash.text.TextFormat;
+import openfl.display.Bitmap;
+import openfl.display.Sprite;
+import openfl.events.MouseEvent;
+import openfl.text.TextField;
+import openfl.text.TextFormat;
 import openfl.Assets;
 
 @:dox(hide)

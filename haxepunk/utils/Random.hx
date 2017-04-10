@@ -19,7 +19,7 @@ class Random
 	}
 
 	/**
-	 * Randomizes the random seed using Flash's Math.random() function.
+	 * Randomizes the random seed using Math.random() function.
 	 */
 	public static inline function randomizeSeed()
 	{

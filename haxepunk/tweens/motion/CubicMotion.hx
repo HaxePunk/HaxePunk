@@ -1,7 +1,7 @@
 ﻿package haxepunk.tweens.motion;
 
 import haxepunk.Tween;
-import flash.geom.Point;
+import openfl.geom.Point;
 import haxepunk.utils.Ease;
 
 /**
