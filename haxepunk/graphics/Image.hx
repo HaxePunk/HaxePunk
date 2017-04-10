@@ -346,13 +346,7 @@ class Image extends Graphic
 	 *
 	 * Default value: false if HXP.stage.quality is LOW, true otherwise.
 	 */
-	#if flash
-	public var smooth(get_smooth, set_smooth):Bool;
-	inline function get_smooth():Bool return _bitmap.smoothing;
-	inline function set_smooth(s:Bool):Bool return _bitmap.smoothing = s;
-	#else
 	public var smooth:Bool;
-	#end
 
 	/**
 	 * Width of the image.

@@ -97,13 +97,8 @@ class Engine extends Sprite
 		_frameList = new Array();
 
 		// on-stage event listener
-#if flash
-		if (Lib.current.stage != null) onStage();
-		else Lib.current.addEventListener(Event.ADDED_TO_STAGE, onStage);
-#else
 		addEventListener(Event.ADDED_TO_STAGE, onStage);
 		Lib.current.addChild(this);
-#end
 	}
 
 	/**
@@ -256,15 +251,8 @@ class Engine extends Sprite
 	function onStage(?e:Event)
 	{
 		// remove event listener
-#if flash
-		if (e != null)
-			Lib.current.removeEventListener(Event.ADDED_TO_STAGE, onStage);
-		HXP.stage = Lib.current.stage;
-		HXP.stage.addChild(this);
-#else
 		removeEventListener(Event.ADDED_TO_STAGE, onStage);
 		HXP.stage = stage;
-#end
 		setStageProperties();
 
 		// enable input

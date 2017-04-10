@@ -206,9 +206,6 @@ class Text extends Image
 		_format.leading = options.leading;
 
 		_field = new TextField();
-#if flash
-		_field.embedFonts = true;
-#end
 		_field.wordWrap = options.wordWrap;
 		_field.defaultTextFormat = _format;
 		if (options.filters != null)

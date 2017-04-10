@@ -28,9 +28,8 @@ class Tilemap extends Canvas
 	 * @param	tileHeight			Tile height.
 	 * @param	tileSpacingWidth	Tile horizontal spacing.
 	 * @param	tileSpacingHeight	Tile vertical spacing.
-	 * @param	opaqueTiles			Indicates if this tileset contains only opaque tiles (defaults to true). Only used in Flash .
 	 */
-	public function new(tileset:TileType, width:Int, height:Int, tileWidth:Int, tileHeight:Int, tileSpacingWidth:Int=0, tileSpacingHeight:Int=0, opaqueTiles:Bool=true)
+	public function new(tileset:TileType, width:Int, height:Int, tileWidth:Int, tileHeight:Int, tileSpacingWidth:Int=0, tileSpacingHeight:Int=0)
 	{
 		_rect = HXP.rect;
 
@@ -39,7 +38,6 @@ class Tilemap extends Canvas
 		_height = height - (height % tileHeight);
 		_columns = Std.int(_width / tileWidth);
 		_rows = Std.int(_height / tileHeight);
-		_opaqueTiles = opaqueTiles;
 
 		this.tileSpacingWidth = tileSpacingWidth;
 		this.tileSpacingHeight = tileSpacingHeight;
@@ -339,14 +337,6 @@ class Tilemap extends Canvas
 			}
 			_columns = _map[Std.int(y)].length;
 
-#if flash
-			shift(Std.int(columns * _tile.width), 0);
-			_rect.x = columns > 0 ? 0 : _columns + columns;
-			_rect.y = 0;
-			_rect.width = Math.abs(columns);
-			_rect.height = _rows;
-			updateRect(_rect, !wrap);
-#end
 		}
 
 		if (rows != 0)
@@ -368,46 +358,7 @@ class Tilemap extends Canvas
 				}
 			}
 			_rows = _map.length;
-
-#if flash
-			shift(0, Std.int(rows * _tile.height));
-			_rect.x = 0;
-			_rect.y = rows > 0 ? 0 : _rows + rows;
-			_rect.width = _columns;
-			_rect.height = Math.abs(rows);
-			updateRect(_rect, !wrap);
-#end
 		}
-	}
-
-	/** @private Used by shiftTiles to update a rectangle of tiles from the tilemap. */
-	function updateRect(rect:Rectangle, clear:Bool)
-	{
-		var x:Int = Std.int(rect.x),
-			y:Int = Std.int(rect.y),
-			w:Int = Std.int(x + rect.width),
-			h:Int = Std.int(y + rect.height),
-			u:Bool = usePositions;
-		usePositions = false;
-		if (clear)
-		{
-			while (y < h)
-			{
-				while (x < w) clearTile(x++, y);
-				x = Std.int(rect.x);
-				y++;
-			}
-		}
-		else
-		{
-			while (y < h)
-			{
-				while (x < w) updateTile(x++, y);
-				x = Std.int(rect.x);
-				y++;
-			}
-		}
-		usePositions = u;
 	}
 
 	inline function floorX(x:Float) return Math.floor(x * HXP.screen.fullScaleX) / HXP.screen.fullScaleX;
@@ -560,13 +511,6 @@ class Tilemap extends Canvas
 	public var rows(get, null):Int;
 	inline function get_rows():Int return _rows;
 
-	/**
-	 * If false, whenever you call setTile or one of the load methods, clears the affected Tilemap areas before redrawing.
-	 * Only used on Flash targets and with tilesets that contain transparency.
-	 */
-	public var opaqueTiles(get, null):Bool;
-	inline function get_opaqueTiles():Bool return _opaqueTiles;
-
 	/** Default value: false if HXP.stage.quality is LOW, true otherwise. */
 	public var smooth:Bool;
 
@@ -576,7 +520,6 @@ class Tilemap extends Canvas
 	var _rows:Int;
 
 	// Tileset information.
-	var _opaqueTiles:Bool;
 	var _set:BitmapData;
 	var _atlas:TileAtlas;
 	var _setColumns:Int;
