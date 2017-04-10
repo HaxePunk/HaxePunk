@@ -37,7 +37,7 @@ class TiledImage extends Image
 		_point.y = point.y + y - originY - camera.y * scrollY;
 
 		// TODO: properly handle flipped tiled spritemaps
-		if (_flipped) _point.x += _sourceRect.width;
+		if (flipped) _point.x += _sourceRect.width;
 		var fsx = HXP.screen.fullScaleX,
 			fsy = HXP.screen.fullScaleY,
 			sx = fsx * scale * scaleX,
@@ -49,7 +49,7 @@ class TiledImage extends Image
 			while (x < _width)
 			{
 				_region.draw(Math.floor((_point.x + x) * fsx), Math.floor((_point.y + y) * fsy),
-					layer, sx * (_flipped ? -1 : 1), sy, angle,
+					layer, sx * (flipped ? -1 : 1), sy, angle,
 					_red, _green, _blue, _alpha);
 				x += _sourceRect.width;
 			}
