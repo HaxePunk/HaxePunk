@@ -1,6 +1,5 @@
 package haxepunk.graphics;
 
-import openfl.display.BitmapData;
 import openfl.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Graphic;

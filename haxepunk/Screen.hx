@@ -1,13 +1,11 @@
 package haxepunk;
 
 import openfl.display.Bitmap;
-import openfl.display.PixelSnapping;
 import openfl.display.Sprite;
 import openfl.filters.BitmapFilter;
 import openfl.geom.Matrix;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.Renderer;
-import haxepunk.graphics.Image;
 import haxepunk.screen.ScaleMode;
 
 /**
