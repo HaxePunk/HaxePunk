@@ -1,6 +1,6 @@
 package haxepunk;
 
-import haxepunk.ds.Either;
+import haxe.ds.Either;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.TileAtlas;
 import haxepunk.graphics.atlas.AtlasRegion;
@@ -12,29 +12,25 @@ import flash.geom.Point;
  *
  * Conversion is automatic, no need to use this.
  */
-abstract TileType(Either<BitmapData, TileAtlas>)
+abstract TileType(Either<BitmapData, TileAtlas>) from Either<BitmapData, TileAtlas>
 {
-	inline function new(e:Either<BitmapData, TileAtlas>) this = e;
-	@:dox(hide) public var type(get, never):Either<BitmapData, TileAtlas>;
-	@:to inline function get_type() return this;
-
-	@:dox(hide) @:from public static inline function fromString(tileset:String)
+	@:dox(hide) @:from public static inline function fromString(tileset:String):TileType
 	{
 		if (HXP.renderMode == RenderMode.HARDWARE)
-			return new TileType(Right(new TileAtlas(tileset)));
+			return Right(new TileAtlas(tileset));
 		else
-			return new TileType(Left(HXP.getBitmap(tileset)));
+			return Left(HXP.getBitmap(tileset));
 	}
-	@:dox(hide) @:from public static inline function fromTileAtlas(atlas:TileAtlas)
+	@:dox(hide) @:from public static inline function fromTileAtlas(atlas:TileAtlas):TileType
 	{
-		return new TileType(Right(atlas));
+		return Right(atlas);
 	}
-	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData)
+	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData):TileType
 	{
 		if (HXP.renderMode == RenderMode.HARDWARE)
-			return new TileType(Right(new TileAtlas(bd)));
+			return Right(new TileAtlas(bd));
 		else
-			return new TileType(Left(bd));
+			return Left(bd);
 	}
 }
 
@@ -43,33 +39,29 @@ abstract TileType(Either<BitmapData, TileAtlas>)
  *
  * Conversion is automatic, no need to use this.
  */
-abstract ImageType(Either<BitmapData, AtlasRegion>)
+abstract ImageType(Either<BitmapData, AtlasRegion>) from Either<BitmapData, AtlasRegion>
 {
-	inline function new(e:Either<BitmapData, AtlasRegion>) this = e;
-	@:dox(hide) public var type(get, never):Either<BitmapData, AtlasRegion>;
-	@:to inline function get_type() return this;
-
-	@:dox(hide) @:from public static inline function fromString(s:String)
+	@:dox(hide) @:from public static inline function fromString(s:String):ImageType
 	{
 		if (HXP.renderMode == RenderMode.HARDWARE)
-			return new ImageType(Right(Atlas.loadImageAsRegion(s)));
+			return Right(Atlas.loadImageAsRegion(s));
 		else
-			return new ImageType(Left(HXP.getBitmap(s)));
+			return Left(HXP.getBitmap(s));
 	}
-	@:dox(hide) @:from public static inline function fromTileAtlas(atlas:TileAtlas)
+	@:dox(hide) @:from public static inline function fromTileAtlas(atlas:TileAtlas):ImageType
 	{
-		return new ImageType(Right(atlas.getRegion(0)));
+		return Right(atlas.getRegion(0));
 	}
-	@:dox(hide) @:from public static inline function fromAtlasRegion(region:AtlasRegion)
+	@:dox(hide) @:from public static inline function fromAtlasRegion(region:AtlasRegion):ImageType
 	{
-		return new ImageType(Right(region));
+		return Right(region);
 	}
-	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData)
+	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData):ImageType
 	{
 		if (HXP.renderMode == RenderMode.HARDWARE)
-			return new ImageType(Right(Atlas.loadImageAsRegion(bd)));
+			return Right(Atlas.loadImageAsRegion(bd));
 		else
-			return new ImageType(Left(bd));
+			return Left(bd);
 	}
 
 	public var width(get, never):Int;
@@ -98,20 +90,20 @@ abstract ImageType(Either<BitmapData, AtlasRegion>)
  *
  * Conversion is automatic, no need to use this.
  */
-abstract ImageOrTileType(Either<ImageType, TileType>)
+@:dox(hide)
+abstract ImageOrTileType(Either<ImageType, TileType>) from Either<ImageType, TileType>
 {
-	inline function new(e:Either<ImageType, TileType>) this = e;
-	@:dox(hide) public var type(get, never):Either<ImageType, TileType>;
-	@:to inline function get_type() return this;
+	@:from public static inline function fromString(tileset:String):ImageOrTileType
+		return Right(TileType.fromString(tileset));
 
-	@:dox(hide) @:from public static inline function fromString(tileset:String):ImageOrTileType
-	return new ImageOrTileType(Right(TileType.fromString(tileset)));
-	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData):ImageOrTileType
-	return new ImageOrTileType(Right(TileType.fromBitmapData(bd)));
-	@:dox(hide) @:from public static inline function fromTileAtlas(atlas:TileAtlas):ImageOrTileType
-	return new ImageOrTileType(Right(TileType.fromTileAtlas(atlas)));
-	@:dox(hide) @:from public static inline function fromAtlasRegion(region:AtlasRegion):ImageOrTileType
-	return new ImageOrTileType(Left(ImageType.fromAtlasRegion(region)));
+	@:from public static inline function fromBitmapData(bd:BitmapData):ImageOrTileType
+		return Right(TileType.fromBitmapData(bd));
+
+	@:from public static inline function fromTileAtlas(atlas:TileAtlas):ImageOrTileType
+		return Right(TileType.fromTileAtlas(atlas));
+
+	@:from public static inline function fromAtlasRegion(region:AtlasRegion):ImageOrTileType
+		return Left(ImageType.fromAtlasRegion(region));
 }
 
 /**

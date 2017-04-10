@@ -3,6 +3,7 @@ package haxepunk.graphics;
 import flash.display.BitmapData;
 import flash.display.BlendMode;
 import flash.geom.Point;
+import haxe.ds.Either;
 import haxepunk.HXP;
 import haxepunk.Graphic;
 import haxepunk.graphics.atlas.AtlasRegion;
@@ -49,7 +50,7 @@ class Emitter extends Graphic
 	 */
 	public function setSource(source:ImageOrTileType, frameWidth:Int = 0, frameHeight:Int = 0)
 	{
-		switch (source.type)
+		switch (source)
 		{
 			case Left(img):
 				_source = new Image(img);
