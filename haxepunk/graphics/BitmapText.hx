@@ -142,6 +142,13 @@ class BitmapText extends Graphic
 	public var lineSpacing:Int = 0;
 	public var charSpacing:Int = 0;
 
+	/**
+	 * How many characters of text to render. If -1, render the entire string;
+	 * if less than the number of visible characters, will end early. Images
+	 * and line breaks count as one character each.
+	 */
+	public var displayCharCount:Int = -1;
+
 	var opCodes:Array<TextOpcode> = new Array();
 
 	/**
@@ -498,9 +505,11 @@ class BitmapText extends Graphic
 			currentScale:Float = 1,
 			cursorX:Float = 0,
 			cursorY:Float = 0,
-			thisLineHeight:Float = lineHeight * sy;
+			thisLineHeight:Float = lineHeight * sy,
+			charCount:Int = 0;
 		for (op in opCodes)
 		{
+			if (displayCharCount > -1 && charCount >= displayCharCount) break;
 			switch (op)
 			{
 				case SetColor(color):
@@ -523,6 +532,8 @@ class BitmapText extends Graphic
 					// render a block of text on this line
 					for (i in 0 ... text.length)
 					{
+						if (displayCharCount > -1 && charCount >= displayCharCount) break;
+						++charCount;
 						var char = text.charAt(i);
 						var region = _font.getChar(char);
 						var gd = _font.glyphData.get(char);
@@ -558,6 +569,7 @@ class BitmapText extends Graphic
 					cursorX = 0;
 					cursorY += thisLineHeight;
 					thisLineHeight = lineHeight * sy * currentScale;
+					++charCount;
 				case Image(img):
 					if (renderImageFunction != null)
 					{
@@ -566,6 +578,7 @@ class BitmapText extends Graphic
 					thisLineHeight = Std.int(Math.max(thisLineHeight, img.height * img.scale * img.scaleY));
 					cursorX += (img.width * img.scale * img.scaleX * this.scale * this.scaleX * currentScale) + charSpacing * sx * currentScale;
 					if (cursorX > textWidth) textWidth = Std.int(cursorX);
+					++charCount;
 			}
 		}
 		textHeight = Std.int(cursorY + (cursorX > 0 ? thisLineHeight : 0));
