@@ -167,7 +167,7 @@ class BitmapFontAtlas extends TextureAtlas
 
 			while (cx < bmd.width && letterIdx < alphabetLength)
 			{
-				if (Std.int(bmd.getPixel(cx, cy)) != globalBGColor) 
+				if (Std.int(bmd.getPixel(cx, cy)) != globalBGColor)
 				{
 					// found non bg pixel
 					var gx:Int = cx;
@@ -194,11 +194,11 @@ class BitmapFontAtlas extends TextureAtlas
 					// set the defined region
 					var region = atlas.defineRegion(glyph, HXP.rect);
 					atlas.glyphData[glyph] = md;
-					
+
 					// store max size
 					if (gh > rowHeight) rowHeight = gh;
 					if (gh > atlas.fontSize) atlas.fontSize = gh;
-					
+
 					// go to next glyph
 					cx += gw;
 					letterIdx++;
@@ -232,7 +232,7 @@ class BitmapFontAtlas extends TextureAtlas
 	 * Returns an AtlasRegion for a given character, or whitespace if that
 	 * character is not found.
 	 */
-	public function getChar(name:String):AtlasRegion
+	public inline function getChar(name:String):AtlasRegion
 	{
 		try
 		{

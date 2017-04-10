@@ -1,9 +1,10 @@
 package haxepunk.graphics;
 
 import flash.display.BitmapData;
-import flash.geom.Point;
-import flash.geom.Matrix;
 import flash.geom.ColorTransform;
+import flash.geom.Matrix;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.RenderMode;
 import haxepunk.Graphic;
@@ -13,7 +14,8 @@ import haxepunk.graphics.atlas.AtlasRegion;
 import haxepunk.utils.Color;
 
 @:dox(hide)
-typedef RenderFunction = AtlasRegion -> GlyphData -> Float -> Float -> Void;
+typedef RenderFunction = AtlasRegion -> GlyphData -> Color -> Float -> Float -> Float -> Float -> Void;
+typedef RenderImageFunction = Image -> Color -> Float -> Float -> Float -> Float -> Void;
 
 /**
  * Text option including the font, size, color, font format...
@@ -26,11 +28,98 @@ typedef BitmapTextOptions =
 };
 
 /**
+ * Rendering opcodes. Text is parsed into an array of these opcodes which
+ * either modify the format, render blocks of text or images, or change the
+ * cursor position.
+ * @since	4.0.0
+ */
+enum TextOpcode
+{
+	SetColor(color:Color);
+	SetAlpha(alpha:Float);
+	SetScale(scale:Float);
+	TextBlock(text:String);
+	NextLine;
+	Image(img:Image);
+	PopColor;
+	PopAlpha;
+	PopScale;
+}
+
+/**
  * An object for drawing text using a bitmap font.
  * @since	2.5.0
  */
 class BitmapText extends Graphic
 {
+	static var FORMAT_TAG_RE = ~/<(([A-Za-z_-]+)\/?|(\/[A-Za-z_-]+))>/;
+
+	static var formatTags:Map<String, Array<TextOpcode>> = [
+		"br" => [NextLine],
+	];
+
+	static var _colorStack:Array<Color> = new Array();
+	static var _alphaStack:Array<Float> = new Array();
+	static var _scaleStack:Array<Float> = new Array();
+
+	/**
+	 * Define a new format tag which can be used to modify the formatting of a
+	 * subset of text.
+	 * @param tag The tag name, e.g. "red" (used as "<red>my text</red>"). Will
+	 *  			automatically define the appropriate close tag.
+	 * @param color The color of text inside this tag.
+	 * @param alpha The alpha of text inside this tag.
+	 * @param scale The scale of text inside this tag.
+	 * @since 4.0.0
+	 */
+	public static function defineFormatTag(tag:String, ?color:Color, ?alpha:Float, ?scale:Float):Void
+	{
+		var tagOps:Array<TextOpcode> = new Array();
+		var closeTagOps:Array<TextOpcode> = new Array();
+		if (color != null)
+		{
+			tagOps.push(SetColor(color));
+			closeTagOps.push(PopColor);
+		}
+		if (alpha != null)
+		{
+			tagOps.push(SetAlpha(alpha));
+			closeTagOps.push(PopAlpha);
+		}
+		if (scale != null)
+		{
+			tagOps.push(SetScale(scale));
+			closeTagOps.push(PopScale);
+		}
+		var closeTag = '/$tag';
+		formatTags[tag] = tagOps;
+		formatTags[closeTag] = closeTagOps;
+	}
+
+	/**
+	 * Define a markup tag which can be used to render an Image. Should be used
+	 * as a self-closed tag.
+	 * @param tag The tag name, e.g. "my-img" (used as "<my-img/>")
+	 * @param image An Image to be rendered. The Image's coordinates, origin,
+	 *  			angle and scale can be modified.
+	 * @since 4.0.0
+	 */
+	public static function defineImageTag(tag:String, image:Image)
+	{
+		formatTags[tag] = [Image(image)];
+	}
+
+	/**
+	 * Undefine an existing XML tag.
+	 * @since 4.0.0
+	 */
+	public static function removeTag(tag:String)
+	{
+		if (formatTags.exists(tag)) formatTags.remove(tag);
+		var closeTag = '/$tag';
+		if (formatTags.exists(closeTag)) formatTags.remove(closeTag);
+	}
+
 	public var width:Float = 0;
 	public var height:Float = 0;
 	public var textWidth:Int = 0;
@@ -38,8 +127,8 @@ class BitmapText extends Graphic
 	public var autoWidth:Bool = false;
 
 	/**
-	 * Whether or not to automatically figure out the height 
-	 * and width of the text. 
+	 * Whether or not to automatically figure out the height
+	 * and width of the text.
 	 * @default False.
 	 */
 	public var autoHeight:Bool = false;
@@ -50,9 +139,10 @@ class BitmapText extends Graphic
 	public var scaleX:Float = 1;
 	public var scaleY:Float = 1;
 
-	public var lines:Array<String>;
 	public var lineSpacing:Int = 0;
 	public var charSpacing:Int = 0;
+
+	var opCodes:Array<TextOpcode> = new Array();
 
 	/**
 	 * BitmapText constructor.
@@ -70,7 +160,7 @@ class BitmapText extends Graphic
 	 * 						align		Alignment ("left", "center" or "right"). (Currently ignored.)
 	 * 						resizable	If the text field can automatically resize if its contents grow. (Currently ignored.)
 	 * 						leading		Vertical space between lines. (Currently ignored.)
-	 *						richText	If the text field uses a rich text string. (Currently ignored.) 
+	 *						richText	If the text field uses a rich text string. (Currently ignored.)
 	 */
 	public function new(text:String, x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0, ?options:BitmapTextOptions)
 	{
@@ -93,7 +183,7 @@ class BitmapText extends Graphic
 		// failure to load
 		if (_font == null)
 			throw "Invalid font glyphs provided.";
-		
+
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -108,152 +198,193 @@ class BitmapText extends Graphic
 		{
 			_set = HXP.getBitmap(StringTools.replace(options.font, ".fnt", ".png"));
 			_matrix = HXP.matrix;
+			_rect = HXP.rect;
 			_colorTransform = new ColorTransform();
 		}
 
 		this.color = options.color;
-		updateColor();
 		this.text = text != null ? text : "";
+		_bufferDirty = true;
 
 		smooth = (HXP.stage.quality != LOW);
 	}
 
-	var _red:Float;
-	var _green:Float;
-	var _blue:Float;
 	public var color(default, set):Color;
 	function set_color(value:Color):Int
 	{
-		value &= 0xFFFFFF;
-		if (color == value) return value;
-
-		color = value;
-		updateColor();
-
-		return value;
+		_bufferDirty = true;
+		return color = value;
 	}
 
 	public var alpha(default, set):Float=1;
 	function set_alpha(value:Float)
 	{
-		alpha = value;
-		updateColor();
-
-		return value;
-	}
-
-	/*
-	 * Called automatically to update the ColorTransform object whenever color
-	 * or alpha is set.
-	 */
-	function updateColor()
-	{
-		// update _colorTransform if blitting
-		_red = color.red;
-		_green = color.green;
-		_blue = color.blue;
-
-		if (blit)
-		{
-			_colorTransform.redMultiplier = _red;
-			_colorTransform.greenMultiplier = _green;
-			_colorTransform.blueMultiplier = _blue;
-			_colorTransform.alphaMultiplier = alpha;
-		}
+		_bufferDirty = true;
+		return alpha = value;
 	}
 
 	public var text(default, set):String;
 	function set_text(text:String):String
 	{
-		this.text = text;
-		var _oldLines:Array<String> = null;
-		if (lines != null)
-			_oldLines = lines;
-		lines = text.split("\n");
-
-		if (wrap)
+		if (this.text != text)
 		{
-			wordWrap();
-		}
+			this.text = text;
 
-		textWidth = textHeight = 0;
-		if (blit) updateBuffer(_oldLines);
-		else computeTextSize();
+			parseText();
+
+			textWidth = textHeight = 0;
+			if (blit) _bufferDirty = true;
+			else computeTextSize();
+		}
 
 		return text;
 	}
 
 	/**
-	 * Automatically wraps text by figuring out how many words can fit on a
-	 * single line, and splitting the remainder onto a new line.
+	 * Parse text and any formatting tags into a list of rendering opcodes.
+	 * Handles newlines and word wrapping.
 	 */
-	public function wordWrap():Void
+	function parseText():Void
 	{
-		// subdivide lines
-		var newLines:Array<String> = [];
+		// clear current opcode list
+		while (opCodes.length > 0)
+		{
+			opCodes.pop();
+		}
+		while (_scaleStack.length > 0)
+		{
+			_scaleStack.pop();
+		}
+		_scaleStack.push(1);
 		var spaceWidth = _font.glyphData.get(' ').xAdvance;
 		var fontScale = size / _font.fontSize;
-		var sx:Float = scale * scaleX * fontScale, 
+		var sx:Float = scale * scaleX * fontScale,
 			sy:Float = scale * scaleY * fontScale;
-		for (line in lines)
+		var currentLine:Float = 0;
+		var remaining = text;
+		var cursorX:Float = 0,
+			block:String = "",
+			currentWord:String = "",
+			currentWordLength:Float = 0,
+			currentScale:Float = 1;
+		while (true)
 		{
-			var subLines:Array<String> = [];
-			var words:Array<String> = [];
-			// split this line into words
-			var thisWord = "";
-			for (n in 0 ... line.length)
+			var matched = FORMAT_TAG_RE.match(remaining);
+			var line:String = matched ? FORMAT_TAG_RE.matchedLeft() : remaining;
+			if (line.length > 0)
 			{
-				var char:String = line.charAt(n);
-				switch (char)
+				for (i in 0 ... line.length)
 				{
-					case ' ', '-':
-						words.push(thisWord + char);
-						thisWord = "";
-					default:
-						thisWord += char;
-				}
-			}
-			if (thisWord != "") words.push(thisWord);
-			if (words.length > 1)
-			{
-				var w:Int = 0, lastBreak:Int = 0, lineWidth:Float = 0;
-				while (w < words.length)
-				{
-					var wordWidth:Float = 0;
-					var word = words[w];
-					for (letter in word.split(''))
+					var char:String = line.charAt(i);
+					switch (char)
 					{
-						var letterWidth = _font.glyphData.exists(letter) ?
-						                  _font.glyphData.get(letter).xAdvance : 0;
-						wordWidth += (letterWidth + charSpacing);
+						case "\n":
+							if (currentWord != "")
+							{
+								block += currentWord;
+								currentWord = "";
+							}
+							if (block != "")
+							{
+								opCodes.push(TextBlock(block));
+								block = "";
+							}
+							opCodes.push(NextLine);
+							currentWordLength = cursorX = 0;
+						case " ", "-":
+							block += currentWord + char;
+							currentWord = "";
+							var charWidth = _font.glyphData.exists(char)
+								? _font.glyphData.get(char).xAdvance
+								: 0;
+							cursorX += currentWordLength + (charSpacing + charWidth) * sx * currentScale;
+							currentWordLength = 0;
+						default:
+							currentWord += char;
+							if (wrap)
+							{
+								var charWidth = _font.glyphData.exists(char)
+									? _font.glyphData.get(char).xAdvance
+									: 0;
+								currentWordLength += charWidth * sx * currentScale;
+								if (cursorX + currentWordLength > width)
+								{
+									if (block != "")
+									{
+										opCodes.push(TextBlock(block));
+										block = "";
+									}
+									opCodes.push(NextLine);
+									cursorX = 0;
+								}
+								currentWordLength += charSpacing * sx * currentScale;
+							}
 					}
-					lineWidth += wordWidth;
-					// if the word ends in a space, don't count that last space
-					// toward the line length for determining overflow
-					var endsInSpace = word.charAt(word.length - 1) == ' ';
-					if ((lineWidth - (endsInSpace ? spaceWidth : 0)) > width / sx)
-					{
-						// line is too long; split it before this word
-						subLines.push(words.slice(lastBreak, w).join(''));
-						lineWidth = wordWidth;
-						lastBreak = w;
-					}
-					w += 1;
 				}
-				subLines.push(words.slice(lastBreak).join(''));
-			}
-			else
-			{
-				subLines.push(line);
 			}
 
-			for (subline in subLines)
+			if (matched)
 			{
-				newLines.push(subline);
+				var tag:String = FORMAT_TAG_RE.matched(2);
+				if (tag == null) tag = FORMAT_TAG_RE.matched(3);
+				if (tag != null && formatTags.exists(tag))
+				{
+					for (tag in formatTags[tag])
+					{
+						if (currentWord != "")
+						{
+							block += currentWord;
+							cursorX += currentWordLength + charSpacing * sx * currentScale;
+							currentWord = "";
+						}
+						if (block != "")
+						{
+							opCodes.push(TextBlock(block));
+							block = "";
+						}
+						switch (tag)
+						{
+							case Image(img):
+								cursorX += currentWordLength + (img.width * img.scale * img.scaleX + charSpacing) * sx * currentScale;
+								currentWordLength = 0;
+								if (wrap && cursorX > width)
+								{
+									opCodes.push(NextLine);
+									cursorX = (img.width * img.scale * img.scaleX + charSpacing) * sx * currentScale;
+								}
+								opCodes.push(tag);
+
+							case SetScale(scale):
+								_scaleStack.push(currentScale = scale);
+								opCodes.push(tag);
+							case PopScale:
+								if (_scaleStack.length > 1) _scaleStack.pop();
+								currentScale = _scaleStack[_scaleStack.length - 1];
+								opCodes.push(tag);
+							case NextLine:
+								opCodes.push(NextLine);
+								currentWordLength = cursorX = 0;
+							default:
+								opCodes.push(tag);
+						}
+					}
+				}
+				else
+				{
+					throw 'Unrecognized format tag: <$tag>';
+				}
+				remaining = FORMAT_TAG_RE.matchedRight();
 			}
+			else break;
 		}
-
-		lines = newLines;
+		if (currentWord != "")
+		{
+			block += currentWord;
+		}
+		if (block != "")
+		{
+			opCodes.push(TextBlock(block));
+		}
 	}
 
 	/**
@@ -270,7 +401,7 @@ class BitmapText extends Graphic
 	 * any lines were unchanged from previously rendered text, they will not be
 	 * re-drawn.
 	 */
-	public function updateBuffer(?oldLines:Array<String>)
+	public function updateBuffer()
 	{
 		// render the string of text to _buffer
 
@@ -289,16 +420,16 @@ class BitmapText extends Graphic
 		if (autoWidth || autoHeight)
 		{
 			computeTextSize();
-			w = Std.int(autoWidth ? (textWidth / sx) : (width / sx));
-			h = Std.int(autoHeight ? (textHeight / sy) : (height / sy));
+			w = Math.ceil(autoWidth ? (textWidth / sx) : (width / sx));
+			h = Math.ceil(autoHeight ? (textHeight / sy) : (height / sy));
 		}
 		else
 		{
-			w = Std.int(width / sx);
-			h = Std.int(height / sy);
+			w = Math.ceil(width / sx);
+			h = Math.ceil(height / sy);
 		}
-		w = Std.int(w);
-		h = Std.int(h + _font.lineHeight + lineSpacing);
+		w = Math.ceil(w);
+		h = Math.ceil(h + _font.lineHeight + lineSpacing);
 
 		// create or clear the buffer if necessary
 		if (_buffer == null || _buffer.width != w || _buffer.height != h)
@@ -308,16 +439,35 @@ class BitmapText extends Graphic
 		}
 		else
 		{
-			_buffer.fillRect(_buffer.rect, HXP.blackColor);
+			_buffer.fillRect(_buffer.rect, Color.Black);
 		}
 
 		// make a pass through each character, copying it onto the buffer
-		renderFont(function(region:AtlasRegion, gd:GlyphData, x:Float, y:Float)
+		renderFont(function(region:AtlasRegion, gd:GlyphData, color:Color, alpha:Float, scale:Float, x:Float, y:Float)
 		{
-			_point.x = x;
-			_point.y = y;
-
-			_buffer.copyPixels(_set, gd.rect, _point, null, null, true);
+			_rect.setTo(x / sx, y / sy, gd.rect.width * scale, gd.rect.height * scale);
+			_matrix.setTo(scale, 0, 0, scale, (x / sx - gd.rect.x * scale), (y / sy - gd.rect.y * scale));
+			_colorTransform.redMultiplier = color.red;
+			_colorTransform.greenMultiplier = color.green;
+			_colorTransform.blueMultiplier = color.blue;
+			_colorTransform.alphaMultiplier = alpha;
+			_buffer.draw(_set, _matrix, _colorTransform, null, _rect, smooth);
+		}, function(image:Image, color:Color, alpha:Float, scale:Float, x:Float, y:Float) {
+			var originalX = image.x,
+				originalY = image.y,
+				originalScaleX = image.scaleX,
+				originalScaleY = image.scaleY;
+			image.x = (image.x + x) / sx;
+			image.y = (image.y + y) / sy;
+			image.color = color;
+			image.alpha = alpha;
+			image.scaleX *= scale / sx;
+			image.scaleY *= scale / sy;
+			image.render(_buffer, HXP.zero, HXP.zeroCamera);
+			image.x = originalX;
+			image.y = originalY;
+			image.scaleX = originalScaleX;
+			image.scaleY = originalScaleY;
 		});
 	}
 
@@ -325,71 +475,115 @@ class BitmapText extends Graphic
 	 * Loops through the text, drawing each character on each line.
 	 * @param renderFunction    Function to render each character.
 	 */
-	inline function renderFont(?renderFunction:RenderFunction)
+	inline function renderFont(?renderFunction:RenderFunction, ?renderImageFunction:RenderImageFunction)
 	{
 		// loop through the text one character at a time, calling the supplied
 		// rendering function for each character
-		var fontScale = size / _font.fontSize;
-
 		var lineHeight:Int = Std.int(_font.lineHeight + lineSpacing);
 
-		var rx:Int = 0, ry:Int = 0;
-		var sx:Float = scale * scaleX * fontScale, 
-			sy:Float = scale * scaleY * fontScale;
-		for (y in 0 ... lines.length)
+		// make sure our format stacks are clear
+		while (_colorStack.length > 0) _colorStack.pop();
+		while (_alphaStack.length > 0) _alphaStack.pop();
+		while (_scaleStack.length > 0) _scaleStack.pop();
+
+		_colorStack.push(color);
+		_alphaStack.push(alpha);
+		_scaleStack.push(1);
+
+		var sx = scale * scaleX * size / _font.fontSize,
+			sy = scale * scaleY * size / _font.fontSize;
+
+		var currentColor:Color = color,
+			currentAlpha:Float = alpha,
+			currentScale:Float = 1,
+			cursorX:Float = 0,
+			cursorY:Float = 0,
+			thisLineHeight:Float = lineHeight * sy;
+		for (op in opCodes)
 		{
-			var line = lines[y];
-
-			for (x in 0 ... line.length)
+			switch (op)
 			{
-				var letter = line.charAt(x);
-				var region = _font.getChar(letter);
-				var gd = _font.glyphData.get(letter);
-				// if a character isn't in this font, display a space
-				if (gd == null) 
-				{
-					letter = ' ';
-					gd = _font.glyphData.get(' ');
-				}
-
-				if (letter == ' ')
-				{
-					// it's a space, just move the cursor
-					rx += Std.int(gd.xAdvance);
-				}
-				else
-				{
-					// draw the character
-					if (renderFunction != null)
+				case SetColor(color):
+					_colorStack.push(currentColor = color);
+				case SetAlpha(alpha):
+					_alphaStack.push(currentAlpha = alpha);
+				case SetScale(scale):
+					_scaleStack.push(currentScale = scale);
+					thisLineHeight = Math.max(thisLineHeight, lineHeight * currentScale * sy);
+				case PopColor:
+					if (_colorStack.length > 1) _colorStack.pop();
+					currentColor = _colorStack[_colorStack.length - 1];
+				case PopAlpha:
+					if (_alphaStack.length > 1) _alphaStack.pop();
+					currentAlpha = _alphaStack[_alphaStack.length - 1];
+				case PopScale:
+					if (_scaleStack.length > 1) _scaleStack.pop();
+					currentScale = _scaleStack[_scaleStack.length - 1];
+				case TextBlock(text):
+					// render a block of text on this line
+					for (i in 0 ... text.length)
 					{
-						renderFunction(region, gd,
-						               (rx + gd.xOffset),
-						               (ry + gd.yOffset));
-					}
-					// advance cursor position
-					rx += Std.int((gd.xAdvance + charSpacing));
-					if (width != 0 && rx > width / sx)
-					{
-						textWidth = Std.int(width);
-						rx = 0;
-						ry += lineHeight;
-					}
-				}
+						var char = text.charAt(i);
+						var region = _font.getChar(char);
+						var gd = _font.glyphData.get(char);
+						// if a character isn't in this font, display a space
+						if (gd == null)
+						{
+							char = ' ';
+							gd = _font.glyphData.get(' ');
+						}
 
-				// longest line so far
-				if (Std.int(rx * sx) > textWidth) textWidth = Std.int(rx * sx);
+						if (char == ' ')
+						{
+							// it's a space, just move the cursor
+							cursorX += gd.xAdvance * sx * currentScale;
+						}
+						else
+						{
+							// draw the character
+							if (renderFunction != null)
+							{
+								renderFunction(region, gd, currentColor, currentAlpha, currentScale,
+											(cursorX + gd.xOffset * sx * currentScale),
+											(cursorY + gd.yOffset * sy * currentScale));
+							}
+							// advance cursor position
+							cursorX += (gd.xAdvance + charSpacing) * sx * currentScale;
+						}
+
+						if (cursorX > textWidth) textWidth = Std.int(cursorX);
+					}
+				case NextLine:
+					// advance to next line
+					cursorX = 0;
+					cursorY += thisLineHeight;
+					thisLineHeight = lineHeight * sy * currentScale;
+				case Image(img):
+					if (renderImageFunction != null)
+					{
+						renderImageFunction(img, currentColor, currentAlpha, currentScale, cursorX, cursorY);
+					}
+					thisLineHeight = Std.int(Math.max(thisLineHeight, img.height * img.scale * img.scaleY));
+					cursorX += (img.width * img.scale * img.scaleX * this.scale * this.scaleX * currentScale) + charSpacing * sx * currentScale;
+					if (cursorX > textWidth) textWidth = Std.int(cursorX);
 			}
-
-			// next line
-			rx = 0;
-			ry += lineHeight;
-			if (Std.int(ry * sy) > textHeight) textHeight = Std.int(ry * sy);
 		}
+		textHeight = Std.int(cursorY + (cursorX > 0 ? thisLineHeight : 0));
+
+		_colorStack.pop();
+		_alphaStack.pop();
+		_scaleStack.pop();
 	}
 
 	@:dox(hide)
 	override public function render(target:BitmapData, point:Point, camera:Camera)
 	{
+		if (_bufferDirty)
+		{
+			updateBuffer();
+			_bufferDirty = false;
+		}
+
 		// determine drawing location
 		var fontScale = size / _font.fontSize;
 
@@ -405,7 +599,7 @@ class BitmapText extends Graphic
 		_matrix.d = sy;
 		_matrix.tx = _point.x;
 		_matrix.ty = _point.y;
-		target.draw(_buffer, _matrix, _colorTransform, null, null, smooth);
+		target.draw(_buffer, _matrix, null, null, null, smooth);
 		//target.copyPixels(_buffer, _buffer.rect, _point, null, null, true);
 	}
 
@@ -418,16 +612,33 @@ class BitmapText extends Graphic
 		var fsx = HXP.screen.fullScaleX,
 			fsy = HXP.screen.fullScaleY;
 
-		var sx = scale * scaleX * fontScale * fsx,
-			sy = scale * scaleY * fontScale * fsy;
+		// scale per point; needs to be multiplied by size / fontSize
+		var sx = scale * scaleX * fsx * size / _font.fontSize,
+			sy = scale * scaleY * fsy * size / _font.fontSize;
 
 		_point.x = Math.floor(point.x + x - camera.x * scrollX);
 		_point.y = Math.floor(point.y + y - camera.y * scrollY);
 
 		// use hardware accelerated rendering
-		renderFont(function(region:AtlasRegion, gd:GlyphData, x:Float, y:Float)
+		renderFont(function(region:AtlasRegion, gd:GlyphData, color:Color, alpha:Float, scale:Float, x:Float, y:Float)
 		{
-			region.draw(_point.x * fsx + x * sx, _point.y * fsy + y * sy, layer, sx, sy, 0, _red, _green, _blue, alpha, smooth);
+			region.draw((_point.x + x) * fsx, (_point.y + y) * fsy, layer, sx * scale, sy * scale, 0, color.red, color.green, color.blue, alpha, smooth);
+		}, function(image:Image, color:Color, alpha:Float, scale:Float, x:Float, y:Float) {
+			var originalX = image.x,
+				originalY = image.y,
+				originalScaleX = image.scaleX,
+				originalScaleY = image.scaleY;
+			image.x += _point.x + x;
+			image.y += _point.y + y;
+			image.color = color;
+			image.alpha = alpha;
+			image.scaleX *= this.scale * scaleX * scale;
+			image.scaleY *= this.scale * scaleY * scale;
+			image.renderAtlas(layer, HXP.zero, HXP.zeroCamera);
+			image.x = originalX;
+			image.y = originalY;
+			image.scaleX = originalScaleX;
+			image.scaleY = originalScaleY;
 		});
 	}
 
@@ -435,9 +646,10 @@ class BitmapText extends Graphic
 	public var smooth:Bool;
 
 	var _buffer:BitmapData;
+	var _bufferDirty:Bool = false;
 	var _set:BitmapData;
 	var _font:BitmapFontAtlas;
 	var _matrix:Matrix;
+	var _rect:Rectangle;
 	var _colorTransform:ColorTransform;
-
 }
