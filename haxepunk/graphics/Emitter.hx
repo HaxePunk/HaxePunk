@@ -55,11 +55,9 @@ class Emitter extends Graphic
 			case Left(img):
 				_source = new Image(img);
 				_animated = false;
-				blit = false;
 			case Right(tile):
 				_source = new Spritemap(tile, frameWidth, frameHeight);
 				_animated = true;
-				blit = _source.blit;
 		}
 		_source.centerOrigin();
 	}
@@ -131,7 +129,7 @@ class Emitter extends Graphic
 		_particle = null;
 	}
 
-	function renderParticles(buffer:Bool, target:BitmapData, layer:Int, point:Point, camera:Camera)
+	override public function renderAtlas(layer:Int, point:Point, camera:Camera)
 	{
 		var p:Particle = _particle;
 
@@ -188,23 +186,12 @@ class Emitter extends Graphic
 				_source.x = p.x(td) - point.x;
 				_source.y = p.y(td) - point.y;
 
-				if (buffer) _source.render(target, point, camera);
-				else _source.renderAtlas(layer, point, camera);
+				_source.renderAtlas(layer, point, camera);
 			}
 
 			// get next particle
 			p = p._next;
 		}
-	}
-
-	override public function render(target:BitmapData, point:Point, camera:Camera)
-	{
-		renderParticles(true, target, -1, point, camera);
-	}
-
-	override public function renderAtlas(layer:Int, point:Point, camera:Camera)
-	{
-		renderParticles(false, null, layer, point, camera);
 	}
 
 	/**

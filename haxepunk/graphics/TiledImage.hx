@@ -22,46 +22,10 @@ class TiledImage extends Image
 	public function new(texture:ImageType, width:Int = 0, height:Int = 0, clipRect:Rectangle = null)
 	{
 		_graphics = HXP.sprite.graphics;
-		_offsetX = _offsetY = 0;
+		offsetX = offsetY = 0;
 		_width = width;
 		_height = height;
 		super(texture, clipRect);
-	}
-
-	/** @private Creates the buffer. */
-	override function createBuffer()
-	{
-		if (_width == 0) _width = Std.int(_sourceRect.width);
-		if (_height == 0) _height = Std.int(_sourceRect.height);
-		_buffer = HXP.createBitmap(_width, _height, true);
-		_bufferRect = _buffer.rect;
-	}
-
-	/** @private Updates the buffer. */
-	@:dox(hide)
-	override public function updateBuffer(clearBefore:Bool = false)
-	{
-		if (blit)
-		{
-			if (_source == null) return;
-			if (_texture == null)
-			{
-				_texture = HXP.createBitmap(Std.int(_sourceRect.width), Std.int(_sourceRect.height), true);
-				_texture.copyPixels(_source, _sourceRect, HXP.zero);
-			}
-			_buffer.fillRect(_bufferRect, 0);
-			_graphics.clear();
-			if (_offsetX != 0 || _offsetY != 0)
-			{
-				HXP.matrix.identity();
-				HXP.matrix.tx = Math.round(_offsetX);
-				HXP.matrix.ty = Math.round(_offsetY);
-				_graphics.beginBitmapFill(_texture, HXP.matrix);
-			}
-			else _graphics.beginBitmapFill(_texture);
-			_graphics.drawRect(0, 0, _width, _height);
-			_buffer.draw(HXP.sprite, null, _tint);
-		}
 	}
 
 	/** Renders the image. */
@@ -97,28 +61,12 @@ class TiledImage extends Image
 	/**
 	 * The x-offset of the texture.
 	 */
-	public var offsetX(get, set):Float;
-	function get_offsetX():Float return _offsetX; 
-	function set_offsetX(value:Float):Float
-	{
-		if (_offsetX == value) return value;
-		_offsetX = value;
-		updateBuffer();
-		return _offsetX;
-	}
+	public var offsetX:Float;
 
 	/**
 	 * The y-offset of the texture.
 	 */
-	public var offsetY(get, set):Float;
-	function get_offsetY():Float return _offsetY; 
-	function set_offsetY(value:Float):Float
-	{
-		if (_offsetY == value) return value;
-		_offsetY = value;
-		updateBuffer();
-		return _offsetY;
-	}
+	public var offsetY:Float;
 
 	/**
 	 * Sets the texture offset.
@@ -127,10 +75,8 @@ class TiledImage extends Image
 	 */
 	public function setOffset(x:Float, y:Float)
 	{
-		if (_offsetX == x && _offsetY == y) return;
-		_offsetX = x;
-		_offsetY = y;
-		updateBuffer();
+		offsetX = x;
+		offsetY = y;
 	}
 
 	// Drawing information.
@@ -138,6 +84,4 @@ class TiledImage extends Image
 	var _texture:BitmapData;
 	var _width:Int;
 	var _height:Int;
-	var _offsetX:Float;
-	var _offsetY:Float;
 }

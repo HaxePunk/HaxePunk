@@ -6,7 +6,6 @@ import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxepunk.HXP;
-import haxepunk.RenderMode;
 import haxepunk.Graphic;
 import haxepunk.graphics.Text;
 import haxepunk.graphics.atlas.BitmapFontAtlas;
@@ -184,7 +183,6 @@ class BitmapText extends Graphic
 		// load the font as a BitmapFontAtlas
 		var font = BitmapFontAtlas.getFont(options.font, options.format, options.extraParams);
 
-		blit = HXP.renderMode != RenderMode.HARDWARE;
 		_font = cast(font, BitmapFontAtlas);
 
 		// failure to load
@@ -200,14 +198,6 @@ class BitmapText extends Graphic
 
 		autoWidth = (width == 0);
 		autoHeight = (height == 0);
-
-		if (blit)
-		{
-			_set = HXP.getBitmap(StringTools.replace(options.font, ".fnt", ".png"));
-			_matrix = HXP.matrix;
-			_rect = HXP.rect;
-			_colorTransform = new ColorTransform();
-		}
 
 		this.color = options.color;
 		this.text = text != null ? text : "";
@@ -236,12 +226,8 @@ class BitmapText extends Graphic
 		if (this.text != text)
 		{
 			this.text = text;
-
-			parseText();
-
 			textWidth = textHeight = 0;
-			if (blit) _bufferDirty = true;
-			else computeTextSize();
+			computeTextSize();
 		}
 
 		return text;
@@ -403,81 +389,6 @@ class BitmapText extends Graphic
 		renderFont();
 	}
 
-	/**
-	 * Update the drawing buffer on software rendering mode. For efficiency, if
-	 * any lines were unchanged from previously rendered text, they will not be
-	 * re-drawn.
-	 */
-	public function updateBuffer()
-	{
-		// render the string of text to _buffer
-
-		if (text == null) return;
-
-		var fontScale = size / _font.fontSize;
-
-		var fsx = HXP.screen.fullScaleX,
-			fsy = HXP.screen.fullScaleY;
-
-		var sx = scale * scaleX * fontScale,
-			sy = scale * scaleY * fontScale;
-
-		var w:Int;
-		var h:Int;
-		if (autoWidth || autoHeight)
-		{
-			computeTextSize();
-			w = Math.ceil(autoWidth ? (textWidth / sx) : (width / sx));
-			h = Math.ceil(autoHeight ? (textHeight / sy) : (height / sy));
-		}
-		else
-		{
-			w = Math.ceil(width / sx);
-			h = Math.ceil(height / sy);
-		}
-		w = Math.ceil(w);
-		h = Math.ceil(h + _font.lineHeight + lineSpacing);
-
-		// create or clear the buffer if necessary
-		if (_buffer == null || _buffer.width != w || _buffer.height != h)
-		{
-			if (_buffer != null) _buffer.dispose();
-			_buffer = HXP.createBitmap(w, h, true, 0);
-		}
-		else
-		{
-			_buffer.fillRect(_buffer.rect, Color.Black);
-		}
-
-		// make a pass through each character, copying it onto the buffer
-		renderFont(function(region:AtlasRegion, gd:GlyphData, color:Color, alpha:Float, scale:Float, x:Float, y:Float)
-		{
-			_rect.setTo(x / sx, y / sy, gd.rect.width * scale, gd.rect.height * scale);
-			_matrix.setTo(scale, 0, 0, scale, (x / sx - gd.rect.x * scale), (y / sy - gd.rect.y * scale));
-			_colorTransform.redMultiplier = color.red;
-			_colorTransform.greenMultiplier = color.green;
-			_colorTransform.blueMultiplier = color.blue;
-			_colorTransform.alphaMultiplier = alpha;
-			_buffer.draw(_set, _matrix, _colorTransform, null, _rect, smooth);
-		}, function(image:Image, color:Color, alpha:Float, scale:Float, x:Float, y:Float) {
-			var originalX = image.x,
-				originalY = image.y,
-				originalScaleX = image.scaleX,
-				originalScaleY = image.scaleY;
-			image.x = (image.x + x) / sx;
-			image.y = (image.y + y) / sy;
-			image.color = color;
-			image.alpha = alpha;
-			image.scaleX *= scale / sx;
-			image.scaleY *= scale / sy;
-			image.render(_buffer, HXP.zero, HXP.zeroCamera);
-			image.x = originalX;
-			image.y = originalY;
-			image.scaleX = originalScaleX;
-			image.scaleY = originalScaleY;
-		});
-	}
-
 	/*
 	 * Loops through the text, drawing each character on each line.
 	 * @param renderFunction    Function to render each character.
@@ -589,34 +500,6 @@ class BitmapText extends Graphic
 	}
 
 	@:dox(hide)
-	override public function render(target:BitmapData, point:Point, camera:Camera)
-	{
-		if (_bufferDirty)
-		{
-			updateBuffer();
-			_bufferDirty = false;
-		}
-
-		// determine drawing location
-		var fontScale = size / _font.fontSize;
-
-		var sx = scale * scaleX * fontScale,
-			sy = scale * scaleY * fontScale;
-
-		_point.x = Math.floor(point.x + x - camera.x * scrollX);
-		_point.y = Math.floor(point.y + y - camera.y * scrollY);
-
-		// blit the buffer to the screen
-		_matrix.b = _matrix.c = 0;
-		_matrix.a = sx;
-		_matrix.d = sy;
-		_matrix.tx = _point.x;
-		_matrix.ty = _point.y;
-		target.draw(_buffer, _matrix, null, null, null, smooth);
-		//target.copyPixels(_buffer, _buffer.rect, _point, null, null, true);
-	}
-
-	@:dox(hide)
 	override public function renderAtlas(layer:Int, point:Point, camera:Camera)
 	{
 		// determine drawing location
@@ -663,6 +546,4 @@ class BitmapText extends Graphic
 	var _set:BitmapData;
 	var _font:BitmapFontAtlas;
 	var _matrix:Matrix;
-	var _rect:Rectangle;
-	var _colorTransform:ColorTransform;
 }

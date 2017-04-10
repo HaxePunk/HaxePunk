@@ -28,54 +28,6 @@ class TiledSpritemap extends Spritemap
 		super(source, frameWidth, frameHeight, callbackFunc);
 	}
 
-	/** @private Creates the buffer. */
-	override function createBuffer()
-	{
-		if (_imageWidth == 0) _imageWidth = Std.int(_sourceRect.width);
-		if (_imageHeight == 0) _imageHeight = Std.int(_sourceRect.height);
-		_buffer = HXP.createBitmap(_imageWidth, _imageHeight, true);
-		_bufferRect = _buffer.rect;
-	}
-
-	/** @private Updates the buffer. */
-	@:dox(hide)
-	override public function updateBuffer(clearBefore:Bool = false)
-	{
-		if (blit)
-		{
-			// get position of the current frame
-			_rect.x = _rect.width * _frame;
-			_rect.y = Std.int(_rect.x / _width) * _rect.height;
-			_rect.x %= _width;
-			if (flipped) _rect.x = (_width - _rect.width) - _rect.x;
-
-			// render it repeated to the buffer
-			var xx:Int = Std.int(_offsetX) % _imageWidth,
-				yy:Int = Std.int(_offsetY) % _imageHeight;
-			if (xx >= 0) xx -= _imageWidth;
-			if (yy >= 0) yy -= _imageHeight;
-			HXP.point.x = xx;
-			HXP.point.y = yy;
-			while (HXP.point.y < _imageHeight)
-			{
-				while (HXP.point.x < _imageWidth)
-				{
-					_buffer.copyPixels(_source, _sourceRect, HXP.point);
-					HXP.point.x += _sourceRect.width;
-				}
-				HXP.point.x = xx;
-				HXP.point.y += _sourceRect.height;
-			}
-
-			// tint the buffer
-			if (_tint != null) _buffer.colorTransform(_bufferRect, _tint);
-		}
-		else
-		{
-			super.updateBuffer(clearBefore);
-		}
-	}
-
 	/** Renders the image. */
 	@:dox(hide)
 	override public function renderAtlas(layer:Int, point:Point, camera:Camera)
@@ -110,7 +62,7 @@ class TiledSpritemap extends Spritemap
 	 * The x-offset of the texture.
 	 */
 	public var offsetX(get, set):Float;
-	function get_offsetX():Float return _offsetX; 
+	function get_offsetX():Float return _offsetX;
 	function set_offsetX(value:Float):Float
 	{
 		if (_offsetX == value) return value;
@@ -123,7 +75,7 @@ class TiledSpritemap extends Spritemap
 	 * The y-offset of the texture.
 	 */
 	public var offsetY(get, set):Float;
-	function get_offsetY():Float return _offsetY; 
+	function get_offsetY():Float return _offsetY;
 	function set_offsetY(value:Float):Float
 	{
 		if (_offsetY == value) return value;

@@ -5,7 +5,6 @@ import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxepunk.HXP;
-import haxepunk.RenderMode;
 import haxepunk.Graphic;
 import haxepunk.graphics.Image;
 import haxepunk.utils.Color;
@@ -101,8 +100,6 @@ class NineSlice extends Graphic
 
 		width = w;
 		height = h;
-
-		blit = HXP.renderMode == RenderMode.BUFFER;
 	}
 
 	inline function getSegment(source:ImageType, x:Int, y:Int, width:Int, height:Int):Image
@@ -113,12 +110,6 @@ class NineSlice extends Graphic
 		return segment;
 	}
 
-	/**
-	 * Updates the Image. Make sure to set graphic = output image afterwards.
-	 * @param	width	New width
-	 * @param	height	New height
-	 * @return
-	 */
 	function renderSegments(renderFunc:Image -> Void)
 	{
 		var leftWidth:Float, rightWidth:Float, topHeight:Float, bottomHeight:Float;
@@ -163,11 +154,6 @@ class NineSlice extends Graphic
 			segment.scaleY = height / segment.height;
 			renderFunc(segment);
 		}
-	}
-
-	override public function render(target:BitmapData, point:Point, camera:Camera)
-	{
-		renderSegments(function(segment:Image) segment.render(target, point, camera));
 	}
 
 	override public function renderAtlas(layer:Int, point:Point, camera:Camera)

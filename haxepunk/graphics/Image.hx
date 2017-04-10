@@ -14,7 +14,6 @@ import haxe.ds.Either;
 import haxepunk.Camera;
 import haxepunk.Graphic;
 import haxepunk.HXP;
-import haxepunk.RenderMode;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.AtlasRegion;
 import haxepunk.masks.Polygon;
@@ -69,16 +68,6 @@ class Image extends Graphic
 	public var blend:BlendMode;
 
 	/**
-	 * tintMode value to tint in multiply mode.
-	 */
-	public static inline var TINTING_MULTIPLY:Float = 0.0;
-
-	/**
-	 * tintMode value to tint in colorize mode.
-	 */
-	public static inline var TINTING_COLORIZE:Float = 1.0;
-
-	/**
 	 * Constructor.
 	 * @param	source		Source image.
 	 * @param	clipRect	Optional rectangle defining area of the source image to draw.
@@ -91,37 +80,16 @@ class Image extends Graphic
 		// check if the _source or _region were set in a higher class
 		if (source != null)
 		{
-			switch (source)
-			{
-				case Left(bitmap):
-					blit = true;
-					_source = bitmap;
-					_sourceRect = bitmap.rect;
-				case Right(region):
-					blit = false;
-					_region = region;
-					_sourceRect = new Rectangle(0, 0, _region.width, _region.height);
-			}
+			_region = source;
+			_sourceRect = new Rectangle(0, 0, _region.width, _region.height);
 		}
 
 		if (clipRect != null)
 		{
 			if (clipRect.width == 0) clipRect.width = _sourceRect.width;
 			if (clipRect.height == 0) clipRect.height = _sourceRect.height;
-			if (!blit)
-			{
-				_region = _region.clip(clipRect); // create a new clipped region
-			}
+			_region = _region.clip(clipRect); // create a new clipped region
 			_sourceRect = clipRect;
-		}
-
-		if (blit)
-		{
-			_bitmap = new Bitmap();
-			_colorTransform = new ColorTransform();
-
-			createBuffer();
-			updateBuffer();
 		}
 
 		smooth = (HXP.stage.quality != LOW);
@@ -139,49 +107,6 @@ class Image extends Graphic
 		_color = 0x00FFFFFF;
 		_red = _green = _blue = 1;
 		_matrix = HXP.matrix;
-	}
-
-	/** @private Creates the buffer. */
-	function createBuffer()
-	{
-		_buffer = HXP.createBitmap(Std.int(_sourceRect.width), Std.int(_sourceRect.height), true);
-		_bufferRect = _buffer.rect;
-		_bitmap.bitmapData = _buffer;
-	}
-
-	/** Renders the image. */
-	@:dox(hide)
-	override public function render(target:BitmapData, point:Point, camera:Camera)
-	{
-		var sx = scale * scaleX,
-			sy = scale * scaleY;
-
-		// determine drawing location
-		_point.x = point.x + x - originX - camera.x * scrollX;
-		_point.y = point.y + y - originY - camera.y * scrollY;
-
-		// only draw if buffer exists
-		if (_buffer != null)
-		{
-			if (angle == 0 && sx == 1 && sy == 1 && blend == null)
-			{
-				// render without transformation
-				target.copyPixels(_buffer, _bufferRect, _point, null, null, true);
-			}
-			else
-			{
-				// render with transformation
-				_matrix.b = _matrix.c = 0;
-				_matrix.a = sx;
-				_matrix.d = sy;
-				_matrix.tx = -originX * sx;
-				_matrix.ty = -originY * sy;
-				if (angle != 0) _matrix.rotate(angle * MathUtil.RAD);
-				_matrix.tx += originX + _point.x;
-				_matrix.ty += originY + _point.y;
-				target.draw(_bitmap, _matrix, null, blend, null, _bitmap.smoothing);
-			}
-		}
 	}
 
 	@:dox(hide)
@@ -248,15 +173,7 @@ class Image extends Graphic
 			throw "Illegal rect, sizes cannot be 0.";
 
 		var source:BitmapData = HXP.createBitmap(width, height, true, 0xFFFFFFFF);
-		var image:Image;
-		if (HXP.renderMode == RenderMode.HARDWARE)
-		{
-			image = new Image(Atlas.loadImageAsRegion(source));
-		}
-		else
-		{
-			image = new Image(source);
-		}
+		var image = new Image(Atlas.loadImageAsRegion(source));
 
 		image.color = color;
 		image.alpha = alpha;
@@ -282,15 +199,7 @@ class Image extends Graphic
 		var data:BitmapData = HXP.createBitmap(radius * 2, radius * 2, true, 0);
 		data.draw(HXP.sprite);
 
-		var image:Image;
-		if (HXP.renderMode == RenderMode.HARDWARE)
-		{
-			image = new Image(Atlas.loadImageAsRegion(data));
-		}
-		else
-		{
-			image = new Image(data);
-		}
+		var image = new Image(Atlas.loadImageAsRegion(data));
 
 		image.color = color;
 		image.alpha = alpha;
@@ -359,15 +268,7 @@ class Image extends Graphic
 		var data:BitmapData = HXP.createBitmap(w, h, true, 0);
 		data.draw(HXP.sprite, HXP.matrix);
 
-		var image:Image;
-		if (HXP.renderMode == RenderMode.HARDWARE)
-		{
-			image = new Image(Atlas.loadImageAsRegion(data));
-		}
-		else
-		{
-			image = new Image(data);
-		}
+		var image = new Image(Atlas.loadImageAsRegion(data));
 
 		// adjust position, origin and angle
 		image.x = polygon.x + polygon.origin.x;
@@ -384,52 +285,6 @@ class Image extends Graphic
 	}
 
 	/**
-	 * Updates the image buffer.
-	 */
-	@:dox(hide)
-	public function updateBuffer(clearBefore:Bool = false)
-	{
-		if (_source == null) return;
-		if (clearBefore) _buffer.fillRect(_bufferRect, 0);
-		_buffer.copyPixels(_source, _sourceRect, HXP.zero);
-		if (_tint != null) _buffer.colorTransform(_bufferRect, _tint);
-	}
-
-	function updateColorTransform()
-	{
-		if (_alpha == 1)
-		{
-			if (_tintFactor == 0 || (_tintMode == TINTING_MULTIPLY && _color == 0xFFFFFF))
-			{
-				_tint = null;
-				return updateBuffer();
-			}
-		}
-
-		_tint = _colorTransform;
-
-		_tint.redMultiplier = _tintMode * (1.0 - _tintFactor) + (1 - _tintMode) * (_tintFactor * ((_color >> 16 & 0xFF) / 255 - 1) + 1);
-		_tint.greenMultiplier = _tintMode * (1.0 - _tintFactor) + (1 - _tintMode) * (_tintFactor * ((_color >>  8 & 0xFF) / 255 - 1) + 1);
-		_tint.blueMultiplier = _tintMode * (1.0 - _tintFactor) + (1 - _tintMode) * (_tintFactor * ((_color		& 0xFF) / 255 - 1) + 1);
-
-		_tint.redOffset = _color.r * _tintFactor * _tintMode;
-		_tint.greenOffset = _color.g * _tintFactor * _tintMode;
-		_tint.blueOffset = _color.b * _tintFactor * _tintMode;
-
-		_tint.alphaMultiplier = _alpha;
-		updateBuffer();
-	}
-
-	/**
-	 * Clears the image buffer.
-	 */
-	public function clear()
-	{
-		if (_buffer == null) return;
-		_buffer.fillRect(_bufferRect, 0);
-	}
-
-	/**
 	 * Change the opacity of the Image, a value from 0 to 1.
 	 */
 	public var alpha(get_alpha, set_alpha):Float;
@@ -437,10 +292,7 @@ class Image extends Graphic
 	function set_alpha(value:Float):Float
 	{
 		value = value < 0 ? 0 : (value > 1 ? 1 : value);
-		if (_alpha == value) return value;
-		_alpha = value;
-		if (blit) updateColorTransform();
-		return _alpha;
+		return _alpha = value;
 	}
 
 	/**
@@ -457,85 +309,14 @@ class Image extends Graphic
 		_red = _color.red;
 		_green = _color.green;
 		_blue = _color.blue;
-		if (blit) updateColorTransform();
 		return _color;
-	}
-
-	/**
-	 * The amount the image will be tinted, suggested values from
-	 * 0 to 1. 0 Means no change, 1 is full color tint.
-	 *
-	 * <p>Only works with blit mode.</p>
-	 *
-	 * <p>You can get cool, weird effects if setting this value outside the 0-1 value range.</p>
-	 *
-	 * @default 1.
-	 */
-	public var tinting(get, set):Float;
-	inline function get_tinting():Float return _tintFactor;
-	function set_tinting(value:Float):Float
-	{
-		if (_tintFactor == value || !blit) return value;
-		_tintFactor = value;
-		updateColorTransform();
-		return _tintFactor;
-	}
-
-	/**
-	 * The tint mode - multiply or colorize.
-	 *
-	 * <p>Only works with blit mode.</p>
-	 *
-	 * <p>You can get cool, weird effects if this value is not either 0 or 1.</p>
-	 *
-	 * @default Image.TINTING_MULTIPLY
-	 */
-	public var tintMode(get, set):Float;
-	inline function get_tintMode():Float return _tintMode;
-	function set_tintMode(value:Float):Float
-	{
-		if (_tintMode == value || !blit) return value;
-		_tintMode = value;
-		updateColorTransform();
-		return _tintMode;
 	}
 
 	/**
 	 * If you want to draw the Image horizontally flipped. This is
 	 * faster than setting scaleX to -1 if your image isn't transformed.
 	 */
-	public var flipped(get_flipped, set_flipped):Bool;
-	inline function get_flipped():Bool return _flipped;
-	function set_flipped(value:Bool):Bool
-	{
-		if (_flipped == value) return value;
-		_flipped = value;
-		if (blit)
-		{
-			var temp:BitmapData = _source;
-			if (!value || _flip != null)
-			{
-				_source = _flip;
-			}
-			else if (_flips.exists(temp))
-			{
-				_source = _flips.get(temp);
-			}
-			else
-			{
-				_source = HXP.createBitmap(_source.width, _source.height, true);
-				_flips.set(temp, _source);
-				HXP.matrix.identity();
-				HXP.matrix.a = -1;
-				HXP.matrix.tx = _source.width;
-				_source.draw(temp, HXP.matrix);
-			}
-			_flip = temp;
-			updateBuffer();
-		}
-
-		return _flipped;
-	}
+	public var flipped:Bool;
 
 	/**
 	 * Centers the Image's originX/Y to its center.
@@ -577,13 +358,13 @@ class Image extends Graphic
 	 * Width of the image.
 	 */
 	public var width(get, never):Int;
-	function get_width():Int return Std.int(blit ? _bufferRect.width : (!_region.rotated ? _region.width : _region.height));
+	function get_width():Int return Std.int(!_region.rotated ? _region.width : _region.height);
 
 	/**
 	 * Height of the image.
 	 */
 	public var height(get, never):Int;
-	function get_height():Int return Std.int(blit ? _bufferRect.height : (!_region.rotated ? _region.height : _region.width));
+	function get_height():Int return Std.int(!_region.rotated ? _region.height : _region.width);
 
 	/**
 	 * The scaled width of the image.
@@ -608,17 +389,12 @@ class Image extends Graphic
 	// Source and buffer information.
 	var _source:BitmapData;
 	var _sourceRect:Rectangle;
-	var _buffer:BitmapData;
-	var _bufferRect:Rectangle;
 	var _bitmap:Bitmap;
 	var _region:AtlasRegion;
 
 	// Color and alpha information.
 	var _alpha:Float;
 	var _color:Color;
-	var _tintFactor:Float = 1.0;
-	var _tintMode:Float = TINTING_MULTIPLY;
-	var _tint:ColorTransform;
 	var _colorTransform:ColorTransform;
 	var _matrix:Matrix;
 	var _red:Float;

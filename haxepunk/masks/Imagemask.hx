@@ -76,7 +76,8 @@ class Imagemask extends Pixelmask
 		_height = Math.ceil(r.height);
 
 		_data = new BitmapData(_width, _height, true, 0x00000000);
-		_source.render(_data, new Camera(-_x, -_y), new Camera(0, 0));
+		// TODO: get rid of this class???
+		// _source.render(_data, new Camera(-_x, -_y), new Camera(0, 0));
 
 		super.update();
 	}

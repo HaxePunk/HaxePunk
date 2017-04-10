@@ -71,30 +71,14 @@ class Tilemap extends Canvas
 		}
 
 		// load the tileset graphic
-		switch (tileset)
-		{
-			case Left(bd):
-				blit = true;
-				_set = bd;
-			case Right(atlas):
-				blit = false;
-				_atlas = atlas;
-				atlas.prepare(tileWidth, tileHeight, tileSpacingWidth, tileSpacingHeight);
-		}
+		_atlas = tileset;
+		_atlas.prepare(tileWidth, tileHeight, tileSpacingWidth, tileSpacingHeight);
 
 		if (_set == null && _atlas == null)
 			throw "Invalid tileset graphic provided.";
 
-		if (blit)
-		{
-			_setColumns = Std.int(_set.width / tileWidth);
-			_setRows = Std.int(_set.height / tileHeight);
-		}
-		else
-		{
-			_setColumns = Std.int(_atlas.width / tileWidth);
-			_setRows = Std.int(_atlas.height / tileHeight);
-		}
+		_setColumns = Std.int(_atlas.width / tileWidth);
+		_setRows = Std.int(_atlas.height / tileHeight);
 		_setCount = _setColumns * _setRows;
 
 		smooth = (HXP.stage.quality != LOW);
@@ -118,20 +102,6 @@ class Tilemap extends Canvas
 		row %= _rows;
 		_map[row][column] = index;
 
-		if (blit)
-		{
-			if (!_opaqueTiles || index < 0)
-			{
-				_tile.x = column * _tile.width;
-				_tile.y = row * _tile.height;
-				fill(_tile, 0, 0); // erase tile
-			}
-			if (index >= 0)
-			{
-				updateTileRect(index);
-				draw(column * _tile.width, row * _tile.height, _set, _tile); // draw tile
-			}
-		}
 	}
 
 	/**
