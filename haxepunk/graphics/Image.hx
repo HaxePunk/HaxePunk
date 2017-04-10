@@ -107,7 +107,7 @@ class Image extends Graphic
 	}
 
 	@:dox(hide)
-	override public function renderAtlas(layer:Int, point:Point, camera:Camera)
+	override public function render(layer:Int, point:Point, camera:Camera)
 	{
 		var sx = scale * scaleX,
 			sy = scale * scaleY,

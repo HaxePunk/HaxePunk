@@ -30,7 +30,7 @@ class TiledImage extends Image
 
 	/** Renders the image. */
 	@:dox(hide)
-	override public function renderAtlas(layer:Int, point:Point, camera:Camera)
+	override public function render(layer:Int, point:Point, camera:Camera)
 	{
 		// determine drawing location
 		_point.x = point.x + x - originX - camera.x * scrollX;

@@ -149,26 +149,6 @@ class Text extends Image
 		return options;
 	}
 
-	/*override function set_alpha(value:Float):Float
-	{
-		value = value < 0 ? 0 : (value > 1 ? 1 : value);
-		if (_alpha == value) return value;
-		_alpha = value;
-		updateColorTransform();
-		return _alpha;
-	}
-
-	override function set_color(value:Color):Color
-	{
-		value &= 0xFFFFFF;
-		if (_color == value) return value;
-		_color = value;
-		// save individual color channel values
-		_red = _green = _blue = 1;
-		updateColorTransform();
-		return _color;
-	}*/
-
 	/**
 	 * Text constructor.
 	 * @param text    Text to display.
@@ -199,6 +179,8 @@ class Text extends Image
 		if (!Reflect.hasField(options, "wordWrap")) options.wordWrap = false;
 		if (!Reflect.hasField(options, "leading")) options.leading = 0;
 		if (!Reflect.hasField(options, "border")) options.border = null;
+
+		_matrix = new Matrix();
 
 		var fontObj = Assets.getFont(options.font);
 		_format = new TextFormat(fontObj.fontName, options.size, 0xFFFFFF);
@@ -350,7 +332,6 @@ class Text extends Image
 			_borderBackBuffer = _buffer.clone();
 		}
 		_bufferRect = _buffer.rect;
-		_bitmap.bitmapData = _buffer;
 	}
 
 	/**
@@ -634,7 +615,7 @@ class Text extends Image
 	var bufferMargin(get, null):Float;
 	inline function get_bufferMargin() return 2 + (border == null ? 0 : border.size);
 
-	override public function renderAtlas(layer:Int, point:Point, camera:Camera)
+	override public function render(layer:Int, point:Point, camera:Camera)
 	{
 		if (_needsUpdate) updateTextBuffer();
 
@@ -651,7 +632,7 @@ class Text extends Image
 			_green = border.color.g / 0xff;
 			_blue = border.color.b / 0xff;
 			_alpha = border.alpha * _alpha;
-			super.renderAtlas(layer, point, camera);
+			super.render(layer, point, camera);
 			_region = textRegion;
 			_red = r;
 			_green = g;
@@ -659,12 +640,13 @@ class Text extends Image
 			_alpha = a;
 		}
 
-		super.renderAtlas(layer, point, camera);
+		super.render(layer, point, camera);
 	}
 
 	// Text information.
 	var _width:Int;
 	var _height:Int;
+	var _matrix:Matrix;
 	var _text:String;
 	var _richText:String;
 	var _field:TextField;

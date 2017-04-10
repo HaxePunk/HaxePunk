@@ -161,7 +161,7 @@ class Graphic
 	 * @param  camera     The camera offset.
 	 */
 	@:dox(hide)
-	public function renderAtlas(layer:Int, point:Point, camera:Camera) {}
+	public function render(layer:Int, point:Point, camera:Camera) {}
 
 	/**
 	 * Pause updating this graphic.
