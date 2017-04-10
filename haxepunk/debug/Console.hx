@@ -440,9 +440,6 @@ class Console
 		if (!_enabled || !_visible)
 			return;
 
-		if (_paused)
-			HXP.engine.render();
-
 		// move on resize
 		_entRead.x = width - _entReadText.width;
 		_layerList.x = width - _layerList.width - 20;
@@ -608,6 +605,7 @@ class Console
 	function stepFrame()
 	{
 		HXP.engine.update();
+		HXP.engine.render();
 		updateEntityCount();
 		updateEntityLists();
 		renderEntities();
