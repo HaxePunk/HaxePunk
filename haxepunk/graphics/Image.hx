@@ -345,13 +345,13 @@ class Image extends Graphic
 	 * Width of the image.
 	 */
 	public var width(get, never):Int;
-	function get_width():Int return Std.int(!_region.rotated ? _region.width : _region.height);
+	function get_width():Int return Std.int(_region.rotated ? _region.height : _region.width);
 
 	/**
 	 * Height of the image.
 	 */
 	public var height(get, never):Int;
-	function get_height():Int return Std.int(!_region.rotated ? _region.height : _region.width);
+	function get_height():Int return Std.int(_region.rotated ? _region.width : _region.height);
 
 	/**
 	 * The scaled width of the image.

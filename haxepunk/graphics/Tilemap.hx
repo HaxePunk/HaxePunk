@@ -1,6 +1,5 @@
 package haxepunk.graphics;
 
-import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxe.ds.Either;
@@ -96,7 +95,7 @@ class Tilemap extends Graphic
 		_atlas = tileset;
 		_atlas.prepare(tileWidth, tileHeight, tileSpacingWidth, tileSpacingHeight);
 
-		if (_set == null && _atlas == null)
+		if (_atlas == null)
 			throw "Invalid tileset graphic provided.";
 
 		_setColumns = Std.int(_atlas.width / tileWidth);
@@ -582,7 +581,6 @@ class Tilemap extends Graphic
 	var _blue:Float;
 
 	// Tileset information.
-	var _set:BitmapData;
 	var _atlas:TileAtlas;
 	var _setColumns:Int;
 	var _setRows:Int;

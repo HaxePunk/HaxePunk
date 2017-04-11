@@ -14,19 +14,15 @@ class ColoredRect extends Graphic
 	public var blendMode:BlendMode = BlendMode.ALPHA;
 
 	public var color:Color;
-
 	public var alpha:Float;
-
-	var _color:Color;
-	var _alpha:Float;
 
 	public function new(width:Float, height:Float, color:Color = Color.White, alpha:Float = 1)
 	{
 		super();
 		this.width = width;
 		this.height = height;
-		this._color = color;
-		this._alpha = alpha;
+		this.color = color;
+		this.alpha = alpha;
 	}
 
 	@:access(haxepunk.graphics.atlas.AtlasData)

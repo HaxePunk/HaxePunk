@@ -1,6 +1,5 @@
 package haxepunk.graphics;
 
-import flash.display.BitmapData;
 import flash.display.Graphics;
 import flash.geom.Point;
 import flash.geom.Rectangle;
@@ -81,7 +80,6 @@ class TiledImage extends Image
 
 	// Drawing information.
 	var _graphics:Graphics;
-	var _texture:BitmapData;
 	var _width:Int;
 	var _height:Int;
 }

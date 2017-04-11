@@ -19,7 +19,6 @@ class Graphiclist extends Graphic
 		_graphics = new Array<Graphic>();
 		_temp = new Array<Graphic>();
 		_camera = new Camera();
-		_count = 0;
 
 		super();
 
@@ -102,7 +101,7 @@ class Graphiclist extends Graphic
 	{
 		if (graphic == null) return graphic;
 
-		_graphics[_count++] = graphic;
+		_graphics[count++] = graphic;
 		if (!active) active = graphic.active;
 		return graphic;
 	}
@@ -119,7 +118,7 @@ class Graphiclist extends Graphic
 
 		for (g in _graphics)
 		{
-			if (g == graphic) _count--;
+			if (g == graphic) count--;
 			else _temp[_temp.length] = g;
 		}
 		var temp:Array<Graphic> = _graphics;
@@ -148,7 +147,7 @@ class Graphiclist extends Graphic
 	{
 		HXP.clear(_graphics);
 		HXP.clear(_temp);
-		_count = 0;
+		count = 0;
 		active = false;
 	}
 
@@ -161,8 +160,7 @@ class Graphiclist extends Graphic
 	/**
 	 * Amount of Graphics in this list.
 	 */
-	public var count(get, null):Int;
-	function get_count():Int return _count;
+	public var count(default, null):Int = 0;
 
 	/**
 	 * Check if the Graphiclist should update.
@@ -183,6 +181,5 @@ class Graphiclist extends Graphic
 	// List information.
 	var _graphics:Array<Graphic>;
 	var _temp:Array<Graphic>;
-	var _count:Int;
 	var _camera:Camera;
 }
