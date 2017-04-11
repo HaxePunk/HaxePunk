@@ -1,15 +1,15 @@
 package haxepunk.graphics;
 
 import haxe.ds.StringMap;
-import openfl.display.BitmapData;
-import openfl.geom.ColorTransform;
-import openfl.geom.Matrix;
-import openfl.geom.Point;
-import openfl.geom.Rectangle;
-import openfl.text.TextField;
-import openfl.text.TextFormat;
-import openfl.text.TextFormatAlign;
-import openfl.Assets;
+import flash.display.BitmapData;
+import flash.geom.ColorTransform;
+import flash.geom.Matrix;
+import flash.geom.Point;
+import flash.geom.Rectangle;
+import flash.text.TextField;
+import flash.text.TextFormat;
+import flash.text.TextFormatAlign;
+import flash.Assets;
 import haxepunk.HXP;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.AtlasRegion;
@@ -208,6 +208,9 @@ class Text extends Image
 		_sourceRect = source.rect;
 		_region = Atlas.loadImageAsRegion(_source);
 		super();
+
+		createBuffer();
+		updateBuffer();
 
 		this.x = x;
 		this.y = y;

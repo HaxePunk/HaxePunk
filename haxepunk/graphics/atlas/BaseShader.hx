@@ -1,8 +1,8 @@
 package haxepunk.graphics.atlas;
 
 #if hardware_render
-import openfl.gl.GL;
-import openfl.gl.GLProgram;
+import flash.gl.GL;
+import flash.gl.GLProgram;
 
 #if js
 typedef GLUniformLocation = js.html.webgl.UniformLocation;

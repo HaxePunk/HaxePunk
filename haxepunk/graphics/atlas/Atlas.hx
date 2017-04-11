@@ -1,7 +1,7 @@
 package haxepunk.graphics.atlas;
 
-import openfl.display.BlendMode;
-import openfl.geom.Rectangle;
+import flash.display.BlendMode;
+import flash.geom.Rectangle;
 import haxepunk.graphics.atlas.AtlasData;
 
 class Atlas

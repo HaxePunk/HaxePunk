@@ -1,9 +1,9 @@
 package haxepunk;
 
-import openfl.display.Bitmap;
-import openfl.display.Sprite;
-import openfl.filters.BitmapFilter;
-import openfl.geom.Matrix;
+import flash.display.Bitmap;
+import flash.display.Sprite;
+import flash.filters.BitmapFilter;
+import flash.geom.Matrix;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.Renderer;
 import haxepunk.screen.ScaleMode;

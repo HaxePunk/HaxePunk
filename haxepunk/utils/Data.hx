@@ -1,6 +1,6 @@
 package haxepunk.utils;
 
-import openfl.net.SharedObject;
+import flash.net.SharedObject;
 
 /**
  * Static helper class used for saving and loading data from stored cookies.

@@ -1,8 +1,8 @@
 package haxepunk;
 
 import haxe.ds.IntMap;
-import openfl.display.Sprite;
-import openfl.geom.Point;
+import flash.display.Sprite;
+import flash.geom.Point;
 import haxepunk.graphics.atlas.AtlasData;
 import haxepunk.graphics.atlas.SceneSprite;
 import haxepunk.graphics.atlas.Shader;

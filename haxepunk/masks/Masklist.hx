@@ -1,6 +1,6 @@
 package haxepunk.masks;
 
-import openfl.display.Graphics;
+import flash.display.Graphics;
 import haxepunk.Entity;
 import haxepunk.HXP;
 import haxepunk.Mask;

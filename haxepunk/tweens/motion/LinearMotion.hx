@@ -2,7 +2,7 @@
 
 import haxepunk.Tween;
 import haxepunk.utils.Ease;
-import openfl.geom.Point;
+import flash.geom.Point;
 
 /**
  * Determines motion along a line, from one point to another.

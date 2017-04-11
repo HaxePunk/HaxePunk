@@ -1,13 +1,13 @@
 package haxepunk;
 
-import openfl.display.Sprite;
-import openfl.display.StageAlign;
-import openfl.display.StageDisplayState;
-import openfl.display.StageQuality;
-import openfl.display.StageScaleMode;
-import openfl.events.Event;
-import openfl.geom.Rectangle;
-import openfl.Lib;
+import flash.display.Sprite;
+import flash.display.StageAlign;
+import flash.display.StageDisplayState;
+import flash.display.StageQuality;
+import flash.display.StageScaleMode;
+import flash.events.Event;
+import flash.geom.Rectangle;
+import flash.Lib;
 import haxepunk.utils.Draw;
 import haxepunk.input.Input;
 import haxepunk.utils.Random;

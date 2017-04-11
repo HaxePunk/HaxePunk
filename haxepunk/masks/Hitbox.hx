@@ -3,8 +3,8 @@ package haxepunk.masks;
 import haxepunk.Mask;
 import haxepunk.utils.Projection;
 import haxepunk.utils.Vector;
-import openfl.display.Graphics;
-import openfl.geom.Point;
+import flash.display.Graphics;
+import flash.geom.Point;
 import haxepunk.masks.Polygon;
 
 /** Uses parent's hitbox to determine collision.

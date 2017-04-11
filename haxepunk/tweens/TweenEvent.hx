@@ -1,6 +1,6 @@
 package haxepunk.tweens;
 
-import openfl.events.Event;
+import flash.events.Event;
 
 @:dox(hide)
 class TweenEvent extends Event

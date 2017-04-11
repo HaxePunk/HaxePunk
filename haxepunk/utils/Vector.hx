@@ -1,6 +1,6 @@
 package haxepunk.utils;
 
-import openfl.geom.Point;
+import flash.geom.Point;
 
 
 @:dox(hide)

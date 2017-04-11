@@ -1,5 +1,7 @@
 package haxepunk.utils;
 
+import flash.geom.Point;
+
 /**
  * This class is for math utility functions previously stored in HXP.
  * @since	4.0.0

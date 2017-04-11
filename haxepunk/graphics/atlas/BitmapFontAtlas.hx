@@ -1,8 +1,8 @@
 package haxepunk.graphics.atlas;
 
-import openfl.display.BitmapData;
-import openfl.geom.Rectangle;
-import openfl.Assets;
+import flash.display.BitmapData;
+import flash.geom.Rectangle;
+import flash.Assets;
 import haxe.xml.Fast;
 import haxepunk.HXP;
 import haxepunk.graphics.atlas.AtlasData;

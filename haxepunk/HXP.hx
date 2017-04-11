@@ -1,14 +1,14 @@
 package haxepunk;
 
 import haxe.Timer;
-import openfl.display.BitmapData;
-import openfl.display.Sprite;
-import openfl.display.Stage;
-import openfl.display.StageDisplayState;
-import openfl.geom.Matrix;
-import openfl.geom.Point;
-import openfl.geom.Rectangle;
-import openfl.ui.Mouse;
+import flash.display.BitmapData;
+import flash.display.Sprite;
+import flash.display.Stage;
+import flash.display.StageDisplayState;
+import flash.geom.Matrix;
+import flash.geom.Point;
+import flash.geom.Rectangle;
+import flash.ui.Mouse;
 import haxepunk.Tween.TweenType;
 import haxepunk.debug.Console;
 import haxepunk.tweens.misc.Alarm;
