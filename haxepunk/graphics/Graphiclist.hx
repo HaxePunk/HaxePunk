@@ -1,6 +1,6 @@
 package haxepunk.graphics;
 
-import openfl.geom.Point;
+import flash.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Graphic;
 

@@ -1,7 +1,7 @@
 package haxepunk.tweens.motion;
 
 import haxepunk.Tween;
-import openfl.geom.Point;
+import flash.geom.Point;
 
 /**
  * Determines linear motion along a set of points.

@@ -1,12 +1,12 @@
 package haxepunk.graphics;
 
-import openfl.display.BitmapData;
-import openfl.display.BlendMode;
-import openfl.geom.Point;
-import openfl.geom.Rectangle;
-import openfl.display.Graphics;
-import openfl.display.JointStyle;
-import openfl.display.LineScaleMode;
+import flash.display.BitmapData;
+import flash.display.BlendMode;
+import flash.geom.Point;
+import flash.geom.Rectangle;
+import flash.display.Graphics;
+import flash.display.JointStyle;
+import flash.display.LineScaleMode;
 import haxepunk.Camera;
 import haxepunk.Graphic;
 import haxepunk.HXP;

@@ -9,8 +9,8 @@ import haxepunk.masks.Hitbox;
 import haxepunk.utils.Projection;
 import haxepunk.utils.Vector;
 import haxepunk.utils.MathUtil;
-import openfl.display.Graphics;
-import openfl.geom.Point;
+import flash.display.Graphics;
+import flash.geom.Point;
 
 
 /**

@@ -1,7 +1,7 @@
 package haxepunk;
 
 import haxepunk.tweens.TweenEvent;
-import openfl.events.EventDispatcher;
+import flash.events.EventDispatcher;
 
 /**
  * The type of the tween.

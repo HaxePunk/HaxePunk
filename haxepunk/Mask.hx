@@ -4,7 +4,7 @@ import haxepunk.Entity;
 import haxepunk.utils.Projection;
 import haxepunk.utils.Vector;
 import haxepunk.masks.Masklist;
-import openfl.display.Graphics;
+import flash.display.Graphics;
 
 /**
  * Base class for Entity collision masks.

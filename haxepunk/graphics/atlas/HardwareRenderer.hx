@@ -11,7 +11,7 @@ import flash.gl.GLBuffer;
 import flash.gl.GLFramebuffer;
 #if lime
 import lime.utils.Float32Array;
-import openfl._internal.renderer.opengl.GLRenderer;
+import flash._internal.renderer.opengl.GLRenderer;
 #elseif nme
 import nme.utils.Float32Array;
 #end

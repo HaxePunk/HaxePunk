@@ -1,23 +1,23 @@
 package haxepunk.input;
 
-import openfl.events.KeyboardEvent;
-import openfl.events.MouseEvent;
-import openfl.events.TouchEvent;
-import openfl.ui.Multitouch;
-import openfl.ui.MultitouchInputMode;
+import flash.events.KeyboardEvent;
+import flash.events.MouseEvent;
+import flash.events.TouchEvent;
+import flash.ui.Multitouch;
+import flash.ui.MultitouchInputMode;
 import haxe.ds.Either.Left;
 import haxe.ds.Either.Right;
 import haxepunk.HXP;
 import haxepunk.ds.OneOf;
-import openfl.ui.Mouse;
+import flash.ui.Mouse;
 
 #if (openfl_legacy && (cpp || neko))
-import openfl.events.JoystickEvent;
+import flash.events.JoystickEvent;
 #end
 
 #if ouya
 import tv.ouya.console.api.OuyaController;
-import openfl.utils.JNI;
+import flash.utils.JNI;
 #end
 
 typedef InputType = OneOf<String, Int>;

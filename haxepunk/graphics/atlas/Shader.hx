@@ -1,6 +1,6 @@
 package haxepunk.graphics.atlas;
 
-import openfl.Assets;
+import flash.Assets;
 
 /**
  * Used to create a custom shader.

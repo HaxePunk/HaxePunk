@@ -1,10 +1,10 @@
 package haxepunk.masks;
 
 import haxepunk.Mask;
-import openfl.display.BitmapData;
-import openfl.geom.Point;
-import openfl.geom.Matrix;
-import openfl.geom.Rectangle;
+import flash.display.BitmapData;
+import flash.geom.Point;
+import flash.geom.Matrix;
+import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.graphics.Image;
 import haxepunk.utils.MathUtil;
