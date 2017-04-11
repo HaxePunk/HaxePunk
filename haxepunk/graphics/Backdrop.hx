@@ -1,8 +1,6 @@
 package haxepunk.graphics;
 
-import flash.display.BitmapData;
 import flash.geom.Point;
-import haxe.ds.Either;
 import haxepunk.graphics.atlas.AtlasRegion;
 import haxepunk.HXP;
 import haxepunk.Graphic;
