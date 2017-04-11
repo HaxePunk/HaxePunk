@@ -353,9 +353,9 @@ class HardwareRenderer
 
 				GL.bindBuffer(GL.ARRAY_BUFFER, glBuffer);
 				#if (lime >= "4.0.0")
-				GL.bufferData(GL.ARRAY_BUFFER, buffer.length * FLOAT32_BYTES, 0, GL.DYNAMIC_DRAW);
+				GL.bufferData(GL.ARRAY_BUFFER, buffer.length * FLOAT32_BYTES, buffer, GL.DYNAMIC_DRAW);
 				#else
-				GL.bufferData(GL.ARRAY_BUFFER, null, GL.DYNAMIC_DRAW);
+				GL.bufferData(GL.ARRAY_BUFFER, buffer, GL.DYNAMIC_DRAW);
 				#end
 			}
 
