@@ -10,6 +10,10 @@ Major release; see MIGRATION.md for migration guide.
 * [bendmorris] Added NineSlice graphic
 * [bendmorris] Added Color abstract
 * [bendmorris] Text borders and shadows
+* [bendmorris] BitmapText formatting markup/inline images
+* [bendmorris] Gradually display BitmapText
+* [bendmorris] ColoredRect graphic
+* [bendmorris] Signals
 
 v2.6.0
 ------------------------------
