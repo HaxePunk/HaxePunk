@@ -537,9 +537,6 @@ class BitmapText extends Graphic
 	/** Default value: false if HXP.stage.quality is LOW, true otherwise. */
 	public var smooth:Bool;
 
-	var _buffer:BitmapData;
-	var _bufferDirty:Bool = false;
-	var _set:BitmapData;
 	var _font:BitmapFontAtlas;
-	var _matrix:Matrix;
+
 }

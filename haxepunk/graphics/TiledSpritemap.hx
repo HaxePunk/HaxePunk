@@ -1,6 +1,5 @@
 package haxepunk.graphics;
 
-import flash.display.Graphics;
 import flash.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Graphic;
@@ -21,7 +20,6 @@ class TiledSpritemap extends Spritemap
 	 */
 	public function new(source:TileType, frameWidth:Int = 0, frameHeight:Int = 0, width:Int = 0, height:Int = 0, callbackFunc:Void -> Void = null)
 	{
-		_graphics = HXP.sprite.graphics;
 		_offsetX = _offsetY = 0;
 		_imageWidth = width;
 		_imageHeight = height;
@@ -97,7 +95,6 @@ class TiledSpritemap extends Spritemap
 		updateBuffer();
 	}
 
-	var _graphics:Graphics;
 	var _imageWidth:Int;
 	var _imageHeight:Int;
 	var _offsetX:Float;

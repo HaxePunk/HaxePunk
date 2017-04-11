@@ -1,7 +1,5 @@
 package haxepunk.graphics;
 
-import flash.display.BitmapData;
-import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxepunk.HXP;
@@ -16,7 +14,6 @@ class NineSlice extends Graphic
 {
 	public var width:Float;
 	public var height:Float;
-	public var clipRect:Rectangle;
 
 	/**
 	 * If false, the borders will always be drawn at their native resolution,
@@ -104,8 +101,7 @@ class NineSlice extends Graphic
 
 	inline function getSegment(source:ImageType, x:Int, y:Int, width:Int, height:Int):Image
 	{
-		_rect.setTo(x, y, width, height);
-		var segment = new Image(source, _rect);
+		var segment = new Image(source, new Rectangle(x, y, width, height));
 		segment.originX = segment.originY = 0;
 		return segment;
 	}
@@ -172,6 +168,4 @@ class NineSlice extends Graphic
 	var botR:Image;
 
 	var _sliceRect:Rectangle = new Rectangle();
-	var _rect:Rectangle = new Rectangle();
-	var _matrix:Matrix = new Matrix();
 }

@@ -1,9 +1,9 @@
 package haxepunk.graphics;
 
-import flash.display.BitmapData;
 import flash.display.BlendMode;
 import flash.geom.Point;
-import haxe.ds.Either;
+import haxe.ds.Either.Left;
+import haxe.ds.Either.Right;
 import haxepunk.HXP;
 import haxepunk.Graphic;
 import haxepunk.graphics.atlas.AtlasRegion;
@@ -423,6 +423,4 @@ class Emitter extends Graphic
 	var _height:Int;
 	var _frameWidth:Int;
 	var _frameHeight:Int;
-	var _frameCount:Int;
-	var _frames:Array<AtlasRegion>;
 }
