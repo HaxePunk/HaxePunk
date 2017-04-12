@@ -8,10 +8,6 @@ import haxepunk.graphics.atlas.BitmapFontAtlas;
 import haxepunk.graphics.atlas.AtlasRegion;
 import haxepunk.utils.Color;
 
-@:dox(hide)
-typedef RenderFunction = AtlasRegion -> GlyphData -> Color -> Float -> Float -> Float -> Float -> Void;
-typedef RenderImageFunction = Image -> Color -> Float -> Float -> Float -> Float -> Void;
-
 /**
  * Text option including the font, size, color, font format...
  */
@@ -35,7 +31,7 @@ enum TextOpcode
 	SetScale(scale:Float);
 	TextBlock(text:String);
 	NextLine;
-	Image(img:Image);
+	Image(image:Image);
 	PopColor;
 	PopAlpha;
 	PopScale;
@@ -222,8 +218,8 @@ class BitmapText extends Graphic
 		if (this.text != text)
 		{
 			this.text = text;
-			textWidth = textHeight = 0;
-			computeTextSize();
+
+			parseText();
 		}
 
 		return text;
@@ -236,26 +232,52 @@ class BitmapText extends Graphic
 	function parseText():Void
 	{
 		// clear current opcode list
-		while (opCodes.length > 0)
-		{
-			opCodes.pop();
-		}
-		while (_scaleStack.length > 0)
-		{
-			_scaleStack.pop();
-		}
+		HXP.clear(opCodes);
+		HXP.clear(_scaleStack);
+		textWidth = textHeight = 0;
+
 		_scaleStack.push(1);
 		var spaceWidth = _font.glyphData.get(' ').xAdvance;
 		var fontScale = size / _font.fontSize;
 		var sx:Float = scale * scaleX * fontScale,
 			sy:Float = scale * scaleY * fontScale;
-		var currentLine:Float = 0;
+		var lineHeight:Int = Std.int(_font.lineHeight + lineSpacing),
+			thisLineHeight:Float = lineHeight * sy;
 		var remaining = text;
 		var cursorX:Float = 0,
+			cursorY:Float = 0,
 			block:String = "",
 			currentWord:String = "",
 			currentWordLength:Float = 0,
 			currentScale:Float = 1;
+
+		inline function flushWord()
+		{
+			if (currentWord != "")
+			{
+				block += currentWord;
+				currentWord = "";
+				cursorX += currentWordLength;
+				if (cursorX > textWidth) textWidth = Std.int(cursorX);
+				currentWordLength = 0;
+			}
+		}
+		inline function flushBlock()
+		{
+			if (block != "")
+			{
+				opCodes.push(TextBlock(block));
+				block = "";
+			}
+		}
+		inline function addNextLine()
+		{
+			opCodes.push(NextLine);
+			cursorX = 0;
+			cursorY += thisLineHeight;
+			thisLineHeight = lineHeight * sy;
+		}
+
 		while (true)
 		{
 			var matched = FORMAT_TAG_RE.match(remaining);
@@ -268,46 +290,28 @@ class BitmapText extends Graphic
 					switch (char)
 					{
 						case "\n":
-							if (currentWord != "")
-							{
-								block += currentWord;
-								currentWord = "";
-							}
-							if (block != "")
-							{
-								opCodes.push(TextBlock(block));
-								block = "";
-							}
-							opCodes.push(NextLine);
-							currentWordLength = cursorX = 0;
+							flushWord();
+							flushBlock();
+							addNextLine();
 						case " ", "-":
-							block += currentWord + char;
-							currentWord = "";
 							var charWidth = _font.glyphData.exists(char)
 								? _font.glyphData.get(char).xAdvance
 								: 0;
-							cursorX += currentWordLength + (charSpacing + charWidth) * sx * currentScale;
-							currentWordLength = 0;
+							currentWord += char;
+							currentWordLength += (charSpacing + charWidth) * sx * currentScale;
+							flushWord();
 						default:
 							currentWord += char;
-							if (wrap)
+							var charWidth = _font.glyphData.exists(char)
+								? _font.glyphData.get(char).xAdvance
+								: 0;
+							currentWordLength += charWidth * sx * currentScale;
+							if (wrap && cursorX + currentWordLength > width)
 							{
-								var charWidth = _font.glyphData.exists(char)
-									? _font.glyphData.get(char).xAdvance
-									: 0;
-								currentWordLength += charWidth * sx * currentScale;
-								if (cursorX + currentWordLength > width)
-								{
-									if (block != "")
-									{
-										opCodes.push(TextBlock(block));
-										block = "";
-									}
-									opCodes.push(NextLine);
-									cursorX = 0;
-								}
-								currentWordLength += charSpacing * sx * currentScale;
+								flushBlock();
+								addNextLine();
 							}
+							currentWordLength += charSpacing * sx * currentScale;
 					}
 				}
 			}
@@ -318,39 +322,36 @@ class BitmapText extends Graphic
 				if (tag == null) tag = FORMAT_TAG_RE.matched(3);
 				if (tag != null && formatTags.exists(tag))
 				{
+					flushWord();
+					flushBlock();
 					for (tag in formatTags[tag])
 					{
-						if (currentWord != "")
-						{
-							block += currentWord;
-							cursorX += currentWordLength + charSpacing * sx * currentScale;
-							currentWord = "";
-						}
-						if (block != "")
-						{
-							opCodes.push(TextBlock(block));
-							block = "";
-						}
 						switch (tag)
 						{
-							case Image(img):
-								cursorX += currentWordLength + (img.width * img.scale * img.scaleX + charSpacing) * sx * currentScale;
+							case Image(image):
+								thisLineHeight = Std.int(Math.max(thisLineHeight, currentScale * image.height * image.scale * image.scaleY));
+								cursorX += currentWordLength + (image.width * image.scale * image.scaleX + charSpacing) * sx * currentScale;
 								currentWordLength = 0;
 								if (wrap && cursorX > width)
 								{
 									opCodes.push(NextLine);
-									cursorX = (img.width * img.scale * img.scaleX + charSpacing) * sx * currentScale;
+									cursorX = (image.width * image.scale * image.scaleX + charSpacing) * sx * currentScale;
+									cursorY += thisLineHeight;
+									thisLineHeight = lineHeight * sy;
 								}
 								opCodes.push(tag);
-
+								if (cursorX > textWidth) textWidth = Std.int(cursorX);
 							case SetScale(scale):
 								_scaleStack.push(currentScale = scale);
 								opCodes.push(tag);
+								thisLineHeight = Math.max(thisLineHeight, lineHeight * sy * currentScale);
 							case PopScale:
 								if (_scaleStack.length > 1) _scaleStack.pop();
 								currentScale = _scaleStack[_scaleStack.length - 1];
 								opCodes.push(tag);
 							case NextLine:
+								cursorY += thisLineHeight;
+								thisLineHeight = lineHeight * sy;
 								opCodes.push(NextLine);
 								currentWordLength = cursorX = 0;
 							default:
@@ -366,33 +367,25 @@ class BitmapText extends Graphic
 			}
 			else break;
 		}
-		if (currentWord != "")
-		{
-			block += currentWord;
-		}
-		if (block != "")
-		{
-			opCodes.push(TextBlock(block));
-		}
+		flushWord();
+		flushBlock();
+		textHeight = Std.int(cursorY + (cursorX > 0 ? thisLineHeight : 0));
+
+		_scaleStack.pop();
 	}
 
-	/**
-	 * Run through the render loop without actually drawing anything. This
-	 * will compute the textWidth and textHeight attributes.
-	 */
-	public function computeTextSize()
+	@:dox(hide)
+	override public function render(layer:Int, point:Point, camera:Camera)
 	{
-		renderFont();
-	}
+		// determine drawing location
+		var fontScale = size / _font.fontSize;
 
-	/*
-	 * Loops through the text, drawing each character on each line.
-	 * @param renderFunction    Function to render each character.
-	 */
-	inline function renderFont(?renderFunction:RenderFunction, ?renderImageFunction:RenderImageFunction)
-	{
-		// loop through the text one character at a time, calling the supplied
-		// rendering function for each character
+		var fsx = HXP.screen.fullScaleX,
+			fsy = HXP.screen.fullScaleY;
+
+		_point.x = Math.floor(point.x + x - camera.x * scrollX);
+		_point.y = Math.floor(point.y + y - camera.y * scrollY);
+
 		var lineHeight:Int = Std.int(_font.lineHeight + lineSpacing);
 
 		// make sure our format stacks are clear
@@ -459,17 +452,12 @@ class BitmapText extends Graphic
 						else
 						{
 							// draw the character
-							if (renderFunction != null)
-							{
-								renderFunction(region, gd, currentColor, currentAlpha, currentScale,
-											(cursorX + gd.xOffset * sx * currentScale),
-											(cursorY + gd.yOffset * sy * currentScale));
-							}
+							var x = cursorX + gd.xOffset * sx * currentScale,
+								y = cursorY + gd.yOffset * sy * currentScale;
+							region.draw((_point.x + x) * fsx, (_point.y + y) * fsy, layer, fsx * sx * currentScale, fsy * sy * currentScale, 0, currentColor.red, currentColor.green, currentColor.blue, currentAlpha, smooth);
 							// advance cursor position
 							cursorX += (gd.xAdvance + charSpacing) * sx * currentScale;
 						}
-
-						if (cursorX > textWidth) textWidth = Std.int(cursorX);
 					}
 				case NextLine:
 					// advance to next line
@@ -477,61 +465,33 @@ class BitmapText extends Graphic
 					cursorY += thisLineHeight;
 					thisLineHeight = lineHeight * sy * currentScale;
 					++charCount;
-				case Image(img):
-					if (renderImageFunction != null)
-					{
-						renderImageFunction(img, currentColor, currentAlpha, currentScale, cursorX, cursorY);
-					}
-					thisLineHeight = Std.int(Math.max(thisLineHeight, img.height * img.scale * img.scaleY));
-					cursorX += (img.width * img.scale * img.scaleX * this.scale * this.scaleX * currentScale) + charSpacing * sx * currentScale;
-					if (cursorX > textWidth) textWidth = Std.int(cursorX);
+				case Image(image):
+					// draw the image
+					var originalX = image.x,
+						originalY = image.y,
+						originalScaleX = image.scaleX,
+						originalScaleY = image.scaleY;
+					image.x += _point.x + cursorX;
+					image.y += _point.y + cursorY;
+					image.color = currentColor;
+					image.alpha = currentAlpha;
+					image.scaleX *= this.scale * scaleX * currentScale;
+					image.scaleY *= this.scale * scaleY * currentScale;
+					image.render(layer, HXP.zero, HXP.zeroCamera);
+					image.x = originalX;
+					image.y = originalY;
+					image.scaleX = originalScaleX;
+					image.scaleY = originalScaleY;
+					// advance cursor position
+					thisLineHeight = Std.int(Math.max(thisLineHeight, currentScale * image.height * image.scale * image.scaleY));
+					cursorX += (image.width * image.scale * image.scaleX * this.scale * this.scaleX * currentScale) + charSpacing * sx * currentScale;
 					++charCount;
 			}
 		}
-		textHeight = Std.int(cursorY + (cursorX > 0 ? thisLineHeight : 0));
 
 		_colorStack.pop();
 		_alphaStack.pop();
 		_scaleStack.pop();
-	}
-
-	@:dox(hide)
-	override public function render(layer:Int, point:Point, camera:Camera)
-	{
-		// determine drawing location
-		var fontScale = size / _font.fontSize;
-
-		var fsx = HXP.screen.fullScaleX,
-			fsy = HXP.screen.fullScaleY;
-
-		// scale per point; needs to be multiplied by size / fontSize
-		var sx = scale * scaleX * fsx * size / _font.fontSize,
-			sy = scale * scaleY * fsy * size / _font.fontSize;
-
-		_point.x = Math.floor(point.x + x - camera.x * scrollX);
-		_point.y = Math.floor(point.y + y - camera.y * scrollY);
-
-		// use hardware accelerated rendering
-		renderFont(function(region:AtlasRegion, gd:GlyphData, color:Color, alpha:Float, scale:Float, x:Float, y:Float)
-		{
-			region.draw((_point.x + x) * fsx, (_point.y + y) * fsy, layer, sx * scale, sy * scale, 0, color.red, color.green, color.blue, alpha, smooth);
-		}, function(image:Image, color:Color, alpha:Float, scale:Float, x:Float, y:Float) {
-			var originalX = image.x,
-				originalY = image.y,
-				originalScaleX = image.scaleX,
-				originalScaleY = image.scaleY;
-			image.x += _point.x + x;
-			image.y += _point.y + y;
-			image.color = color;
-			image.alpha = alpha;
-			image.scaleX *= this.scale * scaleX * scale;
-			image.scaleY *= this.scale * scaleY * scale;
-			image.renderAtlas(layer, HXP.zero, HXP.zeroCamera);
-			image.x = originalX;
-			image.y = originalY;
-			image.scaleX = originalScaleX;
-			image.scaleY = originalScaleY;
-		});
 	}
 
 	/** Default value: false if HXP.stage.quality is LOW, true otherwise. */
