@@ -8,7 +8,7 @@
 
 A Haxe port of the [FlashPunk](http://useflashpunk.net) AS3 library. There are a few additions/differences from the original.
 
-* Builds for Flash, HTML5, Windows, Mac, Linux, iOS, and Android
+* Builds for HTML5, Windows, Mac, Linux, iOS, and Android
 * Circle/Polygon masks
 * Hardware acceleration for native targets
 * Joystick and multi-touch input
@@ -64,7 +64,7 @@ There are a few ways you can get involved with HaxePunk.
 ## Credits
 
 *	Chevy Ray Johnston for creating the original FlashPunk.
-*	[OpenFL](http://www.openfl.org/) makes native targets possible and simplifies asset management in Flash. Thanks guys!
+*	[OpenFL](http://www.openfl.org/) makes native targets possible and simplifies asset management. Thanks guys!
 *	All the awesome people who have [contributed](https://github.com/HaxePunk/HaxePunk/graphs/contributors) to HaxePunk and joined in the discussions on the [forum](http://forum.haxepunk.com).
 
 ## MIT License
