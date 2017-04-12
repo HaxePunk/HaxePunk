@@ -223,10 +223,12 @@ class HXP
 	 * Empties an array of its' contents
 	 * @param array filled array
 	 */
-	public static inline function clear(array:Array<Dynamic>)
+	@:generic public static inline function clear<T>(array:Array<T>)
 	{
-#if (cpp || php)
-		array.splice(0, array.length);
+#if cpp
+		// splice causes Array allocation, so prefer pop for most arrays
+		if (array.length > 256) array.splice(0, array.length);
+		else while (array.length > 0) array.pop();
 #else
 		untyped array.length = 0;
 #end
