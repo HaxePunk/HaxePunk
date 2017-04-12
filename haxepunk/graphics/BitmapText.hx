@@ -111,27 +111,85 @@ class BitmapText extends Graphic
 		if (formatTags.exists(closeTag)) formatTags.remove(closeTag);
 	}
 
-	public var width:Float = 0;
-	public var height:Float = 0;
-	public var textWidth:Int = 0;
-	public var textHeight:Int = 0;
-	public var autoWidth:Bool = false;
+	/** Default value: false if HXP.stage.quality is LOW, true otherwise. */
+	public var smooth:Bool;
+
+	@:isVar public var textWidth(get, set):Int = 0;
+	inline function get_textWidth()
+	{
+		if (_dirty) parseText();
+		return textWidth;
+	}
+	inline function set_textWidth(v:Int) return textWidth = v;
+
+	@:isVar public var textHeight(get, set):Int = 0;
+	inline function get_textHeight()
+	{
+		if (_dirty) parseText();
+		return textHeight;
+	}
+	inline function set_textHeight(v:Int) return textHeight = v;
+
+	public var width(default, set):Float = 0;
+	inline function set_width(v:Float)
+	{
+		if (v != width) _dirty = true;
+		return width = v;
+	}
+	public var height(default, set):Float = 0;
+	inline function set_height(v:Float)
+	{
+		if (v != height) _dirty = true;
+		return height = v;
+	}
 
 	/**
-	 * Whether or not to automatically figure out the height
-	 * and width of the text.
-	 * @default False.
+	 * Font size, in points.
 	 */
-	public var autoHeight:Bool = false;
-	public var size:Int = 0;
-	public var wrap:Bool = false;
+	public var size(default, set):Int = 0;
+	inline function set_size(v:Int)
+	{
+		if (v != size) _dirty = true;
+		return size = v;
+	}
+	public var wrap(default, set):Bool = false;
+	inline function set_wrap(v:Bool)
+	{
+		if (v != wrap) _dirty = true;
+		return wrap = v;
+	}
 
-	public var scale:Float = 1;
-	public var scaleX:Float = 1;
-	public var scaleY:Float = 1;
+	public var scale(default, set):Float = 1;
+	inline function set_scale(v:Float)
+	{
+		if (v != scale) _dirty = true;
+		return scale = v;
+	}
+	public var scaleX(default, set):Float = 1;
+	inline function set_scaleX(v:Float)
+	{
+		if (v != scaleX) _dirty = true;
+		return scaleX = v;
+	}
+	public var scaleY(default, set):Float = 1;
+	inline function set_scaleY(v:Float)
+	{
+		if (v != scaleY) _dirty = true;
+		return scaleY = v;
+	}
 
-	public var lineSpacing:Int = 0;
-	public var charSpacing:Int = 0;
+	public var lineSpacing(default, set):Int = 0;
+	inline function set_lineSpacing(v:Int)
+	{
+		if (v != lineSpacing) _dirty = true;
+		return lineSpacing = v;
+	}
+	public var charSpacing(default, set):Int = 0;
+	inline function set_charSpacing(v:Int)
+	{
+		if (v != charSpacing) _dirty = true;
+		return charSpacing = v;
+	}
 
 	/**
 	 * How many characters of text to render. If -1, render the entire string;
@@ -234,7 +292,6 @@ class BitmapText extends Graphic
 		// clear current opcode list
 		HXP.clear(opCodes);
 		HXP.clear(_scaleStack);
-		textWidth = textHeight = 0;
 
 		_scaleStack.push(1);
 		var spaceWidth = _font.glyphData.get(' ').xAdvance;
@@ -250,6 +307,8 @@ class BitmapText extends Graphic
 			currentWord:String = "",
 			currentWordLength:Float = 0,
 			currentScale:Float = 1;
+
+		var textWidth = 0, textHeight = 0;
 
 		inline function flushWord()
 		{
@@ -372,6 +431,9 @@ class BitmapText extends Graphic
 		textHeight = Std.int(cursorY + (cursorX > 0 ? thisLineHeight : 0));
 
 		_scaleStack.pop();
+		this.textWidth = textWidth;
+		this.textHeight = textHeight;
+		_dirty = false;
 	}
 
 	@:dox(hide)
@@ -494,9 +556,8 @@ class BitmapText extends Graphic
 		_scaleStack.pop();
 	}
 
-	/** Default value: false if HXP.stage.quality is LOW, true otherwise. */
-	public var smooth:Bool;
-
+	var autoWidth:Bool = false;
+	var autoHeight:Bool = false;
+	var _dirty:Bool = false;
 	var _font:BitmapFontAtlas;
-
 }
