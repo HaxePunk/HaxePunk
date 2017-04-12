@@ -251,6 +251,15 @@ class Screen
 	function get_mouseY():Int return Std.int(_sprite.mouseY);
 
 	/**
+	 * Captures the current screen as an Image object.
+	 * @return	A new Image object.
+	 */
+	public function capture():Image
+	{
+		throw "Screen.capture not currently supported";
+	}
+
+	/**
 	 * Cause the screen to shake for a specified length of time.
 	 * @param	duration	Duration of shake effect, in seconds.
 	 * @param	magnitude	Number of pixels to shake in any direction.

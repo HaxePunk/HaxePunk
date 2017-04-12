@@ -33,7 +33,7 @@ abstract TileType(TileAtlas) from TileAtlas to TileAtlas
  *
  * Conversion is automatic, no need to use this.
  */
- @:forward(width, height)
+@:forward(width, height)
 abstract ImageType(AtlasRegion) from AtlasRegion to AtlasRegion
 {
 	@:dox(hide) @:from public static inline function fromString(s:String):ImageType
