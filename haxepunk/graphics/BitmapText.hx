@@ -251,24 +251,12 @@ class BitmapText extends Graphic
 
 		this.color = options.color;
 		this.text = text != null ? text : "";
-		_bufferDirty = true;
 
 		smooth = (HXP.stage.quality != LOW);
 	}
 
-	public var color(default, set):Color;
-	function set_color(value:Color):Int
-	{
-		_bufferDirty = true;
-		return color = value;
-	}
-
-	public var alpha(default, set):Float=1;
-	function set_alpha(value:Float)
-	{
-		_bufferDirty = true;
-		return alpha = value;
-	}
+	public var color:Color;
+	public var alpha:Float = 1;
 
 	public var text(default, set):String;
 	function set_text(text:String):String
@@ -451,9 +439,9 @@ class BitmapText extends Graphic
 		var lineHeight:Int = Std.int(_font.lineHeight + lineSpacing);
 
 		// make sure our format stacks are clear
-		while (_colorStack.length > 0) _colorStack.pop();
-		while (_alphaStack.length > 0) _alphaStack.pop();
-		while (_scaleStack.length > 0) _scaleStack.pop();
+		HXP.clear(_colorStack);
+		HXP.clear(_alphaStack);
+		HXP.clear(_scaleStack);
 
 		_colorStack.push(color);
 		_alphaStack.push(alpha);
