@@ -106,7 +106,7 @@ class NineSlice extends Graphic
 		return segment;
 	}
 
-	function renderSegments(renderFunc:Image -> Void)
+	override public function render(layer:Int, point:Point, camera:Camera)
 	{
 		var leftWidth:Float, rightWidth:Float, topHeight:Float, bottomHeight:Float;
 		if (scaleBorder)
@@ -129,32 +129,27 @@ class NineSlice extends Graphic
 		var leftX = 0, centerX = leftWidth, rightX = leftWidth + centerWidth,
 			topY = 0, centerY = topHeight, bottomY = topHeight + centerHeight;
 
-		drawSegment(renderFunc, topL, leftX, topY, leftWidth, topHeight);
-		drawSegment(renderFunc, topC, centerX, topY, centerWidth, topHeight);
-		drawSegment(renderFunc, topR, rightX, topY, rightWidth, topHeight);
-		drawSegment(renderFunc, medL, leftX, centerY, leftWidth, centerHeight);
-		drawSegment(renderFunc, medC, centerX, centerY, centerWidth, centerHeight);
-		drawSegment(renderFunc, medR, rightX, centerY, rightWidth, centerHeight);
-		drawSegment(renderFunc, botL, leftX, bottomY, leftWidth, bottomHeight);
-		drawSegment(renderFunc, botC, centerX, bottomY, centerWidth, bottomHeight);
-		drawSegment(renderFunc, botR, rightX, bottomY, rightWidth, bottomHeight);
-	}
-
-	inline function drawSegment(renderFunc:Image -> Void, segment:Image, x:Float, y:Float, width:Float, height:Float)
-	{
-		if (segment != null && segment.visible)
+		inline function drawSegment(segment:Image, x:Float, y:Float, width:Float, height:Float)
 		{
-			segment.x = this.x + x;
-			segment.y = this.y + y;
-			segment.scaleX = width / segment.width;
-			segment.scaleY = height / segment.height;
-			renderFunc(segment);
+			if (segment != null && segment.visible)
+			{
+				segment.x = this.x + x;
+				segment.y = this.y + y;
+				segment.scaleX = width / segment.width;
+				segment.scaleY = height / segment.height;
+				segment.render(layer, point, camera);
+			}
 		}
-	}
 
-	override public function render(layer:Int, point:Point, camera:Camera)
-	{
-		renderSegments(function(segment:Image) segment.render(layer, point, camera));
+		drawSegment(topL, leftX, topY, leftWidth, topHeight);
+		drawSegment(topC, centerX, topY, centerWidth, topHeight);
+		drawSegment(topR, rightX, topY, rightWidth, topHeight);
+		drawSegment(medL, leftX, centerY, leftWidth, centerHeight);
+		drawSegment(medC, centerX, centerY, centerWidth, centerHeight);
+		drawSegment(medR, rightX, centerY, rightWidth, centerHeight);
+		drawSegment(botL, leftX, bottomY, leftWidth, bottomHeight);
+		drawSegment(botC, centerX, bottomY, centerWidth, bottomHeight);
+		drawSegment(botR, rightX, bottomY, rightWidth, bottomHeight);
 	}
 
 	var topL:Image;
