@@ -18,11 +18,11 @@ class AtlasRegion
 	/**
 	 * Width of this region
 	 */
-	public var width(get, never):Float;
+	public var width(get, never):Int;
 	/**
 	 * Height of this region
 	 */
-	public var height(get, never):Float;
+	public var height(get, never):Int;
 
 	/**
 	 * Creates a new AtlasRegion
@@ -146,8 +146,8 @@ class AtlasRegion
 
 	inline function get_x():Float return _rect.x;
 	inline function get_y():Float return _rect.y;
-	inline function get_width():Float return _rect.width;
-	inline function get_height():Float return _rect.height;
+	inline function get_width():Int return Std.int(_rect.width);
+	inline function get_height():Int return Std.int(_rect.height);
 
 	var _rect:Rectangle;
 	var _parent:AtlasData;

@@ -33,6 +33,7 @@ abstract TileType(TileAtlas) from TileAtlas to TileAtlas
  *
  * Conversion is automatic, no need to use this.
  */
+ @:forward(width, height)
 abstract ImageType(AtlasRegion) from AtlasRegion to AtlasRegion
 {
 	@:dox(hide) @:from public static inline function fromString(s:String):ImageType
@@ -50,18 +51,6 @@ abstract ImageType(AtlasRegion) from AtlasRegion to AtlasRegion
 	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData):ImageType
 	{
 		return Atlas.loadImageAsRegion(bd);
-	}
-
-	public var width(get, never):Int;
-	inline function get_width()
-	{
-		return Std.int(this.width);
-	}
-
-	public var height(get, never):Int;
-	inline function get_height()
-	{
-		return Std.int(this.height);
 	}
 }
 
