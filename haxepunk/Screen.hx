@@ -33,11 +33,7 @@ class Screen
 	{
 		_sprite = new Sprite();
 		_bitmap = new Array<Bitmap>();
-		init();
-	}
 
-	public function init()
-	{
 		x = y = 0;
 		_current = 0;
 		scale = scaleX = scaleY = 1;
