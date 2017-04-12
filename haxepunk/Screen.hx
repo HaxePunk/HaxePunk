@@ -6,6 +6,7 @@ import flash.filters.BitmapFilter;
 import flash.geom.Matrix;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.Renderer;
+import haxepunk.graphics.Image;
 import haxepunk.screen.ScaleMode;
 
 /**
