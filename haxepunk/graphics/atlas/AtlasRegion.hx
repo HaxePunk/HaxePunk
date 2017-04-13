@@ -6,7 +6,7 @@ import flash.geom.Point;
 import flash.geom.Matrix;
 import haxepunk.utils.MathUtil;
 
-class AtlasRegion
+class AtlasRegion implements IAtlasRegion
 {
 	/**
 	 * If the region is rotated by 90 degress (used for sprite packing)

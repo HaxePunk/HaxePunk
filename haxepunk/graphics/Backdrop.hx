@@ -1,7 +1,7 @@
 package haxepunk.graphics;
 
 import flash.geom.Point;
-import haxepunk.graphics.atlas.AtlasRegion;
+import haxepunk.graphics.atlas.IAtlasRegion;
 import haxepunk.HXP;
 import haxepunk.Graphic;
 import haxepunk.utils.Color;
@@ -128,7 +128,7 @@ class Backdrop extends Graphic
 	var _blue:Float;
 
 	// Backdrop information.
-	var _region:AtlasRegion;
+	var _region:IAtlasRegion;
 	var _width:Int;
 	var _height:Int;
 	var _repeatX:Bool;

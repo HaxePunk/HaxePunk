@@ -10,7 +10,7 @@ import haxepunk.Camera;
 import haxepunk.Graphic;
 import haxepunk.HXP;
 import haxepunk.graphics.atlas.Atlas;
-import haxepunk.graphics.atlas.AtlasRegion;
+import haxepunk.graphics.atlas.IAtlasRegion;
 import haxepunk.masks.Polygon;
 import haxepunk.utils.Color;
 import haxepunk.utils.MathUtil;
@@ -321,13 +321,13 @@ class Image extends Graphic
 	 * Width of the image.
 	 */
 	public var width(get, never):Int;
-	function get_width():Int return Std.int(_region.rotated ? _region.height : _region.width);
+	function get_width():Int return _region.width;
 
 	/**
 	 * Height of the image.
 	 */
 	public var height(get, never):Int;
-	function get_height():Int return Std.int(_region.rotated ? _region.width : _region.height);
+	function get_height():Int return _region.height;
 
 	/**
 	 * The scaled width of the image.
@@ -345,7 +345,7 @@ class Image extends Graphic
 
 	// Source and buffer information.
 	var _sourceRect:Rectangle;
-	var _region:AtlasRegion;
+	var _region:IAtlasRegion;
 
 	// Color and alpha information.
 	var _alpha:Float;

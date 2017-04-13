@@ -7,10 +7,11 @@ import haxe.xml.Fast;
 import haxepunk.HXP;
 import haxepunk.graphics.atlas.AtlasData;
 
-enum BitmapFontFormat
+@:enum
+abstract BitmapFontFormat(Int)
 {
-	XML;
-	XNA;
+	var XML = 1;
+	var XNA = 2;
 }
 
 typedef GlyphData =

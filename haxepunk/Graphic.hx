@@ -4,6 +4,8 @@ import haxe.ds.Either;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.TileAtlas;
 import haxepunk.graphics.atlas.AtlasRegion;
+import haxepunk.graphics.atlas.AtlasResolutions;
+import haxepunk.graphics.atlas.IAtlasRegion;
 import flash.display.BitmapData;
 import flash.display.BlendMode;
 import flash.geom.Point;
@@ -36,7 +38,7 @@ abstract TileType(TileAtlas) from TileAtlas to TileAtlas
  * Conversion is automatic, no need to use this.
  */
 @:forward(width, height)
-abstract ImageType(AtlasRegion) from AtlasRegion to AtlasRegion
+abstract ImageType(IAtlasRegion) from IAtlasRegion to IAtlasRegion
 {
 	@:dox(hide) @:from public static inline function fromString(s:String):ImageType
 	{
@@ -46,13 +48,21 @@ abstract ImageType(AtlasRegion) from AtlasRegion to AtlasRegion
 	{
 		return atlas.getRegion(0);
 	}
-	@:dox(hide) @:from public static inline function fromAtlasRegion(region:AtlasRegion):ImageType
+	@:dox(hide) @:from public static inline function fromAtlasRegion(region:IAtlasRegion):ImageType
 	{
 		return region;
 	}
 	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData):ImageType
 	{
 		return Atlas.loadImageAsRegion(bd);
+	}
+	@:dox(hide) @:from public static inline function fromStrings(v:Array<String>):ImageType
+	{
+		return new AtlasResolutions([for (image in v) Atlas.loadImageAsRegion(image)]);
+	}
+	@:dox(hide) @:from public static inline function fromAtlasRegions(v:Array<AtlasRegion>):ImageType
+	{
+		return new AtlasResolutions(v);
 	}
 }
 

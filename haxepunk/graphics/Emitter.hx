@@ -19,12 +19,6 @@ import haxepunk.utils.Random;
 class Emitter extends Graphic
 {
 	/**
-	 * Optional blend mode to use when drawing this image.
-	 * Use constants from the flash.display.BlendMode class.
-	 */
-	public var blend:BlendMode;
-
-	/**
 	 * Constructor. Sets the source image to use for newly added particle types.
 	 * @param	source			Source image.
 	 * @param	frameWidth		Frame width.
