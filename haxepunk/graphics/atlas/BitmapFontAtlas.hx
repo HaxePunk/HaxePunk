@@ -14,21 +14,12 @@ abstract BitmapFontFormat(Int)
 	var XNA = 2;
 }
 
-typedef GlyphData =
-{
-	var glyph:String;
-	var rect:Rectangle;
-	var xOffset:Int;
-	var yOffset:Int;
-	var xAdvance:Int;
-};
-
 /**
  * TextureAtlas which supports parsing various bitmap font formats. Used by
  * BitmapFont.
  * @since	2.5.0
  */
-class BitmapFontAtlas extends TextureAtlas
+class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 {
 	public var lineHeight:Int = 0;
 	public var fontSize:Int = 0;
@@ -105,17 +96,19 @@ class BitmapFontAtlas extends TextureAtlas
 				default: glyph;
 			}
 
-			var md:GlyphData = {
+			// set the defined region
+			var region = atlas.defineRegion(glyph, HXP.rect);
+
+			var gd:GlyphData = {
 				glyph: glyph,
 				rect: HXP.rect.clone(),
 				xOffset: char.has.xoffset ? Std.parseInt(char.att.xoffset) : 0,
 				yOffset: char.has.yoffset ? Std.parseInt(char.att.yoffset) : 0,
-				xAdvance: char.has.xadvance ? Std.parseInt(char.att.xadvance) : 0
+				xAdvance: char.has.xadvance ? Std.parseInt(char.att.xadvance) : 0,
+				scale: 1,
+				region: region
 			};
-
-			// set the defined region
-			var region = atlas.defineRegion(glyph, HXP.rect);
-			atlas.glyphData[glyph] = md;
+			atlas.glyphData[glyph] = gd;
 		}
 		return atlas;
 	}
@@ -184,17 +177,18 @@ class BitmapFontAtlas extends TextureAtlas
 					glyph = glyphString.charAt(letterIdx);
 					HXP.rect.setTo(cx, cy, gw, gh);
 
-					var md:GlyphData = {
+					// set the defined region
+					var region = atlas.defineRegion(glyph, HXP.rect);
+					var gd:GlyphData = {
 						glyph: glyph,
 						rect: HXP.rect.clone(),
 						xOffset: 0,
 						yOffset: 0,
-						xAdvance: gw
+						xAdvance: gw,
+						scale: 1,
+						region: region
 					};
-
-					// set the defined region
-					var region = atlas.defineRegion(glyph, HXP.rect);
-					atlas.glyphData[glyph] = md;
+					atlas.glyphData[glyph] = gd;
 
 					// store max size
 					if (gh > rowHeight) rowHeight = gh;
@@ -233,16 +227,16 @@ class BitmapFontAtlas extends TextureAtlas
 	 * Returns an AtlasRegion for a given character, or whitespace if that
 	 * character is not found.
 	 */
-	public inline function getChar(name:String):AtlasRegion
+	public inline function getChar(name:String, size:Float):GlyphData
 	{
-		try
-		{
-			return getRegion(name);
-		}
-		catch (msg:String)
-		{
-			return getRegion(' ');
-		}
+		var glyph:GlyphData = glyphData.exists(name) ? glyphData[name] : glyphData[' '];
+		glyph.scale = size / fontSize;
+		return glyph;
+	}
+
+	public function getLineHeight(size:Float)
+	{
+		return lineHeight * size / fontSize;
 	}
 
 	static var _fonts:Map<String, BitmapFontAtlas>;

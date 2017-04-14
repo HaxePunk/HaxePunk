@@ -42,7 +42,8 @@ abstract ImageType(IAtlasRegion) from IAtlasRegion to IAtlasRegion
 {
 	@:dox(hide) @:from public static inline function fromString(s:String):ImageType
 	{
-		return Atlas.loadImageAsRegion(s);
+		var resolutions = AssetManager.getResolutions(s);
+		return resolutions == null ? Atlas.loadImageAsRegion(s) : resolutions;
 	}
 	@:dox(hide) @:from public static inline function fromTileAtlas(atlas:TileAtlas):ImageType
 	{

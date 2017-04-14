@@ -3,8 +3,6 @@ package haxepunk.graphics.atlas;
 import flash.display.BlendMode;
 import flash.geom.Rectangle;
 import flash.geom.Point;
-import flash.geom.Matrix;
-import haxepunk.utils.MathUtil;
 
 /**
  * This class manages multiple AtlasRegions containing the same image at
@@ -32,10 +30,10 @@ class AtlasResolutions implements IAtlasRegion
 		{
 			throw "Can't create an AtlasResolutions set with no AtlasRegions";
 		}
-		for (region in regions) addRegion(region);
+		for (region in regions) addResolution(region);
 	}
 
-	public function addRegion(region:AtlasRegion)
+	public function addResolution(region:AtlasRegion)
 	{
 		if (regions.length == 0)
 		{
@@ -46,7 +44,7 @@ class AtlasResolutions implements IAtlasRegion
 		{
 			if (Math.abs(region.width / region.height - base.width / base.height) > 0.001)
 			{
-				throw "All AtlasRegions in an AtlasResolutions set must have the same aspect ratio";
+				throw 'All AtlasRegions in an AtlasResolutions set must have the same aspect ratio: $base $region';
 			}
 			for (i in 0 ... regions.length + 1)
 			{
