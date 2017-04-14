@@ -4,8 +4,9 @@ import flash.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Graphic;
 import haxepunk.graphics.Text;
-import haxepunk.graphics.atlas.BitmapFontAtlas;
 import haxepunk.graphics.atlas.AtlasRegion;
+import haxepunk.graphics.atlas.BitmapFontAtlas;
+import haxepunk.graphics.atlas.IBitmapFont;
 import haxepunk.utils.Color;
 
 /**
@@ -231,9 +232,13 @@ class BitmapText extends Graphic
 		if (!Reflect.hasField(options, "wordWrap"))  options.wordWrap  = false;
 
 		// load the font as a BitmapFontAtlas
-		var font = BitmapFontAtlas.getFont(options.font, options.format, options.extraParams);
+		var font:IBitmapFont = AssetManager.getBitmapFont(options.font);
+		if (font == null)
+		{
+			font = BitmapFontAtlas.getFont(options.font, options.format, options.extraParams);
+		}
 
-		_font = cast(font, BitmapFontAtlas);
+		_font = font;
 
 		// failure to load
 		if (_font == null)
@@ -244,7 +249,7 @@ class BitmapText extends Graphic
 		this.width = width;
 		this.height = height;
 		wrap = options.wordWrap;
-		size = options.size != null ? options.size : _font.fontSize;
+		size = options.size;
 
 		autoWidth = (width == 0);
 		autoHeight = (height == 0);
@@ -282,12 +287,13 @@ class BitmapText extends Graphic
 		HXP.clear(_scaleStack);
 
 		_scaleStack.push(1);
-		var spaceWidth = _font.glyphData.get(' ').xAdvance;
-		var fontScale = size / _font.fontSize;
-		var sx:Float = scale * scaleX * fontScale,
-			sy:Float = scale * scaleY * fontScale;
-		var lineHeight:Int = Std.int(_font.lineHeight + lineSpacing),
-			thisLineHeight:Float = lineHeight * sy;
+		var fsx:Float = HXP.screen.fullScaleX,
+			fsy:Float = HXP.screen.fullScaleY;
+		var sx:Float = size * scale * scaleX,
+			sy:Float = size * scale * scaleY;
+		var lineHeight:Float = _font.getLineHeight(sy * fsy) / fsy,
+			lineSpacing:Float = lineSpacing * scale * scaleY,
+			thisLineHeight:Float = lineHeight;
 		var remaining = text;
 		var cursorX:Float = 0,
 			cursorY:Float = 0,
@@ -321,8 +327,8 @@ class BitmapText extends Graphic
 		{
 			opCodes.push(NextLine);
 			cursorX = 0;
-			cursorY += thisLineHeight;
-			thisLineHeight = lineHeight * sy;
+			cursorY += thisLineHeight + lineSpacing;
+			thisLineHeight = lineHeight;
 		}
 
 		while (true)
@@ -341,24 +347,22 @@ class BitmapText extends Graphic
 							flushBlock();
 							addNextLine();
 						case " ", "-":
-							var charWidth = _font.glyphData.exists(char)
-								? _font.glyphData.get(char).xAdvance
-								: 0;
+							var gd = _font.getChar(char, sx * fsx * currentScale);
+							var charWidth = gd.xAdvance * gd.scale / fsx;
 							currentWord += char;
-							currentWordLength += (charSpacing + charWidth) * sx * currentScale;
+							currentWordLength += charSpacing * currentScale + charWidth;
 							flushWord();
 						default:
 							currentWord += char;
-							var charWidth = _font.glyphData.exists(char)
-								? _font.glyphData.get(char).xAdvance
-								: 0;
-							currentWordLength += charWidth * sx * currentScale;
+							var gd = _font.getChar(char, sx * fsx * currentScale);
+							var charWidth = gd.xAdvance * gd.scale / fsx;
+							currentWordLength += charWidth;
 							if (wrap && cursorX + currentWordLength > width)
 							{
 								flushBlock();
 								addNextLine();
 							}
-							currentWordLength += charSpacing * sx * currentScale;
+							currentWordLength += charSpacing * currentScale;
 					}
 				}
 			}
@@ -377,29 +381,26 @@ class BitmapText extends Graphic
 						{
 							case Image(image):
 								thisLineHeight = Std.int(Math.max(thisLineHeight, currentScale * image.height * image.scale * image.scaleY));
-								cursorX += currentWordLength + (image.width * image.scale * image.scaleX + charSpacing) * sx * currentScale;
+								var imageWidth = ((image.width * image.scale * image.scaleX * this.scale * this.scaleX) + charSpacing) * currentScale;
+								cursorX += imageWidth;
 								currentWordLength = 0;
 								if (wrap && cursorX > width)
 								{
-									opCodes.push(NextLine);
-									cursorX = (image.width * image.scale * image.scaleX + charSpacing) * sx * currentScale;
-									cursorY += thisLineHeight;
-									thisLineHeight = lineHeight * sy;
+									addNextLine();
+									cursorX = imageWidth;
 								}
 								opCodes.push(tag);
 								if (cursorX > textWidth) textWidth = Std.int(cursorX);
 							case SetScale(scale):
 								_scaleStack.push(currentScale = scale);
 								opCodes.push(tag);
-								thisLineHeight = Math.max(thisLineHeight, lineHeight * sy * currentScale);
+								thisLineHeight = Math.max(thisLineHeight, lineHeight * currentScale);
 							case PopScale:
 								if (_scaleStack.length > 1) _scaleStack.pop();
 								currentScale = _scaleStack[_scaleStack.length - 1];
 								opCodes.push(tag);
 							case NextLine:
-								cursorY += thisLineHeight;
-								thisLineHeight = lineHeight * sy;
-								opCodes.push(NextLine);
+								addNextLine();
 								currentWordLength = cursorX = 0;
 							default:
 								opCodes.push(tag);
@@ -416,7 +417,7 @@ class BitmapText extends Graphic
 		}
 		flushWord();
 		flushBlock();
-		textHeight = Std.int(cursorY + (cursorX > 0 ? thisLineHeight : 0));
+		textHeight = Std.int(cursorY + (cursorX > 0 ? thisLineHeight : (cursorY > 0 ? -lineSpacing : 0)));
 
 		_scaleStack.pop();
 		this.textWidth = textWidth;
@@ -428,16 +429,11 @@ class BitmapText extends Graphic
 	override public function render(layer:Int, point:Point, camera:Camera)
 	{
 		// determine drawing location
-		var fontScale = size / _font.fontSize;
-
 		var fsx = HXP.screen.fullScaleX,
 			fsy = HXP.screen.fullScaleY;
 
 		_point.x = Math.floor(point.x + x - camera.x * scrollX);
 		_point.y = Math.floor(point.y + y - camera.y * scrollY);
-
-		var lineHeight:Int = Std.int(_font.lineHeight + lineSpacing);
-
 		// make sure our format stacks are clear
 		HXP.clear(_colorStack);
 		HXP.clear(_alphaStack);
@@ -447,15 +443,16 @@ class BitmapText extends Graphic
 		_alphaStack.push(alpha);
 		_scaleStack.push(1);
 
-		var sx = scale * scaleX * size / _font.fontSize,
-			sy = scale * scaleY * size / _font.fontSize;
-
+		var sx = scale * scaleX * size,
+			sy = scale * scaleY * size;
+		var lineHeight:Float = _font.getLineHeight(sy * fsy) / fsy,
+			lineSpacing:Float = lineSpacing * scale * scaleY,
+			thisLineHeight:Float = lineHeight;
 		var currentColor:Color = color,
 			currentAlpha:Float = alpha,
 			currentScale:Float = 1,
 			cursorX:Float = 0,
 			cursorY:Float = 0,
-			thisLineHeight:Float = lineHeight * sy,
 			charCount:Int = 0;
 		for (op in opCodes)
 		{
@@ -468,7 +465,7 @@ class BitmapText extends Graphic
 					_alphaStack.push(currentAlpha = alpha);
 				case SetScale(scale):
 					_scaleStack.push(currentScale = scale);
-					thisLineHeight = Math.max(thisLineHeight, lineHeight * currentScale * sy);
+					thisLineHeight = Math.max(thisLineHeight, lineHeight * currentScale);
 				case PopColor:
 					if (_colorStack.length > 1) _colorStack.pop();
 					currentColor = _colorStack[_colorStack.length - 1];
@@ -485,35 +482,32 @@ class BitmapText extends Graphic
 						if (displayCharCount > -1 && charCount >= displayCharCount) break;
 						++charCount;
 						var char = text.charAt(i);
-						var region = _font.getChar(char);
-						var gd = _font.glyphData.get(char);
-						// if a character isn't in this font, display a space
-						if (gd == null)
-						{
-							char = ' ';
-							gd = _font.glyphData.get(' ');
-						}
+						var gd = _font.getChar(char, sx * fsx * currentScale);
 
 						if (char == ' ')
 						{
 							// it's a space, just move the cursor
-							cursorX += gd.xAdvance * sx * currentScale;
+							cursorX += gd.xAdvance * gd.scale / fsx;
 						}
 						else
 						{
 							// draw the character
-							var x = cursorX + gd.xOffset * sx * currentScale,
-								y = cursorY + gd.yOffset * sy * currentScale;
-							region.draw((_point.x + x) * fsx, (_point.y + y) * fsy, layer, fsx * sx * currentScale, fsy * sy * currentScale, 0, currentColor.red, currentColor.green, currentColor.blue, currentAlpha, smooth);
+							var x = cursorX + gd.xOffset * gd.scale / fsx,
+								y = cursorY + gd.yOffset * gd.scale / fsx;
+							gd.region.draw(
+								(_point.x + x) * fsx, (_point.y + y) * fsy,
+								layer, gd.scale, fsy / fsx * gd.scale * sy / sx, 0,
+								currentColor.red, currentColor.green, currentColor.blue, currentAlpha, smooth
+							);
 							// advance cursor position
-							cursorX += (gd.xAdvance + charSpacing) * sx * currentScale;
+							cursorX += gd.xAdvance * gd.scale / fsx + charSpacing * currentScale;
 						}
 					}
 				case NextLine:
 					// advance to next line
 					cursorX = 0;
-					cursorY += thisLineHeight;
-					thisLineHeight = lineHeight * sy * currentScale;
+					cursorY += thisLineHeight + lineSpacing;
+					thisLineHeight = lineHeight * currentScale;
 					++charCount;
 				case Image(image):
 					// draw the image
@@ -534,7 +528,7 @@ class BitmapText extends Graphic
 					image.scaleY = originalScaleY;
 					// advance cursor position
 					thisLineHeight = Std.int(Math.max(thisLineHeight, currentScale * image.height * image.scale * image.scaleY));
-					cursorX += (image.width * image.scale * image.scaleX * this.scale * this.scaleX * currentScale) + charSpacing * sx * currentScale;
+					cursorX += ((image.width * image.scale * image.scaleX * this.scale * this.scaleX) + charSpacing) * currentScale;
 					++charCount;
 			}
 		}
@@ -547,5 +541,5 @@ class BitmapText extends Graphic
 	var autoWidth:Bool = false;
 	var autoHeight:Bool = false;
 	var _dirty:Bool = false;
-	var _font:BitmapFontAtlas;
+	var _font:IBitmapFont;
 }
