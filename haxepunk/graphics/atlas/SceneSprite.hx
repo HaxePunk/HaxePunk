@@ -31,7 +31,7 @@ class SceneSprite extends Sprite
 		if (scene.alpha > 0)
 		{
 			// draw the scene background
-			var command = batch.getDrawCommand(null, false, BlendMode.ALPHA);
+			var command = batch.getDrawCommand(null, false, BlendMode.ALPHA, null);
 			var sceneColor:Color = scene.color == null ? HXP.stage.color : scene.color;
 			var alpha = scene.alpha,
 				red = sceneColor.red * alpha,

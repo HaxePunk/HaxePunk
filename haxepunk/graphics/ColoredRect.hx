@@ -1,6 +1,5 @@
 package haxepunk.graphics;
 
-import flash.display.BlendMode;
 import flash.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Graphic;
@@ -11,7 +10,6 @@ class ColoredRect extends Graphic
 {
 	public var width:Float;
 	public var height:Float;
-	public var blendMode:BlendMode = BlendMode.ALPHA;
 
 	public var color:Color;
 	public var alpha:Float;
@@ -30,7 +28,7 @@ class ColoredRect extends Graphic
 	override public function render(layer:Int, point:Point, camera:Point)
 	{
 		var batch = AtlasData._scene.sprite.batch,
-			command = batch.getDrawCommand(null, false, blendMode);
+			command = batch.getDrawCommand(null, false, blend, screenClipRect(point.x, point.y));
 		var x1 = (point.x - camera.x + x) * HXP.screen.fullScaleX,
 			x2 = x1 + width * HXP.screen.fullScaleX,
 			y1 = (point.y - camera.y + y) * HXP.screen.fullScaleY,

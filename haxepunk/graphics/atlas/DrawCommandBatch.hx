@@ -36,11 +36,11 @@ class DrawCommandBatch
 		head = last = null;
 	}
 
-	public function getDrawCommand(texture:BitmapData, smooth:Bool, blend:BlendMode, x1:Float=0, y1:Float=0, x2:Float=0, y2:Float=0, x3:Float=0, y3:Float=0)
+	public function getDrawCommand(texture:BitmapData, smooth:Bool, blend:BlendMode, clipRect:Rectangle, x1:Float=0, y1:Float=0, x2:Float=0, y2:Float=0, x3:Float=0, y3:Float=0)
 	{
 		if (blend == null) blend = BlendMode.ALPHA;
 
-		if (last != null && last.match(texture, smooth, blend))
+		if (last != null && last.match(texture, smooth, blend, clipRect))
 		{
 			// we can reuse the most recent draw call
 			return last;
@@ -60,7 +60,7 @@ class DrawCommandBatch
 				found:Bool = false;
 			while (current != null && i++ < MAX_LOOKBACK_CALLS && t < MAX_TRIANGLE_CHECKS)
 			{
-				if (current.match(texture, smooth, blend))
+				if (current.match(texture, smooth, blend, clipRect))
 				{
 					found = true;
 					break;
@@ -74,7 +74,7 @@ class DrawCommandBatch
 				current = last;
 				while (current != null && i++ < MAX_LOOKBACK_CALLS)
 				{
-					if (current.match(texture, smooth, blend))
+					if (current.match(texture, smooth, blend, clipRect))
 					{
 						// we can use this existing draw call
 						return current;
@@ -105,7 +105,7 @@ class DrawCommandBatch
 		}
 		#end
 
-		var command = DrawCommand.create(texture, smooth, blend);
+		var command = DrawCommand.create(texture, smooth, blend, clipRect);
 		if (last == null)
 		{
 			head = last = command;
@@ -120,7 +120,8 @@ class DrawCommandBatch
 		return command;
 	}
 
-	public inline function addRect(texture:BitmapData, smooth:Bool, blend:BlendMode,
+	public inline function addRect(
+		texture:BitmapData, smooth:Bool, blend:BlendMode, clipRect:Rectangle,
 		rx:Float, ry:Float, rw:Float, rh:Float,
 		a:Float, b:Float, c:Float, d:Float,
 		tx:Float, ty:Float,
@@ -150,7 +151,7 @@ class DrawCommandBatch
 		inline function transformY(x, y) return matrixTransformY(matrix, x, y);
 
 		addTriangle(
-			texture, smooth, blend,
+			texture, smooth, blend, clipRect,
 			transformX(0, 0), transformY(0, 0), uvx1, uvy1,
 			transformX(rw, 0), transformY(rw, 0), uvx2, uvy1,
 			transformX(0, rh), transformY(0, rh), uvx1, uvy2,
@@ -158,7 +159,7 @@ class DrawCommandBatch
 		);
 
 		addTriangle(
-			texture, smooth, blend,
+			texture, smooth, blend, clipRect,
 			transformX(0, rh), transformY(0, rh), uvx1, uvy2,
 			transformX(rw, 0), transformY(rw, 0), uvx2, uvy1,
 			transformX(rw, rh), transformY(rw, rh), uvx2, uvy2,
@@ -166,11 +167,11 @@ class DrawCommandBatch
 		);
 	}
 
-	public inline function addTriangle(texture:BitmapData, smooth:Bool, blend:BlendMode, tx1:Float, ty1:Float, uvx1:Float, uvy1:Float, tx2:Float, ty2:Float, uvx2:Float, uvy2:Float, tx3:Float, ty3:Float, uvx3:Float, uvy3:Float, red:Float, green:Float, blue:Float, alpha:Float):Void
+	public inline function addTriangle(texture:BitmapData, smooth:Bool, blend:BlendMode, clipRect:Rectangle, tx1:Float, ty1:Float, uvx1:Float, uvy1:Float, tx2:Float, ty2:Float, uvx2:Float, uvy2:Float, tx3:Float, ty3:Float, uvx3:Float, uvy3:Float, red:Float, green:Float, blue:Float, alpha:Float):Void
 	{
 		if (alpha > 0)
 		{
-			var command = getDrawCommand(texture, smooth, blend, tx1, ty1, tx2, ty2, tx3, ty3);
+			var command = getDrawCommand(texture, smooth, blend, clipRect, tx1, ty1, tx2, ty2, tx3, ty3);
 			command.addTriangle(tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, red, green, blue, alpha);
 		}
 	}

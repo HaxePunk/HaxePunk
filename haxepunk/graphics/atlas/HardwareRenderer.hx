@@ -214,7 +214,7 @@ class HardwareRenderer
 
 	static inline function bindTexture(texture:BitmapData, smooth:Bool)
 	{
-		#if (lime && !flash)
+		#if lime
 		var renderer:GLRenderer = cast HXP.stage.__renderer;
 		var renderSession = renderer.renderSession;
 		GL.bindTexture(GL.TEXTURE_2D, texture.getTexture(renderSession.gl));
@@ -305,9 +305,9 @@ class HardwareRenderer
 
 	public function new()
 	{
-#if ios
+		#if ios
 		defaultFramebuffer = new GLFramebuffer(GL.version, GL.getParameter(GL.FRAMEBUFFER_BINDING));
-#end
+		#end
 		if (_ortho == null)
 		{
 			_ortho = new Float32Array(16);
@@ -396,7 +396,21 @@ class HardwareRenderer
 				GL.vertexAttribPointer(shader.attributeIndex("aTexCoord"), 2, GL.FLOAT, false, stride, 6 * FLOAT32_BYTES);
 			}
 
-			GL.scissor(Std.int(x0), Std.int(HXP.windowHeight - y0 - HXP.screen.height), Std.int(HXP.screen.width), Std.int(HXP.screen.height));
+			var x:Int = Std.int(x0),
+				y:Int = Std.int(y0),
+				width:Int = HXP.screen.width,
+				height:Int = HXP.screen.height,
+				clipRect = drawCommand.clipRect;
+			if (clipRect != null)
+			{
+				x += Std.int(Math.max(clipRect.x, 0));
+				y += Std.int(Math.max(clipRect.y, 0));
+				width -= Std.int(clipRect.x);
+				height -= Std.int(clipRect.y);
+				width = Std.int(Math.min(width, clipRect.width));
+				height = Std.int(Math.min(height, clipRect.height));
+			}
+			GL.scissor(x, HXP.windowHeight - y - height, width, height);
 			GL.enable(GL.SCISSOR_TEST);
 			GL.drawArrays(GL.TRIANGLES, 0, items * 3);
 			GL.disable(GL.SCISSOR_TEST);
@@ -404,7 +418,6 @@ class HardwareRenderer
 			#if (gl_debug || debug) checkForGLErrors(); #end
 
 			GL.bindBuffer(GL.ARRAY_BUFFER, null);
-
 			shader.unbind();
 
 			#if (gl_debug || debug) checkForGLErrors(); #end

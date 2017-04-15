@@ -5,7 +5,9 @@ import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.TileAtlas;
 import haxepunk.graphics.atlas.AtlasRegion;
 import flash.display.BitmapData;
+import flash.display.BlendMode;
 import flash.geom.Point;
+import flash.geom.Rectangle;
 
 /**
  * Abstract representing either a `String`, a `TileAtlas` or a `BitmapData`.
@@ -87,6 +89,19 @@ class Graphic
 	public var active:Bool = false;
 
 	/**
+	 * Optional blend mode to use when drawing this image.
+	 * Use constants from the flash.display.BlendMode class.
+	 */
+	public var blend:BlendMode;
+
+	/**
+	 * Optional rectangle to clip the portion of this graphic that will be
+	 * drawn.
+	 * @since 4.0.0
+	 */
+	public var clipRect:Rectangle;
+
+	/**
 	 * If the graphic should render.
 	 */
 	public var visible(get, set):Bool;
@@ -125,6 +140,26 @@ class Graphic
 	 * If the graphic should render at its position relative to its parent Entity's position.
 	 */
 	public var relative:Bool = true;
+
+	var _screenClipRect:Rectangle;
+	inline function screenClipRect(x:Float, y:Float)
+	{
+		if (clipRect != null)
+		{
+			if (_screenClipRect == null) _screenClipRect = new Rectangle();
+			_screenClipRect.setTo(
+				(x + clipRect.x) * HXP.screen.fullScaleX,
+				(y + clipRect.y) * HXP.screen.fullScaleY,
+				clipRect.width * HXP.screen.fullScaleX,
+				clipRect.height * HXP.screen.fullScaleY
+			);
+			return _screenClipRect;
+		}
+		else
+		{
+			return null;
+		}
+	}
 
 	/**
 	 * Constructor.
