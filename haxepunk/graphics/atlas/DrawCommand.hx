@@ -107,7 +107,7 @@ private class RenderData
 @:allow(haxepunk.graphics.atlas.DrawCommandBatch)
 class DrawCommand
 {
-	public static function create(texture:BitmapData, smooth:Bool, ?blend:BlendMode)
+	public static function create(texture:BitmapData, smooth:Bool, ?blend:BlendMode, ?clipRect:Rectangle)
 	{
 		if (blend == null) blend = BlendMode.ALPHA;
 		var command:DrawCommand;
@@ -124,6 +124,7 @@ class DrawCommand
 		command.texture = texture;
 		command.smooth = smooth;
 		command.blend = blend;
+		command.clipRect = clipRect;
 		return command;
 	}
 
@@ -147,15 +148,23 @@ class DrawCommand
 	public var texture:BitmapData;
 	public var smooth:Bool = false;
 	public var blend:BlendMode = BlendMode.ALPHA;
+	public var clipRect:Rectangle = null;
 	#if render_batch
 	public var bounds:Rectangle = new Rectangle();
 	#end
 
 	function new() {}
 
-	public inline function match(texture:BitmapData, smooth:Bool, blend:BlendMode):Bool
+	public inline function match(texture:BitmapData, smooth:Bool, blend:BlendMode, clipRect:Rectangle):Bool
 	{
-		return this.texture == texture && this.smooth == smooth && this.blend == blend;
+		return this.texture == texture && this.smooth == smooth && this.blend == blend &&
+			((this.clipRect == null && clipRect == null) ||
+				(this.clipRect != null && clipRect != null &&
+				Std.int(this.clipRect.x) == Std.int(clipRect.x) &&
+				Std.int(this.clipRect.y) == Std.int(clipRect.y) &&
+				Std.int(this.clipRect.width) == Std.int(clipRect.width) &&
+				Std.int(this.clipRect.height) == Std.int(clipRect.height)
+			));
 	}
 
 	public inline function addTriangle(tx1:Float, ty1:Float, uvx1:Float, uvy1:Float, tx2:Float, ty2:Float, uvx2:Float, uvy2:Float, tx3:Float, ty3:Float, uvx3:Float, uvy3:Float, red:Float, green:Float, blue:Float, alpha:Float):Void

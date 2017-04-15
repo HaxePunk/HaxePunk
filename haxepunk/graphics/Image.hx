@@ -1,7 +1,6 @@
 package haxepunk.graphics;
 
 import flash.display.BitmapData;
-import flash.display.BlendMode;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.display.Graphics;
@@ -56,12 +55,6 @@ class Image extends Graphic
 	public var originY:Float;
 
 	/**
-	 * Optional blend mode to use when drawing this image.
-	 * Use constants from the flash.display.BlendMode class.
-	 */
-	public var blend:BlendMode;
-
-	/**
 	 * Constructor.
 	 * @param	source		Source image.
 	 * @param	clipRect	Optional rectangle defining area of the source image to draw.
@@ -97,7 +90,6 @@ class Image extends Graphic
 		originX = originY = 0;
 
 		_alpha = 1;
-		flipped = false;
 		_color = 0x00FFFFFF;
 		_red = _green = _blue = 1;
 	}
@@ -123,21 +115,12 @@ class Image extends Graphic
 				_point.y = (point.y + y - originY * sy - camera.y * scrollY);
 			}
 
-			if (flipped)
-			{
-				_point.x += _sourceRect.width * sx;
-			}
-
 			// render without rotation
-			_region.draw(_point.x * fsx, _point.y * fsy, layer, sx * fsx * (flipped ? -1 : 1), sy * fsy, angle, _red, _green, _blue, _alpha, smooth, blend);
+			var clipRect = screenClipRect(_point.x, _point.y);
+			_region.draw(_point.x * fsx, _point.y * fsy, layer, sx * fsx, sy * fsy, angle, _red, _green, _blue, _alpha, smooth, blend, clipRect);
 		}
 		else
 		{
-			if (flipped)
-			{
-				sx *= -1;
-			}
-
 			var angle = angle * MathUtil.RAD;
 			var cos = Math.cos(angle);
 			var sin = Math.sin(angle);
@@ -145,10 +128,10 @@ class Image extends Graphic
 			var b = sx * sin * fsy;
 			var c = -sy * sin * fsx;
 			var d = sy * cos * fsy;
-			var tx = (-originX * sx * cos + originY * sy * sin + originX + _point.x) * fsx;
-			var ty = (-originX * sx * sin - originY * sy * cos + originY + _point.y) * fsy;
-
-			_region.drawMatrix(tx, ty, a, b, c, d, layer, _red, _green, _blue, _alpha, smooth, blend);
+			var tx = (-originX * sx * cos + originY * sy * sin + originX + _point.x);
+			var ty = (-originX * sx * sin - originY * sy * cos + originY + _point.y);
+			var clipRect = screenClipRect(tx, ty);
+			_region.drawMatrix(tx * fsx, ty * fsy, a, b, c, d, layer, _red, _green, _blue, _alpha, smooth, blend, clipRect);
 		}
 	}
 
@@ -306,12 +289,6 @@ class Image extends Graphic
 	}
 
 	/**
-	 * If you want to draw the Image horizontally flipped. This is
-	 * faster than setting scaleX to -1 if your image isn't transformed.
-	 */
-	public var flipped:Bool;
-
-	/**
 	 * Centers the Image's originX/Y to its center.
 	 */
 	public function centerOrigin()
@@ -331,7 +308,6 @@ class Image extends Graphic
 		x -= originX;
 		y -= originY;
 	}
-
 
 	/**
 	 * If the image should be drawn transformed with pixel smoothing.
@@ -366,12 +342,6 @@ class Image extends Graphic
 	public var scaledHeight(get, set_scaledHeight):Float;
 	inline function get_scaledHeight():Float return height * scaleY * scale;
 	inline function set_scaledHeight(h:Float):Float return scaleY = h / scale / height;
-
-	/**
-	 * Clipping rectangle for the image.
-	 */
-	public var clipRect(get, null):Rectangle;
-	inline function get_clipRect():Rectangle return _sourceRect;
 
 	// Source and buffer information.
 	var _sourceRect:Rectangle;
