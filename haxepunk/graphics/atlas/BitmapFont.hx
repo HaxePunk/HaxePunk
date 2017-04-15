@@ -35,10 +35,10 @@ class BitmapFont implements IBitmapFont
 		return glyph;
 	}
 
-	public function getLineHeight(size:Float)
+	public function getLineHeight(size:Float):Float
 	{
 		var atlas = atlasForScale(size);
-		return atlas.lineHeight * size / atlas.fontSize;
+		return atlas.getLineHeight(size);
 	}
 
 	inline function atlasForScale(size:Float):BitmapFontAtlas
