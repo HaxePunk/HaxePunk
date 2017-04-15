@@ -65,49 +65,51 @@ class AtlasRegion
 
 	/**
 	 * Prepares tile data for rendering
-	 * @param	x		The x-axis location to draw the tile
-	 * @param	y		The y-axis location to draw the tile
-	 * @param	layer	The layer to draw on
-	 * @param	scaleX	The scale value for the x-axis
-	 * @param	scaleY	The scale value for the y-axis
-	 * @param	angle	An angle to rotate the tile in degrees
-	 * @param	red		A red tint value
-	 * @param	green	A green tint value
-	 * @param	blue	A blue tint value
-	 * @param	alpha	The tile's opacity
-	 * @param	smooth	Whther to draw with antialiasing
-	 * @param	blend	Blend mode
+	 * @param	x			The x-axis location to draw the tile
+	 * @param	y			The y-axis location to draw the tile
+	 * @param	layer		The layer to draw on
+	 * @param	scaleX		The scale value for the x-axis
+	 * @param	scaleY		The scale value for the y-axis
+	 * @param	angle		An angle to rotate the tile in degrees
+	 * @param	red			A red tint value
+	 * @param	green		A green tint value
+	 * @param	blue		A blue tint value
+	 * @param	alpha		The tile's opacity
+	 * @param	smooth		Whether to draw with antialiasing
+	 * @param	blend		Blend mode
+	 * @param	clipRect	Clipping rectangle
 	 */
 	public inline function draw(x:Float, y:Float, layer:Int,
 		scaleX:Float=1, scaleY:Float=1, angle:Float=0,
 		red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1,
-		?smooth:Bool, ?blend:BlendMode)
+		?smooth:Bool, ?blend:BlendMode, ?clipRect:Rectangle)
 	{
 		if (smooth == null) smooth = Atlas.smooth;
 		if (rotated) angle = angle + 90;
 
-		_parent.prepareTile(_rect, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha, smooth, blend);
+		_parent.prepareTile(_rect, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha, smooth, blend, clipRect);
 	}
 
 	/**
 	 * Prepares tile data for rendering using a matrix
-	 * @param	tx		X-Axis translation
-	 * @param	ty		Y-Axis translation
-	 * @param	a		Top-left
-	 * @param	b		Top-right
-	 * @param	c		Bottom-left
-	 * @param	d		Bottom-right
-	 * @param	layer	The layer to draw on
-	 * @param	red		Red color value
-	 * @param	green	Green color value
-	 * @param	blue	Blue color value
-	 * @param	alpha	The tile's opacity
-	 * @param	smooth	Whther to draw with antialiasing
-	 * @param	blend	Blend mode
+	 * @param	tx			X-Axis translation
+	 * @param	ty			Y-Axis translation
+	 * @param	a			Top-left
+	 * @param	b			Top-right
+	 * @param	c			Bottom-left
+	 * @param	d			Bottom-right
+	 * @param	layer		The layer to draw on
+	 * @param	red			Red color value
+	 * @param	green		Green color value
+	 * @param	blue		Blue color value
+	 * @param	alpha		The tile's opacity
+	 * @param	smooth		Whether to draw with antialiasing
+	 * @param	blend		Blend mode
+	 * @param	clipRect	Clipping rectangle
 	 */
 	public inline function drawMatrix(tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
 		layer:Int, red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1,
-		?smooth:Bool, ?blend:BlendMode)
+		?smooth:Bool, ?blend:BlendMode, ?clipRect:Rectangle)
 	{
 		if (smooth == null) smooth = Atlas.smooth;
 
@@ -117,11 +119,11 @@ class AtlasRegion
 			matrix.rotate(90 * MathUtil.RAD);
 			_parent.prepareTileMatrix(_rect, layer,
 				matrix.tx, matrix.ty, matrix.a, matrix.b, matrix.c, matrix.d,
-				red, green, blue, alpha, smooth, blend);
+				red, green, blue, alpha, smooth, blend, clipRect);
 		}
 		else
 		{
-			_parent.prepareTileMatrix(_rect, layer, tx, ty, a, b, c, d, red, green, blue, alpha, smooth, blend);
+			_parent.prepareTileMatrix(_rect, layer, tx, ty, a, b, c, d, red, green, blue, alpha, smooth, blend, clipRect);
 		}
 	}
 
