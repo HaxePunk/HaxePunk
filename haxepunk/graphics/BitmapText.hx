@@ -31,7 +31,7 @@ enum TextOpcode
 	SetAlpha(alpha:Float);
 	SetScale(scale:Float);
 	TextBlock(text:String);
-	NextLine;
+	NewLine(height:Float);
 	Image(image:Image);
 	PopColor;
 	PopAlpha;
@@ -47,7 +47,7 @@ class BitmapText extends Graphic
 	static var FORMAT_TAG_RE = ~/<(([A-Za-z_-]+)\/?|(\/[A-Za-z_-]+))>/;
 
 	static var formatTags:Map<String, Array<TextOpcode>> = [
-		"br" => [NextLine],
+		"br" => [NewLine(1)],
 	];
 
 	static var _colorStack:Array<Color> = new Array();
@@ -302,7 +302,9 @@ class BitmapText extends Graphic
 			currentWordLength:Float = 0,
 			currentScale:Float = 1;
 
-		var textWidth = 0, textHeight = 0;
+		var textWidth = 0;
+		opCodes.push(null);
+		var newLineIndex:Int = 0;
 
 		inline function flushWord()
 		{
@@ -323,12 +325,14 @@ class BitmapText extends Graphic
 				block = "";
 			}
 		}
-		inline function addNextLine()
+		inline function addNewLine()
 		{
-			opCodes.push(NextLine);
 			cursorX = 0;
 			cursorY += thisLineHeight + lineSpacing;
+			opCodes[newLineIndex] = NewLine(Std.int(thisLineHeight));
 			thisLineHeight = lineHeight;
+			opCodes.push(null);
+			newLineIndex = opCodes.length - 1;
 		}
 
 		while (true)
@@ -345,22 +349,24 @@ class BitmapText extends Graphic
 						case "\n":
 							flushWord();
 							flushBlock();
-							addNextLine();
+							addNewLine();
 						case " ", "-":
-							var gd = _font.getChar(char, sx * fsx * currentScale);
+							var maxFullScale = sx * fsx;
+							var gd = _font.getChar(char, maxFullScale * currentScale);
 							var charWidth = gd.xAdvance * gd.scale / fsx;
 							currentWord += char;
 							currentWordLength += charSpacing * currentScale + charWidth;
 							flushWord();
 						default:
 							currentWord += char;
-							var gd = _font.getChar(char, sx * fsx * currentScale);
+							var maxFullScale = sx * fsx;
+							var gd = _font.getChar(char, maxFullScale * currentScale);
 							var charWidth = gd.xAdvance * gd.scale / fsx;
 							currentWordLength += charWidth;
 							if (wrap && cursorX + currentWordLength > width)
 							{
 								flushBlock();
-								addNextLine();
+								addNewLine();
 							}
 							currentWordLength += charSpacing * currentScale;
 					}
@@ -380,16 +386,16 @@ class BitmapText extends Graphic
 						switch (tag)
 						{
 							case Image(image):
-								thisLineHeight = Std.int(Math.max(thisLineHeight, currentScale * image.height * image.scale * image.scaleY));
 								var imageWidth = ((image.width * image.scale * image.scaleX * this.scale * this.scaleX) + charSpacing) * currentScale;
 								cursorX += imageWidth;
 								currentWordLength = 0;
 								if (wrap && cursorX > width)
 								{
-									addNextLine();
+									addNewLine();
 									cursorX = imageWidth;
 								}
 								opCodes.push(tag);
+								thisLineHeight = Math.max(thisLineHeight, currentScale * image.height * image.scale * image.scaleY * this.scale * this.scaleY);
 								if (cursorX > textWidth) textWidth = Std.int(cursorX);
 							case SetScale(scale):
 								_scaleStack.push(currentScale = scale);
@@ -398,9 +404,10 @@ class BitmapText extends Graphic
 							case PopScale:
 								if (_scaleStack.length > 1) _scaleStack.pop();
 								currentScale = _scaleStack[_scaleStack.length - 1];
+								thisLineHeight = Math.max(thisLineHeight, lineHeight * currentScale);
 								opCodes.push(tag);
-							case NextLine:
-								addNextLine();
+							case NewLine(height):
+								addNewLine();
 								currentWordLength = cursorX = 0;
 							default:
 								opCodes.push(tag);
@@ -417,11 +424,11 @@ class BitmapText extends Graphic
 		}
 		flushWord();
 		flushBlock();
-		textHeight = Std.int(cursorY + (cursorX > 0 ? thisLineHeight : (cursorY > 0 ? -lineSpacing : 0)));
+		if (opCodes[newLineIndex] == null) opCodes[newLineIndex] = NewLine(thisLineHeight);
+		this.textWidth = textWidth;
+		this.textHeight = Std.int(cursorY + (cursorX > 0 ? thisLineHeight : 0));
 
 		_scaleStack.pop();
-		this.textWidth = textWidth;
-		this.textHeight = textHeight;
 		_dirty = false;
 	}
 
@@ -447,7 +454,7 @@ class BitmapText extends Graphic
 			sy = scale * scaleY * size;
 		var lineHeight:Float = _font.getLineHeight(sy * fsy) / fsy,
 			lineSpacing:Float = lineSpacing * scale * scaleY,
-			thisLineHeight:Float = lineHeight;
+			thisLineHeight:Float = 0;
 		var currentColor:Color = color,
 			currentAlpha:Float = alpha,
 			currentScale:Float = 1,
@@ -465,7 +472,6 @@ class BitmapText extends Graphic
 					_alphaStack.push(currentAlpha = alpha);
 				case SetScale(scale):
 					_scaleStack.push(currentScale = scale);
-					thisLineHeight = Math.max(thisLineHeight, lineHeight * currentScale);
 				case PopColor:
 					if (_colorStack.length > 1) _colorStack.pop();
 					currentColor = _colorStack[_colorStack.length - 1];
@@ -482,7 +488,8 @@ class BitmapText extends Graphic
 						if (displayCharCount > -1 && charCount >= displayCharCount) break;
 						++charCount;
 						var char = text.charAt(i);
-						var gd = _font.getChar(char, sx * fsx * currentScale);
+						var maxFullScale = sx * fsx;
+						var gd = _font.getChar(char, maxFullScale * currentScale);
 
 						if (char == ' ')
 						{
@@ -492,42 +499,38 @@ class BitmapText extends Graphic
 						else
 						{
 							// draw the character
-							var x = cursorX + gd.xOffset * gd.scale / fsx,
-								y = cursorY + gd.yOffset * gd.scale / fsx;
+							var x = cursorX + gd.xOffset * gd.scale * sx / maxFullScale,
+								y = cursorY + gd.yOffset * gd.scale * sy / maxFullScale + thisLineHeight - (lineHeight * currentScale);
 							gd.region.draw(
 								(_point.x + x) * fsx, (_point.y + y) * fsy,
-								layer, gd.scale, fsy / fsx * gd.scale * sy / sx, 0,
+								layer, gd.scale * sx * fsx / maxFullScale, gd.scale * sy * fsy / maxFullScale, 0,
 								currentColor.red, currentColor.green, currentColor.blue, currentAlpha, smooth
 							);
 							// advance cursor position
 							cursorX += gd.xAdvance * gd.scale / fsx + charSpacing * currentScale;
 						}
 					}
-				case NextLine:
-					// advance to next line
+				case NewLine(height):
+					// advance to next line and set the new line height
 					cursorX = 0;
-					cursorY += thisLineHeight + lineSpacing;
-					thisLineHeight = lineHeight * currentScale;
+					cursorY += thisLineHeight + (thisLineHeight > 0 ? lineSpacing : 0);
+					thisLineHeight = height;
 					++charCount;
 				case Image(image):
 					// draw the image
-					var originalX = image.x,
-						originalY = image.y,
-						originalScaleX = image.scaleX,
+					var originalScaleX = image.scaleX,
 						originalScaleY = image.scaleY;
-					image.x += _point.x + cursorX;
-					image.y += _point.y + cursorY;
+					image.originX = image.originY = 0;
+					image.x = _point.x + cursorX;
+					image.y = _point.y + cursorY + thisLineHeight - image.height * image.scale * image.scaleY * currentScale * this.scale * this.scaleY;
 					image.color = currentColor;
 					image.alpha = currentAlpha;
-					image.scaleX *= this.scale * scaleX * currentScale;
-					image.scaleY *= this.scale * scaleY * currentScale;
+					image.scaleX *= this.scale * this.scaleX * currentScale;
+					image.scaleY *= this.scale * this.scaleY * currentScale;
 					image.render(layer, HXP.zero, HXP.zeroCamera);
-					image.x = originalX;
-					image.y = originalY;
 					image.scaleX = originalScaleX;
 					image.scaleY = originalScaleY;
 					// advance cursor position
-					thisLineHeight = Std.int(Math.max(thisLineHeight, currentScale * image.height * image.scale * image.scaleY));
 					cursorX += ((image.width * image.scale * image.scaleX * this.scale * this.scaleX) + charSpacing) * currentScale;
 					++charCount;
 			}
