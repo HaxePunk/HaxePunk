@@ -137,6 +137,12 @@ class NineSlice extends Graphic
 				segment.y = this.y + y;
 				segment.scaleX = width / segment.width;
 				segment.scaleY = height / segment.height;
+				if (clipRect != null)
+				{
+					_clipRect.setTo(clipRect.x - x, clipRect.y - y, clipRect.width, clipRect.height);
+					segment.clipRect = _clipRect;
+				}
+				else segment.clipRect = null;
 				segment.render(layer, point, camera);
 			}
 		}
@@ -163,4 +169,5 @@ class NineSlice extends Graphic
 	var botR:Image;
 
 	var _sliceRect:Rectangle = new Rectangle();
+	var _clipRect:Rectangle = new Rectangle();
 }
