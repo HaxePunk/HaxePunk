@@ -12,7 +12,7 @@ private class RenderData
 {
 	public function new() {}
 
-	var _data:Vector<Float> = new Vector(16);
+	var _data:Vector<Float> = Vector.fromArrayCopy([for (i in 0 ... 16) 0.0]);
 
 	public var tx1(get, set):Float; inline function get_tx1() return _data[0]; inline function set_tx1(v:Float) return _data[0] = v;
 	public var ty1(get, set):Float; inline function get_ty1() return _data[1]; inline function set_ty1(v:Float) return _data[1] = v;
@@ -68,7 +68,7 @@ private class RenderData
 		{
 			var ua = (((x22 - x21) * (y11 - y21)) - ((y22 - y21) * (x11 - x21))) / d,
 				ub = (((x12 - x11) * (y11 - y21)) - ((y12 - y11) * (x11 - x21))) / d;
-			if (ua >= 0 && ua <= 1 && ua >= 0 && ua <= 1) d = 0;
+			if (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1) d = 0;
 		}
 		return d == 0;
 	}
