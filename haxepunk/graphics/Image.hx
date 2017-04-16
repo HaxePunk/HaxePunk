@@ -310,14 +310,6 @@ class Image extends Graphic
 	}
 
 	/**
-	 * If the image should be drawn transformed with pixel smoothing.
-	 * This will affect drawing performance, but look less pixelly.
-	 *
-	 * Default value: false if HXP.stage.quality is LOW, true otherwise.
-	 */
-	public var smooth:Bool;
-
-	/**
 	 * Width of the image.
 	 */
 	public var width(get, never):Int;

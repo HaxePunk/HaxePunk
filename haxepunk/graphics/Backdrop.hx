@@ -86,7 +86,8 @@ class Backdrop extends Graphic
 					px + x * scaledWidth,
 					py + y * scaledHeight,
 					layer, sx, sy, 0,
-					_red, _green, _blue, _alpha
+					_red, _green, _blue, _alpha,
+					smooth, blend
 				);
 			}
 		}

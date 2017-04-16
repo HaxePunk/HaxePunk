@@ -82,9 +82,8 @@ class AtlasRegion implements IAtlasRegion
 	public inline function draw(x:Float, y:Float, layer:Int,
 		scaleX:Float=1, scaleY:Float=1, angle:Float=0,
 		red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1,
-		?smooth:Bool, ?blend:BlendMode, ?clipRect:Rectangle)
+		smooth:Bool, ?blend:BlendMode, ?clipRect:Rectangle)
 	{
-		if (smooth == null) smooth = Atlas.smooth;
 		if (rotated) angle = angle + 90;
 
 		_parent.prepareTile(_rect, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha, smooth, blend, clipRect);
@@ -109,10 +108,8 @@ class AtlasRegion implements IAtlasRegion
 	 */
 	public inline function drawMatrix(tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
 		layer:Int, red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1,
-		?smooth:Bool, ?blend:BlendMode, ?clipRect:Rectangle)
+		smooth:Bool, ?blend:BlendMode, ?clipRect:Rectangle):Void
 	{
-		if (smooth == null) smooth = Atlas.smooth;
-
 		if (rotated)
 		{
 			var matrix = new Matrix(a, b, c, d, tx, ty);

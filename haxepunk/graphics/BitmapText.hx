@@ -112,9 +112,6 @@ class BitmapText extends Graphic
 		if (formatTags.exists(closeTag)) formatTags.remove(closeTag);
 	}
 
-	/** Default value: false if HXP.stage.quality is LOW, true otherwise. */
-	public var smooth:Bool;
-
 	@:isVar public var textWidth(get, set):Int = 0;
 	inline function get_textWidth()
 	{
@@ -499,11 +496,11 @@ class BitmapText extends Graphic
 						else
 						{
 							// draw the character
-							var x = cursorX + gd.xOffset * gd.scale * sx / maxFullScale,
+							var x = cursorX + gd.xOffset * gd.scale / fsx,
 								y = cursorY + gd.yOffset * gd.scale * sy / maxFullScale + thisLineHeight - (lineHeight * currentScale);
 							gd.region.draw(
 								(_point.x + x) * fsx, (_point.y + y) * fsy,
-								layer, gd.scale * sx * fsx / maxFullScale, gd.scale * sy * fsy / maxFullScale, 0,
+								layer, gd.scale, gd.scale * sy * fsy / maxFullScale, 0,
 								currentColor.red, currentColor.green, currentColor.blue, currentAlpha, smooth
 							);
 							// advance cursor position
@@ -518,16 +515,20 @@ class BitmapText extends Graphic
 					++charCount;
 				case Image(image):
 					// draw the image
-					var originalScaleX = image.scaleX,
+					var originalX = image.x,
+						originalY = image.y,
+						originalScaleX = image.scaleX,
 						originalScaleY = image.scaleY;
 					image.originX = image.originY = 0;
-					image.x = _point.x + cursorX;
-					image.y = _point.y + cursorY + thisLineHeight - image.height * image.scale * image.scaleY * currentScale * this.scale * this.scaleY;
+					image.x += _point.x + cursorX;
+					image.y += _point.y + cursorY + thisLineHeight - image.height * image.scale * image.scaleY * currentScale * this.scale * this.scaleY;
 					image.color = currentColor;
 					image.alpha = currentAlpha;
 					image.scaleX *= this.scale * this.scaleX * currentScale;
 					image.scaleY *= this.scale * this.scaleY * currentScale;
 					image.render(layer, HXP.zero, HXP.zeroCamera);
+					image.x = originalX;
+					image.y = originalY;
 					image.scaleX = originalScaleX;
 					image.scaleY = originalScaleY;
 					// advance cursor position
