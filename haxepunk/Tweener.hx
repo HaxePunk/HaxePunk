@@ -8,15 +8,14 @@ import haxepunk.Tween;
 @:access(haxepunk.Tween)
 class Tweener
 {
-	public var active:Bool;
-	public var autoClear:Bool;
+	@:isVar public var active(get, set):Bool = true;
+	function get_active() return active;
+	function set_active(v:Bool) return active = v;
+
+	public var autoClear:Bool = false;
 
 	@:allow(haxepunk)
-	function new()
-	{
-		active = true;
-		autoClear = false;
-	}
+	function new() {}
 
 	@:dox(hide)
 	public function update() {}
@@ -114,7 +113,7 @@ class Tweener
 
 	/** If there is at least a tween. */
 	public var hasTween(get, never):Bool;
-	function get_hasTween():Bool return (_tween != null); 
+	function get_hasTween():Bool return (_tween != null);
 
 	var _tween:Tween;
 }
