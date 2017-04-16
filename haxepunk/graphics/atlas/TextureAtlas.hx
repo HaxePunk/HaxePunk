@@ -13,18 +13,6 @@ using StringTools;
 
 class TextureAtlas extends Atlas
 {
-	function new(?source:AtlasDataType)
-	{
-		_regions = new Map<String, AtlasRegion>();
-
-		super(source);
-
-		if (source == null)
-		{
-			_pages = new Map();
-		}
-	}
-
 	/**
 	 * Loads a TexturePacker xml file and generates all tile regions.
 	 * Uses the Generic XML exporter format from Texture Packer.
@@ -65,6 +53,18 @@ class TextureAtlas extends Atlas
 	public static inline function loadGdxTexturePacker(file:String):TextureAtlas
 	{
 		return GdxTexturePacker.load(file);
+	}
+
+	function new(?source:AtlasDataType)
+	{
+		_regions = new Map<String, AtlasRegion>();
+
+		super(source);
+
+		if (source == null)
+		{
+			_pages = new Map();
+		}
 	}
 
 	/**
