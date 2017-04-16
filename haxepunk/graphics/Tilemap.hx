@@ -562,9 +562,6 @@ class Tilemap extends Graphic
 	public var rows(get, null):Int;
 	inline function get_rows():Int return _rows;
 
-	/** Default value: false if HXP.stage.quality is LOW, true otherwise. */
-	public var smooth:Bool;
-
 	// Tilemap information.
 	var _map:Array<Array<Int>>;
 	var _columns:Int;

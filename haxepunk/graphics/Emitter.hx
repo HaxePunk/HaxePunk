@@ -403,7 +403,6 @@ class Emitter extends Graphic
 	public var particleCount(default, null):Int;
 
 	public var scale:Float = 1;
-	public var smooth:Bool = true;
 
 	// Particle information.
 	var _types:Map<String, ParticleType>;

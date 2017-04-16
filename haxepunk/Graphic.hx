@@ -100,6 +100,14 @@ class Graphic
 	public var active:Bool = false;
 
 	/**
+	 * If the image should be drawn transformed with pixel smoothing.
+	 * This will affect drawing performance, but look less pixelly.
+	 *
+	 * Default value: false if HXP.stage.quality is LOW, true otherwise.
+	 */
+	public var smooth:Bool;
+
+	/**
 	 * Optional blend mode to use when drawing this image.
 	 * Use constants from the flash.display.BlendMode class.
 	 */

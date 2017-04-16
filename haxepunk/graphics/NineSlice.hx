@@ -21,21 +21,6 @@ class NineSlice extends Graphic
 	 */
 	public var scaleBorder:Bool = false;
 
-	public var smooth(default, set):Bool;
-	inline function set_smooth(v:Bool)
-	{
-		return topL.smooth =
-			topC.smooth =
-			topR.smooth =
-			medL.smooth =
-			medC.smooth =
-			medR.smooth =
-			botL.smooth =
-			botC.smooth =
-			botR.smooth =
-			v;
-	}
-
 	public var color(default, set):Color;
 	inline function set_color(v:Color):Color
 	{
@@ -143,6 +128,7 @@ class NineSlice extends Graphic
 					segment.clipRect = _clipRect;
 				}
 				else segment.clipRect = null;
+				segment.smooth = smooth;
 				segment.render(layer, point, camera);
 			}
 		}
