@@ -145,7 +145,7 @@ class Scene extends Tweener
 			if (e.active)
 			{
 				if (e.hasTween) e.updateTweens();
-				e.update();
+				if (e.active) e.update();
 			}
 			if (e.graphic != null && e.graphic.active) e.graphic.update();
 		}
