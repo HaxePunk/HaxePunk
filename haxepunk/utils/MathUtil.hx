@@ -66,6 +66,18 @@ class MathUtil
 	}
 
 	/**
+	 * Linear interpolation between two values. Result rounded to an integer.
+	 * @param	a		First value.
+	 * @param	b		Second value.
+	 * @param	t		Interpolation factor.
+	 * @return	When t=0, returns a. When t=1, returns b. When t=0.5, will return halfway between a and b. Etc.
+	 */
+	public static inline function ilerp(a:Int, b:Int, t:Float = 1):Int
+	{
+		return Std.int(Math.round(lerp(a, b, t)));
+	}
+
+	/**
 	 * Steps the object towards a point.
 	 * @param	object		Object to move (must have an x and y property).
 	 * @param	x			X position to step towards.
