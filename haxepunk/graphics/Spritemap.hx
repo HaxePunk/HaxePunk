@@ -4,8 +4,32 @@ import flash.geom.Rectangle;
 import haxe.ds.Either;
 import haxepunk.HXP;
 import haxepunk.Graphic;
+import haxepunk.ds.Maybe;
 import haxepunk.graphics.atlas.TileAtlas;
 import haxepunk.utils.Random;
+
+@:allow(haxepunk.graphics.Spritemap)
+class Animation
+{
+	var frames:Array<Int>;
+	var frameRate:Float;
+	var frameCount:Int;
+	var loop:Bool;
+	var parent:Spritemap;
+
+	function new(parent:Spritemap, frames:Array<Int>, frameRate:Float, loop:Bool)
+	{
+		this.frames = frames;
+		this.frameRate = (frameRate == 0 ? HXP.assignedFrameRate : frameRate);
+		this.frameCount = this.frames.length;
+		this.loop = loop;
+	}
+
+	public function play(reset:Bool = false, reverse:Bool = false)
+	{
+		parent.playAnimation(this, reset, reverse);
+	}
+}
 
 /**
  * Performance-optimized animated Image. Can have multiple animations,
@@ -36,8 +60,7 @@ class Spritemap extends Image
 	/**
 	 * The currently playing animation.
 	 */
-	public var currentAnim(get, null):String;
-	function get_currentAnim():String return (_anim != null) ? _anim.name : "";
+	public var currentAnimation(default, null):Maybe<Animation>;
 
 	/**
 	 * Constructor.
@@ -58,8 +81,10 @@ class Spritemap extends Image
 			throw "Frame width and height can't be bigger than the source image dimension.";
 		}
 
-		_atlas.prepare(frameWidth == 0 ? Std.int(_atlas.width) : frameWidth,
-			frameHeight == 0 ? Std.int(_atlas.height) : frameHeight);
+		_atlas.prepare(
+			frameWidth == 0 ? Std.int(_atlas.width) : frameWidth,
+			frameHeight == 0 ? Std.int(_atlas.height) : frameHeight
+		);
 
 		frame = 0;
 		active = true;
@@ -69,35 +94,35 @@ class Spritemap extends Image
 	@:dox(hide)
 	override public function update()
 	{
-		if (_anim != null && !complete)
-		{
-			_timer += _anim.frameRate * HXP.elapsed * rate;
-			if (_timer >= 1)
-			{
-				while (_timer >= 1)
-				{
-					_timer--;
-					_index += reverse ? -1 : 1;
+		currentAnimation.may(function(anim) {
+			if (complete) return;
 
-					if ((reverse && _index == -1) || (!reverse && _index == _anim.frameCount))
+			_timer += HXP.elapsed * anim.frameRate * rate;
+			if (_timer < 1) return;
+
+			while (_timer >= 1)
+			{
+				_timer--;
+				_index += reverse ? -1 : 1;
+
+				if (_index < 0 || _index >= anim.frameCount)
+				{
+					if (anim.loop)
 					{
-						if (_anim.loop)
-						{
-							_index = reverse ? _anim.frameCount - 1 : 0;
-							endAnimation.invoke();
-						}
-						else
-						{
-							_index = reverse ? 0 : _anim.frameCount - 1;
-							complete = true;
-							endAnimation.invoke();
-							break;
-						}
+						_index = reverse ? anim.frameCount - 1 : 0;
+						endAnimation.invoke();
+					}
+					else
+					{
+						_index = reverse ? 0 : anim.frameCount - 1;
+						complete = true;
+						endAnimation.invoke();
+						break;
 					}
 				}
-				if (_anim != null) frame = Std.int(_anim.frames[_index]);
 			}
-		}
+			frame = Std.int(anim.frames[_index]);
+		});
 	}
 
 	/**
@@ -110,17 +135,14 @@ class Spritemap extends Image
 	 */
 	public function add(name:String, frames:Array<Int>, frameRate:Float = 0, loop:Bool = true):Animation
 	{
-		if (_anims.get(name) != null)
-			throw "Cannot have multiple animations with the same name";
-
-		for (i in 0...frames.length)
+		if (_anims.exists(name))
 		{
-			frames[i] %= _atlas.tileCount;
-			if (frames[i] < 0) frames[i] += _atlas.tileCount;
+			throw "Cannot have multiple animations with the same name";
 		}
-		var anim = new Animation(name, frames, frameRate, loop);
+
+		// make sure frames are valid
+		var anim = new Animation(this, frames, frameRate, loop);
 		_anims.set(name, anim);
-		anim.parent = this;
 		return anim;
 	}
 
@@ -133,22 +155,13 @@ class Spritemap extends Image
 	 */
 	public function play(name:String = "", reset:Bool = false, reverse:Bool = false):Animation
 	{
-		if (!reset && _anim != null && _anim.name == name)
-		{
-			return _anim;
-		}
-
-		if (!_anims.exists(name))
+		if (_anims.exists(name) == false)
 		{
 			stop(reset);
 			return null;
 		}
 
-		_anim = _anims.get(name);
-		this.reverse = reverse;
-		restart();
-
-		return _anim;
+		return playAnimation(_anims.get(name), reset, reverse);
 	}
 
 	/**
@@ -168,10 +181,7 @@ class Spritemap extends Image
 			return null;
 		}
 
-		if (!reset && _anim != null && _anim.frames == frames)
-			return _anim;
-
-		return playAnimation(new Animation(null, frames, frameRate, loop), reset, reverse);
+		return playAnimation(new Animation(this, frames, frameRate, loop), reset, reverse);
 	}
 
 	/**
@@ -179,21 +189,21 @@ class Spritemap extends Image
 	 * @param	animation	The Animation object to play
 	 * @param	reset		When the supplied animation is currently playing, should it be force-restarted
 	 * @param	reverse		If the animation should be played backward.
-	 * @return	Anim object representing the played animation.
+	 * @return	Animation object representing the played animation.
 	 */
- 	public function playAnimation(anim:Animation, reset:Bool = false, reverse:Bool = false): Animation
+	public function playAnimation(anim:Animation, reset:Bool = false, reverse:Bool = false): Animation
 	{
-		if (anim == null)
-			throw "No animation supplied";
-
-		if (!reset && _anim == anim)
-			return anim;
-
-		_anim = anim;
+		reset = reset || (currentAnimation != anim);
+		currentAnimation = anim;
 		this.reverse = reverse;
-		restart();
+		if (reset) restart();
 
 		return anim;
+	}
+
+	inline function getLastFrame():Int
+	{
+		return currentAnimation.map(function(a) return reverse ? a.frames.length - 1 : 0, 0);
 	}
 
 	/**
@@ -201,8 +211,9 @@ class Spritemap extends Image
 	 */
 	public function restart()
 	{
-		_timer = _index = reverse ? _anim.frames.length - 1 : 0;
-		frame = _anim.frames[_index];
+		_timer = 0;
+		_index = getLastFrame();
+		frame = currentAnimation.map(function(a) return a.frames[_index], 0);
 		complete = false;
 	}
 
@@ -213,9 +224,11 @@ class Spritemap extends Image
 	public function stop(reset:Bool = false)
 	{
 		if (reset)
-			frame = _index = reverse ? _anim.frames.length - 1 : 0;
+		{
+			frame = _index = getLastFrame();
+		}
 
-		_anim = null;
+		currentAnimation = null;
 		complete = true;
 	}
 
@@ -234,10 +247,12 @@ class Spritemap extends Image
 	 */
 	public function setAnimFrame(name:String, index:Int)
 	{
-		var frames:Array<Int> = _anims.get(name).frames;
-		index = index % frames.length;
-		if (index < 0) index += frames.length;
-		frame = frames[index];
+		if (_anims.exists(name))
+		{
+			var anim = _anims.get(name);
+			index = Std.int(Math.abs(index)) % anim.frameCount;
+			frame = anim.frames[index];
+		}
 	}
 
 	/**
@@ -246,8 +261,7 @@ class Spritemap extends Image
 	public var frame(default, set):Int;
 	function set_frame(value:Int):Int
 	{
-		value %= _atlas.tileCount;
-		if (value < 0) value = _atlas.tileCount + value;
+		value = Std.int(Math.abs(value)) % _atlas.tileCount;
 		if (frame != value) {
 			_region = _atlas.getRegion(value);
 			_sourceRect.width = _region.width;
@@ -260,20 +274,19 @@ class Spritemap extends Image
 	 * Current index of the playing animation.
 	 */
 	public var index(get, set):Int;
-	function get_index():Int return _anim != null ? _index : 0;
+	function get_index():Int return currentAnimation.exists() ? _index : 0;
 	function set_index(value:Int):Int
 	{
-		if (_anim == null) return 0;
-		value %= _anim.frameCount;
-		if (_index == value) return _index;
-		_index = value;
-		frame = _anim.frames[_index];
-		return _index;
+		return currentAnimation.map(function(anim) {
+			value %= anim.frameCount;
+			if (_index == value) return _index;
+			frame = anim.frames[value];
+			return _index = value;
+		}, 0);
 	}
 
 	// Spritemap information.
 	var _anims:Map<String, Animation>;
-	var _anim:Animation;
 	var _index:Int;
 	var _timer:Float = 0;
 	var _atlas:TileAtlas;

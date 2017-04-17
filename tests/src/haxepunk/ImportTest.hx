@@ -14,7 +14,6 @@ import haxepunk.Tweener;
 import haxepunk.Tween;
 import haxepunk.debug.Console;
 import haxepunk.debug.LayerList;
-import haxepunk.graphics.Animation;
 import haxepunk.graphics.BitmapText;
 import haxepunk.graphics.Emitter;
 import haxepunk.graphics.Graphiclist;
