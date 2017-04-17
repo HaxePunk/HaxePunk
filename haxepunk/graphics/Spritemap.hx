@@ -29,6 +29,16 @@ class Animation
 	{
 		parent.playAnimation(this, reset, reverse);
 	}
+
+	public inline function getFirstFrame(reverse:Bool):Int
+	{
+		return reverse ? 0 : this.frameCount - 1;
+	}
+
+	public inline function getLastFrame(reverse:Bool):Int
+	{
+		return reverse ? this.frameCount - 1 : 0;
+	}
 }
 
 /**
@@ -109,12 +119,12 @@ class Spritemap extends Image
 				{
 					if (anim.loop)
 					{
-						_index = reverse ? anim.frameCount - 1 : 0;
+						_index = anim.getLastFrame(reverse);
 						endAnimation.invoke();
 					}
 					else
 					{
-						_index = reverse ? 0 : anim.frameCount - 1;
+						_index = anim.getFirstFrame(reverse);
 						complete = true;
 						endAnimation.invoke();
 						break;
@@ -201,19 +211,16 @@ class Spritemap extends Image
 		return anim;
 	}
 
-	inline function getLastFrame():Int
-	{
-		return currentAnimation.map(function(a) return reverse ? a.frames.length - 1 : 0, 0);
-	}
-
 	/**
 	 * Resets the animation to play from the beginning.
 	 */
 	public function restart()
 	{
 		_timer = 0;
-		_index = getLastFrame();
-		frame = currentAnimation.map(function(a) return a.frames[_index], 0);
+		currentAnimation.may(function(anim) {
+			_index = anim.getLastFrame(reverse);
+			frame = anim.frames[_index];
+		});
 		complete = false;
 	}
 
@@ -225,7 +232,7 @@ class Spritemap extends Image
 	{
 		if (reset)
 		{
-			frame = _index = getLastFrame();
+			frame = _index = currentAnimation.map(function(a) return a.getLastFrame(reverse), 0);
 		}
 
 		currentAnimation = null;
