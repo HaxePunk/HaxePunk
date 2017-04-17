@@ -1,10 +1,15 @@
 package haxepunk.graphics.atlas;
 
+import flash.Assets;
 import haxepunk.HXP;
 import haxepunk.graphics.atlas.AtlasData;
 
 class TileAtlas extends Atlas
 {
+
+	public var tileCount(get, never):Int;
+	inline function get_tileCount():Int return _regions.length;
+
 	/**
 	 * Constructor.
 	 *
@@ -28,10 +33,28 @@ class TileAtlas extends Atlas
 		{
 			throw 'Atlas doesn\'t have a region number "$index"';
 		}
-		
+
 		return _regions[index];
 	}
-	
+
+	/**
+	 * Loads a TexturePacker xml file and generates all tile regions.
+	 * Uses the Generic XML exporter format from Texture Packer.
+	 * @param	file	The TexturePacker file to load
+	 * @param	sprites	A list of the sprite names in the packed file
+	 * @return	A TileAtlas with all packed images defined as regions ordered by sprite names supplied
+	 */
+	public static function loadTexturePacker(file:String, sprites:Array<String>):TileAtlas
+	{
+		var textureAtlas = TextureAtlas.loadTexturePacker(file);
+		var atlas = new TileAtlas(textureAtlas._data);
+		for (spriteName in sprites) {
+			var region = textureAtlas.getRegion(spriteName);
+			atlas._regions.push(region);
+		}
+		return atlas;
+	}
+
 	/**
 	 * Prepares the atlas for drawing.
 	 * @param	tileWidth	With of the tiles.

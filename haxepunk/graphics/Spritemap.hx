@@ -16,34 +16,29 @@ class Spritemap extends Image
 	/**
 	 * If the animation has stopped.
 	 */
-	public var complete:Bool;
+	public var complete:Bool = true;
 
 	/**
-	 * Optional callback function for animation end.
+	 * Callback function for animation end.
 	 */
-	@:dox(hide) // mistaken for a class function
-	public var callbackFunc:Void -> Void;
+	public var endAnimation:Signal = new Signal();
 
 	/**
 	 * Animation speed factor, alter this to speed up/slow down all animations.
 	 */
-	public var rate:Float;
+	public var rate:Float = 1;
 
 	/**
 	 * Constructor.
 	 * @param	source			Source image.
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
-	 * @param	cbFunc			Optional callback function for animation end.
 	 */
-	public function new(source:TileType, frameWidth:Int = 0, frameHeight:Int = 0, ?cbFunc:Void -> Void)
+	public function new(source:TileType, frameWidth:Int = 0, frameHeight:Int = 0)
 	{
-		complete = true;
-		rate = 1;
 		_anims = new Map<String, Animation>();
 		_timer = _frame = 0;
 
-		_rect = new Rectangle(0, 0, frameWidth, frameHeight);
 		_atlas = source;
 
 		if (frameWidth > _atlas.width || frameHeight > _atlas.height)
@@ -51,21 +46,9 @@ class Spritemap extends Image
 			throw "Frame width and height can't be bigger than the source image dimension.";
 		}
 
-		_atlas.prepare(frameWidth == 0 ? Std.int(_atlas.width) : frameWidth, frameHeight == 0 ? Std.int(_atlas.height) : frameHeight);
-		super(_atlas.getRegion(_frame), _rect);
-
-		_width = Std.int(_atlas.width);
-		_height = Std.int(_atlas.height);
-		if (frameWidth == 0) _rect.width = _width;
-		if (frameHeight == 0) _rect.height = _height;
-
-		if (_width % _rect.width != 0 || _height % _rect.height != 0)
-			throw "Source image width and height should be multiples of the frame width and height.";
-
-		_columns = Math.ceil(_width / _rect.width);
-		_rows = Math.ceil(_height / _rect.height);
-		_frameCount = _columns * _rows;
-		callbackFunc = cbFunc;
+		_atlas.prepare(frameWidth == 0 ? Std.int(_atlas.width) : frameWidth,
+			frameHeight == 0 ? Std.int(_atlas.height) : frameHeight);
+		super(_atlas.getRegion(_frame), new Rectangle(0, 0, frameWidth, frameHeight));
 
 		updateBuffer();
 		active = true;
@@ -99,13 +82,13 @@ class Spritemap extends Image
 						if (_anim.loop)
 						{
 							_index = reverse ? _anim.frameCount - 1 : 0;
-							if (callbackFunc != null) callbackFunc();
+							endAnimation.invoke();
 						}
 						else
 						{
 							_index = reverse ? 0 : _anim.frameCount - 1;
 							complete = true;
-							if (callbackFunc != null) callbackFunc();
+							endAnimation.invoke();
 							break;
 						}
 					}
@@ -131,8 +114,8 @@ class Spritemap extends Image
 
 		for (i in 0...frames.length)
 		{
-			frames[i] %= _frameCount;
-			if (frames[i] < 0) frames[i] += _frameCount;
+			frames[i] %= _atlas.tileCount;
+			if (frames[i] < 0) frames[i] += _atlas.tileCount;
 		}
 		var anim = new Animation(name, frames, frameRate, loop);
 		_anims.set(name, anim);
@@ -238,37 +221,11 @@ class Spritemap extends Image
 	}
 
 	/**
-	 * Gets the frame index based on the column and row of the source image.
-	 * @param	column		Frame column.
-	 * @param	row			Frame row.
-	 * @return	Frame index.
-	 */
-	public inline function getFrame(column:Int = 0, row:Int = 0):Int
-	{
-		return (row % _rows) * _columns + (column % _columns);
-	}
-
-	/**
-	 * Sets the current display frame based on the column and row of the source image.
-	 * When you set the frame, any animations playing will be stopped to force the frame.
-	 * @param	column		Frame column.
-	 * @param	row			Frame row.
-	 */
-	public function setFrame(column:Int = 0, row:Int = 0)
-	{
-		_anim = null;
-		var frame:Int = getFrame(column, row);
-		if (_frame == frame) return;
-		_frame = frame;
-		updateBuffer();
-	}
-
-	/**
 	 * Assigns the Spritemap to a random frame.
 	 */
 	public function randFrame()
 	{
-		frame = Random.randInt(_frameCount);
+		frame = Random.randInt(_atlas.tileCount);
 	}
 
 	/**
@@ -293,8 +250,8 @@ class Spritemap extends Image
 	function set_frame(value:Int):Int
 	{
 		_anim = null;
-		value %= _frameCount;
-		if (value < 0) value = _frameCount + value;
+		value %= _atlas.tileCount;
+		if (value < 0) value = _atlas.tileCount + value;
 		if (_frame == value) return _frame;
 		_frame = value;
 		updateBuffer();
@@ -323,36 +280,12 @@ class Spritemap extends Image
 	public var reverse:Bool;
 
 	/**
-	 * The amount of frames in the Spritemap.
-	 */
-	public var frameCount(get, null):Int;
-	function get_frameCount():Int return _frameCount;
-
-	/**
-	 * Columns in the Spritemap.
-	 */
-	public var columns(get, null):Int;
-	function get_columns():Int return _columns;
-
-	/**
-	 * Rows in the Spritemap.
-	 */
-	public var rows(get, null):Int;
-	function get_rows():Int return _rows;
-
-	/**
 	 * The currently playing animation.
 	 */
 	public var currentAnim(get, null):String;
 	function get_currentAnim():String return (_anim != null) ? _anim.name : "";
 
 	// Spritemap information.
-	var _rect:Rectangle;
-	var _width:Int;
-	var _height:Int;
-	var _columns:Int;
-	var _rows:Int;
-	var _frameCount:Int;
 	var _anims:Map<String, Animation>;
 	var _anim:Animation;
 	var _index:Int;
