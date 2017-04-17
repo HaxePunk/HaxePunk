@@ -48,7 +48,8 @@ class TileAtlas extends Atlas
 	{
 		var textureAtlas = TextureAtlas.loadTexturePacker(file);
 		var atlas = new TileAtlas(textureAtlas._data);
-		for (spriteName in sprites) {
+		for (spriteName in sprites)
+		{
 			var region = textureAtlas.getRegion(spriteName);
 			atlas._regions.push(region);
 		}

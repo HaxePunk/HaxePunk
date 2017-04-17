@@ -155,7 +155,7 @@ class Spritemap extends Image
 	 */
 	public function play(name:String = "", reset:Bool = false, reverse:Bool = false):Animation
 	{
-		if (_anims.exists(name) == false)
+		if (!_anims.exists(name))
 		{
 			stop(reset);
 			return null;
@@ -262,7 +262,8 @@ class Spritemap extends Image
 	function set_frame(value:Int):Int
 	{
 		value = Std.int(Math.abs(value)) % _atlas.tileCount;
-		if (frame != value) {
+		if (frame != value)
+		{
 			_region = _atlas.getRegion(value);
 			_sourceRect.width = _region.width;
 			_sourceRect.height = _region.height;
