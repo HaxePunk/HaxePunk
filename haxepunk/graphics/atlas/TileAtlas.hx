@@ -38,17 +38,15 @@ class TileAtlas extends Atlas
 	}
 
 	/**
-	 * Loads a TexturePacker xml file and generates all tile regions.
-	 * Uses the Generic XML exporter format from Texture Packer.
-	 * @param	file	The TexturePacker file to load
-	 * @param	sprites	A list of the sprite names in the packed file
+	 * Loads a TileAtlas from a named TextureAtlas
+	 * @param	textureAtlas	A TextureAtlas object to pull frames from
+	 * @param	regions			A list of atlas region names in the order they should be in TileAtlas
 	 * @return	A TileAtlas with all packed images defined as regions ordered by sprite names supplied
 	 */
-	public static function loadTexturePacker(file:String, sprites:Array<String>):TileAtlas
+	public static function loadFromTextureAtlas(textureAtlas:TextureAtlas, regions:Array<String>):TileAtlas
 	{
-		var textureAtlas = TextureAtlas.loadTexturePacker(file);
 		var atlas = new TileAtlas(textureAtlas._data);
-		for (spriteName in sprites)
+		for (spriteName in regions)
 		{
 			var region = textureAtlas.getRegion(spriteName);
 			atlas._regions.push(region);
