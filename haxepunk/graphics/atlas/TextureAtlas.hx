@@ -195,7 +195,7 @@ private class GdxTexturePacker
 				var size:Array<Int> = [for (x in getTuple(values["size"])) Std.parseInt(x)];
 				var rotate:Float = values["rotate"] == "true" ? -90 : 0;
 				var r:Rectangle = (rotate != 0) ? new Rectangle(xy[0], xy[1], size[1], size[0]) : new Rectangle(xy[0], xy[1], size[0], size[1]);
-				var path:String = Path.join([inputDir, Path.withExtension(regionName, extension)]);
+				var path:String = Path.join([inputDir, regionName + "." + extension]);
 				// TODO: rotation currently ignored; rotation is in the opposite
 				// direction of TexturePacker XML
 				atlas.defineRegion(path, r, null, pageName);
