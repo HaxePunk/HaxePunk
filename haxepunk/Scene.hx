@@ -209,8 +209,8 @@ class Scene extends Tweener
 			}
 		}
 
-		// renders the cursor
-		if (HXP.cursor != null && HXP.cursor.visible)
+		// render the cursor if this is the topmost scene
+		if (HXP.cursor != null && HXP.cursor.visible && this == HXP.scene)
 		{
 			HXP.cursor.render();
 		}
