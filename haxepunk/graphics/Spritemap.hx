@@ -29,6 +29,17 @@ class Spritemap extends Image
 	public var rate:Float = 1;
 
 	/**
+	 * If the animation is played in reverse.
+	 */
+	public var reverse:Bool = false;
+
+	/**
+	 * The currently playing animation.
+	 */
+	public var currentAnim(get, null):String;
+	function get_currentAnim():String return (_anim != null) ? _anim.name : "";
+
+	/**
 	 * Constructor.
 	 * @param	source			Source image.
 	 * @param	frameWidth		Frame width.
@@ -37,7 +48,8 @@ class Spritemap extends Image
 	public function new(source:TileType, frameWidth:Int = 0, frameHeight:Int = 0)
 	{
 		_anims = new Map<String, Animation>();
-		_timer = _frame = 0;
+
+		super();
 
 		_atlas = source;
 
@@ -48,19 +60,9 @@ class Spritemap extends Image
 
 		_atlas.prepare(frameWidth == 0 ? Std.int(_atlas.width) : frameWidth,
 			frameHeight == 0 ? Std.int(_atlas.height) : frameHeight);
-		super(_atlas.getRegion(_frame), new Rectangle(0, 0, frameWidth, frameHeight));
 
-		updateBuffer();
+		frame = 0;
 		active = true;
-	}
-
-	/**
-	 * Updates the spritemap's buffer.
-	 */
-	@:dox(hide)
-	public function updateBuffer()
-	{
-		_region = _atlas.getRegion(_frame);
 	}
 
 	/** @private Updates the animation. */
@@ -93,8 +95,7 @@ class Spritemap extends Image
 						}
 					}
 				}
-				if (_anim != null) _frame = Std.int(_anim.frames[_index]);
-				updateBuffer();
+				if (_anim != null) frame = Std.int(_anim.frames[_index]);
 			}
 		}
 	}
@@ -201,9 +202,8 @@ class Spritemap extends Image
 	public function restart()
 	{
 		_timer = _index = reverse ? _anim.frames.length - 1 : 0;
-		_frame = _anim.frames[_index];
+		frame = _anim.frames[_index];
 		complete = false;
-		updateBuffer();
 	}
 
 	/**
@@ -213,11 +213,10 @@ class Spritemap extends Image
 	public function stop(reset:Bool = false)
 	{
 		if (reset)
-			_frame = _index = reverse ? _anim.frames.length - 1 : 0;
+			frame = _index = reverse ? _anim.frames.length - 1 : 0;
 
 		_anim = null;
 		complete = true;
-		updateBuffer();
 	}
 
 	/**
@@ -242,20 +241,19 @@ class Spritemap extends Image
 	}
 
 	/**
-	 * Sets the current frame index. When you set this, any
-	 * animations playing will be stopped to force the frame.
+	 * Sets the current frame index.
 	 */
-	public var frame(get, set):Int;
-	function get_frame():Int return _frame;
+	public var frame(default, set):Int;
 	function set_frame(value:Int):Int
 	{
-		_anim = null;
 		value %= _atlas.tileCount;
 		if (value < 0) value = _atlas.tileCount + value;
-		if (_frame == value) return _frame;
-		_frame = value;
-		updateBuffer();
-		return _frame;
+		if (frame != value) {
+			_region = _atlas.getRegion(value);
+			_sourceRect.width = _region.width;
+			_sourceRect.height = _region.height;
+		}
+		return frame = value;
 	}
 
 	/**
@@ -269,27 +267,14 @@ class Spritemap extends Image
 		value %= _anim.frameCount;
 		if (_index == value) return _index;
 		_index = value;
-		_frame = _anim.frames[_index];
-		updateBuffer();
+		frame = _anim.frames[_index];
 		return _index;
 	}
-
-	/**
-	 * If the animation is played in reverse.
-	 */
-	public var reverse:Bool;
-
-	/**
-	 * The currently playing animation.
-	 */
-	public var currentAnim(get, null):String;
-	function get_currentAnim():String return (_anim != null) ? _anim.name : "";
 
 	// Spritemap information.
 	var _anims:Map<String, Animation>;
 	var _anim:Animation;
 	var _index:Int;
-	var _frame:Int;
-	var _timer:Float;
+	var _timer:Float = 0;
 	var _atlas:TileAtlas;
 }
