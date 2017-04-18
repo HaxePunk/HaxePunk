@@ -57,7 +57,7 @@
             "type": "LocalVariableName",
             "props": {
                 "severity": "INFO",
-                "format": "^[a-z][a-zA-Z0-9]*$"
+                "format": "^[_a-z][a-zA-Z0-9]*$"
             }
         },
         {
