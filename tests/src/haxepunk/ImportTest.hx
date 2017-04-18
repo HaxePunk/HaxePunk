@@ -19,8 +19,6 @@ import haxepunk.graphics.Emitter;
 import haxepunk.graphics.Graphiclist;
 import haxepunk.graphics.Image;
 import haxepunk.graphics.NineSlice;
-import haxepunk.graphics.Particle;
-import haxepunk.graphics.ParticleType;
 import haxepunk.graphics.Spritemap;
 import haxepunk.graphics.Text;
 import haxepunk.graphics.TiledImage;

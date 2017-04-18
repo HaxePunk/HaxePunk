@@ -91,9 +91,8 @@ class Image extends Graphic
 		scale = scaleX = scaleY = 1;
 		originX = originY = 0;
 
-		_alpha = 1;
-		_color = 0x00FFFFFF;
-		_red = _green = _blue = 1;
+		alpha = 1;
+		color = 0xFFFFFF;
 	}
 
 	@:dox(hide)
@@ -119,7 +118,7 @@ class Image extends Graphic
 
 			// render without rotation
 			var clipRect = screenClipRect(_point.x, _point.y);
-			_region.draw(_point.x * fsx, _point.y * fsy, layer, sx * fsx, sy * fsy, angle, _red, _green, _blue, _alpha, smooth, blend, clipRect);
+			_region.draw(_point.x * fsx, _point.y * fsy, layer, sx * fsx, sy * fsy, angle, _red, _green, _blue, alpha, smooth, blend, clipRect);
 		}
 		else
 		{
@@ -133,7 +132,7 @@ class Image extends Graphic
 			var tx = (-originX * sx * cos + originY * sy * sin + originX + _point.x);
 			var ty = (-originX * sx * sin - originY * sy * cos + originY + _point.y);
 			var clipRect = screenClipRect(tx, ty);
-			_region.drawMatrix(tx * fsx, ty * fsy, a, b, c, d, layer, _red, _green, _blue, _alpha, smooth, blend, clipRect);
+			_region.drawMatrix(tx * fsx, ty * fsy, a, b, c, d, layer, _red, _green, _blue, alpha, smooth, blend, clipRect);
 		}
 	}
 
@@ -263,34 +262,6 @@ class Image extends Graphic
 	}
 
 	/**
-	 * Change the opacity of the Image, a value from 0 to 1.
-	 */
-	public var alpha(get_alpha, set_alpha):Float;
-	inline function get_alpha():Float return _alpha;
-	function set_alpha(value:Float):Float
-	{
-		value = value < 0 ? 0 : (value > 1 ? 1 : value);
-		return _alpha = value;
-	}
-
-	/**
-	 * The tinted color of the Image. Use 0xFFFFFF to draw the Image normally.
-	 */
-	public var color(get_color, set_color):Color;
-	inline function get_color():Color return _color;
-	function set_color(value:Color):Color
-	{
-		value &= 0xFFFFFF;
-		if (_color == value) return value;
-		_color = value;
-		// save individual color channel values
-		_red = _color.red;
-		_green = _color.green;
-		_blue = _color.blue;
-		return _color;
-	}
-
-	/**
 	 * Centers the Image's originX/Y to its center.
 	 */
 	public function centerOrigin()
@@ -340,11 +311,4 @@ class Image extends Graphic
 	// Source and buffer information.
 	var _sourceRect:Rectangle;
 	var _region:IAtlasRegion;
-
-	// Color and alpha information.
-	var _alpha:Float;
-	var _color:Color;
-	var _red:Float;
-	var _green:Float;
-	var _blue:Float;
 }

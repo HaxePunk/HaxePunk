@@ -272,9 +272,6 @@ class BitmapText extends Graphic
 		smooth = (HXP.stage.quality != LOW);
 	}
 
-	public var color:Color;
-	public var alpha:Float = 1;
-
 	public var text(default, set):String;
 	function set_text(text:String):String
 	{

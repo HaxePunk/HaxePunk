@@ -21,8 +21,7 @@ class NineSlice extends Graphic
 	 */
 	public var scaleBorder:Bool = false;
 
-	public var color(default, set):Color;
-	inline function set_color(v:Color):Color
+	override function set_color(v:Color):Color
 	{
 		return topL.color =
 			topC.color =
@@ -33,11 +32,10 @@ class NineSlice extends Graphic
 			botL.color =
 			botC.color =
 			botR.color =
-			v;
+			color = v;
 	}
 
-	public var alpha(default, set):Float;
-	inline function set_alpha(v:Float):Float
+	override function set_alpha(v:Float):Float
 	{
 		return topL.alpha =
 			topC.alpha =
@@ -48,7 +46,7 @@ class NineSlice extends Graphic
 			botL.alpha =
 			botC.alpha =
 			botR.alpha =
-			v;
+			alpha = v;
 	}
 
 	var source:ImageType;

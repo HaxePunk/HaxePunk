@@ -11,9 +11,6 @@ class ColoredRect extends Graphic
 	public var width:Float;
 	public var height:Float;
 
-	public var color:Color;
-	public var alpha:Float;
-
 	public function new(width:Float, height:Float, color:Color = Color.White, alpha:Float = 1)
 	{
 		super();

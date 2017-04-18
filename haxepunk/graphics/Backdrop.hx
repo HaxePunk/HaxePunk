@@ -86,47 +86,12 @@ class Backdrop extends Graphic
 					px + x * scaledWidth,
 					py + y * scaledHeight,
 					layer, sx, sy, 0,
-					_red, _green, _blue, _alpha,
+					_red, _green, _blue, alpha,
 					smooth, blend
 				);
 			}
 		}
 	}
-
-	/**
-	 * The tinted color of the Canvas. Use 0xFFFFFF to draw the it normally.
-	 */
-	public var color(get, set):Color;
-	function get_color():Color return _color;
-	function set_color(value:Color):Color
-	{
-		value &= 0xFFFFFF;
-		if (_color == value) return _color;
-		_color = value;
-		_red = color.red;
-		_green = color.green;
-		_blue = color.blue;
-		return _color;
-	}
-
-	/**
-	 * Change the opacity of the Canvas, a value from 0 to 1.
-	 */
-	public var alpha(get, set):Float;
-	function get_alpha():Float return _alpha;
-	function set_alpha(value:Float):Float
-	{
-		if (value < 0) value = 0;
-		else if (value > 1) value = 1;
-		return _alpha = value;
-	}
-
-	// Color tinting information.
-	var _color:Color;
-	var _alpha:Float;
-	var _red:Float;
-	var _green:Float;
-	var _blue:Float;
 
 	// Backdrop information.
 	var _region:IAtlasRegion;
