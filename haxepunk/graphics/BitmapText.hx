@@ -19,6 +19,14 @@ typedef BitmapTextOptions =
 	@:optional var extraParams:Dynamic;
 };
 
+@:enum
+abstract AlignType(Int)
+{
+	var Left = 0;
+	var Center = 1;
+	var Right = 2;
+}
+
 /**
  * Rendering opcodes. Text is parsed into an array of these opcodes which
  * either modify the format, render blocks of text or images, or change the
@@ -31,8 +39,9 @@ enum TextOpcode
 	SetAlpha(alpha:Float);
 	SetScale(scale:Float);
 	TextBlock(text:String);
-	NewLine(height:Float);
+	NewLine(width:Float, height:Float, align:AlignType);
 	Image(image:Image);
+	Align(alignType:AlignType);
 	PopColor;
 	PopAlpha;
 	PopScale;
@@ -47,7 +56,13 @@ class BitmapText extends Graphic
 	static var FORMAT_TAG_RE = ~/<(([A-Za-z_-]+)\/?|(\/[A-Za-z_-]+))>/;
 
 	static var formatTags:Map<String, Array<TextOpcode>> = [
-		"br" => [NewLine(1)],
+		"br" => [NewLine(0, 0, Left)],
+		"left" => [Align(Left)],
+		"/left" => [Align(Left)],
+		"right" => [Align(Right)],
+		"/right" => [Align(Left)],
+		"center" => [Align(Center)],
+		"/center" => [Align(Left)],
 	];
 
 	static var _colorStack:Array<Color> = new Array();
@@ -297,7 +312,8 @@ class BitmapText extends Graphic
 			block:String = "",
 			currentWord:String = "",
 			currentWordLength:Float = 0,
-			currentScale:Float = 1;
+			currentScale:Float = 1,
+			currentAlign:AlignType = AlignType.Left;
 
 		var textWidth = 0;
 		opCodes.push(null);
@@ -324,9 +340,9 @@ class BitmapText extends Graphic
 		}
 		inline function addNewLine()
 		{
+			opCodes[newLineIndex] = NewLine(Std.int(cursorX), Std.int(thisLineHeight), currentAlign);
 			cursorX = 0;
 			cursorY += thisLineHeight + lineSpacing;
-			opCodes[newLineIndex] = NewLine(Std.int(thisLineHeight));
 			thisLineHeight = lineHeight;
 			opCodes.push(null);
 			newLineIndex = opCodes.length - 1;
@@ -403,9 +419,15 @@ class BitmapText extends Graphic
 								currentScale = _scaleStack[_scaleStack.length - 1];
 								thisLineHeight = Math.max(thisLineHeight, lineHeight * currentScale);
 								opCodes.push(tag);
-							case NewLine(height):
+							case NewLine(_, _, _):
 								addNewLine();
-								currentWordLength = cursorX = 0;
+							case Align(alignType):
+								if (cursorX > 0)
+								{
+									addNewLine();
+								}
+								if (alignType != Left && !autoWidth) textWidth = Std.int(width);
+								currentAlign = alignType;
 							default:
 								opCodes.push(tag);
 						}
@@ -421,8 +443,9 @@ class BitmapText extends Graphic
 		}
 		flushWord();
 		flushBlock();
-		if (opCodes[newLineIndex] == null) opCodes[newLineIndex] = NewLine(thisLineHeight);
+		if (opCodes[newLineIndex] == null) opCodes[newLineIndex] = NewLine(cursorX, thisLineHeight, currentAlign);
 		this.textWidth = textWidth;
+		if (autoWidth) width = textWidth;
 		this.textHeight = Std.int(cursorY + (cursorX > 0 ? thisLineHeight : 0));
 
 		_scaleStack.pop();
@@ -451,7 +474,8 @@ class BitmapText extends Graphic
 			sy = scale * scaleY * size;
 		var lineHeight:Float = _font.getLineHeight(sy * fsy) / fsy,
 			lineSpacing:Float = lineSpacing * scale * scaleY,
-			thisLineHeight:Float = 0;
+			thisLineHeight:Float = 0,
+			lineOffsetX:Float = 0;
 		var currentColor:Color = color,
 			currentAlpha:Float = alpha,
 			currentScale:Float = 1,
@@ -496,7 +520,7 @@ class BitmapText extends Graphic
 						else
 						{
 							// draw the character
-							var x = cursorX + gd.xOffset * gd.scale / fsx,
+							var x = cursorX + lineOffsetX + gd.xOffset * gd.scale / fsx,
 								y = cursorY + gd.yOffset * gd.scale * sy / maxFullScale + thisLineHeight - (lineHeight * currentScale);
 							gd.region.draw(
 								(_point.x + x) * fsx, (_point.y + y) * fsy,
@@ -507,11 +531,16 @@ class BitmapText extends Graphic
 							cursorX += gd.xAdvance * gd.scale / fsx + charSpacing * currentScale;
 						}
 					}
-				case NewLine(height):
+				case NewLine(lineWidth, lineHeight, alignType):
 					// advance to next line and set the new line height
 					cursorX = 0;
 					cursorY += thisLineHeight + (thisLineHeight > 0 ? lineSpacing : 0);
-					thisLineHeight = height;
+					lineOffsetX = Std.int((width - lineWidth) * switch (alignType) {
+						case Left: 0;
+						case Center: 0.5;
+						case Right: 1;
+					});
+					thisLineHeight = lineHeight;
 					++charCount;
 				case Image(image):
 					// draw the image
@@ -520,7 +549,7 @@ class BitmapText extends Graphic
 						originalScaleX = image.scaleX,
 						originalScaleY = image.scaleY;
 					image.originX = image.originY = 0;
-					image.x += _point.x + cursorX;
+					image.x += _point.x + cursorX + lineOffsetX;
 					image.y += _point.y + cursorY + thisLineHeight - image.height * image.scale * image.scaleY * currentScale * this.scale * this.scaleY;
 					image.color = currentColor;
 					image.alpha = currentAlpha;
@@ -534,6 +563,7 @@ class BitmapText extends Graphic
 					// advance cursor position
 					cursorX += ((image.width * image.scale * image.scaleX * this.scale * this.scaleX) + charSpacing) * currentScale;
 					++charCount;
+				case Align(_): {}
 			}
 		}
 
