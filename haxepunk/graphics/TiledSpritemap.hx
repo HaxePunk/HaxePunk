@@ -44,7 +44,7 @@ class TiledSpritemap extends Spritemap
 			{
 				_region.draw(Math.floor((_point.x + x) * fsx), Math.floor((_point.y + y) * fsy),
 					layer, sx, sy, angle,
-					_red, _green, _blue, _alpha,
+					_red, _green, _blue, alpha,
 					smooth, blend
 				);
 				x += _sourceRect.width;

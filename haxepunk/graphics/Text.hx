@@ -626,21 +626,15 @@ class Text extends Image
 		{
 			// draw the border first
 			var textRegion = _region,
-				r = _red,
-				g = _green,
-				b = _blue,
-				a = _alpha;
+				c = color,
+				a = alpha;
 			_region = _borderRegion;
-			_red = border.color.r / 0xff;
-			_green = border.color.g / 0xff;
-			_blue = border.color.b / 0xff;
-			_alpha = border.alpha * _alpha;
+			color = border.color;
+			alpha = border.alpha;
 			super.render(layer, point, camera);
 			_region = textRegion;
-			_red = r;
-			_green = g;
-			_blue = b;
-			_alpha = a;
+			color = c;
+			alpha = a;
 		}
 
 		super.render(layer, point, camera);

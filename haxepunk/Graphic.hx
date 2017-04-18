@@ -1,15 +1,16 @@
 package haxepunk;
 
 import haxe.ds.Either;
+import flash.display.BitmapData;
+import flash.display.BlendMode;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.TileAtlas;
 import haxepunk.graphics.atlas.AtlasRegion;
 import haxepunk.graphics.atlas.AtlasResolutions;
 import haxepunk.graphics.atlas.IAtlasRegion;
-import flash.display.BitmapData;
-import flash.display.BlendMode;
-import flash.geom.Point;
-import flash.geom.Rectangle;
+import haxepunk.utils.Color;
 
 /**
  * Abstract representing either a `String`, a `TileAtlas` or a `BitmapData`.
@@ -156,6 +157,33 @@ class Graphic
 	public var scrollY:Float = 1;
 
 	/**
+	 * Change the opacity of the Image, a value from 0 to 1.
+	 */
+	@:isVar public var alpha(get_alpha, set_alpha):Float = 1;
+	inline function get_alpha():Float return alpha;
+	function set_alpha(value:Float):Float
+	{
+		return alpha = value < 0 ? 0 : (value > 1 ? 1 : value);
+	}
+
+	/**
+	 * The tinted color of the Image. Use 0xFFFFFF to draw the Image normally.
+	 */
+	@:isVar public var color(get_color, set_color):Color = Color.White;
+	inline function get_color():Color return color;
+	function set_color(value:Color):Color
+	{
+		value &= 0xFFFFFF;
+		if (color == value) return value;
+		color = value;
+		// save individual color channel values
+		_red = color.red;
+		_green = color.green;
+		_blue = color.blue;
+		return color;
+	}
+
+	/**
 	 * If the graphic should render at its position relative to its parent Entity's position.
 	 */
 	public var relative:Bool = true;
@@ -225,7 +253,9 @@ class Graphic
 	// Graphic information.
 	var _scroll:Bool = true;
 	var _point:Point = new Point();
-	var _entity:Entity;
-
 	var _visible:Bool = true;
+	// Color and alpha information.
+	var _red:Float;
+	var _green:Float;
+	var _blue:Float;
 }
