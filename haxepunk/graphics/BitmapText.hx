@@ -27,6 +27,8 @@ abstract AlignType(Int)
 	var Right = 2;
 }
 
+typedef GlyphMoveFunction = String -> Point -> Point;
+
 /**
  * Rendering opcodes. Text is parsed into an array of these opcodes which
  * either modify the format, render blocks of text or images, or change the
@@ -42,9 +44,11 @@ enum TextOpcode
 	NewLine(width:Float, height:Float, align:AlignType);
 	Image(image:Image);
 	Align(alignType:AlignType);
+	MoveText(f:GlyphMoveFunction);
 	PopColor;
 	PopAlpha;
 	PopScale;
+	PopMoveText;
 }
 
 /**
@@ -68,6 +72,7 @@ class BitmapText extends Graphic
 	static var _colorStack:Array<Color> = new Array();
 	static var _alphaStack:Array<Float> = new Array();
 	static var _scaleStack:Array<Float> = new Array();
+	static var _moveStack:Array<GlyphMoveFunction> = new Array();
 
 	/**
 	 * Define a new format tag which can be used to modify the formatting of a
@@ -114,6 +119,13 @@ class BitmapText extends Graphic
 	public static function defineImageTag(tag:String, image:Image)
 	{
 		formatTags[tag] = [Image(image)];
+	}
+
+	public static function defineMoveTag(tag:String, func:GlyphMoveFunction)
+	{
+		var closeTag = '/$tag';
+		formatTags[tag] = [MoveText(func)];
+		formatTags[closeTag] = [PopMoveText];
 	}
 
 	/**
@@ -460,6 +472,7 @@ class BitmapText extends Graphic
 		HXP.clear(_colorStack);
 		HXP.clear(_alphaStack);
 		HXP.clear(_scaleStack);
+		HXP.clear(_moveStack);
 
 		_colorStack.push(color);
 		_alphaStack.push(alpha);
@@ -477,6 +490,16 @@ class BitmapText extends Graphic
 			cursorX:Float = 0,
 			cursorY:Float = 0,
 			charCount:Int = 0;
+		inline function getRenderPoint(char:String = "")
+		{
+			var point = HXP.point;
+			point.setTo(cursorX, cursorY);
+			for (func in _moveStack)
+			{
+				point = func(char, point);
+			}
+			return point;
+		}
 		for (op in opCodes)
 		{
 			if (displayCharCount > -1 && charCount >= displayCharCount) break;
@@ -515,8 +538,9 @@ class BitmapText extends Graphic
 						else
 						{
 							// draw the character
-							var x = cursorX + lineOffsetX + gd.xOffset * gd.scale / fsx,
-								y = cursorY + gd.yOffset * gd.scale * sy / maxFullScale + thisLineHeight - (lineHeight * currentScale);
+							var point = getRenderPoint(char);
+							var x = point.x + lineOffsetX + gd.xOffset * gd.scale / fsx,
+								y = point.y + gd.yOffset * gd.scale * sy / maxFullScale + thisLineHeight - (lineHeight * currentScale);
 							gd.region.draw(
 								(_point.x + x) * fsx, (_point.y + y) * fsy,
 								layer, gd.scale, gd.scale * sy * fsy / maxFullScale, 0,
@@ -544,8 +568,9 @@ class BitmapText extends Graphic
 						originalScaleX = image.scaleX,
 						originalScaleY = image.scaleY;
 					image.originX = image.originY = 0;
-					image.x += _point.x + cursorX + lineOffsetX;
-					image.y += _point.y + cursorY + thisLineHeight - image.height * image.scale * image.scaleY * currentScale * this.scale * this.scaleY;
+					var point = getRenderPoint();
+					image.x += _point.x + point.x + lineOffsetX;
+					image.y += _point.y + point.y + thisLineHeight - image.height * image.scale * image.scaleY * currentScale * this.scale * this.scaleY;
 					image.color = currentColor;
 					image.alpha = currentAlpha;
 					image.scaleX *= this.scale * this.scaleX * currentScale;
@@ -559,6 +584,10 @@ class BitmapText extends Graphic
 					cursorX += ((image.width * image.scale * image.scaleX * this.scale * this.scaleX) + charSpacing) * currentScale;
 					++charCount;
 				case Align(_): {}
+				case MoveText(func):
+					_moveStack.push(func);
+				case PopMoveText:
+					_moveStack.pop();
 			}
 		}
 
