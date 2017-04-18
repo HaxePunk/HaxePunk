@@ -17,9 +17,9 @@ import haxepunk.utils.Color;
 
 @:dox(hide)
 #if lime
-typedef AlignType = TextFormatAlign;
+typedef TextAlignType = TextFormatAlign;
 #else
-typedef AlignType = String;
+typedef TextAlignType = String;
 #end
 
 /**
@@ -32,7 +32,7 @@ typedef TextOptions =
 	/** Optional. The font size. Default value is 16. */
 	@:optional var size:Int;
 	/** Optional. The aligment of the text. Default value is left. */
-	@:optional var align:AlignType;
+	@:optional var align:TextAlignType;
 	/** Optional. Automatic word wrapping. Default value is false. */
 	@:optional var wordWrap:Bool;
 	/** Optional. If the text field can automatically resize if its contents grow. Default value is true. */
@@ -579,8 +579,8 @@ class Text extends Image
 	/**
 	 * Font alignment.
 	 */
-	public var align(default, set):AlignType;
-	function set_align(value:AlignType):AlignType
+	public var align(default, set):TextAlignType;
+	function set_align(value:TextAlignType):TextAlignType
 	{
 		if (align == value) return value;
 		_format.align = value;
