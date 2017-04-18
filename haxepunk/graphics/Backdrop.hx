@@ -4,7 +4,6 @@ import flash.geom.Point;
 import haxepunk.graphics.atlas.IAtlasRegion;
 import haxepunk.HXP;
 import haxepunk.Graphic;
-import haxepunk.utils.Color;
 
 /**
  * A background texture that can be repeated horizontally and vertically
