@@ -326,15 +326,7 @@ class HardwareRenderer
 
 		if (drawCommand != null && drawCommand.dataCount > 0)
 		{
-			var shader:BaseShader;
-			if (drawCommand.texture == null)
-			{
-				shader = colorShader;
-			}
-			else
-			{
-				shader = textureShader;
-			}
+			var shader:BaseShader = drawCommand.texture == null ? colorShader : textureShader;
 			shader.bind();
 
 			var bufferChunkSize:Int = shader.bufferChunkSize;
@@ -385,7 +377,6 @@ class HardwareRenderer
 			#if (gl_debug || debug) checkForGLErrors(); #end
 
 			var blend = drawCommand.blend;
-			if (blend == null) blend = BlendMode.ALPHA;
 			setBlendMode(blend);
 
 			var stride = bufferChunkSize * FLOAT32_BYTES;

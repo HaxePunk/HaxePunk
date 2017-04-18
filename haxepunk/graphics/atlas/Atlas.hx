@@ -64,7 +64,7 @@ class Atlas
 	public inline function prepareTile(rect:Rectangle, x:Float, y:Float, layer:Int,
 		scaleX:Float, scaleY:Float, angle:Float,
 		red:Float, green:Float, blue:Float, alpha:Float,
-		smooth:Bool, ?blend:BlendMode)
+		smooth:Bool, blend:BlendMode)
 	{
 		_data.prepareTile(rect, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha, smooth, blend);
 	}

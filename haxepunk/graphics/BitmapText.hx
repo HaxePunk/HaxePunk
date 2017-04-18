@@ -73,6 +73,7 @@ class BitmapText extends Graphic
 	static var _alphaStack:Array<Float> = new Array();
 	static var _scaleStack:Array<Float> = new Array();
 	static var _moveStack:Array<GlyphMoveFunction> = new Array();
+	static var _renderPoint:Point = new Point();
 
 	/**
 	 * Define a new format tag which can be used to modify the formatting of a
@@ -492,7 +493,7 @@ class BitmapText extends Graphic
 			charCount:Int = 0;
 		inline function getRenderPoint(char:String = "")
 		{
-			var point = HXP.point;
+			var point = _renderPoint;
 			point.setTo(cursorX, cursorY);
 			for (func in _moveStack)
 			{
@@ -544,7 +545,7 @@ class BitmapText extends Graphic
 							gd.region.draw(
 								(_point.x + x) * fsx, (_point.y + y) * fsy,
 								layer, gd.scale, gd.scale * sy * fsy / maxFullScale, 0,
-								currentColor.red, currentColor.green, currentColor.blue, currentAlpha, smooth
+								currentColor.red, currentColor.green, currentColor.blue, currentAlpha, smooth, blend
 							);
 							// advance cursor position
 							cursorX += gd.xAdvance * gd.scale / fsx + charSpacing * currentScale;

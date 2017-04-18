@@ -76,7 +76,7 @@ class AtlasResolutions implements IAtlasRegion
 	public inline function draw(x:Float, y:Float, layer:Int,
 		scaleX:Float=1, scaleY:Float=1, angle:Float=0,
 		red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1,
-		smooth:Bool, ?blend:BlendMode, ?clipRect:Rectangle)
+		smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
 	{
 		var region = regionForScale(Math.max(Math.abs(scaleX), Math.abs(scaleY)));
 		var scale:Float = base.width / region.width;
@@ -102,7 +102,7 @@ class AtlasResolutions implements IAtlasRegion
 	 */
 	public inline function drawMatrix(tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
 		layer:Int, red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1,
-		smooth:Bool, ?blend:BlendMode, ?clipRect:Rectangle)
+		smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
 	{
 		var region = regionForScale(Math.max(Math.abs(a * c), Math.abs(b * d)));
 		var scale:Float = base.width / region.width;

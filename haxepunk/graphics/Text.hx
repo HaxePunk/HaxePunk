@@ -413,7 +413,7 @@ class Text extends Image
 		}
 	}
 
-	public function resize(width:Int, height:Int, ?redraw:Bool = true)
+	public function resize(width:Int, height:Int, redraw:Bool = true)
 	{
 		_width = width;
 		_height = height;
@@ -541,7 +541,7 @@ class Text extends Image
 		return true;
 	}
 
-	public function setBorder(?style:BorderStyle = BorderStyle.FastOutline, ?size:Int = 1, ?color:Color = Color.Black, ?alpha:Float = 1)
+	public function setBorder(style:BorderStyle = BorderStyle.FastOutline, size:Int = 1, color:Color = Color.Black, alpha:Float = 1)
 	{
 		border = {
 			style: style,

@@ -15,16 +15,16 @@ class ScaleMode
 	/**
 	 * @param	integer		Whether scale should be rounded to an integer.
 	 */
-	public function new(?integer:Bool = false)
+	public function new(integer:Bool = false)
 	{
 		this.integer = integer;
 		setBaseSize(HXP.width, HXP.height);
 	}
 
-	public function setBaseSize(?width:Int, ?height:Int)
+	public function setBaseSize(width:Int = -1, height:Int = -1)
 	{
-		if (width == null) width = HXP.width;
-		if (height == null) height = HXP.height;
+		if (width == -1) width = HXP.width;
+		if (height == -1) height = HXP.height;
 		baseWidth = width;
 		baseHeight = height;
 	}
