@@ -42,9 +42,6 @@ class Backdrop extends Graphic
 		_repeatX = repeatX;
 		_repeatY = repeatY;
 
-		color = 0xFFFFFF;
-		alpha = 1;
-
 		super();
 	}
 

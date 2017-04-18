@@ -65,8 +65,6 @@ class Tilemap extends Graphic
 		super();
 		this.width = width - (width % tileWidth);
 		this.height = height - (height % tileHeight);
-		color = 0xFFFFFF;
-		alpha = 1;
 		_columns = Std.int(this.width / tileWidth);
 		_rows = Std.int(this.height / tileHeight);
 
@@ -101,8 +99,6 @@ class Tilemap extends Graphic
 		_setColumns = Std.int(_atlas.width / tileWidth);
 		_setRows = Std.int(_atlas.height / tileHeight);
 		_setCount = _setColumns * _setRows;
-
-		smooth = (HXP.stage.quality != LOW);
 	}
 
 	/**

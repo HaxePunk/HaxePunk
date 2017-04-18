@@ -159,8 +159,7 @@ class Graphic
 	/**
 	 * Change the opacity of the Image, a value from 0 to 1.
 	 */
-	@:isVar public var alpha(get_alpha, set_alpha):Float = 1;
-	inline function get_alpha():Float return alpha;
+	public var alpha(default, set):Float = 1;
 	function set_alpha(value:Float):Float
 	{
 		return alpha = value < 0 ? 0 : (value > 1 ? 1 : value);
@@ -169,18 +168,16 @@ class Graphic
 	/**
 	 * The tinted color of the Image. Use 0xFFFFFF to draw the Image normally.
 	 */
-	@:isVar public var color(get_color, set_color):Color = Color.White;
-	inline function get_color():Color return color;
+	public var color(default, set):Color;
 	function set_color(value:Color):Color
 	{
 		value &= 0xFFFFFF;
 		if (color == value) return value;
-		color = value;
 		// save individual color channel values
-		_red = color.red;
-		_green = color.green;
-		_blue = color.blue;
-		return color;
+		_red = value.red;
+		_green = value.green;
+		_blue = value.blue;
+		return color = value;
 	}
 
 	/**
@@ -212,7 +209,11 @@ class Graphic
 	 * Constructor.
 	 */
 	@:allow(haxepunk)
-	function new() {}
+	function new()
+	{
+		smooth = (HXP.stage.quality != LOW);
+		color = Color.White;
+	}
 
 	/**
 	 * Updates the graphic.

@@ -268,8 +268,6 @@ class BitmapText extends Graphic
 
 		this.color = options.color;
 		this.text = text != null ? text : "";
-
-		smooth = (HXP.stage.quality != LOW);
 	}
 
 	public var text(default, set):String;
