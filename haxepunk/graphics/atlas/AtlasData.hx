@@ -177,7 +177,7 @@ class AtlasData
 		rect:Rectangle, layer:Int,
 		tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
 		red:Float, green:Float, blue:Float, alpha:Float,
-		smooth:Bool=false, ?blend:BlendMode, ?clipRect:Rectangle)
+		smooth:Bool=false, blend:BlendMode, ?clipRect:Rectangle)
 	{
 		var batch = _scene.sprite.batch;
 		batch.addRect(
@@ -206,7 +206,7 @@ class AtlasData
 		rect:Rectangle, tx:Float, ty:Float, layer:Int,
 		scaleX:Float, scaleY:Float, angle:Float,
 		red:Float, green:Float, blue:Float, alpha:Float,
-		smooth:Bool, ?blend:BlendMode, ?clipRect:Rectangle):Void
+		smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void
 	{
 		var a:Float, b:Float, c:Float, d:Float;
 
@@ -238,7 +238,7 @@ class AtlasData
 		tx2:Float, ty2:Float, uvx2:Float, uvy2:Float,
 		tx3:Float, ty3:Float, uvx3:Float, uvy3:Float,
 		red:Float, green:Float, blue:Float, alpha:Float,
-		smooth:Bool, ?blend:BlendMode, ?clipRect:Rectangle):Void
+		smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void
 	{
 		var batch = _scene.sprite.batch;
 		batch.addTriangle(bitmapData, smooth, blend, clipRect, tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, red, green, blue, alpha);

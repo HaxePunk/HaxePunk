@@ -107,9 +107,8 @@ private class RenderData
 @:allow(haxepunk.graphics.atlas.DrawCommandBatch)
 class DrawCommand
 {
-	public static function create(texture:BitmapData, smooth:Bool, ?blend:BlendMode, ?clipRect:Rectangle)
+	public static function create(texture:BitmapData, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
 	{
-		if (blend == null) blend = BlendMode.ALPHA;
 		var command:DrawCommand;
 		if (_pool != null)
 		{

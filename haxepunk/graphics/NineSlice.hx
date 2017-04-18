@@ -61,7 +61,6 @@ class NineSlice extends Graphic
 	 */
 	public function new(source:ImageType, leftWidth:Int = 0, rightWidth:Int = 0, topHeight:Int = 0, bottomHeight:Int = 0)
 	{
-		super();
 		this.source = source;
 
 		var w = source.width,
@@ -77,6 +76,8 @@ class NineSlice extends Graphic
 		botC = getSegment(source, leftWidth, h - bottomHeight, w - leftWidth - rightWidth, bottomHeight);
 		botR = getSegment(source, w - rightWidth, h - bottomHeight, rightWidth, bottomHeight);
 		_sliceRect.setTo(leftWidth, topHeight, w - rightWidth, h - bottomHeight);
+
+		super();
 
 		width = w;
 		height = h;

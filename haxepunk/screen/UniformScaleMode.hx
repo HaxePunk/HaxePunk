@@ -30,7 +30,7 @@ class UniformScaleMode extends ScaleMode
 	 * @param	integer		Whether scale should be rounded to an integer.
 	 * @param	mode
 	 */
-	public function new(type:UniformScaleType = Expand, ?integer:Bool = false)
+	public function new(type:UniformScaleType = Expand, integer:Bool = false)
 	{
 		super(integer);
 		this.type = type;
