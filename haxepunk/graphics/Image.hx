@@ -80,8 +80,6 @@ class Image extends Graphic
 			_region = _region.clip(clipRect); // create a new clipped region
 			_sourceRect = clipRect;
 		}
-
-		smooth = (HXP.stage.quality != LOW);
 	}
 
 	/** @private Initialize variables */

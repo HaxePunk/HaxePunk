@@ -26,7 +26,6 @@ import haxepunk.utils.Random;
 		_types = new Map<String, ParticleType>();
 		active = true;
 		particleCount = 0;
-		smooth = (HXP.stage.quality != LOW);
 	}
 
 	override public function render(layer:Int, point:Point, camera:Camera)
