@@ -4,6 +4,7 @@ import haxepunk.Entity;
 import haxepunk.HXP;
 import haxepunk.graphics.Backdrop;
 import haxepunk.graphics.Emitter;
+import haxepunk.graphics.Image;
 import haxepunk.graphics.atlas.TextureAtlas;
 import haxepunk.input.Input;
 import haxepunk.utils.Random;
@@ -26,7 +27,7 @@ class GameScene extends DemoScene
 		backdrop.color = 0x555555;
 		addGraphic(backdrop);
 
-		smoke = new Emitter("smoke.png", 16, 16);
+		smoke = new Emitter("gfx/smoke.png", 16, 16);
 		smoke.newType("exhaust", [0]);
 		smoke.setMotion("exhaust", 90, 30, 0.5, 360, 10, 0.5);
 		smoke.setAlpha("exhaust");

@@ -34,7 +34,8 @@ class Player extends Physics
 		sprite.add("grav_jump", [21]);
 
 		graphic = sprite;
-		setHitbox(16, 32, -8);
+		sprite.centerOrigin();
+		setHitbox(16, 32, 8, 16);
 
 		// Set physics properties
 		gravity.y = 1.8;
