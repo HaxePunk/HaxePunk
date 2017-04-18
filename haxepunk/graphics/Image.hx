@@ -64,11 +64,13 @@ class Image extends Graphic
 		super();
 		init();
 
-		// check if the _source or _region were set in a higher class
+		_sourceRect = new Rectangle(0, 0, 1, 1);
+
 		if (source != null)
 		{
 			_region = source;
-			_sourceRect = new Rectangle(0, 0, _region.width, _region.height);
+			_sourceRect.width = _region.width;
+			_sourceRect.height = _region.height;
 		}
 
 		if (clipRect != null)

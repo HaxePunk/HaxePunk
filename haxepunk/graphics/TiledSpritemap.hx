@@ -16,14 +16,12 @@ class TiledSpritemap extends Spritemap
 	 * @param	frameHeight		Frame height.
 	 * @param	width			Width of the block to render.
 	 * @param	height			Height of the block to render.
-	 * @param	callbackFunc	Optional callback function for animation end.
 	 */
-	public function new(source:TileType, frameWidth:Int = 0, frameHeight:Int = 0, width:Int = 0, height:Int = 0, callbackFunc:Void -> Void = null)
+	public function new(source:TileType, frameWidth:Int = 0, frameHeight:Int = 0, width:Int = 0, height:Int = 0)
 	{
-		_offsetX = _offsetY = 0;
 		_imageWidth = width;
 		_imageHeight = height;
-		super(source, frameWidth, frameHeight, callbackFunc);
+		super(source, frameWidth, frameHeight);
 	}
 
 	/** Renders the image. */
@@ -56,47 +54,6 @@ class TiledSpritemap extends Spritemap
 		}
 	}
 
-	/**
-	 * The x-offset of the texture.
-	 */
-	public var offsetX(get, set):Float;
-	function get_offsetX():Float return _offsetX;
-	function set_offsetX(value:Float):Float
-	{
-		if (_offsetX == value) return value;
-		_offsetX = value;
-		updateBuffer();
-		return _offsetX;
-	}
-
-	/**
-	 * The y-offset of the texture.
-	 */
-	public var offsetY(get, set):Float;
-	function get_offsetY():Float return _offsetY;
-	function set_offsetY(value:Float):Float
-	{
-		if (_offsetY == value) return value;
-		_offsetY = value;
-		updateBuffer();
-		return _offsetY;
-	}
-
-	/**
-	 * Sets the texture offset.
-	 * @param	x		The x-offset.
-	 * @param	y		The y-offset.
-	 */
-	public function setOffset(x:Float, y:Float)
-	{
-		if (_offsetX == x && _offsetY == y) return;
-		_offsetX = x;
-		_offsetY = y;
-		updateBuffer();
-	}
-
 	var _imageWidth:Int;
 	var _imageHeight:Int;
-	var _offsetX:Float;
-	var _offsetY:Float;
 }
