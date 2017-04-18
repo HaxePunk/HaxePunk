@@ -121,11 +121,11 @@ class Player extends Physics
 		// Always face the direction we were last heading
 		if (velocity.x < 0)
 		{
-			sprite.flipped = true; // left
+			sprite.scaleX = -1; // left
 		}
 		else if (velocity.x > 0)
 		{
-			sprite.flipped = false; // right
+			sprite.scaleX = 1; // right
 		}
 	}
 
