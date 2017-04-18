@@ -1,8 +1,8 @@
 import haxepunk.HXP;
 import haxepunk.Entity;
 import haxepunk.graphics.Image;
+import haxepunk.graphics.BaseEmitter.Particle;
 import haxepunk.graphics.Emitter;
-import haxepunk.graphics.Particle;
 import haxepunk.utils.MathUtil;
 
 

@@ -40,7 +40,7 @@ class GameScene extends DemoScene
 #if !flash
 		atlas = TextureAtlas.loadTexturePacker("atlas/assets.xml");
 #end
-		backdrop = new Backdrop(#if flash "gfx/tile.png" #else atlas.getRegion("tile.png") #end, true, true);
+		backdrop = new Backdrop("gfx/tile.png", true, true);
 		addGraphic(backdrop, 20);
 
 		player = new Player(10 * 32, 11 * 32);

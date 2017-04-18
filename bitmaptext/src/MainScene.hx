@@ -1,3 +1,4 @@
+import flash.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Entity;
 import haxepunk.Scene;
@@ -6,6 +7,26 @@ import haxepunk.graphics.Image;
 
 class MainScene extends Scene
 {
+	static var _time:Float = 0;
+	static var _shakeChars:Map<String, Float> = new Map();
+	static var _shake:Float = 0;
+
+	static function shakeChar(char:String, point:Point):Point
+	{
+		if (!_shakeChars.exists(char) || _shake > 1)
+		{
+			_shakeChars[char] = Math.random() * 2 - 1;
+		}
+		point.y += _shakeChars[char];
+		return point;
+	}
+
+	static function sineWave(char:String, point:Point):Point
+	{
+		point.y += (Math.sin(_time * 4 - point.x / 4) - 0.5) * 2;
+		return point;
+	}
+
 	public function new()
 	{
 		super();
@@ -14,6 +35,8 @@ class MainScene extends Scene
 		BitmapText.defineFormatTag("ghost", null, 0.5);
 		BitmapText.defineFormatTag("big", null, null, 1.5);
 		BitmapText.defineFormatTag("big_green", 0x55d400, null, 1.5);
+		BitmapText.defineMoveTag("shake", shakeChar);
+		BitmapText.defineMoveTag("sine", sineWave);
 		var img = new Image("assets/graphics/star.png");
 		img.scale = 0.25;
 		img.smooth = true;
@@ -37,7 +60,7 @@ class MainScene extends Scene
 		txt.charSpacing = txt.lineSpacing = 16;
 		addText(txt);
 
-		var txt = new BitmapText("This is some wrapped text. It will fill as much vertical space as needed, but width is limited, so it shouldn't extend past 75% of the screen width. This whole paragraph should wrap correctly.\nHard line breaks are also allowed.", 0, 0, Std.int(HXP.width * 0.75), 0, {
+		var txt = new BitmapText("This is some wrapped text. It will <sine>fill as much <shake>vertical</shake> space as needed</sine>, but width is limited, so it shouldn't extend past 75% of the screen width. This whole paragraph should wrap correctly. <sine><star/><star/><star/><star/><star/></sine>\nHard line breaks are also allowed.", 0, 0, Std.int(HXP.width * 0.75), 0, {
 			font: "assets/fonts/azmoonfleet.64.fnt",
 			size: 14,
 			color: 0x00ff00,
@@ -77,7 +100,7 @@ class MainScene extends Scene
 		gradualText.displayCharCount = 0;
 		addText(gradualText);
 
-		var txt = new BitmapText("<center>Also, here is some centered</center><right>or right-aligned text!\nIt also supports line breaks and wrapping, of course.</right>", 0, 0, Std.int(HXP.width * 0.75), 0, {
+		var txt = new BitmapText("<center>Also, here is some <shake>centered</shake></center><right>or right-aligned text!\nIt also supports line breaks and wrapping, of course.</right>", 0, 0, Std.int(HXP.width * 0.75), 0, {
 			font: "assets/fonts/azmoonfleet.64.fnt",
 			size: 14,
 			wordWrap: true
@@ -102,6 +125,11 @@ class MainScene extends Scene
 		gradualText.displayCharCount = Std.int(t);
 		if (t > gradualText.text.length) tDirection = -1;
 		else if (t < 0) tDirection = 1;
+
+		_time = (_time + HXP.elapsed);
+        if (_shake > 1) --_shake;
+		_shake += HXP.elapsed * 15;
+		_time %= Math.PI;
 	}
 
 	var gradualText:BitmapText;
