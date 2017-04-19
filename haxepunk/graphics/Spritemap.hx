@@ -11,6 +11,8 @@ import haxepunk.utils.Random;
 @:allow(haxepunk.graphics.Spritemap)
 class Animation
 {
+	public var end:Signal = new Signal();
+
 	var frames:Array<Int>;
 	var frameRate:Float;
 	var frameCount:Int;
@@ -120,13 +122,15 @@ class Spritemap extends Image
 					if (anim.loop)
 					{
 						_index = anim.getLastFrame(reverse);
+						anim.end.invoke();
 						endAnimation.invoke();
 					}
 					else
 					{
 						_index = anim.getFirstFrame(reverse);
-						complete = true;
+						anim.end.invoke();
 						endAnimation.invoke();
+						complete = true;
 						break;
 					}
 				}
