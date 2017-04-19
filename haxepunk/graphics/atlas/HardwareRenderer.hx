@@ -67,17 +67,17 @@ void main(void) {
 	override public function bind()
 	{
 		super.bind();
-		GL.enableVertexAttribArray(attributeIndex("aPosition"));
-		GL.enableVertexAttribArray(attributeIndex("aTexCoord"));
-		GL.enableVertexAttribArray(attributeIndex("aColor"));
+		GL.enableVertexAttribArray(attributeIndex(HardwareRenderer.ATTRIBUTE_POSITION));
+		GL.enableVertexAttribArray(attributeIndex(HardwareRenderer.ATTRIBUTE_TEX_COORD));
+		GL.enableVertexAttribArray(attributeIndex(HardwareRenderer.ATTRIBUTE_COLOR));
 	}
 
 	override public function unbind()
 	{
 		super.unbind();
-		GL.disableVertexAttribArray(attributeIndex("aPosition"));
-		GL.disableVertexAttribArray(attributeIndex("aTexCoord"));
-		GL.disableVertexAttribArray(attributeIndex("aColor"));
+		GL.disableVertexAttribArray(attributeIndex(HardwareRenderer.ATTRIBUTE_POSITION));
+		GL.disableVertexAttribArray(attributeIndex(HardwareRenderer.ATTRIBUTE_TEX_COORD));
+		GL.disableVertexAttribArray(attributeIndex(HardwareRenderer.ATTRIBUTE_COLOR));
 	}
 }
 
@@ -121,15 +121,15 @@ void main(void) {
 	override public function bind()
 	{
 		super.bind();
-		GL.enableVertexAttribArray(attributeIndex("aPosition"));
-		GL.enableVertexAttribArray(attributeIndex("aColor"));
+		GL.enableVertexAttribArray(attributeIndex(HardwareRenderer.ATTRIBUTE_POSITION));
+		GL.enableVertexAttribArray(attributeIndex(HardwareRenderer.ATTRIBUTE_COLOR));
 	}
 
 	override public function unbind()
 	{
 		super.unbind();
-		GL.disableVertexAttribArray(attributeIndex("aPosition"));
-		GL.disableVertexAttribArray(attributeIndex("aColor"));
+		GL.disableVertexAttribArray(attributeIndex(HardwareRenderer.ATTRIBUTE_POSITION));
+		GL.disableVertexAttribArray(attributeIndex(HardwareRenderer.ATTRIBUTE_COLOR));
 	}
 }
 
@@ -145,6 +145,13 @@ void main(void) {
 @:dox(hide)
 class HardwareRenderer
 {
+	public static inline var ATTRIBUTE_COLOR:String = "aColor";
+	public static inline var ATTRIBUTE_POSITION:String = "aPosition";
+	public static inline var ATTRIBUTE_TEX_COORD:String = "aTexCoord";
+	public static inline var UNIFORM_IMAGE:String = "uImage0";
+	public static inline var UNIFORM_MATRIX:String = "uMatrix";
+	public static inline var UNIFORM_RESOLUTION:String = "uResolution";
+
 	static inline var FLOAT32_BYTES:Int = #if lime Float32Array.BYTES_PER_ELEMENT #else Float32Array.SBYTES_PER_ELEMENT #end;
 
 	static inline function resize(length:Int, minChunks:Int, chunkSize:Int)
@@ -356,9 +363,9 @@ class HardwareRenderer
 				y0:Int = Std.int(HXP.screen.y);
 			ortho(-x0, -x0 + HXP.windowWidth, -y0 + HXP.windowHeight, -y0, 1000, -1000);
 			#if (lime >= "4.0.0")
-			GL.uniformMatrix4fv(shader.uniformIndex("uMatrix"), 1, false, _ortho);
+			GL.uniformMatrix4fv(shader.uniformIndex(UNIFORM_MATRIX), 1, false, _ortho);
 			#else
-			GL.uniformMatrix4fv(shader.uniformIndex("uMatrix"), false, _ortho);
+			GL.uniformMatrix4fv(shader.uniformIndex(UNIFORM_MATRIX), false, _ortho);
 			#end
 
 			#if (gl_debug || debug) checkForGLErrors(); #end
@@ -380,11 +387,11 @@ class HardwareRenderer
 			setBlendMode(blend);
 
 			var stride = bufferChunkSize * FLOAT32_BYTES;
-			GL.vertexAttribPointer(shader.attributeIndex("aPosition"), 2, GL.FLOAT, false, stride, 0);
-			GL.vertexAttribPointer(shader.attributeIndex("aColor"), 4, GL.FLOAT, false, stride, 2 * FLOAT32_BYTES);
+			GL.vertexAttribPointer(shader.attributeIndex(ATTRIBUTE_POSITION), 2, GL.FLOAT, false, stride, 0);
+			GL.vertexAttribPointer(shader.attributeIndex(ATTRIBUTE_COLOR), 4, GL.FLOAT, false, stride, 2 * FLOAT32_BYTES);
 			if (texture != null)
 			{
-				GL.vertexAttribPointer(shader.attributeIndex("aTexCoord"), 2, GL.FLOAT, false, stride, 6 * FLOAT32_BYTES);
+				GL.vertexAttribPointer(shader.attributeIndex(ATTRIBUTE_TEX_COORD), 2, GL.FLOAT, false, stride, 6 * FLOAT32_BYTES);
 			}
 
 			var x:Int = Std.int(x0),
@@ -459,18 +466,18 @@ class HardwareRenderer
 				}
 				shader.bind();
 
-				GL.enableVertexAttribArray(shader.attributeIndex("aPosition"));
-				GL.enableVertexAttribArray(shader.attributeIndex("aTexCoord"));
+				GL.enableVertexAttribArray(shader.attributeIndex(ATTRIBUTE_POSITION));
+				GL.enableVertexAttribArray(shader.attributeIndex(ATTRIBUTE_TEX_COORD));
 
 				GL.activeTexture(GL.TEXTURE0);
 				GL.bindTexture(GL.TEXTURE_2D, renderTexture);
 				//GL.enable(GL.TEXTURE_2D);
 
 				GL.bindBuffer(GL.ARRAY_BUFFER, postProcessBuffer);
-				GL.vertexAttribPointer(shader.attributeIndex("aPosition"), 4, GL.FLOAT, false, 6 * FLOAT32_BYTES, 0);
-				GL.vertexAttribPointer(shader.attributeIndex("aTexCoord"), 2, GL.FLOAT, false, 6 * FLOAT32_BYTES, 4 * FLOAT32_BYTES);
-				GL.uniform1i(shader.uniformIndex("uImage0"), 0);
-				GL.uniform2f(shader.uniformIndex("uResolution"), HXP.screen.width, HXP.screen.height);
+				GL.vertexAttribPointer(shader.attributeIndex(ATTRIBUTE_POSITION), 4, GL.FLOAT, false, 6 * FLOAT32_BYTES, 0);
+				GL.vertexAttribPointer(shader.attributeIndex(ATTRIBUTE_TEX_COORD), 2, GL.FLOAT, false, 6 * FLOAT32_BYTES, 4 * FLOAT32_BYTES);
+				GL.uniform1i(shader.uniformIndex(UNIFORM_IMAGE), 0);
+				GL.uniform2f(shader.uniformIndex(UNIFORM_RESOLUTION), HXP.screen.width, HXP.screen.height);
 
 				GL.blendEquation(GL.FUNC_ADD);
 				GL.blendFunc(GL.ONE, GL.ONE_MINUS_SRC_ALPHA);
@@ -480,8 +487,8 @@ class HardwareRenderer
 				//GL.disable(GL.TEXTURE_2D);
 				GL.bindTexture(GL.TEXTURE_2D, null);
 
-				GL.disableVertexAttribArray(shader.attributeIndex("aPosition"));
-				GL.disableVertexAttribArray(shader.attributeIndex("aTexCoord"));
+				GL.disableVertexAttribArray(shader.attributeIndex(ATTRIBUTE_POSITION));
+				GL.disableVertexAttribArray(shader.attributeIndex(ATTRIBUTE_TEX_COORD));
 
 				shader.unbind();
 
