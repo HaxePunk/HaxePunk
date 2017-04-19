@@ -12,6 +12,9 @@ log.txt
 tests/report
 .temp
 
+TestMain.hx
+TestSuite.hx
+
 # OS specific files
 .DS_Store
 Thumbs.db
