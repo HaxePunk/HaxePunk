@@ -17,6 +17,7 @@ class Platform
 					currentPack = parts.slice(1, parts.length - 1),
 					deprecatedPack = parts.slice(0, parts.length - 1);
 				trace('Warning: the com.haxepunk package is deprecated ($typeName -> ' + currentPack.join(".") + '.$name)');
+				trace("See MIGRATION.md for help updating your project to use HaxePunk 4.0");
 				return {name: name, pack: deprecatedPack, kind: TDAlias(TPath({name: name, pack: currentPack})), fields: [], pos: Context.currentPos()};
 			}
 			return null;
