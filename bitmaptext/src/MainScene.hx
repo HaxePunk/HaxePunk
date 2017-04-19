@@ -31,6 +31,7 @@ class MainScene extends Scene
 	{
 		super();
 
+		BitmapText.defineFormatTag("white", 0xffffff);
 		BitmapText.defineFormatTag("blue", 0x5f8dd3);
 		BitmapText.defineFormatTag("ghost", null, 0.5);
 		BitmapText.defineFormatTag("big", null, null, 1.5);
@@ -60,7 +61,7 @@ class MainScene extends Scene
 		txt.charSpacing = txt.lineSpacing = 16;
 		addText(txt);
 
-		var txt = new BitmapText("This is some wrapped text. It will <sine>fill as much <shake>vertical</shake> space as needed</sine>, but width is limited, so it shouldn't extend past 75% of the screen width. This whole paragraph should wrap correctly. <sine><star/><star/><star/><star/><star/></sine>\nHard line breaks are also allowed.", 0, 0, Std.int(HXP.width * 0.75), 0, {
+		var txt = new BitmapText("<white>This is some wrapped text.</white> It will <sine>fill as much vertical space as needed</sine>, <shake>but width is limited</shake>, so it shouldn't extend past 75% of the screen width. This whole paragraph should wrap correctly. <sine><star/><star/><star/><star/><star/></sine>\nHard line breaks are also allowed.", 0, 0, Std.int(HXP.width * 0.75), 0, {
 			font: "assets/fonts/azmoonfleet.64.fnt",
 			size: 14,
 			color: 0x00ff00,
