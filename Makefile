@@ -49,7 +49,7 @@ checkstyle:
 examples: tool.n
 	@git submodule update --init
 	@echo "Building examples with" ${TARGET} "using" ${COMMAND}
-	@for path in `find examples -mindepth 1 -maxdepth 1 -type d`; do echo "Building" $$path"..."; (cd $$path; haxelib run ${COMMAND} build ${TARGET}); done
+	@(for path in `find examples -mindepth 1 -maxdepth 1 -type d`; do echo "Building" $$path"..."; (cd $$path; haxelib run ${COMMAND} build ${TARGET}) || exit; done)
 
 clean:
 	@echo "Cleaning up old files"
