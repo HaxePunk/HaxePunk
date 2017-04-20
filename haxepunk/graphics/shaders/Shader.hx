@@ -1,8 +1,12 @@
-package haxepunk.graphics.atlas;
+package haxepunk.graphics.shaders;
 
 #if hardware_render
 import flash.gl.GL;
 import flash.gl.GLProgram;
+import flash.gl.GLShader;
+import haxepunk.graphics.atlas.GLUtils;
+import haxepunk.graphics.atlas.DrawCommand;
+import haxepunk.graphics.atlas.Float32Array;
 
 #if js
 typedef GLUniformLocation = js.html.webgl.UniformLocation;
@@ -10,10 +14,11 @@ typedef GLUniformLocation = js.html.webgl.UniformLocation;
 typedef GLUniformLocation = Int;
 #end
 
-class BaseShader
+class Shader
 {
+
 	public var glProgram:GLProgram;
-	public var bufferChunkSize:Int = 0;
+	public var bytesPerVertex:Int = 0;
 
 	var vertexSource:String;
 	var fragmentSource:String;
@@ -32,23 +37,8 @@ class BaseShader
 
 	public function build()
 	{
-		var vertexShader = GL.createShader(GL.VERTEX_SHADER);
-		GL.shaderSource(vertexShader, vertexSource);
-		GL.compileShader(vertexShader);
-		#if gl_debug
-		if (GL.getShaderParameter(vertexShader, GL.COMPILE_STATUS) == 0)
-			throw "Error compiling vertex shader: " +
-			GL.getShaderInfoLog(vertexShader);
-		#end
-
-		var fragmentShader = GL.createShader(GL.FRAGMENT_SHADER);
-		GL.shaderSource(fragmentShader, fragmentSource);
-		GL.compileShader(fragmentShader);
-		#if gl_debug
-		if (GL.getShaderParameter(fragmentShader, GL.COMPILE_STATUS) == 0)
-			throw "Error compiling fragment shader: " +
-			GL.getShaderInfoLog(fragmentShader);
-		#end
+		var vertexShader = compile(GL.VERTEX_SHADER, vertexSource);
+		var fragmentShader = compile(GL.FRAGMENT_SHADER, fragmentSource);
 
 		glProgram = GL.createProgram();
 		GL.attachShader(glProgram, fragmentShader);
@@ -60,11 +50,25 @@ class BaseShader
 		#end
 	}
 
+	function compile(type:Int, source:String):GLShader
+	{
+		var shader = GL.createShader(type);
+		GL.shaderSource(shader, source);
+		GL.compileShader(shader);
+		#if gl_debug
+		if (GL.getShaderParameter(shader, GL.COMPILE_STATUS) == 0)
+			throw "Error compiling vertex shader: " + GL.getShaderInfoLog(shader);
+		#end
+		return shader;
+	}
+
 	public function destroy()
 	{
 		for (key in uniformIndices.keys()) uniformIndices.remove(key);
 		for (key in attributeIndices.keys()) attributeIndices.remove(key);
 	}
+
+	public function prepare(drawCommand:DrawCommand, buffer:Float32Array) throw "unimplemented";
 
 	public function bind()
 	{

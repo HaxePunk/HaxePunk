@@ -10,6 +10,8 @@ import haxepunk.graphics.atlas.TileAtlas;
 import haxepunk.graphics.atlas.AtlasRegion;
 import haxepunk.graphics.atlas.AtlasResolutions;
 import haxepunk.graphics.atlas.IAtlasRegion;
+import haxepunk.graphics.shaders.Shader;
+import haxepunk.graphics.shaders.TextureShader;
 import haxepunk.utils.Color;
 
 /**
@@ -122,6 +124,12 @@ class Graphic
 	public var clipRect:Rectangle;
 
 	/**
+	 * The shader to use when drawing this graphic.
+	 * @since 4.0.0
+	 */
+	public var shader:Shader;
+
+	/**
 	 * If the graphic should render.
 	 */
 	public var visible(get, set):Bool;
@@ -213,6 +221,7 @@ class Graphic
 	{
 		smooth = (HXP.stage.quality != LOW);
 		color = Color.White;
+		shader = TextureShader.get();
 	}
 
 	/**

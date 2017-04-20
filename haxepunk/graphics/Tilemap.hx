@@ -441,7 +441,7 @@ class Tilemap extends Graphic
 					scx = (Math.floor(nx) - Math.floor(wx)) / tileWidth;
 
 					updateTileRect(tile);
-					_atlas.prepareTile(_tile, Math.floor(_point.x + wx), Math.floor(_point.y + wy), layer, scx, scy, 0, _red, _green, _blue, alpha, smooth, blend);
+					_atlas.prepareTile(_tile, Math.floor(_point.x + wx), Math.floor(_point.y + wy), layer, shader, scx, scy, 0, _red, _green, _blue, alpha, smooth, blend);
 				}
 				wx = nx;
 			}

@@ -4,6 +4,7 @@ import flash.display.BlendMode;
 import flash.display.Sprite;
 import flash.geom.Rectangle;
 import haxepunk.utils.Color;
+import haxepunk.graphics.shaders.ColorShader;
 
 @:access(haxepunk.Scene)
 @:access(haxepunk.graphics.atlas.DrawCommand)
@@ -31,7 +32,7 @@ class SceneSprite extends Sprite
 		if (scene.alpha > 0)
 		{
 			// draw the scene background
-			var command = batch.getDrawCommand(null, false, BlendMode.ALPHA, null);
+			var command = batch.getDrawCommand(null, ColorShader.get(), false, BlendMode.ALPHA, null);
 			var sceneColor:Color = scene.color == null ? HXP.stage.color : scene.color;
 			var alpha = scene.alpha,
 				red = sceneColor.red * alpha,

@@ -46,7 +46,7 @@ class TiledImage extends Image
 			while (x < _width)
 			{
 				_region.draw(Math.floor((_point.x + x) * fsx), Math.floor((_point.y + y) * fsy),
-					layer, sx, sy, angle,
+					layer, shader, sx, sy, angle,
 					_red, _green, _blue, alpha,
 					smooth, blend
 					);
