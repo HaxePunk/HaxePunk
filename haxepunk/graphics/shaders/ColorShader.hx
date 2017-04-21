@@ -39,7 +39,7 @@ void main(void) {
 	function new()
 	{
 		super(VERTEX_SHADER, FRAGMENT_SHADER);
-		bytesPerVertex = 6;
+		floatsPerVertex = 6;
 	}
 
 	public static function get():ColorShader
@@ -95,7 +95,7 @@ void main(void) {
 		GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer);
 		#end
 
-		var stride = bytesPerVertex * Float32Array.BYTES_PER_ELEMENT;
+		var stride = floatsPerVertex * Float32Array.BYTES_PER_ELEMENT;
 		GL.vertexAttribPointer(position, 2, GL.FLOAT, false, stride, 0);
 		GL.vertexAttribPointer(color, 4, GL.FLOAT, false, stride, 2 * Float32Array.BYTES_PER_ELEMENT);
 	}

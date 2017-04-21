@@ -146,7 +146,7 @@ class HardwareRenderer
 			// expand arrays if necessary
 			var bufferLength:Int = buffer == null ? 0 : buffer.length;
 			var triangles:Int = drawCommand.triangleCount;
-			var floatsPerTriangle:Int = shader.bytesPerVertex * 3;
+			var floatsPerTriangle:Int = shader.floatsPerVertex * 3;
 			if (bufferLength < triangles * floatsPerTriangle)
 			{
 				buffer = new Float32Array(resize(bufferLength, triangles, floatsPerTriangle));

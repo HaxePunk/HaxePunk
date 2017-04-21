@@ -18,7 +18,7 @@ class Shader
 {
 
 	public var glProgram:GLProgram;
-	public var bytesPerVertex:Int = 0;
+	public var floatsPerVertex:Int = 0;
 
 	var vertexSource:String;
 	var fragmentSource:String;
