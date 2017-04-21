@@ -7,6 +7,7 @@ import haxepunk.graphics.Emitter;
 import haxepunk.graphics.Image;
 import haxepunk.graphics.atlas.TextureAtlas;
 import haxepunk.input.Input;
+import haxepunk.input.Mouse;
 import haxepunk.utils.Random;
 
 class GameScene extends DemoScene
@@ -65,7 +66,7 @@ class GameScene extends DemoScene
 				smoke.emit("exhaust", mouseX, mouseY);
 			}
 
-			if (Input.mousePressed)
+			if (Mouse.mousePressed)
 			{
 				smoke.setColor("exhaust", Random.randInt(16777215), Random.randInt(16777215));
 			}

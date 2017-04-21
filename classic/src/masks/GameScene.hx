@@ -16,6 +16,11 @@ class GameScene extends DemoScene
 	public function new()
 	{
 		super();
+
+		Key.define("up", [Key.UP]);
+		Key.define("down", [Key.DOWN]);
+		Key.define("left", [Key.LEFT]);
+		Key.define("right", [Key.RIGHT]);
 	}
 
 	public override function begin()
@@ -84,6 +89,7 @@ class GameScene extends DemoScene
 		e.graphic = tilemap;
 		e.type = "solid";
 		add(e);
+
 		return e;
 	}
 
@@ -92,16 +98,16 @@ class GameScene extends DemoScene
 		super.update();
 		var x:Int = 0, y:Int = 0;
 
-		if (Input.check(Key.LEFT))
+		if (Input.check("left"))
 			x = -8;
 
-		if (Input.check(Key.RIGHT))
+		if (Input.check("right"))
 			x = 8;
 
-		if (Input.check(Key.UP))
+		if (Input.check("up"))
 			y = -8;
 
-		if (Input.check(Key.DOWN))
+		if (Input.check("down"))
 			y = 8;
 
 		circle.moveBy(x, y, "solid");

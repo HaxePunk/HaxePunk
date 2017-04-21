@@ -4,6 +4,7 @@ import haxepunk.Entity;
 import haxepunk.graphics.Text;
 import haxepunk.input.Input;
 import haxepunk.input.Key;
+import haxepunk.input.Mouse;
 
 // have to import scenes for compilation
 import platformer.GameScene;
@@ -37,6 +38,13 @@ class DemoScene extends Scene
 		}
 
 		tapTime = 0;
+
+		Key.define("next_scene", [Key.LEFT_SQUARE_BRACKET]);
+		Key.define("prev_scene", [Key.RIGHT_SQUARE_BRACKET]);
+		Key.define("fullscreen", [Key.F]);
+		inputPressed.next_scene.bind(nextScene);
+		inputPressed.prev_scene.bind(previousScene);
+		inputPressed.fullscreen.bind(function() HXP.fullscreen = !HXP.fullscreen);
 	}
 
 	function loadScene():Bool
@@ -72,7 +80,7 @@ class DemoScene extends Scene
 	public override function update()
 	{
 		tapTime -= HXP.elapsed;
-		if (Input.mousePressed)
+		if (Mouse.mousePressed)
 		{
 			if (tapTime > 0)
 			{
@@ -82,18 +90,6 @@ class DemoScene extends Scene
 		}
 
 		// cycle through scenes with '[' and ']'
-		if (Input.pressed(Key.LEFT_SQUARE_BRACKET))
-		{
-			nextScene();
-		}
-		if (Input.pressed(Key.RIGHT_SQUARE_BRACKET))
-		{
-			previousScene();
-		}
-		if (Input.pressed(Key.F))
-		{
-			HXP.fullscreen = !HXP.fullscreen;
-		}
 		super.update();
 	}
 

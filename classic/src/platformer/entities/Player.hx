@@ -4,7 +4,10 @@ import haxepunk.HXP;
 import haxepunk.Sfx;
 import haxepunk.graphics.Spritemap;
 import haxepunk.input.Input;
+import haxepunk.input.Gamepad;
+import haxepunk.input.gamepads.XboxGamepad;
 import haxepunk.input.Key;
+import haxepunk.input.Mouse;
 import haxepunk.utils.MathUtil;
 import platformer.entities.Physics;
 
@@ -45,9 +48,32 @@ class Player extends Physics
 		friction.y = 0.99; // wall friction
 
 		// Define input keys
-		Input.define("left", [Key.A, Key.LEFT]);
-		Input.define("right", [Key.D, Key.RIGHT]);
-		Input.define("jump", [Key.W, Key.SPACE, Key.UP]);
+		Key.define("left", [Key.A, Key.LEFT]);
+		Key.define("right", [Key.D, Key.RIGHT]);
+		Key.define("jump", [Key.W, Key.SPACE, Key.UP]);
+		Key.define("switch_jump_mode", [Key.J]);
+
+		Mouse.define("switch_jump_mode", MouseButton.RIGHT);
+
+		Gamepad.onConnect.bind(registerGamepad);
+		for (gamepad in Gamepad.gamepads) registerGamepad(gamepad);
+	}
+
+	override public function added()
+	{
+		scene.inputPressed.switch_jump_mode.bind(switchJumpStyle);
+	}
+
+	function registerGamepad(gamepad:Gamepad)
+	{
+		gamepad.defineButton("left", [XboxGamepad.DPAD_LEFT]);
+		gamepad.defineButton("right", [XboxGamepad.DPAD_RIGHT]);
+		gamepad.defineButton("jump", [XboxGamepad.A_BUTTON]);
+		gamepad.defineButton("switch_jump_mode", [XboxGamepad.B_BUTTON]);
+		gamepad.defineAxis("left", XboxGamepad.LEFT_ANALOGUE_X, -0.1, -1);
+		gamepad.defineAxis("right", XboxGamepad.LEFT_ANALOGUE_X, 0.1, 1);
+		gamepad.defineAxis("jump", XboxGamepad.LEFT_ANALOGUE_Y, -0.5, -1);
+		gamepad.defineAxis("jump", XboxGamepad.RIGHT_ANALOGUE_Y, -0.5, -1);
 	}
 
 	function doJump()
@@ -79,16 +105,7 @@ class Player extends Physics
 	{
 		acceleration.x = acceleration.y = 0;
 
-		var joystick = Input.joystick(1);
-		if (joystick.connected)
-		{
-			acceleration.x = joystick.getAxis(1);
-
-			if (joystick.pressed(1)) doJump();
-			if (joystick.pressed(2)) switchJumpStyle();
-		}
-
-		if (Input.mouseDown)
+		if (Mouse.mouseDown)
 		{
 			if (scene.mouseX < x)
 				acceleration.x = -kMoveSpeed;
@@ -103,11 +120,6 @@ class Player extends Physics
 
 		if (Input.check("right"))
 			acceleration.x = kMoveSpeed;
-
-		if (Input.pressed(Key.J))
-		{
-			switchJumpStyle();
-		}
 
 		if (Input.pressed("jump"))
 		{

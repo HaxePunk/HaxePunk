@@ -10,6 +10,8 @@ import haxepunk.graphics.Tilemap;
 import haxepunk.graphics.Backdrop;
 import haxepunk.masks.Grid;
 import haxepunk.input.Input;
+import haxepunk.input.Key;
+import haxepunk.input.Mouse;
 import haxepunk.Scene;
 import flash.Lib;
 import entities.Bunny;
@@ -49,6 +51,18 @@ class GameScene extends Scene
 #if !flash
 		atlas = TextureAtlas.loadTexturePacker("atlas/assets.xml");
 #end
+		Key.define("add", [Key.SPACE]);
+		Mouse.define("add", MouseButton.LEFT);
+		inputPressed.add.bind(onAdd);
+	}
+
+	function onAdd()
+	{
+		if (tapTime > 0)
+		{
+			addSomeBunnies();
+		}
+		tapTime = 0.6;
 	}
 
 	public override function begin()
@@ -103,14 +117,6 @@ class GameScene extends Scene
 		pirate.y = Std.int(HXP.height - 1.3 * pirate.height + 70 - 30 * Math.sin(t / 100));
 
 		tapTime -= HXP.elapsed;
-		if (Input.mousePressed)
-		{
-			if (tapTime > 0)
-			{
-				addSomeBunnies();
-			}
-			tapTime = 0.6;
-		}
 
 		super.update();
 	}
