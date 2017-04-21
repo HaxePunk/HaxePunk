@@ -40,6 +40,8 @@ void main() {
 	public function new(fragmentSource:String)
 	{
 		super(DEFAULT_VERTEX_SHADER, fragmentSource);
+		position.name = "aPosition";
+		texCoord.name = "aTexCoord";
 	}
 
 	function createBuffer()
@@ -58,8 +60,6 @@ void main() {
 	override public function build()
 	{
 		super.build();
-		position = attributeIndex("aPosition");
-		texCoord = attributeIndex("aTexCoord");
 		image = uniformIndex("uImage0");
 		resolution = uniformIndex("uResolution");
 	}
@@ -71,22 +71,13 @@ void main() {
 		{
 			createBuffer();
 		}
-		GL.enableVertexAttribArray(position);
-		GL.enableVertexAttribArray(texCoord);
 
 		GL.bindBuffer(GL.ARRAY_BUFFER, buffer);
-		GL.vertexAttribPointer(position, 2, GL.FLOAT, false, 4 * Float32Array.BYTES_PER_ELEMENT, 0);
-		GL.vertexAttribPointer(texCoord, 2, GL.FLOAT, false, 4 * Float32Array.BYTES_PER_ELEMENT, 2 * Float32Array.BYTES_PER_ELEMENT);
+		GL.vertexAttribPointer(position.index, 2, GL.FLOAT, false, 4 * Float32Array.BYTES_PER_ELEMENT, 0);
+		GL.vertexAttribPointer(texCoord.index, 2, GL.FLOAT, false, 4 * Float32Array.BYTES_PER_ELEMENT, 2 * Float32Array.BYTES_PER_ELEMENT);
 
 		GL.uniform1i(image, 0);
 		GL.uniform2f(resolution, HXP.screen.width, HXP.screen.height);
-	}
-
-	override public function unbind()
-	{
-		GL.disableVertexAttribArray(position);
-		GL.disableVertexAttribArray(texCoord);
-		super.unbind();
 	}
 
 	static var _vertices:Array<Float> = [

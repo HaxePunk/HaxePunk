@@ -39,34 +39,14 @@ void main(void) {
 	function new()
 	{
 		super(VERTEX_SHADER, FRAGMENT_SHADER);
+		position.name = "aPosition";
+		color.name = "aColor";
 	}
 
 	public static function get():ColorShader
 	{
 		if (instance == null) instance = new ColorShader();
 		return instance;
-	}
-
-	override public function build()
-	{
-		super.build();
-		position = attributeIndex("aPosition");
-		color = attributeIndex("aColor");
-	}
-
-	override public function bind()
-	{
-		super.bind();
-
-		GL.enableVertexAttribArray(position);
-		GL.enableVertexAttribArray(color);
-	}
-
-	override public function unbind()
-	{
-		super.unbind();
-		GL.disableVertexAttribArray(position);
-		GL.disableVertexAttribArray(color);
 	}
 
 	static var instance:ColorShader;

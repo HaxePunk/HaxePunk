@@ -14,19 +14,47 @@ typedef GLUniformLocation = js.html.webgl.UniformLocation;
 typedef GLUniformLocation = Int;
 #end
 
+class Attribute
+{
+	public var index(default, null):Int;
+
+	public var name(default, set):String;
+	public inline function set_name(value:String):String
+	{
+		name = value;
+		rebind(); // requires name to be set
+		return name;
+	}
+
+	public var isEnabled(get, never):Bool;
+	inline function get_isEnabled():Bool return name != null;
+
+	var parent:Shader;
+
+	public function new(parent:Shader)
+	{
+		this.parent = parent;
+	}
+
+	public function rebind()
+	{
+		if (isEnabled) index = parent.attributeIndex(name);
+	}
+}
+
 class Shader
 {
 
 	public var glProgram:GLProgram;
 	public var floatsPerVertex(get, never):Int;
-	inline function get_floatsPerVertex():Int return 2 + (texCoord == null ? 0 : 2) + (color == null ? 0 : 4);
+	inline function get_floatsPerVertex():Int return 2 + (texCoord.isEnabled ? 2 : 0) + (color.isEnabled ? 4 : 0);
 
 	var vertexSource:String;
 	var fragmentSource:String;
 
-	var position:Null<Int> = null;
-	var texCoord:Null<Int> = null;
-	var color:Null<Int> = null;
+	var position:Attribute;
+	var texCoord:Attribute;
+	var color:Attribute;
 
 	var uniformIndices:Map<String, GLUniformLocation> = new Map();
 	var attributeIndices:Map<String, Int> = new Map();
@@ -35,6 +63,9 @@ class Shader
 
 	function new(vertexSource:String, fragmentSource:String)
 	{
+		position = new Attribute(this);
+		texCoord = new Attribute(this);
+		color = new Attribute(this);
 		this.vertexSource = vertexSource;
 		this.fragmentSource = fragmentSource;
 		build();
@@ -53,6 +84,10 @@ class Shader
 		if (GL.getProgramParameter(glProgram, GL.LINK_STATUS) == 0)
 			throw "Unable to initialize the shader program.";
 		#end
+
+		position.rebind();
+		texCoord.rebind();
+		color.rebind();
 	}
 
 	function compile(type:Int, source:String):GLShader
@@ -75,15 +110,15 @@ class Shader
 
 	public function prepare(drawCommand:DrawCommand, buffer:Float32Array)
 	{
-		if (position == null) return;
+		if (!position.isEnabled) return;
 
 		var bufferPos:Int = -1;
 
-		var hasTexCoord = texCoord != null;
+		var hasTexCoord = texCoord.isEnabled;
 		var textureOffset = drawCommand.triangleCount * 6;
 		var texturePos = textureOffset - 1;
 
-		var hasColor = color != null;
+		var hasColor = color.isEnabled;
 		var colorOffset = drawCommand.triangleCount * (hasTexCoord ? 12 : 6);
 		var colorPos = colorOffset - 1;
 
@@ -128,14 +163,14 @@ class Shader
 		GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer);
 		#end
 
-		GL.vertexAttribPointer(position, 2, GL.FLOAT, false, 0, 0);
+		GL.vertexAttribPointer(position.index, 2, GL.FLOAT, false, 0, 0);
 		if (hasTexCoord)
 		{
-			GL.vertexAttribPointer(texCoord, 2, GL.FLOAT, false, 0, textureOffset * Float32Array.BYTES_PER_ELEMENT);
+			GL.vertexAttribPointer(texCoord.index, 2, GL.FLOAT, false, 0, textureOffset * Float32Array.BYTES_PER_ELEMENT);
 		}
 		if (hasColor)
 		{
-			GL.vertexAttribPointer(color, 4, GL.FLOAT, false, 0, colorOffset * Float32Array.BYTES_PER_ELEMENT);
+			GL.vertexAttribPointer(color.index, 4, GL.FLOAT, false, 0, colorOffset * Float32Array.BYTES_PER_ELEMENT);
 		}
 	}
 
@@ -153,11 +188,18 @@ class Shader
 		{
 			GL.uniform1f(uniformIndex(name), uniformValues[name]);
 		}
+
+		GL.enableVertexAttribArray(position.index);
+		if (texCoord.isEnabled) GL.enableVertexAttribArray(texCoord.index);
+		if (color.isEnabled) GL.enableVertexAttribArray(color.index);
 	}
 
 	public function unbind()
 	{
 		GL.useProgram(null);
+		GL.disableVertexAttribArray(position.index);
+		if (texCoord.isEnabled) GL.disableVertexAttribArray(texCoord.index);
+		if (color.isEnabled) GL.disableVertexAttribArray(color.index);
 	}
 
 	/**
