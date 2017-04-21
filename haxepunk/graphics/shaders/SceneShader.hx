@@ -4,7 +4,6 @@ import flash.Assets;
 import flash.gl.GL;
 import flash.gl.GLBuffer;
 import flash.gl.GLUniformLocation;
-import haxepunk.graphics.atlas.DrawCommand;
 import haxepunk.graphics.atlas.Float32Array;
 import haxepunk.graphics.atlas.GLUtils;
 

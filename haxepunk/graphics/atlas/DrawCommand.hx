@@ -1,12 +1,9 @@
 package haxepunk.graphics.atlas;
 
-import haxe.ds.Vector;
 import flash.display.BlendMode;
 import flash.display.BitmapData;
 import flash.geom.Rectangle;
 import haxepunk.graphics.shaders.Shader;
-import haxepunk.graphics.shaders.ColorShader;
-import haxepunk.graphics.shaders.TextureShader;
 
 @:allow(haxepunk.graphics.atlas.DrawCommand)
 @:allow(haxepunk.graphics.atlas.DrawCommandBatch)

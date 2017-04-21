@@ -2,8 +2,6 @@ package haxepunk.graphics.shaders;
 
 #if hardware_render
 import flash.gl.GL;
-import flash.utils.ArrayBufferView;
-import flash.utils.Int32Array;
 import haxepunk.graphics.atlas.Float32Array;
 import haxepunk.graphics.atlas.DrawCommand;
 
