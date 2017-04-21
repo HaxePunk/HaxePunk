@@ -18,10 +18,15 @@ class Shader
 {
 
 	public var glProgram:GLProgram;
-	public var floatsPerVertex:Int = 0;
+	public var floatsPerVertex(get, never):Int;
+	inline function get_floatsPerVertex():Int return 2 + (texCoord == null ? 0 : 2) + (color == null ? 0 : 4);
 
 	var vertexSource:String;
 	var fragmentSource:String;
+
+	var position:Null<Int> = null;
+	var texCoord:Null<Int> = null;
+	var color:Null<Int> = null;
 
 	var uniformIndices:Map<String, GLUniformLocation> = new Map();
 	var attributeIndices:Map<String, Int> = new Map();
@@ -68,7 +73,71 @@ class Shader
 		for (key in attributeIndices.keys()) attributeIndices.remove(key);
 	}
 
-	public function prepare(drawCommand:DrawCommand, buffer:Float32Array) throw "unimplemented";
+	public function prepare(drawCommand:DrawCommand, buffer:Float32Array)
+	{
+		if (position == null) return;
+
+		var bufferPos:Int = -1;
+
+		var hasTexCoord = texCoord != null;
+		var textureOffset = drawCommand.triangleCount * 6;
+		var texturePos = textureOffset - 1;
+
+		var hasColor = color != null;
+		var colorOffset = drawCommand.triangleCount * (hasTexCoord ? 12 : 6);
+		var colorPos = colorOffset - 1;
+
+		drawCommand.loopRenderData(function(data) {
+			buffer[++bufferPos] = data.tx1;
+			buffer[++bufferPos] = data.ty1;
+			buffer[++bufferPos] = data.tx2;
+			buffer[++bufferPos] = data.ty2;
+			buffer[++bufferPos] = data.tx3;
+			buffer[++bufferPos] = data.ty3;
+
+			if (hasTexCoord)
+			{
+				buffer[++texturePos] = data.uvx1;
+				buffer[++texturePos] = data.uvy1;
+				buffer[++texturePos] = data.uvx2;
+				buffer[++texturePos] = data.uvy2;
+				buffer[++texturePos] = data.uvx3;
+				buffer[++texturePos] = data.uvy3;
+			}
+
+			if (hasColor)
+			{
+				buffer[++colorPos] = data.red;
+				buffer[++colorPos] = data.green;
+				buffer[++colorPos] = data.blue;
+				buffer[++colorPos] = data.alpha;
+				buffer[++colorPos] = data.red;
+				buffer[++colorPos] = data.green;
+				buffer[++colorPos] = data.blue;
+				buffer[++colorPos] = data.alpha;
+				buffer[++colorPos] = data.red;
+				buffer[++colorPos] = data.green;
+				buffer[++colorPos] = data.blue;
+				buffer[++colorPos] = data.alpha;
+			}
+		});
+
+		#if (lime >= "4.0.0")
+		GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer.length * Float32Array.BYTES_PER_ELEMENT, buffer);
+		#else
+		GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer);
+		#end
+
+		GL.vertexAttribPointer(position, 2, GL.FLOAT, false, 0, 0);
+		if (hasTexCoord)
+		{
+			GL.vertexAttribPointer(texCoord, 2, GL.FLOAT, false, 0, textureOffset * Float32Array.BYTES_PER_ELEMENT);
+		}
+		if (hasColor)
+		{
+			GL.vertexAttribPointer(color, 4, GL.FLOAT, false, 0, colorOffset * Float32Array.BYTES_PER_ELEMENT);
+		}
+	}
 
 	public function bind()
 	{

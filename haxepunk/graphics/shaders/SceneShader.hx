@@ -98,8 +98,6 @@ void main() {
 		-1.0,  1.0, 0, 1
 	];
 
-	var position:Int;
-	var texCoord:Int;
 	var image:GLUniformLocation;
 	var resolution:GLUniformLocation;
 	static var buffer:GLBuffer;

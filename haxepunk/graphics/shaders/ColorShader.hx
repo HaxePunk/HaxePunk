@@ -39,7 +39,6 @@ void main(void) {
 	function new()
 	{
 		super(VERTEX_SHADER, FRAGMENT_SHADER);
-		floatsPerVertex = 6;
 	}
 
 	public static function get():ColorShader
@@ -63,52 +62,12 @@ void main(void) {
 		GL.enableVertexAttribArray(color);
 	}
 
-	override public function prepare(drawCommand:DrawCommand, buffer:Float32Array)
-	{
-		var bufferPos:Int = -1;
-		drawCommand.loopRenderData(function(data) {
-			buffer[++bufferPos] = data.tx1;
-			buffer[++bufferPos] = data.ty1;
-			buffer[++bufferPos] = data.red;
-			buffer[++bufferPos] = data.green;
-			buffer[++bufferPos] = data.blue;
-			buffer[++bufferPos] = data.alpha;
-
-			buffer[++bufferPos] = data.tx2;
-			buffer[++bufferPos] = data.ty2;
-			buffer[++bufferPos] = data.red;
-			buffer[++bufferPos] = data.green;
-			buffer[++bufferPos] = data.blue;
-			buffer[++bufferPos] = data.alpha;
-
-			buffer[++bufferPos] = data.tx3;
-			buffer[++bufferPos] = data.ty3;
-			buffer[++bufferPos] = data.red;
-			buffer[++bufferPos] = data.green;
-			buffer[++bufferPos] = data.blue;
-			buffer[++bufferPos] = data.alpha;
-		});
-
-		#if (lime >= "4.0.0")
-		GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer.length * Float32Array.BYTES_PER_ELEMENT, buffer);
-		#else
-		GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer);
-		#end
-
-		var stride = floatsPerVertex * Float32Array.BYTES_PER_ELEMENT;
-		GL.vertexAttribPointer(position, 2, GL.FLOAT, false, stride, 0);
-		GL.vertexAttribPointer(color, 4, GL.FLOAT, false, stride, 2 * Float32Array.BYTES_PER_ELEMENT);
-	}
-
 	override public function unbind()
 	{
 		super.unbind();
 		GL.disableVertexAttribArray(position);
 		GL.disableVertexAttribArray(color);
 	}
-
-	var position:Int;
-	var color:Int;
 
 	static var instance:ColorShader;
 }
