@@ -12,22 +12,22 @@ private class RenderData
 {
 	public function new() {}
 
-	public var tx1:Float;
-	public var ty1:Float;
-	public var uvx1:Float;
-	public var uvy1:Float;
-	public var tx2:Float;
-	public var ty2:Float;
-	public var uvx2:Float;
-	public var uvy2:Float;
-	public var tx3:Float;
-	public var ty3:Float;
-	public var uvx3:Float;
-	public var uvy3:Float;
-	public var red:Float;
-	public var green:Float;
-	public var blue:Float;
-	public var alpha:Float;
+	public var tx1:Float = 0;
+	public var ty1:Float = 0;
+	public var uvx1:Float = 0;
+	public var uvy1:Float = 0;
+	public var tx2:Float = 0;
+	public var ty2:Float = 0;
+	public var uvx2:Float = 0;
+	public var uvy2:Float = 0;
+	public var tx3:Float = 0;
+	public var ty3:Float = 0;
+	public var uvx3:Float = 0;
+	public var uvy3:Float = 0;
+	public var red:Float = 0;
+	public var green:Float = 0;
+	public var blue:Float = 0;
+	public var alpha:Float = 0;
 
 	public var x1(get, never):Float;
 	public inline function get_x1() return DrawCommandBatch.minOf3(tx1, tx2, tx3);
