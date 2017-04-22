@@ -52,16 +52,16 @@ class Shader
 	var vertexSource:String;
 	var fragmentSource:String;
 
-	var position:Attribute;
-	var texCoord:Attribute;
-	var color:Attribute;
+	public var position:Attribute;
+	public var texCoord:Attribute;
+	public var color:Attribute;
 
 	var uniformIndices:Map<String, GLUniformLocation> = new Map();
 	var attributeIndices:Map<String, Int> = new Map();
 	var uniformNames:Array<String> = new Array();
 	var uniformValues:Map<String, Float> = new Map();
 
-	function new(vertexSource:String, fragmentSource:String)
+	public function new(vertexSource:String, fragmentSource:String)
 	{
 		position = new Attribute(this);
 		texCoord = new Attribute(this);
