@@ -79,8 +79,8 @@ import haxepunk.utils.Random;
 					std = type._scaleEase != null ? type._scaleEase(t) : t;
 					_source.scale = scale * p.scale(std);
 				}
-				_source.x = p.x(td) - point.x;
-				_source.y = p.y(td) - point.y;
+				_source.x = p.x(td) - point.x + this.x;
+				_source.y = p.y(td) - point.y + this.y;
 				_source.render(layer, point, camera);
 			}
 
