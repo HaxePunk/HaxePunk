@@ -1,11 +1,7 @@
 package haxepunk.graphics.shaders;
 
 #if hardware_render
-import flash.gl.GL;
-import haxepunk.graphics.atlas.Float32Array;
-import haxepunk.graphics.atlas.DrawCommand;
 
-@:dox(hide)
 class TextureShader extends Shader
 {
 	static var VERTEX_SHADER =
@@ -46,20 +42,20 @@ void main(void) {
 	}
 }";
 
-	function new()
+	public function new(?fragment:String)
 	{
-		super(VERTEX_SHADER, FRAGMENT_SHADER);
+		super(VERTEX_SHADER, fragment == null ? FRAGMENT_SHADER : fragment);
 		position.name = "aPosition";
 		texCoord.name = "aTexCoord";
 		color.name = "aColor";
 	}
 
-	public static function get():TextureShader
+	public static var defaultShader(get, null):TextureShader;
+	static inline function get_defaultShader():TextureShader
 	{
-		if (instance == null) instance = new TextureShader();
-		return instance;
+		if (defaultShader == null) defaultShader = new TextureShader();
+		return defaultShader;
 	}
 
-	static var instance:TextureShader;
 }
 #end

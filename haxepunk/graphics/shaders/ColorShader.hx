@@ -1,11 +1,7 @@
 package haxepunk.graphics.shaders;
 
 #if hardware_render
-import flash.gl.GL;
-import haxepunk.graphics.atlas.Float32Array;
-import haxepunk.graphics.atlas.DrawCommand;
 
-@:dox(hide)
 class ColorShader extends Shader
 {
 	static var VERTEX_SHADER =
@@ -36,19 +32,18 @@ void main(void) {
 	gl_FragColor = vColor;
 }";
 
-	function new()
+	public function new(?fragment:String)
 	{
-		super(VERTEX_SHADER, FRAGMENT_SHADER);
+		super(VERTEX_SHADER, fragment == null ? FRAGMENT_SHADER : fragment);
 		position.name = "aPosition";
 		color.name = "aColor";
 	}
 
-	public static function get():ColorShader
+	public static var defaultShader(get, null):ColorShader;
+	static inline function get_defaultShader():ColorShader
 	{
-		if (instance == null) instance = new ColorShader();
-		return instance;
+		if (defaultShader == null) defaultShader = new ColorShader();
+		return defaultShader;
 	}
-
-	static var instance:ColorShader;
 }
 #end

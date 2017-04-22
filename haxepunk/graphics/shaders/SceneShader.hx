@@ -37,9 +37,9 @@ void main() {
 	/**
 	 * Create a custom shader from a string.
 	 */
-	public function new(fragmentSource:String)
+	public function new(fragment:String)
 	{
-		super(DEFAULT_VERTEX_SHADER, fragmentSource);
+		super(DEFAULT_VERTEX_SHADER, fragment);
 		position.name = "aPosition";
 		texCoord.name = "aTexCoord";
 	}

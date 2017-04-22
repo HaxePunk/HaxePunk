@@ -221,7 +221,7 @@ class Graphic
 	{
 		smooth = (HXP.stage.quality != LOW);
 		color = Color.White;
-		shader = TextureShader.get();
+		shader = TextureShader.defaultShader;
 	}
 
 	/**

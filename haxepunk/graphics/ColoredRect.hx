@@ -19,7 +19,7 @@ class ColoredRect extends Graphic
 		this.height = height;
 		this.color = color;
 		this.alpha = alpha;
-		this.shader = ColorShader.get();
+		this.shader = ColorShader.defaultShader;
 	}
 
 	@:access(haxepunk.graphics.atlas.AtlasData)
