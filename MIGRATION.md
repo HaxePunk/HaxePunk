@@ -39,3 +39,21 @@ Flash No Longer Supported
 -------------------------
 
 The decision was made to remove Flash support from HaxePunk 4. If you still need to compile for Flash please use the latest 2.x version.
+
+Input Changes
+-------------
+
+Input-related functionality has moved into the haxepunk.input package, and everything related to specific input types has been moved to its own class (haxepunk.input.Mouse, haxepunk.input.Key...)
+
+With the refactored input system, you can define inputs from multiple sources as a single action within your game:
+
+```
+Key.define("left", [Key.LEFT, Key.A]);
+myGamepad.defineButton("left", [PS3_CONTROLLER.DPAD_LEFT]);
+myGamepad.defineAxis("left", PS3_CONTROLLER.LEFT_ANALOGUE_X, -0.1, -1);
+Mouse.define("left", MouseButton.LEFT);
+```
+
+These can then be checked using `Input.check("left")`, `Input.pressed("left")`, or `Input.released("left")`
+
+Both the Engine (for global controls) and the Scene (for Scene-specific controls) also have `inputPressed` and `inputReleased` signals that you can bind callbacks to: `scene.inputPressed.left.bind(myFunction)`.
