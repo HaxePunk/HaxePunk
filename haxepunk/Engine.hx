@@ -8,8 +8,9 @@ import flash.display.StageScaleMode;
 import flash.events.Event;
 import flash.geom.Rectangle;
 import flash.Lib;
-import haxepunk.utils.Draw;
+import haxepunk.Signal;
 import haxepunk.input.Input;
+import haxepunk.utils.Draw;
 import haxepunk.utils.Random;
 
 /**
@@ -43,23 +44,23 @@ class Engine extends Sprite
 	/**
 	 * Invoked before the update cycle begins each frame.
 	 */
-	public var preUpdate:Signal = new Signal();
+	public var preUpdate:Signal0 = new Signal0();
 	/**
 	 * Invoked after update cycle.
 	 */
-	public var postUpdate:Signal = new Signal();
+	public var postUpdate:Signal0 = new Signal0();
 	/**
 	 * Invoked before rendering begins each frame.
 	 */
-	public var preRender:Signal = new Signal();
+	public var preRender:Signal0 = new Signal0();
 	/**
 	 * Invoked after rendering completes.
 	 */
-	public var postRender:Signal = new Signal();
+	public var postRender:Signal0 = new Signal0();
 	/**
 	 * Invoked after the screen is resized.
 	 */
-	public var resize:Signal = new Signal();
+	public var resize:Signal0 = new Signal0();
 	/**
 	 * Invoked when input is received.
 	 */

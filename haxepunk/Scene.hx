@@ -3,6 +3,7 @@ package haxepunk;
 import haxe.ds.IntMap;
 import flash.display.Sprite;
 import flash.geom.Point;
+import haxepunk.Signal;
 import haxepunk.graphics.atlas.AtlasData;
 import haxepunk.graphics.atlas.SceneSprite;
 import haxepunk.graphics.shaders.SceneShader;
@@ -51,23 +52,23 @@ class Scene extends Tweener
 	/**
 	 * Invoked before this Scene's update cycle begins each frame.
 	 */
-	public var preUpdate:Signal = new Signal();
+	public var preUpdate:Signal0 = new Signal0();
 	/**
 	 * Invoked after this Scene's update cycle.
 	 */
-	public var postUpdate:Signal = new Signal();
+	public var postUpdate:Signal0 = new Signal0();
 	/**
 	 * Invoked before rendering begins for this Scene each frame.
 	 */
-	public var preRender:Signal = new Signal();
+	public var preRender:Signal0 = new Signal0();
 	/**
 	 * Invoked after rendering this Scene completes.
 	 */
-	public var postRender:Signal = new Signal();
+	public var postRender:Signal0 = new Signal0();
 	/**
 	 * Invoked after this Scene is resized.
 	 */
-	public var resize:Signal = new Signal();
+	public var resize:Signal0 = new Signal0();
 	/**
 	 * Invoked when input is received while this Scene is active.
 	 */
