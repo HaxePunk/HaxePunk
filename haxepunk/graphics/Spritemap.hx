@@ -4,6 +4,7 @@ import flash.geom.Rectangle;
 import haxe.ds.Either;
 import haxepunk.HXP;
 import haxepunk.Graphic;
+import haxepunk.Signal;
 import haxepunk.ds.Maybe;
 import haxepunk.graphics.atlas.TileAtlas;
 import haxepunk.utils.Random;
@@ -11,7 +12,7 @@ import haxepunk.utils.Random;
 @:allow(haxepunk.graphics.Spritemap)
 class Animation
 {
-	public var end:Signal = new Signal();
+	public var end:Signal0 = new Signal0();
 
 	var frames:Array<Int>;
 	var frameRate:Float;
@@ -57,7 +58,7 @@ class Spritemap extends Image
 	/**
 	 * Callback function for animation end.
 	 */
-	public var endAnimation:TypedSignal<Animation> = new TypedSignal();
+	public var endAnimation:Signal1<Animation> = new Signal1();
 
 	/**
 	 * Animation speed factor, alter this to speed up/slow down all animations.

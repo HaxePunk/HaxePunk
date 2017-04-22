@@ -151,7 +151,7 @@ class MouseManager extends Entity
 		}
 
 		// onPress
-		if (Input.mousePressed)
+		if (Mouse.mousePressed)
 		{
 			for (entity in collisions)
 			{
@@ -165,7 +165,7 @@ class MouseManager extends Entity
 		}
 
 		// onRelease
-		if (Input.mouseReleased)
+		if (Mouse.mouseReleased)
 		{
 			for (entity in collisions)
 			{
@@ -197,8 +197,8 @@ class MouseManager extends Entity
 			if (_default != null)
 			{
 				if (_default.onEnter != null && !_lastFallthrough) _default.onEnter();
-				if (_default.onPress != null && Input.mousePressed) _default.onPress();
-				if (_default.onRelease != null && Input.mouseReleased) _default.onRelease();
+				if (_default.onPress != null && Mouse.mousePressed) _default.onPress();
+				if (_default.onRelease != null && Mouse.mouseReleased) _default.onRelease();
 			}
 		}
 		else if (_lastFallthrough)
