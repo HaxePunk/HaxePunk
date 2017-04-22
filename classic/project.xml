@@ -16,7 +16,7 @@
 	<assets path="assets/audio" rename="sfx" include="*.mp3" if="flash" />
 	<assets path="assets/audio" rename="sfx" include="*.ogg" unless="flash"/>
 	<assets path="assets/audio" rename="sfx" include="*.wav" unless="html5"/>
-	<assets path="assets/audio" rename="sfx" include="*.wav" embed="false" if="html5"/>
+	<assets path="assets/audio" rename="sfx" include="*.wav" embed="true" if="html5"/>
     <assets path="assets/font" rename="font" type="font" include="*.ttf" unless="html5"/>
     <assets path="assets/font" rename="font" type="font" include="*.woff|*.svg" if="html5"/>
 	<assets path="assets/atlas" rename="atlas" include="*.xml" />
