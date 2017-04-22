@@ -1,3 +1,3 @@
-title: Screen Scale Modes
+title: BitmapText
 width: 800
 height: 480
