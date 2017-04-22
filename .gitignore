@@ -14,6 +14,7 @@ tests/report
 
 TestMain.hx
 TestSuite.hx
+ExampleTest.hx
 
 # OS specific files
 .DS_Store
