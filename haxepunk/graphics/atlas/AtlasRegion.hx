@@ -5,6 +5,7 @@ import flash.geom.Rectangle;
 import flash.geom.Point;
 import flash.geom.Matrix;
 import haxepunk.utils.MathUtil;
+import haxepunk.graphics.shaders.Shader;
 
 class AtlasRegion implements IAtlasRegion
 {
@@ -68,6 +69,7 @@ class AtlasRegion implements IAtlasRegion
 	 * @param	x			The x-axis location to draw the tile
 	 * @param	y			The y-axis location to draw the tile
 	 * @param	layer		The layer to draw on
+	 * @param	shader		The shader to use for drawing
 	 * @param	scaleX		The scale value for the x-axis
 	 * @param	scaleY		The scale value for the y-axis
 	 * @param	angle		An angle to rotate the tile in degrees
@@ -79,14 +81,17 @@ class AtlasRegion implements IAtlasRegion
 	 * @param	blend		Blend mode
 	 * @param	clipRect	Clipping rectangle
 	 */
-	public inline function draw(x:Float, y:Float, layer:Int,
+	public inline function draw(x:Float, y:Float, layer:Int, shader:Shader,
 		scaleX:Float=1, scaleY:Float=1, angle:Float=0,
 		red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1,
 		smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
 	{
 		if (rotated) angle = angle + 90;
 
-		_parent.prepareTile(_rect, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha, smooth, blend, clipRect);
+		_parent.prepareTile(shader, _rect, x, y, layer,
+			scaleX, scaleY, angle,
+			red, green, blue, alpha,
+			smooth, blend, clipRect);
 	}
 
 	/**
@@ -98,6 +103,7 @@ class AtlasRegion implements IAtlasRegion
 	 * @param	c			Bottom-left
 	 * @param	d			Bottom-right
 	 * @param	layer		The layer to draw on
+	 * @param	shader		The shader to use for drawing
 	 * @param	red			Red color value
 	 * @param	green		Green color value
 	 * @param	blue		Blue color value
@@ -107,20 +113,21 @@ class AtlasRegion implements IAtlasRegion
 	 * @param	clipRect	Clipping rectangle
 	 */
 	public inline function drawMatrix(tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
-		layer:Int, red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1,
+		layer:Int, shader:Shader, red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1,
 		smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void
 	{
 		if (rotated)
 		{
 			var matrix = new Matrix(a, b, c, d, tx, ty);
 			matrix.rotate(90 * MathUtil.RAD);
-			_parent.prepareTileMatrix(_rect, layer,
+			_parent.prepareTileMatrix(shader, _rect, layer,
 				matrix.tx, matrix.ty, matrix.a, matrix.b, matrix.c, matrix.d,
 				red, green, blue, alpha, smooth, blend, clipRect);
 		}
 		else
 		{
-			_parent.prepareTileMatrix(_rect, layer, tx, ty, a, b, c, d, red, green, blue, alpha, smooth, blend, clipRect);
+			_parent.prepareTileMatrix(shader, _rect, layer, tx, ty, a, b, c, d,
+				red, green, blue, alpha, smooth, blend, clipRect);
 		}
 	}
 

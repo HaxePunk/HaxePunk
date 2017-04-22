@@ -5,7 +5,7 @@ import flash.display.Sprite;
 import flash.geom.Point;
 import haxepunk.graphics.atlas.AtlasData;
 import haxepunk.graphics.atlas.SceneSprite;
-import haxepunk.graphics.atlas.Shader;
+import haxepunk.graphics.shaders.SceneShader;
 import haxepunk.utils.MathUtil;
 
 /**
@@ -46,7 +46,7 @@ class Scene extends Tweener
 	 *
 	 * @since	4.0.0
 	 */
-	public var shaders:Null<Array<Shader>>;
+	public var shaders:Null<Array<SceneShader>>;
 
 	/**
 	 * Invoked before the update cycle begins each frame.

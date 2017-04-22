@@ -3,6 +3,7 @@ package haxepunk.graphics.atlas;
 import flash.display.BlendMode;
 import flash.geom.Rectangle;
 import haxepunk.graphics.atlas.AtlasData;
+import haxepunk.graphics.shaders.Shader;
 
 class Atlas
 {
@@ -62,11 +63,11 @@ class Atlas
 	 * @param	alpha	The tile's opacity
 	 */
 	public inline function prepareTile(rect:Rectangle, x:Float, y:Float, layer:Int,
-		scaleX:Float, scaleY:Float, angle:Float,
+		shader:Shader, scaleX:Float, scaleY:Float, angle:Float,
 		red:Float, green:Float, blue:Float, alpha:Float,
 		smooth:Bool, blend:BlendMode)
 	{
-		_data.prepareTile(rect, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha, smooth, blend);
+		_data.prepareTile(shader, rect, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha, smooth, blend);
 	}
 
 	/**

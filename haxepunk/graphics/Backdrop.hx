@@ -81,7 +81,7 @@ class Backdrop extends Graphic
 				_region.draw(
 					px + x * scaledWidth,
 					py + y * scaledHeight,
-					layer, sx, sy, 0,
+					layer, shader, sx, sy, 0,
 					_red, _green, _blue, alpha,
 					smooth, blend
 				);
