@@ -66,7 +66,7 @@ class DrawCommandBatch
 					found = true;
 					break;
 				}
-				t += current.dataCount;
+				t += current.triangleCount;
 				current = current._prev;
 			}
 			if (found)
