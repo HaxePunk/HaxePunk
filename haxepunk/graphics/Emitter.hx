@@ -32,7 +32,7 @@ class Emitter extends BaseEmitter<Spritemap>
 		_frames = new Map();
 	}
 
-	override public function addType(name:String, ?blendMode:BlendMode):ParticleType
+	override function addType(name:String, ?blendMode:BlendMode):ParticleType
 	{
 		return newType(name, blendMode);
 	}

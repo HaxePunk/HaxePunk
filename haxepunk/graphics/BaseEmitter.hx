@@ -164,7 +164,7 @@ import haxepunk.utils.Random;
 	 * @param	frames		Array of frame indices for the particles to animate.
 	 * @return	A new ParticleType object.
 	 */
-	public function addType(name:String, ?blendMode:BlendMode):ParticleType
+	function addType(name:String, ?blendMode:BlendMode):ParticleType
 	{
 		if (blendMode == null) blendMode = this.blend;
 		var pt:ParticleType = _types.get(name);
