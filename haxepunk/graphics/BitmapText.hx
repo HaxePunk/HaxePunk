@@ -544,8 +544,9 @@ class BitmapText extends Graphic
 								y = point.y + gd.yOffset * gd.scale * sy / maxFullScale + thisLineHeight - (lineHeight * currentScale);
 							gd.region.draw(
 								(_point.x + x) * fsx, (_point.y + y) * fsy,
-								layer, shader, gd.scale, gd.scale * sy * fsy / maxFullScale, 0,
-								currentColor.red, currentColor.green, currentColor.blue, currentAlpha, smooth, blend
+								layer, gd.scale, gd.scale * sy * fsy / maxFullScale, 0,
+								currentColor.red, currentColor.green, currentColor.blue, currentAlpha,
+								shader, smooth, blend
 							);
 							// advance cursor position
 							cursorX += gd.xAdvance * gd.scale / fsx + charSpacing * currentScale;
