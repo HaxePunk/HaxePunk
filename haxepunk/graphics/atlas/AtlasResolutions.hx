@@ -75,13 +75,17 @@ class AtlasResolutions implements IAtlasRegion
 	 * @param	clipRect	Clipping rectangle
 	 */
 	public inline function draw(x:Float, y:Float, layer:Int,
-		shader:Shader, scaleX:Float=1, scaleY:Float=1, angle:Float=0,
+		scaleX:Float=1, scaleY:Float=1, angle:Float=0,
 		red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1,
-		smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
+		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
 	{
 		var region = regionForScale(Math.max(Math.abs(scaleX), Math.abs(scaleY)));
 		var scale:Float = base.width / region.width;
-		region.draw(x, y, layer, shader, scaleX * scale, scaleY * scale, angle, red, green, blue, alpha, smooth, blend, clipRect);
+		region.draw(x, y, layer,
+			scaleX * scale, scaleY * scale, angle,
+			red, green, blue, alpha,
+			shader, smooth, blend, clipRect
+		);
 	}
 
 	/**
@@ -102,12 +106,15 @@ class AtlasResolutions implements IAtlasRegion
 	 * @param	clipRect	Clipping rectangle
 	 */
 	public inline function drawMatrix(tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
-		layer:Int, shader:Shader, red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1,
-		smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
+		layer:Int, red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1,
+		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
 	{
 		var region = regionForScale(Math.max(Math.abs(a * c), Math.abs(b * d)));
 		var scale:Float = base.width / region.width;
-		region.drawMatrix(tx * scale, ty * scale, a * scale, b * scale, c * scale, d * scale, layer, shader, red, green, blue, alpha, smooth, blend, clipRect);
+		region.drawMatrix(tx * scale, ty * scale, a * scale, b * scale, c * scale, d * scale, layer,
+			red, green, blue, alpha,
+			shader, smooth, blend, clipRect
+		);
 	}
 
 	public function clip(clipRect:Rectangle, ?center:Point):IAtlasRegion

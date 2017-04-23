@@ -175,11 +175,10 @@ class AtlasData
 	 * @param  alpha Alpha value
 	 */
 	public inline function prepareTileMatrix(
-		shader:Shader,
 		rect:Rectangle, layer:Int,
 		tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
 		red:Float, green:Float, blue:Float, alpha:Float,
-		smooth:Bool=false, blend:BlendMode, ?clipRect:Rectangle)
+		shader:Shader, smooth:Bool=false, blend:BlendMode, ?clipRect:Rectangle)
 	{
 		var batch = _scene.sprite.batch;
 		batch.addRect(
@@ -205,11 +204,10 @@ class AtlasData
 	 * @param  alpha  Alpha value
 	 */
 	public inline function prepareTile(
-		shader:Shader,
 		rect:Rectangle, tx:Float, ty:Float, layer:Int,
 		scaleX:Float, scaleY:Float, angle:Float,
 		red:Float, green:Float, blue:Float, alpha:Float,
-		smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void
+		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void
 	{
 		var a:Float, b:Float, c:Float, d:Float;
 
@@ -237,12 +235,11 @@ class AtlasData
 	}
 
 	public function prepareTriangle(
-		shader:Shader,
 		tx1:Float, ty1:Float, uvx1:Float, uvy1:Float,
 		tx2:Float, ty2:Float, uvx2:Float, uvy2:Float,
 		tx3:Float, ty3:Float, uvx3:Float, uvy3:Float,
 		red:Float, green:Float, blue:Float, alpha:Float,
-		smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void
+		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void
 	{
 		var batch = _scene.sprite.batch;
 		batch.addTriangle(bitmapData, shader, smooth, blend, clipRect, tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, red, green, blue, alpha);

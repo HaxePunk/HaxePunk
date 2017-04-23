@@ -63,11 +63,11 @@ class Atlas
 	 * @param	alpha	The tile's opacity
 	 */
 	public inline function prepareTile(rect:Rectangle, x:Float, y:Float, layer:Int,
-		shader:Shader, scaleX:Float, scaleY:Float, angle:Float,
+		scaleX:Float, scaleY:Float, angle:Float,
 		red:Float, green:Float, blue:Float, alpha:Float,
-		smooth:Bool, blend:BlendMode)
+		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
 	{
-		_data.prepareTile(shader, rect, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha, smooth, blend);
+		_data.prepareTile(rect, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha, shader, smooth, blend, clipRect);
 	}
 
 	/**

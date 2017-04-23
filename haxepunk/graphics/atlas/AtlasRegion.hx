@@ -81,17 +81,17 @@ class AtlasRegion implements IAtlasRegion
 	 * @param	blend		Blend mode
 	 * @param	clipRect	Clipping rectangle
 	 */
-	public inline function draw(x:Float, y:Float, layer:Int, shader:Shader,
+	public inline function draw(x:Float, y:Float, layer:Int,
 		scaleX:Float=1, scaleY:Float=1, angle:Float=0,
 		red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1,
-		smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
+		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
 	{
 		if (rotated) angle = angle + 90;
 
-		_parent.prepareTile(shader, _rect, x, y, layer,
+		_parent.prepareTile(_rect, x, y, layer,
 			scaleX, scaleY, angle,
 			red, green, blue, alpha,
-			smooth, blend, clipRect);
+			shader, smooth, blend, clipRect);
 	}
 
 	/**
@@ -113,21 +113,26 @@ class AtlasRegion implements IAtlasRegion
 	 * @param	clipRect	Clipping rectangle
 	 */
 	public inline function drawMatrix(tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
-		layer:Int, shader:Shader, red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1,
-		smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void
+		layer:Int, red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1,
+		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void
 	{
 		if (rotated)
 		{
 			var matrix = new Matrix(a, b, c, d, tx, ty);
 			matrix.rotate(90 * MathUtil.RAD);
-			_parent.prepareTileMatrix(shader, _rect, layer,
+			_parent.prepareTileMatrix(_rect, layer,
 				matrix.tx, matrix.ty, matrix.a, matrix.b, matrix.c, matrix.d,
-				red, green, blue, alpha, smooth, blend, clipRect);
+				red, green, blue, alpha,
+				shader, smooth, blend, clipRect
+			);
 		}
 		else
 		{
-			_parent.prepareTileMatrix(shader, _rect, layer, tx, ty, a, b, c, d,
-				red, green, blue, alpha, smooth, blend, clipRect);
+			_parent.prepareTileMatrix(_rect, layer,
+				tx, ty, a, b, c, d,
+				red, green, blue, alpha,
+				shader, smooth, blend, clipRect
+			);
 		}
 	}
 

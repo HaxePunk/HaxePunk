@@ -116,7 +116,11 @@ class Image extends Graphic
 
 			// render without rotation
 			var clipRect = screenClipRect(_point.x, _point.y);
-			_region.draw(_point.x * fsx, _point.y * fsy, layer, shader, sx * fsx, sy * fsy, angle, _red, _green, _blue, alpha, smooth, blend, clipRect);
+			_region.draw(_point.x * fsx, _point.y * fsy,
+				layer, sx * fsx, sy * fsy, angle,
+				_red, _green, _blue, alpha,
+				shader, smooth, blend, clipRect
+			);
 		}
 		else
 		{
@@ -130,7 +134,10 @@ class Image extends Graphic
 			var tx = (-originX * sx * cos + originY * sy * sin + originX + _point.x);
 			var ty = (-originX * sx * sin - originY * sy * cos + originY + _point.y);
 			var clipRect = screenClipRect(tx, ty);
-			_region.drawMatrix(tx * fsx, ty * fsy, a, b, c, d, layer, shader, _red, _green, _blue, alpha, smooth, blend, clipRect);
+			_region.drawMatrix(tx * fsx, ty * fsy, a, b, c, d, layer,
+				_red, _green, _blue, alpha,
+				shader, smooth, blend, clipRect
+			);
 		}
 	}
 
