@@ -1,8 +1,6 @@
 -cp ..
 -cp src
 -main TestMain
---macro include("haxepunk")
---macro haxepunk.utils.Platform.run()
 -lib munit
 -lib hamcrest
 

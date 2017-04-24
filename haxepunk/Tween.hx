@@ -1,7 +1,8 @@
 package haxepunk;
 
-import haxepunk.tweens.TweenEvent;
 import flash.events.EventDispatcher;
+import haxepunk.tweens.TweenEvent;
+import haxepunk.ds.Maybe;
 
 /**
  * The type of the tween.
@@ -38,7 +39,7 @@ enum TweenType
 class Tween extends EventDispatcher
 {
 	/** If the tween is active. */
-	public var active:Bool;
+	public var active:Bool = false;
 
 	/** Whether tween is currently running forward. For TweenType.PingPong. */
 	public var forward:Bool = true;
@@ -52,9 +53,12 @@ class Tween extends EventDispatcher
 	 */
 	public function new(duration:Float, ?type:TweenType, ?complete:Dynamic -> Void, ?ease:Float -> Float)
 	{
+		if (duration <= 0)
+		{
+			throw "Tween duration must be greater than zero!";
+		}
 		_target = duration;
-		if (type == null) type = TweenType.Persist;
-		_type = type;
+		_type = type == null ? TweenType.Persist : type;
 		_ease = ease;
 		_t = 0;
 		_callback = complete;
@@ -72,15 +76,18 @@ class Tween extends EventDispatcher
 	@:dox(hide)
 	public function update()
 	{
-		_time += HXP.elapsed;
-		_t = percent;
-		if (_ease != null && _t > 0 && _t < 1) _t = _ease(_t);
-		if (_time >= _target)
+		if (active)
 		{
-			_t = forward ? 1 : 0;
-			_finish = true;
+			_time += HXP.elapsed;
+			_t = percent;
+			if (_t > 0 && _t < 1) _ease.may(function(f) _t = f(_t));
+			if (_time >= _target)
+			{
+				_t = forward ? 1 : 0;
+				_finish = true;
+			}
+			dispatchEvent(new TweenEvent(TweenEvent.UPDATE));
 		}
-		dispatchEvent(new TweenEvent(TweenEvent.UPDATE));
 	}
 
 	/**
@@ -89,7 +96,7 @@ class Tween extends EventDispatcher
 	public function start()
 	{
 		_time = 0;
-		if (_target == 0)
+		if (_target <= 0)
 		{
 			active = false;
 			dispatchEvent(new TweenEvent(TweenEvent.FINISH));
@@ -147,10 +154,10 @@ class Tween extends EventDispatcher
 	function get_scale():Float return _t;
 
 	var _type:TweenType;
-	var _ease:Float -> Float;
+	var _ease:Maybe<Float -> Float>;
 	var _t:Float;
 
-	var _time:Float;
+	var _time:Float = 0;
 	var _target:Float;
 
 	var _callback:Dynamic -> Void;
