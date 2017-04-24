@@ -1,7 +1,7 @@
 version=2.1.2
 src=src
-bin=bin
-report=report
+bin=bin/test
+report=bin/report
 hxml=test-openfl4.hxml
-classPaths=src,..
-coveragePackages=com
+classPaths=..
+coveragePackages=haxepunk
