@@ -26,7 +26,7 @@ sudo: false
 install:
   - yes | haxelib install hxcpp 3.4.49 > log.txt || cat log.txt
   - if [[ $TEST ]]; then
-        yes | haxelib install munit > log.txt || cat log.txt;
+        yes | haxelib git munit https://github.com/massiveinteractive/MassiveUnit.git master src > log.txt || cat log.txt;
         yes | haxelib install mcover > log.txt || cat log.txt;
         yes | haxelib install hamcrest > log.txt || cat log.txt;
     fi

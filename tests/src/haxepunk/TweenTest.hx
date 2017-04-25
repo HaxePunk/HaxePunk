@@ -3,7 +3,7 @@ package haxepunk;
 import massive.munit.Assert;
 import haxepunk.Tween;
 
-class TweenTest extends BaseTest
+class TweenTest
 {
 	@Before
 	public function setup()
@@ -22,13 +22,13 @@ class TweenTest extends BaseTest
 	@Test
 	public function testStartWhereDurationIsZero()
 	{
-		assertThrows(String, function() new Tween(0));
+		Assert.throws(String, function() new Tween(0));
 	}
 
 	@Test
 	public function testStartWithNegativeDuration()
 	{
-		assertThrows(String, function() new Tween(-4));
+		Assert.throws(String, function() new Tween(-4));
 	}
 
 	@Test
