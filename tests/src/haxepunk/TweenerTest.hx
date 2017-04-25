@@ -3,7 +3,7 @@ package haxepunk;
 import massive.munit.Assert;
 import haxepunk.Tweener;
 
-class TweenerTest extends BaseTest
+class TweenerTest
 {
 	@Before
 	public function setup()
@@ -16,7 +16,7 @@ class TweenerTest extends BaseTest
 	{
 		var tween = new Tween(1);
 		tweener.addTween(tween);
-		assertThrows(String, function() tweener.addTween(tween));
+		Assert.throws(String, function() tweener.addTween(tween));
 	}
 
 	var tweener:Tweener;
