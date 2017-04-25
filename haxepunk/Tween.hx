@@ -53,9 +53,9 @@ class Tween extends EventDispatcher
 	 */
 	public function new(duration:Float, ?type:TweenType, ?complete:Dynamic -> Void, ?ease:Float -> Float)
 	{
-		if (duration <= 0)
+		if (duration < 0)
 		{
-			throw "Tween duration must be greater than zero!";
+			throw "Tween duration must be positive!";
 		}
 		_target = duration;
 		_type = type == null ? TweenType.Persist : type;
@@ -96,7 +96,7 @@ class Tween extends EventDispatcher
 	public function start()
 	{
 		_time = 0;
-		if (_target <= 0)
+		if (_target == 0)
 		{
 			active = false;
 			dispatchEvent(new TweenEvent(TweenEvent.FINISH));
@@ -147,7 +147,7 @@ class Tween extends EventDispatcher
 
 	/** Progression of the tween, between 0 and 1. */
 	public var percent(get, set):Float;
-	function get_percent():Float return (forward ? _time : (_target - _time)) / _target;
+	function get_percent():Float return _target == 0 ? 0 : ((forward ? _time : (_target - _time)) / _target);
 	function set_percent(value:Float):Float return _time = _target * value;
 
 	public var scale(get, null):Float;

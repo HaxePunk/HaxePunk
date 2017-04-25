@@ -22,7 +22,11 @@ class TweenTest
 	@Test
 	public function testStartWhereDurationIsZero()
 	{
-		Assert.throws(String, function() new Tween(0));
+		var tween = new Tween(0);
+		tween.start();
+		Assert.isFalse(tween.active);
+		tween.update();
+		Assert.areEqual(0.0, tween.percent);
 	}
 
 	@Test
