@@ -41,6 +41,7 @@ enum MouseMode
 	Panning;
 	Selecting;
 	Dragging;
+	// Scrolling;
 }
 
 /**
@@ -55,8 +56,6 @@ class Console
 	 */
 	public var toggleKey:Int;
 
-	var fps:FPSCounter;
-
 	@:allow(haxepunk)
 	function new()
 	{
@@ -67,16 +66,11 @@ class Console
 		_layerList = new LayerList();
 
 		// Button panel information.
-		_butRead = new Sprite();
+		_butPanel = new Sprite();
 
 		// Entity selection information.
 		_entScreen = new Sprite();
 		_entSelect = new Sprite();
-
-		LAYER_LIST  = new IntMap<Int>();
-		ENTITY_LIST = new Array<Entity>();
-		SCREEN_LIST = new Array<Entity>();
-		SELECT_LIST = new Array<Entity>();
 	}
 
 	function traceLog(v:Dynamic, ?infos:PosInfos)
@@ -86,7 +80,7 @@ class Console
 #if (cpp || neko)
 		Sys.println(log);
 #end
-		if (_enabled && _sprite.visible) updateLog();
+		repositionLogger();
 	}
 
 	/**
@@ -115,24 +109,23 @@ class Console
 			_logger.log(s);
 		}
 
-		// If the log is running, update it.
-		if (_enabled && _sprite.visible) updateLog();
+		repositionLogger();
 	}
 
 	public inline function watch(properties:Array<String>)
 	{
-		debugText.watch(properties);
+		_debugText.watch(properties);
 	}
 
 	/**
-	 * Show the console, no effect if the console insn't hidden.
+	 * Show the console, no effect if the console isn't hidden.
 	 */
 	public function show()
 	{
-		if (!_visible)
+		if (!_onStage)
 		{
 			HXP.stage.addChild(_sprite);
-			_visible = true;
+			_onStage = true;
 		}
 	}
 
@@ -141,10 +134,10 @@ class Console
 	 */
 	public function hide()
 	{
-		if (_visible)
+		if (_onStage)
 		{
 			HXP.stage.removeChild(_sprite);
-			_visible = false;
+			_onStage = false;
 		}
 	}
 
@@ -178,8 +171,7 @@ class Console
 
 		// Enable it and add the Sprite to the stage.
 		_enabled = true;
-		_visible = true;
-		HXP.stage.addChild(_sprite);
+		show();
 
 		// Used to determine some text sizing.
 		var big:Bool = width >= BIG_WIDTH_THRESHOLD;
@@ -192,12 +184,12 @@ class Console
 		_entScreen.addChild(_entSelect);
 
 		// The entity count text.
-		entityCount = new EntityCounter();
-		_sprite.addChild(entityCount);
+		_entityCount = new EntityCounter();
+		_sprite.addChild(_entityCount);
 
 		// The FPS text.
-		fps = new FPSCounter(big);
-		_sprite.addChild(fps);
+		_fps = new FPSCounter(big);
+		_sprite.addChild(_fps);
 
 		_sprite.addChild(_layerList);
 
@@ -206,22 +198,22 @@ class Console
 		_sprite.addChild(_logger);
 
 		// The debug text.
-		debugText = new DebugText();
-		_sprite.addChild(debugText);
+		_debugText = new DebugText();
+		_sprite.addChild(_debugText);
 
 		// The button panel buttons.
-		_sprite.addChild(_butRead);
-		_butRead.addChild(_butDebug);
-		_butRead.addChild(_butOutput);
-		_butRead.addChild(_butPlay).x = 20;
-		_butRead.addChild(_butPause).x = 20;
-		_butRead.addChild(_butStep).x = 40;
+		_sprite.addChild(_butPanel);
+		_butPanel.addChild(_butDebug);
+		_butPanel.addChild(_butOutput);
+		_butPanel.addChild(_butPlay).x = 20;
+		_butPanel.addChild(_butPause).x = 20;
+		_butPanel.addChild(_butStep).x = 40;
 		updateButtons();
 
 		// The button panel.
-		_butRead.graphics.clear();
-		_butRead.graphics.beginFill(0, .75);
-		_butRead.graphics.drawRoundRect(-20, -20, 100, 40, 40, 40);
+		_butPanel.graphics.clear();
+		_butPanel.graphics.beginFill(0, .75);
+		_butPanel.graphics.drawRoundRect(-20, -20, 100, 40, 40, 40);
 		debug = true;
 
 		// redraws the logo
@@ -235,7 +227,7 @@ class Console
 			Log.trace = traceLog;
 
 		_logger.log("-- HaxePunk v" + HXP.VERSION + " --");
-		if (_enabled && _sprite.visible) updateLog();
+		repositionLogger();
 	}
 
 	@:dox(hide)
@@ -253,7 +245,7 @@ class Console
 		_back.bitmapData.draw(_bmpLogo, HXP.matrix, null, BlendMode.MULTIPLY);
 		_back.bitmapData.draw(_back.bitmapData, null, null, BlendMode.INVERT);
 		_back.bitmapData.colorTransform(_back.bitmapData.rect, new ColorTransform(1, 1, 1, 0.5));
-		updateLog();
+		repositionLogger();
 	}
 
 	/**
@@ -264,7 +256,7 @@ class Console
 	function set_visible(value:Bool):Bool
 	{
 		_sprite.visible = value;
-		if (_enabled && value) updateLog();
+		repositionLogger();
 		return _sprite.visible;
 	}
 
@@ -287,25 +279,25 @@ class Console
 	public function update()
 	{
 		// Quit if the console isn't enabled or visible.
-		if (!_enabled || !_visible)
+		if (!_enabled || !_onStage)
 			return;
 
 		// move on resize
-		entityCount.update();
+		_entityCount.update();
 		_layerList.x = width - _layerList.width - 20;
 		_layerList.y = (height - _layerList.height) / 2;
-		_layerList.visible = HXP.engine.paused && _debug;
+		_layerList.visible = HXP.engine.paused && debug;
 
 		// Update buttons.
-		if (_butRead.visible)
+		if (_butPanel.visible)
 			updateButtons();
 
 		// If the console is paused.
-		if (_paused)
+		if (paused)
 		{
 
 			// While in debug mode.
-			if (_debug)
+			if (debug)
 			{
 				updateEntityLists(HXP.scene.count != ENTITY_LIST.length);
 
@@ -361,10 +353,10 @@ class Console
 				{
 					// Update info while the game runs.
 					renderEntities();
-					fps.update();
+					_fps.update();
 				}
 
-				debugText.update(SELECT_LIST, width >= BIG_WIDTH_THRESHOLD);
+				_debugText.update(SELECT_LIST, width >= BIG_WIDTH_THRESHOLD);
 			}
 			else
 			{
@@ -373,7 +365,7 @@ class Console
 				{
 					_scrolling = Mouse.mouseDown;
 					_logger.scroll(Mouse.mouseFlashY);
-					updateLog();
+					repositionLogger();
 				}
 				else if (Mouse.mousePressed)
 				{
@@ -384,49 +376,48 @@ class Console
 		else
 		{
 			// Update info while the game runs.
-			fps.update();
+			_fps.update();
 		}
 
 		// Console toggle.
-		if (Key.pressed(toggleKey)) paused = !_paused;
+		if (Key.pressed(toggleKey)) paused = !paused;
 	}
 
 	/**
 	 * If the Console is currently in paused mode.
 	 */
-	public var paused(get, set):Bool;
-	function get_paused():Bool return _paused;
+	public var paused(default, set):Bool = false;
 	function set_paused(value:Bool):Bool
 	{
 		// Quit if the console isn't enabled.
 		if (!_enabled) return false;
 
 		// Set the console to paused.
-		_paused = value;
+		paused = value;
 		HXP.engine.paused = value;
 
 		// Panel visibility.
 		_back.visible = value;
 		_entScreen.visible = value;
 #if !mobile // buttons always show on mobile devices
-		_butRead.visible = value;
+		_butPanel.visible = value;
 #end
 
 		// If the console is paused.
 		if (value)
 		{
 			// Set the console to paused mode.
-			if (_debug) debug = true;
-			else updateLog();
+			if (debug) debug = true;
+			else repositionLogger();
 
 			Mouse.showCursor();
 		}
 		else
 		{
 			// Set the console to running mode.
-			debugText.visible = false;
+			_debugText.visible = false;
 			_logger.visible = true;
-			updateLog();
+			repositionLogger();
 			HXP.clear(ENTITY_LIST);
 			HXP.clear(SCREEN_LIST);
 			HXP.clear(SELECT_LIST);
@@ -435,29 +426,29 @@ class Console
 			HXP.cursor = null;
 			HXP.cursor = cursor;
 		}
-		return _paused;
+		return paused;
 	}
 
 	/**
 	 * If the Console is currently in debug mode.
 	 */
-	public var debug(get, set):Bool;
-	function get_debug():Bool return _debug;
+	public var debug(default, set):Bool = false;
 	function set_debug(value:Bool):Bool
 	{
 		// Quit if the console isn't enabled.
-		if (!_enabled) return false;
+		if (_enabled)
+		{
+			// Set the console to debug mode.
+			debug = value;
+			_debugText.visible = value;
+			_logger.visible = !value;
 
-		// Set the console to debug mode.
-		_debug = value;
-		debugText.visible = value;
-		_logger.visible = !value;
-
-		// Update console state.
-		if (value) updateEntityLists();
-		else updateLog();
-		renderEntities();
-		return _debug;
+			// Update console state.
+			if (value) updateEntityLists();
+			else repositionLogger();
+			renderEntities();
+		}
+		return debug;
 	}
 
 	/** @private Steps the frame ahead. */
@@ -465,7 +456,7 @@ class Console
 	{
 		HXP.engine.update();
 		HXP.engine.render();
-		entityCount.update();
+		_entityCount.update();
 		updateEntityLists();
 		renderEntities();
 	}
@@ -675,10 +666,10 @@ class Console
 	{
 		var e:Entity;
 		// If debug mode is on.
-		_entScreen.visible = _debug;
+		_entScreen.visible = debug;
 		_entScreen.x = HXP.screen.x;
 		_entScreen.y = HXP.screen.y;
-		if (_debug)
+		if (debug)
 		{
 			var g:Graphics = _entScreen.graphics,
 				sx:Float = HXP.camera.fullScaleX,
@@ -722,13 +713,16 @@ class Console
 	}
 
 	/** @private Updates the log window. */
-	function updateLog()
+	function repositionLogger()
 	{
-		_paused ? _logger.drawMultipleLines() : _logger.drawSingleLine();
+		if (_enabled && visible)
+		{
+			paused ? _logger.drawMultipleLines() : _logger.drawSingleLine();
 
-		fps.selectable = _paused;
-		entityCount.selectable = _paused;
-		debugText.selectable = _paused;
+			_fps.selectable = paused;
+			_entityCount.selectable = paused;
+			_debugText.selectable = paused;
+		}
 	}
 
 	/** @private Shows a bitmap button and handles click events */
@@ -750,14 +744,14 @@ class Console
 	function updateButtons()
 	{
 		// Button visibility.
-		_butRead.x = (width >= BIG_WIDTH_THRESHOLD ? fps.offset + Std.int((entityCount.x - fps.offset) / 2) - 30 : 160 + 20);
+		_butPanel.x = (width >= BIG_WIDTH_THRESHOLD ? _fps.offset + Std.int((_entityCount.x - _fps.offset) / 2) - 30 : 160 + 20);
 		// hide all buttons initially and only show if showButton is called
 		_butStep.visible = _butDebug.visible = _butOutput.visible = _butPlay.visible = _butPause.visible = false;
 
-		if (_paused)
+		if (paused)
 		{
 			// Debug/Output button.
-			if (_debug)
+			if (debug)
 			{
 				showButton(_butOutput, function() debug = false);
 			}
@@ -799,10 +793,8 @@ class Console
 	function get_height():Int return HXP.windowHeight;
 
 	// Console state information.
-	var _enabled:Bool;
-	var _visible:Bool;
-	var _paused:Bool;
-	var _debug:Bool;
+	var _enabled:Bool = false;
+	var _onStage:Bool = false;
 	var _mouseMode:MouseMode = None;
 	var _scrolling:Bool;
 
@@ -810,20 +802,14 @@ class Console
 	var _sprite:Sprite;
 	var _back:Bitmap;
 
-	// Layer panel information
 	var _layerList:LayerList;
-
-	// Output panel information.
 	var _logger:LogReader;
-
-	// Entity count panel information.
-	var entityCount:EntityCounter;
-
-	// Debug panel information.
-	var debugText:DebugText;
+	var _entityCount:EntityCounter;
+	var _debugText:DebugText;
+	var _fps:FPSCounter;
 
 	// Button panel information
-	var _butRead:Sprite;
+	var _butPanel:Sprite;
 	var _butDebug:Bitmap;
 	var _butOutput:Bitmap;
 	var _butPlay:Bitmap;
@@ -835,13 +821,13 @@ class Console
 	// Entity selection information.
 	var _entScreen:Sprite;
 	var _entSelect:Sprite;
-	var _mouseOrigin:Point = new Point();
+	var _mouseOrigin = new Point();
 
 	// Entity lists.
-	var LAYER_LIST:IntMap<Int>;
-	var ENTITY_LIST:Array<Entity>;
-	var SCREEN_LIST:Array<Entity>;
-	var SELECT_LIST:Array<Entity>;
+	var LAYER_LIST = new IntMap<Int>();
+	var ENTITY_LIST = new Array<Entity>();
+	var SCREEN_LIST = new Array<Entity>();
+	var SELECT_LIST = new Array<Entity>();
 
 	// Switch to small text in debug if console width > this threshold.
 	static inline var BIG_WIDTH_THRESHOLD:Int = 420;
