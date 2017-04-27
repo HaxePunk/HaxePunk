@@ -87,6 +87,7 @@ class BitmapText extends Graphic
 	 */
 	public static function defineFormatTag(tag:String, ?color:Color, ?alpha:Float, ?scale:Float):Void
 	{
+		if (formatTags.exists(tag)) throw 'Duplicate format tag: <$tag> already exists';
 		var tagOps:Array<TextOpcode> = new Array();
 		var closeTagOps:Array<TextOpcode> = new Array();
 		if (color != null)
@@ -119,11 +120,13 @@ class BitmapText extends Graphic
 	 */
 	public static function defineImageTag(tag:String, image:Image)
 	{
+		if (formatTags.exists(tag)) throw 'Duplicate format tag: <$tag> already exists';
 		formatTags[tag] = [Image(image)];
 	}
 
 	public static function defineMoveTag(tag:String, func:GlyphMoveFunction)
 	{
+		if (formatTags.exists(tag)) throw 'Duplicate format tag: <$tag> already exists';
 		var closeTag = '/$tag';
 		formatTags[tag] = [MoveText(func)];
 		formatTags[closeTag] = [PopMoveText];
