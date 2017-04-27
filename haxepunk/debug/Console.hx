@@ -66,11 +66,6 @@ class Console
 
 		_layerList = new LayerList();
 
-		// Debug panel information.
-		_debRead = new Sprite();
-		_debReadText0 = new TextField();
-		_debReadText1 = new TextField();
-
 		// Button panel information.
 		_butRead = new Sprite();
 
@@ -82,9 +77,6 @@ class Console
 		ENTITY_LIST = new Array<Entity>();
 		SCREEN_LIST = new Array<Entity>();
 		SELECT_LIST = new Array<Entity>();
-
-		// Watch information.
-		WATCH_LIST = ["x", "y"];
 	}
 
 	function traceLog(v:Dynamic, ?infos:PosInfos)
@@ -127,21 +119,9 @@ class Console
 		if (_enabled && _sprite.visible) updateLog();
 	}
 
-	/**
-	 * Adds properties to watch in the console's debug panel.
-	 * @param	properties		The properties (strings) to watch.
-	 */
-	public function watch(properties:Array<Dynamic>)
+	public inline function watch(properties:Array<String>)
 	{
-		var i:String;
-		if (properties.length > 1)
-		{
-			for (i in properties) WATCH_LIST.push(i);
-		}
-		else
-		{
-			WATCH_LIST.push(properties[0]);
-		}
+		debugText.watch(properties);
 	}
 
 	/**
@@ -226,22 +206,8 @@ class Console
 		_sprite.addChild(_logger);
 
 		// The debug text.
-		_sprite.addChild(_debRead);
-		_debRead.addChild(_debReadText0);
-		_debRead.addChild(_debReadText1);
-		_debReadText0.defaultTextFormat = Format.format(16, 0xFFFFFF);
-		_debReadText1.defaultTextFormat = Format.format(8, 0xFFFFFF);
-		_debReadText0.selectable = false;
-		_debReadText0.width = 80;
-		_debReadText0.height = 20;
-		_debReadText1.width = 160;
-		_debReadText1.height = Std.int(height / 4);
-		_debReadText0.x = 2;
-		_debReadText0.y = 3;
-		_debReadText1.x = 2;
-		_debReadText1.y = 24;
-		_debReadText0.text = "DEBUG:";
-		_debRead.y = height - (_debReadText1.y + _debReadText1.height);
+		debugText = new DebugText();
+		_sprite.addChild(debugText);
 
 		// The button panel buttons.
 		_sprite.addChild(_butRead);
@@ -350,7 +316,7 @@ class Console
 					if (Mouse.mousePressed)
 					{
 						// Mouse is within clickable area.
-						if (Mouse.mouseFlashY > 20 && (Mouse.mouseFlashX > _debReadText1.width || Mouse.mouseFlashY < _debRead.y))
+						if (Mouse.mouseFlashY > 20)
 						{
 							if (Key.check(Key.SHIFT))
 							{
@@ -398,8 +364,7 @@ class Console
 					fps.update();
 				}
 
-				// Update debug panel.
-				updateDebugRead();
+				debugText.update(SELECT_LIST, width >= BIG_WIDTH_THRESHOLD);
 			}
 			else
 			{
@@ -459,7 +424,7 @@ class Console
 		else
 		{
 			// Set the console to running mode.
-			_debRead.visible = false;
+			debugText.visible = false;
 			_logger.visible = true;
 			updateLog();
 			HXP.clear(ENTITY_LIST);
@@ -485,7 +450,7 @@ class Console
 
 		// Set the console to debug mode.
 		_debug = value;
-		_debRead.visible = value;
+		debugText.visible = value;
 		_logger.visible = !value;
 
 		// Update console state.
@@ -763,58 +728,7 @@ class Console
 
 		fps.selectable = _paused;
 		entityCount.selectable = _paused;
-		_debReadText0.selectable = _paused;
-		_debReadText1.selectable = _paused;
-	}
-
-	/** @private Update the debug panel text. */
-	function updateDebugRead()
-	{
-		var str:String;
-		// Find out the screen size and set the text.
-		var big:Bool = width >= BIG_WIDTH_THRESHOLD;
-
-		// Update the Debug read text.
-		var s:String =
-			"Mouse: " + Std.string(HXP.scene.mouseX) + ", " + Std.string(HXP.scene.mouseY) +
-			"\nCamera: " + Std.string(HXP.camera.x) + ", " + Std.string(HXP.camera.y);
-		if (SELECT_LIST.length != 0)
-		{
-			if (SELECT_LIST.length > 1)
-			{
-				s += "\n\nSelected: " + Std.string(SELECT_LIST.length);
-			}
-			else
-			{
-				var e:Entity = SELECT_LIST[0];
-				s += "\n\n- " + Type.getClassName(Type.getClass(e)) + " -\n";
-				for (str in WATCH_LIST)
-				{
-					var field = Reflect.field(e, str);
-					if (field != null)
-					{
-						s += "\n" + str + ": " + Std.string(field);
-					}
-				}
-			}
-		}
-
-		// Set the text and format.
-		_debReadText1.text = s;
-		_debReadText1.setTextFormat(Format.format(big ? 16 : 8));
-		_debReadText1.width = Math.max(_debReadText1.textWidth + 4, _debReadText0.width);
-		_debReadText1.height = _debReadText1.y + _debReadText1.textHeight + 4;
-
-		// The debug panel.
-		_debRead.y = Std.int(height - _debReadText1.height);
-		_debRead.graphics.clear();
-		_debRead.graphics.beginFill(0, .75);
-		_debRead.graphics.drawRect(0, 0, _debReadText0.width - 20, 20);
-		_debRead.graphics.moveTo(_debReadText0.width, 20);
-		_debRead.graphics.lineTo(_debReadText0.width - 20, 20);
-		_debRead.graphics.lineTo(_debReadText0.width - 20, 0);
-		_debRead.graphics.curveTo(_debReadText0.width, 0, _debReadText0.width, 20);
-		_debRead.graphics.drawRoundRect(-20, 20, _debReadText1.width + 40, height - _debRead.y, 40, 40);
+		debugText.selectable = _paused;
 	}
 
 	/** @private Shows a bitmap button and handles click events */
@@ -906,9 +820,7 @@ class Console
 	var entityCount:EntityCounter;
 
 	// Debug panel information.
-	var _debRead:Sprite;
-	var _debReadText0:TextField;
-	var _debReadText1:TextField;
+	var debugText:DebugText;
 
 	// Button panel information
 	var _butRead:Sprite;
@@ -930,9 +842,6 @@ class Console
 	var ENTITY_LIST:Array<Entity>;
 	var SCREEN_LIST:Array<Entity>;
 	var SELECT_LIST:Array<Entity>;
-
-	// Watch information.
-	var WATCH_LIST:Array<String>;
 
 	// Switch to small text in debug if console width > this threshold.
 	static inline var BIG_WIDTH_THRESHOLD:Int = 420;
