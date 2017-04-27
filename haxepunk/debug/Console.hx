@@ -13,14 +13,11 @@ import flash.geom.ColorTransform;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.text.TextField;
-import flash.text.TextFormat;
-import flash.text.TextFormatAlign;
 import haxepunk.Entity;
 import haxepunk.HXP;
 import haxepunk.input.Input;
 import haxepunk.input.Key;
 import haxepunk.input.Mouse;
-import haxepunk.utils.Color;
 import haxepunk.utils.MathUtil;
 
 
@@ -46,244 +43,6 @@ enum MouseMode
 	Dragging;
 }
 
-class Format
-{
-	/** @private Gets a TextFormat object with the formatting. */
-	public static function format(size:Int = 16, color:Color = 0xFFFFFF, align:String = "left"):TextFormat
-	{
-		if (_format == null)
-		{
-			var font = Assets.getFont("font/04B_03__.ttf");
-			if (font == null)
-			{
-				font = Assets.getFont(HXP.defaultFont);
-			}
-			_format = new TextFormat(font.fontName, 8, 0xFFFFFF);
-		}
-
-		_format.size = size;
-		_format.color = color;
-		switch (align)
-		{
-			case "left":
-				_format.align = TextFormatAlign.LEFT;
-			case "right":
-				_format.align = TextFormatAlign.RIGHT;
-			case "center":
-				_format.align = TextFormatAlign.CENTER;
-			case "justify":
-				_format.align = TextFormatAlign.JUSTIFY;
-		}
-		return _format;
-	}
-
-	static var _format:TextFormat;
-}
-
-class LogReader extends Sprite
-{
-	public function new(big:Bool)
-	{
-		super();
-
-		this.addChild(_logReadText0);
-		this.addChild(_logReadText1);
-		_logReadText0.defaultTextFormat = Format.format(16, 0xFFFFFF);
-		_logReadText1.defaultTextFormat = Format.format(big ? 16 : 8, 0xFFFFFF);
-		_logReadText0.selectable = false;
-		_logReadText0.width = 80;
-		_logReadText0.height = 20;
-		_logReadText1.width = HXP.windowWidth;
-		_logReadText0.x = 2;
-		_logReadText0.y = 3;
-		_logReadText0.text = "OUTPUT:";
-		_logHeight = HXP.windowHeight - 60;
-		_logBar = new Rectangle(8, 24, 16, _logHeight - 8);
-		_logBarGlobal = _logBar.clone();
-		_logBarGlobal.y += 40;
-		if (big) _logLines = Std.int(_logHeight / 16.5);
-		else _logLines = Std.int(_logHeight / 8.5);
-	}
-
-	public function log(text:String)
-	{
-		LOG.push(text);
-	}
-
-	public function canStartScrolling(x:Float, y:Float)
-	{
-		return LOG.length > _logLines ? _logBarGlobal.contains(x, y) : false;
-	}
-
-	public function scroll(y:Float)
-	{
-		_logScroll = MathUtil.scaleClamp(y, _logBarGlobal.y, _logBarGlobal.bottom, 0, 1);
-	}
-
-	function drawStart()
-	{
-		_logHeight = HXP.windowHeight - 60;
-		_logBar.height = _logHeight - 8;
-	}
-
-	public function drawSingleLine()
-	{
-		drawStart();
-		this.y = HXP.windowHeight - 40;
-		_logReadText1.height = 20;
-		this.graphics.clear();
-		this.graphics.beginFill(0, .75);
-		this.graphics.drawRect(0, 0, _logReadText0.width - 20, 20);
-		this.graphics.moveTo(_logReadText0.width, 20);
-		this.graphics.lineTo(_logReadText0.width - 20, 20);
-		this.graphics.lineTo(_logReadText0.width - 20, 0);
-		this.graphics.curveTo(_logReadText0.width, 0, _logReadText0.width, 20);
-		this.graphics.drawRect(0, 20, HXP.windowWidth, 20);
-
-		// Draw the single-line log text with the latests logged text.
-		_logReadText1.text = (LOG.length != 0) ? LOG[LOG.length - 1] : "";
-		_logReadText1.x = 2;
-		_logReadText1.y = 21;
-		_logReadText1.selectable = false;
-	}
-
-	public function drawMultipleLines()
-	{
-		drawStart();
-		this.y = 40;
-		this.graphics.clear();
-		this.graphics.beginFill(0, .75);
-		this.graphics.drawRect(0, 0, _logReadText0.width - 20, 20);
-		this.graphics.moveTo(_logReadText0.width, 20);
-		this.graphics.lineTo(_logReadText0.width - 20, 20);
-		this.graphics.lineTo(_logReadText0.width - 20, 0);
-		this.graphics.curveTo(_logReadText0.width, 0, _logReadText0.width, 20);
-		this.graphics.drawRect(0, 20, HXP.windowWidth, _logHeight);
-
-		// Draw the log scrollbar.
-		this.graphics.beginFill(0x202020, 1);
-		this.graphics.drawRoundRect(_logBar.x, _logBar.y, _logBar.width, _logBar.height, 16, 16);
-
-		// If the log has more lines than the display limit.
-		if (LOG.length > _logLines)
-		{
-			// Draw the log scrollbar handle.
-			this.graphics.beginFill(0xFFFFFF, 1);
-			var y:Int = Std.int(_logBar.y + 2 + (_logBar.height - 16) * _logScroll);
-			this.graphics.drawRoundRect(_logBar.x + 2, y, 12, 12, 12, 12);
-		}
-
-		// Display the log text lines.
-		if (LOG.length != 0)
-		{
-			var i:Int = (LOG.length > _logLines) ? Std.int(Math.round((LOG.length - _logLines) * _logScroll)) : 0,
-				n:Int = Std.int(i + Math.min(_logLines, LOG.length)),
-				s:String = "";
-			while (i < n) s += LOG[i++] + "\n";
-			_logReadText1.text = s;
-		}
-		else _logReadText1.text = "";
-
-		// Indent the text for the scrollbar and size it to the log panel.
-		_logReadText1.height = _logHeight;
-		_logReadText1.x = 32;
-		_logReadText1.y = 24;
-	}
-
-	var _logReadText0:TextField = new TextField();
-	var _logReadText1:TextField = new TextField();
-	var _logHeight:Int;
-	var _logBar:Rectangle;
-	var _logBarGlobal:Rectangle;
-	var _logScroll:Float = 0;
-
-	// Log information.
-	var _logLines:Int = 33;
-	var LOG = new Array<String>();
-}
-
-class FPSCounter extends Sprite
-{
-
-	var big:Bool = false;
-
-	public var selectable(get, set):Bool;
-	function get_selectable():Bool return _fpsReadText.selectable;
-	function set_selectable(value:Bool):Bool
-	{
-		_fpsReadText.selectable = value;
-		_fpsInfoText0.selectable = value;
-		_fpsInfoText1.selectable = value;
-		_memReadText.selectable = value;
-		return value;
-	}
-
-	public var offset(get, never):Float;
-	function get_offset():Float return _fpsInfo.x + _fpsInfoText0.width + _fpsInfoText1.width;
-
-	public function new(big:Bool)
-	{
-		super();
-		this.big = big;
-		this.addChild(_fpsReadText);
-		_fpsReadText.defaultTextFormat = Format.format(16);
-		_fpsReadText.width = 70;
-		_fpsReadText.height = 20;
-		_fpsReadText.x = 2;
-		_fpsReadText.y = 1;
-
-		// The frame timing text.
-		if (big) this.addChild(_fpsInfo);
-		_fpsInfo.addChild(_fpsInfoText0);
-		_fpsInfo.addChild(_fpsInfoText1);
-		_fpsInfoText0.defaultTextFormat = Format.format(8, 0xAAAAAA);
-		_fpsInfoText1.defaultTextFormat = Format.format(8, 0xAAAAAA);
-		_fpsInfoText0.width = _fpsInfoText1.width = 60;
-		_fpsInfoText0.height = _fpsInfoText1.height = 20;
-		_fpsInfo.x = 75;
-		_fpsInfoText1.x = 60;
-		_fpsInfo.width = _fpsInfoText0.width + _fpsInfoText1.width;
-
-		// The FPS and frame timing panel.
-		this.graphics.clear();
-		this.graphics.beginFill(0, .75);
-		this.graphics.drawRoundRect(-20, -20, big ? 320 + 20 : 160 + 20, 40, 40, 40);
-
-		// The memory usage
-#if !js
-		this.addChild(_memReadText);
-		_memReadText.defaultTextFormat = Format.format(16);
-		_memReadText.embedFonts = true;
-		_memReadText.width = 110;
-		_memReadText.height = 20;
-		_memReadText.x = (big) ? _fpsInfo.x + _fpsInfoText0.width + _fpsInfoText1.width + 5 : _fpsInfo.x + 9;
-		_memReadText.y = 1;
-#end
-	}
-
-	/** @private Update the FPS/frame timing panel text. */
-	public function update()
-	{
-		_fpsReadText.text = "FPS: " + Std.int(HXP.frameRate);
-		_fpsInfoText0.text =
-			"Update: " + Std.string(HXP._updateTime) + "ms\n" +
-			"Render: " + Std.string(HXP._renderTime) + "ms";
-		_fpsInfoText1.text =
-			"System: " + Std.string(HXP._systemTime) + "ms\n" +
-			"Game: " + Std.string(HXP._gameTime) + "ms";
-#if !js
-		_memReadText.text =
-			(big ? "Mem: " : "") + MathUtil.roundDecimal(flash.system.System.totalMemory / 1024 / 1024, 2) + "MB";
-#end
-	}
-
-	var _fpsInfo:Sprite = new Sprite();
-	var _fpsReadText:TextField = new TextField();
-	var _fpsInfoText0:TextField = new TextField();
-	var _fpsInfoText1:TextField = new TextField();
-	var _memReadText:TextField = new TextField();
-}
-
 /**
  * Console used for debugging, shows entities and their masks.
  *
@@ -306,10 +65,6 @@ class Console
 		_back = new Bitmap();
 
 		_layerList = new LayerList();
-
-		// Entity count panel information.
-		_entRead = new Sprite();
-		_entReadText = new TextField();
 
 		// Debug panel information.
 		_debRead = new Sprite();
@@ -457,17 +212,8 @@ class Console
 		_entScreen.addChild(_entSelect);
 
 		// The entity count text.
-		_sprite.addChild(_entRead);
-		_entRead.addChild(_entReadText);
-		_entReadText.defaultTextFormat = Format.format(16, 0xFFFFFF, "right");
-		_entReadText.width = 100;
-		_entReadText.height = 20;
-		_entRead.x = width - _entReadText.width;
-
-		// The entity count panel.
-		_entRead.graphics.clear();
-		_entRead.graphics.beginFill(0, .5);
-		_entRead.graphics.drawRoundRect(0, -20, _entReadText.width + 20, 40, 40, 40);
+		entityCount = new EntityCounter();
+		_sprite.addChild(entityCount);
 
 		// The FPS text.
 		fps = new FPSCounter(big);
@@ -579,7 +325,7 @@ class Console
 			return;
 
 		// move on resize
-		_entRead.x = width - _entReadText.width;
+		entityCount.update();
 		_layerList.x = width - _layerList.width - 20;
 		_layerList.y = (height - _layerList.height) / 2;
 		_layerList.visible = HXP.engine.paused && _debug;
@@ -650,7 +396,6 @@ class Console
 					// Update info while the game runs.
 					renderEntities();
 					fps.update();
-					updateEntityCount();
 				}
 
 				// Update debug panel.
@@ -675,7 +420,6 @@ class Console
 		{
 			// Update info while the game runs.
 			fps.update();
-			updateEntityCount();
 		}
 
 		// Console toggle.
@@ -756,7 +500,7 @@ class Console
 	{
 		HXP.engine.update();
 		HXP.engine.render();
-		updateEntityCount();
+		entityCount.update();
 		updateEntityLists();
 		renderEntities();
 	}
@@ -1018,7 +762,7 @@ class Console
 		_paused ? _logger.drawMultipleLines() : _logger.drawSingleLine();
 
 		fps.selectable = _paused;
-		_entReadText.selectable = _paused;
+		entityCount.selectable = _paused;
 		_debReadText0.selectable = _paused;
 		_debReadText1.selectable = _paused;
 	}
@@ -1073,12 +817,6 @@ class Console
 		_debRead.graphics.drawRoundRect(-20, 20, _debReadText1.width + 40, height - _debRead.y, 40, 40);
 	}
 
-	/** @private Updates the Entity count text. */
-	function updateEntityCount()
-	{
-		_entReadText.text = Std.string(HXP.scene.count) + " Entities";
-	}
-
 	/** @private Shows a bitmap button and handles click events */
 	function showButton(bitmap:Bitmap, clicked:Void->Void)
 	{
@@ -1098,7 +836,7 @@ class Console
 	function updateButtons()
 	{
 		// Button visibility.
-		_butRead.x = (width >= BIG_WIDTH_THRESHOLD ? fps.offset + Std.int((_entRead.x - fps.offset) / 2) - 30 : 160 + 20);
+		_butRead.x = (width >= BIG_WIDTH_THRESHOLD ? fps.offset + Std.int((entityCount.x - fps.offset) / 2) - 30 : 160 + 20);
 		// hide all buttons initially and only show if showButton is called
 		_butStep.visible = _butDebug.visible = _butOutput.visible = _butPlay.visible = _butPause.visible = false;
 
@@ -1165,8 +903,7 @@ class Console
 	var _logger:LogReader;
 
 	// Entity count panel information.
-	var _entRead:Sprite;
-	var _entReadText:TextField;
+	var entityCount:EntityCounter;
 
 	// Debug panel information.
 	var _debRead:Sprite;
