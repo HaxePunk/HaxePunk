@@ -18,6 +18,7 @@ class EntityCounter extends Sprite
 	public function update()
 	{
 		var numEntities = HXP.scene.count;
+		x = HXP.windowWidth - textField.width;
 		if (count != numEntities)
 		{
 			count = numEntities;
@@ -26,7 +27,6 @@ class EntityCounter extends Sprite
 			textField.width = textField.textWidth + 20;
 			textField.height = textField.textHeight + 4;
 
-			x = HXP.windowWidth - textField.width;
 			graphics.clear();
 			graphics.beginFill(0, 0.5);
 			graphics.drawRoundRect(0, -20, textField.width + 20, 40, 40, 40);

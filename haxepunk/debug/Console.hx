@@ -167,7 +167,7 @@ class Console
 		_sprite.addChild(_entityCount);
 
 		// The FPS text.
-		_fps = new FPSCounter(big);
+		_fps = new FPSCounter();
 		_sprite.addChild(_fps);
 
 		_sprite.addChild(_layerList);
@@ -187,7 +187,7 @@ class Console
 		_butPanel.addChild(_butPlay).x = 20;
 		_butPanel.addChild(_butPause).x = 20;
 		_butPanel.addChild(_butStep).x = 40;
-		updateButtons();
+		updateButtons(big);
 
 		// The button panel.
 		_butPanel.graphics.clear();
@@ -256,15 +256,16 @@ class Console
 		if (!_enabled || !_onStage)
 			return;
 
+		var big = width >= BIG_WIDTH_THRESHOLD;
+
 		// move on resize
 		_entityCount.update();
 		_layerList.x = width - _layerList.width - 20;
 		_layerList.y = (height - _layerList.height) / 2;
 		_layerList.visible = HXP.engine.paused && debug;
 
-		// Update buttons.
-		if (_butPanel.visible)
-			updateButtons();
+		updateButtons(big);
+		_fps.update(big);
 
 		// If the console is paused.
 		if (paused)
@@ -278,11 +279,7 @@ class Console
 				if (HXP.engine.paused)
 				{
 					_entSelect.update();
-					_debugText.update(_entSelect.selected, width >= BIG_WIDTH_THRESHOLD);
-				}
-				else
-				{
-					_fps.update();
+					_debugText.update(_entSelect.selected, big);
 				}
 
 				_entSelect.draw();
@@ -301,11 +298,6 @@ class Console
 					_scrolling = _logger.canStartScrolling(Mouse.mouseFlashX, Mouse.mouseFlashY);
 				}
 			}
-		}
-		else
-		{
-			// Update info while the game runs.
-			_fps.update();
 		}
 
 		// Console toggle.
@@ -425,10 +417,10 @@ class Console
 	}
 
 	/** @private Updates the Button panel. */
-	function updateButtons()
+	function updateButtons(big:Bool)
 	{
 		// Button visibility.
-		_butPanel.x = (width >= BIG_WIDTH_THRESHOLD ? _fps.offset + Std.int((_entityCount.x - _fps.offset) / 2) - 30 : 160 + 20);
+		_butPanel.x = (big ? _fps.offset + Std.int((_entityCount.x - _fps.offset) / 2) - 30 : 160 + 20);
 		// hide all buttons initially and only show if showButton is called
 		_butStep.visible = _butDebug.visible = _butOutput.visible = _butPlay.visible = _butPause.visible = false;
 
