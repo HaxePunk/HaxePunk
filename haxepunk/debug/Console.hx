@@ -2,24 +2,16 @@ package haxepunk.debug;
 
 import haxe.Log;
 import haxe.PosInfos;
-import haxe.ds.IntMap;
 import flash.Assets;
 import flash.display.Bitmap;
 import flash.display.BlendMode;
-import flash.display.Graphics;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.geom.ColorTransform;
-import flash.geom.Point;
-import flash.geom.Rectangle;
-import flash.text.TextField;
 import haxepunk.Entity;
 import haxepunk.HXP;
-import haxepunk.input.Input;
 import haxepunk.input.Key;
 import haxepunk.input.Mouse;
-import haxepunk.utils.MathUtil;
-
 
 /**
  * If the console should capture the trace() function calls.
@@ -33,15 +25,6 @@ enum TraceCapture
 
 	/** The console will capture the traces. */
 	Yes;
-}
-
-enum MouseMode
-{
-	None;
-	Panning;
-	Selecting;
-	Dragging;
-	// Scrolling;
 }
 
 /**
@@ -67,10 +50,6 @@ class Console
 
 		// Button panel information.
 		_butPanel = new Sprite();
-
-		// Entity selection information.
-		_entScreen = new Sprite();
-		_entSelect = new Sprite();
 	}
 
 	function traceLog(v:Dynamic, ?infos:PosInfos)
@@ -180,8 +159,9 @@ class Console
 		_sprite.addChild(_back);
 
 		// The entity and selection sprites.
-		_sprite.addChild(_entScreen);
-		_entScreen.addChild(_entSelect);
+		_entSelect = new EntitySelect();
+		_entSelect.onLayerCount.bind(function(l) _layerList.set(l));
+		_sprite.addChild(_entSelect);
 
 		// The entity count text.
 		_entityCount = new EntityCounter();
@@ -263,14 +243,9 @@ class Console
 	/**
 	 * Allows masks to be turned on and off in the console
 	 */
-	public var debugDraw(default, set):Bool = true;
-	function set_debugDraw(value:Bool):Bool
-	{
-		debugDraw = value;
-		updateEntityLists(false);
-		renderEntities();
-		return value;
-	}
+	public var debugDraw(get, set):Bool;
+	inline function get_debugDraw():Bool return _enabled ? _entSelect.debugDraw : false;
+	inline function set_debugDraw(value:Bool):Bool return _enabled ? _entSelect.debugDraw = value : false;
 
 	/**
 	 * Console update, called by game loop.
@@ -299,64 +274,19 @@ class Console
 			// While in debug mode.
 			if (debug)
 			{
-				updateEntityLists(HXP.scene.count != ENTITY_LIST.length);
 
 				// While the game is paused.
 				if (HXP.engine.paused)
 				{
-					// When the mouse is pressed.
-					if (Mouse.mousePressed)
-					{
-						// Mouse is within clickable area.
-						if (Mouse.mouseFlashY > 20)
-						{
-							if (Key.check(Key.SHIFT))
-							{
-								if (SELECT_LIST.length != 0) startDragging();
-								else startPanning();
-							}
-							else startSelection();
-						}
-					}
-					else
-					{
-						// Update mouse movement functions.
-						switch (_mouseMode)
-						{
-							case Selecting: updateSelection();
-							case Dragging: updateDragging();
-							case Panning: updatePanning();
-							case None:
-						}
-					}
-
-					// Select all Entities
-					if (Key.pressed(Key.A)) selectAll();
-
-					// If the shift key is held.
-					if (Key.check(Key.SHIFT))
-					{
-						// If Entities are selected.
-						if (SELECT_LIST.length != 0)
-						{
-							// Move Entities with the arrow keys.
-							keyMove(moveSelected);
-						}
-						else
-						{
-							// Pan the camera with the arrow keys.
-							keyMove(panCamera);
-						}
-					}
+					_entSelect.update();
+					_debugText.update(_entSelect.selected, width >= BIG_WIDTH_THRESHOLD);
 				}
 				else
 				{
-					// Update info while the game runs.
-					renderEntities();
 					_fps.update();
 				}
 
-				_debugText.update(SELECT_LIST, width >= BIG_WIDTH_THRESHOLD);
+				_entSelect.draw();
 			}
 			else
 			{
@@ -398,7 +328,7 @@ class Console
 
 		// Panel visibility.
 		_back.visible = value;
-		_entScreen.visible = value;
+		_entSelect.visible = value;
 #if !mobile // buttons always show on mobile devices
 		_butPanel.visible = value;
 #end
@@ -418,9 +348,7 @@ class Console
 			_debugText.visible = false;
 			_logger.visible = true;
 			repositionLogger();
-			HXP.clear(ENTITY_LIST);
-			HXP.clear(SCREEN_LIST);
-			HXP.clear(SELECT_LIST);
+			_entSelect.clear();
 
 			var cursor = HXP.cursor;
 			HXP.cursor = null;
@@ -444,9 +372,9 @@ class Console
 			_logger.visible = !value;
 
 			// Update console state.
-			if (value) updateEntityLists();
-			else repositionLogger();
-			renderEntities();
+			if (!value) repositionLogger();
+			_entSelect.visible = value;
+			_entSelect.draw();
 		}
 		return debug;
 	}
@@ -457,65 +385,7 @@ class Console
 		HXP.engine.update();
 		HXP.engine.render();
 		_entityCount.update();
-		updateEntityLists();
-		renderEntities();
-	}
-
-	/** @private Starts Entity dragging. */
-	function startDragging()
-	{
-		_mouseMode = Dragging;
-		_mouseOrigin.x = Mouse.mouseX;
-		_mouseOrigin.y = Mouse.mouseY;
-	}
-
-	/** @private Updates Entity dragging. */
-	function updateDragging()
-	{
-		moveSelected(Std.int(Mouse.mouseX - _mouseOrigin.x), Std.int(Mouse.mouseY - _mouseOrigin.y));
-		_mouseOrigin.x = Mouse.mouseX;
-		_mouseOrigin.y = Mouse.mouseY;
-		if (Mouse.mouseReleased) _mouseMode = None;
-	}
-
-	/** @private Move the selected Entitites by the amount. */
-	function moveSelected(xDelta:Int, yDelta:Int)
-	{
-		for (e in SELECT_LIST)
-		{
-			e.x += xDelta;
-			e.y += yDelta;
-		}
-		HXP.engine.render();
-		renderEntities();
-		updateEntityLists(true);
-	}
-
-	/** @private Starts camera panning. */
-	function startPanning()
-	{
-		_mouseMode = Panning;
-		_mouseOrigin.x = Mouse.mouseX;
-		_mouseOrigin.y = Mouse.mouseY;
-	}
-
-	/** @private Updates camera panning. */
-	function updatePanning()
-	{
-		if (Mouse.mouseReleased) _mouseMode = None;
-		panCamera(Std.int(_mouseOrigin.x - Mouse.mouseX), Std.int(_mouseOrigin.y - Mouse.mouseY));
-		_mouseOrigin.x = Mouse.mouseX;
-		_mouseOrigin.y = Mouse.mouseY;
-	}
-
-	/** @private Pans the camera. */
-	function panCamera(xDelta:Int, yDelta:Int)
-	{
-		HXP.camera.x += xDelta;
-		HXP.camera.y += yDelta;
-		HXP.engine.render();
-		updateEntityLists(true);
-		renderEntities();
+		_entSelect.draw();
 	}
 
 	/** @private Sets the camera position. */
@@ -524,192 +394,7 @@ class Console
 		HXP.camera.x = x;
 		HXP.camera.y = y;
 		HXP.engine.render();
-		updateEntityLists(true);
-		renderEntities();
-	}
-
-	/** @private Starts Entity selection. */
-	function startSelection()
-	{
-		_mouseMode = Selecting;
-		_mouseOrigin.x = Mouse.mouseFlashX;
-		_mouseOrigin.y = Mouse.mouseFlashY;
-	}
-
-	function getMouseRectangle():Rectangle
-	{
-		var rect = new Rectangle(
-			_mouseOrigin.x,
-			_mouseOrigin.y,
-			Mouse.mouseFlashX - _mouseOrigin.x,
-			Mouse.mouseFlashY - _mouseOrigin.y
-		);
-
-		// make sure rectangle stays positive
-		if (rect.width < 0) rect.x -= (rect.width = -rect.width);
-		if (rect.height < 0) rect.y -= (rect.height = -rect.height);
-
-		return rect;
-	}
-
-	/** @private Updates Entity selection. */
-	function updateSelection()
-	{
-		var rect = getMouseRectangle();
-
-		if (Mouse.mouseReleased)
-		{
-			selectEntities(rect);
-			renderEntities();
-			_mouseMode = None;
-			_entSelect.graphics.clear();
-		}
-		else
-		{
-			_entSelect.graphics.clear();
-			_entSelect.graphics.lineStyle(1, 0xFFFFFF);
-			_entSelect.graphics.drawRect(rect.x, rect.y, rect.width, rect.height);
-		}
-	}
-
-	/** @private Selects the Entitites in the rectangle. */
-	function selectEntities(rect:Rectangle)
-	{
-		// clear selections if not pressing Ctrl (which appends selections)
-		if (!Key.check(Key.CONTROL))
-		{
-			HXP.clear(SELECT_LIST);
-		}
-
-		// only make selections if the rectangle has a width and height
-		if (rect.width > 0 && rect.height > 0)
-		{
-			HXP.rect.width = HXP.rect.height = ENTITY_HANDLE_RADIUS * 2;
-			// Append/Remove selected Entitites.
-			for (e in SCREEN_LIST)
-			{
-				HXP.rect.x = (e.x - HXP.camera.x) * HXP.screen.fullScaleX - ENTITY_HANDLE_RADIUS;
-				HXP.rect.y = (e.y - HXP.camera.y) * HXP.screen.fullScaleY - ENTITY_HANDLE_RADIUS;
-				if (rect.intersects(HXP.rect))
-				{
-					if (HXP.indexOf(SELECT_LIST, e) < 0)
-					{
-						SELECT_LIST.push(e);
-					}
-					else
-					{
-						SELECT_LIST.remove(e);
-					}
-				}
-			}
-		}
-	}
-
-	/** @private Selects all entities on screen. */
-	function selectAll()
-	{
-		// capture number selected before clearing selection list
-		var numSelected = SELECT_LIST.length;
-		HXP.clear(SELECT_LIST);
-
-		// if the number of entities on screen is the same as selected, leave the list cleared
-		if (numSelected != SCREEN_LIST.length)
-		{
-			for (e in SCREEN_LIST) SELECT_LIST.push(e);
-		}
-		renderEntities();
-	}
-
-	inline function keyMove(func:Int->Int->Void)
-	{
-		var x = (Key.pressed(Key.RIGHT) ? 1 : 0) - (Key.pressed(Key.LEFT) ? 1 : 0);
-		var y = (Key.pressed(Key.DOWN) ? 1 : 0) - (Key.pressed(Key.UP) ? 1 : 0);
-		if (x == 0 && y == 0) return;
-		func(x, y);
-	}
-
-	/** @private Update the Entity list information. */
-	function updateEntityLists(fetchList:Bool = true)
-	{
-		// If the list should be re-populated.
-		if (fetchList)
-		{
-			HXP.clear(ENTITY_LIST);
-			HXP.scene.getAll(ENTITY_LIST);
-
-			for (key in LAYER_LIST.keys())
-			{
-				LAYER_LIST.set(key, 0);
-			}
-		}
-
-		// Update the list of Entities on screen.
-		HXP.clear(SCREEN_LIST);
-		for (e in ENTITY_LIST)
-		{
-			var layer = e.layer;
-			if (HXP.scene.camera.onCamera(e) && HXP.scene.layerVisible(layer))
-				SCREEN_LIST.push(e);
-
-			if (fetchList)
-				LAYER_LIST.set(layer, LAYER_LIST.exists(layer) ? LAYER_LIST.get(layer) + 1 : 1);
-		}
-
-		if (fetchList)
-		{
-			_layerList.set(LAYER_LIST);
-		}
-	}
-
-	/** @private Renders the Entities positions and hitboxes. */
-	function renderEntities()
-	{
-		var e:Entity;
-		// If debug mode is on.
-		_entScreen.visible = debug;
-		_entScreen.x = HXP.screen.x;
-		_entScreen.y = HXP.screen.y;
-		if (debug)
-		{
-			var g:Graphics = _entScreen.graphics,
-				sx:Float = HXP.camera.fullScaleX,
-				sy:Float = HXP.camera.fullScaleY,
-				colorHitbox = 0xFFFFFF,
-				colorPosition = 0xFFFFFF;
-			g.clear();
-			for (e in SCREEN_LIST)
-			{
-				var graphicScrollX = e.graphic != null ? e.graphic.scrollX : 1;
-				var graphicScrollY = e.graphic != null ? e.graphic.scrollY : 1;
-
-				// If the Entity is not selected.
-				if (HXP.indexOf(SELECT_LIST, e) < 0)
-				{
-					colorHitbox = 0xFF0000;
-					colorPosition = 0x00FF00;
-				}
-				else
-				{
-					colorHitbox = 0xFFFFFF;
-					colorPosition = 0xFFFFFF;
-				}
-
-				// Draw the hitbox and position.
-				if (e.width != 0 && e.height != 0)
-				{
-					g.lineStyle(1, colorHitbox);
-					g.drawRect((e.x - e.originX - HXP.camera.x * graphicScrollX) * sx, (e.y - e.originY - HXP.camera.y * graphicScrollY) * sy, e.width * sx, e.height * sy);
-
-					if (debugDraw && e.mask != null)
-					{
-						g.lineStyle(1, 0x0000FF);
-						e.mask.debugDraw(g, sx, sy);
-					}
-				}
-				g.lineStyle(1, colorPosition);
-				g.drawCircle((e.x - HXP.camera.x * graphicScrollX) * sx, (e.y - HXP.camera.y * graphicScrollY) * sy, ENTITY_HANDLE_RADIUS);
-			}
-		}
+		_entSelect.draw(true);
 	}
 
 	/** @private Updates the log window. */
@@ -766,16 +451,18 @@ class Console
 		// Play/Pause button.
 		if (HXP.engine.paused)
 		{
-			showButton(_butPlay, function() {
+			showButton(_butPlay, function()
+			{
 				HXP.engine.paused = false;
-				renderEntities();
+				_entSelect.draw();
 			});
 		}
 		else
 		{
-			showButton(_butPause, function() {
+			showButton(_butPause, function()
+			{
 				HXP.engine.paused = true;
-				renderEntities();
+				_entSelect.draw();
 			});
 		}
 	}
@@ -795,7 +482,6 @@ class Console
 	// Console state information.
 	var _enabled:Bool = false;
 	var _onStage:Bool = false;
-	var _mouseMode:MouseMode = None;
 	var _scrolling:Bool;
 
 	// Console display objects.
@@ -807,6 +493,7 @@ class Console
 	var _entityCount:EntityCounter;
 	var _debugText:DebugText;
 	var _fps:FPSCounter;
+	var _entSelect:EntitySelect;
 
 	// Button panel information
 	var _butPanel:Sprite;
@@ -818,19 +505,7 @@ class Console
 
 	var _bmpLogo:Bitmap;
 
-	// Entity selection information.
-	var _entScreen:Sprite;
-	var _entSelect:Sprite;
-	var _mouseOrigin = new Point();
-
-	// Entity lists.
-	var LAYER_LIST = new IntMap<Int>();
-	var ENTITY_LIST = new Array<Entity>();
-	var SCREEN_LIST = new Array<Entity>();
-	var SELECT_LIST = new Array<Entity>();
-
 	// Switch to small text in debug if console width > this threshold.
 	static inline var BIG_WIDTH_THRESHOLD:Int = 420;
-	static inline var ENTITY_HANDLE_RADIUS:Int = 3;
 
 }
