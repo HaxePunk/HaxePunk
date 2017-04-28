@@ -8,7 +8,6 @@ import flash.display.BlendMode;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.geom.ColorTransform;
-import haxepunk.Entity;
 import haxepunk.HXP;
 import haxepunk.input.Key;
 import haxepunk.input.Mouse;
