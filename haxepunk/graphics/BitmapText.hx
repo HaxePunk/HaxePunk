@@ -60,7 +60,9 @@ class BitmapText extends Graphic
 	static var FORMAT_TAG_RE = ~/<(([A-Za-z_-]+)\/?|(\/[A-Za-z_-]+))>/;
 
 	static var formatTags:Map<String, Array<TextOpcode>> = [
+		// newline
 		"br" => [NewLine(0, 0, Left)],
+		// alignment
 		"left" => [Align(Left)],
 		"/left" => [Align(Left)],
 		"right" => [Align(Right)],
@@ -72,6 +74,7 @@ class BitmapText extends Graphic
 	static var _colorStack:Array<Color> = new Array();
 	static var _alphaStack:Array<Float> = new Array();
 	static var _scaleStack:Array<Float> = new Array();
+	static var _word:Array<TextOpcode> = new Array();
 	static var _moveStack:Array<GlyphMoveFunction> = new Array();
 	static var _renderPoint:Point = new Point();
 
@@ -308,6 +311,7 @@ class BitmapText extends Graphic
 		// clear current opcode list
 		HXP.clear(opCodes);
 		HXP.clear(_scaleStack);
+		HXP.clear(_word);
 
 		_scaleStack.push(1);
 		var fsx:Float = HXP.screen.fullScaleX,
@@ -322,33 +326,36 @@ class BitmapText extends Graphic
 			cursorY:Float = 0,
 			block:String = "",
 			currentWord:String = "",
-			currentWordLength:Float = 0,
+			wordLength:Float = 0,
 			currentScale:Float = 1,
-			currentAlign:AlignType = AlignType.Left;
+			currentAlign:AlignType = AlignType.Left,
+			wrapping:Bool = false;
 
 		var textWidth = 0;
 		opCodes.push(null);
 		var newLineIndex:Int = 0;
 
-		inline function flushWord()
+		inline function pushOpcode(opCode:TextOpcode)
 		{
-			if (currentWord != "")
+			if (opCode == null || opCodes[opCodes.length - 1] == null)
 			{
-				block += currentWord;
-				currentWord = "";
-				cursorX += currentWordLength;
-				if (cursorX > textWidth) textWidth = Std.int(cursorX);
-				currentWordLength = 0;
+				opCodes.push(opCode);
+			}
+			else switch (opCode)
+			{
+				case TextBlock(txt2):
+					switch (opCodes[opCodes.length - 1])
+					{
+						case TextBlock(txt1):
+							opCodes[opCodes.length - 1] = TextBlock(txt1 + txt2);
+						default:
+							opCodes.push(opCode);
+					}
+				default:
+					opCodes.push(opCode);
 			}
 		}
-		inline function flushBlock()
-		{
-			if (block != "")
-			{
-				opCodes.push(TextBlock(block));
-				block = "";
-			}
-		}
+		// start the next line
 		inline function addNewLine()
 		{
 			opCodes[newLineIndex] = NewLine(Std.int(cursorX), Std.int(thisLineHeight), currentAlign);
@@ -358,6 +365,39 @@ class BitmapText extends Graphic
 			opCodes.push(null);
 			newLineIndex = opCodes.length - 1;
 		}
+		// flush some text to the current word
+		inline function flushCurrentWord()
+		{
+			if (currentWord != "")
+			{
+				_word.push(TextBlock(currentWord));
+				currentWord = "";
+			}
+		}
+		// add a word of text
+		inline function flushWord()
+		{
+			flushCurrentWord();
+			if (_word.length != 0)
+			{
+				if (wrap && cursorX + wordLength > width)
+				{
+					addNewLine();
+					cursorX = wordLength;
+				}
+				else
+				{
+					cursorX += wordLength;
+				}
+				if (cursorX > textWidth) textWidth = Std.int(cursorX);
+				for (opCode in _word)
+				{
+					pushOpcode(opCode);
+				}
+				HXP.clear(_word);
+				wordLength = 0;
+			}
+		}
 
 		while (true)
 		{
@@ -365,35 +405,41 @@ class BitmapText extends Graphic
 			var line:String = matched ? FORMAT_TAG_RE.matchedLeft() : remaining;
 			if (line.length > 0)
 			{
-				for (i in 0 ... line.length)
+				var i:Int = 0;
+				while (i < line.length)
 				{
 					var char:String = line.charAt(i);
+					inline function addChar()
+					{
+						var maxFullScale = sx * fsx;
+						var gd = _font.getChar(char, maxFullScale * currentScale);
+						var charWidth = gd.xAdvance * gd.scale / fsx;
+						currentWord += char;
+						wordLength += charWidth + charSpacing * currentScale;
+					}
 					switch (char)
 					{
 						case "\n":
 							flushWord();
-							flushBlock();
 							addNewLine();
-						case " ", "-":
-							var maxFullScale = sx * fsx;
-							var gd = _font.getChar(char, maxFullScale * currentScale);
-							var charWidth = gd.xAdvance * gd.scale / fsx;
-							currentWord += char;
-							currentWordLength += charSpacing * currentScale + charWidth;
+						case " ":
+							addChar();
 							flushWord();
-						default:
-							currentWord += char;
-							var maxFullScale = sx * fsx;
-							var gd = _font.getChar(char, maxFullScale * currentScale);
-							var charWidth = gd.xAdvance * gd.scale / fsx;
-							currentWordLength += charWidth;
-							if (wrap && cursorX + currentWordLength > width)
+						case "-":
+							var hyphen = currentWord != "";
+							if (hyphen && i < line.length - 1)
 							{
-								flushBlock();
-								addNewLine();
+								var nextChar = line.charAt(i + 1);
+								if (nextChar == " " || nextChar == "-") hyphen = false;
 							}
-							currentWordLength += charSpacing * currentScale;
+							addChar();
+							if (hyphen) flushWord();
+						default:
+							// treat tabs as non-breaking spaces
+							if (char == "	") char = " ";
+							addChar();
 					}
+					++i;
 				}
 			}
 
@@ -403,36 +449,31 @@ class BitmapText extends Graphic
 				if (tag == null) tag = FORMAT_TAG_RE.matched(3);
 				if (tag != null && formatTags.exists(tag))
 				{
-					flushWord();
-					flushBlock();
+					flushCurrentWord();
 					for (tag in formatTags[tag])
 					{
 						switch (tag)
 						{
 							case Image(image):
 								var imageWidth = ((image.width * image.scale * image.scaleX * this.scale * this.scaleX) + charSpacing) * currentScale;
-								cursorX += imageWidth;
-								currentWordLength = 0;
-								if (wrap && cursorX > width)
-								{
-									addNewLine();
-									cursorX = imageWidth;
-								}
-								opCodes.push(tag);
+								_word.push(tag);
+								wordLength += imageWidth;
 								thisLineHeight = Math.max(thisLineHeight, currentScale * image.height * image.scale * image.scaleY * this.scale * this.scaleY);
 								if (cursorX > textWidth) textWidth = Std.int(cursorX);
 							case SetScale(scale):
 								_scaleStack.push(currentScale = scale);
-								opCodes.push(tag);
+								_word.push(tag);
 								thisLineHeight = Math.max(thisLineHeight, lineHeight * currentScale);
 							case PopScale:
 								if (_scaleStack.length > 1) _scaleStack.pop();
 								currentScale = _scaleStack[_scaleStack.length - 1];
 								thisLineHeight = Math.max(thisLineHeight, lineHeight * currentScale);
-								opCodes.push(tag);
+								_word.push(tag);
 							case NewLine(_, _, _):
+								flushWord();
 								addNewLine();
 							case Align(alignType):
+								flushWord();
 								if (cursorX > 0)
 								{
 									addNewLine();
@@ -440,7 +481,7 @@ class BitmapText extends Graphic
 								if (alignType != Left && !autoWidth) textWidth = Std.int(width);
 								currentAlign = alignType;
 							default:
-								opCodes.push(tag);
+								_word.push(tag);
 						}
 					}
 				}
@@ -453,7 +494,6 @@ class BitmapText extends Graphic
 			else break;
 		}
 		flushWord();
-		flushBlock();
 		if (opCodes[newLineIndex] == null) opCodes[newLineIndex] = NewLine(cursorX, thisLineHeight, currentAlign);
 		this.textWidth = textWidth;
 		if (autoWidth) width = textWidth;
@@ -588,11 +628,11 @@ class BitmapText extends Graphic
 					// advance cursor position
 					cursorX += ((image.width * image.scale * image.scaleX * this.scale * this.scaleX) + charSpacing) * currentScale;
 					++charCount;
-				case Align(_): {}
 				case MoveText(func):
 					_moveStack.push(func);
 				case PopMoveText:
 					_moveStack.pop();
+				case Align(_): {}
 			}
 		}
 
