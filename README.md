@@ -4,15 +4,13 @@
 [![Haxelib](https://img.shields.io/github/tag/haxepunk/haxepunk.svg?style=flat&label=haxelib)](http://lib.haxe.org/p/haxepunk)
 [![Join the chat at https://gitter.im/HaxePunk/HaxePunk](https://badges.gitter.im/HaxePunk/HaxePunk.svg)](https://gitter.im/HaxePunk/HaxePunk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-# HaxePunk
+![HaxePunk](template/assets/graphics/HaxePunk.png?raw=HaxePunk)
 
-A Haxe port of the [FlashPunk](http://useflashpunk.net) AS3 library. There are a few additions/differences from the original.
+HaxePunk is a powerful cross-platform 2D game engine, based on the [FlashPunk](http://useflashpunk.net) AS3 library.
 
-* Builds for HTML5, Windows, Mac, Linux, iOS, and Android
-* Circle/Polygon masks
-* Hardware acceleration for native targets
-* Joystick and multi-touch input
-* Texture atlases for native targets (supports TexturePacker xml)
+* Builds for HTML5 (WebGL), Windows, Mac, Linux, iOS, and Android
+* Hardware acceleration and texture atlas support
+* Gamepad and multi-touch input
 
 ## Release build
 
@@ -27,7 +25,7 @@ haxelib run HaxePunk new MyProject # creates a new project
 
 ## Development build
 
-Make sure you set a default program for swf files to view the debug output. You will also need a C++ compiler for native builds (Xcode, Visual Studio, g++).
+You will need a C++ compiler for native builds (Xcode, Visual Studio, g++).
 
 ```bash
 git clone https://github.com/HaxePunk/HaxePunk.git
@@ -57,15 +55,15 @@ There are a few ways you can get involved with HaxePunk.
 
 * The development roadmap is available on [Trello](https://trello.com/b/WZrfACWS/haxepunk-development).
 * Come chat with us on [Gitter](https://gitter.im/HaxePunk/HaxePunk).
-*	Drop by the [HaxePunk forum](http://forum.haxepunk.com) to ask a question or show off what you've created.
-*	Create an issue or pull request or take part in the discussion.
-*	Follow us on Twitter: [@HaxePunk](https://twitter.com/intent/user?screen_name=HaxePunk)
+* Drop by the [HaxePunk forum](http://forum.haxepunk.com) to ask a question or show off what you've created.
+* Create an issue or pull request or take part in the discussion.
+* Follow us on Twitter: [@HaxePunk](https://twitter.com/intent/user?screen_name=HaxePunk)
 
 ## Credits
 
-*	Chevy Ray Johnston for creating the original FlashPunk.
-*	[OpenFL](http://www.openfl.org/) makes native targets possible and simplifies asset management. Thanks guys!
-*	All the awesome people who have [contributed](https://github.com/HaxePunk/HaxePunk/graphs/contributors) to HaxePunk and joined in the discussions on the [forum](http://forum.haxepunk.com).
+* Chevy Ray Johnston for creating the original FlashPunk.
+* [OpenFL](http://www.openfl.org/) makes native targets possible and simplifies asset management. Thanks guys!
+* All the awesome people who have [contributed](https://github.com/HaxePunk/HaxePunk/graphs/contributors) to HaxePunk and joined in the discussions on the [forum](http://forum.haxepunk.com).
 
 ## MIT License
 
