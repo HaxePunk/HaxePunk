@@ -1,7 +1,7 @@
 language: haxe
 
 haxe:
-  - 3.4.0
+  - 3.4.2
 
 matrix:
   allow_failures:
