@@ -81,12 +81,10 @@ class SlopedGrid extends Hitbox
 		for (x in 0...rows)
 		{
 			data.push(new Array<Tile>());
-#if (neko || cpp) // initialize to false instead of null
 			for (y in 0...columns)
 			{
 				data[x][y] = _emptyTile;
 			}
-#end
 		}
 	}
 
