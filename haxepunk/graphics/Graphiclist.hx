@@ -50,35 +50,23 @@ class Graphiclist extends Graphic
 		else return _graphics[i];
 	}
 
-	inline function renderList(renderFunc:Graphic->Void, point:Point, camera:Camera)
+	/** @private Renders the Graphics in the list. */
+	override public function render(layer:Int, point:Point, camera:Camera)
 	{
-		point.x += x;
-		point.y += y;
-		camera.x *= scrollX;
-		camera.y *= scrollY;
-
 		for (g in _graphics)
 		{
 			if (g.visible)
 			{
 				if (g.relative)
 				{
-					_point.x = point.x;
-					_point.y = point.y;
+					_point.x = point.x + x;
+					_point.y = point.y + y;
 				}
 				else _point.x = _point.y = 0;
-				_camera.x = camera.x;
-				_camera.y = camera.y;
-				renderFunc(g);
+				_camera.setTo(camera.x * scrollX, camera.y * scrollY);
+				g.render(layer, _point, _camera);
 			}
 		}
-	}
-
-	/** @private Renders the Graphics in the list. */
-	@:dox(hide)
-	override public function render(layer:Int, point:Point, camera:Camera)
-	{
-		renderList(function(g:Graphic) g.render(layer, _point, _camera), point, camera);
 	}
 
 	/**
