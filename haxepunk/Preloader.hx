@@ -18,7 +18,12 @@ class Preloader extends #if (openfl >= "4.4.1") openfl.display.Preloader.Default
 	{
 		super();
 
+#if lime
 		Assets.loadBitmapData("graphics/preloader/haxepunk.png").onComplete(function(bmd) {
+#else
+		var bmd = Assets.getBitmapData("graphics/preloader/haxepunk.png");
+		{
+#end
 			scaleIncrement = 0.002;
 
 			var width = 260;
@@ -91,7 +96,8 @@ class Preloader extends #if (openfl >= "4.4.1") openfl.display.Preloader.Default
 
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			onEnterFrame(null); // initial render
-		});
+		}
+        #if lime ); #end
 	}
 
 	public function onEnterFrame(e:Event)
