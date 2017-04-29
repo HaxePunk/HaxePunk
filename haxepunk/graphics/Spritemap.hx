@@ -270,7 +270,7 @@ class Spritemap extends Image
 	/**
 	 * Sets the current frame index.
 	 */
-	public var frame(default, set):Int;
+	public var frame(default, set):Int = -1;
 	function set_frame(value:Int):Int
 	{
 		value = Std.int(Math.abs(value)) % _atlas.tileCount;
