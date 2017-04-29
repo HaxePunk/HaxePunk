@@ -313,7 +313,7 @@ class Image extends Graphic
 	inline function get_scaledHeight():Float return height * scaleY * scale;
 	inline function set_scaledHeight(h:Float):Float return scaleY = h / scale / height;
 
-	public inline function toString():String return '[Image $width x $height]';
+	override public function toString():String return '[$_class $width x $height]';
 
 	// Source and buffer information.
 	var _sourceRect:Rectangle;

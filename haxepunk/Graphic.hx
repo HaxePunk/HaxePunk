@@ -222,6 +222,7 @@ class Graphic
 		smooth = (HXP.stage.quality != LOW);
 		color = Color.White;
 		shader = TextureShader.defaultShader;
+		_class = Type.getClassName(Type.getClass(this));
 	}
 
 	/**
@@ -260,6 +261,9 @@ class Graphic
 		active = true;
 	}
 
+	public function toString():String return '[$_class]';
+
+	var _class:String;
 	// Graphic information.
 	var _scroll:Bool = true;
 	var _point:Point = new Point();

@@ -97,7 +97,7 @@ class Preloader extends #if (openfl >= "4.4.1") openfl.display.Preloader.Default
 			addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			onEnterFrame(null); // initial render
 		}
-        #if lime ); #end
+		#if lime ); #end
 	}
 
 	public function onEnterFrame(e:Event)
