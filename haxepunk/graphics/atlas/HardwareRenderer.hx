@@ -1,6 +1,5 @@
 package haxepunk.graphics.atlas;
 
-#if hardware_render
 import haxe.PosInfos;
 import flash.geom.Rectangle;
 import flash.display.BitmapData;
@@ -295,4 +294,3 @@ class HardwareRenderer
 
 	inline function destroy() {}
 }
-#end

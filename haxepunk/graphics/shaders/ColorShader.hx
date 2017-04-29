@@ -1,7 +1,5 @@
 package haxepunk.graphics.shaders;
 
-#if hardware_render
-
 class ColorShader extends Shader
 {
 	static var VERTEX_SHADER =
@@ -46,4 +44,3 @@ void main(void) {
 		return defaultShader;
 	}
 }
-#end

@@ -1,6 +1,5 @@
 package haxepunk.graphics.atlas;
 
-#if hardware_render
 @:dox(hide)
 class GLUtils
 {
@@ -17,4 +16,3 @@ class GLUtils
 	}
 #end
 }
-#end

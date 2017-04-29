@@ -8,7 +8,6 @@
 
 	<haxedef name="source-header" value="haxe"/>
 	<haxedef name="webgl" if="html5"/>
-	<haxedef name="hardware_render" unless="flash"/>
 	<haxeflag name="--macro" value="haxepunk.utils.Platform.run()"/>
 
 	<haxelib name="openfl"/>
