@@ -107,6 +107,13 @@ class MainScene extends Scene
 			wordWrap: true
 		});
 		addText(txt);
+
+		var txt = new BitmapText("Unless there is space between them <star/><star/>images	count	as	part	of	words<star/><star/> and will wrap with them. Tabs act as non-breaking spaces.", 0, 0, Std.int(HXP.width * 0.5), 0, {
+			font: "assets/fonts/azmoonfleet.64.fnt",
+			size: 14,
+			wordWrap: true
+		});
+		addText(txt);
 	}
 
 	function addText(txt:BitmapText)

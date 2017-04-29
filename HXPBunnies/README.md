@@ -11,8 +11,5 @@ and [Amanda Lobb](http://amandalobb.com/), then ported to haxe-NME by
 [Philippe Elsass](https://github.com/elsassph/nme-bunnymark), and finally ported
 to HaxePunk by @Beeblerox.
 
-Flash is limited to software rendering so there is a significant performance
-improvement when you use cpp targets. Cpp targets make use of drawTiles GPU
-Acceleration and on a desktop it can display 10,000's of bunnies with additional
-variations of alpha and scaling. On the Flash target however, rendering with
-alpha and scaling means a severe performance decrease.
+Cpp targets on a desktop can display 10,000's of bunnies with additional 
+variations of alpha and scaling.
