@@ -4,7 +4,7 @@
 [![Haxelib](https://img.shields.io/github/tag/haxepunk/haxepunk.svg?style=flat&label=haxelib)](http://lib.haxe.org/p/haxepunk)
 [![Join the chat at https://gitter.im/HaxePunk/HaxePunk](https://badges.gitter.im/HaxePunk/HaxePunk.svg)](https://gitter.im/HaxePunk/HaxePunk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-![HaxePunk](template/assets/graphics/HaxePunk.png?raw=HaxePunk)
+![HaxePunk](template/assets/HaxePunk.png?raw=HaxePunk)
 
 HaxePunk is a powerful cross-platform 2D game engine, based on the [FlashPunk](http://useflashpunk.net) AS3 library.
 
