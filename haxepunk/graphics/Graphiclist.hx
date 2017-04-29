@@ -50,12 +50,11 @@ class Graphiclist extends Graphic
 		else return _graphics[i];
 	}
 
-	inline function renderList(renderFunc:Graphic->Void, point:Point, camera:Camera)
+	inline function renderList(renderFunc:Graphic->Void, point:Point, topCamera:Camera)
 	{
 		point.x += x;
 		point.y += y;
-		camera.x *= scrollX;
-		camera.y *= scrollY;
+		var camera = new Point(topCamera.x * scrollX, topCamera.y * scrollY);
 
 		for (g in _graphics)
 		{
