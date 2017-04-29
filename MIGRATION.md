@@ -33,7 +33,7 @@ Class Changes
 | com.haxepunk.utils.Input         | haxepunk.input.Input        |
 | com.haxepunk.utils.Key           | haxepunk.input.Key          |
 | com.haxepunk.utils.Touch         | haxepunk.input.Touch        |
-| com.haxepunk.utils.Joystick      | haxepunk.input.Joystick     |
+| com.haxepunk.utils.Joystick      | haxepunk.input.Gamepad      |
 
 Flash No Longer Supported
 -------------------------
