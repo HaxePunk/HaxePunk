@@ -1,6 +1,6 @@
 package haxepunk.graphics.shaders;
 
-#if hardware_render
+import flash.Assets;
 
 class TextureShader extends Shader
 {
@@ -42,6 +42,14 @@ void main(void) {
 	}
 }";
 
+	/**
+	 * Create a custom shader from a text asset.
+	 */
+	public static inline function fromAsset(name:String):TextureShader
+	{
+		return new TextureShader(Assets.getText(name));
+	}
+
 	public function new(?fragment:String)
 	{
 		super(VERTEX_SHADER, fragment == null ? FRAGMENT_SHADER : fragment);
@@ -56,6 +64,4 @@ void main(void) {
 		if (defaultShader == null) defaultShader = new TextureShader();
 		return defaultShader;
 	}
-
 }
-#end
