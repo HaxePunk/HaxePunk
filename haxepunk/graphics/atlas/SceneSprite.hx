@@ -16,12 +16,11 @@ class SceneSprite extends Sprite
 	{
 		super();
 		this.scene = scene;
-#if hardware_render
+
 		var oglView = new flash.display.OpenGLView();
 		addChild(oglView);
 		oglView.render = renderScene;
 		batch = new DrawCommandBatch();
-#end
 	}
 
 	public function startFrame()

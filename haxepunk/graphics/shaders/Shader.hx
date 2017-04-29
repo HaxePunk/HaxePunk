@@ -1,6 +1,5 @@
 package haxepunk.graphics.shaders;
 
-#if hardware_render
 import flash.gl.GL;
 import flash.gl.GLProgram;
 import flash.gl.GLShader;
@@ -238,4 +237,3 @@ class Shader
 		uniformValues[name] = value;
 	}
 }
-#end

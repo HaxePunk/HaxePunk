@@ -15,7 +15,6 @@
 -D lime-native
 -D linux
 -D desktop
--D hardware_render
 -lib lime
 -lib openfl
 --remap flash:openfl

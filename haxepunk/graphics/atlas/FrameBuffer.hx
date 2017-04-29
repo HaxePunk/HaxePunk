@@ -1,6 +1,5 @@
 package haxepunk.graphics.atlas;
 
-#if hardware_render
 import flash.gl.GL;
 import flash.gl.GLFramebuffer;
 //import flash.gl.GLRenderbuffer;
@@ -91,4 +90,3 @@ class FrameBuffer
 		GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
 	}
 }
-#end
