@@ -279,7 +279,6 @@ class Engine extends Sprite
 		checkScene();
 
 		// game start
-		Draw.init();
 		init();
 
 		#if debug_console
