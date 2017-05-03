@@ -1,5 +1,6 @@
 package haxepunk.utils;
 
+import flash.geom.Point;
 import flash.display.BlendMode;
 import haxepunk.Entity;
 import haxepunk.HXP;
@@ -102,65 +103,62 @@ class Draw
 
 		var ht = thickness / 2;
 		var vec = [];
-		for (i in 0...Std.int(points.length / 2))
+		var last = Std.int(points.length / 2);
+		var aa = new Point(), bb = new Point(); // saves first vertex for last draw
+		var a = new Point(),
+			b = new Point(),
+			c = new Point(), // current
+			u = new Point(),
+			v = new Point();
+		begin();
+		for (i in 0...last)
 		{
 			var index = i * 2;
 
-			var x = points[index];
-			var y = points[index+1];
+			c.x = points[index];
+			c.y = points[index+1];
 
 			// vector u (difference between last and current)
-			var u1 = x - wrap(points, index - 2);
-			var u2 = y - wrap(points, index - 1);
+			u.x = c.x - wrap(points, index - 2);
+			u.y = c.y - wrap(points, index - 1);
 
 			// vector v (difference between current and next)
-			var v1 = x - wrap(points, index + 2);
-			var v2 = y - wrap(points, index + 3);
+			v.x = c.x - wrap(points, index + 2);
+			v.y = c.y - wrap(points, index + 3);
 
-			// delta vector (adding u and v)
-			var dx = u1 + v1;
-			var dy = u2 + v2;
+			var delta = u.add(v);
+			delta.normalize(ht);
 
-			var length = Math.sqrt(dx * dx + dy * dy);
-			if (length == 0) length = 1; // don't divide by zero!
-			// normalize line and set delta to half thickness
-			dx = (dx / length) * ht;
-			dy = (dy / length) * ht;
-			vec.push([x + dx, y + dy, x - dx, y - dy]);
-		}
+			u = c.add(delta);
+			v = c.subtract(delta);
 
-		begin();
-		var x1 = vec[0][0], y1 = vec[0][1],
-			x2 = vec[0][2], y2 = vec[0][3];
-		for (i in 1...vec.length)
-		{
-			var x3 = vec[i][0], y3 = vec[i][1],
-				x4 = vec[i][2], y4 = vec[i][3];
-			if (y4 < y3 || x4 < x3) // HACK! preventing twist in some cases??
+			if ((u.x * v.x) + (u.y * v.y) < 0)
 			{
-				drawQuad(
-					x1, y1, x2, y2,
-					x4, y4, x3, y3,
-					red, green, blue, alpha
-				);
+				delta.x = -delta.x;
+				delta.y = -delta.y;
+			}
+
+			if (i == 0)
+			{
+				aa.copyFrom(u);
+				bb.copyFrom(v);
 			}
 			else
 			{
 				drawQuad(
-					x1, y1, x2, y2,
-					x3, y3, x4, y4,
+					a.x, a.y, b.x, b.y,
+					v.x, v.y, u.x, u.y,
 					red, green, blue, alpha
 				);
 			}
-			x1 = x3; y1 = y3;
-			x2 = x4; y2 = y4;
+
+			a.copyFrom(u);
+			b.copyFrom(v);
 		}
 
 		drawQuad(
-			x1, y1,
-			x2, y2,
-			vec[0][2], vec[0][3],
-			vec[0][0], vec[0][1],
+			a.x, a.y, b.x, b.y,
+			bb.x, bb.y, aa.x, aa.y,
 			red, green, blue, alpha
 		);
 	}
@@ -207,17 +205,9 @@ class Draw
 	 * @param	radius		Radius of the circle.
 	 * @param	segments	Increasing will smooth the circle but takes longer to render. Must be a value greater than zero.
 	 */
-	public static function circle(x:Float, y:Float, radius:Float, segments:Int = 25)
+	public static inline function circle(x:Float, y:Float, radius:Float, segments:Int = 25)
 	{
-		var radians = (2 * Math.PI) / segments;
-		var points = [];
-		for (segment in 0...segments)
-		{
-			var theta = (segment + 1) * radians;
-			points.push(x + (Math.sin(theta) * radius));
-			points.push(y + (Math.cos(theta) * radius));
-		}
-		polygon(points);
+		arc(x, y, radius, 0, 2 * Math.PI, segments);
 	}
 
 	/**
@@ -244,6 +234,28 @@ class Draw
 			command.addTriangle(x, y, 0, 0, x1, y1, 0, 0, x2, y2, 0, 0, r, g, b, alpha);
 			x1 = x2; y1 = y2;
 		}
+	}
+
+	/**
+	 * Draws a circle to the screen.
+	 * @param	x			X position of the circle's center.
+	 * @param	y			Y position of the circle's center.
+	 * @param	radius		Radius of the circle.
+	 * @param	start		The starting angle in radians.
+	 * @param	angle		The arc size in radians.
+	 * @param	segments	Increasing will smooth the circle but takes longer to render. Must be a value greater than zero.
+	 */
+	public static function arc(x:Float, y:Float, radius:Float, start:Float, angle:Float, segments:Int = 25)
+	{
+		var radians = angle / segments;
+		var points = [];
+		for (segment in 0...segments)
+		{
+			var theta = segment * radians + start;
+			points.push(x + (Math.sin(theta) * radius));
+			points.push(y + (Math.cos(theta) * radius));
+		}
+		polygon(points);
 	}
 
 	/**
