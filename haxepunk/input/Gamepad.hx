@@ -7,6 +7,7 @@ import lime.ui.Gamepad as LimeGamepad;
 import flash.events.JoystickEvent;
 #end
 import haxepunk.HXP;
+import haxepunk.Signal;
 
 typedef GamepadID = Int;
 typedef GamepadButton = Int;
@@ -40,8 +41,8 @@ class Gamepad
 	public static var deadZone:Float = 0.15;
 
 	public static var gamepads:Map<Int, Gamepad> = new Map<Int, Gamepad>();
-	public static var onConnect:TypedSignal<Gamepad> = new TypedSignal();
-	public static var onDisconnect:TypedSignal<Gamepad> = new TypedSignal();
+	public static var onConnect:Signal1<Gamepad> = new Signal1();
+	public static var onDisconnect:Signal1<Gamepad> = new Signal1();
 
 	public static function init()
 	{
