@@ -4,7 +4,6 @@ import massive.munit.Assert;
 
 class VarTweenTest extends TestSuite
 {
-
 	@Test
 	public function testTweenNullObject()
 	{
@@ -25,8 +24,7 @@ class VarTweenTest extends TestSuite
 	{
 		var tween = new VarTween();
 		Assert.isFalse(tween.active);
-		var foo = { bar: 0 };
-		tween.tween(foo, "bar", 0, 0);
+		tween.tween({ foo: 0 }, "foo", 0, 0);
 		Assert.isFalse(tween.active);
 	}
 
@@ -40,5 +38,4 @@ class VarTweenTest extends TestSuite
 		tween.update(1);
 		Assert.areEqual(0.5, foo.bar);
 	}
-
 }

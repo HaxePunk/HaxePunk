@@ -83,12 +83,12 @@ class Tweener
 	 */
 	public function clearTweens()
 	{
-		var t:Tween,
-			ft:Tween = _tween;
-		while (ft != null)
+		var t:Tween = _tween;
+		while (t != null)
 		{
-			removeTween(ft._next);
-			ft = ft._next;
+			var next = t._next;
+			removeTween(t);
+			t = next;
 		}
 	}
 
@@ -97,17 +97,14 @@ class Tweener
 	 */
 	public function updateTweens(elapsed:Float)
 	{
-		var t:Tween,
-			ft:Tween = _tween;
-		while (ft != null)
+		var t:Tween = _tween;
+		while (t != null)
 		{
-			t = cast(ft, Tween);
 			if (t.active)
 			{
 				t.update(elapsed);
-				if (ft._finish) ft.finish();
 			}
-			ft = ft._next;
+			t = t._next;
 		}
 	}
 

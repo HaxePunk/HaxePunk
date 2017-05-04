@@ -88,6 +88,10 @@ class Tween extends EventDispatcher
 			}
 			dispatchEvent(new TweenEvent(TweenEvent.UPDATE));
 		}
+		if (_finish)
+		{
+			finish();
+		}
 	}
 
 	/**

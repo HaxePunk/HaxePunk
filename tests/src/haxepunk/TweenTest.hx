@@ -80,7 +80,8 @@ class TweenTest
 		var tween = new Tween(10);
 		tween.start();
 		tween.update(11);
-		Assert.areEqual(1.1, tween.percent);
+		Assert.areEqual(1.0, tween.percent);
 		Assert.areEqual(1.0, tween.scale);
 	}
+
 }
