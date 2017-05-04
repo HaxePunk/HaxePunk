@@ -13,18 +13,18 @@ class AngleTween extends Tween
 	 * The current value.
 	 */
 	public var angle:Float;
-	
+
 	/**
 	 * Constructor.
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:Dynamic -> Void, type:TweenType) 
+	public function new(?complete:Dynamic -> Void, type:TweenType)
 	{
 		angle = 0;
 		super(0, type, complete);
 	}
-	
+
 	/**
 	 * Tweens the value from one angle to another.
 	 * @param	fromAngle		Start angle.
@@ -44,16 +44,16 @@ class AngleTween extends Tween
 		_ease = ease;
 		start();
 	}
-	
+
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update() 
+	override public function update(elapsed:Float)
 	{
-		super.update();
+		super.update(elapsed);
 		angle = (_start + _range * _t) % 360;
 		if (angle < 0) angle += 360;
 	}
-	
+
 	// Tween information.
 	var _start:Float;
 	var _range:Float;

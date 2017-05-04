@@ -14,11 +14,11 @@ class Fader extends Tween
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:Dynamic -> Void, ?type:TweenType) 
+	public function new(?complete:Dynamic -> Void, ?type:TweenType)
 	{
 		super(0, type, complete);
 	}
-	
+
 	/**
 	 * Fades FP.volume to the target volume.
 	 * @param	volume		The volume to fade to.
@@ -34,15 +34,15 @@ class Fader extends Tween
 		_ease = ease;
 		start();
 	}
-	
+
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update() 
+	override public function update(elapsed:Float)
 	{
-		super.update();
+		super.update(elapsed);
 		HXP.volume = _start + _range * _t;
 	}
-	
+
 	// Fader information.
 	var _start:Float;
 	var _range:Float;

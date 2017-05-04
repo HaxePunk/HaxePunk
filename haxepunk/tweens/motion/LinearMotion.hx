@@ -65,14 +65,14 @@ class LinearMotion extends Motion
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update()
+	override public function update(elapsed:Float)
 	{
-		super.update();
+		super.update(elapsed);
 		x = _fromX + _moveX * _t;
 		y = _fromY + _moveY * _t;
 		if (x == _fromX + _moveX && y == _fromY + _moveY && active)
 		{
-			super.update();
+			super.update(elapsed);
 			finish();
 		}
 	}

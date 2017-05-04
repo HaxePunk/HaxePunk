@@ -95,7 +95,7 @@ class Tweener
 	/**
 	 * Update all contained tweens.
 	 */
-	public function updateTweens()
+	public function updateTweens(elapsed:Float)
 	{
 		var t:Tween,
 			ft:Tween = _tween;
@@ -104,7 +104,7 @@ class Tweener
 			t = cast(ft, Tween);
 			if (t.active)
 			{
-				t.update();
+				t.update(elapsed);
 				if (ft._finish) ft.finish();
 			}
 			ft = ft._next;
