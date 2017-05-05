@@ -17,9 +17,9 @@ env:
   - TARGET=neko COMMAND=openfl OPENFL=4.6.0 LIME=3.6.2 TEST=openfl4 DOCS=1
   - TARGET=cpp COMMAND=openfl OPENFL=4.6.0 LIME=3.6.2
   - TARGET=html5 COMMAND=openfl OPENFL=4.6.0 LIME=3.6.2
-  - TARGET=neko COMMAND=openfl OPENFL=4.9.1 LIME=4.0.1 TEST=openfl4
-  - TARGET=cpp COMMAND=openfl OPENFL=4.9.1 LIME=4.0.1
-  - TARGET=html5 COMMAND=openfl OPENFL=4.9.1 LIME=4.0.1
+  - TARGET=neko COMMAND=openfl OPENFL=5.0.0 LIME=4.1.0 TEST=openfl5
+  - TARGET=cpp COMMAND=openfl OPENFL=5.0.0 LIME=4.1.0
+  - TARGET=html5 COMMAND=openfl OPENFL=5.0.0 LIME=4.1.0
 
 sudo: false
 
@@ -27,6 +27,7 @@ install:
   - yes | haxelib install hxcpp 3.4.49 > log.txt || cat log.txt
   - if [[ $TEST ]]; then
         yes | haxelib git munit https://github.com/massiveinteractive/MassiveUnit.git master src > log.txt || cat log.txt;
+        yes | haxelib git mlib https://github.com/massiveinteractive/mlib.git master src > log.txt || cat log.txt;
         yes | haxelib install mcover > log.txt || cat log.txt;
         yes | haxelib install hamcrest > log.txt || cat log.txt;
     fi
