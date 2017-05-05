@@ -54,7 +54,7 @@ class MultiVarTween extends Tween
 
 			if (Math.isNaN(a))
 			{
-				throw "The property \"" + p + "\" is not numeric.";
+				throw 'The property $p is not numeric.';
 			}
 			_vars.push(p);
 			_start.push(a);
@@ -65,9 +65,9 @@ class MultiVarTween extends Tween
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update()
+	override public function update(elapsed:Float)
 	{
-		super.update();
+		super.update(elapsed);
 		var i:Int = _vars.length;
 
 		while (i-- > 0)

@@ -41,7 +41,7 @@ class VarTween extends Tween
 		// Check if the variable is a number
 		if (Math.isNaN(a))
 		{
-			throw "The property \"" + property + "\" is not numeric.";
+			throw 'The property $property is not numeric.';
 		}
 
 		_start = a;
@@ -52,9 +52,9 @@ class VarTween extends Tween
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update()
+	override public function update(elapsed:Float)
 	{
-		super.update();
+		super.update(elapsed);
 		Reflect.setProperty(_object, _property, _start + _range * _t);
 	}
 

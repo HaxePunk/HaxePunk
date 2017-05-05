@@ -91,9 +91,9 @@ class QuadPath extends Motion
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update()
+	override public function update(elapsed:Float)
 	{
-		super.update();
+		super.update(elapsed);
 		if (_index < _curve.length - 1)
 		{
 			while (_t > _curveT[_index + 1]) _index++;

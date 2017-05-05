@@ -92,9 +92,9 @@ class LinearPath extends Motion
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update()
+	override public function update(elapsed:Float)
 	{
-		super.update();
+		super.update(elapsed);
 		if (_index < _points.length - 1)
 		{
 			while (_t > _pointT[_index + 1]) _index++;

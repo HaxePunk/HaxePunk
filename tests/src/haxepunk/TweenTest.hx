@@ -25,7 +25,7 @@ class TweenTest
 		var tween = new Tween(0);
 		tween.start();
 		Assert.isFalse(tween.active);
-		tween.update();
+		tween.update(0);
 		Assert.areEqual(0.0, tween.percent);
 	}
 
@@ -48,8 +48,7 @@ class TweenTest
 	public function testUpdateWithoutStart()
 	{
 		var tween = new Tween(10);
-		HXP.elapsed = 1;
-		tween.update();
+		tween.update(1);
 		Assert.areEqual(0.0, tween.percent);
 	}
 
@@ -57,11 +56,10 @@ class TweenTest
 	public function testUpdateWithStart()
 	{
 		var tween = new Tween(10);
-		HXP.elapsed = 1;
 		Assert.areEqual(0, tween.percent);
 		tween.start();
 		Assert.areEqual(0, tween.percent);
-		tween.update();
+		tween.update(1);
 		Assert.areEqual(0.1, tween.percent);
 	}
 
@@ -69,11 +67,10 @@ class TweenTest
 	public function testScale()
 	{
 		var tween = new Tween(10);
-		HXP.elapsed = 1;
 		Assert.areEqual(0, tween.scale);
 		tween.start();
 		Assert.areEqual(0, tween.scale);
-		tween.update();
+		tween.update(1);
 		Assert.areEqual(0.1, tween.scale);
 	}
 
@@ -81,10 +78,10 @@ class TweenTest
 	public function testUpdatePastTarget()
 	{
 		var tween = new Tween(10);
-		HXP.elapsed = 11;
 		tween.start();
-		tween.update();
-		Assert.areEqual(1.1, tween.percent);
+		tween.update(11);
+		Assert.areEqual(1.0, tween.percent);
 		Assert.areEqual(1.0, tween.scale);
 	}
+
 }

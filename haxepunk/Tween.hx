@@ -74,11 +74,11 @@ class Tween extends EventDispatcher
 	 * Updates the Tween, called by World.
 	 */
 	@:dox(hide)
-	public function update()
+	public function update(elapsed:Float)
 	{
 		if (active)
 		{
-			_time += HXP.elapsed;
+			_time += elapsed;
 			_t = percent;
 			if (_t > 0 && _t < 1) _ease.may(function(f) _t = f(_t));
 			if (_time >= _target)
@@ -87,6 +87,10 @@ class Tween extends EventDispatcher
 				_finish = true;
 			}
 			dispatchEvent(new TweenEvent(TweenEvent.UPDATE));
+		}
+		if (_finish)
+		{
+			finish();
 		}
 	}
 

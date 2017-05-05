@@ -138,10 +138,10 @@ class Engine extends Sprite
 
 		preUpdate.invoke();
 
-		if (HXP.tweener.active && HXP.tweener.hasTween) HXP.tweener.updateTweens();
+		if (HXP.tweener.active && HXP.tweener.hasTween) HXP.tweener.updateTweens(HXP.elapsed);
 		if (_scene.active)
 		{
-			if (_scene.hasTween) _scene.updateTweens();
+			if (_scene.hasTween) _scene.updateTweens(HXP.elapsed);
 			_scene.update();
 		}
 		_scene.updateLists(false);
