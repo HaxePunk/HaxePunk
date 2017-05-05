@@ -15,9 +15,9 @@ class SfxFader extends Tween
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(sfx:Sfx, ?complete:Dynamic -> Void, ?type:TweenType)
+	public function new(sfx:Sfx, ?type:TweenType)
 	{
-		super(0, type, complete);
+		super(0, type);
 		_sfx = sfx;
 	}
 

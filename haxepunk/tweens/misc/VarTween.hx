@@ -13,9 +13,9 @@ class VarTween extends Tween
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:Dynamic -> Void, ?type:TweenType)
+	public function new(?type:TweenType)
 	{
-		super(0, type, complete);
+		super(0, type);
 	}
 
 	/**

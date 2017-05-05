@@ -25,9 +25,9 @@ class Motion extends Tween
 	 * @param	type		Tween type.
 	 * @param	ease		Optional easer function.
 	 */
-	public function new(duration:Float, ?complete:Dynamic -> Void, ?type:TweenType, ease:Float -> Float = null)
+	public function new(duration:Float, ?type:TweenType, ease:Float -> Float = null)
 	{
 		x = y = 0;
-		super(duration, type, complete, ease);
+		super(duration, type, ease);
 	}
 }

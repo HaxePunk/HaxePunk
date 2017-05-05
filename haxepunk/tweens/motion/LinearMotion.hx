@@ -14,11 +14,11 @@ class LinearMotion extends Motion
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:Dynamic -> Void, ?type:TweenType)
+	public function new(?type:TweenType)
 	{
 		_fromX = _fromY = _moveX = _moveY = 0;
 		_distance = -1;
-		super(0, complete, type, null);
+		super(0, type, null);
 	}
 
 	/**

@@ -32,7 +32,8 @@ class TweenerTest
 	public function testCallback()
 	{
 		var called = 0;
-		var tween = new Tween(2, Persist, function(_) called += 1);
+		var tween = new Tween(2, Persist);
+		tween.complete.bind(function() called += 1);
 		tweener.addTween(tween, true);
 		Assert.areEqual(0, called);
 		tweener.updateTweens(1);

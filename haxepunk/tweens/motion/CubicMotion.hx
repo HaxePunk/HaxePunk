@@ -14,11 +14,11 @@ class CubicMotion extends Motion
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:Dynamic -> Void, type:TweenType)
+	public function new(type:TweenType)
 	{
 		_fromX = _fromY = _toX = _toY = 0;
 		_aX = _aY = _bX = _bY = 0;
-		super(0, complete, type, null);
+		super(0, type, null);
 	}
 
 	/**

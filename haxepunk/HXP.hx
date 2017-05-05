@@ -489,12 +489,12 @@ class HXP
 		{
 			var delay:Float = options.delay;
 			Reflect.deleteField( options, "delay" );
-			HXP.alarm(delay, function (o:Dynamic) HXP.tween(object, values, duration, options));
+			HXP.alarm(delay, function () HXP.tween(object, values, duration, options));
 			return null;
 		}
 
 		var type:TweenType = TweenType.OneShot,
-			complete:Dynamic -> Void = null,
+			complete:Void -> Void = null,
 			ease:Float -> Float = null,
 			tweener:Tweener = HXP.tweener;
 		if (Std.is(object, Tweener)) tweener = cast(object, Tweener);
@@ -505,7 +505,8 @@ class HXP
 			if (Reflect.hasField(options, "ease")) ease = options.ease;
 			if (Reflect.hasField(options, "tweener")) tweener = options.tweener;
 		}
-		var tween:MultiVarTween = new MultiVarTween(complete, type);
+		var tween:MultiVarTween = new MultiVarTween(type);
+		if (complete != null) tween.complete.bind(complete);
 		tween.tween(object, values, duration, ease);
 		tweener.addTween(tween, true);
 		return tween;
@@ -521,12 +522,13 @@ class HXP
 	 *
 	 * Example: HXP.alarm(5.0, callbackFunction, TweenType.Looping); // Calls callbackFunction every 5 seconds
 	 */
-	public static function alarm(delay:Float, complete:Dynamic -> Void, ?type:TweenType, tweener:Tweener = null):Alarm
+	public static function alarm(delay:Float, complete:Void -> Void, ?type:TweenType, ?tweener:Tweener):Alarm
 	{
 		if (type == null) type = TweenType.OneShot;
 		if (tweener == null) tweener = HXP.tweener;
 
-		var alarm:Alarm = new Alarm(delay, complete, type);
+		var alarm:Alarm = new Alarm(delay, type);
+		if (complete != null) alarm.complete.bind(complete);
 		tweener.addTween(alarm, true);
 		return alarm;
 	}

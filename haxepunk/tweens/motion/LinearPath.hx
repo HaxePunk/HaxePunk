@@ -13,7 +13,7 @@ class LinearPath extends Motion
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:Dynamic -> Void, ?type:TweenType)
+	public function new(?type:TweenType)
 	{
 		_points = new Array<Point>();
 		_pointD = new Array<Float>();
@@ -21,7 +21,7 @@ class LinearPath extends Motion
 
 		distance = _speed = _index = 0;
 
-		super(0, complete, type, null);
+		super(0, type, null);
 		_pointD[0] = _pointT[0] = 0;
 	}
 
