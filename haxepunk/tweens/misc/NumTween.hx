@@ -11,7 +11,7 @@ class NumTween extends Tween
 	/**
 	 * The current value.
 	 */
-	public var value:Float;
+	public var value:Float = 0;
 
 	/**
 	 * Constructor.
@@ -20,7 +20,6 @@ class NumTween extends Tween
 	 */
 	public function new(?complete:Dynamic -> Void, ?type:TweenType)
 	{
-		value = 0;
 		super(0, type, complete);
 	}
 

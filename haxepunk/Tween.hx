@@ -125,8 +125,7 @@ class Tween extends EventDispatcher
 				start();
 			case OneShot:
 				_time = _target;
-				active = false;
-				_parent.removeTween(this);
+				cancel();
 		}
 		_finish = false;
 		dispatchEvent(new TweenEvent(TweenEvent.FINISH));

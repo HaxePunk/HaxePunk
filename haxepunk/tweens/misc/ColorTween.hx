@@ -19,16 +19,30 @@ class ColorTween extends Tween
 	/**
 	 * The current alpha.
 	 */
-	public var alpha:Float;
+	public var alpha:Float = 1;
+
+	/**
+	 * Red value of the current color, from 0 to 255.
+	 */
+	public var red(default, null):Int;
+
+	/**
+	 * Green value of the current color, from 0 to 255.
+	 */
+	public var green(default, null):Int;
+
+	/**
+	 * Blue value of the current color, from 0 to 255.
+	 */
+	public var blue(default, null):Int;
 
 	/**
 	 * Constructor.
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:Dynamic -> Void, type:TweenType)
+	public function new(?complete:Dynamic -> Void, ?type:TweenType)
 	{
-		alpha = 1;
 		super(0, type, complete);
 	}
 
@@ -73,21 +87,6 @@ class ColorTween extends Tween
 		blue = Std.int((_startB + _rangeB * _t) * 255);
 		color = red << 16 | green << 8 | blue;
 	}
-
-	/**
-	 * Red value of the current color, from 0 to 255.
-	 */
-	public var red(default, null):Int;
-
-	/**
-	 * Green value of the current color, from 0 to 255.
-	 */
-	public var green(default, null):Int;
-
-	/**
-	 * Blue value of the current color, from 0 to 255.
-	 */
-	public var blue(default, null):Int;
 
 	// Color information.
 	var _startA:Float;
