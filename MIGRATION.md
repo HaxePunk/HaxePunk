@@ -47,7 +47,7 @@ Input-related functionality has moved into the haxepunk.input package, and every
 
 With the refactored input system, you can define inputs from multiple sources as a single action within your game:
 
-```
+```haxe
 Key.define("left", [Key.LEFT, Key.A]);
 myGamepad.defineButton("left", [PS3_CONTROLLER.DPAD_LEFT]);
 myGamepad.defineAxis("left", PS3_CONTROLLER.LEFT_ANALOGUE_X, -0.1, -1);
@@ -57,3 +57,23 @@ Mouse.define("left", MouseButton.LEFT);
 These can then be checked using `Input.check("left")`, `Input.pressed("left")`, or `Input.released("left")`
 
 Both the Engine (for global controls) and the Scene (for Scene-specific controls) also have `inputPressed` and `inputReleased` signals that you can bind callbacks to: `scene.inputPressed.left.bind(myFunction)`.
+
+Tween Events
+------------
+
+Previously tween events were dispatched but are now using signals. Instead of passing a `complete` function to the tween when constructing it you'll need to bind to the signal instead.
+
+```haxe
+var tween = new Tween(10, onComplete); // old style
+
+var tween = new Tween(10);
+tween.complete.bind(onComplete); // new style
+```
+
+In addition to the complete function you can also bind to start and update.
+
+```haxe
+var tween = new Tween(10);
+tween.started.bind(function() trace("Tween started!"));
+tween.updated.bind(function() trace("Tween updated!"));
+```
