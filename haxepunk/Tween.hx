@@ -1,8 +1,7 @@
 package haxepunk;
 
-import haxepunk.tweens.TweenEvent;
 import haxepunk.ds.Maybe;
-import haxepunk.Signal;
+import haxepunk.Signal.Signal0;
 
 /**
  * The type of the tween.
