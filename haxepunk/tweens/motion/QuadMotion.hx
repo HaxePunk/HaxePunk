@@ -10,6 +10,11 @@ import flash.geom.Point;
 class QuadMotion extends Motion
 {
 	/**
+	 * The distance of the entire curve.
+	 */
+	public var distance(default, null):Float = 0;
+
+	/**
 	 * Starts moving along the curve.
 	 * @param	fromX		X start.
 	 * @param	fromY		Y start.
@@ -22,13 +27,7 @@ class QuadMotion extends Motion
 	 */
 	public function setMotion(fromX:Float, fromY:Float, controlX:Float, controlY:Float, toX:Float, toY:Float, duration:Float, ?ease:EaseFunction)
 	{
-		_distance = -1;
-		x = _fromX = fromX;
-		y = _fromY = fromY;
-		_controlX = controlX;
-		_controlY = controlY;
-		_toX = toX;
-		_toY = toY;
+		set(fromX, fromY, controlX, controlY, toX, toY);
 		_target = duration;
 		_ease = ease;
 		start();
@@ -47,13 +46,7 @@ class QuadMotion extends Motion
 	 */
 	public function setMotionSpeed(fromX:Float, fromY:Float, controlX:Float, controlY:Float, toX:Float, toY:Float, speed:Float, ?ease:EaseFunction)
 	{
-		_distance = -1;
-		x = _fromX = fromX;
-		y = _fromY = fromY;
-		_controlX = controlX;
-		_controlY = controlY;
-		_toX = toX;
-		_toY = toY;
+		set(fromX, fromY, controlX, controlY, toX, toY);
 		_target = distance / speed;
 		_ease = ease;
 		start();
@@ -67,13 +60,19 @@ class QuadMotion extends Motion
 		y = _fromY * (1 - _t) * (1 - _t) + _controlY * 2 * (1 - _t) * _t + _toY * _t * _t;
 	}
 
-	/**
-	 * The distance of the entire curve.
-	 */
-	public var distance(get, null):Float;
-	function get_distance():Float
+	inline function set(fromX:Float, fromY:Float, controlX:Float, controlY:Float, toX:Float, toY:Float)
 	{
-		if (_distance >= 0) return _distance;
+		x = _fromX = fromX;
+		y = _fromY = fromY;
+		_controlX = controlX;
+		_controlY = controlY;
+		_toX = toX;
+		_toY = toY;
+		distance = calculateDistance();
+	}
+
+	function calculateDistance():Float
+	{
 		var a:Point = HXP.point,
 			b:Point = HXP.point2;
 		a.x = x - 2 * _controlX + _toX;
@@ -92,7 +91,6 @@ class QuadMotion extends Motion
 	}
 
 	// Curve information.
-	var _distance:Float = -1;
 	var _fromX:Float = 0;
 	var _fromY:Float = 0;
 	var _toX:Float = 0;

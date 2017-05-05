@@ -239,15 +239,14 @@ class HXP
 	/**
 	 * Global volume factor for all sounds, a value from 0 to 1.
 	 */
-	public static var volume(get, set):Float;
-	static inline function get_volume():Float return _volume;
+	public static var volume(default, set):Float = 1;
 	static function set_volume(value:Float):Float
 	{
-		if (value < 0) value = 0;
-		if (_volume == value) return value;
-		_volume = value;
+		value = MathUtil.clamp(value, 0, 1);
+		if (volume == value) return value;
+		volume = value;
 		Sfx.onGlobalUpdated(false);
-		return _volume;
+		return volume;
 	}
 
 	/**
@@ -620,7 +619,6 @@ class HXP
 	static var _bitmap:Map<String, BitmapData> = new Map<String, BitmapData>();
 
 	// Volume control.
-	static var _volume:Float = 1;
 	static var _pan:Float = 0;
 
 	/** The stage. */

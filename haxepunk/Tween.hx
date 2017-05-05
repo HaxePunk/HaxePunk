@@ -1,7 +1,8 @@
 package haxepunk;
 
-import haxepunk.ds.Maybe;
 import haxepunk.Signal.Signal0;
+import haxepunk.ds.Maybe;
+import haxepunk.utils.Ease.EaseFunction;
 
 /**
  * The type of the tween.
@@ -58,7 +59,7 @@ class Tween
 	 * @param	type			Tween type, one of Tween.PERSIST (default), Tween.LOOPING, or Tween.ONESHOT.
 	 * @param	ease			Optional easer function to apply to the Tweened value.
 	 */
-	public function new(duration:Float, ?type:TweenType, ?ease:Float -> Float)
+	public function new(duration:Float, ?type:TweenType, ?ease:EaseFunction)
 	{
 		if (duration < 0)
 		{
@@ -161,7 +162,7 @@ class Tween
 	function get_scale():Float return _t;
 
 	var _type:TweenType;
-	var _ease:Maybe<Float -> Float>;
+	var _ease:Maybe<EaseFunction>;
 	var _t:Float;
 
 	var _time:Float = 0;
