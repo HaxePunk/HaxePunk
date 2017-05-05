@@ -71,12 +71,12 @@ class Tween
 	}
 
 	/** @private Update function for override in subclasses */
-	function _update() { }
+	function _update() {}
 
 	/**
 	 * Updates the Tween, called by World.
 	 */
-	 @:dox(hide)
+	@:dox(hide)
 	public function update(elapsed:Float)
 	{
 		var isFinished = false;
