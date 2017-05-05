@@ -46,9 +46,8 @@ class AngleTween extends Tween
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update(elapsed:Float)
+	override function _update()
 	{
-		super.update(elapsed);
 		angle = (_start + _range * _t) % 360;
 		if (angle < 0) angle += 360;
 	}

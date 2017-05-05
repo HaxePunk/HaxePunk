@@ -52,9 +52,8 @@ class VarTween extends Tween
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update(elapsed:Float)
+	override function _update()
 	{
-		super.update(elapsed);
 		Reflect.setProperty(_object, _property, _start + _range * _t);
 	}
 

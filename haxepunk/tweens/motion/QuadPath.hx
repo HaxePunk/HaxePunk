@@ -1,6 +1,5 @@
 package haxepunk.tweens.motion;
 
-import haxepunk.Tween.TweenType;
 import haxepunk.utils.Ease.EaseFunction;
 import flash.geom.Point;
 
@@ -10,24 +9,6 @@ import flash.geom.Point;
  */
 class QuadPath extends Motion
 {
-	/**
-	 * Constructor.
-	 * @param	complete	Optional completion callback.
-	 * @param	type		Tween type.
-	 */
-	public function new(type:TweenType)
-	{
-		_points = new Array<Point>();
-		_curve = new Array<Point>();
-		_curveD = new Array<Float>();
-		_curveT = new Array<Float>();
-		_distance = _speed = _index = 0;
-		_updateCurve = true;
-
-		super(0, type, null);
-		_curveT[0] = 0;
-	}
-
 	/**
 	 * Starts moving along the path.
 	 * @param	duration	Duration of the movement.
@@ -91,9 +72,8 @@ class QuadPath extends Motion
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update(elapsed:Float)
+	override function _update()
 	{
-		super.update(elapsed);
 		if (_index < _curve.length - 1)
 		{
 			while (_t > _curveT[_index + 1]) _index++;
@@ -188,16 +168,16 @@ class QuadPath extends Motion
 	}
 
 	// Path information.
-	var _points:Array<Point>;
-	var _distance:Float;
-	var _speed:Float;
-	var _index:Int;
+	var _points:Array<Point> = [];
+	var _distance:Float = 0;
+	var _speed:Float = 0;
+	var _index:Int = 0;
 
 	// Curve information.
-	var _updateCurve:Bool;
-	var _curve:Array<Point>;
-	var _curveT:Array<Float>;
-	var _curveD:Array<Float>;
+	var _updateCurve:Bool = true;
+	var _curve:Array<Point> = [];
+	var _curveT:Array<Float> = [0];
+	var _curveD:Array<Float> = [];
 
 	// Curve points.
 	var _a:Point;

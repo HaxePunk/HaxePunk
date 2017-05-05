@@ -21,6 +21,10 @@ class AngleTweenTest extends TestSuite
 		tween.tween(10, 240, 4);
 		tween.update(2);
 		Assert.areEqual(305, tween.angle);
+
+		tween.tween(240, 10, 4);
+		tween.update(2);
+		Assert.areEqual(305, tween.angle);
 	}
 
 	@Test

@@ -1,6 +1,5 @@
 package haxepunk.tweens.motion;
 
-import haxepunk.Tween.TweenType;
 import haxepunk.HXP;
 import haxepunk.utils.Ease.EaseFunction;
 import flash.geom.Point;
@@ -10,19 +9,6 @@ import flash.geom.Point;
  */
 class QuadMotion extends Motion
 {
-	/**
-	 * Constructor.
-	 * @param	complete	Optional completion callback.
-	 * @param	type		Tween type.
-	 */
-	public function new(type:TweenType)
-	{
-		_distance = -1;
-		_fromX = _fromY = _toX = _toY = 0;
-		_controlX = _controlY = 0;
-		super(0, type, null);
-	}
-
 	/**
 	 * Starts moving along the curve.
 	 * @param	fromX		X start.
@@ -75,9 +61,8 @@ class QuadMotion extends Motion
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update(elapsed:Float)
+	override function _update()
 	{
-		super.update(elapsed);
 		x = _fromX * (1 - _t) * (1 - _t) + _controlX * 2 * (1 - _t) * _t + _toX * _t * _t;
 		y = _fromY * (1 - _t) * (1 - _t) + _controlY * 2 * (1 - _t) * _t + _toY * _t * _t;
 	}
@@ -107,11 +92,11 @@ class QuadMotion extends Motion
 	}
 
 	// Curve information.
-	var _distance:Float;
-	var _fromX:Float;
-	var _fromY:Float;
-	var _toX:Float;
-	var _toY:Float;
-	var _controlX:Float;
-	var _controlY:Float;
+	var _distance:Float = -1;
+	var _fromX:Float = 0;
+	var _fromY:Float = 0;
+	var _toX:Float = 0;
+	var _toY:Float = 0;
+	var _controlX:Float = 0;
+	var _controlY:Float = 0;
 }

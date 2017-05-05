@@ -62,6 +62,15 @@ class TweenerTest
 	}
 
 	@Test
+	public function testTweenCancel()
+	{
+		var tween = new Tween(1);
+		tweener.addTween(tween, true);
+		tween.cancel();
+		Assert.throws(String, function() tweener.removeTween(tween));
+	}
+
+	@Test
 	public function testClearTweens()
 	{
 		var tweens = [new Tween(1), new Tween(3), new Tween(2)];

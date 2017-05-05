@@ -70,12 +70,16 @@ class Tween
 		_t = 0;
 	}
 
+	/** @private Update function for override in subclasses */
+	function _update() { }
+
 	/**
 	 * Updates the Tween, called by World.
 	 */
-	@:dox(hide)
+	 @:dox(hide)
 	public function update(elapsed:Float)
 	{
+		var isFinished = false;
 		if (active)
 		{
 			_time += elapsed;
@@ -84,11 +88,12 @@ class Tween
 			if (_time >= _target)
 			{
 				_t = forward ? 1 : 0;
-				_finish = true;
+				isFinished = true;
 			}
+			_update();
 			updated.invoke();
 		}
-		if (_finish)
+		if (isFinished)
 		{
 			finish();
 		}
@@ -127,7 +132,6 @@ class Tween
 				_time = _target;
 				cancel();
 		}
-		_finish = false;
 		complete.invoke();
 
 		if (_type == TweenType.OneShot)
@@ -163,7 +167,6 @@ class Tween
 	var _time:Float = 0;
 	var _target:Float;
 
-	var _finish:Bool;
 	var _parent:Tweener;
 	var _prev:Tween;
 	var _next:Tween;

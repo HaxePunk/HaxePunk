@@ -41,9 +41,8 @@ class NumTween extends Tween
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update(elapsed:Float)
+	override function _update()
 	{
-		super.update(elapsed);
 		value = _start + _range * _t;
 	}
 

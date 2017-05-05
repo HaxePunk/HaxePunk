@@ -1,6 +1,5 @@
 package haxepunk.tweens.motion;
 
-import haxepunk.Tween.TweenType;
 import haxepunk.utils.Ease.EaseFunction;
 
 /**
@@ -9,16 +8,9 @@ import haxepunk.utils.Ease.EaseFunction;
 class LinearMotion extends Motion
 {
 	/**
-	 * Constructor.
-	 * @param	complete	Optional completion callback.
-	 * @param	type		Tween type.
+	 * Length of the current line of movement.
 	 */
-	public function new(?type:TweenType)
-	{
-		_fromX = _fromY = _moveX = _moveY = 0;
-		_distance = -1;
-		super(0, type, null);
-	}
+	public var distance(default, null):Float = 0;
 
 	/**
 	 * Starts moving along a line.
@@ -31,11 +23,7 @@ class LinearMotion extends Motion
 	 */
 	public function setMotion(fromX:Float, fromY:Float, toX:Float, toY:Float, duration:Float, ?ease:EaseFunction)
 	{
-		_distance = -1;
-		x = _fromX = fromX;
-		y = _fromY = fromY;
-		_moveX = toX - fromX;
-		_moveY = toY - fromY;
+		set(fromX, fromY, toX, toY);
 		_target = duration;
 		_ease = ease;
 		start();
@@ -47,16 +35,12 @@ class LinearMotion extends Motion
 	 * @param	fromY		Y start.
 	 * @param	toX			X finish.
 	 * @param	toY			Y finish.
-	 * @param	speed		Speed of the movement.
+	 * @param	speed		Speed of the movement (units per second).
 	 * @param	ease		Optional easer function.
 	 */
 	public function setMotionSpeed(fromX:Float, fromY:Float, toX:Float, toY:Float, speed:Float, ?ease:EaseFunction)
 	{
-		_distance = -1;
-		x = _fromX = fromX;
-		y = _fromY = fromY;
-		_moveX = toX - fromX;
-		_moveY = toY - fromY;
+		set(fromX, fromY, toX, toY);
 		_target = distance / speed;
 		_ease = ease;
 		start();
@@ -64,32 +48,24 @@ class LinearMotion extends Motion
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update(elapsed:Float)
+	override function _update()
 	{
-		super.update(elapsed);
 		x = _fromX + _moveX * _t;
 		y = _fromY + _moveY * _t;
-		if (x == _fromX + _moveX && y == _fromY + _moveY && active)
-		{
-			super.update(elapsed);
-			finish();
-		}
 	}
 
-	/**
-	 * Length of the current line of movement.
-	 */
-	public var distance(get, never):Float;
-	function get_distance():Float
+	inline function set(fromX:Float, fromY:Float, toX:Float, toY:Float):Void
 	{
-		if (_distance >= 0) return _distance;
-		return (_distance = Math.sqrt(_moveX * _moveX + _moveY * _moveY));
+		x = _fromX = fromX;
+		y = _fromY = fromY;
+		_moveX = toX - fromX;
+		_moveY = toY - fromY;
+		distance = Math.sqrt(_moveX * _moveX + _moveY * _moveY);
 	}
 
 	// Line information.
-	var _fromX:Float;
-	var _fromY:Float;
-	var _moveX:Float;
-	var _moveY:Float;
-	var _distance:Float;
+	var _fromX:Float = 0;
+	var _fromY:Float = 0;
+	var _moveX:Float = 0;
+	var _moveY:Float = 0;
 }

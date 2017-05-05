@@ -1,6 +1,5 @@
 package haxepunk.tweens.motion;
 
-import haxepunk.Tween.TweenType;
 import haxepunk.utils.Ease.EaseFunction;
 import haxepunk.utils.MathUtil;
 
@@ -10,17 +9,15 @@ import haxepunk.utils.MathUtil;
 class CircularMotion extends Motion
 {
 	/**
-	 * Constructor.
-	 * @param	complete	Optional completion callback.
-	 * @param	type		Tween type.
+	 * The current position on the circle.
 	 */
-	public function new(?type:TweenType)
-	{
-		_centerX = _centerY = 0;
-		_radius = angle = 0;
-		_angleStart = _angleFinish = 0;
-		super(0, type, null);
-	}
+	public var angle(default, null):Float = 0;
+
+	/**
+	 * The circumference of the current circle motion.
+	 */
+	public var circumference(get, never):Float;
+	function get_circumference():Float return _radius * _CIRC;
 
 	/**
 	 * Starts moving along a circle.
@@ -68,30 +65,20 @@ class CircularMotion extends Motion
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update(elapsed:Float)
+	override function _update()
 	{
-		super.update(elapsed);
 		angle = _angleStart + _angleFinish * _t;
 		x = _centerX + Math.cos(angle) * _radius;
 		y = _centerY + Math.sin(angle) * _radius;
 	}
 
-	/**
-	 * The current position on the circle.
-	 */
-	public var angle(default, null):Float;
-
-	/**
-	 * The circumference of the current circle motion.
-	 */
-	public var circumference(get, never):Float;
-	function get_circumference():Float return _radius * _CIRC;
-
 	// Circle information.
-	var _centerX:Float;
-	var _centerY:Float;
-	var _radius:Float;
-	var _angleStart:Float;
-	var _angleFinish:Float;
-	static inline var _CIRC:Float = 6.283185307; // Math.PI * 2
+	var _centerX:Float = 0;
+	var _centerY:Float = 0;
+	var _radius:Float = 0;
+	var _angleStart:Float = 0;
+	var _angleFinish:Float = 0;
+
+	static var _CIRC(get, never):Float;
+	static inline function get__CIRC():Float return Math.PI * 2;
 }
