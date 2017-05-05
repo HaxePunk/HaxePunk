@@ -1,4 +1,4 @@
-﻿package haxepunk.tweens.misc;
+package haxepunk.tweens.misc;
 
 import haxepunk.Tween;
 

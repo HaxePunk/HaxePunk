@@ -2,8 +2,7 @@ package haxepunk.tweens.misc;
 
 import haxepunk.Tween;
 import haxepunk.utils.Color;
-import haxepunk.utils.Ease;
-
+import haxepunk.utils.Ease.EaseFunction;
 
 /**
  * Tweens a color's red, green, and blue properties
@@ -55,7 +54,7 @@ class ColorTween extends Tween
 	 * @param	toAlpha			End alpha.
 	 * @param	ease			Optional easer function.
 	 */
-	public function tween(duration:Float, fromColor:Color, toColor:Color, fromAlpha:Float = 1, toAlpha:Float = 1, ease:Float -> Float = null)
+	public function tween(duration:Float, fromColor:Color, toColor:Color, fromAlpha:Float = 1, toAlpha:Float = 1, ?ease:EaseFunction)
 	{
 		fromColor &= 0xFFFFFF;
 		toColor &= 0xFFFFFF;

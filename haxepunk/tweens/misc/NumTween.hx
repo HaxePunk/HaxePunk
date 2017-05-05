@@ -1,7 +1,7 @@
-﻿package haxepunk.tweens.misc;
+package haxepunk.tweens.misc;
 
 import haxepunk.Tween;
-import haxepunk.utils.Ease;
+import haxepunk.utils.Ease.EaseFunction;
 
 /**
  * Tweens a numeric value.
@@ -30,7 +30,7 @@ class NumTween extends Tween
 	 * @param	duration		Duration of the tween.
 	 * @param	ease			Optional easer function.
 	 */
-	public function tween(fromValue:Float, toValue:Float, duration:Float, ?ease:Float -> Float)
+	public function tween(fromValue:Float, toValue:Float, duration:Float, ?ease:EaseFunction)
 	{
 		_start = value = fromValue;
 		_range = toValue - value;

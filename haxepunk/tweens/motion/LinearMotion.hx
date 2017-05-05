@@ -1,8 +1,7 @@
-﻿package haxepunk.tweens.motion;
+package haxepunk.tweens.motion;
 
-import haxepunk.Tween;
-import haxepunk.utils.Ease;
-import flash.geom.Point;
+import haxepunk.Tween.TweenType;
+import haxepunk.utils.Ease.EaseFunction;
 
 /**
  * Determines motion along a line, from one point to another.
@@ -30,7 +29,7 @@ class LinearMotion extends Motion
 	 * @param	duration	Duration of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotion(fromX:Float, fromY:Float, toX:Float, toY:Float, duration:Float, ease:Float -> Float = null)
+	public function setMotion(fromX:Float, fromY:Float, toX:Float, toY:Float, duration:Float, ?ease:EaseFunction)
 	{
 		_distance = -1;
 		x = _fromX = fromX;
@@ -51,7 +50,7 @@ class LinearMotion extends Motion
 	 * @param	speed		Speed of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotionSpeed(fromX:Float, fromY:Float, toX:Float, toY:Float, speed:Float, ease:Float -> Float = null)
+	public function setMotionSpeed(fromX:Float, fromY:Float, toX:Float, toY:Float, speed:Float, ?ease:EaseFunction)
 	{
 		_distance = -1;
 		x = _fromX = fromX;

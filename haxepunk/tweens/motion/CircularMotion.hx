@@ -1,11 +1,8 @@
-﻿package haxepunk.tweens.motion;
+package haxepunk.tweens.motion;
 
-import flash.geom.Point;
-import haxepunk.HXP;
-import haxepunk.Tween;
-import haxepunk.utils.Ease;
+import haxepunk.Tween.TweenType;
+import haxepunk.utils.Ease.EaseFunction;
 import haxepunk.utils.MathUtil;
-
 
 /**
  * Determines a circular motion.
@@ -35,7 +32,7 @@ class CircularMotion extends Motion
 	 * @param	duration	Duration of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotion(centerX:Float, centerY:Float, radius:Float, angle:Float, clockwise:Bool, duration:Float, ease:Float -> Float = null)
+	public function setMotion(centerX:Float, centerY:Float, radius:Float, angle:Float, clockwise:Bool, duration:Float, ?ease:EaseFunction)
 	{
 		_centerX = centerX;
 		_centerY = centerY;
@@ -57,7 +54,7 @@ class CircularMotion extends Motion
 	 * @param	speed		Speed of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotionSpeed(centerX:Float, centerY:Float, radius:Float, angle:Float, clockwise:Bool, speed:Float, ease:Float -> Float = null)
+	public function setMotionSpeed(centerX:Float, centerY:Float, radius:Float, angle:Float, clockwise:Bool, speed:Float, ?ease:EaseFunction)
 	{
 		_centerX = centerX;
 		_centerY = centerY;

@@ -1,8 +1,8 @@
-﻿package haxepunk.tweens.misc;
+package haxepunk.tweens.misc;
 
 import haxepunk.HXP;
 import haxepunk.Tween;
-import haxepunk.utils.Ease;
+import haxepunk.utils.Ease.EaseFunction;
 
 /**
  * Tweens from one angle to another.
@@ -31,7 +31,7 @@ class AngleTween extends Tween
 	 * @param	duration		Duration of the tween.
 	 * @param	ease			Optional easer function.
 	 */
-	public function tween(fromAngle:Float, toAngle:Float, duration:Float, ?ease:Float -> Float)
+	public function tween(fromAngle:Float, toAngle:Float, duration:Float, ?ease:EaseFunction)
 	{
 		_start = angle = fromAngle;
 		var d:Float = toAngle - angle,

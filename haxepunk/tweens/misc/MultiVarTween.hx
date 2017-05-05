@@ -1,6 +1,7 @@
 package haxepunk.tweens.misc;
 
 import haxepunk.Tween;
+import haxepunk.utils.Ease.EaseFunction;
 
 /**
  * Tweens multiple numeric public properties of an Object simultaneously.
@@ -28,7 +29,7 @@ class MultiVarTween extends Tween
 	 * @param	duration	Duration of the tween.
 	 * @param	ease		Optional easer function.
 	 */
-	public function tween(object:Dynamic, properties:Dynamic, duration:Float, ease:Float -> Float = null)
+	public function tween(object:Dynamic, properties:Dynamic, duration:Float, ?ease:EaseFunction)
 	{
 		_object = object;
 		HXP.clear(_vars);

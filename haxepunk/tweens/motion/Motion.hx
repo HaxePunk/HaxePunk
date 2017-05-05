@@ -1,7 +1,7 @@
-﻿package haxepunk.tweens.motion;
+package haxepunk.tweens.motion;
 
 import haxepunk.Tween;
-import haxepunk.utils.Ease;
+import haxepunk.utils.Ease.EaseFunction;
 
 /**
  * Base class for motion Tweens.
@@ -25,7 +25,7 @@ class Motion extends Tween
 	 * @param	type		Tween type.
 	 * @param	ease		Optional easer function.
 	 */
-	public function new(duration:Float, ?type:TweenType, ease:Float -> Float = null)
+	public function new(duration:Float, ?type:TweenType, ?ease:EaseFunction)
 	{
 		x = y = 0;
 		super(duration, type, ease);

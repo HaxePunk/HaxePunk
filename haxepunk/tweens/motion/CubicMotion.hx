@@ -1,8 +1,7 @@
-﻿package haxepunk.tweens.motion;
+package haxepunk.tweens.motion;
 
-import haxepunk.Tween;
-import flash.geom.Point;
-import haxepunk.utils.Ease;
+import haxepunk.Tween.TweenType;
+import haxepunk.utils.Ease.EaseFunction;
 
 /**
  * Determines motion along a cubic curve.
@@ -34,7 +33,7 @@ class CubicMotion extends Motion
 	 * @param	duration	Duration of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotion(fromX:Float, fromY:Float, aX:Float, aY:Float, bX:Float, bY:Float, toX:Float, toY:Float, duration:Float, ease:Float -> Float = null)
+	public function setMotion(fromX:Float, fromY:Float, aX:Float, aY:Float, bX:Float, bY:Float, toX:Float, toY:Float, duration:Float, ?ease:EaseFunction)
 	{
 		x = _fromX = fromX;
 		y = _fromY = fromY;

@@ -1,7 +1,7 @@
-﻿package haxepunk.tweens.motion;
+package haxepunk.tweens.motion;
 
-import haxepunk.Tween;
-import haxepunk.utils.Ease;
+import haxepunk.Tween.TweenType;
+import haxepunk.utils.Ease.EaseFunction;
 import flash.geom.Point;
 
 /**
@@ -33,7 +33,7 @@ class QuadPath extends Motion
 	 * @param	duration	Duration of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotion(duration:Float, ease:Float -> Float = null)
+	public function setMotion(duration:Float, ?ease:EaseFunction)
 	{
 		updatePath();
 		_target = duration;
@@ -47,7 +47,7 @@ class QuadPath extends Motion
 	 * @param	speed		Speed of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotionSpeed(speed:Float, ease:Float -> Float = null)
+	public function setMotionSpeed(speed:Float, ?ease:EaseFunction)
 	{
 		updatePath();
 		_target = _distance / speed;
@@ -176,15 +176,15 @@ class QuadPath extends Motion
 		a.y = start.y - 2 * control.y + finish.y;
 		b.x = 2 * control.x - 2 * start.x;
 		b.y = 2 * control.y - 2 * start.y;
-		var A:Float = 4 * (a.x * a.x + a.y * a.y),
-			B:Float = 4 * (a.x * b.x + a.y * b.y),
-			C:Float = b.x * b.x + b.y * b.y,
-			ABC:Float = 2 * Math.sqrt(A + B + C),
-			A2:Float = Math.sqrt(A),
-			A32:Float = 2 * A * A2,
-			C2:Float = 2 * Math.sqrt(C),
-			BA:Float = B / A2;
-		return (A32 * ABC + A2 * B * (ABC - C2) + (4 * C * A - B * B) * Math.log((2 * A2 + BA + ABC) / (BA + C2))) / (4 * A32);
+		var a1:Float = 4 * (a.x * a.x + a.y * a.y),
+			b1:Float = 4 * (a.x * b.x + a.y * b.y),
+			c1:Float = b.x * b.x + b.y * b.y,
+			abc:Float = 2 * Math.sqrt(a1 + b1 + c1),
+			a2:Float = Math.sqrt(a1),
+			a32:Float = 2 * a1 * a2,
+			c2:Float = 2 * Math.sqrt(c1),
+			ba:Float = b1 / a2;
+		return (a32 * abc + a2 * b1 * (abc - c2) + (4 * c1 * a1 - b1 * b1) * Math.log((2 * a2 + ba + abc) / (ba + c2))) / (4 * a32);
 	}
 
 	// Path information.
