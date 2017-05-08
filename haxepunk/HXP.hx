@@ -378,8 +378,9 @@ class HXP
 	 */
 	public static function overwriteBitmapCache(name:String, data:BitmapData):Bool
 	{
+		var removed = removeBitmap(name);
 		_bitmap.set(name, data);
-		return removeBitmap(name);
+		return removed;
 	}
 
 	/**
