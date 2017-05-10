@@ -3,6 +3,7 @@ package haxepunk.graphics;
 import flash.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Graphic;
+import haxepunk.utils.Color;
 
 /**
  * A Graphic that can contain multiple Graphics of one or various types.
@@ -10,6 +11,24 @@ import haxepunk.Graphic;
  */
 class Graphiclist extends Graphic
 {
+	override function set_alpha(v:Float):Float
+	{
+		for (graphic in _graphics)
+		{
+			graphic.alpha = v;
+		}
+		return super.set_alpha(v);
+	}
+
+	override function set_color(v:Color):Color
+	{
+		for (graphic in _graphics)
+		{
+			graphic.color = v;
+		}
+		return super.set_color(v);
+	}
+
 	/**
 	 * Constructor.
 	 * @param	graphic		Graphic objects to add to the list.
