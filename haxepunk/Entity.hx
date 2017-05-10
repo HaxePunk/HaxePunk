@@ -38,7 +38,9 @@ class Entity extends Tweener
 	/**
 	 * If the Entity should respond to collision checks.
 	 */
-	public var collidable:Bool = true;
+	@:isVar public var collidable(get, set):Bool = true;
+	function get_collidable() return collidable && (parent == null || parent.collidable);
+	function set_collidable(v:Bool) return collidable = v;
 
 	/**
 	 * X position of the Entity in the Scene.
