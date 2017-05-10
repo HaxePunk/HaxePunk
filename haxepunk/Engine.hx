@@ -274,6 +274,10 @@ class Engine extends Sprite
 		Draw.init();
 		init();
 
+		#if show_console
+		HXP.console.enable();
+		#end
+
 		// start game loop
 		_rate = 1000 / HXP.assignedFrameRate;
 
