@@ -21,7 +21,6 @@ import haxepunk.utils.Vector;
  */
 class Image extends Graphic
 {
-
 	/**
 	 * Rotation of the image, in degrees.
 	 */

@@ -230,6 +230,12 @@ class BitmapText extends Graphic
 	 */
 	public var displayCharCount:Int = -1;
 
+	/**
+	 * The total number of visible characters (or images) in the text.
+	 * `displayCharCount` can be between 0 and this number.
+	 */
+	public var charCount(default, null):Int = 0;
+
 	var opCodes:Array<TextOpcode> = new Array();
 
 	/**
@@ -320,7 +326,7 @@ class BitmapText extends Graphic
 			sy:Float = size * scale * scaleY;
 		var lineHeight:Float = _font.getLineHeight(sy * fsy) / fsy,
 			lineSpacing:Float = lineSpacing * scale * scaleY,
-			thisLineHeight:Float = lineHeight;
+			thisLineHeight:Float = 0;
 		var remaining = text;
 		var cursorX:Float = 0,
 			cursorY:Float = 0,
@@ -332,6 +338,7 @@ class BitmapText extends Graphic
 			wrapping:Bool = false;
 
 		var textWidth = 0;
+		charCount = 0;
 		opCodes.push(null);
 		var newLineIndex:Int = 0;
 
@@ -360,10 +367,11 @@ class BitmapText extends Graphic
 		{
 			opCodes[newLineIndex] = NewLine(Std.int(cursorX), Std.int(thisLineHeight), currentAlign);
 			cursorX = 0;
-			cursorY += thisLineHeight + lineSpacing;
-			thisLineHeight = lineHeight;
+			cursorY += thisLineHeight + (cursorY == 0 ? 0 : lineSpacing);
+			thisLineHeight = lineHeight * currentScale;
 			opCodes.push(null);
 			newLineIndex = opCodes.length - 1;
+			++charCount;
 		}
 		// flush some text to the current word
 		inline function flushCurrentWord()
@@ -409,6 +417,7 @@ class BitmapText extends Graphic
 				while (i < line.length)
 				{
 					var char:String = line.charAt(i);
+					thisLineHeight = Math.max(thisLineHeight, lineHeight * currentScale);
 					inline function addChar()
 					{
 						var maxFullScale = sx * fsx;
@@ -416,6 +425,7 @@ class BitmapText extends Graphic
 						var charWidth = gd.xAdvance * gd.scale / fsx;
 						currentWord += char;
 						wordLength += charWidth + charSpacing * currentScale;
+						++charCount;
 					}
 					switch (char)
 					{
@@ -458,16 +468,15 @@ class BitmapText extends Graphic
 								var imageWidth = ((image.width * image.scale * image.scaleX * this.scale * this.scaleX) + charSpacing) * currentScale;
 								_word.push(tag);
 								wordLength += imageWidth;
-								thisLineHeight = Math.max(thisLineHeight, currentScale * image.height * image.scale * image.scaleY * this.scale * this.scaleY);
+								thisLineHeight = Math.max(thisLineHeight, image.height * currentScale * image.scale * image.scaleY * this.scale * this.scaleY);
 								if (cursorX > textWidth) textWidth = Std.int(cursorX);
+								++charCount;
 							case SetScale(scale):
 								_scaleStack.push(currentScale = scale);
 								_word.push(tag);
-								thisLineHeight = Math.max(thisLineHeight, lineHeight * currentScale);
 							case PopScale:
 								if (_scaleStack.length > 1) _scaleStack.pop();
 								currentScale = _scaleStack[_scaleStack.length - 1];
-								thisLineHeight = Math.max(thisLineHeight, lineHeight * currentScale);
 								_word.push(tag);
 							case NewLine(_, _, _):
 								flushWord();
@@ -598,14 +607,14 @@ class BitmapText extends Graphic
 				case NewLine(lineWidth, lineHeight, alignType):
 					// advance to next line and set the new line height
 					cursorX = 0;
-					cursorY += thisLineHeight + (thisLineHeight > 0 ? lineSpacing : 0);
+					cursorY += thisLineHeight + ((cursorY > 0 && thisLineHeight > 0) ? lineSpacing : 0);
 					lineOffsetX = Std.int((width - lineWidth) * switch (alignType) {
 						case Left: 0;
 						case Center: 0.5;
 						case Right: 1;
 					});
 					thisLineHeight = lineHeight;
-					++charCount;
+					if (cursorY != 0) ++charCount;
 				case Image(image):
 					// draw the image
 					var originalX = image.x,
@@ -614,8 +623,8 @@ class BitmapText extends Graphic
 						originalScaleY = image.scaleY;
 					image.originX = image.originY = 0;
 					var point = getRenderPoint();
-					image.x += _point.x + point.x + lineOffsetX;
-					image.y += _point.y + point.y + thisLineHeight - image.height * image.scale * image.scaleY * currentScale * this.scale * this.scaleY;
+					image.x = _point.x + point.x + lineOffsetX + originalX;
+					image.y = _point.y + point.y + thisLineHeight + originalY - image.height * image.scale * image.scaleY * currentScale * this.scale * this.scaleY;
 					image.color = currentColor;
 					image.alpha = currentAlpha;
 					image.scaleX *= this.scale * this.scaleX * currentScale;
