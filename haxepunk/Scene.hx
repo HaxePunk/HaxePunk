@@ -68,15 +68,15 @@ class Scene extends Tweener
 	/**
 	 * Invoked after this Scene is resized.
 	 */
-	public var resize:Signal0 = new Signal0();
+	public var onResize:Signal0 = new Signal0();
 	/**
 	 * Invoked when input is received while this Scene is active.
 	 */
-	public var inputPressed:Signals = new Signals();
+	public var onInputPressed:Signals = new Signals();
 	/**
 	 * Invoked when input is received while this Scene is active.
 	 */
-	public var inputReleased:Signals = new Signals();
+	public var onInputReleased:Signals = new Signals();
 
 	/**
 	 * Constructor.
@@ -125,7 +125,7 @@ class Scene extends Tweener
 			{
 				e.resized();
 			}
-			resize.invoke();
+			onResize.invoke();
 		}
 	}
 

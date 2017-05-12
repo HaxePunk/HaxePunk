@@ -143,11 +143,11 @@ class Input
 			switch (op)
 			{
 				case PRESS:
-					trigger(HXP.engine.inputPressed);
-					trigger(HXP.scene.inputPressed);
+					trigger(HXP.engine.onInputPressed);
+					trigger(HXP.scene.onInputPressed);
 				case RELEASE:
-					trigger(HXP.engine.inputReleased);
-					trigger(HXP.scene.inputReleased);
+					trigger(HXP.engine.onInputReleased);
+					trigger(HXP.scene.onInputReleased);
 				default: {}
 			}
 		}

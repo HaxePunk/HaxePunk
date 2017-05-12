@@ -60,15 +60,23 @@ class Engine extends Sprite
 	/**
 	 * Invoked after the screen is resized.
 	 */
-	public var resize:Signal0 = new Signal0();
+	public var onResize:Signal0 = new Signal0();
 	/**
 	 * Invoked when input is received.
 	 */
-	public var inputPressed:Signals = new Signals();
+	public var onInputPressed:Signals = new Signals();
 	/**
 	 * Invoked when input is received.
 	 */
-	public var inputReleased:Signals = new Signals();
+	public var onInputReleased:Signals = new Signals();
+	/**
+	 * Invoked after the scene is switched.
+	 */
+	public var onSceneSwitch:Signal0 = new Signal0();
+	/**
+	 * Invoked when the application is closed.
+	 */
+	public var onClose:Signal0 = new Signal0();
 
 	/**
 	 * Constructor. Defines startup information about your game.
@@ -253,7 +261,7 @@ class Engine extends Sprite
 		_scrollRect.height = HXP.screen.height;
 		scrollRect = _scrollRect;
 
-		resize.invoke();
+		onResize.invoke();
 	}
 
 	/** @private Event handler for stage entry. */
@@ -284,6 +292,17 @@ class Engine extends Sprite
 		// nonfixed framerate
 		_last = Lib.getTimer();
 		addEventListener(Event.ENTER_FRAME, onEnterFrame);
+
+		#if (nme || openfl_legacy)
+		Lib.stage.onQuit = function() {
+			onClose.invoke();
+			Lib.close();
+		}
+		#else
+		openfl.Lib.current.stage.application.onExit.add(function(_) {
+			onClose.invoke();
+		});
+		#end
 	}
 
 	/** @private Framerate independent game loop. */
@@ -358,6 +377,8 @@ class Engine extends Sprite
 			_scene.updateLists();
 			_scene.begin();
 			_scene.updateLists();
+
+			onSceneSwitch.invoke();
 		}
 	}
 
