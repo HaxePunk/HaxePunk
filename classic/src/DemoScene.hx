@@ -42,9 +42,9 @@ class DemoScene extends Scene
 		Key.define("next_scene", [Key.LEFT_SQUARE_BRACKET]);
 		Key.define("prev_scene", [Key.RIGHT_SQUARE_BRACKET]);
 		Key.define("fullscreen", [Key.F]);
-		inputPressed.next_scene.bind(nextScene);
-		inputPressed.prev_scene.bind(previousScene);
-		inputPressed.fullscreen.bind(function() HXP.fullscreen = !HXP.fullscreen);
+		onInputPressed.next_scene.bind(nextScene);
+		onInputPressed.prev_scene.bind(previousScene);
+		onInputPressed.fullscreen.bind(function() HXP.fullscreen = !HXP.fullscreen);
 	}
 
 	function loadScene():Bool

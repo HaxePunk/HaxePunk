@@ -61,7 +61,7 @@ class Player extends Physics
 
 	override public function added()
 	{
-		scene.inputPressed.switch_jump_mode.bind(switchJumpStyle);
+		scene.onInputPressed.switch_jump_mode.bind(switchJumpStyle);
 	}
 
 	function registerGamepad(gamepad:Gamepad)

@@ -53,7 +53,7 @@ class GameScene extends Scene
 #end
 		Key.define("add", [Key.SPACE]);
 		Mouse.define("add", MouseButton.LEFT);
-		inputPressed.add.bind(onAdd);
+		onInputPressed.add.bind(onAdd);
 	}
 
 	function onAdd()

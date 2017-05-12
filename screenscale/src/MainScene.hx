@@ -91,7 +91,7 @@ class MainScene extends Scene
 		Key.define("right", [Key.D, Key.RIGHT]);
 		Key.define("next", [Key.TAB, Key.SPACE, Key.ENTER]);
 		Mouse.define("next", MouseButton.LEFT);
-		inputPressed.next.bind(changeScaleMode);
+		onInputPressed.next.bind(changeScaleMode);
 	}
 
 	function changeScaleMode()
