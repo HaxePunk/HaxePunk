@@ -29,16 +29,16 @@ class HardwareRenderer
 		) * chunkSize);
 	}
 
-	static inline function checkForGLErrors(?posInfos:PosInfos)
+	static inline function checkForGLErrors(?pos:PosInfos)
 	{
 		#if gl_debug
 		var error = GL.getError();
 		if (error != GL.NO_ERROR)
-			throw "GL ERROR: " + error;
+			throw "GL Error found at " + pos.fileName + ":" + pos.lineNumber + ": " + error;
 		#elseif debug
 		var error = GL.getError();
 		if (error != GL.NO_ERROR)
-			trace("GL Error: " + error);
+			trace("GL Error found at " + pos.fileName + ":" + pos.lineNumber + ": " + error);
 		#end
 	}
 
