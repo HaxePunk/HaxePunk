@@ -114,7 +114,7 @@ class Tilemap extends Graphic
 			column = Std.int(column / _tile.width);
 			row = Std.int(row / _tile.height);
 		}
-		index %= _setCount;
+		if (index > -1) index %= _setCount;
 		column %= _columns;
 		row %= _rows;
 		_map[row][column] = index;
