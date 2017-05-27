@@ -238,16 +238,16 @@ class AtlasData
 	 * Prepares a triangle draw command
 	 * @param  tx1    The first vertex x position
 	 * @param  ty1    The first vertex y position
-	 * @param  uvx1   The first vertex uv x coord
-	 * @param  uvy1   The first vertex uv y coord
+	 * @param  uvx1   The first vertex uv x coord (0-1)
+	 * @param  uvy1   The first vertex uv y coord (0-1)
 	 * @param  tx2    The second vertex x position
 	 * @param  ty2    The second vertex y position
-	 * @param  uvx2   The second vertex uv x coord
-	 * @param  uvy2   The second vertex uv y coord
+	 * @param  uvx2   The second vertex uv x coord (0-1)
+	 * @param  uvy2   The second vertex uv y coord (0-1)
 	 * @param  tx3    The third vertex x position
 	 * @param  ty3    The third vertex y position
-	 * @param  uvx3   The third vertex uv x coord
-	 * @param  uvy3   The third vertex uv y coord
+	 * @param  uvx3   The third vertex uv x coord (0-1)
+	 * @param  uvy3   The third vertex uv y coord (0-1)
 	 * @param  red    Red color value
 	 * @param  green  Green color value
 	 * @param  blue   Blue color value
