@@ -234,6 +234,29 @@ class AtlasData
 		batch.addRect(bitmapData, shader, smooth, blend, clipRect, rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, red, green, blue, alpha);
 	}
 
+	/**
+	 * Prepares a triangle draw command
+	 * @param  tx1    The first vertex x position
+	 * @param  ty1    The first vertex y position
+	 * @param  uvx1   The first vertex uv x coord
+	 * @param  uvy1   The first vertex uv y coord
+	 * @param  tx2    The second vertex x position
+	 * @param  ty2    The second vertex y position
+	 * @param  uvx2   The second vertex uv x coord
+	 * @param  uvy2   The second vertex uv y coord
+	 * @param  tx3    The third vertex x position
+	 * @param  ty3    The third vertex y position
+	 * @param  uvx3   The third vertex uv x coord
+	 * @param  uvy3   The third vertex uv y coord
+	 * @param  red    Red color value
+	 * @param  green  Green color value
+	 * @param  blue   Blue color value
+	 * @param  alpha  Alpha value
+	 * @param  shader Shader to use for rendering
+	 * @param  smooth Enables linear smoothing on texture
+	 * @param  blend  Blend mode to use for rendering
+	 * @param  clipRect The rectangle used for clipping
+	 */
 	public function prepareTriangle(
 		tx1:Float, ty1:Float, uvx1:Float, uvy1:Float,
 		tx2:Float, ty2:Float, uvx2:Float, uvy2:Float,
