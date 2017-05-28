@@ -44,7 +44,7 @@ class QuadPath extends Motion
 	 */
 	public function addPoint(x:Float = 0, y:Float = 0)
 	{
-		_updateCurve = true;
+		updateInternalCurve = true;
 		if (_points.length == 0) _curve[0] = new Point(x, y);
 		_points[_points.length] = new Point(x, y);
 	}
@@ -72,7 +72,7 @@ class QuadPath extends Motion
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override function _update()
+	override function updateInternal()
 	{
 		if (_index < _curve.length - 1)
 		{
@@ -94,8 +94,8 @@ class QuadPath extends Motion
 		if (_points.length < 3)
 			throw "A QuadPath must have at least 3 points to operate.";
 
-		if (!_updateCurve) return;
-		_updateCurve = false;
+		if (!updateInternalCurve) return;
+		updateInternalCurve = false;
 
 		// produce the curve points
 		var p:Point,
@@ -174,7 +174,7 @@ class QuadPath extends Motion
 	var _index:Int = 0;
 
 	// Curve information.
-	var _updateCurve:Bool = true;
+	var updateInternalCurve:Bool = true;
 	var _curve:Array<Point> = [];
 	var _curveT:Array<Float> = [0];
 	var _curveD:Array<Float> = [];

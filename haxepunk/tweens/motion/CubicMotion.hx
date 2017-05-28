@@ -37,7 +37,7 @@ class CubicMotion extends Motion
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override function _update()
+	override function updateInternal()
 	{
 		x = _t * _t * _t * (_toX + 3 * (_aX - _bX) - _fromX) + 3 * _t * _t * (_fromX - 2 * _aX + _bX) + 3 * _t * (_aX - _fromX) + _fromX;
 		y = _t * _t * _t * (_toY + 3 * (_aY - _bY) - _fromY) + 3 * _t * _t * (_fromY - 2 * _aY + _bY) + 3 * _t * (_aY - _fromY) + _fromY;

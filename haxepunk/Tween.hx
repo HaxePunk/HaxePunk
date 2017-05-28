@@ -45,13 +45,13 @@ class Tween
 	public var forward:Bool = true;
 
 	/** Signal fires when tween starts */
-	public var started = new Signal0();
+	public var onStart = new Signal0();
 
 	/** Signal fires when tween updates */
-	public var updated = new Signal0();
+	public var onUpdate = new Signal0();
 
 	/** Signal fires when tween is completed */
-	public var complete = new Signal0();
+	public var onComplete = new Signal0();
 
 	/**
 	 * Constructor. Specify basic information about the Tween.
@@ -72,7 +72,7 @@ class Tween
 	}
 
 	/** @private Update function for override in subclasses */
-	function _update() {}
+	function updateInternal() {}
 
 	/**
 	 * Updates the Tween, called by World.
@@ -91,8 +91,8 @@ class Tween
 				_t = forward ? 1 : 0;
 				isFinished = true;
 			}
-			_update();
-			updated.invoke();
+			updateInternal();
+			onUpdate.invoke();
 		}
 		if (isFinished)
 		{
@@ -109,12 +109,12 @@ class Tween
 		if (_target == 0)
 		{
 			active = false;
-			complete.invoke();
+			onComplete.invoke();
 		}
 		else
 		{
 			active = true;
-			started.invoke();
+			onStart.invoke();
 		}
 	}
 
@@ -133,11 +133,11 @@ class Tween
 				_time = _target;
 				cancel();
 		}
-		complete.invoke();
+		onComplete.invoke();
 
 		if (_type == TweenType.OneShot)
 		{
-			complete.clear();
+			onComplete.clear();
 		}
 	}
 

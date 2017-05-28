@@ -60,7 +60,7 @@ class SfxFader extends Tween
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override function _update()
+	override function updateInternal()
 	{
 		if (_sfx != null) _sfx.volume = _start + _range * _t;
 		if (_crossSfx != null) _crossSfx.volume = _crossRange * _t;

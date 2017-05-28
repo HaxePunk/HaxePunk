@@ -66,7 +66,7 @@ class MultiVarTween extends Tween
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override function _update()
+	override function updateInternal()
 	{
 		var i:Int = _vars.length;
 

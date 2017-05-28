@@ -52,7 +52,7 @@ class VarTween extends Tween
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override function _update()
+	override function updateInternal()
 	{
 		Reflect.setProperty(_object, _property, _start + _range * _t);
 	}

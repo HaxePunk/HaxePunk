@@ -48,7 +48,7 @@ class LinearMotion extends Motion
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override function _update()
+	override function updateInternal()
 	{
 		x = _fromX + _moveX * _t;
 		y = _fromY + _moveY * _t;

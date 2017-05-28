@@ -75,7 +75,7 @@ class LinearPath extends Motion
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override function _update()
+	override function updateInternal()
 	{
 		if (_index < _points.length - 1)
 		{

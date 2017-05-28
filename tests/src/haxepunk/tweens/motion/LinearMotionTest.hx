@@ -45,7 +45,7 @@ class LinearMotionTest extends TestSuite
 	{
 		var tween = new LinearMotion();
 		tween.setMotion(0, 0, 4, 10, 2);
-		tween.complete.bind(function()
+		tween.onComplete.bind(function()
 		{
 			Assert.areEqual(4, tween.x);
 			Assert.areEqual(10, tween.y);

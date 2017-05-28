@@ -14,7 +14,7 @@ class TweenTest
 	{
 		var called = 0;
 		var tween = new Tween(10);
-		tween.started.bind(function() called += 1);
+		tween.onStart.bind(function() called += 1);
 		tween.start();
 		Assert.isTrue(tween.active);
 		Assert.areEqual(1, called);
@@ -101,7 +101,7 @@ class TweenTest
 	{
 		var called = 0;
 		var tween = new Tween(10, OneShot);
-		tween.complete.bind(function() called += 1);
+		tween.onComplete.bind(function() called += 1);
 		tween.start();
 		tween.update(10);
 		Assert.areEqual(1, called);
@@ -126,7 +126,7 @@ class TweenTest
 	{
 		var called = 0;
 		var tween = new Tween(4);
-		tween.updated.bind(function() called += 1);
+		tween.onUpdate.bind(function() called += 1);
 		tween.start();
 		Assert.areEqual(0, called);
 		tween.update(1);

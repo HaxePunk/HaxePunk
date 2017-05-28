@@ -505,7 +505,7 @@ class HXP
 			if (Reflect.hasField(options, "tweener")) tweener = options.tweener;
 		}
 		var tween:MultiVarTween = new MultiVarTween(type);
-		if (complete != null) tween.complete.bind(complete);
+		if (complete != null) tween.onComplete.bind(complete);
 		tween.tween(object, values, duration, ease);
 		tweener.addTween(tween, true);
 		return tween;
@@ -527,7 +527,7 @@ class HXP
 		if (tweener == null) tweener = HXP.tweener;
 
 		var alarm:Alarm = new Alarm(delay, type);
-		if (complete != null) alarm.complete.bind(complete);
+		if (complete != null) alarm.onComplete.bind(complete);
 		tweener.addTween(alarm, true);
 		return alarm;
 	}
