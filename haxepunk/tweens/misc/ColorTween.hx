@@ -2,8 +2,7 @@ package haxepunk.tweens.misc;
 
 import haxepunk.Tween;
 import haxepunk.utils.Color;
-import haxepunk.utils.Ease;
-
+import haxepunk.utils.Ease.EaseFunction;
 
 /**
  * Tweens a color's red, green, and blue properties
@@ -19,17 +18,31 @@ class ColorTween extends Tween
 	/**
 	 * The current alpha.
 	 */
-	public var alpha:Float;
+	public var alpha:Float = 1;
+
+	/**
+	 * Red value of the current color, from 0 to 255.
+	 */
+	public var red(default, null):Int;
+
+	/**
+	 * Green value of the current color, from 0 to 255.
+	 */
+	public var green(default, null):Int;
+
+	/**
+	 * Blue value of the current color, from 0 to 255.
+	 */
+	public var blue(default, null):Int;
 
 	/**
 	 * Constructor.
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:Dynamic -> Void, type:TweenType)
+	public function new(?type:TweenType)
 	{
-		alpha = 1;
-		super(0, type, complete);
+		super(0, type);
 	}
 
 	/**
@@ -41,7 +54,7 @@ class ColorTween extends Tween
 	 * @param	toAlpha			End alpha.
 	 * @param	ease			Optional easer function.
 	 */
-	public function tween(duration:Float, fromColor:Color, toColor:Color, fromAlpha:Float = 1, toAlpha:Float = 1, ease:Float -> Float = null)
+	public function tween(duration:Float, fromColor:Color, toColor:Color, fromAlpha:Float = 1, toAlpha:Float = 1, ?ease:EaseFunction)
 	{
 		fromColor &= 0xFFFFFF;
 		toColor &= 0xFFFFFF;
@@ -64,30 +77,14 @@ class ColorTween extends Tween
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update(elapsed:Float)
+	override function updateInternal()
 	{
-		super.update(elapsed);
 		alpha = _startA + _rangeA * _t;
 		red = Std.int((_startR + _rangeR * _t) * 255);
 		green = Std.int((_startG + _rangeG * _t) * 255);
 		blue = Std.int((_startB + _rangeB * _t) * 255);
 		color = red << 16 | green << 8 | blue;
 	}
-
-	/**
-	 * Red value of the current color, from 0 to 255.
-	 */
-	public var red(default, null):Int;
-
-	/**
-	 * Green value of the current color, from 0 to 255.
-	 */
-	public var green(default, null):Int;
-
-	/**
-	 * Blue value of the current color, from 0 to 255.
-	 */
-	public var blue(default, null):Int;
 
 	// Color information.
 	var _startA:Float;

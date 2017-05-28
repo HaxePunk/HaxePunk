@@ -239,15 +239,14 @@ class HXP
 	/**
 	 * Global volume factor for all sounds, a value from 0 to 1.
 	 */
-	public static var volume(get, set):Float;
-	static inline function get_volume():Float return _volume;
+	public static var volume(default, set):Float = 1;
 	static function set_volume(value:Float):Float
 	{
-		if (value < 0) value = 0;
-		if (_volume == value) return value;
-		_volume = value;
+		value = MathUtil.clamp(value, 0, 1);
+		if (volume == value) return value;
+		volume = value;
 		Sfx.onGlobalUpdated(false);
-		return _volume;
+		return volume;
 	}
 
 	/**
@@ -489,12 +488,12 @@ class HXP
 		{
 			var delay:Float = options.delay;
 			Reflect.deleteField( options, "delay" );
-			HXP.alarm(delay, function (o:Dynamic) HXP.tween(object, values, duration, options));
+			HXP.alarm(delay, function () HXP.tween(object, values, duration, options));
 			return null;
 		}
 
 		var type:TweenType = TweenType.OneShot,
-			complete:Dynamic -> Void = null,
+			complete:Void -> Void = null,
 			ease:Float -> Float = null,
 			tweener:Tweener = HXP.tweener;
 		if (Std.is(object, Tweener)) tweener = cast(object, Tweener);
@@ -505,7 +504,8 @@ class HXP
 			if (Reflect.hasField(options, "ease")) ease = options.ease;
 			if (Reflect.hasField(options, "tweener")) tweener = options.tweener;
 		}
-		var tween:MultiVarTween = new MultiVarTween(complete, type);
+		var tween:MultiVarTween = new MultiVarTween(type);
+		if (complete != null) tween.onComplete.bind(complete);
 		tween.tween(object, values, duration, ease);
 		tweener.addTween(tween, true);
 		return tween;
@@ -521,12 +521,13 @@ class HXP
 	 *
 	 * Example: HXP.alarm(5.0, callbackFunction, TweenType.Looping); // Calls callbackFunction every 5 seconds
 	 */
-	public static function alarm(delay:Float, complete:Dynamic -> Void, ?type:TweenType, tweener:Tweener = null):Alarm
+	public static function alarm(delay:Float, complete:Void -> Void, ?type:TweenType, ?tweener:Tweener):Alarm
 	{
 		if (type == null) type = TweenType.OneShot;
 		if (tweener == null) tweener = HXP.tweener;
 
-		var alarm:Alarm = new Alarm(delay, complete, type);
+		var alarm:Alarm = new Alarm(delay, type);
+		if (complete != null) alarm.onComplete.bind(complete);
 		tweener.addTween(alarm, true);
 		return alarm;
 	}
@@ -618,7 +619,6 @@ class HXP
 	static var _bitmap:Map<String, BitmapData> = new Map<String, BitmapData>();
 
 	// Volume control.
-	static var _volume:Float = 1;
 	static var _pan:Float = 0;
 
 	/** The stage. */

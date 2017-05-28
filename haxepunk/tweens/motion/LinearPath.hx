@@ -1,6 +1,6 @@
 package haxepunk.tweens.motion;
 
-import haxepunk.Tween;
+import haxepunk.utils.Ease.EaseFunction;
 import flash.geom.Point;
 
 /**
@@ -9,28 +9,11 @@ import flash.geom.Point;
 class LinearPath extends Motion
 {
 	/**
-	 * Constructor.
-	 * @param	complete	Optional completion callback.
-	 * @param	type		Tween type.
-	 */
-	public function new(?complete:Dynamic -> Void, ?type:TweenType)
-	{
-		_points = new Array<Point>();
-		_pointD = new Array<Float>();
-		_pointT = new Array<Float>();
-
-		distance = _speed = _index = 0;
-
-		super(0, complete, type, null);
-		_pointD[0] = _pointT[0] = 0;
-	}
-
-	/**
 	 * Starts moving along the path.
 	 * @param	duration		Duration of the movement.
 	 * @param	ease			Optional easer function.
 	 */
-	public function setMotion(duration:Float, ease:Float -> Float = null)
+	public function setMotion(duration:Float, ?ease:EaseFunction)
 	{
 		updatePath();
 		_target = duration;
@@ -44,7 +27,7 @@ class LinearPath extends Motion
 	 * @param	speed		Speed of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotionSpeed(speed:Float, ease:Float -> Float = null)
+	public function setMotionSpeed(speed:Float, ?ease:EaseFunction)
 	{
 		updatePath();
 		_target = distance / speed;
@@ -92,9 +75,8 @@ class LinearPath extends Motion
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update(elapsed:Float)
+	override function updateInternal()
 	{
-		super.update(elapsed);
 		if (_index < _points.length - 1)
 		{
 			while (_t > _pointT[_index + 1]) _index++;
@@ -126,7 +108,7 @@ class LinearPath extends Motion
 	/**
 	 * The full length of the path.
 	 */
-	public var distance(default, null):Float;
+	public var distance(default, null):Float = 0;
 
 	/**
 	 * How many points are on the path.
@@ -135,11 +117,11 @@ class LinearPath extends Motion
 	function get_pointCount():Float return _points.length;
 
 	// Path information.
-	var _points:Array<Point>;
-	var _pointD:Array<Float>;
-	var _pointT:Array<Float>;
-	var _speed:Float;
-	var _index:Int;
+	var _points:Array<Point> = [];
+	var _pointD:Array<Float> = [0];
+	var _pointT:Array<Float> = [0];
+	var _speed:Float = 0;
+	var _index:Int = 0;
 
 	// Line information.
 	var _last:Point;

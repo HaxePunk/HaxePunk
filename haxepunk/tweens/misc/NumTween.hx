@@ -1,7 +1,7 @@
-﻿package haxepunk.tweens.misc;
+package haxepunk.tweens.misc;
 
 import haxepunk.Tween;
-import haxepunk.utils.Ease;
+import haxepunk.utils.Ease.EaseFunction;
 
 /**
  * Tweens a numeric value.
@@ -11,17 +11,16 @@ class NumTween extends Tween
 	/**
 	 * The current value.
 	 */
-	public var value:Float;
+	public var value:Float = 0;
 
 	/**
 	 * Constructor.
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:Dynamic -> Void, ?type:TweenType)
+	public function new(?type:TweenType)
 	{
-		value = 0;
-		super(0, type, complete);
+		super(0, type);
 	}
 
 	/**
@@ -31,7 +30,7 @@ class NumTween extends Tween
 	 * @param	duration		Duration of the tween.
 	 * @param	ease			Optional easer function.
 	 */
-	public function tween(fromValue:Float, toValue:Float, duration:Float, ?ease:Float -> Float)
+	public function tween(fromValue:Float, toValue:Float, duration:Float, ?ease:EaseFunction)
 	{
 		_start = value = fromValue;
 		_range = toValue - value;
@@ -42,9 +41,8 @@ class NumTween extends Tween
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update(elapsed:Float)
+	override function updateInternal()
 	{
-		super.update(elapsed);
 		value = _start + _range * _t;
 	}
 

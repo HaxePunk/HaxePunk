@@ -1,8 +1,8 @@
-﻿package haxepunk.tweens.sound;
+package haxepunk.tweens.sound;
 
 import haxepunk.Sfx;
 import haxepunk.Tween;
-import haxepunk.utils.Ease;
+import haxepunk.utils.Ease.EaseFunction;
 
 /**
  * Sound effect fader.
@@ -15,9 +15,9 @@ class SfxFader extends Tween
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(sfx:Sfx, ?complete:Dynamic -> Void, ?type:TweenType)
+	public function new(sfx:Sfx, ?type:TweenType)
 	{
-		super(0, type, complete);
+		super(0, type);
 		_sfx = sfx;
 	}
 
@@ -27,7 +27,7 @@ class SfxFader extends Tween
 	 * @param	duration	Duration of the fade.
 	 * @param	ease		Optional easer function.
 	 */
-	public function fadeTo(volume:Float, duration:Float, ease:Float -> Float = null)
+	public function fadeTo(volume:Float, duration:Float, ?ease:EaseFunction)
 	{
 		if (volume < 0) volume = 0;
 		_start = _sfx.volume;
@@ -45,7 +45,7 @@ class SfxFader extends Tween
 	 * @param	volume		The volume to fade in the new Sfx to.
 	 * @param	ease		Optional easer function.
 	 */
-	public function crossFade(play:Sfx, loop:Bool, duration:Float, volume:Float = 1, ease:Float -> Float = null)
+	public function crossFade(play:Sfx, loop:Bool, duration:Float, volume:Float = 1, ?ease:EaseFunction)
 	{
 		_crossSfx = play;
 		_crossRange = volume;
@@ -60,9 +60,8 @@ class SfxFader extends Tween
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update(elapsed:Float)
+	override function updateInternal()
 	{
-		super.update(elapsed);
 		if (_sfx != null) _sfx.volume = _start + _range * _t;
 		if (_crossSfx != null) _crossSfx.volume = _crossRange * _t;
 	}

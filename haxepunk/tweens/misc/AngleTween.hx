@@ -1,8 +1,8 @@
-﻿package haxepunk.tweens.misc;
+package haxepunk.tweens.misc;
 
 import haxepunk.HXP;
 import haxepunk.Tween;
-import haxepunk.utils.Ease;
+import haxepunk.utils.Ease.EaseFunction;
 
 /**
  * Tweens from one angle to another.
@@ -12,27 +12,26 @@ class AngleTween extends Tween
 	/**
 	 * The current value.
 	 */
-	public var angle:Float;
+	public var angle:Float = 0;
 
 	/**
 	 * Constructor.
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:Dynamic -> Void, type:TweenType)
+	public function new(?type:TweenType)
 	{
-		angle = 0;
-		super(0, type, complete);
+		super(0, type);
 	}
 
 	/**
-	 * Tweens the value from one angle to another.
+	 * Tweens the value from one angle to another. Rotates on the shortest angle.
 	 * @param	fromAngle		Start angle.
 	 * @param	toAngle			End angle.
 	 * @param	duration		Duration of the tween.
 	 * @param	ease			Optional easer function.
 	 */
-	public function tween(fromAngle:Float, toAngle:Float, duration:Float, ease:Float -> Float = null)
+	public function tween(fromAngle:Float, toAngle:Float, duration:Float, ?ease:EaseFunction)
 	{
 		_start = angle = fromAngle;
 		var d:Float = toAngle - angle,
@@ -47,9 +46,8 @@ class AngleTween extends Tween
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update(elapsed:Float)
+	override function updateInternal()
 	{
-		super.update(elapsed);
 		angle = (_start + _range * _t) % 360;
 		if (angle < 0) angle += 360;
 	}

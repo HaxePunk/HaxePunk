@@ -1,7 +1,7 @@
-﻿package haxepunk.tweens.misc;
+package haxepunk.tweens.misc;
 
 import haxepunk.Tween;
-import haxepunk.utils.Ease;
+import haxepunk.utils.Ease.EaseFunction;
 
 /**
  * Tweens a numeric public property of an Object.
@@ -13,9 +13,9 @@ class VarTween extends Tween
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:Dynamic -> Void, ?type:TweenType)
+	public function new(?type:TweenType)
 	{
-		super(0, type, complete);
+		super(0, type);
 	}
 
 	/**
@@ -26,7 +26,7 @@ class VarTween extends Tween
 	 * @param	duration	Duration of the tween.
 	 * @param	ease		Optional easer function.
 	 */
-	public function tween(object:Dynamic, property:String, to:Float, duration:Float, ease:Float -> Float = null)
+	public function tween(object:Dynamic, property:String, to:Float, duration:Float, ?ease:EaseFunction)
 	{
 		_object = object;
 		_ease = ease;
@@ -52,9 +52,8 @@ class VarTween extends Tween
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update(elapsed:Float)
+	override function updateInternal()
 	{
-		super.update(elapsed);
 		Reflect.setProperty(_object, _property, _start + _range * _t);
 	}
 

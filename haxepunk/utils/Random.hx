@@ -43,8 +43,7 @@ class Random
 	 */
 	public static inline function randInt(amount:Int):Int
 	{
-		_seed = Std.int((_seed * 16807.0) % MathUtil.INT_MAX_VALUE);
-		return Std.int((_seed / MathUtil.INT_MAX_VALUE) * amount);
+		return Std.int(random * amount);
 	}
 
 	// Pseudo-random number generation (the seed is set in Engine's contructor).

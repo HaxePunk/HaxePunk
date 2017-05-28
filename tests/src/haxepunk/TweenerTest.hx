@@ -32,7 +32,8 @@ class TweenerTest
 	public function testCallback()
 	{
 		var called = 0;
-		var tween = new Tween(2, Persist, function(_) called += 1);
+		var tween = new Tween(2, Persist);
+		tween.onComplete.bind(function() called += 1);
 		tweener.addTween(tween, true);
 		Assert.areEqual(0, called);
 		tweener.updateTweens(1);
@@ -58,6 +59,15 @@ class TweenerTest
 		Assert.isTrue(tween.active);
 		tweener.removeTween(tween);
 		Assert.isFalse(tween.active);
+	}
+
+	@Test
+	public function testTweenCancel()
+	{
+		var tween = new Tween(1);
+		tweener.addTween(tween, true);
+		tween.cancel();
+		Assert.throws(String, function() tweener.removeTween(tween));
 	}
 
 	@Test

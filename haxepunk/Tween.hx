@@ -1,8 +1,8 @@
 package haxepunk;
 
-import flash.events.EventDispatcher;
-import haxepunk.tweens.TweenEvent;
+import haxepunk.Signal.Signal0;
 import haxepunk.ds.Maybe;
+import haxepunk.utils.Ease.EaseFunction;
 
 /**
  * The type of the tween.
@@ -36,7 +36,7 @@ enum TweenType
  * Do not use this directly, instead use the classes in haxepunk.tweens.*
  * </p>
  */
-class Tween extends EventDispatcher
+class Tween
 {
 	/** If the tween is active. */
 	public var active:Bool = false;
@@ -44,14 +44,22 @@ class Tween extends EventDispatcher
 	/** Whether tween is currently running forward. For TweenType.PingPong. */
 	public var forward:Bool = true;
 
+	/** Signal fires when tween starts */
+	public var onStart = new Signal0();
+
+	/** Signal fires when tween updates */
+	public var onUpdate = new Signal0();
+
+	/** Signal fires when tween is completed */
+	public var onComplete = new Signal0();
+
 	/**
 	 * Constructor. Specify basic information about the Tween.
 	 * @param	duration		Duration of the tween (in seconds).
 	 * @param	type			Tween type, one of Tween.PERSIST (default), Tween.LOOPING, or Tween.ONESHOT.
-	 * @param	complete		Optional callback for when the Tween completes.
 	 * @param	ease			Optional easer function to apply to the Tweened value.
 	 */
-	public function new(duration:Float, ?type:TweenType, ?complete:Dynamic -> Void, ?ease:Float -> Float)
+	public function new(duration:Float, ?type:TweenType, ?ease:EaseFunction)
 	{
 		if (duration < 0)
 		{
@@ -61,14 +69,10 @@ class Tween extends EventDispatcher
 		_type = type == null ? TweenType.Persist : type;
 		_ease = ease;
 		_t = 0;
-		_callback = complete;
-		super();
-
-		if (_callback != null)
-		{
-			addEventListener(TweenEvent.FINISH, _callback);
-		}
 	}
+
+	/** @private Update function for override in subclasses */
+	function updateInternal() {}
 
 	/**
 	 * Updates the Tween, called by World.
@@ -76,6 +80,7 @@ class Tween extends EventDispatcher
 	@:dox(hide)
 	public function update(elapsed:Float)
 	{
+		var isFinished = false;
 		if (active)
 		{
 			_time += elapsed;
@@ -84,11 +89,12 @@ class Tween extends EventDispatcher
 			if (_time >= _target)
 			{
 				_t = forward ? 1 : 0;
-				_finish = true;
+				isFinished = true;
 			}
-			dispatchEvent(new TweenEvent(TweenEvent.UPDATE));
+			updateInternal();
+			onUpdate.invoke();
 		}
-		if (_finish)
+		if (isFinished)
 		{
 			finish();
 		}
@@ -103,12 +109,12 @@ class Tween extends EventDispatcher
 		if (_target == 0)
 		{
 			active = false;
-			dispatchEvent(new TweenEvent(TweenEvent.FINISH));
+			onComplete.invoke();
 		}
 		else
 		{
 			active = true;
-			dispatchEvent(new TweenEvent(TweenEvent.START));
+			onStart.invoke();
 		}
 	}
 
@@ -125,15 +131,13 @@ class Tween extends EventDispatcher
 				start();
 			case OneShot:
 				_time = _target;
-				active = false;
-				_parent.removeTween(this);
+				cancel();
 		}
-		_finish = false;
-		dispatchEvent(new TweenEvent(TweenEvent.FINISH));
+		onComplete.invoke();
 
-		if (_type == TweenType.OneShot && _callback != null)
+		if (_type == TweenType.OneShot)
 		{
-			removeEventListener(TweenEvent.FINISH, _callback);
+			onComplete.clear();
 		}
 	}
 
@@ -158,14 +162,12 @@ class Tween extends EventDispatcher
 	function get_scale():Float return _t;
 
 	var _type:TweenType;
-	var _ease:Maybe<Float -> Float>;
+	var _ease:Maybe<EaseFunction>;
 	var _t:Float;
 
 	var _time:Float = 0;
 	var _target:Float;
 
-	var _callback:Dynamic -> Void;
-	var _finish:Bool;
 	var _parent:Tweener;
 	var _prev:Tween;
 	var _next:Tween;
