@@ -42,6 +42,10 @@ class Entity extends Tweener
 	function get_collidable() return collidable && (parent == null || parent.collidable);
 	function set_collidable(v:Bool) return collidable = v;
 
+	public var enabled(get, set):Bool;
+	inline function get_enabled() return active && visible && collidable;
+	inline function set_enabled(v:Bool) return active = visible = collidable = v;
+
 	/**
 	 * X position of the Entity in the Scene.
 	 */
