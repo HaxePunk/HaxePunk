@@ -77,34 +77,6 @@ class HardwareRenderer
 		}
 	}
 
-	#if lime
-	@:access(openfl.display.Stage)
-	@:allow(lime._internal.renderer.opengl.GLRenderer)
-	#end
-	static inline function bindTexture(texture:BitmapData, smooth:Bool)
-	{
-		#if lime
-		var renderer = cast HXP.stage.__renderer;
-		var renderSession = renderer.renderSession;
-		GL.bindTexture(GL.TEXTURE_2D, texture.getTexture(renderSession.gl));
-		#elseif nme
-		if (!texture.premultipliedAlpha) texture.premultipliedAlpha = true;
-		GL.bindBitmapDataTexture(texture);
-		#end
-		if (smooth)
-		{
-			GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
-			GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
-		}
-		else
-		{
-			GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
-			GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
-		}
-		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
-		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
-	}
-
 	static var _point:Point = new Point();
 	static var _ortho:Float32Array;
 
@@ -139,73 +111,81 @@ class HardwareRenderer
 
 		if (drawCommand != null && drawCommand.triangleCount > 0)
 		{
-			var shader = drawCommand.shader;
-			shader.bind();
-
-			// expand arrays if necessary
-			var bufferLength:Int = buffer == null ? 0 : buffer.length;
-			var triangles:Int = drawCommand.triangleCount;
-			var floatsPerTriangle:Int = shader.floatsPerVertex * 3;
-			if (bufferLength < triangles * floatsPerTriangle)
-			{
-				buffer = new Float32Array(resize(bufferLength, triangles, floatsPerTriangle));
-
-				GL.bindBuffer(GL.ARRAY_BUFFER, glBuffer);
-				#if (lime >= "4.0.0")
-				GL.bufferData(GL.ARRAY_BUFFER, buffer.length * Float32Array.BYTES_PER_ELEMENT, buffer, GL.DYNAMIC_DRAW);
-				#else
-				GL.bufferData(GL.ARRAY_BUFFER, buffer, GL.DYNAMIC_DRAW);
-				#end
-			}
-
 			var x:Int = Std.int(HXP.screen.x),
 				y:Int = Std.int(HXP.screen.y);
-			ortho(-x, -x + HXP.windowWidth, -y + HXP.windowHeight, -y, 1000, -1000);
-			#if (lime >= "4.0.0")
-			GL.uniformMatrix4fv(shader.uniformIndex(UNIFORM_MATRIX), 1, false, _ortho);
-			#else
-			GL.uniformMatrix4fv(shader.uniformIndex(UNIFORM_MATRIX), false, _ortho);
-			#end
-
-			#if (gl_debug || debug) checkForGLErrors(); #end
-
-			var texture:BitmapData = drawCommand.texture;
-			if (texture != null) bindTexture(texture, drawCommand.smooth);
-
-			#if (gl_debug || debug) checkForGLErrors(); #end
-
-			GL.bindBuffer(GL.ARRAY_BUFFER, glBuffer);
-			shader.prepare(drawCommand, buffer);
-
-			#if (gl_debug || debug) checkForGLErrors(); #end
-
-			setBlendMode(drawCommand.blend);
-
 			var width:Int = HXP.screen.width,
 				height:Int = HXP.screen.height,
 				clipRect = drawCommand.clipRect;
 			if (clipRect != null)
 			{
-				x += Std.int(Math.max(clipRect.x, 0));
-				y += Std.int(Math.max(clipRect.y, 0));
 				width -= Std.int(clipRect.x);
 				height -= Std.int(clipRect.y);
 				width = Std.int(Math.min(width, clipRect.width));
 				height = Std.int(Math.min(height, clipRect.height));
 			}
-			GL.scissor(x, HXP.windowHeight - y - height, width, height);
-			GL.enable(GL.SCISSOR_TEST);
 
-			GL.drawArrays(GL.TRIANGLES, 0, triangles * 3);
+			if (width > 0 && height > 0)
+			{
+				var shader = drawCommand.shader;
+				shader.bind();
 
-			#if (gl_debug || debug) checkForGLErrors(); #end
+				// expand arrays if necessary
+				var bufferLength:Int = buffer == null ? 0 : buffer.length;
+				var triangles:Int = drawCommand.triangleCount;
+				var floatsPerTriangle:Int = shader.floatsPerVertex * 3;
+				if (bufferLength < triangles * floatsPerTriangle)
+				{
+					buffer = new Float32Array(resize(bufferLength, triangles, floatsPerTriangle));
 
-			GL.disable(GL.SCISSOR_TEST);
+					GL.bindBuffer(GL.ARRAY_BUFFER, glBuffer);
+					#if (lime >= "4.0.0")
+					GL.bufferData(GL.ARRAY_BUFFER, buffer.length * Float32Array.BYTES_PER_ELEMENT, buffer, GL.DYNAMIC_DRAW);
+					#else
+					GL.bufferData(GL.ARRAY_BUFFER, buffer, GL.DYNAMIC_DRAW);
+					#end
+				}
 
-			GL.bindBuffer(GL.ARRAY_BUFFER, null);
-			shader.unbind();
+				ortho(-x, -x + HXP.windowWidth, -y + HXP.windowHeight, -y, 1000, -1000);
+				#if (lime >= "4.0.0")
+				GL.uniformMatrix4fv(shader.uniformIndex(UNIFORM_MATRIX), 1, false, _ortho);
+				#else
+				GL.uniformMatrix4fv(shader.uniformIndex(UNIFORM_MATRIX), false, _ortho);
+				#end
 
-			#if (gl_debug || debug) checkForGLErrors(); #end
+				#if (gl_debug || debug) checkForGLErrors(); #end
+
+				var texture:BitmapData = drawCommand.texture;
+				if (texture != null) GLUtils.bindTexture(texture, drawCommand.smooth);
+
+				#if (gl_debug || debug) checkForGLErrors(); #end
+
+				GL.bindBuffer(GL.ARRAY_BUFFER, glBuffer);
+				shader.prepare(drawCommand, buffer);
+
+				#if (gl_debug || debug) checkForGLErrors(); #end
+
+				setBlendMode(drawCommand.blend);
+
+				if (clipRect != null)
+				{
+					x += Std.int(Math.max(clipRect.x, 0));
+					y += Std.int(Math.max(clipRect.y, 0));
+				}
+
+				GL.scissor(x, HXP.windowHeight - y - height, width, height);
+				GL.enable(GL.SCISSOR_TEST);
+
+				GL.drawArrays(GL.TRIANGLES, 0, triangles * 3);
+
+				#if (gl_debug || debug) checkForGLErrors(); #end
+
+				GL.disable(GL.SCISSOR_TEST);
+
+				GL.bindBuffer(GL.ARRAY_BUFFER, null);
+				shader.unbind();
+
+				#if (gl_debug || debug) checkForGLErrors(); #end
+			}
 		}
 	}
 
