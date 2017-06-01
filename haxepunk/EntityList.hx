@@ -60,6 +60,20 @@ class EntityList<T:Entity> extends Entity
 		return entity;
 	}
 
+	public function pop():T
+	{
+		var entity = entities.pop();
+		if (entity != null)
+		{
+			if (scene != null)
+			{
+				scene.remove(entity);
+			}
+			entity.parent = null;
+		}
+		return entity;
+	}
+
 	/**
 	 * Call a function on all Entities in an EntityList.
 	 */
