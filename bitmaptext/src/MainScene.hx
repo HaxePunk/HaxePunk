@@ -31,11 +31,11 @@ class MainScene extends Scene
 	{
 		super();
 
-		BitmapText.defineFormatTag("white", 0xffffff);
-		BitmapText.defineFormatTag("blue", 0x5f8dd3);
-		BitmapText.defineFormatTag("ghost", null, 0.5);
-		BitmapText.defineFormatTag("big", null, null, 1.5);
-		BitmapText.defineFormatTag("big_green", 0x55d400, null, 1.5);
+		BitmapText.defineFormatTag("white", {color: 0xffffff});
+		BitmapText.defineFormatTag("blue", {color: 0x5f8dd3});
+		BitmapText.defineFormatTag("ghost", {alpha: 0.5});
+		BitmapText.defineFormatTag("big", {scale: 1.5});
+		BitmapText.defineFormatTag("big_green", {color: 0x55d400, scale: 1.5});
 		BitmapText.defineMoveTag("shake", shakeChar);
 		BitmapText.defineMoveTag("sine", sineWave);
 		var img = new Image("assets/graphics/star.png");
