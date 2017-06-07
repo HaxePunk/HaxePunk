@@ -29,8 +29,8 @@ class Cursor extends Entity
 		if (img != null)
 		{
 			// scale to 1
-			img.scaleX = 1 / HXP.screen.fullScaleX;
-			img.scaleY = 1 / HXP.screen.fullScaleY;
+			img.scaleX = 1 / camera.fullScaleX;
+			img.scaleY = 1 / camera.fullScaleY;
 		}
 	}
 

@@ -37,8 +37,8 @@ class SceneSprite extends Sprite
 				red = sceneColor.red * alpha,
 				green = sceneColor.green * alpha,
 				blue = sceneColor.blue * alpha;
-			var w = HXP.width * HXP.screen.fullScaleX,
-				h = HXP.height * HXP.screen.fullScaleY;
+			var w = HXP.width * scene.camera.fullScaleX,
+				h = HXP.height * scene.camera.fullScaleY;
 			command.addTriangle(0, 0, 0, 0, w, 0, 0, 0, 0, h, 0, 0, red, green, blue, alpha);
 			command.addTriangle(0, h, 0, 0, w, 0, 0, 0, w, h, 0, 0, red, green, blue, alpha);
 		}

@@ -194,16 +194,16 @@ class Graphic
 	public var relative:Bool = true;
 
 	var _screenClipRect:Rectangle;
-	inline function screenClipRect(x:Float, y:Float)
+	inline function screenClipRect(camera:Camera, x:Float, y:Float)
 	{
 		if (clipRect != null)
 		{
 			if (_screenClipRect == null) _screenClipRect = new Rectangle();
 			_screenClipRect.setTo(
-				(x + clipRect.x) * HXP.screen.fullScaleX,
-				(y + clipRect.y) * HXP.screen.fullScaleY,
-				clipRect.width * HXP.screen.fullScaleX,
-				clipRect.height * HXP.screen.fullScaleY
+				(x + clipRect.x) * camera.fullScaleX,
+				(y + clipRect.y) * camera.fullScaleY,
+				clipRect.width * camera.fullScaleX,
+				clipRect.height * camera.fullScaleY
 			);
 			return _screenClipRect;
 		}

@@ -32,8 +32,8 @@ class TiledSpritemap extends Spritemap
 		_point.x = point.x + x - originX - camera.x * scrollX;
 		_point.y = point.y + y - originY - camera.y * scrollY;
 
-		var fsx = HXP.screen.fullScaleX,
-			fsy = HXP.screen.fullScaleY,
+		var fsx = camera.fullScaleX,
+			fsy = camera.fullScaleY,
 			sx = fsx * scale * scaleX,
 			sy = fsy * scale * scaleY,
 			x = 0.0, y = 0.0;

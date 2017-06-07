@@ -386,23 +386,23 @@ class Tilemap extends Graphic
 	@:dox(hide)
 	override public function render(layer:Int, point:Point, camera:Camera)
 	{
-		var fullScaleX:Float = HXP.screen.fullScaleX,
-			fullScaleY:Float = HXP.screen.fullScaleY,
-			tw:Int = Std.int(tileWidth),
-			th:Int = Std.int(tileHeight);
+		var fullScaleX:Float = camera.fullScaleX,
+			fullScaleY:Float = camera.fullScaleY;
 
 		// determine drawing location
-		_point.x = floorX(point.x) + floorX(x) - floorX(camera.x * scrollX);
-		_point.y = floorY(point.y) + floorY(y) - floorY(camera.y * scrollY);
+		_point.x = camera.floorX(point.x) + camera.floorX(x) - camera.floorX(camera.x * scrollX);
+		_point.y = camera.floorY(point.y) + camera.floorY(y) - camera.floorY(camera.y * scrollY);
 
 		var scx = scale * scaleX,
-			scy = scale * scaleY;
+			scy = scale * scaleY,
+			tw = tileWidth * scx,
+			th = tileHeight * scy;
 
 		// determine start and end tiles to draw (optimization)
-		var startx = Math.floor(-_point.x / (tw * scx)),
-			starty = Math.floor(-_point.y / (th * scy)),
-			destx = startx + 1 + Math.ceil(HXP.width / (tw * scx)),
-			desty = starty + 1 + Math.ceil(HXP.height / (th * scy));
+		var startx = Math.floor(-_point.x / tw),
+			starty = Math.floor(-_point.y / th),
+			destx = startx + 1 + Math.ceil(HXP.width / tw),
+			desty = starty + 1 + Math.ceil(HXP.height / th);
 
 		// nothing will render if we're completely off screen
 		if (startx > _columns || starty > _rows || destx < 0 || desty < 0)
@@ -415,33 +415,33 @@ class Tilemap extends Graphic
 		if (desty > _rows) desty = _rows;
 
 		var wx:Float, wy:Float, nx:Float, ny:Float,
-			sx:Float = (startx * tw * scx) * fullScaleX,
-			sy:Float = (starty * th * scy) * fullScaleY,
-			stepx:Float = tw * scx * fullScaleX,
-			stepy:Float = th * scy * fullScaleY,
 			tile:Int = 0;
 
 		_point.x *= fullScaleX;
 		_point.y *= fullScaleY;
-		wy = sy;
+		wy = camera.floorY(starty * th) * fullScaleY;
 		for (y in starty...desty)
 		{
-			ny = sy + stepy * (y - starty + 1);
+			ny = camera.floorY((y + 1) * th) * fullScaleY;
 			// ensure no vertical overlap between this and next tile
-			scy = (Math.floor(ny) - Math.floor(wy)) / tileHeight;
-			wx = sx;
+			scy = (ny - wy) / tileHeight;
+			wx = camera.floorX(startx * tw) * fullScaleX;
 
 			for (x in startx...destx)
 			{
-				nx = sx + stepx * (x - startx + 1);
+				nx = camera.floorX((x + 1) * tw) * fullScaleX;
 				tile = _map[y % _rows][x % _columns];
 				if (tile >= 0)
 				{
 					// ensure no horizontal overlap between this and next tile
-					scx = (Math.floor(nx) - Math.floor(wx)) / tileWidth;
+					scx = (nx - wx) / tileWidth;
 
 					updateTileRect(tile);
-					_atlas.prepareTile(_tile, Math.floor(_point.x + wx), Math.floor(_point.y + wy), layer,
+					_atlas.prepareTile(
+						_tile,
+						_point.x + wx,
+						_point.y + wy,
+						layer,
 						scx, scy, 0,
 						_red, _green, _blue, alpha,
 						shader, smooth, blend

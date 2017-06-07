@@ -547,11 +547,11 @@ class BitmapText extends Graphic
 		if (_dirty) parseText();
 
 		// determine drawing location
-		var fsx = HXP.screen.fullScaleX,
-			fsy = HXP.screen.fullScaleY;
+		var fsx = camera.fullScaleX,
+			fsy = camera.fullScaleY;
 
-		_point.x = Math.floor(point.x + x - camera.x * scrollX);
-		_point.y = Math.floor(point.y + y - camera.y * scrollY);
+		_point.x = camera.floorX(point.x) + camera.floorX(x) - camera.floorX(camera.x * scrollX);
+		_point.y = camera.floorY(point.y) + camera.floorY(y) - camera.floorY(camera.y * scrollY);
 		// make sure our format stacks are clear
 		HXP.clear(_colorStack);
 		HXP.clear(_alphaStack);

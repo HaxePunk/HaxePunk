@@ -688,8 +688,8 @@ class Console
 		else if (rect.height == 0) rect.height = 1;
 
 		HXP.rect.width = HXP.rect.height = 6;
-		var sx:Float = HXP.screen.fullScaleX,
-			sy:Float = HXP.screen.fullScaleY,
+		var sx:Float = HXP.camera.fullScaleX,
+			sy:Float = HXP.camera.fullScaleY,
 			e:Entity;
 
 		if (!Key.check(Key.CONTROL))
@@ -805,8 +805,8 @@ class Console
 		if (_debug)
 		{
 			var g:Graphics = _entScreen.graphics,
-				sx:Float = HXP.screen.fullScaleX,
-				sy:Float = HXP.screen.fullScaleY,
+				sx:Float = HXP.camera.fullScaleX,
+				sy:Float = HXP.camera.fullScaleY,
 				colorHitbox = 0xFFFFFF,
 				colorPosition = 0xFFFFFF;
 			g.clear();

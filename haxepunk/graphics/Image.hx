@@ -97,24 +97,27 @@ class Image extends Graphic
 	{
 		var sx = scale * scaleX,
 			sy = scale * scaleY,
-			fsx = HXP.screen.fullScaleX,
-			fsy = HXP.screen.fullScaleY;
+			fsx = camera.fullScaleX,
+			fsy = camera.fullScaleY;
+
+		var x = camera.floorX(x);
+		var y = camera.floorY(y);
 
 		// determine drawing location
-		_point.x = point.x + x - originX - camera.x * scrollX;
-		_point.y = point.y + y - originY - camera.y * scrollY;
+		_point.x = camera.floorX(point.x) - camera.floorX(originX) - camera.floorX(camera.x * scrollX) + x;
+		_point.y = camera.floorY(point.y) - camera.floorY(originY) - camera.floorY(camera.y * scrollY) + y;
 
 		if (angle == 0)
 		{
 			// UGH... recalculation of _point for scaled origins
 			if (!(sx == 1 && sy == 1))
 			{
-				_point.x = (point.x + x - originX * sx - camera.x * scrollX);
-				_point.y = (point.y + y - originY * sy - camera.y * scrollY);
+				_point.x = camera.floorX(point.x) - camera.floorX(originX * sx) - camera.floorX(camera.x * scrollX) + x;
+				_point.y = camera.floorY(point.y) - camera.floorY(originY * sy) - camera.floorY(camera.y * scrollY) + y;
 			}
 
 			// render without rotation
-			var clipRect = screenClipRect(_point.x, _point.y);
+			var clipRect = screenClipRect(camera, _point.x, _point.y);
 			_region.draw(_point.x * fsx, _point.y * fsy,
 				layer, sx * fsx, sy * fsy, angle,
 				_red, _green, _blue, alpha,
@@ -132,7 +135,7 @@ class Image extends Graphic
 			var d = sy * cos * fsy;
 			var tx = (-originX * sx * cos + originY * sy * sin + originX + _point.x);
 			var ty = (-originX * sx * sin - originY * sy * cos + originY + _point.y);
-			var clipRect = screenClipRect(tx, ty);
+			var clipRect = screenClipRect(camera, tx, ty);
 			_region.drawMatrix(tx * fsx, ty * fsy, a, b, c, d, layer,
 				_red, _green, _blue, alpha,
 				shader, smooth, blend, clipRect
