@@ -95,20 +95,20 @@ class NineSlice extends Graphic
 		var leftWidth:Float, rightWidth:Float, topHeight:Float, bottomHeight:Float;
 		if (scaleBorder)
 		{
-			leftWidth = Std.int(_sliceRect.left * HXP.screen.fullScaleX) / HXP.screen.fullScaleX;
-			rightWidth = Std.int((source.width - _sliceRect.width) * HXP.screen.fullScaleX) / HXP.screen.fullScaleX;
-			topHeight = Std.int(_sliceRect.top * HXP.screen.fullScaleY) / HXP.screen.fullScaleY;
-			bottomHeight = Std.int((source.height - _sliceRect.height) * HXP.screen.fullScaleY) / HXP.screen.fullScaleY;
+			leftWidth = camera.floorX(_sliceRect.left);
+			rightWidth = camera.floorX(source.width - _sliceRect.width);
+			topHeight = camera.floorY(_sliceRect.top);
+			bottomHeight = camera.floorY(source.height - _sliceRect.height);
 		}
 		else
 		{
-			leftWidth = Std.int(_sliceRect.left) / HXP.screen.fullScaleX;
-			rightWidth = Std.int(source.width - _sliceRect.width) / HXP.screen.fullScaleX;
-			topHeight = Std.int(_sliceRect.top) / HXP.screen.fullScaleY;
-			bottomHeight = Std.int(source.height - _sliceRect.height) / HXP.screen.fullScaleY;
+			leftWidth = camera.floorX(_sliceRect.left) / camera.fullScaleX;
+			rightWidth = camera.floorX(source.width - _sliceRect.width) / camera.fullScaleX;
+			topHeight = camera.floorY(_sliceRect.top) / camera.fullScaleY;
+			bottomHeight = camera.floorY(source.height - _sliceRect.height) / camera.fullScaleY;
 		}
-		var centerWidth:Float = Std.int(width - leftWidth - rightWidth),
-			centerHeight:Float = Std.int(height - topHeight - bottomHeight);
+		var centerWidth:Float = camera.floorX(width) - leftWidth - rightWidth,
+			centerHeight:Float = camera.floorY(height) - topHeight - bottomHeight;
 
 		var leftX = 0, centerX = leftWidth, rightX = leftWidth + centerWidth,
 			topY = 0, centerY = topHeight, bottomY = topHeight + centerHeight;
@@ -117,10 +117,10 @@ class NineSlice extends Graphic
 		{
 			if (segment != null && segment.visible)
 			{
-				segment.x = this.x + x;
-				segment.y = this.y + y;
-				segment.scaleX = width / segment.width;
-				segment.scaleY = height / segment.height;
+				segment.x = camera.floorX(this.x) + x;
+				segment.y = camera.floorY(this.y) + y;
+				segment.scaleX = (camera.floorX(x + width) - camera.floorX(x)) / segment.width;
+				segment.scaleY = (camera.floorY(y + height) - camera.floorY(y)) / segment.height;
 				if (clipRect != null)
 				{
 					_clipRect.setTo(clipRect.x - x, clipRect.y - y, clipRect.width, clipRect.height);

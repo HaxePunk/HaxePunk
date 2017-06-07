@@ -7,6 +7,24 @@ import flash.geom.Point;
  */
 class Camera extends Point
 {
+	public var scale:Float = 1;
+	public var scaleX:Float = 1;
+	public var scaleY:Float = 1;
+
+	public var fullScaleX(get, never):Float;
+	inline function get_fullScaleX() return scale * scaleX * HXP.screen.fullScaleX;
+	public var fullScaleY(get, never):Float;
+	inline function get_fullScaleY() return scale * scaleY * HXP.screen.fullScaleY;
+
+	/**
+	 * Return an X value that, after scaling, will result in an integer.
+	 */
+	public inline function floorX(x:Float) return Math.floor(x * fullScaleX) / fullScaleX;
+	/**
+	 * Return a Y value that, after scaling, will result in an integer.
+	 */
+	public inline function floorY(y:Float) return Math.floor(y * fullScaleY) / fullScaleY;
+
 	var anchorTarget:Null<Position>;
 	var anchorX:Float = 0;
 	var anchorY:Float = 0;

@@ -1,7 +1,6 @@
 package haxepunk.graphics;
 
 import flash.geom.Point;
-import haxepunk.HXP;
 import haxepunk.Graphic;
 import haxepunk.graphics.atlas.AtlasData;
 import haxepunk.graphics.shaders.ColorShader;
@@ -24,16 +23,18 @@ class ColoredRect extends Graphic
 
 	@:access(haxepunk.graphics.atlas.AtlasData)
 	@:access(haxepunk.graphics.atlas.SceneSprite)
-	override public function render(layer:Int, point:Point, camera:Point)
+	override public function render(layer:Int, point:Point, camera:Camera)
 	{
 		var batch = AtlasData._scene.sprite.batch,
 			command = batch.getDrawCommand(null, shader,
-				false, blend, screenClipRect(point.x, point.y));
+				false, blend, screenClipRect(camera, point.x, point.y));
 
-		var x1 = (point.x - camera.x + x) * HXP.screen.fullScaleX,
-			x2 = x1 + width * HXP.screen.fullScaleX,
-			y1 = (point.y - camera.y + y) * HXP.screen.fullScaleY,
-			y2 = y1 + height * HXP.screen.fullScaleY;
+		var fsx = camera.fullScaleX,
+			fsy = camera.fullScaleY;
+		var x1 = (camera.floorX(point.x) - camera.floorX(camera.x) + camera.floorX(x)) * fsx,
+			x2 = x1 + width * fsx,
+			y1 = (camera.floorY(point.y) - camera.floorY(camera.y) + camera.floorY(y)) * fsy,
+			y2 = y1 + height * fsy;
 
 		command.addTriangle(x1, y1, 0, 0, x2, y1, 0, 0, x1, y2, 0, 0, _red, _green, _blue, alpha);
 		command.addTriangle(x1, y2, 0, 0, x2, y1, 0, 0, x2, y2, 0, 0, _red, _green, _blue, alpha);

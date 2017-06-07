@@ -31,9 +31,8 @@ class Backdrop extends Graphic
 	 * @param	source		Source texture.
 	 * @param	repeatX		Repeat horizontally.
 	 * @param	repeatY		Repeat vertically.
-	 * @param	screenScale	How many screens the backdrop must span (to use with screen scaling)
 	 */
-	public function new(source:ImageType, repeatX:Bool = true, repeatY:Bool = true, screenScale:Float = 1.)
+	public function new(source:ImageType, repeatX:Bool = true, repeatY:Bool = true)
 	{
 		_region = source;
 		_width = Std.int(_region.width);
@@ -48,11 +47,13 @@ class Backdrop extends Graphic
 	@:dox(hide)
 	override public function render(layer:Int, point:Point, camera:Camera)
 	{
-		_point.x = point.x + x - camera.x * scrollX;
-		_point.y = point.y + y - camera.y * scrollY;
+		_point.x = camera.floorX(point.x) - camera.floorX(camera.x * scrollX) + camera.floorX(x);
+		_point.y = camera.floorY(point.y) - camera.floorY(camera.y * scrollY) + camera.floorY(y);
+		_point.x *= camera.fullScaleX;
+		_point.y *= camera.fullScaleY;
 
-		var sx = scale * scaleX * HXP.screen.fullScaleX,
-			sy = scale * scaleY * HXP.screen.fullScaleY,
+		var sx = scale * scaleX * camera.fullScaleX,
+			sy = scale * scaleY * camera.fullScaleY,
 			scaledWidth = _width * sx,
 			scaledHeight = _height * sy;
 
@@ -71,16 +72,13 @@ class Backdrop extends Graphic
 			yi = Std.int(Math.ceil((HXP.screen.height - _point.y) / Std.int(scaledHeight)));
 		}
 
-		var px:Int = Std.int(_point.x),
-			py:Int = Std.int(_point.y);
-
 		for (y in 0 ... yi)
 		{
 			for (x in 0 ... xi)
 			{
 				_region.draw(
-					px + x * scaledWidth,
-					py + y * scaledHeight,
+					_point.x + x * scaledWidth,
+					_point.y + y * scaledHeight,
 					layer, sx, sy, 0,
 					_red, _green, _blue, alpha,
 					shader, smooth, blend
