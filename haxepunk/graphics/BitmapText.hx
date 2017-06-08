@@ -84,7 +84,7 @@ class BitmapText extends Graphic
 	static var _colorStack:Array<Color> = new Array();
 	static var _alphaStack:Array<Float> = new Array();
 	static var _scaleStack:Array<Float> = new Array();
-	static var _sizeStack:Array<Float> = new Array();
+	static var _sizeStack:Array<Int> = new Array();
 	static var _word:Array<TextOpcode> = new Array();
 	static var _moveStack:Array<GlyphMoveFunction> = new Array();
 	static var _renderPoint:Point = new Point();
@@ -330,12 +330,16 @@ class BitmapText extends Graphic
 	{
 		// clear current opcode list
 		HXP.clear(opCodes);
-		HXP.clear(_scaleStack);
 		HXP.clear(_sizeStack);
+		HXP.clear(_scaleStack);
+		HXP.clear(_colorStack);
+		HXP.clear(_alphaStack);
 		HXP.clear(_word);
 
-		_scaleStack.push(1);
 		_sizeStack.push(size);
+		_scaleStack.push(1);
+		_colorStack.push(color);
+		_alphaStack.push(alpha);
 		var fsx:Float = HXP.screen.fullScaleX,
 			fsy:Float = HXP.screen.fullScaleY;
 		var sx:Float = size * scale * scaleX,
@@ -495,17 +499,29 @@ class BitmapText extends Graphic
 								_sizeStack.push(size);
 								currentSizeRatio = size / this.size;
 								_word.push(tag);
+							case PopSize:
+								if (_sizeStack.length > 1) _sizeStack.pop();
+								currentSizeRatio = _sizeStack[_sizeStack.length - 1] / this.size;
+								_word.push(SetSize(_sizeStack[_sizeStack.length - 1]));
 							case SetScale(scale):
 								_scaleStack.push(currentScale = scale);
 								_word.push(tag);
 							case PopScale:
 								if (_scaleStack.length > 1) _scaleStack.pop();
 								currentScale = _scaleStack[_scaleStack.length - 1];
+								_word.push(SetScale(currentScale));
+							case SetColor(color):
+								_colorStack.push(color);
 								_word.push(tag);
-							case PopSize:
-								if (_sizeStack.length > 1) _sizeStack.pop();
-								currentSizeRatio = _sizeStack[_sizeStack.length - 1] / this.size;
+							case PopColor:
+								if (_colorStack.length > 1) _colorStack.pop();
+								_word.push(SetColor(_colorStack[_colorStack.length - 1]));
+							case SetAlpha(alpha):
+								_alphaStack.push(alpha);
 								_word.push(tag);
+							case PopAlpha:
+								if (_alphaStack.length > 1) _alphaStack.pop();
+								_word.push(SetAlpha(_alphaStack[_alphaStack.length - 1]));
 							case NewLine(_, _, _):
 								flushWord();
 								addNewLine();
@@ -536,8 +552,6 @@ class BitmapText extends Graphic
 		if (autoWidth) width = textWidth;
 		this.textHeight = Std.int(cursorY + (cursorX > 0 ? thisLineHeight : 0));
 
-		_scaleStack.pop();
-		_sizeStack.pop();
 		_dirty = false;
 	}
 
@@ -545,6 +559,7 @@ class BitmapText extends Graphic
 	override public function render(layer:Int, point:Point, camera:Camera)
 	{
 		if (_dirty) parseText();
+		HXP.clear(_moveStack);
 
 		// determine drawing location
 		var fsx = camera.fullScaleX,
@@ -552,17 +567,6 @@ class BitmapText extends Graphic
 
 		_point.x = camera.floorX(point.x) + camera.floorX(x) - camera.floorX(camera.x * scrollX);
 		_point.y = camera.floorY(point.y) + camera.floorY(y) - camera.floorY(camera.y * scrollY);
-		// make sure our format stacks are clear
-		HXP.clear(_colorStack);
-		HXP.clear(_alphaStack);
-		HXP.clear(_scaleStack);
-		HXP.clear(_sizeStack);
-		HXP.clear(_moveStack);
-
-		_colorStack.push(color);
-		_alphaStack.push(alpha);
-		_scaleStack.push(1);
-		_sizeStack.push(size);
 
 		var sx = scale * scaleX * size,
 			sy = scale * scaleY * size;
@@ -593,26 +597,13 @@ class BitmapText extends Graphic
 			switch (op)
 			{
 				case SetColor(color):
-					_colorStack.push(currentColor = color);
+					currentColor = color;
 				case SetAlpha(alpha):
-					_alphaStack.push(currentAlpha = alpha);
+					currentAlpha = alpha;
 				case SetScale(scale):
-					_scaleStack.push(currentScale = scale);
+					currentScale = scale;
 				case SetSize(size):
-					_sizeStack.push(size);
 					currentSizeRatio = size / this.size;
-				case PopColor:
-					if (_colorStack.length > 1) _colorStack.pop();
-					currentColor = _colorStack[_colorStack.length - 1];
-				case PopAlpha:
-					if (_alphaStack.length > 1) _alphaStack.pop();
-					currentAlpha = _alphaStack[_alphaStack.length - 1];
-				case PopScale:
-					if (_scaleStack.length > 1) _scaleStack.pop();
-					currentScale = _scaleStack[_scaleStack.length - 1];
-				case PopSize:
-					if (_sizeStack.length > 1) _sizeStack.pop();
-					currentSizeRatio = _sizeStack[_sizeStack.length - 1] / this.size;
 				case TextBlock(text):
 					// render a block of text on this line
 					for (i in 0 ... text.length)
@@ -681,13 +672,10 @@ class BitmapText extends Graphic
 					_moveStack.push(func);
 				case PopMoveText:
 					_moveStack.pop();
+				case PopSize, PopScale, PopColor, PopAlpha: {}
 				case Align(_): {}
 			}
 		}
-
-		_colorStack.pop();
-		_alphaStack.pop();
-		_scaleStack.pop();
 	}
 
 	var autoWidth:Bool = false;
