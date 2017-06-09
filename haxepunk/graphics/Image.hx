@@ -120,7 +120,7 @@ class Image extends Graphic
 			var clipRect = screenClipRect(camera, _point.x, _point.y);
 			_region.draw(_point.x * fsx, _point.y * fsy,
 				layer, sx * fsx, sy * fsy, angle,
-				_red, _green, _blue, alpha,
+				color, alpha,
 				shader, smooth, blend, clipRect
 			);
 		}
@@ -137,7 +137,7 @@ class Image extends Graphic
 			var ty = (-originX * sx * sin - originY * sy * cos + originY + _point.y);
 			var clipRect = screenClipRect(camera, tx, ty);
 			_region.drawMatrix(tx * fsx, ty * fsy, a, b, c, d, layer,
-				_red, _green, _blue, alpha,
+				color, alpha,
 				shader, smooth, blend, clipRect
 			);
 		}

@@ -80,7 +80,7 @@ class Backdrop extends Graphic
 					_point.x + x * scaledWidth,
 					_point.y + y * scaledHeight,
 					layer, sx, sy, 0,
-					_red, _green, _blue, alpha,
+					color, alpha,
 					shader, smooth, blend
 				);
 			}

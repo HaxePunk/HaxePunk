@@ -32,15 +32,12 @@ class SceneSprite extends Sprite
 		{
 			// draw the scene background
 			var command = batch.getDrawCommand(null, ColorShader.defaultShader, false, BlendMode.ALPHA, null);
-			var sceneColor:Color = scene.color == null ? HXP.stage.color : scene.color;
-			var alpha = scene.alpha,
-				red = sceneColor.red * alpha,
-				green = sceneColor.green * alpha,
-				blue = sceneColor.blue * alpha;
+			var sceneColor:Color = scene.color == null ? HXP.stage.color : scene.color,
+				alpha = scene.alpha;
 			var w = HXP.width * scene.camera.fullScaleX,
 				h = HXP.height * scene.camera.fullScaleY;
-			command.addTriangle(0, 0, 0, 0, w, 0, 0, 0, 0, h, 0, 0, red, green, blue, alpha);
-			command.addTriangle(0, h, 0, 0, w, 0, 0, 0, w, h, 0, 0, red, green, blue, alpha);
+			command.addTriangle(0, 0, 0, 0, w, 0, 0, 0, 0, h, 0, 0, sceneColor, alpha);
+			command.addTriangle(0, h, 0, 0, w, 0, 0, 0, w, h, 0, 0, sceneColor, alpha);
 		}
 	}
 

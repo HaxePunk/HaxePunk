@@ -6,7 +6,6 @@ import flash.display.BitmapData;
 import flash.display.BlendMode;
 import flash.geom.Point;
 import flash.gl.GL;
-import flash.gl.GLBuffer;
 import flash.gl.GLFramebuffer;
 import haxepunk.HXP;
 import haxepunk.graphics.shaders.SceneShader;
@@ -20,14 +19,6 @@ import haxepunk.graphics.shaders.SceneShader;
 class HardwareRenderer
 {
 	public static inline var UNIFORM_MATRIX:String = "uMatrix";
-
-	static inline function resize(length:Int, minChunks:Int, chunkSize:Int)
-	{
-		return Std.int(Math.max(
-			Std.int(length * 2 / chunkSize),
-			minChunks
-		) * chunkSize);
-	}
 
 	static inline function checkForGLErrors(?pos:PosInfos)
 	{
@@ -84,8 +75,7 @@ class HardwareRenderer
 	var fb:FrameBuffer;
 	var backFb:FrameBuffer;
 
-	var buffer:Float32Array;
-	var glBuffer:GLBuffer;
+	var buffer:RenderBuffer;
 	var defaultFramebuffer:GLFramebuffer = null;
 
 	public function new()
@@ -130,20 +120,9 @@ class HardwareRenderer
 				shader.bind();
 
 				// expand arrays if necessary
-				var bufferLength:Int = buffer == null ? 0 : buffer.length;
 				var triangles:Int = drawCommand.triangleCount;
 				var floatsPerTriangle:Int = shader.floatsPerVertex * 3;
-				if (bufferLength < triangles * floatsPerTriangle)
-				{
-					buffer = new Float32Array(resize(bufferLength, triangles, floatsPerTriangle));
-
-					GL.bindBuffer(GL.ARRAY_BUFFER, glBuffer);
-					#if (lime >= "4.0.0")
-					GL.bufferData(GL.ARRAY_BUFFER, buffer.length * Float32Array.BYTES_PER_ELEMENT, buffer, GL.DYNAMIC_DRAW);
-					#else
-					GL.bufferData(GL.ARRAY_BUFFER, buffer, GL.DYNAMIC_DRAW);
-					#end
-				}
+				buffer.ensureSize(triangles, floatsPerTriangle);
 
 				ortho(-x, -x + HXP.windowWidth, -y + HXP.windowHeight, -y, 1000, -1000);
 				#if (lime >= "4.0.0")
@@ -159,7 +138,7 @@ class HardwareRenderer
 
 				#if (gl_debug || debug) checkForGLErrors(); #end
 
-				GL.bindBuffer(GL.ARRAY_BUFFER, glBuffer);
+				GL.bindBuffer(GL.ARRAY_BUFFER, buffer.glBuffer);
 				shader.prepare(drawCommand, buffer);
 
 				#if (gl_debug || debug) checkForGLErrors(); #end
@@ -191,7 +170,7 @@ class HardwareRenderer
 
 	public function startScene(scene:Scene)
 	{
-		if (GLUtils.invalid(glBuffer))
+		if (buffer == null || GLUtils.invalid(buffer.glBuffer))
 		{
 			destroy();
 			init();
@@ -258,13 +237,15 @@ class HardwareRenderer
 
 	inline function init()
 	{
+		if (buffer == null)
+		{
+			buffer = new RenderBuffer();
+		}
 		if (fb == null)
 		{
 			fb = new FrameBuffer();
 			backFb = new FrameBuffer();
 		}
-
-		glBuffer = GL.createBuffer();
 	}
 
 	inline function bindDefaultFramebuffer()

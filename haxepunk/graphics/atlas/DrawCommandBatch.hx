@@ -5,6 +5,7 @@ import flash.display.BlendMode;
 import flash.geom.Matrix;
 import flash.geom.Rectangle;
 import haxepunk.graphics.shaders.Shader;
+import haxepunk.utils.Color;
 
 @:dox(hide)
 class DrawCommandBatch
@@ -127,7 +128,7 @@ class DrawCommandBatch
 		rx:Float, ry:Float, rw:Float, rh:Float,
 		a:Float, b:Float, c:Float, d:Float,
 		tx:Float, ty:Float,
-		red:Float, green:Float, blue:Float, alpha:Float):Void
+		color:Color, alpha:Float):Void
 	{
 		var uvx1:Float, uvy1:Float, uvx2:Float, uvy2:Float;
 		if (texture == null)
@@ -157,7 +158,7 @@ class DrawCommandBatch
 			transformX(0, 0), transformY(0, 0), uvx1, uvy1,
 			transformX(rw, 0), transformY(rw, 0), uvx2, uvy1,
 			transformX(0, rh), transformY(0, rh), uvx1, uvy2,
-			red, green, blue, alpha
+			color, alpha
 		);
 
 		addTriangle(
@@ -165,7 +166,7 @@ class DrawCommandBatch
 			transformX(0, rh), transformY(0, rh), uvx1, uvy2,
 			transformX(rw, 0), transformY(rw, 0), uvx2, uvy1,
 			transformX(rw, rh), transformY(rw, rh), uvx2, uvy2,
-			red, green, blue, alpha
+			color, alpha
 		);
 	}
 
@@ -174,12 +175,12 @@ class DrawCommandBatch
 		tx1:Float, ty1:Float, uvx1:Float, uvy1:Float,
 		tx2:Float, ty2:Float, uvx2:Float, uvy2:Float,
 		tx3:Float, ty3:Float, uvx3:Float, uvy3:Float,
-		red:Float, green:Float, blue:Float, alpha:Float):Void
+		color:Color, alpha:Float):Void
 	{
 		if (alpha > 0)
 		{
 			var command = getDrawCommand(texture, shader, smooth, blend, clipRect, tx1, ty1, tx2, ty2, tx3, ty3);
-			command.addTriangle(tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, red, green, blue, alpha);
+			command.addTriangle(tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, color, alpha);
 		}
 	}
 }

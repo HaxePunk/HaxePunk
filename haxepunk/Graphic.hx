@@ -179,13 +179,7 @@ class Graphic
 	public var color(default, set):Color;
 	function set_color(value:Color):Color
 	{
-		value &= 0xFFFFFF;
-		if (color == value) return value;
-		// save individual color channel values
-		_red = value.red;
-		_green = value.green;
-		_blue = value.blue;
-		return color = value;
+		return color = value & 0xffffff;
 	}
 
 	/**
@@ -268,8 +262,4 @@ class Graphic
 	var _scroll:Bool = true;
 	var _point:Point = new Point();
 	var _visible:Bool = true;
-	// Color and alpha information.
-	var _red:Float;
-	var _green:Float;
-	var _blue:Float;
 }

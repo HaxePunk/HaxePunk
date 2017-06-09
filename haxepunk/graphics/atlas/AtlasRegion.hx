@@ -4,6 +4,7 @@ import flash.display.BlendMode;
 import flash.geom.Rectangle;
 import flash.geom.Point;
 import flash.geom.Matrix;
+import haxepunk.utils.Color;
 import haxepunk.utils.MathUtil;
 import haxepunk.graphics.shaders.Shader;
 
@@ -83,14 +84,14 @@ class AtlasRegion implements IAtlasRegion
 	 */
 	public inline function draw(x:Float, y:Float, layer:Int,
 		scaleX:Float=1, scaleY:Float=1, angle:Float=0,
-		red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1,
+		color:Color=Color.White, alpha:Float=1,
 		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
 	{
 		if (rotated) angle = angle + 90;
 
 		_parent.prepareTile(_rect, x, y, layer,
 			scaleX, scaleY, angle,
-			red, green, blue, alpha,
+			color, alpha,
 			shader, smooth, blend, clipRect);
 	}
 
@@ -113,7 +114,7 @@ class AtlasRegion implements IAtlasRegion
 	 * @param	clipRect	Clipping rectangle
 	 */
 	public inline function drawMatrix(tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
-		layer:Int, red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1,
+		layer:Int, color:Color=Color.White, alpha:Float=1,
 		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void
 	{
 		if (rotated)
@@ -122,7 +123,7 @@ class AtlasRegion implements IAtlasRegion
 			matrix.rotate(90 * MathUtil.RAD);
 			_parent.prepareTileMatrix(_rect, layer,
 				matrix.tx, matrix.ty, matrix.a, matrix.b, matrix.c, matrix.d,
-				red, green, blue, alpha,
+				color, alpha,
 				shader, smooth, blend, clipRect
 			);
 		}
@@ -130,7 +131,7 @@ class AtlasRegion implements IAtlasRegion
 		{
 			_parent.prepareTileMatrix(_rect, layer,
 				tx, ty, a, b, c, d,
-				red, green, blue, alpha,
+				color, alpha,
 				shader, smooth, blend, clipRect
 			);
 		}

@@ -6,6 +6,7 @@ import flash.gl.GLShader;
 import haxepunk.graphics.atlas.GLUtils;
 import haxepunk.graphics.atlas.DrawCommand;
 import haxepunk.graphics.atlas.Float32Array;
+import haxepunk.graphics.atlas.RenderBuffer;
 
 #if js
 typedef GLUniformLocation = js.html.webgl.UniformLocation;
@@ -46,7 +47,7 @@ class Shader
 
 	public var glProgram:GLProgram;
 	public var floatsPerVertex(get, never):Int;
-	inline function get_floatsPerVertex():Int return 2 + (texCoord.isEnabled ? 2 : 0) + (color.isEnabled ? 4 : 0);
+	inline function get_floatsPerVertex():Int return 2 + (texCoord.isEnabled ? 2 : 0) + (color.isEnabled ? 1 : 0);
 
 	var vertexSource:String;
 	var fragmentSource:String;
@@ -107,69 +108,53 @@ class Shader
 		for (key in attributeIndices.keys()) attributeIndices.remove(key);
 	}
 
-	public function prepare(drawCommand:DrawCommand, buffer:Float32Array)
+	public function prepare(drawCommand:DrawCommand, buffer:RenderBuffer)
 	{
 		if (!position.isEnabled) return;
 
 		var bufferPos:Int = -1;
 
 		var hasTexCoord = texCoord.isEnabled;
-		var textureOffset = drawCommand.triangleCount * 6;
-		var texturePos = textureOffset - 1;
-
 		var hasColor = color.isEnabled;
-		var colorOffset = drawCommand.triangleCount * (hasTexCoord ? 12 : 6);
-		var colorPos = colorOffset - 1;
 
 		drawCommand.loopRenderData(function(data) {
-			buffer[++bufferPos] = data.tx1;
-			buffer[++bufferPos] = data.ty1;
-			buffer[++bufferPos] = data.tx2;
-			buffer[++bufferPos] = data.ty2;
-			buffer[++bufferPos] = data.tx3;
-			buffer[++bufferPos] = data.ty3;
+			var c:UInt = hasColor ? data.color.withAlpha(data.alpha) : 0;
 
-			if (hasTexCoord)
+			inline function addTriangle(tx:Float, ty:Float, uvx:Float, uvy:Float)
 			{
-				buffer[++texturePos] = data.uvx1;
-				buffer[++texturePos] = data.uvy1;
-				buffer[++texturePos] = data.uvx2;
-				buffer[++texturePos] = data.uvy2;
-				buffer[++texturePos] = data.uvx3;
-				buffer[++texturePos] = data.uvy3;
+				buffer.set(++bufferPos, tx);
+				buffer.set(++bufferPos, ty);
+				if (hasTexCoord)
+				{
+					buffer.set(++bufferPos, uvx);
+					buffer.set(++bufferPos, uvy);
+				}
+				if (hasColor)
+				{
+					buffer.setInt32(++bufferPos, c);
+				}
 			}
 
-			if (hasColor)
-			{
-				buffer[++colorPos] = data.red;
-				buffer[++colorPos] = data.green;
-				buffer[++colorPos] = data.blue;
-				buffer[++colorPos] = data.alpha;
-				buffer[++colorPos] = data.red;
-				buffer[++colorPos] = data.green;
-				buffer[++colorPos] = data.blue;
-				buffer[++colorPos] = data.alpha;
-				buffer[++colorPos] = data.red;
-				buffer[++colorPos] = data.green;
-				buffer[++colorPos] = data.blue;
-				buffer[++colorPos] = data.alpha;
-			}
+			addTriangle(data.tx1, data.ty1, data.uvx1, data.uvy1);
+			addTriangle(data.tx2, data.ty2, data.uvx2, data.uvy2);
+			addTriangle(data.tx3, data.ty3, data.uvx3, data.uvy3);
 		});
 
 		#if (lime >= "4.0.0")
-		GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer.length * Float32Array.BYTES_PER_ELEMENT, buffer);
+		GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer.length * Float32Array.BYTES_PER_ELEMENT, buffer.buffer);
 		#else
-		GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer);
+		GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer.buffer);
 		#end
 
-		GL.vertexAttribPointer(position.index, 2, GL.FLOAT, false, 0, 0);
+		var stride:Int = floatsPerVertex * Float32Array.BYTES_PER_ELEMENT;
+		GL.vertexAttribPointer(position.index, 2, GL.FLOAT, false, stride, 0);
 		if (hasTexCoord)
 		{
-			GL.vertexAttribPointer(texCoord.index, 2, GL.FLOAT, false, 0, textureOffset * Float32Array.BYTES_PER_ELEMENT);
+			GL.vertexAttribPointer(texCoord.index, 2, GL.FLOAT, false, stride, 2 * Float32Array.BYTES_PER_ELEMENT);
 		}
 		if (hasColor)
 		{
-			GL.vertexAttribPointer(color.index, 4, GL.FLOAT, false, 0, colorOffset * Float32Array.BYTES_PER_ELEMENT);
+			GL.vertexAttribPointer(color.index, 4, GL.UNSIGNED_BYTE, true, stride, (hasTexCoord ? 4 : 2) * Float32Array.BYTES_PER_ELEMENT);
 		}
 	}
 

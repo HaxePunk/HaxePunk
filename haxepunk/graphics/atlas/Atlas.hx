@@ -4,6 +4,7 @@ import flash.display.BlendMode;
 import flash.geom.Rectangle;
 import haxepunk.graphics.atlas.AtlasData;
 import haxepunk.graphics.shaders.Shader;
+import haxepunk.utils.Color;
 
 class Atlas
 {
@@ -64,10 +65,10 @@ class Atlas
 	 */
 	public inline function prepareTile(rect:Rectangle, x:Float, y:Float, layer:Int,
 		scaleX:Float, scaleY:Float, angle:Float,
-		red:Float, green:Float, blue:Float, alpha:Float,
+		color:Color, alpha:Float,
 		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
 	{
-		_data.prepareTile(rect, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha, shader, smooth, blend, clipRect);
+		_data.prepareTile(rect, x, y, layer, scaleX, scaleY, angle, color, alpha, shader, smooth, blend, clipRect);
 	}
 
 	/**
