@@ -14,7 +14,7 @@ varying vec4 vColor;
 uniform mat4 uMatrix;
 
 void main(void) {
-	vColor = aColor;
+	vColor = vec4(aColor.bgr * aColor.a, aColor.a);
 	gl_Position = uMatrix * aPosition;
 }";
 

@@ -4,6 +4,7 @@ import flash.display.BlendMode;
 import flash.display.BitmapData;
 import flash.geom.Rectangle;
 import haxepunk.graphics.shaders.Shader;
+import haxepunk.utils.Color;
 
 @:allow(haxepunk.graphics.atlas.DrawCommand)
 @:allow(haxepunk.graphics.atlas.DrawCommandBatch)
@@ -24,9 +25,7 @@ private class RenderData
 	public var ty3:Float = 0;
 	public var uvx3:Float = 0;
 	public var uvy3:Float = 0;
-	public var red:Float = 0;
-	public var green:Float = 0;
-	public var blue:Float = 0;
+	public var color:Color = 0;
 	public var alpha:Float = 0;
 
 	public var x1(get, never):Float;
@@ -170,7 +169,7 @@ class DrawCommand
 			));
 	}
 
-	public inline function addTriangle(tx1:Float, ty1:Float, uvx1:Float, uvy1:Float, tx2:Float, ty2:Float, uvx2:Float, uvy2:Float, tx3:Float, ty3:Float, uvx3:Float, uvy3:Float, red:Float, green:Float, blue:Float, alpha:Float):Void
+	public inline function addTriangle(tx1:Float, ty1:Float, uvx1:Float, uvy1:Float, tx2:Float, ty2:Float, uvx2:Float, uvy2:Float, tx3:Float, ty3:Float, uvx3:Float, uvy3:Float, color:Color, alpha:Float):Void
 	{
 		if (alpha > 0)
 		{
@@ -187,9 +186,7 @@ class DrawCommand
 			data.ty3 = ty3;
 			data.uvx3 = uvx3;
 			data.uvy3 = uvy3;
-			data.red = red;
-			data.green = green;
-			data.blue = blue;
+			data.color = color;
 			data.alpha = alpha;
 			addData(data);
 		}

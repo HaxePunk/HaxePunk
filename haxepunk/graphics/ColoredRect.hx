@@ -36,7 +36,7 @@ class ColoredRect extends Graphic
 			y1 = (camera.floorY(point.y) - camera.floorY(camera.y) + camera.floorY(y)) * fsy,
 			y2 = y1 + height * fsy;
 
-		command.addTriangle(x1, y1, 0, 0, x2, y1, 0, 0, x1, y2, 0, 0, _red, _green, _blue, alpha);
-		command.addTriangle(x1, y2, 0, 0, x2, y1, 0, 0, x2, y2, 0, 0, _red, _green, _blue, alpha);
+		command.addTriangle(x1, y1, 0, 0, x2, y1, 0, 0, x1, y2, 0, 0, color, alpha);
+		command.addTriangle(x1, y2, 0, 0, x2, y1, 0, 0, x2, y2, 0, 0, color, alpha);
 	}
 }

@@ -443,7 +443,7 @@ class Tilemap extends Graphic
 						_point.y + wy,
 						layer,
 						scx, scy, 0,
-						_red, _green, _blue, alpha,
+						color, alpha,
 						shader, smooth, blend
 					);
 				}

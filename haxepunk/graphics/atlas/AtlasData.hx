@@ -6,8 +6,9 @@ import flash.geom.Rectangle;
 import flash.geom.Point;
 import flash.geom.Matrix;
 import haxepunk.Scene;
-import haxepunk.utils.MathUtil;
 import haxepunk.graphics.shaders.Shader;
+import haxepunk.utils.Color;
+import haxepunk.utils.MathUtil;
 
 /**
  * Abstract representing either a `String`, a `AtlasData` or a `BitmapData`.
@@ -177,7 +178,7 @@ class AtlasData
 	public inline function prepareTileMatrix(
 		rect:Rectangle, layer:Int,
 		tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
-		red:Float, green:Float, blue:Float, alpha:Float,
+		color:Color, alpha:Float,
 		shader:Shader, smooth:Bool=false, blend:BlendMode, ?clipRect:Rectangle)
 	{
 		var batch = _scene.sprite.batch;
@@ -185,7 +186,7 @@ class AtlasData
 			bitmapData, shader, smooth, blend, clipRect,
 			rect.x, rect.y, rect.width, rect.height,
 			a, b, c, d, tx, ty,
-			red, green, blue, alpha
+			color, alpha
 		);
 	}
 
@@ -206,7 +207,7 @@ class AtlasData
 	public inline function prepareTile(
 		rect:Rectangle, tx:Float, ty:Float, layer:Int,
 		scaleX:Float, scaleY:Float, angle:Float,
-		red:Float, green:Float, blue:Float, alpha:Float,
+		color:Color, alpha:Float,
 		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void
 	{
 		var a:Float, b:Float, c:Float, d:Float;
@@ -231,7 +232,7 @@ class AtlasData
 		}
 
 		var batch = _scene.sprite.batch;
-		batch.addRect(bitmapData, shader, smooth, blend, clipRect, rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, red, green, blue, alpha);
+		batch.addRect(bitmapData, shader, smooth, blend, clipRect, rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, color, alpha);
 	}
 
 	/**
@@ -261,11 +262,11 @@ class AtlasData
 		tx1:Float, ty1:Float, uvx1:Float, uvy1:Float,
 		tx2:Float, ty2:Float, uvx2:Float, uvy2:Float,
 		tx3:Float, ty3:Float, uvx3:Float, uvy3:Float,
-		red:Float, green:Float, blue:Float, alpha:Float,
+		color:Color, alpha:Float,
 		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void
 	{
 		var batch = _scene.sprite.batch;
-		batch.addTriangle(bitmapData, shader, smooth, blend, clipRect, tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, red, green, blue, alpha);
+		batch.addTriangle(bitmapData, shader, smooth, blend, clipRect, tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, color, alpha);
 	}
 
 	// used for pooling

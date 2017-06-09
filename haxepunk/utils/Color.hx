@@ -117,6 +117,7 @@ abstract Color(UInt) from UInt to UInt
 
 	public inline function withAlpha(a:Float):Color
 	{
+		a = a < 0 ? 0 : (a > 1 ? 1 : a);
 		return (Std.int(0xff * a) << 24) | (this & 0xffffff);
 	}
 

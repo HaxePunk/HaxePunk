@@ -483,7 +483,6 @@ class Text extends Image
 		if (fromPlain && _richText != null)
 		{
 			_format.color = 0xFFFFFF;
-			_red = _green = _blue = 1;
 		}
 		else
 		{
