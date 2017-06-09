@@ -25,6 +25,10 @@ class Cursor extends Entity
 		super.update();
 		x = scene.mouseX;
 		y = scene.mouseY;
+	}
+
+	override public function render(camera:Camera)
+	{
 		var img:Image = cast graphic;
 		if (img != null)
 		{
@@ -32,6 +36,7 @@ class Cursor extends Entity
 			img.scaleX = 1 / camera.fullScaleX;
 			img.scaleY = 1 / camera.fullScaleY;
 		}
+		super.render(camera);
 	}
 
 	/**

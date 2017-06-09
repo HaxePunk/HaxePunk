@@ -53,7 +53,7 @@ class Entity extends Tweener
 	function get_x():Float
 	{
 		var parentX:Float = (parent == null) ? 0 : parent.x;
-		return parentX + x + (followCamera ? camera.x : 0);
+		return parentX + x + (followCamera == null ? 0 : followCamera.x);
 	}
 	function set_x(v:Float):Float
 	{
@@ -68,7 +68,7 @@ class Entity extends Tweener
 	function get_y():Float
 	{
 		var parentY:Float = (parent == null) ? 0 : parent.y;
-		return parentY + y + (followCamera ? camera.y : 0);
+		return parentY + y + (followCamera == null ? 0 : followCamera.y);
 	}
 	function set_y(v:Float):Float
 	{
@@ -95,9 +95,9 @@ class Entity extends Tweener
 	function set_localY(v:Float) return y = (parent == null ? 0 : parent.y) + v;
 
 	/**
-	 * If the entity should follow the camera.
+	 * Set to the camera the entity should follow. If null it won't follow any camera.
 	 */
-	public var followCamera:Bool = false;
+	public var followCamera:Null<Camera> = null;
 
 	/**
 	 * Width of the Entity's hitbox.
@@ -127,9 +127,6 @@ class Entity extends Tweener
 	 * The BitmapData target to draw the Entity to. Leave as null to render to the current screen buffer (default).
 	 */
 	public var renderTarget:BitmapData;
-
-	public var camera(get, never):Camera;
-	inline function get_camera() return (scene == null) ? HXP.camera : scene.camera;
 
 	/**
 	 * Constructor. Can be used to place the Entity and assign a graphic and mask.
@@ -185,7 +182,7 @@ class Entity extends Tweener
 	 * Renders the Entity. If you override this for special behaviour,
 	 * remember to call super.render() to render the Entity's graphic.
 	 */
-	public function render():Void
+	public function render(camera:Camera):Void
 	{
 		if (_graphic != null && _graphic.visible)
 		{
@@ -198,7 +195,7 @@ class Entity extends Tweener
 			{
 				_point.x = _point.y = 0;
 			}
-			_graphic.render(layer, _point, _scene.camera);
+			_graphic.render(layer, _point, camera);
 		}
 	}
 
@@ -454,22 +451,6 @@ class Entity extends Tweener
 	{
 		if (_scene == null) return;
 		for (type in types) collideInto(type, x, y, array);
-	}
-
-	/**
-	 * If the Entity collides with the camera rectangle.
-	 */
-	public var onCamera(get, null):Bool;
-	inline function get_onCamera():Bool
-	{
-		if (_scene == null)
-		{
-			return false;
-		}
-		else
-		{
-			return collideRect(x, y, _scene.camera.x, _scene.camera.y, HXP.width, HXP.height);
-		}
 	}
 
 	/**

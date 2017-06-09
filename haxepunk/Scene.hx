@@ -214,14 +214,14 @@ class Scene extends Tweener
 			if (!layerVisible(layer)) continue;
 			for (e in _layers.get(layer))
 			{
-				if (e.visible) e.render();
+				if (e.visible) e.render(camera);
 			}
 		}
 
 		// render the cursor if this is the topmost scene
 		if (HXP.cursor != null && HXP.cursor.visible && this == HXP.scene)
 		{
-			HXP.cursor.render();
+			HXP.cursor.render(camera);
 		}
 
 		sprite.endFrame();
