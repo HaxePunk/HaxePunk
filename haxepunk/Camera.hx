@@ -41,6 +41,11 @@ class Camera extends Point
 		this.anchorY = anchorY;
 	}
 
+	public function onCamera(entity:Entity):Bool
+	{
+		return entity.collideRect(entity.x, entity.y, x, y, HXP.width, HXP.height);
+	}
+
 	public function update()
 	{
 		if (anchorTarget != null)

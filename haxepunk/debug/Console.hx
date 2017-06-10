@@ -781,7 +781,7 @@ class Console
 		for (e in ENTITY_LIST)
 		{
 			var layer = e.layer;
-			if (e.onCamera && HXP.scene.layerVisible(layer))
+			if (HXP.scene.camera.onCamera(e) && HXP.scene.layerVisible(layer))
 				SCREEN_LIST.push(e);
 
 			if (fetchList)
