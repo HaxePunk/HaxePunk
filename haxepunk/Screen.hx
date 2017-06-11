@@ -4,9 +4,9 @@ import flash.display.Bitmap;
 import flash.display.Sprite;
 import flash.filters.BitmapFilter;
 import flash.geom.Matrix;
-import haxepunk.graphics.atlas.Atlas;
-import haxepunk.graphics.atlas.Renderer;
 import haxepunk.graphics.Image;
+import haxepunk.graphics.atlas.Atlas;
+import haxepunk.graphics.hardware.Renderer;
 import haxepunk.screen.ScaleMode;
 
 /**

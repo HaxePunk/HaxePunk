@@ -6,7 +6,7 @@ import flash.geom.Point;
 import flash.geom.Matrix;
 import haxepunk.utils.Color;
 import haxepunk.utils.MathUtil;
-import haxepunk.graphics.shaders.Shader;
+import haxepunk.graphics.shader.Shader;
 
 class AtlasRegion implements IAtlasRegion
 {

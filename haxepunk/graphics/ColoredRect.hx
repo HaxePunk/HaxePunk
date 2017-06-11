@@ -3,7 +3,7 @@ package haxepunk.graphics;
 import flash.geom.Point;
 import haxepunk.Graphic;
 import haxepunk.graphics.atlas.AtlasData;
-import haxepunk.graphics.shaders.ColorShader;
+import haxepunk.graphics.shader.ColorShader;
 import haxepunk.utils.Color;
 
 class ColoredRect extends Graphic
@@ -22,7 +22,7 @@ class ColoredRect extends Graphic
 	}
 
 	@:access(haxepunk.graphics.atlas.AtlasData)
-	@:access(haxepunk.graphics.atlas.SceneSprite)
+	@:access(haxepunk.graphics.hardware.SceneSprite)
 	override public function render(layer:Int, point:Point, camera:Camera)
 	{
 		var batch = AtlasData._scene.sprite.batch,

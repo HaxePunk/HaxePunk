@@ -10,8 +10,8 @@ import haxepunk.graphics.atlas.TileAtlas;
 import haxepunk.graphics.atlas.AtlasRegion;
 import haxepunk.graphics.atlas.AtlasResolutions;
 import haxepunk.graphics.atlas.IAtlasRegion;
-import haxepunk.graphics.shaders.Shader;
-import haxepunk.graphics.shaders.TextureShader;
+import haxepunk.graphics.shader.Shader;
+import haxepunk.graphics.shader.TextureShader;
 import haxepunk.utils.Color;
 
 /**
