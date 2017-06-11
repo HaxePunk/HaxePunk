@@ -1,7 +1,7 @@
 import haxepunk.HXP;
 import haxepunk.Entity;
 import haxepunk.graphics.Spritemap;
-import haxepunk.graphics.Emitter;
+import haxepunk.graphics.emitter.Emitter;
 import haxepunk.utils.MathUtil;
 
 

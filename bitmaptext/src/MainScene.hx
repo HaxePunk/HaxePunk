@@ -2,7 +2,7 @@ import flash.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Entity;
 import haxepunk.Scene;
-import haxepunk.graphics.BitmapText;
+import haxepunk.graphics.text.BitmapText;
 import haxepunk.graphics.Image;
 
 class MainScene extends Scene

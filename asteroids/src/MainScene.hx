@@ -1,7 +1,7 @@
 import haxepunk.HXP;
 import haxepunk.Entity;
 import haxepunk.Scene;
-import haxepunk.graphics.Emitter;
+import haxepunk.graphics.emitter.Emitter;
 import haxepunk.input.Input;
 import haxepunk.input.Key;
 import haxepunk.utils.Ease;

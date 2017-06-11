@@ -2,8 +2,8 @@ package effects;
 
 import haxepunk.Entity;
 import haxepunk.HXP;
-import haxepunk.graphics.Backdrop;
-import haxepunk.graphics.Emitter;
+import haxepunk.graphics.tile.Backdrop;
+import haxepunk.graphics.emitter.Emitter;
 import haxepunk.graphics.Image;
 import haxepunk.graphics.atlas.TextureAtlas;
 import haxepunk.input.Input;

@@ -1,8 +1,8 @@
 import haxepunk.HXP;
 import haxepunk.Entity;
 import haxepunk.graphics.Image;
-import haxepunk.graphics.BaseEmitter.Particle;
-import haxepunk.graphics.Emitter;
+import haxepunk.graphics.emitter.Particle;
+import haxepunk.graphics.emitter.Emitter;
 import haxepunk.utils.MathUtil;
 
 
@@ -41,9 +41,9 @@ class Ship extends Entity
 		setHitbox(body.width, body.height, Std.int(body.width/2), Std.int(body.height/2));
 	}
 
-	@:access(haxepunk.graphics.Emitter)
-	@:access(haxepunk.graphics.Particle)
-	@:access(haxepunk.graphics.ParticleType)
+	@:access(haxepunk.graphics.emitter.Emitter)
+	@:access(haxepunk.graphics.emitter.Particle)
+	@:access(haxepunk.graphics.emitter.ParticleType)
 	override public function update()
 	{
 		super.update();

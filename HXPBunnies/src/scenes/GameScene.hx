@@ -2,12 +2,12 @@ package scenes;
 
 import haxepunk.graphics.Graphiclist;
 import haxepunk.graphics.Image;
-import haxepunk.graphics.Text;
+import haxepunk.graphics.text.Text;
 import haxepunk.HXP;
 import haxepunk.Entity;
 import haxepunk.graphics.atlas.TextureAtlas;
-import haxepunk.graphics.Tilemap;
-import haxepunk.graphics.Backdrop;
+import haxepunk.graphics.tile.Tilemap;
+import haxepunk.graphics.tile.Backdrop;
 import haxepunk.masks.Grid;
 import haxepunk.input.Input;
 import haxepunk.input.Key;

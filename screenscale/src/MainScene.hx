@@ -7,8 +7,8 @@ import haxepunk.screen.FixedScaleMode;
 import haxepunk.input.Input;
 import haxepunk.input.Key;
 import haxepunk.input.Mouse;
-import haxepunk.graphics.Text;
-import haxepunk.graphics.Tilemap;
+import haxepunk.graphics.text.Text;
+import haxepunk.graphics.tile.Tilemap;
 
 typedef ScaleModeInfo =
 {

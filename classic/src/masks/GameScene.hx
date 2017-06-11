@@ -3,7 +3,7 @@ package masks;
 import haxepunk.HXP;
 import haxepunk.Entity;
 import haxepunk.graphics.Image;
-import haxepunk.graphics.Tilemap;
+import haxepunk.graphics.tile.Tilemap;
 import haxepunk.masks.Circle;
 import haxepunk.masks.Grid;
 import haxepunk.masks.Hitbox;

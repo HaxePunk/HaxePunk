@@ -4,7 +4,7 @@ import haxepunk.Entity;
 import haxepunk.HXP;
 import haxepunk.Scene;
 import haxepunk.graphics.Image;
-import haxepunk.graphics.Text;
+import haxepunk.graphics.text.Text;
 import haxepunk.graphics.atlas.Atlas;
 
 class LayerScene extends DemoScene
@@ -41,7 +41,7 @@ class LayerScene extends DemoScene
 		var background = Image.createRect(HXP.width, HXP.height, 0xffffff);
 		addGraphic(background, 100); // add graphic at back
 
-		var text = new haxepunk.graphics.Text();
+		var text = new Text();
 		text.color = 0x000000;
 		text.addStyle("welcome", {color: 0xFF0000, bold: true});
 		text.addStyle("orange", {color: 0xF2990D});
