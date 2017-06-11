@@ -11,7 +11,8 @@ import flash.geom.Rectangle;
 import haxepunk.Entity;
 import haxepunk.HXP;
 import haxepunk.Graphic;
-import haxepunk.graphics.Text;
+import haxepunk.graphics.text.Text;
+import haxepunk.graphics.text.TextOptions;
 import haxepunk.utils.Color;
 
 /**

@@ -5,8 +5,8 @@ import flash.display.Sprite;
 import flash.geom.Point;
 import haxepunk.Signal;
 import haxepunk.graphics.atlas.AtlasData;
-import haxepunk.graphics.atlas.SceneSprite;
-import haxepunk.graphics.shaders.SceneShader;
+import haxepunk.graphics.hardware.SceneSprite;
+import haxepunk.graphics.shader.SceneShader;
 import haxepunk.utils.MathUtil;
 
 /**

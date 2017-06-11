@@ -3,10 +3,10 @@ package haxepunk;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.AtlasRegion;
 import haxepunk.graphics.atlas.AtlasResolutions;
-import haxepunk.graphics.atlas.BitmapFont;
-import haxepunk.graphics.atlas.BitmapFontAtlas;
 import haxepunk.graphics.atlas.IAtlasRegion;
 import haxepunk.graphics.atlas.TextureAtlas;
+import haxepunk.graphics.text.BitmapFont;
+import haxepunk.graphics.text.BitmapFontAtlas;
 
 class AssetManager
 {

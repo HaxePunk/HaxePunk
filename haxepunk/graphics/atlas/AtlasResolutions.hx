@@ -3,7 +3,7 @@ package haxepunk.graphics.atlas;
 import flash.display.BlendMode;
 import flash.geom.Rectangle;
 import flash.geom.Point;
-import haxepunk.graphics.shaders.Shader;
+import haxepunk.graphics.shader.Shader;
 import haxepunk.utils.Color;
 
 /**
