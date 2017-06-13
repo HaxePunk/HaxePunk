@@ -62,7 +62,9 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 		if (xmlText == null) throw 'BitmapFontAtlas: "$file" not found!';
 
 		var xml = Xml.parse(xmlText);
-		var fast = new Fast(xml.firstElement());
+		var firstElement = xml.firstElement();
+		if (firstElement == null) throw 'BitmapFontAtlas: "$file" contains invalid XML!';
+		var fast = new Fast(firstElement);
 
 		atlas.lineHeight = Std.parseInt(fast.node.common.att.lineHeight);
 		atlas.fontSize = Std.parseInt(fast.node.info.att.size);
