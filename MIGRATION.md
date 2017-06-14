@@ -25,15 +25,22 @@ Some functions have been removed. It's possible they will be reimplemented using
 Class Changes
 ---------------
 
-| 2.x                              | 4.x                         |
-|----------------------------------|-----------------------------|
-| com.haxepunk.World               | haxepunk.Scene              |
-| com.haxepunk.graphics.Canvas     | *removed*                   |
-| com.haxepunk.graphics.Stamp      | haxepunk.graphics.Image     |
-| com.haxepunk.utils.Input         | haxepunk.input.Input        |
-| com.haxepunk.utils.Key           | haxepunk.input.Key          |
-| com.haxepunk.utils.Touch         | haxepunk.input.Touch        |
-| com.haxepunk.utils.Joystick      | haxepunk.input.Gamepad      |
+| 2.x                                   | 4.x                                   |
+|---------------------------------------|---------------------------------------|
+| com.haxepunk.World                    | haxepunk.Scene                        |
+| com.haxepunk.graphics.Backdrop        | haxepunk.graphics.tile.Backdro        |
+| com.haxepunk.graphics.BitmapText      | haxepunk.graphics.text.BitmapText     |
+| com.haxepunk.graphics.Canvas          | *removed*                             |
+| com.haxepunk.graphics.Emitter         | haxepunk.graphics.emitter.Emitter     |
+| com.haxepunk.graphics.Stamp           | haxepunk.graphics.Image               |
+| com.haxepunk.graphics.Text            | haxepunk.graphics.text.Text           |
+| com.haxepunk.graphics.TiledImage      | haxepunk.graphics.tile.TiledImage     |
+| com.haxepunk.graphics.TiledSpritemap  | haxepunk.graphics.tile.TiledSpritemap |
+| com.haxepunk.graphics.Tilemap         | haxepunk.graphics.tile.Tilemap        |
+| com.haxepunk.utils.Input              | haxepunk.input.Input                  |
+| com.haxepunk.utils.Key                | haxepunk.input.Key                    |
+| com.haxepunk.utils.Touch              | haxepunk.input.Touch                  |
+| com.haxepunk.utils.Joystick           | haxepunk.input.Gamepad                |
 
 Flash No Longer Supported
 -------------------------
