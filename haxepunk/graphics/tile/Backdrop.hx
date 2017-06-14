@@ -45,7 +45,7 @@ class Backdrop extends Graphic
 	}
 
 	@:dox(hide)
-	override public function render(layer:Int, point:Point, camera:Camera)
+	override public function render(point:Point, camera:Camera)
 	{
 		_point.x = camera.floorX(point.x) - camera.floorX(camera.x * scrollX) + camera.floorX(x);
 		_point.y = camera.floorY(point.y) - camera.floorY(camera.y * scrollY) + camera.floorY(y);
@@ -79,7 +79,7 @@ class Backdrop extends Graphic
 				_region.draw(
 					_point.x + x * scaledWidth,
 					_point.y + y * scaledHeight,
-					layer, sx, sy, 0,
+					sx, sy, 0,
 					color, alpha,
 					shader, smooth, blend
 				);

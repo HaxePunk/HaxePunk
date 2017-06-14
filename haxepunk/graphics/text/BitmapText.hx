@@ -553,7 +553,7 @@ class BitmapText extends Graphic
 	}
 
 	@:dox(hide)
-	override public function render(layer:Int, point:Point, camera:Camera)
+	override public function render(point:Point, camera:Camera)
 	{
 		if (_dirty) parseText();
 		HXP.clear(_moveStack);
@@ -624,7 +624,7 @@ class BitmapText extends Graphic
 								y = point.y + gd.yOffset * gd.scale * sy / maxFullScale + thisLineHeight - (lineHeight * currentScale * currentSizeRatio);
 							gd.region.draw(
 								(_point.x + x) * fsx, (_point.y + y) * fsy,
-								layer, gd.scale, gd.scale * sy * fsy / maxFullScale, 0,
+								gd.scale, gd.scale * sy * fsy / maxFullScale, 0,
 								currentColor, currentAlpha,
 								shader, smooth, blend
 							);
@@ -658,7 +658,7 @@ class BitmapText extends Graphic
 					image.alpha = currentAlpha;
 					image.scaleX *= this.scale * this.scaleX * currentScale;
 					image.scaleY *= this.scale * this.scaleY * currentScale;
-					image.render(layer, HXP.zero, HXP.zeroCamera);
+					image.render(HXP.zero, HXP.zeroCamera);
 					image.x = originalX;
 					image.y = originalY;
 					image.scaleX = originalScaleX;

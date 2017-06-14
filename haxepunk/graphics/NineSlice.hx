@@ -90,7 +90,7 @@ class NineSlice extends Graphic
 		return segment;
 	}
 
-	override public function render(layer:Int, point:Point, camera:Camera)
+	override public function render(point:Point, camera:Camera)
 	{
 		var leftWidth:Float, rightWidth:Float, topHeight:Float, bottomHeight:Float;
 		if (scaleBorder)
@@ -128,7 +128,7 @@ class NineSlice extends Graphic
 				}
 				else segment.clipRect = null;
 				segment.smooth = smooth;
-				segment.render(layer, point, camera);
+				segment.render(point, camera);
 			}
 		}
 

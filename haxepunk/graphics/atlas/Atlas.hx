@@ -54,7 +54,6 @@ class Atlas
 	 * @param  	rect   	The source rectangle to draw
 	 * @param	x		The x-axis location to draw the tile
 	 * @param	y		The y-axis location to draw the tile
-	 * @param	layer	The layer to draw on
 	 * @param	scaleX	The scale value for the x-axis
 	 * @param	scaleY	The scale value for the y-axis
 	 * @param	angle	An angle to rotate the tile
@@ -63,12 +62,12 @@ class Atlas
 	 * @param	blue	A blue tint value
 	 * @param	alpha	The tile's opacity
 	 */
-	public inline function prepareTile(rect:Rectangle, x:Float, y:Float, layer:Int,
+	public inline function prepareTile(rect:Rectangle, x:Float, y:Float,
 		scaleX:Float, scaleY:Float, angle:Float,
 		color:Color, alpha:Float,
 		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
 	{
-		_data.prepareTile(rect, x, y, layer, scaleX, scaleY, angle, color, alpha, shader, smooth, blend, clipRect);
+		_data.prepareTile(rect, x, y, scaleX, scaleY, angle, color, alpha, shader, smooth, blend, clipRect);
 	}
 
 	/**

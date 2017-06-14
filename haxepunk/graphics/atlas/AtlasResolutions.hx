@@ -63,7 +63,6 @@ class AtlasResolutions implements IAtlasRegion
 	 * Prepares tile data for rendering
 	 * @param	x			The x-axis location to draw the tile
 	 * @param	y			The y-axis location to draw the tile
-	 * @param	layer		The layer to draw on
 	 * @param	scaleX		The scale value for the x-axis
 	 * @param	scaleY		The scale value for the y-axis
 	 * @param	angle		An angle to rotate the tile in degrees
@@ -75,14 +74,14 @@ class AtlasResolutions implements IAtlasRegion
 	 * @param	blend		Blend mode
 	 * @param	clipRect	Clipping rectangle
 	 */
-	public inline function draw(x:Float, y:Float, layer:Int,
+	public inline function draw(x:Float, y:Float,
 		scaleX:Float=1, scaleY:Float=1, angle:Float=0,
 		color:Color=Color.White, alpha:Float=1,
 		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
 	{
 		var region = regionForScale(Math.max(Math.abs(scaleX), Math.abs(scaleY)));
 		var scale:Float = base.width / region.width;
-		region.draw(x, y, layer,
+		region.draw(x, y,
 			scaleX * scale, scaleY * scale, angle,
 			color, alpha,
 			shader, smooth, blend, clipRect
@@ -97,7 +96,6 @@ class AtlasResolutions implements IAtlasRegion
 	 * @param	b			Top-right
 	 * @param	c			Bottom-left
 	 * @param	d			Bottom-right
-	 * @param	layer		The layer to draw on
 	 * @param	red			Red color value
 	 * @param	green		Green color value
 	 * @param	blue		Blue color value
@@ -107,12 +105,12 @@ class AtlasResolutions implements IAtlasRegion
 	 * @param	clipRect	Clipping rectangle
 	 */
 	public inline function drawMatrix(tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
-		layer:Int, color:Color=Color.White, alpha:Float=1,
+		color:Color=Color.White, alpha:Float=1,
 		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
 	{
 		var region = regionForScale(Math.max(Math.abs(a * c), Math.abs(b * d)));
 		var scale:Float = base.width / region.width;
-		region.drawMatrix(tx * scale, ty * scale, a * scale, b * scale, c * scale, d * scale, layer,
+		region.drawMatrix(tx * scale, ty * scale, a * scale, b * scale, c * scale, d * scale,
 			color, alpha,
 			shader, smooth, blend, clipRect
 		);

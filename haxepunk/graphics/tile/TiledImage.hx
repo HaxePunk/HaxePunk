@@ -29,7 +29,7 @@ class TiledImage extends Image
 
 	/** Renders the image. */
 	@:dox(hide)
-	override public function render(layer:Int, point:Point, camera:Camera)
+	override public function render(point:Point, camera:Camera)
 	{
 		// determine drawing location
 		_point.x = point.x + x - originX - camera.x * scrollX;
@@ -46,7 +46,7 @@ class TiledImage extends Image
 			while (x < _width)
 			{
 				_region.draw(Math.floor((_point.x + x) * fsx), Math.floor((_point.y + y) * fsy),
-					layer, sx, sy, angle,
+					sx, sy, angle,
 					color, alpha,
 					shader, smooth, blend
 					);

@@ -25,7 +25,7 @@ class TiledSpritemap extends Spritemap
 
 	/** Renders the image. */
 	@:dox(hide)
-	override public function render(layer:Int, point:Point, camera:Camera)
+	override public function render(point:Point, camera:Camera)
 	{
 		// determine drawing location
 		_point.x = point.x + x - originX - camera.x * scrollX;
@@ -42,7 +42,7 @@ class TiledSpritemap extends Spritemap
 			while (x < _imageWidth)
 			{
 				_region.draw(Math.floor((_point.x + x) * fsx), Math.floor((_point.y + y) * fsy),
-					layer, sx, sy, angle,
+					sx, sy, angle,
 					color, alpha,
 					shader, smooth, blend
 				);
