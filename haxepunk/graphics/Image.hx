@@ -93,7 +93,7 @@ class Image extends Graphic
 	}
 
 	@:dox(hide)
-	override public function render(layer:Int, point:Point, camera:Camera)
+	override public function render(point:Point, camera:Camera)
 	{
 		var sx = scale * scaleX,
 			sy = scale * scaleY,
@@ -119,7 +119,7 @@ class Image extends Graphic
 			// render without rotation
 			var clipRect = screenClipRect(camera, _point.x, _point.y);
 			_region.draw(_point.x * fsx, _point.y * fsy,
-				layer, sx * fsx, sy * fsy, angle,
+				sx * fsx, sy * fsy, angle,
 				color, alpha,
 				shader, smooth, blend, clipRect
 			);
@@ -136,7 +136,7 @@ class Image extends Graphic
 			var tx = (-originX * sx * cos + originY * sy * sin + originX + _point.x);
 			var ty = (-originX * sx * sin - originY * sy * cos + originY + _point.y);
 			var clipRect = screenClipRect(camera, tx, ty);
-			_region.drawMatrix(tx * fsx, ty * fsy, a, b, c, d, layer,
+			_region.drawMatrix(tx * fsx, ty * fsy, a, b, c, d,
 				color, alpha,
 				shader, smooth, blend, clipRect
 			);

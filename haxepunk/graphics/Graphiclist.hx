@@ -70,7 +70,7 @@ class Graphiclist extends Graphic
 	}
 
 	/** @private Renders the Graphics in the list. */
-	override public function render(layer:Int, point:Point, camera:Camera)
+	override public function render(point:Point, camera:Camera)
 	{
 		for (g in _graphics)
 		{
@@ -83,7 +83,7 @@ class Graphiclist extends Graphic
 				}
 				else _point.x = _point.y = 0;
 				_camera.setTo(camera.x * scrollX, camera.y * scrollY);
-				g.render(layer, _point, _camera);
+				g.render(_point, _camera);
 			}
 		}
 	}

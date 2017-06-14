@@ -232,12 +232,11 @@ class Graphic
 
 	/**
 	 * Renders the graphic as an atlas.
-	 * @param  layer      The layer to draw to.
 	 * @param  point      The position to draw the graphic.
 	 * @param  camera     The camera offset.
 	 */
 	@:dox(hide)
-	public function render(layer:Int, point:Point, camera:Camera) {}
+	public function render(point:Point, camera:Camera) {}
 
 	/**
 	 * Pause updating this graphic.

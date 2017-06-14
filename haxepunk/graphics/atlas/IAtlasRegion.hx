@@ -11,13 +11,13 @@ interface IAtlasRegion
 	public var width(get, never):Int;
 	public var height(get, never):Int;
 
-	public function draw(x:Float, y:Float, layer:Int,
+	public function draw(x:Float, y:Float,
 		scaleX:Float=1, scaleY:Float=1, angle:Float=0,
 		color:Color=Color.White, alpha:Float=1,
 		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void;
 
 	public function drawMatrix(tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
-		layer:Int, color:Color=Color.White, alpha:Float=1,
+		color:Color=Color.White, alpha:Float=1,
 		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void;
 
 	public function clip(clipRect:Rectangle, ?center:Point):IAtlasRegion;

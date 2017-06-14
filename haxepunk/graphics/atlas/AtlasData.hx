@@ -139,7 +139,6 @@ class AtlasData
 	/**
 	 * Prepares a tile to be drawn using a matrix
 	 * @param  rect   The source rectangle to draw
-	 * @param  layer The layer to draw on
 	 * @param  tx    X-Axis translation
 	 * @param  ty    Y-Axis translation
 	 * @param  a     Top-left
@@ -152,7 +151,7 @@ class AtlasData
 	 * @param  alpha Alpha value
 	 */
 	public inline function prepareTileMatrix(
-		rect:Rectangle, layer:Int,
+		rect:Rectangle,
 		tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
 		color:Color, alpha:Float,
 		shader:Shader, smooth:Bool=false, blend:BlendMode, ?clipRect:Rectangle)
@@ -171,7 +170,6 @@ class AtlasData
 	 * @param  rect   The source rectangle to draw
 	 * @param  x      The x-axis value
 	 * @param  y      The y-axis value
-	 * @param  layer  The layer to draw on
 	 * @param  scaleX X-Axis scale
 	 * @param  scaleY Y-Axis scale
 	 * @param  angle  Angle (in degrees)
@@ -181,7 +179,7 @@ class AtlasData
 	 * @param  alpha  Alpha value
 	 */
 	public inline function prepareTile(
-		rect:Rectangle, tx:Float, ty:Float, layer:Int,
+		rect:Rectangle, tx:Float, ty:Float,
 		scaleX:Float, scaleY:Float, angle:Float,
 		color:Color, alpha:Float,
 		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void

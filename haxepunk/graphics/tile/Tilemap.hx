@@ -382,7 +382,7 @@ class Tilemap extends Graphic
 	inline function floorY(y:Float) return Math.floor(y * HXP.screen.fullScaleY) / HXP.screen.fullScaleY;
 
 	@:dox(hide)
-	override public function render(layer:Int, point:Point, camera:Camera)
+	override public function render(point:Point, camera:Camera)
 	{
 		var fullScaleX:Float = camera.fullScaleX,
 			fullScaleY:Float = camera.fullScaleY;
@@ -439,7 +439,6 @@ class Tilemap extends Graphic
 						_tile,
 						_point.x + wx,
 						_point.y + wy,
-						layer,
 						scx, scy, 0,
 						color, alpha,
 						shader, smooth, blend

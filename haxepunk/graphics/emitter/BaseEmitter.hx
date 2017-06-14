@@ -28,7 +28,7 @@ import haxepunk.utils.Random;
 		particleCount = 0;
 	}
 
-	override public function render(layer:Int, point:Point, camera:Camera)
+	override public function render(point:Point, camera:Camera)
 	{
 		var p:Particle = _particle;
 
@@ -81,7 +81,7 @@ import haxepunk.utils.Random;
 				}
 				_source.x = p.x(td) - point.x + this.x;
 				_source.y = p.y(td) - point.y + this.y;
-				_source.render(layer, point, camera);
+				_source.render(point, camera);
 			}
 
 			// get next particle

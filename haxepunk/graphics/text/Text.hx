@@ -529,7 +529,7 @@ class Text extends Image
 	var bufferMargin(get, null):Float;
 	inline function get_bufferMargin() return 2 + (border == null ? 0 : border.size);
 
-	override public function render(layer:Int, point:Point, camera:Camera)
+	override public function render(point:Point, camera:Camera)
 	{
 		if (_needsUpdate) updateTextBuffer();
 
@@ -542,13 +542,13 @@ class Text extends Image
 			_region = _borderRegion;
 			color = border.color;
 			alpha = border.alpha;
-			super.render(layer, point, camera);
+			super.render(point, camera);
 			_region = textRegion;
 			color = c;
 			alpha = a;
 		}
 
-		super.render(layer, point, camera);
+		super.render(point, camera);
 	}
 
 	// Text information.
