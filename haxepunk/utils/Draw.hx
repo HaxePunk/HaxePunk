@@ -1,14 +1,14 @@
 package haxepunk.utils;
 
-import flash.geom.Point;
 import flash.display.BlendMode;
 import haxepunk.Entity;
 import haxepunk.HXP;
 import haxepunk.Graphic;
-import haxepunk.graphics.Text;
-import haxepunk.graphics.atlas.DrawCommand;
-import haxepunk.graphics.shaders.ColorShader;
-import haxepunk.graphics.shaders.Shader;
+import haxepunk.graphics.text.Text;
+import haxepunk.graphics.hardware.DrawCommand;
+import haxepunk.graphics.shader.ColorShader;
+import haxepunk.graphics.shader.Shader;
+import haxepunk.math.Vector2;
 import haxepunk.utils.Color;
 
 /**
@@ -45,7 +45,7 @@ class Draw
 	/**
 	 * The line thickness to use when drawing lines. Defaults to a single pixel wide.
 	 */
-	public static var thickness:Float = 1;
+	public static var lineThickness:Float = 1;
 
 	/**
 	 * Convenience function to set both color and alpha at the same time.
@@ -66,12 +66,17 @@ class Draw
 	public static function line(x1:Float, y1:Float, x2:Float, y2:Float)
 	{
 		// create perpendicular delta vector
+		// a.set(x1, y1);
+		// b.set(x2, y2);
+		// b.subtract(a);
+		// b.perpendicular();
+		// b.normalize(lineThickness / 2);
 		var dx:Float = -(x2 - x1);
 		var dy:Float = y2 - y1;
 		var length = Math.sqrt(dx * dx + dy * dy);
 		if (length == 0) return;
 		// normalize line and set delta to half thickness
-		var ht = thickness / 2;
+		var ht = lineThickness / 2;
 		var tx = dx;
 		dx = (dy / length) * ht;
 		dy = (tx / length) * ht;
@@ -82,85 +87,133 @@ class Draw
 			x1 - dx, y1 - dy,
 			x2 - dx, y2 - dy,
 			x2 + dx, y2 + dy,
-			color.red, color.green, color.blue, alpha
+			color, alpha
 		);
 	}
 
 	/**
-	 * Draws a triangulated line polygon to the screen. This must be a closed loop of concave lines
-	 * @param	points		An array of floats containing the points of the polygon. The array is ordered in x, y format and must have an even number of values.
+	 * Draws a triangulated line polyline to the screen. This must be a closed loop of concave lines
+	 * @param	points		An array of floats containing the points of the polyline. The array is ordered in x, y format and must have an even number of values.
 	 */
-	public static function polygon(points:Array<Float>)
+	public static function polyline(points:Array<Float>, drawMiter:Bool = false)
 	{
 		if (points.length < 4 || (points.length % 2) == 1)
 		{
-			throw "Invalid number of points. Expected an even number greater than 4.";
+			throw "Invalid number of values. Expected an even number greater than 4.";
 		}
 
-		var red = color.red,
-			green = color.green,
-			blue = color.blue;
-
-		var ht = thickness / 2;
+		var halfThick = lineThickness / 2;
 		var vec = [];
 		var last = Std.int(points.length / 2);
-		var aa = new Point(), bb = new Point(); // saves first vertex for last draw
-		var a = new Point(),
-			b = new Point(),
-			c = new Point(), // current
-			u = new Point(),
-			v = new Point();
+		var pos = new Vector2(points[0], points[1]), // current
+			a = new Vector2(pos.x, pos.y),
+			b = new Vector2(pos.x, pos.y),
+			prev = new Vector2(points[0] - points[2], points[1] - points[3]), // direction
+			next = new Vector2(prev.x, prev.y),
+			inner = new Vector2(),
+			outer = new Vector2(),
+			v1 = new Vector2();
 		begin();
-		for (i in 0...last)
+
+		// a, b - contain last 2 points to render from
+		// c - current point
+		// u,v - direction vectors for last and next lines
+
+		// calculate first end cap
+		next.perpendicular();
+		next.normalize(halfThick);
+		a.add(next);
+		b.subtract(next);
+
+		var over180, angle, index;
+		var alt:Vector2;
+		var tmp = new Vector2();
+
+		for (i in 1...last-1)
 		{
-			var index = i * 2;
+			index = i * 2;
 
-			c.x = points[index];
-			c.y = points[index+1];
-
-			// vector u (difference between last and current)
-			u.x = c.x - wrap(points, index - 2);
-			u.y = c.y - wrap(points, index - 1);
+			pos.x = points[index];
+			pos.y = points[index+1];
 
 			// vector v (difference between current and next)
-			v.x = c.x - wrap(points, index + 2);
-			v.y = c.y - wrap(points, index + 3);
+			next.x = pos.x - points[index + 2];
+			next.y = pos.y - points[index + 3];
 
-			var delta = u.add(v);
-			delta.normalize(ht);
+			over180 = prev.zcross(next) > 0;
+			// calculate half angle from two vectors
+			angle = Math.acos(prev.dot(next) / (prev.length * next.length)) / 2;
 
-			u = c.add(delta);
-			v = c.subtract(delta);
-
-			if ((u.x * v.x) + (u.y * v.y) < 0)
+			inner.copyFrom(prev);
+			inner.normalize(1);
+			outer.copyFrom(next);
+			outer.normalize(1);
+			inner.add(outer);
+			inner.perpendicular();
+			if (over180)
 			{
-				delta.x = -delta.x;
-				delta.y = -delta.y;
+				inner.inverse();
+			}
+			inner.normalize(halfThick / Math.cos(angle));
+			outer.copyFrom(inner); // save for miter joint
+			inner.add(pos);
+
+			// calculate joint points
+			prev.perpendicular();
+			prev.normalize(halfThick);
+
+			v1.copyFrom(next);
+			v1.perpendicular();
+			v1.normalize(halfThick);
+
+			if (!over180)
+			{
+				prev.inverse();
+				v1.inverse();
 			}
 
-			if (i == 0)
+			prev.add(pos);
+			v1.add(pos);
+
+			// draw line connection
+			alt = over180 ? prev : inner;
+			command.addTriangle(a.x, a.y, 0, 0, b.x, b.y, 0, 0, alt.x, alt.y, 0, 0, color, alpha);
+			command.addTriangle(b.x, b.y, 0, 0, prev.x, prev.y, 0, 0, inner.x, inner.y, 0, 0, color, alpha);
+			// draw bevel joint
+			command.addTriangle(v1.x, v1.y, 0, 0, prev.x, prev.y, 0, 0, inner.x, inner.y, 0, 0, color, alpha);
+			if (drawMiter)
 			{
-				aa.copyFrom(u);
-				bb.copyFrom(v);
+				command.addTriangle(v1.x, v1.y, 0, 0, prev.x, prev.y, 0, 0, pos.x - outer.x, pos.y - outer.y, 0, 0, color, alpha);
+			}
+
+			if (over180)
+			{
+				a.copyFrom(v1);
+				b.copyFrom(inner);
 			}
 			else
 			{
-				drawQuad(
-					a.x, a.y, b.x, b.y,
-					v.x, v.y, u.x, u.y,
-					red, green, blue, alpha
-				);
+				a.copyFrom(inner);
+				b.copyFrom(v1);
 			}
 
-			a.copyFrom(u);
-			b.copyFrom(v);
+			prev.copyFrom(next);
 		}
 
-		drawQuad(
-			a.x, a.y, b.x, b.y,
-			bb.x, bb.y, aa.x, aa.y,
-			red, green, blue, alpha
-		);
+		// end cap
+		prev.copyFrom(pos);
+		next.x = points[points.length - 2];
+		next.y = points[points.length - 1];
+		pos.y = -(prev.x - next.x);
+		pos.x = prev.y - next.y;
+		pos.normalize(halfThick);
+		prev.copyFrom(next);
+		prev.subtract(pos);
+		next.add(pos);
+
+		// draw final line
+		command.addTriangle(a.x, a.y, 0, 0, b.x, b.y, 0, 0, prev.x, prev.y, 0, 0, color, alpha);
+		command.addTriangle(b.x, b.y, 0, 0, prev.x, prev.y, 0, 0, next.x, next.y, 0, 0, color, alpha);
 	}
 
 	/**
@@ -175,7 +228,7 @@ class Draw
 	{
 		var x2 = x + width,
 			y2 = y + height;
-		polygon([x, y, x2, y, x2, y2, x, y2]);
+		polyline([x, y, x2, y, x2, y2, x, y2]);
 	}
 
 	/**
@@ -194,7 +247,7 @@ class Draw
 			x + width, y,
 			x + width, y + height,
 			x, y + height,
-			color.red, color.green, color.blue, alpha
+			color, alpha
 		);
 	}
 
@@ -220,9 +273,6 @@ class Draw
 	public static function circleFilled(x:Float, y:Float, radius:Float, segments:Int = 25)
 	{
 		var radians = (2 * Math.PI) / segments;
-		var r = color.red,
-			g = color.green,
-			b = color.blue;
 		var x1 = x,
 			y1 = y + radius;
 		begin();
@@ -231,7 +281,7 @@ class Draw
 			var theta = segment * radians;
 			var x2 = x + (Math.sin(theta) * radius);
 			var y2 = y + (Math.cos(theta) * radius);
-			command.addTriangle(x, y, 0, 0, x1, y1, 0, 0, x2, y2, 0, 0, r, g, b, alpha);
+			command.addTriangle(x, y, 0, 0, x1, y1, 0, 0, x2, y2, 0, 0, color, alpha);
 			x1 = x2; y1 = y2;
 		}
 	}
@@ -255,7 +305,7 @@ class Draw
 			points.push(x + (Math.sin(theta) * radius));
 			points.push(y + (Math.cos(theta) * radius));
 		}
-		polygon(points);
+		polyline(points);
 	}
 
 	/**
@@ -273,9 +323,9 @@ class Draw
 		var points:Array<Float> = [];
 		points.push(x1);
 		points.push(y1);
-		
+
 		var deltaT:Float = 1 / segments;
-		
+
 		for (segment in 1...segments)
 		{
 			var t:Float = segment * deltaT;
@@ -284,86 +334,15 @@ class Draw
 			points.push(x);
 			points.push(y);
 		}
-		
+
 		points.push(x3);
 		points.push(y3);
-		
+
 		polyline(points);
-	}
-	
-	/**
-	 * Draws a triangulated polyline to the screen.
-	 * @param	points		An array of floats containing the points of the polygon. The array is ordered in x, y format and must have an even number of values.
-	 */
-	public static function polyline(points:Array<Float>)
-	{
-		if (points.length < 4 || (points.length % 2) == 1)
-			throw "Invalid number of points. Expected an even number greater than 4.";
-		
-		var a = new Point(),
-			b = new Point(),
-			c = new Point(), // current
-			u = new Point(),
-			v = new Point();
-			prev = new Point();
-			next = new Point();
-			delta = new Point();
-		
-		var red = color.red,
-			green = color.green,
-			blue = color.blue;
-		
-		var numPoints:Int = Std.int(points.length / 2);
-		prev.setTo(points[0], points[1]);
-		var ht:Float = lineThickness / 2;
-		
-		begin();
-		
-		for (i in 0...numPoints)
-		{
-			var index:Int = i * 2;
-			
-			c.x = points[index];
-			c.y = points[index + 1];
-			
-			if (i < numPoints - 1)
-			{
-				next.x = points[index + 2];
-				next.y = points[index + 3];
-			}
-			else
-			{
-				next.copyFrom(c);
-			}
-			
-			delta.y = -(next.x - prev.x);
-			delta.x = next.y - prev.y;
-			delta.normalize(ht);
-			
-			if (i != 0)
-			{
-				u.x = c.x - delta.x;
-				u.y = c.y - delta.y;
-				v.x = c.x + delta.x;
-				v.y = c.y + delta.y;
-				
-				drawQuad(	
-					a.x, a.y, b.x, b.y,
-					u.x, u.y, v.x, v.y,
-					red, green, blue, alpha);
-			}
-			
-			a.x = c.x + delta.x;
-			a.y = c.y + delta.y;
-			b.x = c.x - delta.x;
-			b.y = c.y - delta.y;
-			
-			prev.copyFrom(c);
-		}
 	}
 
 	/** @private Helper function to grab a DrawCommand object from the current scene */
-	@:access(haxepunk.graphics.atlas.SceneSprite)
+	@:access(haxepunk.graphics.hardware.SceneSprite)
 	static inline function begin()
 	{
 		if (shader == null) shader = new ColorShader();
@@ -371,16 +350,10 @@ class Draw
 	}
 
 	/** @private Helper function to add a quad to the buffer */
-	static function drawQuad(x1, y1, x2, y2, x3, y3, x4, y4, r, g, b, a)
+	static function drawQuad(x1, y1, x2, y2, x3, y3, x4, y4, color, a)
 	{
-		command.addTriangle(x1, y1, 0, 0, x2, y2, 0, 0, x3, y3, 0, 0, r, g, b, a);
-		command.addTriangle(x1, y1, 0, 0, x3, y3, 0, 0, x4, y4, 0, 0, r, g, b, a);
-	}
-
-	/** @private Helper function that wraps an index around the list limits */
-	static inline function wrap<T>(list:Array<T>, index:Int):T
-	{
-		return list[index < 0 ? list.length + index : index % list.length];
+		command.addTriangle(x1, y1, 0, 0, x2, y2, 0, 0, x3, y3, 0, 0, color, a);
+		command.addTriangle(x1, y1, 0, 0, x3, y3, 0, 0, x4, y4, 0, 0, color, a);
 	}
 
 	// Drawing information.
