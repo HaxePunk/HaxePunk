@@ -66,28 +66,18 @@ class Draw
 	public static function line(x1:Float, y1:Float, x2:Float, y2:Float)
 	{
 		// create perpendicular delta vector
-		// a.set(x1, y1);
-		// b.set(x2, y2);
-		// b.subtract(a);
-		// b.perpendicular();
-		// b.normalize(lineThickness / 2);
-		var dx:Float = -(x2 - x1);
-		var dy:Float = y2 - y1;
-		var length = Math.sqrt(dx * dx + dy * dy);
-		if (length == 0) return;
-		// normalize line and set delta to half thickness
-		var ht = lineThickness / 2;
-		var tx = dx;
-		dx = (dy / length) * ht;
-		dy = (tx / length) * ht;
+		var a = new Vector2(x1, y1);
+		var b = new Vector2(x2, y2);
+		b.subtract(a);
+		b.normalize(lineThickness / 2);
+		b.perpendicular();
 
 		begin();
 		drawQuad(
-			x1 + dx, y1 + dy,
-			x1 - dx, y1 - dy,
-			x2 - dx, y2 - dy,
-			x2 + dx, y2 + dy,
-			color, alpha
+			x1 + b.x, y1 + b.y,
+			x1 - b.x, y1 - b.y,
+			x2 - b.x, y2 - b.y,
+			x2 + b.x, y2 + b.y
 		);
 	}
 
@@ -95,7 +85,7 @@ class Draw
 	 * Draws a triangulated line polyline to the screen. This must be a closed loop of concave lines
 	 * @param	points		An array of floats containing the points of the polyline. The array is ordered in x, y format and must have an even number of values.
 	 */
-	public static function polyline(points:Array<Float>, drawMiter:Bool = false)
+	public static function polyline(points:Array<Float>, miterJoint:Bool = false)
 	{
 		if (points.length < 4 || (points.length % 2) == 1)
 		{
@@ -103,31 +93,27 @@ class Draw
 		}
 
 		var halfThick = lineThickness / 2;
-		var vec = [];
 		var last = Std.int(points.length / 2);
 		var pos = new Vector2(points[0], points[1]), // current
-			a = new Vector2(pos.x, pos.y),
-			b = new Vector2(pos.x, pos.y),
 			prev = new Vector2(points[0] - points[2], points[1] - points[3]), // direction
 			next = new Vector2(prev.x, prev.y),
 			inner = new Vector2(),
 			outer = new Vector2(),
-			v1 = new Vector2();
+			nextPrev = new Vector2();
 		begin();
 
-		// a, b - contain last 2 points to render from
-		// c - current point
-		// u,v - direction vectors for last and next lines
+		a.set(pos.x, pos.y);
+		b.set(pos.x, pos.y);
 
-		// calculate first end cap
+		// calculate first cap
 		next.perpendicular();
 		next.normalize(halfThick);
 		a.add(next);
 		b.subtract(next);
 
-		var over180, angle, index;
-		var alt:Vector2;
-		var tmp = new Vector2();
+		prev.normalize(1); // unit length
+
+		var over180:Bool, angle:Float, index:Int;
 
 		for (i in 1...last-1)
 		{
@@ -140,80 +126,75 @@ class Draw
 			next.x = pos.x - points[index + 2];
 			next.y = pos.y - points[index + 3];
 
+			next.normalize(1); // unit length
+			nextPrev.copyFrom(next); // we clobber the "next" value so it needs to be saved
+
 			over180 = prev.zcross(next) > 0;
 			// calculate half angle from two vectors
-			angle = Math.acos(prev.dot(next) / (prev.length * next.length)) / 2;
+			// normally this would require knowing the vector lengths but because
+			// they both should be unit vectors we can ignore dividing by length
+			angle = Math.acos(prev.dot(next)) / 2;
 
 			inner.copyFrom(prev);
-			inner.normalize(1);
-			outer.copyFrom(next);
-			outer.normalize(1);
-			inner.add(outer);
+			inner.add(next);
 			inner.perpendicular();
 			if (over180)
 			{
 				inner.inverse();
 			}
 			inner.normalize(halfThick / Math.cos(angle));
-			outer.copyFrom(inner); // save for miter joint
+			if (miterJoint)
+			{
+				outer.copyFrom(pos);
+				outer.subtract(inner);
+			}
 			inner.add(pos);
 
 			// calculate joint points
 			prev.perpendicular();
 			prev.normalize(halfThick);
 
-			v1.copyFrom(next);
-			v1.perpendicular();
-			v1.normalize(halfThick);
+			next.perpendicular();
+			next.normalize(halfThick);
 
 			if (!over180)
 			{
 				prev.inverse();
-				v1.inverse();
+				next.inverse();
 			}
 
 			prev.add(pos);
-			v1.add(pos);
+			next.add(pos);
 
 			// draw line connection
-			alt = over180 ? prev : inner;
-			command.addTriangle(a.x, a.y, 0, 0, b.x, b.y, 0, 0, alt.x, alt.y, 0, 0, color, alpha);
-			command.addTriangle(b.x, b.y, 0, 0, prev.x, prev.y, 0, 0, inner.x, inner.y, 0, 0, color, alpha);
+			drawTriangle(a, b, over180 ? prev : inner);
+			drawTriangle(b, prev, inner);
 			// draw bevel joint
-			command.addTriangle(v1.x, v1.y, 0, 0, prev.x, prev.y, 0, 0, inner.x, inner.y, 0, 0, color, alpha);
-			if (drawMiter)
+			drawTriangle(next, prev, inner);
+			if (miterJoint)
 			{
-				command.addTriangle(v1.x, v1.y, 0, 0, prev.x, prev.y, 0, 0, pos.x - outer.x, pos.y - outer.y, 0, 0, color, alpha);
+				drawTriangle(next, prev, outer);
 			}
 
-			if (over180)
-			{
-				a.copyFrom(v1);
-				b.copyFrom(inner);
-			}
-			else
-			{
-				a.copyFrom(inner);
-				b.copyFrom(v1);
-			}
+			a.copyFrom(over180 ? next : inner);
+			b.copyFrom(over180 ? inner : next);
 
-			prev.copyFrom(next);
+			prev.copyFrom(nextPrev);
 		}
 
 		// end cap
-		prev.copyFrom(pos);
 		next.x = points[points.length - 2];
 		next.y = points[points.length - 1];
-		pos.y = -(prev.x - next.x);
-		pos.x = prev.y - next.y;
+		pos.subtract(next);
+		pos.perpendicular();
 		pos.normalize(halfThick);
 		prev.copyFrom(next);
-		prev.subtract(pos);
-		next.add(pos);
+		prev.add(pos);
+		next.subtract(pos);
 
 		// draw final line
-		command.addTriangle(a.x, a.y, 0, 0, b.x, b.y, 0, 0, prev.x, prev.y, 0, 0, color, alpha);
-		command.addTriangle(b.x, b.y, 0, 0, prev.x, prev.y, 0, 0, next.x, next.y, 0, 0, color, alpha);
+		drawTriangle(a, b, prev);
+		drawTriangle(b, prev, next);
 	}
 
 	/**
@@ -228,7 +209,7 @@ class Draw
 	{
 		var x2 = x + width,
 			y2 = y + height;
-		polyline([x, y, x2, y, x2, y2, x, y2]);
+		polyline([x, y + height / 2, x, y, x2, y, x2, y2, x, y2, x, y + height / 2], true);
 	}
 
 	/**
@@ -246,8 +227,7 @@ class Draw
 			x, y,
 			x + width, y,
 			x + width, y + height,
-			x, y + height,
-			color, alpha
+			x, y + height
 		);
 	}
 
@@ -299,13 +279,13 @@ class Draw
 	{
 		var radians = angle / segments;
 		var points = [];
-		for (segment in 0...segments)
+		for (segment in 0...segments+1)
 		{
 			var theta = segment * radians + start;
 			points.push(x + (Math.sin(theta) * radius));
 			points.push(y + (Math.cos(theta) * radius));
 		}
-		polyline(points);
+		polyline(points, true);
 	}
 
 	/**
@@ -349,13 +329,21 @@ class Draw
 		command = HXP.scene.sprite.batch.getDrawCommand(null, shader, false, blend, null);
 	}
 
-	/** @private Helper function to add a quad to the buffer */
-	static function drawQuad(x1, y1, x2, y2, x3, y3, x4, y4, color, a)
+	static inline function drawTriangle(v1:Vector2, v2:Vector2, v3:Vector2):Void
 	{
-		command.addTriangle(x1, y1, 0, 0, x2, y2, 0, 0, x3, y3, 0, 0, color, a);
-		command.addTriangle(x1, y1, 0, 0, x3, y3, 0, 0, x4, y4, 0, 0, color, a);
+		command.addTriangle(v1.x, v1.y, 0, 0, v2.x, v2.y, 0, 0, v3.x, v3.y, 0, 0, color, alpha);
+	}
+
+	/** @private Helper function to add a quad to the buffer */
+	static inline function drawQuad(x1, y1, x2, y2, x3, y3, x4, y4)
+	{
+		command.addTriangle(x1, y1, 0, 0, x2, y2, 0, 0, x3, y3, 0, 0, color, alpha);
+		command.addTriangle(x1, y1, 0, 0, x3, y3, 0, 0, x4, y4, 0, 0, color, alpha);
 	}
 
 	// Drawing information.
 	static var command:DrawCommand;
+
+	static var a = new Vector2();
+	static var b = new Vector2();
 }
