@@ -5,13 +5,13 @@ class Vector2
 	public var x:Float;
 	public var y:Float;
 
-	public function new(x:Float = 0, y:Float = 0)
+	public inline function new(x:Float = 0, y:Float = 0)
 	{
-		set(x, y);
+		this.x = x;
+		this.y = y;
 	}
 
-	public var length(get, never):Float;
-	function get_length():Float
+	public inline function length():Float
 	{
 		return Math.sqrt(x * x + y * y);
 	}
@@ -22,7 +22,7 @@ class Vector2
 		this.y = y;
 	}
 
-	public function perpendicular()
+	public inline function perpendicular()
 	{
 		var xx = x;
 		x = -y;
@@ -41,6 +41,12 @@ class Vector2
 		y = other.y;
 	}
 
+	public inline function scale(scalar:Float):Void
+	{
+		x *= scalar;
+		y *= scalar;
+	}
+
 	public inline function add(other:Vector2):Void
 	{
 		x += other.x;
@@ -53,20 +59,21 @@ class Vector2
 		y -= other.y;
 	}
 
-	public function distance(other:Vector2):Float
+	public inline function distance(other:Vector2):Float
 	{
 		var dx = this.x - other.x;
 		var dy = this.y - other.y;
 		return Math.sqrt(dx * dx + dy * dy);
 	}
 
-	public function normalize(size:Float):Void
+	public inline function normalize(size:Float):Void
 	{
-		if (x == 0 && y == 0) return;
-
-		var normal = size / this.length;
-		x *= normal;
-		y *= normal;
+		if (!(x == 0 && y == 0))
+		{
+			var normal = size / length();
+			x *= normal;
+			y *= normal;
+		}
 	}
 
 	/**

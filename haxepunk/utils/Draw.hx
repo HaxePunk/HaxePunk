@@ -67,8 +67,7 @@ class Draw
 	{
 		// create perpendicular delta vector
 		var a = new Vector2(x1, y1);
-		var b = new Vector2(x2, y2);
-		b.subtract(a);
+		var b = new Vector2(x2 - a.x, y2 - a.y);
 		b.normalize(lineThickness / 2);
 		b.perpendicular();
 
@@ -94,11 +93,13 @@ class Draw
 
 		var halfThick = lineThickness / 2;
 		var last = Std.int(points.length / 2);
-		var pos = new Vector2(points[0], points[1]), // current
-			prev = new Vector2(points[0] - points[2], points[1] - points[3]), // direction
-			next = new Vector2(prev.x, prev.y),
-			inner = new Vector2(),
-			outer = new Vector2(),
+		var a        = new Vector2(),
+			b        = new Vector2(),
+			pos      = new Vector2(points[0], points[1]), // current
+			prev     = new Vector2(pos.x - points[2], pos.y - points[3]), // direction
+			next     = new Vector2(prev.x, prev.y),
+			inner    = new Vector2(),
+			outer    = new Vector2(),
 			nextPrev = new Vector2();
 		begin();
 
@@ -167,7 +168,14 @@ class Draw
 			next.add(pos);
 
 			// draw line connection
-			drawTriangle(a, b, over180 ? prev : inner);
+			if (over180)
+			{
+				drawTriangle(a, b, prev);
+			}
+			else
+			{
+				drawTriangle(a, b, inner);
+			}
 			drawTriangle(b, prev, inner);
 			// draw bevel joint
 			drawTriangle(next, prev, inner);
@@ -176,8 +184,16 @@ class Draw
 				drawTriangle(next, prev, outer);
 			}
 
-			a.copyFrom(over180 ? next : inner);
-			b.copyFrom(over180 ? inner : next);
+			if (over180)
+			{
+				a.copyFrom(next);
+				b.copyFrom(inner);
+			}
+			else
+			{
+				a.copyFrom(inner);
+				b.copyFrom(next);
+			}
 
 			prev.copyFrom(nextPrev);
 		}
@@ -207,9 +223,13 @@ class Draw
 	 */
 	public static function rect(x:Float, y:Float, width:Float, height:Float)
 	{
+		var ht = lineThickness / 2;
 		var x2 = x + width,
 			y2 = y + height;
-		polyline([x, y + height / 2, x, y, x2, y, x2, y2, x, y2, x, y + height / 2], true);
+		line(x - ht, y , x2 + ht, y ); // top
+		line(x - ht, y2, x2 + ht, y2); // bottom
+		line(x , y + ht, x , y2 - ht); // left
+		line(x2, y + ht, x2, y2 - ht); // right
 	}
 
 	/**
@@ -240,7 +260,34 @@ class Draw
 	 */
 	public static inline function circle(x:Float, y:Float, radius:Float, segments:Int = 25)
 	{
-		arc(x, y, radius, 0, 2 * Math.PI, segments);
+		var radians = 2 * Math.PI / segments;
+		var halfThick = lineThickness / 2;
+		var innerRadius = radius - halfThick;
+		var outerRadius = radius + halfThick;
+		var inner = new Vector2(),
+			outer = new Vector2(),
+			lastOuter = new Vector2(),
+			lastInner = new Vector2();
+
+		begin();
+
+		for (segment in 0...segments+1)
+		{
+			var theta = segment * radians;
+			var sin = Math.sin(theta);
+			var cos = Math.cos(theta);
+			inner.set(x + sin * innerRadius, y + cos * innerRadius);
+			outer.set(x + sin * outerRadius, y + cos * outerRadius);
+
+			if (segment != 0)
+			{
+				drawTriangle(lastInner, lastOuter, outer);
+				drawTriangle(lastInner, outer, inner);
+			}
+
+			lastOuter.copyFrom(outer);
+			lastInner.copyFrom(inner);
+		}
 	}
 
 	/**
@@ -343,7 +390,4 @@ class Draw
 
 	// Drawing information.
 	static var command:DrawCommand;
-
-	static var a = new Vector2();
-	static var b = new Vector2();
 }
