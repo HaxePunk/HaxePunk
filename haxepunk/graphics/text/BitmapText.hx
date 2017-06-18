@@ -48,7 +48,7 @@ enum TextOpcode
 	SetSize(size:Int);
 	TextBlock(text:String);
 	NewLine(width:Float, height:Float, align:AlignType);
-	Image(image:Image);
+	Image(image:Image, padding:Int);
 	Align(alignType:AlignType);
 	MoveText(f:GlyphMoveFunction);
 	PopColor;
@@ -132,10 +132,10 @@ class BitmapText extends Graphic
 	 *  			angle and scale can be modified.
 	 * @since 4.0.0
 	 */
-	public static function defineImageTag(tag:String, image:Image)
+	public static function defineImageTag(tag:String, image:Image, padding:Int=0)
 	{
 		if (formatTags.exists(tag)) throw 'Duplicate format tag: <$tag> already exists';
-		formatTags[tag] = [Image(image)];
+		formatTags[tag] = [Image(image, padding)];
 	}
 
 	public static function defineMoveTag(tag:String, func:GlyphMoveFunction)
@@ -485,10 +485,10 @@ class BitmapText extends Graphic
 					{
 						switch (tag)
 						{
-							case Image(image):
+							case Image(image, padding):
 								var imageWidth = ((image.width * image.scale * image.scaleX * this.scale * this.scaleX) + charSpacing) * currentScale;
 								_word.push(tag);
-								wordLength += imageWidth;
+								wordLength += imageWidth + padding * 2;
 								wordHeight = Math.max(wordHeight, image.height * currentScale * image.scale * image.scaleY * this.scale * this.scaleY);
 								if (cursorX > textWidth) textWidth = Std.int(cursorX);
 								++charCount;
@@ -644,7 +644,7 @@ class BitmapText extends Graphic
 					});
 					thisLineHeight = lineHeight;
 					if (cursorY != 0) ++charCount;
-				case Image(image):
+				case Image(image, padding):
 					// draw the image
 					var originalX = image.x,
 						originalY = image.y,
@@ -652,7 +652,7 @@ class BitmapText extends Graphic
 						originalScaleY = image.scaleY;
 					image.originX = image.originY = 0;
 					var point = getRenderPoint();
-					image.x = _point.x + point.x + lineOffsetX + originalX;
+					image.x = _point.x + point.x + lineOffsetX + originalX + padding;
 					image.y = _point.y + point.y + thisLineHeight + originalY - image.height * image.scale * image.scaleY * currentScale * this.scale * this.scaleY;
 					image.color = currentColor;
 					image.alpha = currentAlpha;
@@ -664,7 +664,7 @@ class BitmapText extends Graphic
 					image.scaleX = originalScaleX;
 					image.scaleY = originalScaleY;
 					// advance cursor position
-					cursorX += ((image.width * image.scale * image.scaleX * this.scale * this.scaleX) + charSpacing) * currentScale;
+					cursorX += ((image.width * image.scale * image.scaleX * this.scale * this.scaleX) + charSpacing + padding * 2) * currentScale;
 					++charCount;
 				case MoveText(func):
 					_moveStack.push(func);
