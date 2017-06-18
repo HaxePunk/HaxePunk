@@ -20,32 +20,49 @@ import haxepunk.utils.Color;
  */
 class Draw
 {
+	@:isVar static var instance(get, null):DrawContext;
+	static inline function get_instance()
+	{
+		if (instance == null) instance = new DrawContext();
+		return instance;
+	}
+
 	/**
 	 * The blending mode used by Draw functions. This will not
 	 * apply to Draw.line(), but will apply to Draw.linePlus().
 	 */
-	public static var blend:BlendMode;
+	public static var blend(get, set):BlendMode;
+	static inline function get_blend() return instance.blend;
+	static inline function set_blend(v:BlendMode) return instance.blend = v;
 
 	/**
 	 * The shader used by Draw functions. This will default to
 	 * a color shader if not set.
 	 */
-	public static var shader:Shader;
+	public static var shader(get, set):Shader;
+	static inline function get_shader() return instance.shader;
+	static inline function set_shader(v:Shader) return instance.shader = v;
 
 	/**
 	 * The red, green, and blue values in a single integer value.
 	 */
-	public static var color:Color = 0xFFFFFF;
+	public static var color(get, set):Color;
+	static inline function get_color() return instance.color;
+	static inline function set_color(v:Color) return instance.color = v;
 
 	/**
 	 * The alpha value to draw. Ranges between 0-1 where 0 is completely transparent and 1 is opaque.
 	 */
-	public static var alpha:Float = 1;
+	public static var alpha(get, set):Float;
+	static inline function get_alpha() return instance.alpha;
+	static inline function set_alpha(v:Float) return instance.alpha = v;
 
 	/**
 	 * The line thickness to use when drawing lines. Defaults to a single pixel wide.
 	 */
-	public static var lineThickness:Float = 1;
+	public static var lineThickness(get, set):Float;
+	static inline function get_lineThickness() return instance.lineThickness;
+	static inline function set_lineThickness(v:Float) return instance.lineThickness = v;
 
 	/**
 	 * Convenience function to set both color and alpha at the same time.
@@ -65,19 +82,7 @@ class Draw
 	 */
 	public static function line(x1:Float, y1:Float, x2:Float, y2:Float)
 	{
-		// create perpendicular delta vector
-		var a = new Vector2(x1, y1);
-		var b = new Vector2(x2 - a.x, y2 - a.y);
-		b.normalize(lineThickness / 2);
-		b.perpendicular();
-
-		begin();
-		drawQuad(
-			x1 + b.x, y1 + b.y,
-			x1 - b.x, y1 - b.y,
-			x2 - b.x, y2 - b.y,
-			x2 + b.x, y2 + b.y
-		);
+		instance.line(x1, y1, x2, y2);
 	}
 
 	/**
@@ -86,131 +91,7 @@ class Draw
 	 */
 	public static function polyline(points:Array<Float>, miterJoint:Bool = false)
 	{
-		if (points.length < 4 || (points.length % 2) == 1)
-		{
-			throw "Invalid number of values. Expected an even number greater than 4.";
-		}
-
-		var halfThick = lineThickness / 2;
-		var last = Std.int(points.length / 2);
-		var a        = new Vector2(),
-			b        = new Vector2(),
-			pos      = new Vector2(points[0], points[1]), // current
-			prev     = new Vector2(pos.x - points[2], pos.y - points[3]), // direction
-			next     = new Vector2(prev.x, prev.y),
-			inner    = new Vector2(),
-			outer    = new Vector2(),
-			nextPrev = new Vector2();
-		begin();
-
-		a.set(pos.x, pos.y);
-		b.set(pos.x, pos.y);
-
-		// calculate first cap
-		next.perpendicular();
-		next.normalize(halfThick);
-		a.add(next);
-		b.subtract(next);
-
-		prev.normalize(1); // unit length
-
-		var over180:Bool, angle:Float, index:Int;
-
-		for (i in 1...last-1)
-		{
-			index = i * 2;
-
-			pos.x = points[index];
-			pos.y = points[index+1];
-
-			// vector v (difference between current and next)
-			next.x = pos.x - points[index + 2];
-			next.y = pos.y - points[index + 3];
-
-			next.normalize(1); // unit length
-			nextPrev.copyFrom(next); // we clobber the "next" value so it needs to be saved
-
-			over180 = prev.zcross(next) > 0;
-			// calculate half angle from two vectors
-			// normally this would require knowing the vector lengths but because
-			// they both should be unit vectors we can ignore dividing by length
-			angle = Math.acos(prev.dot(next)) / 2;
-
-			inner.copyFrom(prev);
-			inner.add(next);
-			inner.perpendicular();
-			if (over180)
-			{
-				inner.inverse();
-			}
-			inner.normalize(halfThick / Math.cos(angle));
-			if (miterJoint)
-			{
-				outer.copyFrom(pos);
-				outer.subtract(inner);
-			}
-			inner.add(pos);
-
-			// calculate joint points
-			prev.perpendicular();
-			prev.normalize(halfThick);
-
-			next.perpendicular();
-			next.normalize(halfThick);
-
-			if (!over180)
-			{
-				prev.inverse();
-				next.inverse();
-			}
-
-			prev.add(pos);
-			next.add(pos);
-
-			// draw line connection
-			if (over180)
-			{
-				drawTriangle(a, b, prev);
-			}
-			else
-			{
-				drawTriangle(a, b, inner);
-			}
-			drawTriangle(b, prev, inner);
-			// draw bevel joint
-			drawTriangle(next, prev, inner);
-			if (miterJoint)
-			{
-				drawTriangle(next, prev, outer);
-			}
-
-			if (over180)
-			{
-				a.copyFrom(next);
-				b.copyFrom(inner);
-			}
-			else
-			{
-				a.copyFrom(inner);
-				b.copyFrom(next);
-			}
-
-			prev.copyFrom(nextPrev);
-		}
-
-		// end cap
-		next.x = points[points.length - 2];
-		next.y = points[points.length - 1];
-		pos.subtract(next);
-		pos.perpendicular();
-		pos.normalize(halfThick);
-		prev.copyFrom(next);
-		prev.add(pos);
-		next.subtract(pos);
-
-		// draw final line
-		drawTriangle(a, b, prev);
-		drawTriangle(b, prev, next);
+		instance.polyline(points, miterJoint);
 	}
 
 	/**
@@ -223,13 +104,7 @@ class Draw
 	 */
 	public static function rect(x:Float, y:Float, width:Float, height:Float)
 	{
-		var ht = lineThickness / 2;
-		var x2 = x + width,
-			y2 = y + height;
-		line(x - ht, y , x2 + ht, y ); // top
-		line(x - ht, y2, x2 + ht, y2); // bottom
-		line(x , y + ht, x , y2 - ht); // left
-		line(x2, y + ht, x2, y2 - ht); // right
+		instance.rect(x, y, width, height);
 	}
 
 	/**
@@ -242,13 +117,7 @@ class Draw
 	 */
 	public static function rectFilled(x:Float, y:Float, width:Float, height:Float)
 	{
-		begin();
-		drawQuad(
-			x, y,
-			x + width, y,
-			x + width, y + height,
-			x, y + height
-		);
+		instance.rectFilled(x, y, width, height);
 	}
 
 	/**
@@ -260,34 +129,7 @@ class Draw
 	 */
 	public static inline function circle(x:Float, y:Float, radius:Float, segments:Int = 25)
 	{
-		var radians = 2 * Math.PI / segments;
-		var halfThick = lineThickness / 2;
-		var innerRadius = radius - halfThick;
-		var outerRadius = radius + halfThick;
-		var inner = new Vector2(),
-			outer = new Vector2(),
-			lastOuter = new Vector2(),
-			lastInner = new Vector2();
-
-		begin();
-
-		for (segment in 0...segments+1)
-		{
-			var theta = segment * radians;
-			var sin = Math.sin(theta);
-			var cos = Math.cos(theta);
-			inner.set(x + sin * innerRadius, y + cos * innerRadius);
-			outer.set(x + sin * outerRadius, y + cos * outerRadius);
-
-			if (segment != 0)
-			{
-				drawTriangle(lastInner, lastOuter, outer);
-				drawTriangle(lastInner, outer, inner);
-			}
-
-			lastOuter.copyFrom(outer);
-			lastInner.copyFrom(inner);
-		}
+		instance.circle(x, y, radius, segments);
 	}
 
 	/**
@@ -299,18 +141,7 @@ class Draw
 	 */
 	public static function circleFilled(x:Float, y:Float, radius:Float, segments:Int = 25)
 	{
-		var radians = (2 * Math.PI) / segments;
-		var x1 = x,
-			y1 = y + radius;
-		begin();
-		for (segment in 1...segments+1)
-		{
-			var theta = segment * radians;
-			var x2 = x + (Math.sin(theta) * radius);
-			var y2 = y + (Math.cos(theta) * radius);
-			command.addTriangle(x, y, 0, 0, x1, y1, 0, 0, x2, y2, 0, 0, color, alpha);
-			x1 = x2; y1 = y2;
-		}
+		instance.circleFilled(x, y, radius, segments);
 	}
 
 	/**
@@ -324,15 +155,7 @@ class Draw
 	 */
 	public static function arc(x:Float, y:Float, radius:Float, start:Float, angle:Float, segments:Int = 25)
 	{
-		var radians = angle / segments;
-		var points = [];
-		for (segment in 0...segments+1)
-		{
-			var theta = segment * radians + start;
-			points.push(x + (Math.sin(theta) * radius));
-			points.push(y + (Math.cos(theta) * radius));
-		}
-		polyline(points, true);
+		instance.arc(x, y, radius, start, angle, segments);
 	}
 
 	/**
@@ -347,47 +170,6 @@ class Draw
 	 */
 	public static function curve(x1:Int, y1:Int, x2:Int, y2:Int, x3:Int, y3:Int, segments:Int = 25)
 	{
-		var points:Array<Float> = [];
-		points.push(x1);
-		points.push(y1);
-
-		var deltaT:Float = 1 / segments;
-
-		for (segment in 1...segments)
-		{
-			var t:Float = segment * deltaT;
-			var x:Float = (1 - t) * (1 - t) * x1 + 2 * t * (1 - t) * x2 + t * t * x3;
-			var y:Float = (1 - t) * (1 - t) * y1 + 2 * t * (1 - t) * y2 + t * t * y3;
-			points.push(x);
-			points.push(y);
-		}
-
-		points.push(x3);
-		points.push(y3);
-
-		polyline(points);
+		instance.curve(x1, y1, x2, y2, x3, y3, segments);
 	}
-
-	/** @private Helper function to grab a DrawCommand object from the current scene */
-	@:access(haxepunk.graphics.hardware.SceneSprite)
-	static inline function begin()
-	{
-		if (shader == null) shader = new ColorShader();
-		command = HXP.scene.sprite.batch.getDrawCommand(null, shader, false, blend, null);
-	}
-
-	static inline function drawTriangle(v1:Vector2, v2:Vector2, v3:Vector2):Void
-	{
-		command.addTriangle(v1.x, v1.y, 0, 0, v2.x, v2.y, 0, 0, v3.x, v3.y, 0, 0, color, alpha);
-	}
-
-	/** @private Helper function to add a quad to the buffer */
-	static inline function drawQuad(x1, y1, x2, y2, x3, y3, x4, y4)
-	{
-		command.addTriangle(x1, y1, 0, 0, x2, y2, 0, 0, x3, y3, 0, 0, color, alpha);
-		command.addTriangle(x1, y1, 0, 0, x3, y3, 0, 0, x4, y4, 0, 0, color, alpha);
-	}
-
-	// Drawing information.
-	static var command:DrawCommand;
 }
