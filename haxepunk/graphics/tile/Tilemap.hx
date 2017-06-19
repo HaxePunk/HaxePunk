@@ -70,7 +70,7 @@ class Tilemap extends Graphic
 		this.tileSpacingHeight = tileSpacingHeight;
 
 		if (_columns == 0 || _rows == 0)
-			throw "Cannot create a bitmapdata of width/height = 0";
+			throw "Cannot create a texture of width/height = 0";
 
 		_maxWidth -= _maxWidth % tileWidth;
 		_maxHeight -= _maxHeight % tileHeight;

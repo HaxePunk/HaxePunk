@@ -1,7 +1,6 @@
 package haxepunk.graphics.hardware;
 
 import flash.display.BlendMode;
-import flash.display.BitmapData;
 import flash.geom.Rectangle;
 import haxepunk.graphics.shader.Shader;
 import haxepunk.utils.Color;
@@ -104,7 +103,7 @@ private class RenderData
 @:allow(haxepunk.graphics.hardware.DrawCommandBatch)
 class DrawCommand
 {
-	public static function create(texture:BitmapData, shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
+	public static function create(texture:Texture, shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
 	{
 		var command:DrawCommand;
 		if (_pool != null)
@@ -143,7 +142,7 @@ class DrawCommand
 	static var _dataPool:RenderData;
 
 	public var shader:Shader;
-	public var texture:BitmapData;
+	public var texture:Texture;
 	public var smooth:Bool = false;
 	public var blend:BlendMode = BlendMode.ALPHA;
 	public var clipRect:Rectangle = null;
@@ -154,19 +153,22 @@ class DrawCommand
 
 	function new() {}
 
-	public inline function match(texture:BitmapData, shader:Shader, smooth:Bool, blend:BlendMode, clipRect:Rectangle):Bool
+	public inline function match(texture:Texture, shader:Shader, smooth:Bool, blend:BlendMode, clipRect:Rectangle):Bool
 	{
-		return this.smooth == smooth &&
-			this.blend == blend &&
-			this.texture == texture &&
-			this.shader == shader &&
-			((this.clipRect == null && clipRect == null) ||
-				(this.clipRect != null && clipRect != null &&
-				Std.int(this.clipRect.x) == Std.int(clipRect.x) &&
-				Std.int(this.clipRect.y) == Std.int(clipRect.y) &&
-				Std.int(this.clipRect.width) == Std.int(clipRect.width) &&
-				Std.int(this.clipRect.height) == Std.int(clipRect.height)
-			));
+		if (this.smooth != smooth) return false;
+		else if (this.texture.id != texture.id) return false;
+		else if (this.shader.id != shader.id) return false;
+		else if (this.blend != blend) return false;
+		else {
+			var aRectIsNull = this.clipRect == null;
+			var bRectIsNull = clipRect == null;
+			if (aRectIsNull != bRectIsNull) return false; // one rect is null the other is not
+			if (aRectIsNull) return true; // both are null, return true
+			else return Std.int(this.clipRect.x) == Std.int(clipRect.x) &&
+					Std.int(this.clipRect.y) == Std.int(clipRect.y) &&
+					Std.int(this.clipRect.width) == Std.int(clipRect.width) &&
+					Std.int(this.clipRect.height) == Std.int(clipRect.height);
+		}
 	}
 
 	public inline function addTriangle(tx1:Float, ty1:Float, uvx1:Float, uvy1:Float, tx2:Float, ty2:Float, uvx2:Float, uvy2:Float, tx3:Float, ty3:Float, uvx3:Float, uvy3:Float, color:Color, alpha:Float):Void

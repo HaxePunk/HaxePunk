@@ -2,7 +2,6 @@ package haxepunk.graphics.hardware;
 
 import haxe.PosInfos;
 import flash.geom.Rectangle;
-import flash.display.BitmapData;
 import flash.display.BlendMode;
 import flash.geom.Point;
 import flash.gl.GL;
@@ -133,7 +132,7 @@ class HardwareRenderer
 
 				#if (gl_debug || debug) checkForGLErrors(); #end
 
-				var texture:BitmapData = drawCommand.texture;
+				var texture:Texture = drawCommand.texture;
 				if (texture != null) GLUtils.bindTexture(texture, drawCommand.smooth);
 
 				#if (gl_debug || debug) checkForGLErrors(); #end

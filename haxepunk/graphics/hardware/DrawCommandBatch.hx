@@ -1,6 +1,5 @@
 package haxepunk.graphics.hardware;
 
-import flash.display.BitmapData;
 import flash.display.BlendMode;
 import flash.geom.Matrix;
 import flash.geom.Rectangle;
@@ -38,7 +37,7 @@ class DrawCommandBatch
 		head = last = null;
 	}
 
-	public function getDrawCommand(texture:BitmapData, shader:Shader, smooth:Bool, blend:BlendMode, clipRect:Rectangle, x1:Float=0, y1:Float=0, x2:Float=0, y2:Float=0, x3:Float=0, y3:Float=0)
+	public function getDrawCommand(texture:Texture, shader:Shader, smooth:Bool, blend:BlendMode, clipRect:Rectangle, x1:Float=0, y1:Float=0, x2:Float=0, y2:Float=0, x3:Float=0, y3:Float=0)
 	{
 		if (blend == null) blend = BlendMode.ALPHA;
 
@@ -123,7 +122,7 @@ class DrawCommandBatch
 	}
 
 	public inline function addRect(
-		texture:BitmapData, shader:Shader,
+		texture:Texture, shader:Shader,
 		smooth:Bool, blend:BlendMode, clipRect:Rectangle,
 		rx:Float, ry:Float, rw:Float, rh:Float,
 		a:Float, b:Float, c:Float, d:Float,
@@ -170,7 +169,7 @@ class DrawCommandBatch
 		);
 	}
 
-	public inline function addTriangle(texture:BitmapData, shader:Shader,
+	public inline function addTriangle(texture:Texture, shader:Shader,
 		smooth:Bool, blend:BlendMode, clipRect:Rectangle,
 		tx1:Float, ty1:Float, uvx1:Float, uvy1:Float,
 		tx2:Float, ty2:Float, uvx2:Float, uvy2:Float,

@@ -1,8 +1,8 @@
 package haxepunk.graphics.hardware;
 
-import flash.display.BitmapData;
 import flash.gl.GL;
 import haxepunk.HXP;
+import haxepunk.graphics.hardware.Texture;
 
 @:dox(hide)
 class GLUtils
@@ -11,16 +11,17 @@ class GLUtils
 	@:access(openfl.display.Stage)
 	@:access(lime._internal.renderer.opengl.GLRenderer)
 	#end
-	public static function bindTexture(texture:BitmapData, smooth:Bool, index:Int=GL.TEXTURE0)
+	public static function bindTexture(texture:Texture, smooth:Bool, index:Int=GL.TEXTURE0)
 	{
 		GL.activeTexture(index);
 		#if lime
 		var renderer = cast HXP.stage.__renderer;
 		var renderSession = renderer.renderSession;
-		GL.bindTexture(GL.TEXTURE_2D, texture.getTexture(renderSession.gl));
+		GL.bindTexture(GL.TEXTURE_2D, texture.bitmap.getTexture(renderSession.gl));
 		#elseif nme
-		if (!texture.premultipliedAlpha) texture.premultipliedAlpha = true;
-		GL.bindBitmapDataTexture(texture);
+		var bitmap = texture.bitmap;
+		if (!bitmap.premultipliedAlpha) bitmap.premultipliedAlpha = true;
+		GL.bindBitmapDataTexture(bitmap);
 		#end
 		if (smooth)
 		{

@@ -1,6 +1,5 @@
 package haxepunk;
 
-import flash.display.BitmapData;
 import flash.geom.Point;
 import haxe.ds.Either.Left;
 import haxe.ds.Either.Right;
@@ -122,11 +121,6 @@ class Entity extends Tweener
 	 * Y origin of the Entity's hitbox.
 	 */
 	public var originY:Int = 0;
-
-	/**
-	 * The BitmapData target to draw the Entity to. Leave as null to render to the current screen buffer (default).
-	 */
-	public var renderTarget:BitmapData;
 
 	/**
 	 * Constructor. Can be used to place the Entity and assign a graphic and mask.

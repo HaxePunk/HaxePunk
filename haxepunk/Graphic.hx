@@ -1,7 +1,6 @@
 package haxepunk;
 
 import haxe.ds.Either;
-import flash.display.BitmapData;
 import flash.display.BlendMode;
 import flash.geom.Point;
 import flash.geom.Rectangle;
@@ -10,12 +9,13 @@ import haxepunk.graphics.atlas.TileAtlas;
 import haxepunk.graphics.atlas.AtlasRegion;
 import haxepunk.graphics.atlas.AtlasResolutions;
 import haxepunk.graphics.atlas.IAtlasRegion;
+import haxepunk.graphics.hardware.Texture;
 import haxepunk.graphics.shader.Shader;
 import haxepunk.graphics.shader.TextureShader;
 import haxepunk.utils.Color;
 
 /**
- * Abstract representing either a `String`, a `TileAtlas` or a `BitmapData`.
+ * Abstract representing either a `String`, a `TileAtlas` or a `Texture`.
  *
  * Conversion is automatic, no need to use this.
  */
@@ -29,14 +29,14 @@ abstract TileType(TileAtlas) from TileAtlas to TileAtlas
 	{
 		return atlas;
 	}
-	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData):TileType
+	@:dox(hide) @:from public static inline function fromTexture(bd:Texture):TileType
 	{
 		return new TileAtlas(bd);
 	}
 }
 
 /**
- * Abstract representing either a `String`, a `TileAtlas`, a `BitmapData` or a `AtlasRegion`.
+ * Abstract representing either a `String`, a `TileAtlas`, a `Texture` or a `AtlasRegion`.
  *
  * Conversion is automatic, no need to use this.
  */
@@ -56,7 +56,7 @@ abstract ImageType(IAtlasRegion) from IAtlasRegion to IAtlasRegion
 	{
 		return region;
 	}
-	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData):ImageType
+	@:dox(hide) @:from public static inline function fromTexture(bd:Texture):ImageType
 	{
 		return Atlas.loadImageAsRegion(bd);
 	}
@@ -81,8 +81,8 @@ abstract ImageOrTileType(Either<ImageType, TileType>) from Either<ImageType, Til
 	@:from public static inline function fromString(tileset:String):ImageOrTileType
 		return Right(TileType.fromString(tileset));
 
-	@:from public static inline function fromBitmapData(bd:BitmapData):ImageOrTileType
-		return Right(TileType.fromBitmapData(bd));
+	@:from public static inline function fromTexture(bd:Texture):ImageOrTileType
+		return Right(TileType.fromTexture(bd));
 
 	@:from public static inline function fromTileAtlas(atlas:TileAtlas):ImageOrTileType
 		return Right(TileType.fromTileAtlas(atlas));

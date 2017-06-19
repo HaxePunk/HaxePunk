@@ -52,6 +52,9 @@ class Shader
 	var vertexSource:String;
 	var fragmentSource:String;
 
+	public var id(default, null):Int;
+	static var idSeq:Int = 0;
+
 	public var position:Attribute;
 	public var texCoord:Attribute;
 	public var color:Attribute;
@@ -69,6 +72,8 @@ class Shader
 		this.vertexSource = vertexSource;
 		this.fragmentSource = fragmentSource;
 		build();
+
+		id = idSeq++;
 	}
 
 	public function build()
