@@ -153,13 +153,19 @@ class DrawCommand
 
 	function new() {}
 
+	/**
+	 * Compares values to this draw command to see if they all match. This is used by the batcher to reuse the previous draw command.
+	 */
 	public inline function match(texture:Texture, shader:Shader, smooth:Bool, blend:BlendMode, clipRect:Rectangle):Bool
 	{
+		// These conditions are checked as individual if statements
+		// to reduce the number of temporary variables created in hxcpp.
 		if (this.smooth != smooth) return false;
 		else if (this.texture.id != texture.id) return false;
 		else if (this.shader.id != shader.id) return false;
 		else if (this.blend != blend) return false;
 		else {
+			// It is faster to do a null check once and compare the results.
 			var aRectIsNull = this.clipRect == null;
 			var bRectIsNull = clipRect == null;
 			if (aRectIsNull != bRectIsNull) return false; // one rect is null the other is not
@@ -171,6 +177,15 @@ class DrawCommand
 		}
 	}
 
+	/**
+	 * Add a triangle vertices to render.
+	 * @param tx[1-3]  Vrtex x coord
+	 * @param ty[1-3]  Vertex y coord
+	 * @param uvx[1-3] Texture x coord [0-1]
+	 * @param uvy[1-3] Texture y coord [0-1]
+	 * @param color    Vertex color tint
+	 * @param alpha    Vertex alpha value
+	 */
 	public inline function addTriangle(tx1:Float, ty1:Float, uvx1:Float, uvy1:Float, tx2:Float, ty2:Float, uvx2:Float, uvy2:Float, tx3:Float, ty3:Float, uvx3:Float, uvy3:Float, color:Color, alpha:Float):Void
 	{
 		if (alpha > 0)
@@ -194,6 +209,9 @@ class DrawCommand
 		}
 	}
 
+	/**
+	 * Recycles the data for all draw commands following this one.
+	 */
 	public function recycle()
 	{
 		recycleData();
