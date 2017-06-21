@@ -1,6 +1,5 @@
 package haxepunk.masks;
 
-import flash.display.Graphics;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxepunk.HXP;
@@ -475,8 +474,12 @@ class Grid extends Hitbox
 	}
 
 	@:dox(hide)
-	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
+	override public function debugDraw(camera:Camera):Void
 	{
+		var dc = Mask.drawContext,
+			scaleX = camera.fullScaleX,
+			scaleY = camera.fullScaleY;
+
 		var cellX:Float, cellY:Float,
 			stepX = tileWidth * scaleX,
 			stepY = tileHeight * scaleY;
@@ -514,39 +517,32 @@ class Grid extends Hitbox
 			{
 				if (row[x])
 				{
-					graphics.lineStyle(1, 0xFFFFFF, 0.3);
-					graphics.drawRect(cellX, cellY, stepX, stepY);
+					dc.lineThickness = 2;
+					dc.setColor(0xffffff, 0.3);
+					dc.rect(cellX, cellY, stepX, stepY);
+					dc.setColor(0x0000ff, 1);
 
 					if (x < columns - 1 && !row[x + 1])
 					{
-						graphics.lineStyle(1, 0x0000FF);
-						graphics.moveTo(cellX + stepX, cellY);
-						graphics.lineTo(cellX + stepX, cellY + stepY);
+						dc.line(cellX + stepX, cellY, cellX + stepX, cellY + stepY);
 					}
 					if (x > 0 && !row[x - 1])
 					{
-						graphics.lineStyle(1, 0x0000FF);
-						graphics.moveTo(cellX, cellY);
-						graphics.lineTo(cellX, cellY + stepY);
+						dc.line(cellX, cellY, cellX, cellY + stepY);
 					}
 					if (y < rows - 1 && !data[y + 1][x])
 					{
-						graphics.lineStyle(1, 0x0000FF);
-						graphics.moveTo(cellX, cellY + stepY);
-						graphics.lineTo(cellX + stepX, cellY + stepY);
+						dc.line(cellX, cellY + stepY, cellX + stepX, cellY + stepY);
 					}
 					if (y > 0 && !data[y - 1][x])
 					{
-						graphics.lineStyle(1, 0x0000FF);
-						graphics.moveTo(cellX, cellY);
-						graphics.lineTo(cellX + stepX, cellY);
+						dc.line(cellX, cellY, cellX + stepX, cellY);
 					}
 				}
 				cellX += stepX;
 			}
 			cellY += stepY;
 		}
-
 	}
 
 	@:dox(hide)

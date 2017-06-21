@@ -1,11 +1,10 @@
 package haxepunk.masks;
 
+import flash.geom.Point;
 import haxepunk.Mask;
+import haxepunk.utils.Draw;
 import haxepunk.utils.Projection;
 import haxepunk.utils.Vector;
-import flash.display.Graphics;
-import flash.geom.Point;
-import haxepunk.masks.Polygon;
 
 /** Uses parent's hitbox to determine collision.
  * This class is used internally by HaxePunk, you don't need to use this class because
@@ -134,12 +133,14 @@ class Hitbox extends Mask
 	}
 
 	@:dox(hide)
-	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
+	override public function debugDraw(camera:Camera):Void
 	{
-		// draw only if the hitbox is part of a Masklist and has a parent
-		if (list != null && parent != null && list.count > 1)
+		if (parent != null)
 		{
-			graphics.drawRect((parent.x - HXP.camera.x + x) * scaleX, (parent.y - HXP.camera.y + y) * scaleY, width * scaleX, height * scaleY);
+			Mask.drawContext.setColor(0xff0000, 0.25);
+			Mask.drawContext.rectFilled((parent.x - camera.x + x) * camera.fullScaleX, (parent.y - camera.y + y) * camera.fullScaleY, width * camera.fullScaleX, height * camera.fullScaleY);
+			Mask.drawContext.setColor(0xff0000, 0.5);
+			Mask.drawContext.rect((parent.x - camera.x + x) * camera.fullScaleX, (parent.y - camera.y + y) * camera.fullScaleY, width * camera.fullScaleX, height * camera.fullScaleY);
 		}
 	}
 

@@ -1,6 +1,5 @@
 package haxepunk.masks;
 
-import flash.display.Graphics;
 import haxepunk.Entity;
 import haxepunk.HXP;
 import haxepunk.Mask;
@@ -187,9 +186,9 @@ class Masklist extends Hitbox
 	}
 
 	@:dox(hide)
-	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
+	override public function debugDraw(camera:Camera):Void
 	{
-		for (m in _masks) m.debugDraw(graphics, scaleX, scaleY);
+		for (m in _masks) m.debugDraw(camera);
 	}
 
 	/**

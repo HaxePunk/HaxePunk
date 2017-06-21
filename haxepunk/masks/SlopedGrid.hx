@@ -1,24 +1,23 @@
 package haxepunk.masks;
 
-import flash.display.Graphics;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.Mask;
 import haxepunk.utils.MathUtil;
 
-
-enum TileType
+@:enum
+abstract TileType(Int)
 {
-	Empty;
-	Solid;
-	AboveSlope;
-	BelowSlope;
+	var Empty = 0;
+	var Solid = 1;
+	var AboveSlope = 2;
+	var BelowSlope = 3;
 	// quick types
-	TopLeft;
-	TopRight;
-	BottomLeft;
-	BottomRight;
+	var TopLeft = 4;
+	var TopRight = 5;
+	var BottomLeft = 6;
+	var BottomRight = 7;
 }
 
 typedef Tile =
@@ -134,10 +133,8 @@ class SlopedGrid extends Hitbox
 	{
 		y1 += tile.yOffset;
 
-		var yoff = tile.slope * _tile.width;
-
-		var x2 = x1 + yoff / tile.slope,
-			y2 = y1 + yoff;
+		var x2 = x1 + _tile.width,
+			y2 = y1 + tile.slope * _tile.width;
 
 		var left:Bool = (x2 - x1) * (py - y1) > (y2 - y1) * (px - x1);
 
@@ -386,15 +383,18 @@ class SlopedGrid extends Hitbox
 	}
 
 	@:dox(hide)
-	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
+	override public function debugDraw(camera:Camera):Void
 	{
+		var dc = Mask.drawContext,
+			scaleX = camera.fullScaleX,
+			scaleY = camera.fullScaleY;
 		var cellX:Float, cellY:Float,
 			stepX = tileWidth * scaleX,
 			stepY = tileHeight * scaleY;
 
 		// determine drawing location
-		var px = _x + _parent.x - HXP.camera.x;
-		var py = _y + _parent.y - HXP.camera.y;
+		var px = _x + _parent.x - camera.x;
+		var py = _y + _parent.y - camera.y;
 
 		// determine start and end tiles to draw (optimization)
 		var startx = Math.floor( -px / tileWidth),
@@ -415,6 +415,8 @@ class SlopedGrid extends Hitbox
 		px = (px + (startx * tileWidth)) * scaleX;
 		py = (py + (starty * tileHeight)) * scaleY;
 
+		dc.lineThickness = 2;
+
 		var row:Array<Tile>;
 		cellY = py;
 		for (y in starty...desty)
@@ -427,46 +429,40 @@ class SlopedGrid extends Hitbox
 				if (tile == null || tile.type == null) {}
 				else if (tile.type == Solid)
 				{
-					graphics.lineStyle(1, 0xFFFFFF, 0.3);
-					graphics.drawRect(cellX, cellY, stepX, stepY);
+					dc.setColor(0xffffff, 0.3);
+					dc.rect(cellX, cellY, stepX, stepY);
+					dc.setColor(0x0000ff, 1);
 
 					if (x < columns - 1 && row[x + 1].type == Empty)
 					{
-						graphics.lineStyle(1, 0x0000FF);
-						graphics.moveTo(cellX + stepX, cellY);
-						graphics.lineTo(cellX + stepX, cellY + stepY);
+						dc.line(cellX + stepX, cellY, cellX + stepX, cellY + stepY);
 					}
 					if (x > 0 && row[x - 1].type == Empty)
 					{
-						graphics.lineStyle(1, 0x0000FF);
-						graphics.moveTo(cellX, cellY);
-						graphics.lineTo(cellX, cellY + stepY);
+						dc.line(cellX, cellY, cellX, cellY + stepY);
 					}
 					if (y < rows - 1 && data[y + 1][x].type == Empty)
 					{
-						graphics.lineStyle(1, 0x0000FF);
-						graphics.moveTo(cellX, cellY + stepY);
-						graphics.lineTo(cellX + stepX, cellY + stepY);
+						dc.line(cellX, cellY + stepY, cellX + stepX, cellY + stepY);
 					}
 					if (y > 0 && data[y - 1][x].type == Empty)
 					{
-						graphics.lineStyle(1, 0x0000FF);
-						graphics.moveTo(cellX, cellY);
-						graphics.lineTo(cellX + stepX, cellY);
+						dc.line(cellX, cellY, cellX + stepX, cellY);
 					}
 				}
 				else if (tile.type == BelowSlope || tile.type == AboveSlope)
 				{
-					var offset = tile.yOffset * scaleY;
-					var xpos = cellX,
-						endx = stepX,
-						ypos = cellY + offset,
-						endy = tile.slope * endx;
+					var offset:Float = tile.yOffset * scaleY;
+					var slope = tile.slope * scaleY / scaleX;
+					var xpos:Float = cellX,
+						endx:Float = stepX,
+						ypos:Float = cellY + offset,
+						endy:Float = slope * endx;
 
 					// draw a flat line if slope goes past tile boundaries
 					if (offset < 0)
 					{
-						var fx = -offset / tile.slope; // find x where y = 0
+						var fx = -offset / slope; // find x where y = 0
 						endx = stepX - fx;
 						xpos = cellX + fx;
 						ypos = cellY;
@@ -474,13 +470,12 @@ class SlopedGrid extends Hitbox
 						// only draw line if next to solid
 						if (y <= 0 || data[y - 1][x].type == Solid)
 						{
-							graphics.moveTo(cellX, ypos);
-							graphics.lineTo(xpos, ypos);
+							dc.line(cellX, ypos, xpos, ypos);
 						}
 					}
-					else if (offset > tileHeight)
+					else if (offset > stepY)
 					{
-						var fx = -(offset - tileWidth) / tile.slope; // find x where y = 0
+						var fx = -(offset - stepX) / slope; // find x where y = 0
 						endx = stepX - fx;
 						xpos = cellX + fx;
 						ypos = cellY + stepY;
@@ -488,41 +483,36 @@ class SlopedGrid extends Hitbox
 						// only draw line if next to solid
 						if (y >= rows - 1 || data[y + 1][x].type == Solid)
 						{
-							graphics.moveTo(cellX, ypos);
-							graphics.lineTo(xpos, ypos);
+							dc.line(cellX, ypos, xpos, ypos);
 						}
 					}
 					else if (offset + endy < 0)
 					{
-						var fx = -offset / tile.slope; // find x where y = 0
+						var fx = -offset / slope; // find x where y = 0
 						endx = fx;
 
 						// only draw line if next to solid
 						if (y <= 0 || data[y - 1][x].type == Solid)
 						{
-							graphics.moveTo(cellX + fx, cellY);
-							graphics.lineTo(cellX + stepX, cellY);
+							dc.line(cellX + fx, cellY, cellX + stepX, cellY);
 						}
 					}
-					else if (offset + endy > tileHeight)
+					else if (offset + endy > stepY)
 					{
-						var fx = -(offset - tileWidth) / tile.slope; // find x where y = 0
+						var fx = -(offset - stepX) / slope; // find x where y = 0
 						endx = fx;
 
 						// only draw line if next to solid
 						if (y >= rows - 1 || data[y + 1][x].type == Solid)
 						{
-							graphics.moveTo(cellX + fx, cellY + stepY);
-							graphics.lineTo(cellX + stepX, cellY + stepY);
+							dc.line(cellX + fx, cellY + stepY, cellX + stepX, cellY + stepY);
 						}
 					}
 
 					// recalculate if there's a new endx
-					endy = tile.slope * endx;
+					endy = slope * endx;
 
-					graphics.lineStyle(1, 0x0000FF);
-					graphics.moveTo(xpos, ypos);
-					graphics.lineTo(xpos + endx, ypos + endy);
+					dc.line(xpos, ypos, xpos + endx, ypos + endy);
 				}
 
 				cellX += stepX;

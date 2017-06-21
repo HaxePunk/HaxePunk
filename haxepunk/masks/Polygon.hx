@@ -9,7 +9,6 @@ import haxepunk.masks.Hitbox;
 import haxepunk.utils.Projection;
 import haxepunk.utils.Vector;
 import haxepunk.utils.MathUtil;
-import flash.display.Graphics;
 import flash.geom.Point;
 
 
@@ -365,23 +364,29 @@ class Polygon extends Hitbox
 	}
 
 	@:dox(hide)
-	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
+	override public function debugDraw(camera:Camera):Void
 	{
-		var	offsetX:Float = _parent.x + _x - HXP.camera.x,
-			offsetY:Float = _parent.y + _y - HXP.camera.y;
+		var offsetX:Float = _parent.x + _x - camera.x,
+			offsetY:Float = _parent.y + _y - camera.y,
+			scaleX = camera.fullScaleX,
+			scaleY = camera.fullScaleY;
 
-		graphics.beginFill(0x0000FF, .3);
+		var dc = Mask.drawContext;
+		dc.setColor(0x0000ff, 0.3);
 
-		graphics.moveTo((points[_points.length - 1].x + offsetX) * scaleX , (_points[_points.length - 1].y + offsetY) * scaleY);
-		for (i in 0..._points.length)
+		for (i in 1..._points.length + 1)
 		{
-			graphics.lineTo((_points[i].x + offsetX) * scaleX, (_points[i].y + offsetY) * scaleY);
+			var a = i - 1, b = i % _points.length;
+			dc.line(
+				(points[a].x + offsetX) * scaleX,
+				(points[a].y + offsetY) * scaleY,
+				(points[b].x + offsetX) * scaleX,
+				(points[b].y + offsetY) * scaleY
+			);
 		}
 
-		graphics.endFill();
-
 		// draw pivot
-		graphics.drawCircle((offsetX + origin.x) * scaleX, (offsetY + origin.y) * scaleY, 2);
+		dc.circle((offsetX + origin.x) * scaleX, (offsetY + origin.y) * scaleY, 2);
 	}
 
 	/**

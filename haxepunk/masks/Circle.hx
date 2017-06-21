@@ -4,9 +4,9 @@ import haxepunk.Graphic;
 import haxepunk.Mask;
 import haxepunk.masks.Grid;
 import haxepunk.masks.SlopedGrid;
+import haxepunk.utils.Draw;
 import haxepunk.utils.Projection;
 import haxepunk.utils.Vector;
-import flash.display.Graphics;
 import flash.geom.Point;
 
 /**
@@ -253,9 +253,13 @@ class Circle extends Hitbox
 	}
 
 	@:dox(hide)
-	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
+	override public function debugDraw(camera:Camera):Void
 	{
-		graphics.drawCircle((_parent.x + _x - HXP.camera.x) * scaleX, (_parent.y + _y - HXP.camera.y) * scaleY, radius * scaleX);
+		Mask.drawContext.lineThickness = 2;
+		Mask.drawContext.setColor(0xff0000, 0.25);
+		Mask.drawContext.circleFilled((_parent.x + _x - camera.x) * camera.fullScaleX, (_parent.y + _y - camera.y) * camera.fullScaleY, radius, camera.fullScaleX, camera.fullScaleY);
+		Mask.drawContext.setColor(0xff0000, 0.5);
+		Mask.drawContext.circle((_parent.x + _x - camera.x) * camera.fullScaleX, (_parent.y + _y - camera.y) * camera.fullScaleY, radius, camera.fullScaleX, camera.fullScaleY);
 	}
 
 	override function get_x():Int return _x - _radius;
