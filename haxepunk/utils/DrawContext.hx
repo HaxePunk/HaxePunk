@@ -31,6 +31,11 @@ class DrawContext
 	public var shader:Shader;
 
 	/**
+	 * Whether shapes should be drawn with antialiasing.
+	 */
+	public var smooth:Bool = true;
+
+	/**
 	 * The red, green, and blue values in a single integer value.
 	 */
 	public var color:Color = 0xFFFFFF;
@@ -262,8 +267,10 @@ class DrawContext
 	 * @param	y			Y position of the circle's center.
 	 * @param	radius		Radius of the circle.
 	 * @param	segments	Increasing will smooth the circle but takes longer to render. Must be a value greater than zero.
+	 * @param	scaleX		Scales the circle horizontally.
+	 * @param	scaleY		Scales the circle vertically.
 	 */
-	public inline function circle(x:Float, y:Float, radius:Float, segments:Int = 25)
+	public inline function circle(x:Float, y:Float, radius:Float, segments:Int = 25, scaleX:Float = 1, scaleY:Float = 1)
 	{
 		var radians = 2 * Math.PI / segments;
 		var halfThick = lineThickness / 2;
@@ -281,8 +288,8 @@ class DrawContext
 			var theta = segment * radians;
 			var sin = Math.sin(theta);
 			var cos = Math.cos(theta);
-			inner.set(x + sin * innerRadius, y + cos * innerRadius);
-			outer.set(x + sin * outerRadius, y + cos * outerRadius);
+			inner.set(x + sin * innerRadius * scaleX, y + cos * innerRadius * scaleY);
+			outer.set(x + sin * outerRadius * scaleX, y + cos * outerRadius * scaleY);
 
 			if (segment != 0)
 			{
@@ -301,8 +308,10 @@ class DrawContext
 	 * @param	y			Y position of the circle's center.
 	 * @param	radius		Radius of the circle.
 	 * @param	segments	Increasing will smooth the circle but takes longer to render. Must be a value greater than zero.
+	 * @param	scaleX		Scales the circle horizontally.
+	 * @param	scaleY		Scales the circle vertically.
 	 */
-	public function circleFilled(x:Float, y:Float, radius:Float, segments:Int = 25)
+	public function circleFilled(x:Float, y:Float, radius:Float, segments:Int = 25, scaleX:Float = 1, scaleY:Float = 1)
 	{
 		var radians = (2 * Math.PI) / segments;
 		var x1 = x,
@@ -311,8 +320,8 @@ class DrawContext
 		for (segment in 1...segments+1)
 		{
 			var theta = segment * radians;
-			var x2 = x + (Math.sin(theta) * radius);
-			var y2 = y + (Math.cos(theta) * radius);
+			var x2 = x + (Math.sin(theta) * radius) * scaleX;
+			var y2 = y + (Math.cos(theta) * radius) * scaleY;
 			command.addTriangle(x, y, 0, 0, x1, y1, 0, 0, x2, y2, 0, 0, color, alpha);
 			x1 = x2; y1 = y2;
 		}
@@ -379,7 +388,7 @@ class DrawContext
 	{
 		if (shader == null) shader = new ColorShader();
 		var scene = (this.scene == null) ? (HXP.renderingScene == null ? HXP.scene : HXP.renderingScene) : this.scene;
-		command = scene.renderer.batch.getDrawCommand(null, shader, false, blend, null);
+		command = scene.renderer.batch.getDrawCommand(null, shader, smooth, blend, null);
 	}
 
 	inline function drawTriangle(v1:Vector2, v2:Vector2, v3:Vector2):Void

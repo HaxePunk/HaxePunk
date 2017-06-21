@@ -44,6 +44,13 @@ class Draw
 	static inline function set_shader(v:Shader) return instance.shader = v;
 
 	/**
+	 * Whether shapes should be drawn with antialiasing.
+	 */
+	public static var smooth(get, set):Bool;
+	static inline function get_smooth() return instance.smooth;
+	static inline function set_smooth(v:Bool) return instance.smooth = v;
+
+	/**
 	 * The red, green, and blue values in a single integer value.
 	 */
 	public static var color(get, set):Color;
@@ -126,10 +133,12 @@ class Draw
 	 * @param	y			Y position of the circle's center.
 	 * @param	radius		Radius of the circle.
 	 * @param	segments	Increasing will smooth the circle but takes longer to render. Must be a value greater than zero.
+	 * @param	scaleX		Scales the circle horizontally.
+	 * @param	scaleY		Scales the circle vertically.
 	 */
-	public static inline function circle(x:Float, y:Float, radius:Float, segments:Int = 25)
+	public static inline function circle(x:Float, y:Float, radius:Float, segments:Int = 25, scaleX:Float = 1, scaleY:Float = 1)
 	{
-		instance.circle(x, y, radius, segments);
+		instance.circle(x, y, radius, segments, scaleX, scaleY);
 	}
 
 	/**
@@ -138,10 +147,12 @@ class Draw
 	 * @param	y			Y position of the circle's center.
 	 * @param	radius		Radius of the circle.
 	 * @param	segments	Increasing will smooth the circle but takes longer to render. Must be a value greater than zero.
+	 * @param	scaleX		Scales the circle horizontally.
+	 * @param	scaleY		Scales the circle vertically.
 	 */
-	public static function circleFilled(x:Float, y:Float, radius:Float, segments:Int = 25)
+	public static function circleFilled(x:Float, y:Float, radius:Float, segments:Int = 25, scaleX:Float = 1, scaleY:Float = 1)
 	{
-		instance.circleFilled(x, y, radius, segments);
+		instance.circleFilled(x, y, radius, segments, scaleX, scaleY);
 	}
 
 	/**
