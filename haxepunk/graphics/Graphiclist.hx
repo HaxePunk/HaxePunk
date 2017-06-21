@@ -72,20 +72,23 @@ class Graphiclist extends Graphic
 	/** @private Renders the Graphics in the list. */
 	override public function render(point:Point, camera:Camera)
 	{
+		var cx = camera.x,
+			cy = camera.y;
+		camera.setTo(cx * scrollX, cy * scrollY);
 		for (g in _graphics)
 		{
 			if (g.visible)
 			{
 				if (g.relative)
 				{
-					_point.x = point.x + x;
-					_point.y = point.y + y;
+					_point.x = camera.floorX(point.x) + camera.floorX(x);
+					_point.y = camera.floorY(point.y) + camera.floorY(y);
 				}
 				else _point.x = _point.y = 0;
-				_camera.setTo(camera.x * scrollX, camera.y * scrollY);
-				g.render(_point, _camera);
+				g.render(_point, camera);
 			}
 		}
+		camera.setTo(cx, cy);
 	}
 
 	/**

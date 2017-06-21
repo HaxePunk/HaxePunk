@@ -156,7 +156,7 @@ class AtlasData
 		color:Color, alpha:Float,
 		shader:Shader, smooth:Bool=false, blend:BlendMode, ?clipRect:Rectangle)
 	{
-		var batch = _scene.sprite.batch;
+		var batch = _scene.renderer.batch;
 		batch.addRect(
 			texture, shader, smooth, blend, clipRect,
 			rect.x, rect.y, rect.width, rect.height,
@@ -205,7 +205,7 @@ class AtlasData
 			d = cos * scaleY; // m11
 		}
 
-		var batch = _scene.sprite.batch;
+		var batch = _scene.renderer.batch;
 		batch.addRect(texture, shader, smooth, blend, clipRect, rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, color, alpha);
 	}
 
@@ -239,7 +239,7 @@ class AtlasData
 		color:Color, alpha:Float,
 		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void
 	{
-		var batch = _scene.sprite.batch;
+		var batch = _scene.renderer.batch;
 		batch.addTriangle(texture, shader, smooth, blend, clipRect, tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, color, alpha);
 	}
 

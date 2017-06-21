@@ -8,8 +8,9 @@ import haxepunk.utils.Color;
 @:dox(hide)
 class DrawCommandBatch
 {
-	static inline var MAX_LOOKBACK_CALLS:Int = 8;
-	static inline var MAX_TRIANGLE_CHECKS:Int = 16;
+	public static var maxLookbackDrawCalls:Int = 16;
+	public static var maxTriangleChecks:Int = 128;
+
 	static var _bounds:Rectangle = new Rectangle();
 
 	public static inline function minOf3(a:Float, b:Float, c:Float) return Math.min(Math.min(a, b), c);
@@ -35,7 +36,7 @@ class DrawCommandBatch
 			// we can reuse the most recent draw call
 			return last;
 		}
-		#if render_batch
+		#if !no_render_batch
 		else if (x1 != 0 && y1 != 0 && x2 != 0 && y2 != 0)
 		{
 			// look back to see if we can add this to a previous draw call
@@ -48,7 +49,7 @@ class DrawCommandBatch
 				t:Int = 0,
 				current:DrawCommand = last,
 				found:Bool = false;
-			while (current != null && i++ < MAX_LOOKBACK_CALLS && t < MAX_TRIANGLE_CHECKS)
+			while (current != null && i++ < maxLookbackDrawCalls && t < maxTriangleChecks)
 			{
 				if (current.match(texture, shader, smooth, blend, clipRect))
 				{
@@ -62,7 +63,7 @@ class DrawCommandBatch
 			{
 				i = t = 0;
 				current = last;
-				while (current != null && i++ < MAX_LOOKBACK_CALLS)
+				while (current != null && i++ < maxLookbackDrawCalls)
 				{
 					if (current.match(texture, shader, smooth, blend, clipRect))
 					{
@@ -75,7 +76,7 @@ class DrawCommandBatch
 						// region; let's investigate
 						var collision = false;
 						var triangle = current.data;
-						while (triangle != null && t++ < MAX_TRIANGLE_CHECKS)
+						while (triangle != null && t++ < maxTriangleChecks)
 						{
 							if (triangle.intersectsTriangle(x1, y1, x2, y2, x3, y3))
 							{

@@ -9,6 +9,8 @@ import flash.events.Event;
 import flash.geom.Rectangle;
 import flash.Lib;
 import haxepunk.Signal;
+import haxepunk.debug.Console;
+import haxepunk.graphics.hardware.EngineRenderer;
 import haxepunk.input.Input;
 import haxepunk.utils.Draw;
 import haxepunk.utils.Random;
@@ -21,6 +23,8 @@ import haxepunk.utils.Random;
  */
 class Engine extends Sprite
 {
+	public var console:Console;
+
 	/**
 	 * If the game should stop updating/rendering.
 	 */
@@ -116,6 +120,15 @@ class Engine extends Sprite
 		// on-stage event listener
 		addEventListener(Event.ADDED_TO_STAGE, onStage);
 		Lib.current.addChild(this);
+
+		addChild(_renderSurface = new EngineRenderer());
+		_iterator = new VisibleSceneIterator(this);
+	}
+
+	public function iterator():VisibleSceneIterator
+	{
+		_iterator.reset();
+		return _iterator;
 	}
 
 	/**
@@ -169,26 +182,12 @@ class Engine extends Sprite
 
 		preRender.invoke();
 
-		if (_scenes.length > 0)
+		for (scene in this)
 		{
-			// find the last visible scene, falling through transparent scenes
-			var visibleScene:Int = _scenes.length - 1;
-			while (_scenes[visibleScene].alpha < 1 && visibleScene > 0)
-			{
-				--visibleScene;
-			}
-			for (i in 0 ... visibleScene)
-			{
-				_scenes[i]._drawn = false;
-			}
-			// render all visible scenes back to front
-			while (visibleScene < _scenes.length)
-			{
-				var scene = _scenes[visibleScene++];
-				scene._drawn = true;
-				if (scene.visible) scene.render();
-			}
+			HXP.renderingScene = scene;
+			scene.render();
 		}
+		HXP.renderingScene = null;
 
 		postRender.invoke();
 
@@ -281,10 +280,6 @@ class Engine extends Sprite
 		// game start
 		init();
 
-		#if debug_console
-		HXP.console.enable();
-		#end
-
 		// start game loop
 		_rate = 1000 / HXP.assignedFrameRate;
 
@@ -301,6 +296,10 @@ class Engine extends Sprite
 		openfl.Lib.current.stage.application.onExit.add(function(_) {
 			onClose.invoke();
 		});
+		#end
+
+		#if debug_console
+		Console.enabled = true;
 		#end
 	}
 
@@ -339,7 +338,7 @@ class Engine extends Sprite
 
 		// render loop
 		if (paused) _frameLast = _time; // continue updating frame timer
-		else render();
+		if (!paused || Console.enabled) render();
 
 		// update timer
 		_time = _systemTime = Lib.getTimer();
@@ -356,7 +355,7 @@ class Engine extends Sprite
 		if (!paused) update();
 
 		// update console
-		if (HXP.consoleEnabled()) HXP.console.update();
+		if (console != null) console.update();
 
 		Input.postUpdate();
 	}
@@ -372,7 +371,6 @@ class Engine extends Sprite
 
 			_scene = _scenes[_scenes.length - 1];
 
-			addChild(_scene.sprite);
 			_scene.updateLists();
 			_scene.begin();
 			_scene.updateLists();
@@ -398,10 +396,6 @@ class Engine extends Sprite
 	public function popScene():Scene
 	{
 		var scene = _scenes.pop();
-		if (contains(scene.sprite))
-		{
-			removeChild(scene.sprite);
-		}
 		return scene;
 	}
 
@@ -447,4 +441,45 @@ class Engine extends Sprite
 	var _frameList:Array<Int>;
 
 	var _scrollRect:Rectangle = new Rectangle();
+	var _renderSurface:EngineRenderer;
+	var _iterator:VisibleSceneIterator;
+}
+
+@:access(haxepunk.Engine)
+private class VisibleSceneIterator
+{
+	var engine:Engine;
+	var i:Int = 0;
+
+	public function new(engine:Engine)
+	{
+		this.engine = engine;
+	}
+
+	public inline function hasNext():Bool
+	{
+		return i < engine._scenes.length ||
+			(i == engine._scenes.length && engine.console != null);
+	}
+
+	public inline function next():Scene
+	{
+		var next = i < engine._scenes.length ? engine._scenes[i] : engine.console;
+		i++;
+		return next;
+	}
+
+	public inline function reset():Void
+	{
+		var _scenes = engine._scenes;
+		if (_scenes.length > 0)
+		{
+			// find the last visible scene, falling through transparent scenes
+			i = _scenes.length - 1;
+			while (_scenes[i].alpha < 1 && i > 0)
+			{
+				--i;
+			}
+		}
+	}
 }

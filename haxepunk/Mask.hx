@@ -1,10 +1,10 @@
 package haxepunk;
 
 import haxepunk.Entity;
+import haxepunk.masks.Masklist;
+import haxepunk.utils.DrawContext;
 import haxepunk.utils.Projection;
 import haxepunk.utils.Vector;
-import haxepunk.masks.Masklist;
-import flash.display.Graphics;
 
 /**
  * Base class for Entity collision masks.
@@ -12,6 +12,17 @@ import flash.display.Graphics;
  */
 class Mask
 {
+	@:isVar public static var drawContext(get, null):DrawContext;
+	static inline function get_drawContext()
+	{
+		if (drawContext == null)
+		{
+			drawContext = new DrawContext();
+			drawContext.lineThickness = 2;
+		}
+		return drawContext;
+	}
+
 	/**
 	 * The parent Entity of this mask.
 	 */
@@ -79,7 +90,7 @@ class Mask
 	 * Override this
 	 */
 	@:dox(hide)
-	public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void {}
+	public function debugDraw(camera:Camera):Void {}
 
 	/** Updates the parent's bounds for this mask. */
 	@:dox(hide)

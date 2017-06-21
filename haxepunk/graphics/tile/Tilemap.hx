@@ -378,9 +378,6 @@ class Tilemap extends Graphic
 		}
 	}
 
-	inline function floorX(x:Float) return Math.floor(x * HXP.screen.fullScaleX) / HXP.screen.fullScaleX;
-	inline function floorY(y:Float) return Math.floor(y * HXP.screen.fullScaleY) / HXP.screen.fullScaleY;
-
 	@:dox(hide)
 	override public function render(point:Point, camera:Camera)
 	{

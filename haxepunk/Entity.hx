@@ -5,6 +5,7 @@ import haxe.ds.Either.Left;
 import haxe.ds.Either.Right;
 import haxepunk.ds.OneOf;
 import haxepunk.graphics.Graphiclist;
+import haxepunk.masks.Hitbox;
 import haxepunk.utils.MathUtil;
 
 typedef SolidType = OneOf<String, Array<String>>;
@@ -191,6 +192,24 @@ class Entity extends Tweener
 			}
 			_graphic.render(_point, camera);
 		}
+	}
+
+	public function debugDraw(camera:Camera, selected:Bool=false)
+	{
+		if (mask == null && width > 0 && height > 0 && collidable)
+		{
+			Mask.drawContext.lineThickness = 2;
+			Mask.drawContext.setColor(0xff0000, 0.25);
+			Mask.drawContext.rectFilled((x - camera.x - originX) * camera.fullScaleX, (y - camera.y - originY) * camera.fullScaleY, width * camera.fullScaleX, height * camera.fullScaleY);
+			Mask.drawContext.setColor(0xff0000, 0.5);
+			Mask.drawContext.rect((x - camera.x - originX) * camera.fullScaleX, (y - camera.y - originY) * camera.fullScaleY, width * camera.fullScaleX, height * camera.fullScaleY);
+		}
+		else if (mask != null)
+		{
+			mask.debugDraw(camera);
+		}
+		Mask.drawContext.setColor(selected ? 0x00ff00 : 0xffffff, 1);
+		Mask.drawContext.circle((x - camera.x) * camera.fullScaleX, (y - camera.y) * camera.fullScaleY, 3, 8);
 	}
 
 	/**

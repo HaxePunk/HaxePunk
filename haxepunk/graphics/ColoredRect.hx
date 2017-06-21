@@ -22,10 +22,10 @@ class ColoredRect extends Graphic
 	}
 
 	@:access(haxepunk.graphics.atlas.AtlasData)
-	@:access(haxepunk.graphics.hardware.SceneSprite)
+	@:access(haxepunk.graphics.hardware.SceneRenderer)
 	override public function render(point:Point, camera:Camera)
 	{
-		var batch = AtlasData._scene.sprite.batch,
+		var batch = AtlasData._scene.renderer.batch,
 			command = batch.getDrawCommand(null, shader,
 				false, blend, screenClipRect(camera, point.x, point.y));
 

@@ -10,45 +10,31 @@ import haxepunk.graphics.shader.ColorShader;
 @:access(haxepunk.graphics.hardware.DrawCommand)
 @:allow(haxepunk.graphics.atlas.AtlasData)
 @:dox(hide)
-class SceneSprite extends Sprite
+class SceneRenderer
 {
 	public function new(scene:Scene)
 	{
-		super();
 		this.scene = scene;
-
-		var oglView = new flash.display.OpenGLView();
-		addChild(oglView);
-		oglView.render = renderScene;
 		batch = new DrawCommandBatch();
 	}
 
 	public function startFrame()
 	{
 		batch.recycle();
-		HXP.screen.renderer.startFrame(scene);
-
-		if (scene.alpha > 0)
-		{
-			// draw the scene background
-			var command = batch.getDrawCommand(null, ColorShader.defaultShader, false, BlendMode.ALPHA, null);
-			var sceneColor:Color = scene.color == null ? HXP.stage.color : scene.color,
-				alpha = scene.alpha;
-			var w = HXP.width * scene.camera.fullScaleX,
-				h = HXP.height * scene.camera.fullScaleY;
-			command.addTriangle(0, 0, 0, 0, w, 0, 0, 0, 0, h, 0, 0, sceneColor, alpha);
-			command.addTriangle(0, h, 0, 0, w, 0, 0, 0, w, h, 0, 0, sceneColor, alpha);
-		}
+		HXP.screen.renderer.startScene(scene);
 	}
 
 	public function endFrame()
 	{
-		HXP.screen.renderer.endFrame(scene);
+		HXP.screen.renderer.flushScene(scene);
 	}
 
+	/**
+	 * Called to render all data to the screen.
+	 */
 	public function renderScene(rect:Rectangle)
 	{
-		if (scene._drawn && scene.visible)
+		if (scene.visible)
 		{
 			HXP.screen.renderer.startScene(scene);
 			var currentDraw:DrawCommand = batch.head;

@@ -13,11 +13,18 @@ import haxepunk.graphics.shader.SceneShader;
  * OpenGL-based renderer. Based on work by @Yanrishatum and @Beeblerox.
  * @since	2.6.0
  */
-@:access(haxepunk.Scene)
 @:dox(hide)
+@:access(haxepunk.Scene)
+@:access(haxepunk.Engine)
 class HardwareRenderer
 {
+	public static var drawCallLimit:Int = -1;
+
 	public static inline var UNIFORM_MATRIX:String = "uMatrix";
+
+	static var triangleCount:Int = 0;
+	static var drawCallCount:Int = 0;
+	static var _tracking:Bool = true;
 
 	static inline function checkForGLErrors(?pos:PosInfos)
 	{
@@ -100,6 +107,13 @@ class HardwareRenderer
 
 		if (drawCommand != null && drawCommand.triangleCount > 0)
 		{
+			if (_tracking)
+			{
+				triangleCount += drawCommand.triangleCount;
+				++drawCallCount;
+				if (drawCallLimit > -1 && drawCallCount > drawCallLimit) return;
+			}
+
 			var x:Int = Std.int(HXP.screen.x),
 				y:Int = Std.int(HXP.screen.y);
 			var width:Int = HXP.screen.width,
@@ -169,6 +183,8 @@ class HardwareRenderer
 
 	public function startScene(scene:Scene)
 	{
+		_tracking = scene != HXP.engine.console;
+
 		if (buffer == null || GLUtils.invalid(buffer.glBuffer))
 		{
 			destroy();
@@ -228,11 +244,13 @@ class HardwareRenderer
 		}
 	}
 
-	public function startFrame(scene:Scene)
+	public function startFrame()
 	{
+		triangleCount = 0;
+		drawCallCount = 0;
 		bindDefaultFramebuffer();
 	}
-	public function endFrame(scene:Scene) {}
+	public function endFrame() {}
 
 	inline function init()
 	{

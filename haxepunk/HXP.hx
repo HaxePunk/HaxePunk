@@ -19,6 +19,7 @@ import haxepunk.utils.Random;
 /**
  * Static catch-all class used to access global properties and functions.
  */
+ @:access(haxepunk.Engine)
 class HXP
 {
 	/**
@@ -84,9 +85,9 @@ class HXP
 	public static var bounds:Rectangle;
 
 	/**
-	 * The default font file to use, by default: font/04B_03__.ttf.
+	 * The default font file to use, by default: font/monofonto.ttf.
 	 */
-	public static var defaultFont:String = "font/04B_03__.ttf";
+	public static var defaultFont:String = "font/monofonto.ttf";
 
 	/**
 	 * Point used to determine drawing offset in the render loop.
@@ -169,6 +170,11 @@ class HXP
 	public static var scene(get, set):Scene;
 	static inline function get_scene():Scene return engine.scene;
 	static inline function set_scene(value:Scene):Scene return engine.scene = value;
+
+	/**
+	 * If we're currently rendering, this is the Scene being rendered now.
+	 */
+	public static var renderingScene:Scene;
 
 	/**
 	 * Resize the screen.
@@ -361,23 +367,9 @@ class HXP
 		return e;
 	}
 
-	/**
-	 * The global Console object.
-	 */
-	public static var console(get, never):Console;
-	static inline function get_console():Console
-	{
-		if (_console == null) _console = new Console();
-		return _console;
-	}
-
-	/**
-	 * Checks if the console is enabled.
-	 */
-	public static function consoleEnabled()
-	{
-		return _console != null;
-	}
+	public static var console(get, set):Console;
+	static inline function get_console() return engine.console;
+	static inline function set_console(c:Console) return engine.console = c;
 
 	/**
 	 * Logs data to the console.
@@ -385,9 +377,9 @@ class HXP
 	 */
 	public static var log = Reflect.makeVarArgs(function(data:Array<Dynamic>)
 	{
-		if (_console != null)
+		if (engine.console != null)
 		{
-			_console.log(data);
+			engine.console.log(data);
 		}
 	});
 
@@ -397,9 +389,9 @@ class HXP
 	 */
 	public static var watch = Reflect.makeVarArgs(function(properties:Array<Dynamic>)
 	{
-		if (_console != null)
+		if (engine.console != null)
 		{
-			_console.watch(properties);
+			engine.console.watch(properties);
 		}
 	});
 

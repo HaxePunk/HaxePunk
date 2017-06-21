@@ -1,6 +1,5 @@
 package haxepunk.graphics.tile;
 
-import flash.display.Graphics;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxepunk.HXP;
@@ -20,7 +19,6 @@ class TiledImage extends Image
 	 */
 	public function new(texture:ImageType, width:Int = 0, height:Int = 0, ?clipRect:Rectangle)
 	{
-		_graphics = HXP.sprite.graphics;
 		offsetX = offsetY = 0;
 		_width = width;
 		_height = height;
@@ -79,7 +77,6 @@ class TiledImage extends Image
 	}
 
 	// Drawing information.
-	var _graphics:Graphics;
 	var _width:Int;
 	var _height:Int;
 }

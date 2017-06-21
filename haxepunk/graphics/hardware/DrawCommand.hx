@@ -146,7 +146,7 @@ class DrawCommand
 	public var smooth:Bool = false;
 	public var blend:BlendMode = BlendMode.ALPHA;
 	public var clipRect:Rectangle = null;
-	#if render_batch
+	#if !no_render_batch
 	public var bounds:Rectangle = new Rectangle();
 	#end
 	public var triangleCount(default, null):Int = 0;
@@ -267,7 +267,7 @@ class DrawCommand
 
 		++triangleCount;
 
-		#if render_batch
+		#if !no_render_batch
 		// update bounds
 		var x1 = data.x1, x2 = data.x2, y1 = data.y1, y2 = data.y2;
 		if (bounds.width == 0)
@@ -302,7 +302,7 @@ class DrawCommand
 			_dataPool = data;
 		}
 		data = _lastData = null;
-		#if render_batch
+		#if !no_render_batch
 		bounds.setTo(0, 0, 0, 0);
 		#end
 	}

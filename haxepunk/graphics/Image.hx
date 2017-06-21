@@ -2,9 +2,6 @@ package haxepunk.graphics;
 
 import flash.geom.Point;
 import flash.geom.Rectangle;
-import flash.display.Graphics;
-import flash.display.JointStyle;
-import flash.display.LineScaleMode;
 import haxepunk.Camera;
 import haxepunk.Graphic;
 import haxepunk.HXP;
@@ -103,18 +100,10 @@ class Image extends Graphic
 		var x = camera.floorX(x);
 		var y = camera.floorY(y);
 
-		// determine drawing location
-		_point.x = camera.floorX(point.x) - camera.floorX(originX) - camera.floorX(camera.x * scrollX) + x;
-		_point.y = camera.floorY(point.y) - camera.floorY(originY) - camera.floorY(camera.y * scrollY) + y;
-
 		if (angle == 0)
 		{
-			// UGH... recalculation of _point for scaled origins
-			if (!(sx == 1 && sy == 1))
-			{
-				_point.x = camera.floorX(point.x) - camera.floorX(originX * sx) - camera.floorX(camera.x * scrollX) + x;
-				_point.y = camera.floorY(point.y) - camera.floorY(originY * sy) - camera.floorY(camera.y * scrollY) + y;
-			}
+			_point.x = camera.floorX(point.x) - camera.floorX(originX * sx) - camera.floorX(camera.x * scrollX) + x;
+			_point.y = camera.floorY(point.y) - camera.floorY(originY * sy) - camera.floorY(camera.y * scrollY) + y;
 
 			// render without rotation
 			var clipRect = screenClipRect(camera, _point.x, _point.y);
@@ -126,6 +115,8 @@ class Image extends Graphic
 		}
 		else
 		{
+			_point.x = camera.floorX(point.x) - camera.floorX(originX) - camera.floorX(camera.x * scrollX) + x;
+			_point.y = camera.floorY(point.y) - camera.floorY(originY) - camera.floorY(camera.y * scrollY) + y;
 			var angle = angle * MathUtil.RAD;
 			var cos = Math.cos(angle);
 			var sin = Math.sin(angle);
@@ -184,83 +175,6 @@ class Image extends Graphic
 		texture.bitmap.draw(HXP.sprite);
 
 		var image = new Image(Atlas.loadImageAsRegion(texture));
-
-		image.color = color;
-		image.alpha = alpha;
-
-		return image;
-	}
-
-	/**
-	 * Creates a new polygon Image from an array of points.
-	 * @param	polygon		A Polygon object to create the Image from.
-	 * @param	color		Color of the polygon.
-	 * @param	alpha		Alpha of the polygon.
-	 * @param	fill		If the polygon should be filled with the color (true) or just an outline (false).
-	 * @param	thick		How thick the outline should be (only applicable when fill = false).
-	 * @return	A new Image object.
-	 * @since	2.5.3
-	 */
-	public static function createPolygon(polygon:Polygon, color:Color = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Int = 1):Image
-	{
-		var graphics:Graphics = HXP.sprite.graphics;
-		var points:Array<Vector> = polygon.points;
-
-		var minX:Float;
-		var maxX:Float;
-		var minY:Float;
-		var maxY:Float;
-
-		var p:Point;
-		var originalAngle:Float = polygon.angle;
-
-		polygon.angle = 0;	// set temporarily angle to 0 so we can sync with image angle later
-
-		minX = minY = MathUtil.NUMBER_MAX_VALUE;
-		maxX = maxY = -MathUtil.NUMBER_MAX_VALUE;
-
-		// find polygon bounds
-		for (p in points)
-		{
-			if (p.x < minX) minX = p.x;
-			if (p.x > maxX) maxX = p.x;
-			if (p.y < minY) minY = p.y;
-			if (p.y > maxY) maxY = p.y;
-		}
-
-		var w:Int = Math.ceil(maxX - minX);
-		var h:Int = Math.ceil(maxY - minY);
-
-		color &= 0xFFFFFF;
-		graphics.clear();
-
-		if (fill)
-			graphics.beginFill(0xFFFFFF);
-		else
-			graphics.lineStyle(thick, 0xFFFFFF, 1, false, LineScaleMode.NORMAL, null, JointStyle.MITER);
-
-		graphics.moveTo(points[points.length - 1].x, points[points.length - 1].y);
-		for (p in points)
-		{
-			graphics.lineTo(p.x, p.y);
-		}
-		graphics.endFill();
-
-		HXP.matrix.identity();
-		HXP.matrix.translate( -minX, -minY);
-
-		var texture:Texture = Texture.create(w, h, true, 0);
-		texture.bitmap.draw(HXP.sprite, HXP.matrix);
-
-		var image = new Image(Atlas.loadImageAsRegion(texture));
-
-		// adjust position, origin and angle
-		image.x = polygon.x + polygon.origin.x;
-		image.y = polygon.y + polygon.origin.y;
-		image.originX = image.x - polygon.minX;
-		image.originY = image.y - polygon.minY;
-		image.angle = originalAngle;
-		polygon.angle = originalAngle;
 
 		image.color = color;
 		image.alpha = alpha;

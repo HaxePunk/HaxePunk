@@ -1,12 +1,12 @@
 package haxepunk;
 
 import haxe.ds.IntMap;
-import flash.display.Sprite;
 import flash.geom.Point;
 import haxepunk.Signal;
 import haxepunk.graphics.atlas.AtlasData;
-import haxepunk.graphics.hardware.SceneSprite;
+import haxepunk.graphics.hardware.SceneRenderer;
 import haxepunk.graphics.shader.SceneShader;
+import haxepunk.utils.DrawContext;
 import haxepunk.utils.MathUtil;
 
 /**
@@ -15,10 +15,12 @@ import haxepunk.utils.MathUtil;
  */
 class Scene extends Tweener
 {
+	static var drawContext:DrawContext = new DrawContext();
+
 	/**
 	 * If the render() loop is performed.
 	 */
-	public var visible:Bool;
+	public var visible:Bool = true;
 
 	/**
 	 * Background color of this Scene. If null, will use HXP.stage.color.
@@ -84,9 +86,9 @@ class Scene extends Tweener
 	public function new()
 	{
 		super();
-		visible = true;
+
 		camera = new Camera();
-		sprite = new SceneSprite(this);
+		renderer = new SceneRenderer(this);
 
 		_layerList = new Array<Int>();
 
@@ -148,6 +150,9 @@ class Scene extends Tweener
 	{
 		preUpdate.invoke();
 
+		// update the camera
+		camera.update();
+
 		// update the entities
 		for (e in _update)
 		{
@@ -159,7 +164,7 @@ class Scene extends Tweener
 			if (e.graphic != null && e.graphic.active) e.graphic.update();
 		}
 
-		// update the camera
+		// update the camera again, in case it's following an entity
 		camera.update();
 
 		// updates the cursor
@@ -186,7 +191,7 @@ class Scene extends Tweener
 	 */
 	public inline function layerVisible(layer:Int):Bool
 	{
-		return !_layerDisplay.exists(layer) || _layerDisplay.get(layer);
+		return (!_layerDisplay.exists(layer)) || _layerDisplay.get(layer);
 	}
 
 	/**
@@ -204,9 +209,17 @@ class Scene extends Tweener
 	 */
 	public function render()
 	{
-		preRender.invoke();
-		sprite.startFrame();
+		renderer.startFrame();
 		AtlasData.startScene(this);
+
+		if (alpha > 0)
+		{
+			drawContext.scene = this;
+			drawContext.setColor(color == null ? HXP.stage.color : color, alpha);
+			drawContext.rectFilled(0, 0, HXP.width * HXP.screen.fullScaleX, HXP.height * HXP.screen.fullScaleY);
+		}
+
+		preRender.invoke();
 
 		// render the entities in order of depth
 		for (layer in _layerList)
@@ -224,8 +237,8 @@ class Scene extends Tweener
 			HXP.cursor.render(camera);
 		}
 
-		sprite.endFrame();
 		postRender.invoke();
+		renderer.endFrame();
 	}
 
 	/**
@@ -234,7 +247,7 @@ class Scene extends Tweener
 	public var mouseX(get, null):Int;
 	inline function get_mouseX():Int
 	{
-		return Std.int(HXP.screen.mouseX + camera.x);
+		return Std.int((HXP.screen.mouseX / camera.scaleX + camera.x));
 	}
 
 	/**
@@ -243,13 +256,13 @@ class Scene extends Tweener
 	public var mouseY(get, null):Int;
 	inline function get_mouseY():Int
 	{
-		return Std.int(HXP.screen.mouseY + camera.y);
+		return Std.int((HXP.screen.mouseY / camera.scaleY + camera.y));
 	}
 
 	/**
-	 * Sprite used to store layer sprites when RenderMode.HARDWARE is set.
+	 * Used to store render data.
 	 */
-	public var sprite(default, null):SceneSprite;
+	public var renderer(default, null):SceneRenderer;
 
 	/**
 	 * Adds the Entity to the Scene at the end of the frame.
@@ -1300,9 +1313,6 @@ class Scene extends Tweener
 
 	var _recycled:Map<String, Entity>;
 	var _entityNames:Map<String, Entity>;
-
-	@:allow(haxepunk.Engine)
-	var _drawn:Bool = false;
 
 	static var _pooledEntityLists:Array<List<Entity>> = new Array();
 }

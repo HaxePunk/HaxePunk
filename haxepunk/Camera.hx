@@ -16,6 +16,12 @@ class Camera extends Point
 	public var fullScaleY(get, never):Float;
 	inline function get_fullScaleY() return scale * scaleY * HXP.screen.fullScaleY;
 
+	public var width(get, never):Float;
+	inline function get_width() return HXP.screen.width / fullScaleX;
+
+	public var height(get, never):Float;
+	inline function get_height() return HXP.screen.height / fullScaleY;
+
 	/**
 	 * Return an X value that, after scaling, will result in an integer.
 	 */

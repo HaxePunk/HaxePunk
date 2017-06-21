@@ -30,12 +30,22 @@ class Text extends Image
 	/**
 	 * Width of the text within the image.
 	 */
-	public var textWidth(default, null):Int;
+	@:isVar public var textWidth(get, null):Int = 0;
+	inline function get_textWidth()
+	{
+		if (_needsUpdate) updateTextBuffer();
+		return textWidth;
+	}
 
 	/**
 	 * Height of the text within the image.
 	 */
-	public var textHeight(default, null):Int;
+	@:isVar public var textHeight(get, null):Int = 0;
+	inline function get_textHeight()
+	{
+		if (_needsUpdate) updateTextBuffer();
+		return textHeight;
+	}
 
 	/**
 	 * If set, configuration for text border.
