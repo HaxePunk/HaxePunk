@@ -38,37 +38,19 @@ class GameScene extends Scene
 		super();
 
 		gravity = 5;
-		#if flash
-		incBunnies = 50;
-		#else
 		incBunnies = 100;
-		#end
 
 		numBunnies = incBunnies;
 
 		tapTime = 0;
 
-#if !flash
 		atlas = TextureAtlas.loadTexturePacker("atlas/assets.xml");
-#end
-		Key.define("add", [Key.SPACE]);
-		Mouse.define("add", MouseButton.LEFT);
-		onInputPressed.add.bind(onAdd);
-	}
-
-	function onAdd()
-	{
-		if (tapTime > 0)
-		{
-			addSomeBunnies();
-		}
-		tapTime = 0.6;
 	}
 
 	public override function begin()
 	{
 		// background
-		backdrop = new Backdrop(#if flash "gfx/grass.png" #else atlas.getRegion("grass.png") #end, true, true);
+		backdrop = new Backdrop(atlas.getRegion("grass.png"), true, true);
 		addGraphic(backdrop);
 
 		// bunnies
@@ -80,19 +62,18 @@ class GameScene extends Scene
 		add(bunny);
 
 		// and some big pirate
-		pirate = new Image(#if flash "gfx/pirate.png" #else atlas.getRegion("pirate.png") #end);
+		pirate = new Image(atlas.getRegion("pirate.png"));
 		addGraphic(pirate);
 
-		overlayText = new Text("numBunnies = " + numBunnies, 0, 0, 0, 0, { color:0x000000, size:30 } );
-		overlayText.resizable = true;
-		var overlay:Entity = new Entity(0, HXP.screen.height - 40, overlayText);
-		//overlay.layer = 0;
-		add(overlay);
+		// overlayText = new Text("numBunnies = " + numBunnies, 0, 0, 0, 0, { color:0x000000, size:30 } );
+		// overlayText.resizable = true;
+		// var overlay:Entity = new Entity(0, HXP.screen.height - 40, overlayText);
+		// add(overlay);
 	}
 
 	function addBunnies(numToAdd:Int):Void
 	{
-		var image = #if flash "gfx/wabbit_alpha.png" #else atlas.getRegion("bunny.png") #end;
+		var image = atlas.getRegion("bunny.png");
 		for (i in 0...(numToAdd))
 		{
 			bunnyImage = new BunnyImage(image);
@@ -108,6 +89,8 @@ class GameScene extends Scene
 		}
 
 		numBunnies = bunnies.length;
+		// overlayText.text = "numBunnies = " + numBunnies;
+		trace(numBunnies);
 	}
 
 	public override function update()
@@ -116,15 +99,22 @@ class GameScene extends Scene
 		pirate.x = Std.int((HXP.width - pirate.width) * (0.5 + 0.5 * Math.sin(t / 3000)));
 		pirate.y = Std.int(HXP.height - 1.3 * pirate.height + 70 - 30 * Math.sin(t / 100));
 
-		tapTime -= HXP.elapsed;
+		if (Mouse.mousePressed)
+		{
+			addingBunnies = true;
+		}
+		if (Mouse.mouseReleased)
+		{
+			addingBunnies = false;
+		}
+
+		if (addingBunnies)
+		{
+			addBunnies(incBunnies);
+		}
 
 		super.update();
 	}
 
-	function addSomeBunnies():Void
-	{
-		var more:Int = numBunnies + incBunnies;
-		addBunnies(more - numBunnies);
-		overlayText.text = "numBunnies = " + numBunnies;
-	}
+	var addingBunnies:Bool = false;
 }
