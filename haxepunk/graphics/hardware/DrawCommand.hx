@@ -164,7 +164,8 @@ class DrawCommand
 		else if (this.texture.id != texture.id) return false;
 		else if (this.shader.id != shader.id) return false;
 		else if (this.blend != blend) return false;
-		else {
+		else
+		{
 			// It is faster to do a null check once and compare the results.
 			var aRectIsNull = this.clipRect == null;
 			var bRectIsNull = clipRect == null;

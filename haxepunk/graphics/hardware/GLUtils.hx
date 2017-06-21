@@ -2,7 +2,6 @@ package haxepunk.graphics.hardware;
 
 import flash.gl.GL;
 import haxepunk.HXP;
-import haxepunk.graphics.hardware.Texture;
 
 @:dox(hide)
 class GLUtils
