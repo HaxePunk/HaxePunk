@@ -2,7 +2,6 @@ package haxepunk.graphics.tile;
 
 import flash.geom.Point;
 import flash.geom.Rectangle;
-import haxepunk.HXP;
 import haxepunk.Graphic.ImageType;
 
 /**

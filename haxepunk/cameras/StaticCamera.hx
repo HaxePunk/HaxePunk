@@ -1,7 +1,5 @@
 package haxepunk.cameras;
 
-import haxepunk.HXP;
-
 /**
  * A camera that doesn't move.
  */

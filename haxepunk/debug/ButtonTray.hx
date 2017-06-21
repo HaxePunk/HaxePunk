@@ -1,6 +1,5 @@
 package haxepunk.debug;
 
-import haxepunk.graphics.Image;
 import haxepunk.input.MouseManager;
 
 class ButtonTray extends EntityList<DebugButton>

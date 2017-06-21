@@ -19,7 +19,7 @@ import haxepunk.utils.Random;
 /**
  * Static catch-all class used to access global properties and functions.
  */
- @:access(haxepunk.Engine)
+@:access(haxepunk.Engine)
 class HXP
 {
 	/**

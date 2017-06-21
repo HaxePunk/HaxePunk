@@ -7,7 +7,6 @@ import haxepunk.HXP;
 import haxepunk.cameras.UICamera;
 import haxepunk.graphics.Image;
 import haxepunk.graphics.hardware.Renderer;
-import haxepunk.graphics.text.Text;
 import haxepunk.input.Key;
 import haxepunk.input.Mouse;
 import haxepunk.input.MouseManager;
@@ -18,7 +17,7 @@ import haxepunk.utils.DrawContext;
 @:access(haxepunk.Engine)
 class Console extends Scene
 {
-	static inline var SAMPLE_TIME:Float = 20/60;
+	static inline var SAMPLE_TIME:Float = 20 / 60;
 	static inline var DATA_SIZE:Int = Std.int(5 / SAMPLE_TIME);
 	static inline var CAMERA_PAN_PER_SECOND:Float = 256;
 	static inline var MIN_DRAG:Int = 8;
@@ -26,8 +25,8 @@ class Console extends Scene
 	public static function enable():Void enabled = true;
 
 	public static var enabled(get, set):Bool;
-	inline static function get_enabled() return HXP.engine.console != null;
-	inline static function set_enabled(v:Bool)
+	static inline function get_enabled() return HXP.engine.console != null;
+	static inline function set_enabled(v:Bool)
 	{
 		HXP.engine.console = new Console();
 		return true;

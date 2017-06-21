@@ -1,10 +1,6 @@
 package haxepunk.graphics.hardware;
 
-import flash.display.BlendMode;
-import flash.display.Sprite;
 import flash.geom.Rectangle;
-import haxepunk.utils.Color;
-import haxepunk.graphics.shader.ColorShader;
 
 @:access(haxepunk.Scene)
 @:access(haxepunk.graphics.hardware.DrawCommand)

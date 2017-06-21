@@ -36,12 +36,7 @@ class EngineRenderer extends OpenGLView
 		HXP.screen.renderer.flushScene(scene);
 	}
 
-	public function startScene(scene:Scene)
-	{
+	public function startScene(scene:Scene) {}
 
-	}
-
-	public function endScene(scene:Scene)
-	{
-	}
+	public function endScene(scene:Scene) {}
 }

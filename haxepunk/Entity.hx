@@ -5,7 +5,6 @@ import haxe.ds.Either.Left;
 import haxe.ds.Either.Right;
 import haxepunk.ds.OneOf;
 import haxepunk.graphics.Graphiclist;
-import haxepunk.masks.Hitbox;
 import haxepunk.utils.MathUtil;
 
 typedef SolidType = OneOf<String, Array<String>>;

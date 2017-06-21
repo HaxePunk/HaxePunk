@@ -8,10 +8,8 @@ import haxepunk.HXP;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.IAtlasRegion;
 import haxepunk.graphics.hardware.Texture;
-import haxepunk.masks.Polygon;
 import haxepunk.utils.Color;
 import haxepunk.utils.MathUtil;
-import haxepunk.utils.Vector;
 
 /**
  * Performance-optimized non-animated image. Can be drawn to the screen with transformations.

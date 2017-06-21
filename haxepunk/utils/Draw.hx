@@ -1,15 +1,7 @@
 package haxepunk.utils;
 
 import flash.display.BlendMode;
-import haxepunk.Entity;
-import haxepunk.HXP;
-import haxepunk.Graphic;
-import haxepunk.graphics.text.Text;
-import haxepunk.graphics.hardware.DrawCommand;
-import haxepunk.graphics.shader.ColorShader;
 import haxepunk.graphics.shader.Shader;
-import haxepunk.math.Vector2;
-import haxepunk.utils.Color;
 
 /**
  * Static class with access to miscellanious drawing functions.
