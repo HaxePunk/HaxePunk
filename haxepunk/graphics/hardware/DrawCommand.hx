@@ -8,7 +8,7 @@ import haxepunk.utils.Color;
 @:allow(haxepunk.graphics.hardware.DrawCommand)
 @:allow(haxepunk.graphics.hardware.DrawCommandBatch)
 @:allow(haxepunk.graphics.hardware.HardwareRenderer)
-private class RenderData
+private class DrawTriangle
 {
 	public function new() {}
 
@@ -91,7 +91,7 @@ private class RenderData
 
 	static inline function cross(ux:Float, uy:Float, vx:Float, vy:Float):Float return ux * vy - uy * vx;
 
-	var _next:RenderData;
+	var _next:DrawTriangle;
 }
 
 /**
@@ -117,7 +117,7 @@ class DrawCommand
 			command = new DrawCommand();
 		}
 		command.shader = shader;
-		command.texture = texture;
+		command.texture = texture == null ? Texture.nullTexture : texture;
 		command.smooth = smooth;
 		command.blend = blend;
 		command.clipRect = clipRect;
@@ -131,7 +131,7 @@ class DrawCommand
 			var cmd = new DrawCommand();
 			for (i in 0 ... m)
 			{
-				cmd.addData(new RenderData());
+				cmd.addData(new DrawTriangle());
 			}
 			cmd.recycle();
 		}
@@ -139,7 +139,7 @@ class DrawCommand
 	}
 
 	static var _pool:DrawCommand = _prePopulatePool(32, 4);
-	static var _dataPool:RenderData;
+	static var _dataPool:DrawTriangle;
 
 	public var shader:Shader;
 	public var texture:Texture;
@@ -191,7 +191,7 @@ class DrawCommand
 	{
 		if (alpha > 0)
 		{
-			var data:RenderData = getData();
+			var data:DrawTriangle = getData();
 			data.tx1 = tx1;
 			data.ty1 = ty1;
 			data.uvx1 = uvx1;
@@ -226,8 +226,8 @@ class DrawCommand
 		_pool = this;
 	}
 
-	@:access(haxepunk.graphics.hardware.RenderData)
-	public inline function loopRenderData(callback:RenderData->Void)
+	@:access(haxepunk.graphics.hardware.DrawTriangle)
+	public inline function loopTriangles(callback:DrawTriangle->Void)
 	{
 		var data = this.data;
 		while (data != null)
@@ -237,9 +237,9 @@ class DrawCommand
 		}
 	}
 
-	inline function getData():RenderData
+	inline function getData():DrawTriangle
 	{
-		var data:RenderData;
+		var data:DrawTriangle;
 		if (_dataPool != null)
 		{
 			data = _dataPool;
@@ -248,12 +248,12 @@ class DrawCommand
 		}
 		else
 		{
-			data = new RenderData();
+			data = new DrawTriangle();
 		}
 		return data;
 	}
 
-	inline function addData(data:RenderData):Void
+	inline function addData(data:DrawTriangle):Void
 	{
 		if (this.data == null)
 		{
@@ -307,8 +307,8 @@ class DrawCommand
 		#end
 	}
 
-	var data:RenderData;
-	var _lastData:RenderData;
+	var data:DrawTriangle;
+	var _lastData:DrawTriangle;
 	var _prev:DrawCommand;
 	var _next:DrawCommand;
 }

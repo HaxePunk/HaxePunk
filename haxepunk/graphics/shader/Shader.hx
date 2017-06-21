@@ -122,7 +122,7 @@ class Shader
 		var hasTexCoord = texCoord.isEnabled;
 		var hasColor = color.isEnabled;
 
-		drawCommand.loopRenderData(function(data)
+		drawCommand.loopTriangles(function(data)
 		{
 			var c:UInt = hasColor ? data.color.withAlpha(data.alpha) : 0;
 

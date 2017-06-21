@@ -18,6 +18,8 @@ class Texture
 
 	public var bitmap(default, null):BitmapData;
 
+	public static var nullTexture:Texture = new Texture(null);
+
 	function new(bitmapData:BitmapData)
 	{
 		id = idSeq++;

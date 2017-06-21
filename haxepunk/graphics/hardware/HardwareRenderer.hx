@@ -133,7 +133,7 @@ class HardwareRenderer
 				#if (gl_debug || debug) checkForGLErrors(); #end
 
 				var texture:Texture = drawCommand.texture;
-				if (texture != null) GLUtils.bindTexture(texture, drawCommand.smooth);
+				if (texture.bitmap != null) GLUtils.bindTexture(texture, drawCommand.smooth);
 
 				#if (gl_debug || debug) checkForGLErrors(); #end
 
