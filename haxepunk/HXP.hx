@@ -464,7 +464,7 @@ class HXP
 	{
 		if (_console != null)
 		{
-			_console.watch(properties);
+			_console.watch([for (p in properties) Std.string(p)]);
 		}
 	});
 
