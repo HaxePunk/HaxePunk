@@ -31,7 +31,7 @@ class DrawCommandBatch
 	{
 		if (blend == null) blend = BlendMode.ALPHA;
 
-		if (last != null && last.match(texture, shader, smooth, blend, clipRect))
+		if (last != null && texture != null && last.match(texture, shader, smooth, blend, clipRect))
 		{
 			// we can reuse the most recent draw call
 			return last;
