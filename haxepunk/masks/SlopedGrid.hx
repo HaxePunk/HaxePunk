@@ -426,7 +426,7 @@ class SlopedGrid extends Hitbox
 			for (x in startx...destx)
 			{
 				var tile = row[x];
-				if (tile == null || tile.type == null) {}
+				if (tile == null) {}
 				else if (tile.type == Solid)
 				{
 					dc.setColor(0xffffff, 0.3);
