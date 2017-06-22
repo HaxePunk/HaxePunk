@@ -11,6 +11,7 @@ bin
 log.txt
 tests/report
 .temp
+dump
 
 TestMain.hx
 TestSuite.hx
