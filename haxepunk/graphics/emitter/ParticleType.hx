@@ -24,7 +24,7 @@ class ParticleType
 	 * @param	frameWidth		Frame width.
 	 * @param	frameHeight		Frame height.
 	 */
-	public function new(name:String, blendMode:BlendMode)
+	public function new(name:String, ?blendMode:BlendMode)
 	{
 		_red = _green = _blue = _alpha = _scale = _trailLength = 1;
 		_blendMode = blendMode;
