@@ -1,6 +1,6 @@
 package haxepunk.graphics.hardware;
 
-import flash.display.BlendMode;
+import haxepunk.utils.BlendMode;
 import flash.geom.Rectangle;
 import haxepunk.graphics.shader.Shader;
 import haxepunk.utils.Color;
@@ -29,7 +29,7 @@ class DrawCommandBatch
 
 	public function getDrawCommand(texture:Texture, shader:Shader, smooth:Bool, blend:BlendMode, clipRect:Rectangle, x1:Float=0, y1:Float=0, x2:Float=0, y2:Float=0, x3:Float=0, y3:Float=0)
 	{
-		if (blend == null) blend = BlendMode.ALPHA;
+		if (blend == null) blend = BlendMode.Alpha;
 
 		if (last != null && texture != null && last.match(texture, shader, smooth, blend, clipRect))
 		{

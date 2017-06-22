@@ -1,6 +1,6 @@
 package haxepunk.graphics.emitter;
 
-import flash.display.BlendMode;
+import haxepunk.utils.BlendMode;
 import haxepunk.Graphic.TileType;
 
 /**

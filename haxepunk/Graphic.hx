@@ -1,7 +1,7 @@
 package haxepunk;
 
 import haxe.ds.Either;
-import flash.display.BlendMode;
+import haxepunk.utils.BlendMode;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxepunk.graphics.atlas.Atlas;
@@ -112,7 +112,7 @@ class Graphic
 
 	/**
 	 * Optional blend mode to use when drawing this image.
-	 * Use constants from the flash.display.BlendMode class.
+	 * Use constants from the haxepunk.utils.BlendMode class.
 	 */
 	public var blend:BlendMode;
 

@@ -1,6 +1,6 @@
 package haxepunk.debug;
 
-import flash.display.BlendMode;
+import haxepunk.utils.BlendMode;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxepunk.HXP;
@@ -93,7 +93,7 @@ class Console extends Scene
 		drawCalls = new CircularBuffer(DATA_SIZE);
 
 		logo = new Image("graphics/debug/console_logo.png");
-		logo.blend = BlendMode.MULTIPLY;
+		logo.blend = BlendMode.Multiply;
 		addGraphic(logo);
 
 		fpsChart = new Metric("FPS", fps, 0xff0000, HXP.frameRate);
@@ -137,7 +137,7 @@ class Console extends Scene
 
 		add(mouseManager);
 
-		color = 0xc0c0c0;
+		bgColor = 0xc0c0c0;
 
 		preRender.bind(debugRender);
 
@@ -269,7 +269,7 @@ class Console extends Scene
 
 		layerList.x = camera.width - layerList.width - 8;
 
-		alpha = paused ? 0.75 : 0;
+		bgAlpha = paused ? 0.75 : 0;
 
 		updateLists();
 	}

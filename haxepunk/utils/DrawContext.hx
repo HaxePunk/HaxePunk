@@ -1,6 +1,6 @@
 package haxepunk.utils;
 
-import flash.display.BlendMode;
+import haxepunk.utils.BlendMode;
 import haxepunk.Entity;
 import haxepunk.HXP;
 import haxepunk.Graphic;

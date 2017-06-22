@@ -6,6 +6,8 @@ import haxepunk.Signal;
 import haxepunk.graphics.atlas.AtlasData;
 import haxepunk.graphics.hardware.SceneRenderer;
 import haxepunk.graphics.shader.SceneShader;
+import haxepunk.utils.BlendMode;
+import haxepunk.utils.Color;
 import haxepunk.utils.DrawContext;
 import haxepunk.utils.MathUtil;
 
@@ -26,14 +28,14 @@ class Scene extends Tweener
 	 * Background color of this Scene. If null, will use HXP.stage.color.
 	 * @since	2.6.0
 	 */
-	public var color:Null<Int> = null;
+	public var bgColor:Null<Color> = null;
 
 	/**
 	 * Background opacity. If less than 1, Scenes behind this Scene in the stack
 	 * will be rendered underneath.
 	 * @since	2.6.0
 	 */
-	public var alpha:Float = 1;
+	public var bgAlpha:Float = 1;
 
 	/**
 	 * Point used to determine drawing offset in the render loop.
@@ -212,11 +214,12 @@ class Scene extends Tweener
 		renderer.startFrame();
 		AtlasData.startScene(this);
 
-		if (alpha > 0)
+		if (bgAlpha > 0)
 		{
 			drawContext.scene = this;
-			drawContext.setColor(color == null ? HXP.stage.color : color, alpha);
-			drawContext.rectFilled(0, 0, HXP.width * HXP.screen.fullScaleX, HXP.height * HXP.screen.fullScaleY);
+			drawContext.blend = BlendMode.Alpha;
+			drawContext.setColor(bgColor == null ? HXP.stage.color : bgColor, bgAlpha);
+			drawContext.rectFilled(0, 0, HXP.width, HXP.height);
 		}
 
 		preRender.invoke();

@@ -20,7 +20,7 @@ class Texture
 
 	public static var nullTexture:Texture = new Texture(null);
 
-	function new(bitmapData:BitmapData)
+	public function new(bitmapData:BitmapData)
 	{
 		id = idSeq++;
 		bitmap = bitmapData;

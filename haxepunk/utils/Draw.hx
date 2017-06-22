@@ -1,6 +1,6 @@
 package haxepunk.utils;
 
-import flash.display.BlendMode;
+import haxepunk.utils.BlendMode;
 import haxepunk.graphics.shader.Shader;
 
 /**

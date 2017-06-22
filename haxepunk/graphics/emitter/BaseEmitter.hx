@@ -1,6 +1,6 @@
 package haxepunk.graphics.emitter;
 
-import flash.display.BlendMode;
+import haxepunk.utils.BlendMode;
 import flash.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Graphic;

@@ -1,8 +1,8 @@
 package haxepunk.graphics.hardware;
 
-import flash.display.BlendMode;
 import flash.geom.Rectangle;
 import haxepunk.graphics.shader.Shader;
+import haxepunk.utils.BlendMode;
 import haxepunk.utils.Color;
 
 @:allow(haxepunk.graphics.hardware.DrawCommand)
@@ -144,7 +144,7 @@ class DrawCommand
 	public var shader:Shader;
 	public var texture:Texture;
 	public var smooth:Bool = false;
-	public var blend:BlendMode = BlendMode.ALPHA;
+	public var blend:BlendMode = BlendMode.Alpha;
 	public var clipRect:Rectangle = null;
 	#if !no_render_batch
 	public var bounds:Rectangle = new Rectangle();

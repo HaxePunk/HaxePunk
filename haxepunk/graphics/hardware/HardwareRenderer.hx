@@ -2,12 +2,12 @@ package haxepunk.graphics.hardware;
 
 import haxe.PosInfos;
 import flash.geom.Rectangle;
-import flash.display.BlendMode;
 import flash.geom.Point;
 import flash.gl.GL;
 import flash.gl.GLFramebuffer;
 import haxepunk.HXP;
 import haxepunk.graphics.shader.SceneShader;
+import haxepunk.utils.BlendMode;
 
 /**
  * OpenGL-based renderer. Based on work by @Yanrishatum and @Beeblerox.
@@ -56,19 +56,20 @@ class HardwareRenderer
 	{
 		switch (blend)
 		{
-			case BlendMode.ADD:
-				GL.blendEquationSeparate(GL.FUNC_ADD, GL.FUNC_ADD);
+			case BlendMode.Add:
+				GL.blendEquation(GL.FUNC_ADD);
 				GL.blendFuncSeparate(GL.ONE, GL.ONE, GL.ZERO, GL.ONE);
-			case BlendMode.MULTIPLY:
-				GL.blendEquationSeparate(GL.FUNC_ADD, GL.FUNC_ADD);
+			case BlendMode.Multiply:
+				GL.blendEquation(GL.FUNC_ADD);
 				GL.blendFuncSeparate(GL.DST_COLOR, GL.ONE_MINUS_SRC_ALPHA, GL.ZERO, GL.ONE);
-			case BlendMode.SCREEN:
-				GL.blendEquationSeparate(GL.FUNC_ADD, GL.FUNC_ADD);
+			case BlendMode.Screen:
+				GL.blendEquation(GL.FUNC_ADD);
 				GL.blendFuncSeparate(GL.ONE, GL.ONE_MINUS_SRC_COLOR, GL.ZERO, GL.ONE);
-			case BlendMode.SUBTRACT:
+			case BlendMode.Subtract:
 				GL.blendEquationSeparate(GL.FUNC_REVERSE_SUBTRACT, GL.FUNC_ADD);
 				GL.blendFuncSeparate(GL.ONE, GL.ONE, GL.ZERO, GL.ONE);
 			default:
+				// BlendMode.Alpha
 				GL.blendEquation(GL.FUNC_ADD);
 				GL.blendFunc(GL.ONE, GL.ONE_MINUS_SRC_ALPHA);
 		}

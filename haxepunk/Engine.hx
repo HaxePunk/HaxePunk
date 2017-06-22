@@ -476,7 +476,7 @@ private class VisibleSceneIterator
 		{
 			// find the last visible scene, falling through transparent scenes
 			i = _scenes.length - 1;
-			while (_scenes[i].alpha < 1 && i > 0)
+			while (_scenes[i].bgAlpha < 1 && i > 0)
 			{
 				--i;
 			}
