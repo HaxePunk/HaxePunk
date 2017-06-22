@@ -263,12 +263,6 @@ class HXP
 		return _pan;
 	}
 
-	public static function createBitmap(width:Int, height:Int, transparent:Bool, color:haxepunk.utils.Color):haxepunk.Graphic.TileType
-	{
-		throw "Please remove HXP.createBitmap() stub after updating examples!";
-		return null;
-	}
-
 	/**
 	 * Optimized version of Lambda.indexOf for Array on dynamic platforms (Lambda.indexOf is less performant on those targets).
 	 *
