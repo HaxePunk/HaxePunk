@@ -1,10 +1,10 @@
 package haxepunk.masks;
 
 import haxepunk.Mask;
-import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxepunk.HXP;
+import haxepunk.graphics.hardware.Texture;
 
 /**
  * A bitmap mask used for pixel-perfect collision.
@@ -27,10 +27,10 @@ class Pixelmask extends Hitbox
 		super();
 
 		// fetch mask data
-		if (Std.is(source, BitmapData))
+		if (Std.is(source, Texture))
 			_data = source;
 		else
-			_data = HXP.getBitmap(source);
+			_data = Texture.fromAsset(source);
 
 		if (_data == null)
 			throw "Invalid Pixelmask source image.";
@@ -75,7 +75,7 @@ class Pixelmask extends Hitbox
 
 		for (dx in Math.floor(intersect.x)...Math.floor(intersect.x + intersect.width + 1))
 			for (dy in Math.floor(intersect.y)...Math.floor(intersect.y + intersect.height + 1))
-				if ((_data.getPixel32(dx, dy) >> 24) & 0xFF > 0)
+				if ((_data.getPixel(dx, dy) >> 24) & 0xFF > 0)
 					return true;
 
 		return false;
@@ -103,7 +103,7 @@ class Pixelmask extends Hitbox
 
 		for (dx in Math.floor(intersect.x)...Math.floor(intersect.x + intersect.width + 1))
 			for (dy in Math.floor(intersect.y)...Math.floor(intersect.y + intersect.height + 1))
-				if ((_data.getPixel32(dx, dy) >> 24) & 0xFF > 0)
+				if ((_data.getPixel(dx, dy) >> 24) & 0xFF > 0)
 					return true;
 
 		return false;
@@ -130,8 +130,8 @@ class Pixelmask extends Hitbox
 		{
 			for (dy in Math.floor(intersect.y)...Math.floor(intersect.y + intersect.height + 1))
 			{
-				var p1 = (_data.getPixel32(dx, dy) >> 24) & 0xFF;
-				var p2 = (other._data.getPixel32(Math.floor(dx - _point.x),
+				var p1 = (_data.getPixel(dx, dy) >> 24) & 0xFF;
+				var p2 = (other._data.getPixel(Math.floor(dx - _point.x),
 						Math.floor(dy - _point.y)) >> 24) & 0xFF;
 
 				if (p1 > 0 && p2 > 0)
@@ -145,11 +145,11 @@ class Pixelmask extends Hitbox
 	}
 
 	/**
-	 * Current BitmapData mask.
+	 * Current Texture mask.
 	 */
-	public var data(get, set):BitmapData;
-	function get_data():BitmapData return _data;
-	function set_data(value:BitmapData):BitmapData
+	public var data(get, set):Texture;
+	function get_data():Texture return _data;
+	function set_data(value:Texture):Texture
 	{
 		_data = value;
 		_width = value.width;
@@ -159,7 +159,7 @@ class Pixelmask extends Hitbox
 	}
 
 	// Pixelmask information.
-	var _data:BitmapData;
+	var _data:Texture;
 
 	// Global objects.
 	var _rect:Rectangle;

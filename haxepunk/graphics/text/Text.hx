@@ -1,7 +1,6 @@
 package haxepunk.graphics.text;
 
 import haxe.ds.StringMap;
-import flash.display.BitmapData;
 import flash.geom.ColorTransform;
 import flash.geom.Matrix;
 import flash.geom.Point;
@@ -13,6 +12,7 @@ import flash.Assets;
 import haxepunk.HXP;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.AtlasRegion;
+import haxepunk.graphics.hardware.Texture;
 import haxepunk.utils.Color;
 
 /**
@@ -48,7 +48,7 @@ class Text extends Image
 		{
 			// create a second buffer for the border, to allow independently
 			// changing its alpha/color without a full buffer update
-			_borderBuffer = HXP.createBitmap(
+			_borderBuffer = Texture.create(
 				Std.int(_sourceRect.width + bufferMargin * 2),
 				Std.int(_sourceRect.height + bufferMargin * 2),
 				true
@@ -115,9 +115,9 @@ class Text extends Image
 		_width = (width == 0 ? Std.int(_field.textWidth + 4) : width);
 		_height = (height == 0 ? Std.int(_field.textHeight + 4) : height);
 
-		var source = HXP.createBitmap(_width, _height, true);
+		var source = Texture.create(_width, _height, true);
 		_source = source;
-		_sourceRect = source.rect;
+		_sourceRect = source.bitmap.rect;
 		_region = Atlas.loadImageAsRegion(_source);
 		super();
 
@@ -216,8 +216,8 @@ class Text extends Image
 		}
 		else
 		{
-			_source.fillRect(_sourceRect, 0);
-			if (border != null && border.alpha > 0) _borderSource.fillRect(_sourceRect, 0);
+			_source.bitmap.fillRect(_sourceRect, 0);
+			if (border != null && border.alpha > 0) _borderSource.bitmap.fillRect(_sourceRect, 0);
 		}
 
 		_field.width = _width;
@@ -226,15 +226,15 @@ class Text extends Image
 		updateBuffer(true);
 		if (border != null && border.alpha > 0)
 		{
-			_borderSource.draw(_borderBuffer);
+			_borderSource.bitmap.draw(_borderBuffer.bitmap);
 		}
-		_source.draw(_buffer);
+		_source.bitmap.draw(_buffer.bitmap);
 	}
 
 	function createBuffer()
 	{
 		if (_buffer != null) _buffer.dispose();
-		_buffer = HXP.createBitmap(
+		_buffer = Texture.create(
 			Std.int(_sourceRect.width + bufferMargin * 2),
 			Std.int(_sourceRect.height + bufferMargin * 2),
 			true
@@ -246,7 +246,7 @@ class Text extends Image
 			_borderBackBuffer.dispose();
 			_borderBackBuffer = _buffer.clone();
 		}
-		_bufferRect = _buffer.rect;
+		_bufferRect = _buffer.bitmap.rect;
 	}
 
 	/**
@@ -257,11 +257,11 @@ class Text extends Image
 	{
 		if (clearBefore)
 		{
-			_buffer.fillRect(_bufferRect, 0);
+			_buffer.bitmap.fillRect(_bufferRect, 0);
 			if (border != null && border.alpha > 0)
 			{
-				_borderBuffer.fillRect(_bufferRect, 0);
-				_borderBackBuffer.fillRect(_bufferRect, 0);
+				_borderBuffer.bitmap.fillRect(_bufferRect, 0);
+				_borderBackBuffer.bitmap.fillRect(_bufferRect, 0);
 			}
 		}
 		if (_source == null) return;
@@ -270,7 +270,7 @@ class Text extends Image
 
 		if (border != null)
 		{
-			_borderBuffer.draw(_field, _matrix, _whiteTint);
+			_borderBuffer.bitmap.draw(_field, _matrix, _whiteTint);
 
 			inline function drawBorder(ox, oy)
 			{
@@ -281,9 +281,9 @@ class Text extends Image
 				_borderBackBuffer = _swap;
 
 				_offset.setTo(0, 0);
-				_borderBuffer.copyPixels(_borderBackBuffer, _bufferRect, _offset, true);
+				_borderBuffer.bitmap.copyPixels(_borderBackBuffer.bitmap, _bufferRect, _offset, true);
 				_offset.setTo(ox, oy);
-				_borderBuffer.copyPixels(_borderBackBuffer, _bufferRect, _offset, true);
+				_borderBuffer.bitmap.copyPixels(_borderBackBuffer.bitmap, _bufferRect, _offset, true);
 			}
 			switch (border.style)
 			{
@@ -311,7 +311,7 @@ class Text extends Image
 			}
 		}
 
-		_buffer.draw(_field, _matrix);
+		_buffer.bitmap.draw(_field, _matrix);
 	}
 
 	/**
@@ -332,17 +332,17 @@ class Text extends Image
 
 		if (_width > _source.width || _height > _source.height)
 		{
-			_source = HXP.createBitmap(
+			_source = Texture.create(
 				Std.int(Math.max(_width, _source.width)),
 				Std.int(Math.max(_height, _source.height)),
 				true
 			);
 
-			_sourceRect = _source.rect;
+			_sourceRect = _source.bitmap.rect;
 
 			if (border != null && border.alpha > 0)
 			{
-				_borderSource = HXP.createBitmap(
+				_borderSource = Texture.create(
 					Std.int(Math.max(_width, _source.width)),
 					Std.int(Math.max(_height, _source.height)),
 					true
@@ -560,8 +560,8 @@ class Text extends Image
 	var _field:TextField;
 	var _format:TextFormat;
 	var _styles:StringMap<TextFormat>;
-	var _source:BitmapData;
-	var _buffer:BitmapData;
+	var _source:Texture;
+	var _buffer:Texture;
 	var _bufferRect:Rectangle;
 
 	var _offset:Point = new Point();
@@ -569,8 +569,8 @@ class Text extends Image
 	var _needsUpdate:Bool = true;
 
 	var _borderTint:ColorTransform = new ColorTransform();
-	var _borderBuffer:BitmapData;
-	var _borderBackBuffer:BitmapData;
+	var _borderBuffer:Texture;
+	var _borderBackBuffer:Texture;
 	var _borderRegion:AtlasRegion;
-	var _borderSource:BitmapData;
+	var _borderSource:Texture;
 }

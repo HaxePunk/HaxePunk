@@ -1,7 +1,6 @@
 package haxepunk;
 
 import haxe.Timer;
-import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.display.Stage;
 import flash.display.StageDisplayState;
@@ -13,7 +12,6 @@ import haxepunk.Tween.TweenType;
 import haxepunk.debug.Console;
 import haxepunk.tweens.misc.Alarm;
 import haxepunk.tweens.misc.MultiVarTween;
-import haxepunk.utils.Color;
 import haxepunk.utils.HaxelibInfo;
 import haxepunk.utils.MathUtil;
 import haxepunk.utils.Random;
@@ -265,6 +263,12 @@ class HXP
 		return _pan;
 	}
 
+	public static function createBitmap(width:Int, height:Int, transparent:Bool, color:haxepunk.utils.Color):haxepunk.Graphic.TileType
+	{
+		throw "Please remove HXP.createBitmap() stub after updating examples!";
+		return null;
+	}
+
 	/**
 	 * Optimized version of Lambda.indexOf for Array on dynamic platforms (Lambda.indexOf is less performant on those targets).
 	 *
@@ -349,69 +353,6 @@ class HXP
 		}
 
 		list.insert(result > 0 ? mid : mid + 1, key);
-	}
-
-	/**
-	 * Fetches a stored BitmapData object represented by the source.
-	 * @param	source		Embedded Bitmap class.
-	 * @return	The stored BitmapData object.
-	 */
-	public static function getBitmap(name:String):BitmapData
-	{
-		if (_bitmap.exists(name))
-			return _bitmap.get(name);
-
-		var data:BitmapData = openfl.Assets.getBitmapData(name, false);
-
-		if (data != null)
-			_bitmap.set(name, data);
-
-		return data;
-	}
-
-	/**
-	 * Overwrites the image cache for a given name
-	 * @param name  The name of the BitmapData to overwrite.
-	 * @param data  The BitmapData object.
-	 * @return True if the prior bitmap was removed.
-	 */
-	public static function overwriteBitmapCache(name:String, data:BitmapData):Bool
-	{
-		var removed = removeBitmap(name);
-		_bitmap.set(name, data);
-		return removed;
-	}
-
-	/**
-	 * Removes a bitmap from the cache
-	 * @param name  The name of the bitmap to remove.
-	 * @return True if the bitmap was removed.
-	 */
-	public static function removeBitmap(name:String):Bool
-	{
-		if (_bitmap.exists(name))
-		{
-			var bitmap = _bitmap.get(name);
-			bitmap.dispose();
-			bitmap = null;
-			return _bitmap.remove(name);
-		}
-		return false;
-	}
-
-	/**
-	 * Creates BitmapData based on platform specifics
-	 *
-	 * @param	width			BitmapData's width.
-	 * @param	height			BitmapData's height.
-	 * @param	transparent		If the BitmapData can have transparency.
-	 * @param	color			BitmapData's color.
-	 *
-	 * @return	The BitmapData.
-	 */
-	public static function createBitmap(width:Int, height:Int, transparent:Bool = false, color:Color = Color.Black):BitmapData
-	{
-		return new BitmapData(width, height, transparent, color);
 	}
 
 	/**
@@ -614,9 +555,6 @@ class HXP
 	@:dox(hide) public static var _renderTime:Float;
 	@:dox(hide) public static var _gameTime:Float;
 	@:dox(hide) public static var _systemTime:Float;
-
-	// Bitmap storage.
-	static var _bitmap:Map<String, BitmapData> = new Map<String, BitmapData>();
 
 	// Volume control.
 	static var _pan:Float = 0;

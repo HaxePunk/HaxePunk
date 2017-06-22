@@ -1,6 +1,5 @@
 package haxepunk.graphics;
 
-import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.display.Graphics;
@@ -11,6 +10,7 @@ import haxepunk.Graphic;
 import haxepunk.HXP;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.IAtlasRegion;
+import haxepunk.graphics.hardware.Texture;
 import haxepunk.masks.Polygon;
 import haxepunk.utils.Color;
 import haxepunk.utils.MathUtil;
@@ -156,7 +156,7 @@ class Image extends Graphic
 		if (width == 0 || height == 0)
 			throw "Illegal rect, sizes cannot be 0.";
 
-		var source:BitmapData = HXP.createBitmap(width, height, true, 0xFFFFFFFF);
+		var source:Texture = Texture.create(width, height, true, 0xFFFFFFFF);
 		var image = new Image(Atlas.loadImageAsRegion(source));
 
 		image.color = color;
@@ -180,10 +180,10 @@ class Image extends Graphic
 		HXP.sprite.graphics.clear();
 		HXP.sprite.graphics.beginFill(0xFFFFFF);
 		HXP.sprite.graphics.drawCircle(radius, radius, radius);
-		var data:BitmapData = HXP.createBitmap(radius * 2, radius * 2, true, 0);
-		data.draw(HXP.sprite);
+		var texture:Texture = Texture.create(radius * 2, radius * 2, true, 0);
+		texture.bitmap.draw(HXP.sprite);
 
-		var image = new Image(Atlas.loadImageAsRegion(data));
+		var image = new Image(Atlas.loadImageAsRegion(texture));
 
 		image.color = color;
 		image.alpha = alpha;
@@ -249,10 +249,10 @@ class Image extends Graphic
 		HXP.matrix.identity();
 		HXP.matrix.translate( -minX, -minY);
 
-		var data:BitmapData = HXP.createBitmap(w, h, true, 0);
-		data.draw(HXP.sprite, HXP.matrix);
+		var texture:Texture = Texture.create(w, h, true, 0);
+		texture.bitmap.draw(HXP.sprite, HXP.matrix);
 
-		var image = new Image(Atlas.loadImageAsRegion(data));
+		var image = new Image(Atlas.loadImageAsRegion(texture));
 
 		// adjust position, origin and angle
 		image.x = polygon.x + polygon.origin.x;

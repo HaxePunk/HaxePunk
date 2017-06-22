@@ -1,7 +1,6 @@
 package haxepunk.graphics.hardware;
 
 import flash.display.BlendMode;
-import flash.display.BitmapData;
 import flash.geom.Rectangle;
 import haxepunk.graphics.shader.Shader;
 import haxepunk.utils.Color;
@@ -9,7 +8,7 @@ import haxepunk.utils.Color;
 @:allow(haxepunk.graphics.hardware.DrawCommand)
 @:allow(haxepunk.graphics.hardware.DrawCommandBatch)
 @:allow(haxepunk.graphics.hardware.HardwareRenderer)
-private class RenderData
+private class DrawTriangle
 {
 	public function new() {}
 
@@ -92,7 +91,7 @@ private class RenderData
 
 	static inline function cross(ux:Float, uy:Float, vx:Float, vy:Float):Float return ux * vy - uy * vx;
 
-	var _next:RenderData;
+	var _next:DrawTriangle;
 }
 
 /**
@@ -104,7 +103,7 @@ private class RenderData
 @:allow(haxepunk.graphics.hardware.DrawCommandBatch)
 class DrawCommand
 {
-	public static function create(texture:BitmapData, shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
+	public static function create(texture:Texture, shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
 	{
 		var command:DrawCommand;
 		if (_pool != null)
@@ -118,7 +117,7 @@ class DrawCommand
 			command = new DrawCommand();
 		}
 		command.shader = shader;
-		command.texture = texture;
+		command.texture = texture == null ? Texture.nullTexture : texture;
 		command.smooth = smooth;
 		command.blend = blend;
 		command.clipRect = clipRect;
@@ -132,7 +131,7 @@ class DrawCommand
 			var cmd = new DrawCommand();
 			for (i in 0 ... m)
 			{
-				cmd.addData(new RenderData());
+				cmd.addData(new DrawTriangle());
 			}
 			cmd.recycle();
 		}
@@ -140,10 +139,10 @@ class DrawCommand
 	}
 
 	static var _pool:DrawCommand = _prePopulatePool(32, 4);
-	static var _dataPool:RenderData;
+	static var _dataPool:DrawTriangle;
 
 	public var shader:Shader;
-	public var texture:BitmapData;
+	public var texture:Texture;
 	public var smooth:Bool = false;
 	public var blend:BlendMode = BlendMode.ALPHA;
 	public var clipRect:Rectangle = null;
@@ -154,26 +153,45 @@ class DrawCommand
 
 	function new() {}
 
-	public inline function match(texture:BitmapData, shader:Shader, smooth:Bool, blend:BlendMode, clipRect:Rectangle):Bool
+	/**
+	 * Compares values to this draw command to see if they all match. This is used by the batcher to reuse the previous draw command.
+	 */
+	public inline function match(texture:Texture, shader:Shader, smooth:Bool, blend:BlendMode, clipRect:Rectangle):Bool
 	{
-		return this.smooth == smooth &&
-			this.blend == blend &&
-			this.texture == texture &&
-			this.shader == shader &&
-			((this.clipRect == null && clipRect == null) ||
-				(this.clipRect != null && clipRect != null &&
-				Std.int(this.clipRect.x) == Std.int(clipRect.x) &&
-				Std.int(this.clipRect.y) == Std.int(clipRect.y) &&
-				Std.int(this.clipRect.width) == Std.int(clipRect.width) &&
-				Std.int(this.clipRect.height) == Std.int(clipRect.height)
-			));
+		// These conditions are checked as individual if statements
+		// to reduce the number of temporary variables created in hxcpp.
+		if (this.smooth != smooth) return false;
+		else if (this.texture.id != texture.id) return false;
+		else if (this.shader.id != shader.id) return false;
+		else if (this.blend != blend) return false;
+		else
+		{
+			// It is faster to do a null check once and compare the results.
+			var aRectIsNull = this.clipRect == null;
+			var bRectIsNull = clipRect == null;
+			if (aRectIsNull != bRectIsNull) return false; // one rect is null the other is not
+			if (aRectIsNull) return true; // both are null, return true
+			else return Std.int(this.clipRect.x) == Std.int(clipRect.x) &&
+					Std.int(this.clipRect.y) == Std.int(clipRect.y) &&
+					Std.int(this.clipRect.width) == Std.int(clipRect.width) &&
+					Std.int(this.clipRect.height) == Std.int(clipRect.height);
+		}
 	}
 
+	/**
+	 * Add a triangle vertices to render.
+	 * @param tx[1-3]  Vrtex x coord
+	 * @param ty[1-3]  Vertex y coord
+	 * @param uvx[1-3] Texture x coord [0-1]
+	 * @param uvy[1-3] Texture y coord [0-1]
+	 * @param color    Vertex color tint
+	 * @param alpha    Vertex alpha value
+	 */
 	public inline function addTriangle(tx1:Float, ty1:Float, uvx1:Float, uvy1:Float, tx2:Float, ty2:Float, uvx2:Float, uvy2:Float, tx3:Float, ty3:Float, uvx3:Float, uvy3:Float, color:Color, alpha:Float):Void
 	{
 		if (alpha > 0)
 		{
-			var data:RenderData = getData();
+			var data:DrawTriangle = getData();
 			data.tx1 = tx1;
 			data.ty1 = ty1;
 			data.uvx1 = uvx1;
@@ -192,6 +210,9 @@ class DrawCommand
 		}
 	}
 
+	/**
+	 * Recycles the data for all draw commands following this one.
+	 */
 	public function recycle()
 	{
 		recycleData();
@@ -205,8 +226,8 @@ class DrawCommand
 		_pool = this;
 	}
 
-	@:access(haxepunk.graphics.hardware.RenderData)
-	public inline function loopRenderData(callback:RenderData->Void)
+	@:access(haxepunk.graphics.hardware.DrawTriangle)
+	public inline function loopTriangles(callback:DrawTriangle->Void)
 	{
 		var data = this.data;
 		while (data != null)
@@ -216,9 +237,9 @@ class DrawCommand
 		}
 	}
 
-	inline function getData():RenderData
+	inline function getData():DrawTriangle
 	{
-		var data:RenderData;
+		var data:DrawTriangle;
 		if (_dataPool != null)
 		{
 			data = _dataPool;
@@ -227,12 +248,12 @@ class DrawCommand
 		}
 		else
 		{
-			data = new RenderData();
+			data = new DrawTriangle();
 		}
 		return data;
 	}
 
-	inline function addData(data:RenderData):Void
+	inline function addData(data:DrawTriangle):Void
 	{
 		if (this.data == null)
 		{
@@ -286,8 +307,8 @@ class DrawCommand
 		#end
 	}
 
-	var data:RenderData;
-	var _lastData:RenderData;
+	var data:DrawTriangle;
+	var _lastData:DrawTriangle;
 	var _prev:DrawCommand;
 	var _next:DrawCommand;
 }

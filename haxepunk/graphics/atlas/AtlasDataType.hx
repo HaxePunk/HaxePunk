@@ -1,9 +1,9 @@
 package haxepunk.graphics.atlas;
 
-import flash.display.BitmapData;
+import haxepunk.graphics.hardware.Texture;
 
 /**
- * Abstract representing either a `String`, a `AtlasData` or a `BitmapData`.
+ * Abstract representing either a `String`, a `AtlasData` or a `Texture`.
  *
  * Conversion is automatic, no need to use this.
  */
@@ -16,9 +16,9 @@ abstract AtlasDataType(AtlasData)
 	{
 		return new AtlasDataType(AtlasData.getAtlasDataByName(s, true));
 	}
-	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData)
+	@:dox(hide) @:from public static inline function fromTexture(texture:Texture)
 	{
-		return new AtlasDataType(new AtlasData(bd));
+		return new AtlasDataType(new AtlasData(texture));
 	}
 	@:dox(hide) @:from public static inline function fromAtlasData(data:AtlasData)
 	{

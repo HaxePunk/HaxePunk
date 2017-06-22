@@ -1,11 +1,11 @@
 package haxepunk.graphics.text;
 
-import flash.display.BitmapData;
 import flash.Assets;
 import haxe.xml.Fast;
 import haxepunk.HXP;
 import haxepunk.graphics.atlas.AtlasDataType;
 import haxepunk.graphics.atlas.TextureAtlas;
+import haxepunk.graphics.hardware.Texture;
 
 @:enum
 abstract BitmapFontFormat(Int)
@@ -127,16 +127,18 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 	public static function loadXNAFont(asset:String, ?options:Dynamic):BitmapFontAtlas
 	{
 		var atlas = new BitmapFontAtlas(asset);
-		var bmd:BitmapData = null;
+		var texture:Texture = null;
 
 		try
 		{
-			bmd = atlas._data.bitmapData;
+			texture = atlas._data.texture;
 		}
 		catch (_:Dynamic) {}
 
-		if (bmd == null)
-			throw 'Invalid XNA font asset "$asset": no BitmapData found.';
+		if (texture == null)
+			throw 'Invalid XNA font asset "$asset": no Texture found.';
+
+		var bitmap = texture.bitmap;
 
 		if (options == null)
 			options = {};
@@ -149,29 +151,29 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 			options.glyphBGColor = 0xFF202020;
 
 		var glyphString:String = options.letters;
-		var globalBGColor:Int = bmd.getPixel(0, 0);
+		var globalBGColor:Int = bitmap.getPixel(0, 0);
 		var cy:Int = 0;
 		var cx:Int;
 		var letterIdx:Int = 0;
 		var glyph:String;
 		var alphabetLength = glyphString.length;
 
-		while (cy < bmd.height && letterIdx < alphabetLength)
+		while (cy < bitmap.height && letterIdx < alphabetLength)
 		{
 			var rowHeight:Int = 0;
 			cx = 0;
 
-			while (cx < bmd.width && letterIdx < alphabetLength)
+			while (cx < bitmap.width && letterIdx < alphabetLength)
 			{
-				if (Std.int(bmd.getPixel(cx, cy)) != globalBGColor)
+				if (Std.int(bitmap.getPixel(cx, cy)) != globalBGColor)
 				{
 					// found non bg pixel
 					var gx:Int = cx;
 					var gy:Int = cy;
 
 					// find width and height of glyph
-					while (Std.int(bmd.getPixel(gx, cy)) != globalBGColor) gx++;
-					while (Std.int(bmd.getPixel(cx, gy)) != globalBGColor) gy++;
+					while (Std.int(bitmap.getPixel(gx, cy)) != globalBGColor) gx++;
+					while (Std.int(bitmap.getPixel(cx, gy)) != globalBGColor) gy++;
 
 					var gw:Int = gx - cx;
 					var gh:Int = gy - cy;
@@ -210,11 +212,11 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 		atlas.lineHeight = atlas.fontSize;
 
 		// remove background color
-		var bgColor32:Int = bmd.getPixel32(0, 0);
-		bmd.threshold(bmd, bmd.rect, HXP.zero, "==", bgColor32, 0x00000000, 0xFFFFFFFF, true);
+		var bgColor32:Int = bitmap.getPixel32(0, 0);
+		bitmap.threshold(bitmap, bitmap.rect, HXP.zero, "==", bgColor32, 0x00000000, 0xFFFFFFFF, true);
 
 		if (options.glyphBGColor != null)
-			bmd.threshold(bmd, bmd.rect, HXP.zero, "==", options.glyphBGColor, 0x00000000, 0xFFFFFFFF, true);
+			bitmap.threshold(bitmap, bitmap.rect, HXP.zero, "==", options.glyphBGColor, 0x00000000, 0xFFFFFFFF, true);
 
 		return atlas;
 	}

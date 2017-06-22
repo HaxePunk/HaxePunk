@@ -1,8 +1,6 @@
 package haxepunk.graphics.hardware;
 
-import flash.display.BitmapData;
 import flash.display.BlendMode;
-import flash.geom.Matrix;
 import flash.geom.Rectangle;
 import haxepunk.graphics.shader.Shader;
 import haxepunk.utils.Color;
@@ -17,16 +15,6 @@ class DrawCommandBatch
 	public static inline function minOf3(a:Float, b:Float, c:Float) return Math.min(Math.min(a, b), c);
 	public static inline function maxOf3(a:Float, b:Float, c:Float) return Math.max(Math.max(a, b), c);
 
-	static inline function matrixTransformX(m:Matrix, px:Float, py:Float):Float
-	{
-		return px * m.a + py * m.c + m.tx;
-	}
-
-	static inline function matrixTransformY(m:Matrix, px:Float, py:Float):Float
-	{
-		return px * m.b + py * m.d + m.ty;
-	}
-
 	public var head:DrawCommand;
 	var last:DrawCommand;
 
@@ -38,7 +26,7 @@ class DrawCommandBatch
 		head = last = null;
 	}
 
-	public function getDrawCommand(texture:BitmapData, shader:Shader, smooth:Bool, blend:BlendMode, clipRect:Rectangle, x1:Float=0, y1:Float=0, x2:Float=0, y2:Float=0, x3:Float=0, y3:Float=0)
+	public function getDrawCommand(texture:Texture, shader:Shader, smooth:Bool, blend:BlendMode, clipRect:Rectangle, x1:Float=0, y1:Float=0, x2:Float=0, y2:Float=0, x3:Float=0, y3:Float=0)
 	{
 		if (blend == null) blend = BlendMode.ALPHA;
 
@@ -123,54 +111,57 @@ class DrawCommandBatch
 	}
 
 	public inline function addRect(
-		texture:BitmapData, shader:Shader,
+		texture:Texture, shader:Shader,
 		smooth:Bool, blend:BlendMode, clipRect:Rectangle,
 		rx:Float, ry:Float, rw:Float, rh:Float,
 		a:Float, b:Float, c:Float, d:Float,
 		tx:Float, ty:Float,
 		color:Color, alpha:Float):Void
 	{
-		var uvx1:Float, uvy1:Float, uvx2:Float, uvy2:Float;
-		if (texture == null)
+		if (alpha > 0)
 		{
-			uvx1 = uvy1 = 0;
-			uvx2 = rw;
-			uvy2 = rh;
+			var uvx1:Float, uvy1:Float, uvx2:Float, uvy2:Float;
+			if (texture == null)
+			{
+				uvx1 = uvy1 = 0;
+				uvx2 = rw;
+				uvy2 = rh;
+			}
+			else
+			{
+				// linear filter requires half pixel offset
+				var offset = smooth ? 0.5 : 0;
+				uvx1 = (rx + offset) / texture.width;
+				uvy1 = (ry + offset) / texture.height;
+				uvx2 = (rx + rw - offset) / texture.width;
+				uvy2 = (ry + rh - offset) / texture.height;
+			}
+
+			// matrix transformations
+			var xa = rw * a + tx;
+			var yb = rw * b + ty;
+			var xc = rh * c + tx;
+			var yd = rh * d + ty;
+
+			var command = getDrawCommand(texture, shader, smooth, blend, clipRect);
+
+			command.addTriangle(
+				tx, ty, uvx1, uvy1,
+				xa, yb, uvx2, uvy1,
+				xc, yd, uvx1, uvy2,
+				color, alpha
+			);
+
+			command.addTriangle(
+				xc, yd, uvx1, uvy2,
+				xa, yb, uvx2, uvy1,
+				xa + rh * c, yb + rh * d, uvx2, uvy2,
+				color, alpha
+			);
 		}
-		else
-		{
-			// linear filter requires half pixel offset
-			var offset = smooth ? 0.5 : 0;
-			uvx1 = (rx + offset) / texture.width;
-			uvy1 = (ry + offset) / texture.height;
-			uvx2 = (rx + rw - offset) / texture.width;
-			uvy2 = (ry + rh - offset) / texture.height;
-		}
-
-		var matrix = HXP.matrix;
-		matrix.setTo(a, b, c, d, tx, ty);
-
-		inline function transformX(x, y) return matrixTransformX(matrix, x, y);
-		inline function transformY(x, y) return matrixTransformY(matrix, x, y);
-
-		addTriangle(
-			texture, shader, smooth, blend, clipRect,
-			transformX(0, 0), transformY(0, 0), uvx1, uvy1,
-			transformX(rw, 0), transformY(rw, 0), uvx2, uvy1,
-			transformX(0, rh), transformY(0, rh), uvx1, uvy2,
-			color, alpha
-		);
-
-		addTriangle(
-			texture, shader, smooth, blend, clipRect,
-			transformX(0, rh), transformY(0, rh), uvx1, uvy2,
-			transformX(rw, 0), transformY(rw, 0), uvx2, uvy1,
-			transformX(rw, rh), transformY(rw, rh), uvx2, uvy2,
-			color, alpha
-		);
 	}
 
-	public inline function addTriangle(texture:BitmapData, shader:Shader,
+	public inline function addTriangle(texture:Texture, shader:Shader,
 		smooth:Bool, blend:BlendMode, clipRect:Rectangle,
 		tx1:Float, ty1:Float, uvx1:Float, uvy1:Float,
 		tx2:Float, ty2:Float, uvx2:Float, uvy2:Float,

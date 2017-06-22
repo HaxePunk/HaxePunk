@@ -1,12 +1,12 @@
 package haxepunk.graphics.atlas;
 
-import flash.display.BitmapData;
 import flash.display.BlendMode;
 import flash.geom.Rectangle;
 import flash.geom.Point;
 import flash.geom.Matrix;
 import haxepunk.Scene;
 import haxepunk.graphics.shader.Shader;
+import haxepunk.graphics.hardware.Texture;
 import haxepunk.utils.Color;
 import haxepunk.utils.MathUtil;
 
@@ -14,19 +14,19 @@ class AtlasData
 {
 	public var width(default, null):Int;
 	public var height(default, null):Int;
-	public var bitmapData:BitmapData;
+	public var texture:Texture;
 
 	/**
 	 * Creates a new AtlasData class
 	 *
 	 * **NOTE**: Only create one instance of AtlasData per name. An error will be thrown if you try to create a duplicate.
 	 *
-	 * @param bd     BitmapData image to use for rendering
-	 * @param name   A reference to the image data, used with destroy and for setting rendering flags
+	 * @param texture Texture image to use for rendering
+	 * @param name    A reference to the image data, used with destroy and for setting rendering flags
 	 */
-	public function new(bd:BitmapData, ?name:String)
+	public function new(texture:Texture, ?name:String)
 	{
-		bitmapData = bd;
+		this.texture = texture;
 
 		_name = name;
 
@@ -42,8 +42,8 @@ class AtlasData
 			}
 		}
 
-		width = bd.width;
-		height = bd.height;
+		width = texture.width;
+		height = texture.height;
 	}
 
 	/**
@@ -60,10 +60,10 @@ class AtlasData
 		}
 		else if (create)
 		{
-			var bitmap:BitmapData = HXP.getBitmap(name);
-			if (bitmap != null)
+			var texture:Texture = Texture.fromAsset(name);
+			if (texture != null)
 			{
-				data = new AtlasData(bitmap, name);
+				data = new AtlasData(texture, name);
 			}
 		}
 		return data;
@@ -81,12 +81,12 @@ class AtlasData
 	/**
 	 * Reloads the image for a particular atlas object
 	 */
-	public function reload(bd:BitmapData):Bool
+	public function reload(texture:Texture):Bool
 	{
 		if (_name != null)
 		{
-			bitmapData = bd;
-			return HXP.overwriteBitmapCache(_name, bd);
+			this.texture = texture;
+			return Texture.overwriteCache(_name, texture);
 		}
 		return false;
 	}
@@ -108,7 +108,7 @@ class AtlasData
 	{
 		if (_name != null)
 		{
-			HXP.removeBitmap(_name);
+			Texture.remove(_name);
 			_dataPool.remove(_name);
 		}
 	}
@@ -158,7 +158,7 @@ class AtlasData
 	{
 		var batch = _scene.sprite.batch;
 		batch.addRect(
-			bitmapData, shader, smooth, blend, clipRect,
+			texture, shader, smooth, blend, clipRect,
 			rect.x, rect.y, rect.width, rect.height,
 			a, b, c, d, tx, ty,
 			color, alpha
@@ -206,7 +206,7 @@ class AtlasData
 		}
 
 		var batch = _scene.sprite.batch;
-		batch.addRect(bitmapData, shader, smooth, blend, clipRect, rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, color, alpha);
+		batch.addRect(texture, shader, smooth, blend, clipRect, rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, color, alpha);
 	}
 
 	/**
@@ -240,7 +240,7 @@ class AtlasData
 		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void
 	{
 		var batch = _scene.sprite.batch;
-		batch.addTriangle(bitmapData, shader, smooth, blend, clipRect, tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, color, alpha);
+		batch.addTriangle(texture, shader, smooth, blend, clipRect, tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, color, alpha);
 	}
 
 	// used for pooling

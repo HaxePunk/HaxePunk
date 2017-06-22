@@ -1,12 +1,12 @@
 package haxepunk.masks;
 
 import haxepunk.Mask;
-import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Matrix;
 import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.graphics.Image;
+import haxepunk.graphics.hardware.Texture;
 import haxepunk.utils.MathUtil;
 
 
@@ -31,7 +31,7 @@ import haxepunk.utils.MathUtil;
  * Remember to call "mask.update()" when you update the image.
  *
  * If you are using `RenderMode.HARDWARE` mode, Imagemask will still work, but only if your
- * Image source is created with a BitmapData. `AtlasData` is not currently
+ * Image source is created with a Texture. `AtlasData` is not currently
  * supported.
  *
  */
@@ -45,7 +45,7 @@ class Imagemask extends Pixelmask
 	 */
 	public function new(source:Image)
 	{
-		super(new BitmapData(1, 1));
+		super(Texture.create(1, 1));
 		_class = Type.getClassName(Type.getSuperClass(Type.getClass(this)));
 		_source = source;
 		update();
@@ -75,7 +75,7 @@ class Imagemask extends Pixelmask
 		_width = Math.ceil(r.width);
 		_height = Math.ceil(r.height);
 
-		_data = new BitmapData(_width, _height, true, 0x00000000);
+		_data = Texture.create(_width, _height, true, 0x00000000);
 		// TODO: get rid of this class???
 		// _source.render(_data, new Camera(-_x, -_y), new Camera(0, 0));
 
@@ -150,8 +150,8 @@ class Imagemask extends Pixelmask
 		{
 			for (dy in Math.floor(intersect.y)...Math.floor(intersect.y + intersect.height))
 			{
-				var p1 = (_data.getPixel32(Std.int(dx - rect.x), Std.int(dy - rect.y)) >> 24) & 0xFF;
-				var p2 = (other._data.getPixel32(Std.int(dx - _rect.x),
+				var p1 = (_data.getPixel(Std.int(dx - rect.x), Std.int(dy - rect.y)) >> 24) & 0xFF;
+				var p2 = (other._data.getPixel(Std.int(dx - _rect.x),
 						Std.int(dy - _rect.y)) >> 24) & 0xFF;
 
 				if (p1 > 0 && p2 > 0)

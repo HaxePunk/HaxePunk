@@ -373,7 +373,7 @@ class Grid extends Hitbox
 			for (dy in Math.floor(intersect.y - _rect.y) ...Math.floor(intersect.y - _rect.y + intersect.height))
 			{
 				var tx = Std.int((dx + _rect.x) / _tile.width), ty = Std.int((dy + _rect.y) / _tile.height);
-				if (data[ty][tx] && (other.data.getPixel32(dx, dy) >> 24) & 0xFF > 0)
+				if (data[ty][tx] && (other.data.getPixel(dx, dy) >> 24) & 0xFF > 0)
 				{
 					return true;
 				}

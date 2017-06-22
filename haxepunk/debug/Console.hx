@@ -16,6 +16,7 @@ import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
 import haxepunk.Entity;
 import haxepunk.HXP;
+import haxepunk.graphics.hardware.Texture;
 import haxepunk.input.Input;
 import haxepunk.input.Key;
 import haxepunk.input.Mouse;
@@ -366,7 +367,7 @@ class Console
 		{
 			_back.bitmapData.dispose();
 		}
-		_back.bitmapData = HXP.createBitmap(width, height, true, 0xFFFFFFFF);
+		_back.bitmapData = Texture.create(width, height, true, 0xFFFFFFFF).bitmap;
 		HXP.matrix.identity();
 		HXP.matrix.tx = Math.max((_back.bitmapData.width - _bmpLogo.width) / 2, 0);
 		HXP.matrix.ty = Math.max((_back.bitmapData.height - _bmpLogo.height) / 2, 0);
