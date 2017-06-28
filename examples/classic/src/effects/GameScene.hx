@@ -8,7 +8,7 @@ import haxepunk.graphics.Image;
 import haxepunk.graphics.atlas.TextureAtlas;
 import haxepunk.input.Input;
 import haxepunk.input.Mouse;
-import haxepunk.utils.Random;
+import haxepunk.math.Random;
 
 class GameScene extends DemoScene
 {

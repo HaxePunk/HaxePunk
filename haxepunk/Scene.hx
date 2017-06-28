@@ -9,7 +9,7 @@ import haxepunk.graphics.shader.SceneShader;
 import haxepunk.utils.BlendMode;
 import haxepunk.utils.Color;
 import haxepunk.utils.DrawContext;
-import haxepunk.utils.MathUtil;
+import haxepunk.math.MathUtil;
 
 /**
  * Updated by `Engine`, main game container that holds all currently active Entities.

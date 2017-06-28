@@ -5,8 +5,8 @@ import haxepunk.Mask;
 import haxepunk.masks.Grid;
 import haxepunk.masks.SlopedGrid;
 import haxepunk.utils.Draw;
-import haxepunk.utils.Projection;
-import haxepunk.utils.Vector;
+import haxepunk.math.Projection;
+import haxepunk.math.Vector2;
 import flash.geom.Point;
 
 /**
@@ -246,7 +246,7 @@ class Circle extends Hitbox
 	}
 
 	@:dox(hide)
-	override public function project(axis:Vector, projection:Projection):Void
+	override public function project(axis:Vector2, projection:Projection):Void
 	{
 		projection.min = -_radius;
 		projection.max = _radius;

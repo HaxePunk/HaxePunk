@@ -1,4 +1,4 @@
-package haxepunk.utils;
+package haxepunk.math;
 
 /**
  * This class is for math utility functions previously stored in HXP.

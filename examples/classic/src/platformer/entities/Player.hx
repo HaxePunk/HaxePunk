@@ -8,7 +8,7 @@ import haxepunk.input.Gamepad;
 import haxepunk.input.gamepads.XboxGamepad;
 import haxepunk.input.Key;
 import haxepunk.input.Mouse;
-import haxepunk.utils.MathUtil;
+import haxepunk.math.MathUtil;
 import platformer.entities.Physics;
 
 private enum JumpStyle

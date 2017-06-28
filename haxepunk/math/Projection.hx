@@ -1,4 +1,4 @@
-package haxepunk.utils;
+package haxepunk.math;
 
 
 @:dox(hide)
@@ -18,9 +18,9 @@ class Projection
 
 	/**
 	 * Check if two projection overlap.
-	 * 
+	 *
 	 * @param	other	The other projection
-	 * 
+	 *
 	 * @return	If they overlap.
 	 */
 	public inline function overlaps(other:Projection):Bool
@@ -30,9 +30,9 @@ class Projection
 
 	/**
 	 * Get the value of two projection overlap.
-	 * 
+	 *
 	 * @param	other	The other projection
-	 * 
+	 *
 	 * @return	The overlap value.
 	 */
 	public inline function getOverlap(other:Projection):Float
@@ -42,7 +42,7 @@ class Projection
 
 	/**
 	 * Prints the projection as a string
-	 * 
+	 *
 	 * @return	String version of the object.
 	 */
 	public function toString():String

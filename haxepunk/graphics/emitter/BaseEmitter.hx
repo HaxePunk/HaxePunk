@@ -6,8 +6,8 @@ import haxepunk.HXP;
 import haxepunk.Graphic;
 import haxepunk.utils.Color;
 import haxepunk.utils.Ease.EaseFunction;
-import haxepunk.utils.MathUtil;
-import haxepunk.utils.Random;
+import haxepunk.math.MathUtil;
+import haxepunk.math.Random;
 
 @:generic class BaseEmitter<T:Graphic> extends Graphic
 {

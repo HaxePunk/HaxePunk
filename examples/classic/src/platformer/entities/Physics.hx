@@ -3,7 +3,7 @@ package platformer.entities;
 import flash.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Entity;
-import haxepunk.utils.MathUtil;
+import haxepunk.math.MathUtil;
 
 class Physics extends Entity
 {

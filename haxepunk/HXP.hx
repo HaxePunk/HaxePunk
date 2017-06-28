@@ -13,8 +13,8 @@ import haxepunk.debug.Console;
 import haxepunk.tweens.misc.Alarm;
 import haxepunk.tweens.misc.MultiVarTween;
 import haxepunk.utils.HaxelibInfo;
-import haxepunk.utils.MathUtil;
-import haxepunk.utils.Random;
+import haxepunk.math.MathUtil;
+import haxepunk.math.Random;
 
 /**
  * Static catch-all class used to access global properties and functions.

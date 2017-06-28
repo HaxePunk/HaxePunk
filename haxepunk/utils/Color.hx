@@ -1,5 +1,7 @@
 package haxepunk.utils;
 
+import haxepunk.math.MathUtil;
+
 /**
  * An abstract with various color utility functions.
  * @since	4.0.0

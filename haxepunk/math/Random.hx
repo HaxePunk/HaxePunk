@@ -1,4 +1,4 @@
-package haxepunk.utils;
+package haxepunk.math;
 
 
 /**

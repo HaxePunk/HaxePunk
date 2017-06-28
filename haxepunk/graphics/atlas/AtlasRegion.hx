@@ -5,7 +5,7 @@ import flash.geom.Rectangle;
 import flash.geom.Point;
 import flash.geom.Matrix;
 import haxepunk.utils.Color;
-import haxepunk.utils.MathUtil;
+import haxepunk.math.MathUtil;
 import haxepunk.graphics.shader.Shader;
 
 class AtlasRegion implements IAtlasRegion

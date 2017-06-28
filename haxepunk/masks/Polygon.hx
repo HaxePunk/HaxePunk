@@ -6,9 +6,9 @@ import haxepunk.Mask;
 import haxepunk.masks.Circle;
 import haxepunk.masks.Grid;
 import haxepunk.masks.Hitbox;
-import haxepunk.utils.Projection;
-import haxepunk.utils.Vector;
-import haxepunk.utils.MathUtil;
+import haxepunk.math.Projection;
+import haxepunk.math.Vector2;
+import haxepunk.math.MathUtil;
 import flash.geom.Point;
 
 
@@ -37,7 +37,7 @@ class Polygon extends Hitbox
 	 * @param	points		An array of coordinates that define the polygon (must have at least 3).
 	 * @param	origin	 	Pivot point for rotations.
 	 */
-	public function new(points:Array<Vector>, ?origin:Point)
+	public function new(points:Array<Vector2>, ?origin:Point)
 	{
 		super();
 		if (points.length < 3) throw "The polygon needs at least 3 sides.";
@@ -211,7 +211,7 @@ class Polygon extends Hitbox
 	function collideCircle(circle:Circle):Bool
 	{
 		var edgesCrossed:Int = 0;
-		var p1:Vector, p2:Vector;
+		var p1:Vector2, p2:Vector2;
 		var i:Int, j:Int;
 		var nPoints:Int = _points.length;
 		var offsetX:Float = _parent.x + _x;
@@ -338,9 +338,9 @@ class Polygon extends Hitbox
 
 	/** Projects this polygon points on axis and returns min and max values in projection object. */
 	@:dox(hide)
-	override public function project(axis:Vector, projection:Projection):Void
+	override public function project(axis:Vector2, projection:Projection):Void
 	{
-		var p:Vector = _points[0];
+		var p:Vector2 = _points[0];
 
 		var min:Float = axis.dot(p),
 			max:Float = min;
@@ -410,9 +410,9 @@ class Polygon extends Hitbox
 	 * If you need to set a point yourself instead of passing in a new Array<Point> you need to call update()
 	 * to make sure the axes update as well.
 	 */
-	public var points(get, set):Array<Vector>;
-	inline function get_points():Array<Vector> return _points;
-	function set_points(value:Array<Vector>):Array<Vector>
+	public var points(get, set):Array<Vector2>;
+	inline function get_points():Array<Vector2> return _points;
+	function set_points(value:Array<Vector2>):Array<Vector2>
 	{
 		if (_points != value)
 		{
@@ -467,12 +467,12 @@ class Polygon extends Hitbox
 		var rotationAngle:Float = (Math.PI * 2) / sides;
 
 		// loop through and generate each point
-		var points:Array<Vector> = new Array<Vector>();
+		var points:Array<Vector2> = new Array<Vector2>();
 
 		for (i in 0...sides)
 		{
 			var tempAngle:Float = Math.PI + i * rotationAngle;
-			var p:Vector = new Vector();
+			var p:Vector2 = new Vector2();
 			p.x = Math.cos(tempAngle) * radius + radius;
 			p.y = Math.sin(tempAngle) * radius + radius;
 			points.push(p);
@@ -494,12 +494,12 @@ class Polygon extends Hitbox
 	 */
 	public static function createFromArray(points:Array<Float>):Polygon
 	{
-		var p:Array<Vector> = new Array<Vector>();
+		var p:Array<Vector2> = new Array<Vector2>();
 
 		var i:Int = 0;
 		while (i < points.length)
 		{
-			p.push(new Vector(points[i++], points[i++]));
+			p.push(new Vector2(points[i++], points[i++]));
 		}
 		return new Polygon(p);
 	}
@@ -510,7 +510,7 @@ class Polygon extends Hitbox
 
 		angleDelta *= MathUtil.RAD;
 
-		var p:Vector;
+		var p:Vector2;
 
 		for (i in 0..._points.length)
 		{
@@ -536,18 +536,18 @@ class Polygon extends Hitbox
 
 	function generateAxes():Void
 	{
-		_axes = new Array<Vector>();
+		_axes = new Array<Vector2>();
 
 		var temp:Float;
 		var nPoints:Int = _points.length;
-		var edge:Vector;
+		var edge:Vector2;
 		var i:Int, j:Int;
 
 		i = 0;
 		j = nPoints - 1;
 		while (i < nPoints)
 		{
-			edge = new Vector();
+			edge = new Vector2();
 			edge.x = _points[i].x - _points[j].x;
 			edge.y = _points[i].y - _points[j].y;
 
@@ -598,8 +598,8 @@ class Polygon extends Hitbox
 
 	// Hitbox information.
 	var _angle:Float;
-	var _points:Array<Vector>;
-	var _axes:Array<Vector>;
+	var _points:Array<Vector2>;
+	var _axes:Array<Vector2>;
 
 	var _fakeEntity:Entity;				// used for Grid and Pixelmask collision
 	var _fakeTileHitbox:Hitbox;			// used for Grid collision
@@ -610,7 +610,7 @@ class Polygon extends Hitbox
 	static var secondProj = new Projection();
 
 	@:dox(hide)
-	public static var vertical = new Vector(0, 1);
+	public static var vertical = new Vector2(0, 1);
 	@:dox(hide)
-	public static var horizontal = new Vector(1, 0);
+	public static var horizontal = new Vector2(1, 0);
 }
