@@ -5,7 +5,7 @@ import flash.media.Sound;
 import flash.media.SoundChannel;
 import flash.media.SoundTransform;
 import flash.Assets;
-import haxepunk.utils.MathUtil;
+import haxepunk.math.MathUtil;
 
 
 /**

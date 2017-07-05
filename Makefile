@@ -44,7 +44,7 @@ unit:
 	@cd tests && haxelib run munit test test-${TEST}.hxml -coverage
 
 checkstyle:
-	haxelib run checkstyle -c checkstyle.json -s com
+	haxelib run checkstyle -c checkstyle.json -s haxepunk
 
 examples: tool.n
 	@git submodule update --init

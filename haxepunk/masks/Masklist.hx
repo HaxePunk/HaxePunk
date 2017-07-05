@@ -3,7 +3,7 @@ package haxepunk.masks;
 import haxepunk.Entity;
 import haxepunk.HXP;
 import haxepunk.Mask;
-import haxepunk.utils.MathUtil;
+import haxepunk.math.MathUtil;
 
 /**
  * A Mask that can contain multiple Masks of one or various types.

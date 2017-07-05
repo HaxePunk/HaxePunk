@@ -4,7 +4,7 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.Mask;
-import haxepunk.utils.MathUtil;
+import haxepunk.math.MathUtil;
 
 @:enum
 abstract TileType(Int)

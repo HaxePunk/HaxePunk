@@ -1,7 +1,7 @@
 package haxepunk.tweens.motion;
 
 import haxepunk.utils.Ease.EaseFunction;
-import haxepunk.utils.MathUtil;
+import haxepunk.math.MathUtil;
 
 /**
  * Determines a circular motion.

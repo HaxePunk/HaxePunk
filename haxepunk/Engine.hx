@@ -13,7 +13,7 @@ import haxepunk.debug.Console;
 import haxepunk.graphics.hardware.EngineRenderer;
 import haxepunk.input.Input;
 import haxepunk.utils.Draw;
-import haxepunk.utils.Random;
+import haxepunk.math.Random;
 
 /**
  * Main game Sprite class, added to the Stage.

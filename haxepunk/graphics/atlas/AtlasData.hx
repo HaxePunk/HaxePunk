@@ -8,7 +8,7 @@ import haxepunk.Scene;
 import haxepunk.graphics.shader.Shader;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.utils.Color;
-import haxepunk.utils.MathUtil;
+import haxepunk.math.MathUtil;
 
 class AtlasData
 {

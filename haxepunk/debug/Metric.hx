@@ -5,7 +5,7 @@ import haxepunk.graphics.text.Text;
 import haxepunk.utils.CircularBuffer;
 import haxepunk.utils.Color;
 import haxepunk.utils.DrawContext;
-import haxepunk.utils.MathUtil;
+import haxepunk.math.MathUtil;
 
 class Metric<T:Float> extends Entity
 {

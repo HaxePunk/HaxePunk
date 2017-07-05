@@ -7,7 +7,7 @@ import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.graphics.Image;
 import haxepunk.graphics.hardware.Texture;
-import haxepunk.utils.MathUtil;
+import haxepunk.math.MathUtil;
 
 
 /**

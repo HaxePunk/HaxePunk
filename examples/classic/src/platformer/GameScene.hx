@@ -6,7 +6,7 @@ import haxepunk.graphics.atlas.TextureAtlas;
 import haxepunk.graphics.tile.Tilemap;
 import haxepunk.graphics.tile.Backdrop;
 import haxepunk.masks.Grid;
-import haxepunk.utils.MathUtil;
+import haxepunk.math.MathUtil;
 import platformer.entities.Player;
 
 class GameScene extends DemoScene

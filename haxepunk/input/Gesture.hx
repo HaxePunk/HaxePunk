@@ -1,7 +1,7 @@
 package haxepunk.input;
 
 import haxepunk.HXP;
-import haxepunk.utils.MathUtil;
+import haxepunk.math.MathUtil;
 
 /**
  * Gesture input. Used to support complex touch input such as swipes,

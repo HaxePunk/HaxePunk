@@ -3,7 +3,7 @@ import haxepunk.Entity;
 import haxepunk.graphics.Image;
 import haxepunk.graphics.emitter.Particle;
 import haxepunk.graphics.emitter.Emitter;
-import haxepunk.utils.MathUtil;
+import haxepunk.math.MathUtil;
 
 
 class Ship extends Entity
