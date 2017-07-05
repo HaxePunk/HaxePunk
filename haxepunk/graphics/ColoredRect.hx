@@ -26,7 +26,7 @@ class ColoredRect extends Graphic
 	override public function render(point:Point, camera:Camera)
 	{
 		var batch = AtlasData._scene.renderer.batch,
-			command = batch.getDrawCommand(Texture.nullTexture, shader,
+			command = batch.getDrawCommand(null, shader,
 				false, blend, screenClipRect(camera, point.x, point.y));
 
 		var fsx = camera.fullScaleX,
