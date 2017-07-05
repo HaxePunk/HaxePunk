@@ -12,7 +12,7 @@ import haxepunk.math.Random;
 @:allow(haxepunk.graphics.Spritemap)
 class Animation
 {
-	public var end:Signal0 = new Signal0();
+	public var onComplete:Signal0 = new Signal0();
 
 	var frames:Array<Int>;
 	var frameRate:Float;
@@ -58,7 +58,7 @@ class Spritemap extends Image
 	/**
 	 * Callback function for animation end.
 	 */
-	public var endAnimation:Signal1<Animation> = new Signal1();
+	public var onAnimationComplete:Signal1<Animation> = new Signal1();
 
 	/**
 	 * Animation speed factor, alter this to speed up/slow down all animations.
@@ -123,15 +123,15 @@ class Spritemap extends Image
 					if (anim.loop)
 					{
 						_index = anim.getLastFrame(reverse);
-						anim.end.invoke();
-						endAnimation.invoke(anim);
+						anim.onComplete.invoke();
+						onAnimationComplete.invoke(anim);
 					}
 					else
 					{
 						_index = anim.getFirstFrame(reverse);
-						anim.end.invoke();
+						anim.onComplete.invoke();
 						complete = true;
-						endAnimation.invoke(anim);
+						onAnimationComplete.invoke(anim);
 						break;
 					}
 				}
