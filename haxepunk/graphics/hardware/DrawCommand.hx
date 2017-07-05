@@ -117,7 +117,7 @@ class DrawCommand
 			command = new DrawCommand();
 		}
 		command.shader = shader;
-		command.texture = texture == null ? Texture.nullTexture : texture;
+		command.texture = texture;
 		command.smooth = smooth;
 		command.blend = blend;
 		command.clipRect = clipRect;

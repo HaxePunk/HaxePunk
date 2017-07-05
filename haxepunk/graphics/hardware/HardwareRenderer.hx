@@ -68,8 +68,7 @@ class HardwareRenderer
 			case BlendMode.Subtract:
 				GL.blendEquationSeparate(GL.FUNC_REVERSE_SUBTRACT, GL.FUNC_ADD);
 				GL.blendFuncSeparate(GL.ONE, GL.ONE, GL.ZERO, GL.ONE);
-			default:
-				// BlendMode.Alpha
+			case BlendMode.Alpha:
 				GL.blendEquation(GL.FUNC_ADD);
 				GL.blendFunc(GL.ONE, GL.ONE_MINUS_SRC_ALPHA);
 		}

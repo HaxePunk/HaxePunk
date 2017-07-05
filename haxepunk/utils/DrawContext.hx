@@ -22,7 +22,7 @@ class DrawContext
 	 * The blending mode used by Draw functions. This will not
 	 * apply to Draw.line(), but will apply to Draw.linePlus().
 	 */
-	public var blend:BlendMode;
+	public var blend:BlendMode = BlendMode.Alpha;
 
 	/**
 	 * The shader used by Draw functions. This will default to
