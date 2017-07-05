@@ -3,9 +3,11 @@
 -main TestMain
 -lib munit
 -lib hamcrest
+--no-inline
 
 --each
 
+-D unit_test
 -D lime_cffi
 -D openfl="5.0.0"
 -D native

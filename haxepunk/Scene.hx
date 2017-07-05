@@ -1075,7 +1075,7 @@ class Scene extends Tweener
 	 * @param	name
 	 * @return	The Entity.
 	 */
-	public function getInstance(name:String):Entity
+	public function getInstance(name:String):Null<Entity>
 	{
 		return _entityNames.get(name);
 	}

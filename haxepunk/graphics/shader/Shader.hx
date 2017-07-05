@@ -71,7 +71,9 @@ class Shader
 		color = new Attribute(this);
 		this.vertexSource = vertexSource;
 		this.fragmentSource = fragmentSource;
+#if !unit_test
 		build();
+#end
 
 		id = idSeq++;
 	}
@@ -197,11 +199,15 @@ class Shader
 	 */
 	public inline function attributeIndex(name:String):Int
 	{
+#if unit_test
+		return 0;
+#else
 		if (!attributeIndices.exists(name))
 		{
 			attributeIndices[name] = GL.getAttribLocation(glProgram, name);
 		}
 		return attributeIndices[name];
+#end
 	}
 
 	/**
