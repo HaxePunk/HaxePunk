@@ -114,7 +114,7 @@ class Graphic
 	 * Optional blend mode to use when drawing this image.
 	 * Use constants from the haxepunk.utils.BlendMode class.
 	 */
-	public var blend:BlendMode;
+	public var blend:BlendMode = BlendMode.Alpha;
 
 	/**
 	 * Optional rectangle to clip the portion of this graphic that will be
