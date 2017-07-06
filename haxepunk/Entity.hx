@@ -639,15 +639,15 @@ class Entity extends Tweener
 	 */
 	public function setHitboxTo(o:Dynamic)
 	{
-		var getInt = function(o:Dynamic, prop:String, defaultValue:Int=0):Int
+		inline function getInt(o:Dynamic, prop:String, defaultValue:Int=0):Int
 		{
-			try
+			return try
 			{
-				return Std.int(Reflect.getProperty(o, prop));
+				Std.int(Reflect.getProperty(o, prop));
 			}
-			catch(e:Dynamic)
+			catch (e:Dynamic)
 			{
-				return defaultValue;
+				defaultValue;
 			}
 		};
 
