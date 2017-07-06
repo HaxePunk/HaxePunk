@@ -230,4 +230,134 @@ class EntityTest
 		e.render(camera);
 		Assert.isTrue(g.isRendered);
 	}
+
+	@Test
+	public function testVisible()
+	{
+		Assert.isTrue(e.visible);
+		e.parent = new Entity();
+		e.parent.visible = false;
+		Assert.isFalse(e.visible);
+		e.parent = null;
+		Assert.isTrue(e.visible);
+		e.visible = false;
+		Assert.isFalse(e.visible);
+	}
+
+	@Test
+	public function testCollidable()
+	{
+		Assert.isTrue(e.collidable);
+		e.parent = new Entity();
+		e.parent.collidable = false;
+		Assert.isFalse(e.collidable);
+		e.parent = null;
+		Assert.isTrue(e.collidable);
+		e.collidable = false;
+		Assert.isFalse(e.collidable);
+	}
+
+	@Test
+	public function testActive()
+	{
+		Assert.isTrue(e.active);
+		e.parent = new Entity();
+		e.parent.active = false;
+		Assert.isFalse(e.active);
+		e.parent = null;
+		Assert.isTrue(e.active);
+		e.active = false;
+		Assert.isFalse(e.active);
+	}
+
+	@Test
+	public function testEnabled()
+	{
+		Assert.isTrue(e.enabled);
+		e.active = false;
+		Assert.isFalse(e.enabled);
+		e.active = true;
+		e.visible = false;
+		Assert.isFalse(e.enabled);
+		e.visible = true;
+		e.collidable = false;
+		Assert.isFalse(e.enabled);
+		e.collidable = true;
+		Assert.isTrue(e.enabled);
+		e.enabled = false;
+		Assert.isFalse(e.visible);
+		Assert.isFalse(e.collidable);
+		Assert.isFalse(e.enabled);
+	}
+
+	@Test
+	public function testGetPosition()
+	{
+		e.x = 15; e.y = 4;
+		Assert.areEqual(15, e.x);
+		Assert.areEqual(4, e.y);
+		e.parent = new Entity(32, 87);
+		Assert.areEqual(47, e.x);
+		Assert.areEqual(91, e.y);
+		e.followCamera = new Camera(99, 32);
+		Assert.areEqual(146, e.x);
+		Assert.areEqual(123, e.y);
+	}
+
+	@Test
+	public function testSetPosition()
+	{
+		e.x = 15; e.y = 4;
+		e.parent = new Entity(32, 87);
+		Assert.areEqual(47, e.x);
+		Assert.areEqual(91, e.y);
+	}
+
+	@Test
+	public function testSetPositionReverse()
+	{
+		e.parent = new Entity(32, 87);
+		e.x = 15; e.y = 4;
+		// Order changes the value of x, y
+		Assert.areEqual(15, e.x);
+		Assert.areEqual(4, e.y);
+	}
+
+	@Test
+	public function testLocalPosition()
+	{
+		e.x = 15; e.y = 4;
+		e.parent = new Entity(32, 87);
+		Assert.areEqual(15, e.localX);
+		Assert.areEqual(4, e.localY);
+	}
+
+	@Test
+	public function testLocalPositionReverse()
+	{
+		e.parent = new Entity(32, 87);
+		e.x = 15; e.y = 4;
+		// Order changes the value of x, y
+		Assert.areEqual(-17, e.localX);
+		Assert.areEqual(-83, e.localY);
+	}
+
+	@Test
+	public function testSetLocalPosition()
+	{
+		e.localX = 15; e.localY = 4;
+		e.parent = new Entity(32, 87);
+		Assert.areEqual(47, e.x);
+		Assert.areEqual(91, e.y);
+	}
+
+	@Test
+	public function testSetLocalPositionReverse()
+	{
+		e.parent = new Entity(32, 87);
+		e.localX = 15; e.localY = 4;
+		// Order changes the value of x, y
+		Assert.areEqual(47, e.x);
+		Assert.areEqual(91, e.y);
+	}
 }
