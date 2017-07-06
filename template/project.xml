@@ -2,14 +2,14 @@
 <project>
 	<meta title="{{PROJECT_NAME}}" package="com.example.app" version="1.0.0" company=""/>
 
-	<app file="{{PROJECT_CLASS}}" main="{{PROJECT_CLASS}}" path="bin"/>
+	<app file="{{PROJECT_CLASS}}" main="{{PROJECT_CLASS}}" path="export"/>
 
 	<window fps="{{FRAMERATE}}" background="0x333333"/>
 	<window width="{{WIDTH}}" height="{{HEIGHT}}" resizable="true" unless="mobile"/>
 	<window width="0" height="0" fullscreen="true" if="mobile"/>
 	<window orientation="landscape" vsync="true" antialiasing="0" if="cpp"/>
 
-	<source path="src"/>
+	<source path="source"/>
 
 	<haxelib name="HaxePunk"/>
 
