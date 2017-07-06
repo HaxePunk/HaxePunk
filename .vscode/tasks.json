@@ -1,0 +1,24 @@
+{
+    "version": "0.1.0",
+    "command": "haxelib",
+    "isShellCommand": true,
+    "args": ["run", "munit", "test", "test-openfl4.hxml", "-coverage"],
+    "taskName": "Massive Unit",
+    "isBuildCommand": true,
+    "showOutput": "silent",
+    "options": {
+        "cwd": "${workspaceRoot}/tests"
+    },
+    "problemMatcher": {
+        "owner": "haxe",
+        "fileLocation": ["relative", "${workspaceRoot}"],
+        "pattern":{
+            "regexp": "(haxepunk/[^\\.]+\\.hx):(\\d+): characters ([0-9]+)-([0-9]+) : (.*)$",
+            "file": 1,
+            "line": 2,
+            "column": 3,
+            "endColumn": 4,
+            "message": 5
+        }
+    }
+}
