@@ -3,9 +3,11 @@
 -main TestMain
 -lib munit
 -lib hamcrest
+--no-inline
 
 --each
 
+-D unit_test
 -D openfl
 -D nme
 -D native

@@ -101,16 +101,12 @@ class Entity extends Tweener
 	/**
 	 * Width of the Entity's hitbox.
 	 */
-	@:isVar public var width(get, set):Int = 0;
-	function get_width() return width;
-	function set_width(w:Int) return width = w;
+	public var width:Int = 0;
 
 	/**
 	 * Height of the Entity's hitbox.
 	 */
-	@:isVar public var height(get, set):Int = 0;
-	function get_height() return height;
-	function set_height(h:Int) return height = h;
+	public var height:Int = 0;
 
 	/**
 	 * X origin of the Entity's hitbox.
@@ -178,9 +174,9 @@ class Entity extends Tweener
 	 */
 	public function render(camera:Camera):Void
 	{
-		if (_graphic != null && _graphic.visible)
+		if (graphic != null && graphic.visible)
 		{
-			if (_graphic.relative)
+			if (graphic.relative)
 			{
 				_point.x = x;
 				_point.y = y;
@@ -189,7 +185,7 @@ class Entity extends Tweener
 			{
 				_point.x = _point.y = 0;
 			}
-			_graphic.render(_point, camera);
+			graphic.render(_point, camera);
 		}
 	}
 
@@ -490,13 +486,13 @@ class Entity extends Tweener
 	 * The center x position of the Entity's hitbox.
 	 */
 	public var centerX(get, null):Float;
-	inline function get_centerX():Float return x - originX + width / 2;
+	inline function get_centerX():Float return left + halfWidth;
 
 	/**
 	 * The center y position of the Entity's hitbox.
 	 */
 	public var centerY(get, null):Float;
-	inline function get_centerY():Float return y - originY + height / 2;
+	inline function get_centerY():Float return top + halfHeight;
 
 	/**
 	 * The leftmost position of the Entity's hitbox.
@@ -508,7 +504,7 @@ class Entity extends Tweener
 	 * The rightmost position of the Entity's hitbox.
 	 */
 	public var right(get, null):Float;
-	inline function get_right():Float return x - originX + width;
+	inline function get_right():Float return left + width;
 
 	/**
 	 * The topmost position of the Entity's hitbox.
@@ -520,7 +516,7 @@ class Entity extends Tweener
 	 * The bottommost position of the Entity's hitbox.
 	 */
 	public var bottom(get, null):Float;
-	inline function get_bottom():Float return y - originY + height;
+	inline function get_bottom():Float return top + height;
 
 	/**
 	 * The rendering layer of this Entity. Higher layers are rendered first.
@@ -532,8 +528,7 @@ class Entity extends Tweener
 		if (_layer == value) return _layer;
 		if (_scene == null)
 		{
-			_layer = value;
-			return _layer;
+			return _layer = value;
 		}
 		_scene.removeRender(this);
 		_layer = value;
@@ -551,8 +546,7 @@ class Entity extends Tweener
 		if (_type == value) return _type;
 		if (_scene == null)
 		{
-			_type = value;
-			return _type;
+			return _type = value;
 		}
 		if (_type != "") _scene.removeType(this);
 		_type = value;
@@ -578,14 +572,7 @@ class Entity extends Tweener
 	/**
 	 * Graphical component to render to the screen.
 	 */
-	public var graphic(get, set):Graphic;
-	inline function get_graphic():Graphic return _graphic;
-	function set_graphic(value:Graphic):Graphic
-	{
-		if (_graphic == value) return value;
-		_graphic = value;
-		return _graphic;
-	}
+	public var graphic:Graphic;
 
 	/**
 	 * An optional name for the entity.
@@ -597,8 +584,7 @@ class Entity extends Tweener
 		if (_name == value) return _name;
 		if (_scene == null)
 		{
-			_name = value;
-			return _name;
+			return _name = value;
 		}
 		if (_name != "") _scene.unregisterName(this);
 		_name = value;
@@ -653,22 +639,23 @@ class Entity extends Tweener
 	 */
 	public function setHitboxTo(o:Dynamic)
 	{
-		width = Reflect.getProperty(o, "width");
-		height = Reflect.getProperty(o, "height");
-
-		if (Reflect.hasField(o, "originX") && Reflect.hasField(o, "originY"))
+		inline function getInt(o:Dynamic, prop:String, defaultValue:Int=0):Int
 		{
-			originX = Reflect.getProperty(o, "originX");
-			originY = Reflect.getProperty(o, "originY");
-		}
-		else
-		{
-			originX = Reflect.getProperty(o, "x");
-			originY = Reflect.getProperty(o, "y");
+			return try
+			{
+				Std.int(Reflect.getProperty(o, prop));
+			}
+			catch (e:Dynamic)
+			{
+				defaultValue;
+			}
+		};
 
-			originX = -originX;
-			originY = -originY;
-		}
+		width = getInt(o, "width");
+		height = getInt(o, "height");
+
+		originX = getInt(o, "originX", -getInt(o, "x"));
+		originY = getInt(o, "originY", -getInt(o, "y"));
 	}
 
 	/**
@@ -932,7 +919,6 @@ class Entity extends Tweener
 	var _moveY:Float = 0;
 
 	// Rendering information.
-	var _graphic:Graphic;
 	var _point:Point;
 
 	static var _EMPTY:Entity = new Entity();
