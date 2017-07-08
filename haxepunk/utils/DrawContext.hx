@@ -387,7 +387,7 @@ class DrawContext
 	inline function begin()
 	{
 		if (shader == null) shader = new ColorShader();
-		var scene = (this.scene == null) ? (HXP.renderingScene == null ? HXP.scene : HXP.renderingScene) : this.scene;
+		var scene = (this.scene == null) ? (HXP.renderingScene == null ? HXP.engine.topScene() : HXP.renderingScene) : this.scene;
 		command = scene.renderer.batch.getDrawCommand(null, shader, smooth, blend, null);
 	}
 

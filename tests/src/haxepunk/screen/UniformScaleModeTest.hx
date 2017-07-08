@@ -5,14 +5,17 @@ import haxepunk.Engine;
 import haxepunk.HXP;
 import haxepunk.screen.UniformScaleMode;
 
+@:access(haxepunk.Engine)
 class UniformScaleModeTest extends TestSuite
 {
+	var engine:Engine;
+
 	@Before
 	public function setup()
 	{
 		HXP.windowWidth = 320;
 		HXP.windowHeight = 480;
-		var engine = new Engine(HXP.windowWidth, HXP.windowHeight);
+		engine = new Engine(HXP.windowWidth, HXP.windowHeight);
 	}
 
 	@Test
@@ -20,7 +23,7 @@ class UniformScaleModeTest extends TestSuite
 	{
 		HXP.screen.scaleMode = new UniformScaleMode();
 
-		HXP.resize(640, 960);
+		engine.resizeScreen(640, 960);
 		Assert.areEqual(2, HXP.screen.fullScaleX);
 		Assert.areEqual(2, HXP.screen.fullScaleY);
 		Assert.areEqual(320, HXP.width);
@@ -28,7 +31,7 @@ class UniformScaleModeTest extends TestSuite
 		Assert.areEqual(640, HXP.windowWidth);
 		Assert.areEqual(960, HXP.windowHeight);
 
-		HXP.resize(320, 480);
+		engine.resizeScreen(320, 480);
 		Assert.areEqual(1, HXP.screen.fullScaleX);
 		Assert.areEqual(1, HXP.screen.fullScaleY);
 		Assert.areEqual(320, HXP.width);
@@ -42,7 +45,7 @@ class UniformScaleModeTest extends TestSuite
 	{
 		HXP.screen.scaleMode = new UniformScaleMode(UniformScaleType.Letterbox);
 
-		HXP.resize(1280, 960);
+		engine.resizeScreen(1280, 960);
 		Assert.areEqual(2, HXP.screen.fullScaleX);
 		Assert.areEqual(2, HXP.screen.fullScaleY);
 		Assert.areEqual(320, HXP.width);
@@ -54,7 +57,7 @@ class UniformScaleModeTest extends TestSuite
 		Assert.areEqual(320, HXP.screen.x);
 		Assert.areEqual(0, HXP.screen.y);
 
-		HXP.resize(320, 960);
+		engine.resizeScreen(320, 960);
 		Assert.areEqual(1, HXP.screen.fullScaleX);
 		Assert.areEqual(1, HXP.screen.fullScaleY);
 		Assert.areEqual(320, HXP.width);
@@ -66,7 +69,7 @@ class UniformScaleModeTest extends TestSuite
 		Assert.areEqual(0, HXP.screen.x);
 		Assert.areEqual(240, HXP.screen.y);
 
-		HXP.resize(320, 480);
+		engine.resizeScreen(320, 480);
 		Assert.areEqual(1, HXP.screen.fullScaleX);
 		Assert.areEqual(1, HXP.screen.fullScaleY);
 		Assert.areEqual(320, HXP.width);
@@ -84,7 +87,7 @@ class UniformScaleModeTest extends TestSuite
 	{
 		HXP.screen.scaleMode = new UniformScaleMode(UniformScaleType.ZoomIn);
 
-		HXP.resize(1280, 960);
+		engine.resizeScreen(1280, 960);
 		Assert.areEqual(4, HXP.screen.fullScaleX);
 		Assert.areEqual(4, HXP.screen.fullScaleY);
 		Assert.areEqual(320, HXP.width);
@@ -96,7 +99,7 @@ class UniformScaleModeTest extends TestSuite
 		Assert.areEqual(0, HXP.screen.x);
 		Assert.areEqual(0, HXP.screen.y);
 
-		HXP.resize(320, 480);
+		engine.resizeScreen(320, 480);
 		Assert.areEqual(1, HXP.screen.fullScaleX);
 		Assert.areEqual(1, HXP.screen.fullScaleY);
 		Assert.areEqual(320, HXP.width);
@@ -114,7 +117,7 @@ class UniformScaleModeTest extends TestSuite
 	{
 		HXP.screen.scaleMode = new UniformScaleMode(UniformScaleType.Expand);
 
-		HXP.resize(1280, 960);
+		engine.resizeScreen(1280, 960);
 		Assert.areEqual(2, HXP.screen.fullScaleX);
 		Assert.areEqual(2, HXP.screen.fullScaleY);
 		Assert.areEqual(640, HXP.width);
@@ -126,7 +129,7 @@ class UniformScaleModeTest extends TestSuite
 		Assert.areEqual(0, HXP.screen.x);
 		Assert.areEqual(0, HXP.screen.y);
 
-		HXP.resize(320, 480);
+		engine.resizeScreen(320, 480);
 		Assert.areEqual(1, HXP.screen.fullScaleX);
 		Assert.areEqual(1, HXP.screen.fullScaleY);
 		Assert.areEqual(320, HXP.width);

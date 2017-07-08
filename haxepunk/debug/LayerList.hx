@@ -28,10 +28,10 @@ private class LayerToggle extends Entity
 		visible = collidable = layerNumber != null;
 		if (layerNumber != null)
 		{
-			var entityCount = HXP.scene._layers.exists(layerNumber) ? Lambda.count(HXP.scene._layers[layerNumber]) : 0;
+			var entityCount = HXP.engine.topScene()._layers.exists(layerNumber) ? Lambda.count(HXP.engine.topScene()._layers[layerNumber]) : 0;
 			var txt = "Layer " + layerNumber + " [" + entityCount + "]";
 			if (label.text != txt) label.text = txt;
-			label.color = HXP.scene.layerVisible(layerNumber) ? 0x00ff00 : 0xff0000;
+			label.color = HXP.engine.topScene().layerVisible(layerNumber) ? 0x00ff00 : 0xff0000;
 		}
 	}
 
@@ -39,9 +39,12 @@ private class LayerToggle extends Entity
 	{
 		if (layerNumber != null)
 		{
-			var display = !HXP.scene.layerVisible(layerNumber);
-			HXP.scene.showLayer(layerNumber, display);
-			HXP.scene.updateLists();
+			for (scene in HXP.engine)
+			{
+				var display = !scene.layerVisible(layerNumber);
+				scene.showLayer(layerNumber, display);
+				scene.updateLists();
+			}
 		}
 	}
 
@@ -77,7 +80,7 @@ class LayerList extends EntityList<LayerToggle>
 	{
 		super.update();
 
-		var layerCount = HXP.scene._layerList.length;
+		var layerCount = HXP.engine.topScene()._layerList.length;
 		while (entities.length < layerCount)
 		{
 			var toggle = new LayerToggle(mouseManager);
@@ -88,11 +91,11 @@ class LayerList extends EntityList<LayerToggle>
 
 		for (i in 0 ... entities.length)
 		{
-			entities[i].layerNumber = i >= HXP.scene._layerList.length ? null : HXP.scene._layerList[i];
+			entities[i].layerNumber = i >= HXP.engine.topScene()._layerList.length ? null : HXP.engine.topScene()._layerList[i];
 			entities[i].update();
 		}
 
-		var txt = Type.getClassName(Type.getClass(HXP.scene));
+		var txt = Type.getClassName(Type.getClass(HXP.engine.topScene()));
 		if (sceneLabel.text != txt) sceneLabel.text = txt;
 	}
 

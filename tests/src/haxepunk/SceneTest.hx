@@ -15,19 +15,7 @@ class SceneTest extends TestSuite
 	@Before
 	public function setup()
 	{
-		new Engine();
 		scene = new Scene();
-	}
-
-	@Test
-	public function testScene()
-	{
-		HXP.scene = scene;
-		Assert.isFalse(HXP.scene == scene);
-
-		// update to set the scene as active
-		HXP.engine.update();
-		Assert.isTrue(HXP.scene == scene);
 	}
 
 	@Test
@@ -121,39 +109,6 @@ class SceneTest extends TestSuite
 		e.name = "bar";
 		Assert.areEqual(e, scene.getInstance("bar"));
 		Assert.areEqual(null, scene.getInstance("foo"));
-	}
-
-	@Test
-	public function testSceneStack()
-	{
-		HXP.engine.scene = scene;
-		HXP.engine.update();
-
-		var scene1 = new Scene(),
-			scene2 = new Scene();
-
-		// pushed new scenes, no update yet, scene hasn't changed
-		HXP.engine.pushScene(scene1);
-		HXP.engine.pushScene(scene2);
-		Assert.areEqual(scene, HXP.engine._scene);
-
-		// after update, last scene pushed is active
-		HXP.engine.update();
-		Assert.areEqual(scene2, HXP.engine._scene);
-
-		// pop scene, scene doesn't change
-		Assert.areEqual(scene2, HXP.engine.popScene());
-		Assert.areEqual(scene2, HXP.engine._scene);
-
-		// after update, previous scene is active
-		HXP.engine.update();
-		Assert.areEqual(scene1, HXP.engine._scene);
-		Assert.areEqual(scene1, HXP.engine.popScene());
-		Assert.areEqual(scene1, HXP.engine._scene);
-
-		// after pop and update, original scene is active
-		HXP.engine.update();
-		Assert.areEqual(scene, HXP.engine._scene);
 	}
 
 	@:access(haxepunk.Scene)

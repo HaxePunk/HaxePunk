@@ -74,10 +74,6 @@ class Engine extends Sprite
 	 */
 	public var onInputReleased:Signals = new Signals();
 	/**
-	 * Invoked after the scene is switched.
-	 */
-	public var onSceneSwitch:Signal0 = new Signal0();
-	/**
 	 * Invoked when the application is closed.
 	 */
 	public var onClose:Signal0 = new Signal0();
@@ -161,23 +157,56 @@ class Engine extends Sprite
 	 */
 	public function update()
 	{
-		if (HXP.screen.needsResize) HXP.resize(HXP.windowWidth, HXP.windowHeight);
+		if (HXP.screen.needsResize) resizeScreen(HXP.windowWidth, HXP.windowHeight);
 		HXP.screen.update();
-
-		_scene.updateLists();
-		checkScene();
 
 		preUpdate.invoke();
 
 		if (HXP.tweener.active && HXP.tweener.hasTween) HXP.tweener.updateTweens(HXP.elapsed);
-		if (_scene.active)
+		for (scene in _scenes)
 		{
-			if (_scene.hasTween) _scene.updateTweens(HXP.elapsed);
-			_scene.update();
+			if (scene.active)
+			{
+				if (scene.hasTween) scene.updateTweens(HXP.elapsed);
+				scene.update();
+			}
+			scene.updateLists();
 		}
-		_scene.updateLists(false);
+
+		updateLists();
 
 		postUpdate.invoke();
+	}
+
+	function updateLists()
+	{
+		inline function loopList(list:Array<Scene>, func:Scene->Void)
+		{
+			for (i in 0...list.length)
+			{
+				func(list[i]);
+			}
+			HXP.clear(list);
+		}
+
+		loopList(_remove, function(scene:Scene)
+		{
+			scene.end();
+			scene.updateLists();
+			if (scene.autoClear && scene.hasTween) scene.clearTweens();
+			_scenes.remove(scene);
+		});
+		loopList(_add, function(scene:Scene)
+		{
+			scene.begin();
+			scene.updateLists();
+			_scenes.push(scene);
+		});
+	}
+
+	public function topScene():Scene
+	{
+		return _scenes[_scenes.length-1];
 	}
 
 	/**
@@ -233,14 +262,14 @@ class Engine extends Sprite
 		{
 			HXP.focused = true;
 			focusGained();
-			_scene.focusGained();
+			for (scene in _scenes) scene.focusGained();
 		});
 
 		stage.addEventListener(Event.DEACTIVATE, function (e:Event)
 		{
 			HXP.focused = false;
 			focusLost();
-			_scene.focusLost();
+			for (scene in _scenes) scene.focusLost();
 		});
 
 #if (!html5 && openfl_legacy)
@@ -267,12 +296,35 @@ class Engine extends Sprite
 			HXP.screen.scaleMode.setBaseSize();
 		}
 		// calculate scale from width/height values
-		HXP.resize(width, height);
+		resizeScreen(width, height);
 		_scrollRect.width = HXP.screen.width;
 		_scrollRect.height = HXP.screen.height;
 		scrollRect = _scrollRect;
 
 		onResize.invoke();
+	}
+
+	/**
+	 * Resize the screen.
+	 * @param width		New width.
+	 * @param height	New height.
+	 */
+	function resizeScreen(width:Int, height:Int)
+	{
+		// resize scene to scale
+		HXP.windowWidth = width;
+		HXP.windowHeight = height;
+		HXP.screen.resize(width, height);
+		HXP.width = HXP.screen.width;
+		HXP.height = HXP.screen.height;
+		HXP.bounds.width = width;
+		HXP.bounds.height = height;
+		for (scene in _scenes)
+		{
+			scene.width = HXP.width;
+			scene.height = HXP.height;
+			onResize.invoke();
+		}
 	}
 
 	/** @private Event handler for stage entry. */
@@ -286,7 +338,7 @@ class Engine extends Sprite
 		Input.enable();
 
 		// switch scenes
-		checkScene();
+		updateLists();
 
 		// game start
 		init();
@@ -371,67 +423,35 @@ class Engine extends Sprite
 		Input.postUpdate();
 	}
 
-	/** @private Switch scenes if they've changed. */
-	inline function checkScene()
-	{
-		if (_scene != null && _scenes.length > 0 && _scenes[_scenes.length - 1] != _scene)
-		{
-			_scene.end();
-			_scene.updateLists();
-			if (_scene.autoClear && _scene.hasTween) _scene.clearTweens();
-
-			_scene = _scenes[_scenes.length - 1];
-
-			_scene.updateLists();
-			_scene.begin();
-			_scene.updateLists();
-
-			onSceneSwitch.invoke();
-		}
-	}
-
-	public var clearColor(get, never):Int;
-	inline function get_clearColor():Int return stage.color;
+	/**
+	 * Color to clear the screen
+	 * @since	4.0.0
+	 **/
+	public var clearColor(get, never):Null<Int>;
+	inline function get_clearColor():Null<Int> return stage.color;
 
 	/**
-	 * Push a scene onto the stack. It will not become active until the next update.
+	 * Add a scene. It will not become active until the next update.
 	 * @param value  The scene to push
 	 * @since	2.5.3
 	 */
-	public function pushScene(value:Scene):Void
+	public function add(scene:Scene)
 	{
-		_scenes.push(value);
+		_add[_add.length] = scene;
 	}
 
 	/**
-	 * Pop a scene from the stack. The current scene will remain active until the next update.
+	 * Remove a scene. The current scenes will remain active until the next update.
 	 * @since	2.5.3
 	 */
-	public function popScene():Scene
+	public function remove(scene:Scene)
 	{
-		var scene = _scenes.pop();
-		return scene;
-	}
-
-	/**
-	 * The currently active Scene object. When you set this, the Scene is flagged
-	 * to switch, but won't actually do so until the end of the current frame.
-	 */
-	public var scene(get, set):Scene;
-	inline function get_scene():Scene return _scene;
-	function set_scene(value:Scene):Scene
-	{
-		if (_scene == value) return value;
-		if (_scenes.length > 0)
-		{
-			popScene();
-		}
-		_scenes.push(value);
-		return _scene;
+		_remove[_remove.length] = scene;
 	}
 
 	// Scene information.
-	var _scene:Scene = new Scene();
+	var _add:Array<Scene> = new Array<Scene>();
+	var _remove:Array<Scene> = new Array<Scene>();
 	var _scenes:Array<Scene> = new Array<Scene>();
 
 	// Timing information.

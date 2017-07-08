@@ -28,8 +28,8 @@ class Console extends Scene
 	static inline function get_enabled() return HXP.engine.console != null;
 	static inline function set_enabled(v:Bool)
 	{
-		HXP.engine.console = new Console();
-		return true;
+		HXP.engine.console = v ? new Console() : null;
+		return v;
 	}
 
 	static inline function avg<T:Float>(buffer:CircularBuffer<T>):Float
@@ -178,7 +178,7 @@ class Console extends Scene
 				else if (Key.check(Key.DOWN)) my = 1;
 				if (mx != 0 || my != 0)
 				{
-					var camera = HXP.scene.camera;
+					var camera = HXP.engine.topScene().camera;
 					camera.x = Std.int(camera.x + HXP.elapsed * CAMERA_PAN_PER_SECOND * mx);
 					camera.y = Std.int(camera.y + HXP.elapsed * CAMERA_PAN_PER_SECOND * my);
 				}
@@ -191,12 +191,12 @@ class Console extends Scene
 			{
 				clickActive = true;
 				dragging = false;
-				click.setTo(HXP.scene.mouseX, HXP.scene.mouseY);
+				click.setTo(HXP.engine.topScene().mouseX, HXP.engine.topScene().mouseY);
 			}
 			if (clickActive)
 			{
-				var mx = HXP.scene.mouseX,
-					my = HXP.scene.mouseY;
+				var mx = HXP.engine.topScene().mouseX,
+					my = HXP.engine.topScene().mouseY;
 				if (panning)
 				{
 					// panning
@@ -214,10 +214,10 @@ class Console extends Scene
 						}
 						else
 						{
-							HXP.scene.camera.x -= dx;
-							HXP.scene.camera.y -= dy;
+							HXP.engine.topScene().camera.x -= dx;
+							HXP.engine.topScene().camera.y -= dy;
 						}
-						click.setTo(HXP.scene.mouseX, HXP.scene.mouseY);
+						click.setTo(HXP.engine.topScene().mouseX, HXP.engine.topScene().mouseY);
 					}
 				}
 				else
@@ -309,7 +309,7 @@ class Console extends Scene
 		var s = HXP.elapsed / SAMPLE_TIME;
 		_fps += 1 / HXP.elapsed * s;
 		_mem += flash.system.System.totalMemory / 1024 / 1024 * s;
-		_ent += HXP.scene.count * s;
+		_ent += HXP.engine.topScene().count * s;
 		_tri += Renderer.triangleCount * s;
 		_dc += Renderer.drawCallCount * s;
 		_t += s;
@@ -328,13 +328,15 @@ class Console extends Scene
 	{
 		if (debugDraw)
 		{
-			var scene = HXP.scene;
-			for (layer in scene._layerList)
+			for (scene in HXP.engine)
 			{
-				if (!scene.layerVisible(layer)) continue;
-				for (e in scene._layers.get(layer))
+				for (layer in scene._layerList)
 				{
-					e.debugDraw(scene.camera, selected.indexOf(e) > -1);
+					if (!scene.layerVisible(layer)) continue;
+					for (e in scene._layers.get(layer))
+					{
+						e.debugDraw(scene.camera, selected.indexOf(e) > -1);
+					}
 				}
 			}
 		}
@@ -342,7 +344,6 @@ class Console extends Scene
 		if (dragging)
 		{
 			drawContext.setColor(0xffffff, 0.9);
-			var camera = HXP.scene.camera;
 			drawContext.rect(
 				(selBox.x - camera.x) * camera.fullScaleX,
 				(selBox.y - camera.y) * camera.fullScaleY,
@@ -356,7 +357,7 @@ class Console extends Scene
 	{
 		var _rect = HXP.rect;
 		HXP.clear(selected);
-		for (entity in HXP.scene._update)
+		for (entity in HXP.engine.topScene()._update)
 		{
 			_rect.setTo(entity.x - 4, entity.y - 4, 8, 8);
 			if (selBox.intersects(_rect))

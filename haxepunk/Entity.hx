@@ -159,11 +159,6 @@ class Entity extends Tweener
 	public function removed():Void {}
 
 	/**
-	 * Override this, called when the Scene is resized.
-	 */
-	public function resized():Void {}
-
-	/**
 	 * Updates the Entity.
 	 */
 	override public function update():Void {}

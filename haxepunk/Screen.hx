@@ -75,16 +75,13 @@ class Screen
 	 * Resizes the screen by recreating the bitmap buffer.
 	 */
 	@:dox(hide)
-	@:allow(haxepunk.HXP)
+	@:allow(haxepunk.Engine)
 	function resize(width:Int, height:Int)
 	{
-		var oldWidth:Int = HXP.width,
-			oldHeight:Int = HXP.height;
-
 		scaleMode.resize(width, height);
 
-		width = HXP.width = Std.int(HXP.screen.width / HXP.screen.fullScaleX);
-		height = HXP.height = Std.int(HXP.screen.height / HXP.screen.fullScaleY);
+		width = Std.int(HXP.screen.width / HXP.screen.fullScaleX);
+		height = Std.int(HXP.screen.height / HXP.screen.fullScaleY);
 
 		_current = 0;
 		needsResize = false;

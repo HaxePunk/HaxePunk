@@ -97,16 +97,6 @@ class HXP
 	public static var focused:Bool = false;
 
 	/**
-	 * Half the screen width.
-	 */
-	public static var halfWidth(default, null):Float;
-
-	/**
-	 * Half the screen height.
-	 */
-	public static var halfHeight(default, null):Float;
-
-	/**
 	 * Defines the allowed orientations
 	 */
 	public static var orientations:Array<Int> = [];
@@ -155,35 +145,9 @@ class HXP
 	}
 
 	/**
-	 * The currently active Scene object. When you set this, the Scene is flagged
-	 * to switch, but won't actually do so until the end of the current frame.
-	 */
-	public static var scene(get, set):Scene;
-	static inline function get_scene():Scene return engine.scene;
-	static inline function set_scene(value:Scene):Scene return engine.scene = value;
-
-	/**
 	 * If we're currently rendering, this is the Scene being rendered now.
 	 */
 	public static var renderingScene:Scene;
-
-	/**
-	 * Resize the screen.
-	 * @param width		New width.
-	 * @param height	New height.
-	 */
-	public static function resize(width:Int, height:Int)
-	{
-		// resize scene to scale
-		HXP.windowWidth = width;
-		HXP.windowHeight = height;
-		HXP.screen.resize(width, height);
-		HXP.halfWidth = HXP.width / 2;
-		HXP.halfHeight = HXP.height / 2;
-		HXP.bounds.width = width;
-		HXP.bounds.height = height;
-		HXP.scene._resize();
-	}
 
 	/**
 	 * Empties an array of its' contents
