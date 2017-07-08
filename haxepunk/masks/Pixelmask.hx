@@ -1,6 +1,7 @@
 package haxepunk.masks;
 
 import haxepunk.Mask;
+import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxepunk.HXP;
@@ -29,6 +30,8 @@ class Pixelmask extends Hitbox
 		// fetch mask data
 		if (Std.is(source, Texture))
 			_data = source;
+		else if (Std.is(source, BitmapData))
+			_data = new Texture(source);
 		else
 			_data = Texture.fromAsset(source);
 
