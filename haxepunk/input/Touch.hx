@@ -4,6 +4,7 @@ import flash.events.TouchEvent;
 import flash.ui.Multitouch;
 import flash.ui.MultitouchInputMode;
 import haxepunk.HXP;
+import haxepunk.math.Vector2;
 
 class Touch
 {
@@ -124,17 +125,10 @@ class Touch
 		this.time = 0;
 	}
 
-	/**
-	 * The touch x-axis coord in the scene.
-	 */
-	public var sceneX(get, never):Float;
-	inline function get_sceneX():Float return x + HXP.camera.x;
-
-	/**
-	 * The touch y-axis coord in the scene.
-	 */
-	public var sceneY(get, never):Float;
-	inline function get_sceneY():Float return y + HXP.camera.y;
+	inline public function cameraOffset(camera:Camera):Vector2
+	{
+		return new Vector2(x + camera.x, y + camera.y);
+	}
 
 	/**
 	 * If the touch was pressed this frame.

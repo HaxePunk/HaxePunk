@@ -485,8 +485,8 @@ class Grid extends Hitbox
 			stepY = tileHeight * scaleY;
 
 		// determine drawing location
-		var px = _x + _parent.x - HXP.camera.x;
-		var py = _y + _parent.y - HXP.camera.y;
+		var px = _x + _parent.x - camera.x;
+		var py = _y + _parent.y - camera.y;
 
 		// determine start and end tiles to draw (optimization)
 		var startx = Math.floor( -px / tileWidth),

@@ -87,12 +87,6 @@ class HXP
 	public static var defaultFont:String = "font/monofonto.ttf";
 
 	/**
-	 * Point used to determine drawing offset in the render loop.
-	 */
-	public static var camera(get, never):Camera;
-	static inline function get_camera() return scene == null ? null : scene.camera;
-
-	/**
 	 * Global tweener for tweening between multiple scenes
 	 */
 	public static var tweener:Tweener = new Tweener();
@@ -204,25 +198,6 @@ class HXP
 #else
 		untyped array.length = 0;
 #end
-	}
-
-	/**
-	 * Sets the camera position.
-	 * @param	x	X position.
-	 * @param	y	Y position.
-	 */
-	public static inline function setCamera(x:Float = 0, y:Float = 0)
-	{
-		camera.x = x;
-		camera.y = y;
-	}
-
-	/**
-	 * Resets the camera position.
-	 */
-	public static inline function resetCamera()
-	{
-		camera.x = camera.y = 0;
 	}
 
 	/**
@@ -523,8 +498,6 @@ class HXP
 	// Global objects used for rendering, collision, etc.
 	@:dox(hide) public static var point:Point = new Point();
 	@:dox(hide) public static var point2:Point = new Point();
-	@:dox(hide) public static var zero:Point = new Point();
-	@:dox(hide) public static var zeroCamera:Camera = new Camera();
 	@:dox(hide) public static var rect:Rectangle = new Rectangle();
 	@:dox(hide) public static var matrix:Matrix = new Matrix();
 	@:dox(hide) public static var entity:Entity;
