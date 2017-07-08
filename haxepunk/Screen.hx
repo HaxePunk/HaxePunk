@@ -126,13 +126,6 @@ class Screen
 	}
 
 	/**
-	 * Refresh color of the screen.
-	 */
-	public var color(get, set):Int;
-	inline function get_color():Null<Int> return HXP.stage.color;
-	inline function set_color(value:Null<Int>):Null<Int> return HXP.stage.color = value;
-
-	/**
 	 * X offset of the screen.
 	 */
 	public var x(default, set):Int = 0;

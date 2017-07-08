@@ -101,7 +101,7 @@ class Input
 	@:dox(hide)
 	public static function enable()
 	{
-		if (!_enabled && HXP.stage != null)
+		if (!_enabled && HXP.engine.stage != null)
 		{
 			Key.init();
 			Mouse.init();

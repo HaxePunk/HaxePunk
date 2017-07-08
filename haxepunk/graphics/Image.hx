@@ -166,11 +166,12 @@ class Image extends Graphic
 		if (radius == 0)
 			throw "Illegal circle, radius cannot be 0.";
 
-		HXP.sprite.graphics.clear();
-		HXP.sprite.graphics.beginFill(0xFFFFFF);
-		HXP.sprite.graphics.drawCircle(radius, radius, radius);
+		var sprite = new flash.display.Sprite();
+		sprite.graphics.clear();
+		sprite.graphics.beginFill(0xFFFFFF);
+		sprite.graphics.drawCircle(radius, radius, radius);
 		var texture:Texture = Texture.create(radius * 2, radius * 2, true, 0);
-		texture.bitmap.draw(HXP.sprite);
+		texture.bitmap.draw(sprite);
 
 		var image = new Image(Atlas.loadImageAsRegion(texture));
 

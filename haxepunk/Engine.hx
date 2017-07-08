@@ -147,6 +147,16 @@ class Engine extends Sprite
 	public function focusLost() {}
 
 	/**
+	 * Toggles between windowed and fullscreen modes
+	 */
+	public var fullscreen(default, set):Bool = false;
+	inline function set_fullscreen(value:Bool):Bool
+	{
+		stage.displayState = value ? StageDisplayState.FULL_SCREEN : StageDisplayState.NORMAL;
+		return fullscreen = value;
+	}
+
+	/**
 	 * Updates the game, updating the Scene and Entities.
 	 */
 	public function update()
@@ -204,27 +214,29 @@ class Engine extends Sprite
 	 */
 	function setStageProperties()
 	{
-		HXP.stage.frameRate = HXP.assignedFrameRate;
-		HXP.stage.align = StageAlign.TOP_LEFT;
+		stage.frameRate = HXP.assignedFrameRate;
+		stage.align = StageAlign.TOP_LEFT;
 #if !js
-		HXP.stage.quality = StageQuality.HIGH;
+		stage.quality = StageQuality.HIGH;
 #end
-		HXP.stage.scaleMode = StageScaleMode.NO_SCALE;
-		HXP.stage.displayState = StageDisplayState.NORMAL;
+		stage.scaleMode = StageScaleMode.NO_SCALE;
+		stage.displayState = StageDisplayState.NORMAL;
 
-		_resize(); // call resize once to initialize the screen
+		Graphic.defaultSmooth = stage.quality != StageQuality.LOW;
+
+		_resize(stage.stageWidth, stage.stageHeight); // call resize once to initialize the screen
 
 		// set resize event
-		HXP.stage.addEventListener(Event.RESIZE, function (e:Event) _resize());
+		stage.addEventListener(Event.RESIZE, function (e:Event) _resize(stage.stageWidth, stage.stageHeight));
 
-		HXP.stage.addEventListener(Event.ACTIVATE, function (e:Event)
+		stage.addEventListener(Event.ACTIVATE, function (e:Event)
 		{
 			HXP.focused = true;
 			focusGained();
 			_scene.focusGained();
 		});
 
-		HXP.stage.addEventListener(Event.DEACTIVATE, function (e:Event)
+		stage.addEventListener(Event.DEACTIVATE, function (e:Event)
 		{
 			HXP.focused = false;
 			focusLost();
@@ -238,24 +250,24 @@ class Engine extends Sprite
 			var tmp = HXP.height;
 			HXP.height = HXP.width;
 			HXP.width = tmp;
-			_resize();
+			_resize(stage.stageWidth, stage.stageHeight);
 			return true;
 		}
 #end
 	}
 
 	/** @private Event handler for stage resize */
-	function _resize()
+	function _resize(width:Int, height:Int)
 	{
 		if (HXP.width == 0 || HXP.height == 0)
 		{
 			// set initial size
-			HXP.width = HXP.stage.stageWidth;
-			HXP.height = HXP.stage.stageHeight;
+			HXP.width = width;
+			HXP.height = height;
 			HXP.screen.scaleMode.setBaseSize();
 		}
 		// calculate scale from width/height values
-		HXP.resize(HXP.stage.stageWidth, HXP.stage.stageHeight);
+		HXP.resize(width, height);
 		_scrollRect.width = HXP.screen.width;
 		_scrollRect.height = HXP.screen.height;
 		scrollRect = _scrollRect;
@@ -268,7 +280,6 @@ class Engine extends Sprite
 	{
 		// remove event listener
 		removeEventListener(Event.ADDED_TO_STAGE, onStage);
-		HXP.stage = stage;
 		setStageProperties();
 
 		// enable input
@@ -378,6 +389,9 @@ class Engine extends Sprite
 			onSceneSwitch.invoke();
 		}
 	}
+
+	public var clearColor(get, never):Int;
+	inline function get_clearColor():Int return stage.color;
 
 	/**
 	 * Push a scene onto the stack. It will not become active until the next update.

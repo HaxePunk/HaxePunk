@@ -1,9 +1,6 @@
 package haxepunk;
 
 import haxe.Timer;
-import flash.display.Sprite;
-import flash.display.Stage;
-import flash.display.StageDisplayState;
 import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
@@ -54,12 +51,12 @@ class HXP
 	public static var fixed:Bool;
 
 	/**
-	 * The framerate assigned to the stage.
+	 * The framerate.
 	 */
 	public static var frameRate:Float = 0;
 
 	/**
-	 * The framerate assigned to the stage.
+	 * The framerate assigned.
 	 */
 	public static var assignedFrameRate:Float;
 
@@ -232,13 +229,8 @@ class HXP
 	 * Toggles between windowed and fullscreen modes
 	 */
 	public static var fullscreen(get, set):Bool;
-	static inline function get_fullscreen():Bool return HXP.stage.displayState == StageDisplayState.FULL_SCREEN;
-	static inline function set_fullscreen(value:Bool):Bool
-	{
-		if (value) HXP.stage.displayState = StageDisplayState.FULL_SCREEN;
-		else HXP.stage.displayState = StageDisplayState.NORMAL;
-		return value;
-	}
+	static inline function get_fullscreen():Bool return engine.fullscreen;
+	static inline function set_fullscreen(value:Bool):Bool return engine.fullscreen = value;
 
 	/**
 	 * Global volume factor for all sounds, a value from 0 to 1.
@@ -505,26 +497,6 @@ class HXP
 		}
 	}
 
-	/**
-	 * Resize the stage, not available on html5.
-	 *
-	 * @param	width	New width.
-	 * @param	height	New height.
-	 */
-	public static function resizeStage(width:Int, height:Int)
-	{
-		#if (cpp || neko)
-		#if (openfl_legacy || nme)
-		HXP.stage.resize(width, height);
-		#else
-		openfl.Lib.application.window.resize(width, height);
-		#end
-		resize(width, height);
-		#elseif debug
-		trace("Can only resize the stage in cpp or neko targets.");
-		#end
-	}
-
 	public static var time(null, set):Float;
 	static inline function set_time(value:Float):Float
 	{
@@ -545,8 +517,6 @@ class HXP
 	// Volume control.
 	static var _pan:Float = 0;
 
-	/** The stage. */
-	public static var stage:Stage;
 	/** The Engine instance. */
 	public static var engine:Engine;
 
@@ -557,6 +527,5 @@ class HXP
 	@:dox(hide) public static var zeroCamera:Camera = new Camera();
 	@:dox(hide) public static var rect:Rectangle = new Rectangle();
 	@:dox(hide) public static var matrix:Matrix = new Matrix();
-	@:dox(hide) public static var sprite:Sprite = new Sprite();
 	@:dox(hide) public static var entity:Entity;
 }
