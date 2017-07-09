@@ -36,7 +36,6 @@ class Screen
 		_bitmap = new Array<Bitmap>();
 
 		x = y = 0;
-		_current = 0;
 		scale = scaleX = scaleY = 1;
 		updateTransformation();
 
@@ -83,7 +82,6 @@ class Screen
 		width = Std.int(HXP.screen.width / HXP.screen.fullScaleX);
 		height = Std.int(HXP.screen.height / HXP.screen.fullScaleY);
 
-		_current = 0;
 		needsResize = false;
 	}
 
@@ -274,7 +272,6 @@ class Screen
 	// Screen infromation.
 	var _sprite:Sprite;
 	var _bitmap:Array<Bitmap>;
-	var _current:Int;
 	var _matrix:Matrix;
 	var _shakeTime:Float=0;
 	var _shakeMagnitude:Int=0;

@@ -319,12 +319,6 @@ class Engine extends Sprite
 		HXP.height = HXP.screen.height;
 		HXP.bounds.width = width;
 		HXP.bounds.height = height;
-		for (scene in _scenes)
-		{
-			scene.width = HXP.width;
-			scene.height = HXP.height;
-			onResize.invoke();
-		}
 	}
 
 	/** @private Event handler for stage entry. */

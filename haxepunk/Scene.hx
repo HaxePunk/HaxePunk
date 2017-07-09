@@ -42,8 +42,13 @@ class Scene extends Tweener
 	 */
 	public var camera:Camera;
 
-	public var width:Int = 0;
-	public var height:Int = 0;
+	public var width(get, set):Int;
+	inline function get_width():Int return HXP.width;
+	inline function set_width(value:Int):Int return HXP.width = value;
+
+	public var height(get, set):Int;
+	inline function get_height():Int return HXP.height;
+	inline function set_height(value:Int):Int return HXP.height = value;
 
 	/**
 	 * Array of shaders which will be used to process the final result of
@@ -69,10 +74,6 @@ class Scene extends Tweener
 	 * Invoked after rendering this Scene completes.
 	 */
 	public var postRender:Signal0 = new Signal0();
-	/**
-	 * Invoked after this Scene is resized.
-	 */
-	public var onResize:Signal0 = new Signal0();
 	/**
 	 * Invoked when input is received while this Scene is active.
 	 */
@@ -204,7 +205,7 @@ class Scene extends Tweener
 			drawContext.scene = this;
 			drawContext.blend = BlendMode.Alpha;
 			drawContext.setColor(bgColor == null ? HXP.engine.clearColor : bgColor, bgAlpha);
-			drawContext.rectFilled(0, 0, HXP.width, HXP.height);
+			drawContext.rectFilled(0, 0, width, height);
 		}
 
 		preRender.invoke();
