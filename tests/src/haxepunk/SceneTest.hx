@@ -10,7 +10,7 @@ import haxepunk.Scene;
 class TestEntity extends Entity {}
 
 @:access(haxepunk.Engine)
-class SceneTest extends TestSuite
+class SceneTest
 {
 	@Before
 	public function setup()

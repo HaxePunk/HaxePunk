@@ -7,7 +7,7 @@ import haxepunk.EntityList;
 import haxepunk.HXP;
 import haxepunk.Scene;
 
-class EntityListTest extends TestSuite
+class EntityListTest
 {
 	@Before
 	public function setup()
@@ -29,7 +29,7 @@ class EntityListTest extends TestSuite
 
 		Assert.areEqual(scene, list.scene);
 		Assert.areEqual(scene, child1.scene);
-		Assert.areEqual(null, child2.scene);
+		Assert.isNull(child2.scene);
 
 		list.add(child2);
 		scene.updateLists();
@@ -37,9 +37,9 @@ class EntityListTest extends TestSuite
 
 		scene.remove(list);
 		scene.updateLists();
-		Assert.areEqual(null, list.scene);
-		Assert.areEqual(null, child1.scene);
-		Assert.areEqual(null, child2.scene);
+		Assert.isNull(list.scene);
+		Assert.isNull(child1.scene);
+		Assert.isNull(child2.scene);
 	}
 
 	@Test

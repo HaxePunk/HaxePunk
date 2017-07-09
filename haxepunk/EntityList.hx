@@ -90,6 +90,7 @@ class EntityList<T:Entity> extends Entity
 		return [for (entity in entities) f(entity)];
 	}
 
+	@:access(haxepunk.Scene)
 	override public function added()
 	{
 		super.added();
@@ -97,18 +98,21 @@ class EntityList<T:Entity> extends Entity
 		{
 			for (entity in entities)
 			{
-				scene.add(entity);
+				// bypass scene buffer
+				scene.addEntity(entity);
 			}
 		}
 	}
 
+	@:access(haxepunk.Scene)
 	override public function removed()
 	{
 		if (scene != null)
 		{
 			for (entity in entities)
 			{
-				scene.remove(entity);
+				// bypass scene buffer
+				scene.removeEntity(entity);
 			}
 		}
 		super.removed();

@@ -5,7 +5,7 @@ import haxepunk.Engine;
 import haxepunk.HXP;
 import haxepunk.screen.UniformScaleMode;
 
-class UniformScaleModeTest extends TestSuite
+class UniformScaleModeTest
 {
 	var engine:Engine;
 

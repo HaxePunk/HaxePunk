@@ -4,7 +4,7 @@ import massive.munit.Assert;
 import haxepunk.Engine;
 import haxepunk.HXP;
 
-class ScaleModeTest extends TestSuite
+class ScaleModeTest
 {
 	var engine:Engine;
 
