@@ -115,6 +115,5 @@ class MainScene extends Scene
 
 		HXP.screen.scaleMode = scaleModes[scaleModeIndex].mode;
 		HXP.screen.scaleMode.setBaseSize(640, 480);
-		HXP.resize(HXP.windowWidth, HXP.windowHeight);
 	}
 }
