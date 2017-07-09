@@ -113,6 +113,8 @@ class Engine extends Sprite
 		tickRate = 4;
 		_frameList = new Array();
 
+		scrollRect = new Rectangle();
+
 		// on-stage event listener
 		addEventListener(Event.ADDED_TO_STAGE, onStage);
 		Lib.current.addChild(this);
@@ -157,7 +159,6 @@ class Engine extends Sprite
 	 */
 	public function update()
 	{
-		if (HXP.screen.needsResize) resizeScreen(HXP.windowWidth, HXP.windowHeight);
 		HXP.screen.update();
 
 		preUpdate.invoke();
@@ -253,10 +254,10 @@ class Engine extends Sprite
 
 		Graphic.defaultSmooth = stage.quality != StageQuality.LOW;
 
-		_resize(stage.stageWidth, stage.stageHeight); // call resize once to initialize the screen
+		resize(stage.stageWidth, stage.stageHeight); // call resize once to initialize the screen
 
 		// set resize event
-		stage.addEventListener(Event.RESIZE, function (e:Event) _resize(stage.stageWidth, stage.stageHeight));
+		stage.addEventListener(Event.RESIZE, function (e:Event) resize(stage.stageWidth, stage.stageHeight));
 
 		stage.addEventListener(Event.ACTIVATE, function (e:Event)
 		{
@@ -279,14 +280,14 @@ class Engine extends Sprite
 			var tmp = HXP.height;
 			HXP.height = HXP.width;
 			HXP.width = tmp;
-			_resize(stage.stageWidth, stage.stageHeight);
+			resize(stage.stageWidth, stage.stageHeight);
 			return true;
 		}
 #end
 	}
 
 	/** @private Event handler for stage resize */
-	function _resize(width:Int, height:Int)
+	function resize(width:Int, height:Int)
 	{
 		if (HXP.width == 0 || HXP.height == 0)
 		{
@@ -296,29 +297,11 @@ class Engine extends Sprite
 			HXP.screen.scaleMode.setBaseSize();
 		}
 		// calculate scale from width/height values
-		resizeScreen(width, height);
-		_scrollRect.width = HXP.screen.width;
-		_scrollRect.height = HXP.screen.height;
-		scrollRect = _scrollRect;
+		HXP.bounds.width = HXP.windowWidth = width;
+		HXP.bounds.height = HXP.windowHeight = height;
+		HXP.screen.needsResize = true;
 
 		onResize.invoke();
-	}
-
-	/**
-	 * Resize the screen.
-	 * @param width		New width.
-	 * @param height	New height.
-	 */
-	function resizeScreen(width:Int, height:Int)
-	{
-		// resize scene to scale
-		HXP.windowWidth = width;
-		HXP.windowHeight = height;
-		HXP.screen.resize(width, height);
-		HXP.width = HXP.screen.width;
-		HXP.height = HXP.screen.height;
-		HXP.bounds.width = width;
-		HXP.bounds.height = height;
 	}
 
 	/** @private Event handler for stage entry. */
@@ -474,7 +457,6 @@ class Engine extends Sprite
 	var _frameListSum:Int = 0;
 	var _frameList:Array<Int>;
 
-	var _scrollRect:Rectangle = new Rectangle();
 	var _renderSurface:EngineRenderer;
 	var _iterator:VisibleSceneIterator;
 }

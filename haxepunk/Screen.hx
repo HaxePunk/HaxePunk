@@ -74,13 +74,15 @@ class Screen
 	 * Resizes the screen by recreating the bitmap buffer.
 	 */
 	@:dox(hide)
-	@:allow(haxepunk.Engine)
 	function resize(width:Int, height:Int)
 	{
 		scaleMode.resize(width, height);
 
-		width = Std.int(HXP.screen.width / HXP.screen.fullScaleX);
-		height = Std.int(HXP.screen.height / HXP.screen.fullScaleY);
+		width = HXP.width = Std.int(HXP.screen.width / HXP.screen.fullScaleX);
+		height = HXP.height = Std.int(HXP.screen.height / HXP.screen.fullScaleY);
+
+		HXP.engine.scrollRect.width = HXP.screen.width;
+		HXP.engine.scrollRect.height = HXP.screen.height;
 
 		needsResize = false;
 	}
@@ -97,6 +99,11 @@ class Screen
 	@:dox(hide)
 	public function update()
 	{
+		if (needsResize)
+		{
+			resize(HXP.windowWidth, HXP.windowHeight);
+		}
+
 		// screen shake
 		if (_shakeTime > 0)
 		{
@@ -202,6 +209,7 @@ class Screen
 	 * True if the scale of the screen has changed.
 	 */
 	@:dox(hide)
+	@:allow(haxepunk.Engine)
 	public var needsResize(default, null):Bool = false;
 
 	/**

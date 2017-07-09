@@ -4,8 +4,7 @@ import massive.munit.Assert;
 import haxepunk.Engine;
 import haxepunk.HXP;
 
-@:access(haxepunk.Engine)
-class FixedScaleModeTest extends TestSuite
+class FixedScaleModeTest
 {
 	var engine:Engine;
 	@Before
@@ -16,11 +15,18 @@ class FixedScaleModeTest extends TestSuite
 		engine = new Engine(HXP.windowWidth, HXP.windowHeight);
 	}
 
+	@:access(haxepunk.Engine)
+	function resize(width:Int, height:Int)
+	{
+		engine.resize(width, height);
+		engine.update();
+	}
+
 	@Test
 	public function testScale()
 	{
 		HXP.screen.scaleMode = new FixedScaleMode();
-		engine.resizeScreen(640, 960);
+		resize(640, 960);
 		Assert.areEqual(1, HXP.screen.scaleX);
 		Assert.areEqual(1, HXP.screen.scaleY);
 		Assert.areEqual(640, HXP.width);
@@ -29,7 +35,7 @@ class FixedScaleModeTest extends TestSuite
 		Assert.areEqual(960, HXP.windowHeight);
 
 		HXP.screen.scaleMode = new FixedScaleMode();
-		engine.resizeScreen(320, 480);
+		resize(320, 480);
 		Assert.areEqual(1, HXP.screen.scaleX);
 		Assert.areEqual(1, HXP.screen.scaleY);
 		Assert.areEqual(320, HXP.width);
