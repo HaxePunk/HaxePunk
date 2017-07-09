@@ -1,14 +1,5 @@
 {
     "version": "0.1.0",
-    "command": "haxelib",
-    "isShellCommand": true,
-    "args": ["run", "munit", "test", "test-openfl4.hxml", "-coverage"],
-    "taskName": "Massive Unit",
-    "isBuildCommand": true,
-    "showOutput": "silent",
-    "options": {
-        "cwd": "${workspaceRoot}/tests"
-    },
     "problemMatcher": {
         "owner": "haxe",
         "fileLocation": ["relative", "${workspaceRoot}"],
@@ -20,5 +11,54 @@
             "endColumn": 4,
             "message": 5
         }
-    }
+    },
+    "tasks": [
+        {
+            "taskName": "Unit Tests",
+            "command": "haxelib",
+            "isShellCommand": true,
+            "args": ["run", "munit", "test", "test-openfl4.hxml", "-coverage"],
+            "isBuildCommand": true,
+            "showOutput": "silent",
+            "options": {
+                "cwd": "${workspaceRoot}/tests"
+            }
+        },
+        {
+            "taskName": "Asteroids example",
+            "command": "haxelib",
+            "isShellCommand": true,
+            "args": ["run", "openfl", "test", "examples/asteroids", "neko", "-debug"]
+        },
+        {
+            "taskName": "BitmapText example",
+            "command": "haxelib",
+            "isShellCommand": true,
+            "args": ["run", "openfl", "test", "examples/bitmaptext", "neko", "-debug"]
+        },
+        {
+            "taskName": "Classic example",
+            "command": "haxelib",
+            "isShellCommand": true,
+            "args": ["run", "openfl", "test", "examples/classic", "neko", "-debug"]
+        },
+        {
+            "taskName": "Cursors example",
+            "command": "haxelib",
+            "isShellCommand": true,
+            "args": ["run", "openfl", "test", "examples/cursors", "neko", "-debug"]
+        },
+        {
+            "taskName": "BunnyMark example",
+            "command": "haxelib",
+            "isShellCommand": true,
+            "args": ["run", "openfl", "test", "examples/HXPBunnies", "neko", "-debug"]
+        },
+        {
+            "taskName": "Screen scale example",
+            "command": "haxelib",
+            "isShellCommand": true,
+            "args": ["run", "openfl", "test", "examples/screenscale", "neko", "-debug"]
+        }
+    ]
 }

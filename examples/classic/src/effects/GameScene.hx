@@ -45,7 +45,8 @@ class GameScene extends DemoScene
 
 	function onTouch(touch:haxepunk.input.Touch)
 	{
-		smoke.emit("exhaust", touch.sceneX, touch.sceneY);
+		var offset = touch.cameraOffset(camera);
+		smoke.emit("exhaust", offset.x, offset.y);
 	}
 
 	public override function update()

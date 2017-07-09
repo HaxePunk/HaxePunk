@@ -430,6 +430,12 @@ class Engine extends Sprite
 	public var clearColor(get, never):Null<Int>;
 	inline function get_clearColor():Null<Int> return stage.color;
 
+	public function replaceScene(scene:Scene)
+	{
+		for (scene in _scenes) remove(scene);
+		add(scene);
+	}
+
 	/**
 	 * Add a scene. It will not become active until the next update.
 	 * @param value  The scene to push

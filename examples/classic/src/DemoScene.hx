@@ -55,7 +55,7 @@ class DemoScene extends Scene
 		var scene = Type.createInstance(classDef, []);
 		if (scene == null) return false;
 
-		HXP.scene = scene;
+		HXP.engine.replaceScene(scene);
 		return true;
 	}
 

@@ -8,7 +8,7 @@ class Main extends Engine
 	override public function init()
 	{
 		Console.enable();
-		HXP.scene = new effects.GameScene();
+		add(new effects.GameScene());
 	}
 
 	public static function main() { new Main(); }

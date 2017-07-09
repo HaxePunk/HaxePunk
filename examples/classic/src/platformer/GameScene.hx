@@ -89,8 +89,8 @@ class GameScene extends DemoScene
 	{
 		backdrop.x += 1;
 		backdrop.y += 2 * MathUtil.sign(player.gravity.y);
-		HXP.camera.x = player.x - HXP.halfWidth;
-		HXP.camera.y = player.y - HXP.halfHeight;
+		camera.x = player.x - width / 2;
+		camera.y = player.y - height / 2;
 		super.update();
 	}
 

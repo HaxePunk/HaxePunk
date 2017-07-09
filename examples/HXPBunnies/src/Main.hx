@@ -8,7 +8,7 @@ class Main extends Engine
 
 	override public function init()
 	{
-		HXP.scene = new scenes.GameScene();
+		add(new scenes.GameScene());
 
 		var fps:FPS = new FPS(10, 10, 0);
 		var format = fps.defaultTextFormat;
@@ -16,7 +16,5 @@ class Main extends Engine
 		fps.defaultTextFormat = format;
 		Lib.current.stage.addChild(fps);
 	}
-
-	public static function main() { new Main(); }
 
 }
