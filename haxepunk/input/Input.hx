@@ -145,14 +145,14 @@ class Input
 			{
 				case PRESS:
 					trigger(HXP.engine.onInputPressed);
-					for (scene in HXP.engine)
+					for (scene in HXP.engine.visibleScenes)
 					{
 						trigger(scene.onInputPressed);
 						if (Console.enabled) trigger(scene.onInputPressed);
 					}
 				case RELEASE:
 					trigger(HXP.engine.onInputReleased);
-					for (scene in HXP.engine)
+					for (scene in HXP.engine.visibleScenes)
 					{
 						trigger(scene.onInputReleased);
 						if (Console.enabled) trigger(scene.onInputReleased);

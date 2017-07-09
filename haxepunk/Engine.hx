@@ -123,7 +123,8 @@ class Engine extends Sprite
 		_iterator = new VisibleSceneIterator(this);
 	}
 
-	public function iterator():VisibleSceneIterator
+	public var visibleScenes(get, never):VisibleSceneIterator;
+	function get_visibleScenes():VisibleSceneIterator
 	{
 		_iterator.reset();
 		return _iterator;
@@ -222,7 +223,7 @@ class Engine extends Sprite
 
 		preRender.invoke();
 
-		for (scene in this)
+		for (scene in visibleScenes)
 		{
 			HXP.renderingScene = scene;
 			scene.render();

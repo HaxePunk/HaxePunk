@@ -17,7 +17,7 @@ class EngineRenderer extends OpenGLView
 	function renderScenes(rect:Rectangle)
 	{
 		HXP.screen.renderer.startFrame();
-		for (scene in HXP.engine)
+		for (scene in HXP.engine.visibleScenes)
 		{
 			renderScene(scene, rect);
 		}

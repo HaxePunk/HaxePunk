@@ -39,7 +39,7 @@ private class LayerToggle extends Entity
 	{
 		if (layerNumber != null)
 		{
-			for (scene in HXP.engine)
+			for (scene in HXP.engine.visibleScenes)
 			{
 				var display = !scene.layerVisible(layerNumber);
 				scene.showLayer(layerNumber, display);

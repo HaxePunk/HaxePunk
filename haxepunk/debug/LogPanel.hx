@@ -56,7 +56,7 @@ class LogPanel extends Entity
 		{
 			if (logMessages.length > 0) txt += logMessages.last + "\n";
 		}
-		for (scene in HXP.engine)
+		for (scene in HXP.engine.visibleScenes)
 		{
 			var mouseLabel = StringTools.rpad("Mouse: " + scene.mouseX + "," + scene.mouseY, " ", 20);
 			txt += mouseLabel + "Camera: " + scene.camera.x + "," + scene.camera.y;

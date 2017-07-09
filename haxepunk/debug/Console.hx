@@ -328,7 +328,7 @@ class Console extends Scene
 	{
 		if (debugDraw)
 		{
-			for (scene in HXP.engine)
+			for (scene in HXP.engine.visibleScenes)
 			{
 				for (layer in scene._layerList)
 				{
