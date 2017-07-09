@@ -11,6 +11,8 @@ private class LayerToggle extends Entity
 
 	var label:Text;
 
+	var display:Bool = true;
+
 	public function new(mouseManager:MouseManager)
 	{
 		super();
@@ -28,10 +30,17 @@ private class LayerToggle extends Entity
 		visible = collidable = layerNumber != null;
 		if (layerNumber != null)
 		{
-			var entityCount = HXP.engine.topScene()._layers.exists(layerNumber) ? Lambda.count(HXP.engine.topScene()._layers[layerNumber]) : 0;
+			var entityCount = 0;
+			display = false;
+			for (scene in HXP.engine.visibleScenes)
+			{
+				if (scene == HXP.console) continue;
+				entityCount = scene._layers.exists(layerNumber) ? Lambda.count(scene._layers[layerNumber]) : 0;
+				display = display || scene.layerVisible(layerNumber);
+			}
 			var txt = "Layer " + layerNumber + " [" + entityCount + "]";
 			if (label.text != txt) label.text = txt;
-			label.color = HXP.engine.topScene().layerVisible(layerNumber) ? 0x00ff00 : 0xff0000;
+			label.color = display ? 0x00ff00 : 0xff0000;
 		}
 	}
 
@@ -41,7 +50,8 @@ private class LayerToggle extends Entity
 		{
 			for (scene in HXP.engine.visibleScenes)
 			{
-				var display = !scene.layerVisible(layerNumber);
+				if (scene == HXP.console) continue;
+				display = !display;
 				scene.showLayer(layerNumber, display);
 				scene.updateLists();
 			}
@@ -76,27 +86,45 @@ class LayerList extends EntityList<LayerToggle>
 		mouseManager.add(this, null, null, onEnter, onExit);
 	}
 
+	function getLayerToggle(layerNumber:Int):Null<LayerToggle>
+	{
+		for (e in entities)
+		{
+			if (e.layerNumber == layerNumber)
+			{
+				return e;
+			}
+		}
+		return null;
+	}
+
 	override public function update()
 	{
 		super.update();
 
-		var layerCount = HXP.engine.topScene()._layerList.length;
-		while (entities.length < layerCount)
+		for (scene in HXP.engine.visibleScenes)
 		{
-			var toggle = new LayerToggle(mouseManager);
-			add(toggle);
-			toggle.localY = childY;
-			childY += toggle.height + 4;
-		}
+			if (scene == HXP.console) continue;
+			var layerCount = scene._layerList.length;
 
-		for (i in 0 ... entities.length)
-		{
-			entities[i].layerNumber = i >= HXP.engine.topScene()._layerList.length ? null : HXP.engine.topScene()._layerList[i];
-			entities[i].update();
-		}
+			for (i in 0...layerCount)
+			{
+				var layerNumber = scene._layerList[i];
+				var toggle = getLayerToggle(layerNumber);
+				if (toggle == null)
+				{
+					toggle = new LayerToggle(mouseManager);
+					add(toggle);
+					toggle.layerNumber = layerNumber;
+					toggle.localY = childY;
+					childY += toggle.height + 4;
+				}
+				toggle.update();
+			}
 
-		var txt = Type.getClassName(Type.getClass(HXP.engine.topScene()));
-		if (sceneLabel.text != txt) sceneLabel.text = txt;
+			var txt = Type.getClassName(Type.getClass(scene));
+			if (sceneLabel.text != txt) sceneLabel.text = txt;
+		}
 	}
 
 	override public function render(camera:Camera)

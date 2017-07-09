@@ -150,9 +150,93 @@ class Console extends Scene
 		}
 	}
 
+	function updateScene(scene:Scene)
+	{
+		if (Key.check(Key.SHIFT))
+		{
+			var mx:Int = 0, my:Int = 0;
+			if (Key.check(Key.LEFT)) mx = -1;
+			else if (Key.check(Key.RIGHT)) mx = 1;
+			if (Key.check(Key.UP)) my = -1;
+			else if (Key.check(Key.DOWN)) my = 1;
+			if (mx != 0 || my != 0)
+			{
+				var camera = scene.camera;
+				camera.x = Std.int(camera.x + HXP.elapsed * CAMERA_PAN_PER_SECOND * mx);
+				camera.y = Std.int(camera.y + HXP.elapsed * CAMERA_PAN_PER_SECOND * my);
+			}
+			if (!clickActive && Mouse.mouseDown)
+			{
+				panning = true;
+			}
+		}
+		if (Mouse.mousePressed)
+		{
+			clickActive = true;
+			dragging = false;
+			click.setTo(scene.mouseX, scene.mouseY);
+		}
+		if (clickActive)
+		{
+			var mx = scene.mouseX,
+				my = scene.mouseY;
+			if (panning)
+			{
+				// panning
+				var dx = Std.int(mx - click.x),
+					dy = Std.int(my - click.y);
+				if (dx != 0 || dy != 0)
+				{
+					if (selected.length > 0)
+					{
+						for (e in selected)
+						{
+							e.x += dx;
+							e.y += dy;
+						}
+					}
+					else
+					{
+						scene.camera.x -= dx;
+						scene.camera.y -= dy;
+					}
+					click.setTo(scene.mouseX, scene.mouseY);
+				}
+			}
+			else
+			{
+				// check for drag selection
+				var moved = Math.abs(mx - click.x) + Math.abs(my - click.y);
+				if (moved > MIN_DRAG)
+				{
+					dragging = true;
+				}
+				if (dragging)
+				{
+					selBox.setTo(Math.min(mx, click.x), Math.min(my, click.y), Math.abs(mx - click.x), Math.abs(my - click.y));
+				}
+				if (Mouse.mouseReleased)
+				{
+					if (!dragging)
+					{
+						selBox.setTo(click.x, click.y, 1, 1);
+					}
+					setSelection(scene);
+					clickActive = dragging = false;
+				}
+			}
+		}
+		if (!Mouse.mouseDown)
+		{
+			clickActive = dragging = panning = false;
+		}
+	}
+
 	override public function update()
 	{
 		super.update();
+
+		var scene = HXP.engine.topScene();
 
 		if (Key.pressed(Key.TILDE))
 		{
@@ -160,93 +244,16 @@ class Console extends Scene
 			debugDraw = paused;
 		}
 
-		if (!paused)
+		if (!paused || _stepping)
 		{
-			updateMetrics();
+			updateMetrics(scene);
 		}
 
 		if (paused)
 		{
 			if (Key.check(Key.RIGHT_SQUARE_BRACKET)) step();
 
-			if (Key.check(Key.SHIFT))
-			{
-				var mx:Int = 0, my:Int = 0;
-				if (Key.check(Key.LEFT)) mx = -1;
-				else if (Key.check(Key.RIGHT)) mx = 1;
-				if (Key.check(Key.UP)) my = -1;
-				else if (Key.check(Key.DOWN)) my = 1;
-				if (mx != 0 || my != 0)
-				{
-					var camera = HXP.engine.topScene().camera;
-					camera.x = Std.int(camera.x + HXP.elapsed * CAMERA_PAN_PER_SECOND * mx);
-					camera.y = Std.int(camera.y + HXP.elapsed * CAMERA_PAN_PER_SECOND * my);
-				}
-				if (!clickActive && Mouse.mouseDown)
-				{
-					panning = true;
-				}
-			}
-			if (Mouse.mousePressed)
-			{
-				clickActive = true;
-				dragging = false;
-				click.setTo(HXP.engine.topScene().mouseX, HXP.engine.topScene().mouseY);
-			}
-			if (clickActive)
-			{
-				var mx = HXP.engine.topScene().mouseX,
-					my = HXP.engine.topScene().mouseY;
-				if (panning)
-				{
-					// panning
-					var dx = Std.int(mx - click.x),
-						dy = Std.int(my - click.y);
-					if (dx != 0 || dy != 0)
-					{
-						if (selected.length > 0)
-						{
-							for (e in selected)
-							{
-								e.x += dx;
-								e.y += dy;
-							}
-						}
-						else
-						{
-							HXP.engine.topScene().camera.x -= dx;
-							HXP.engine.topScene().camera.y -= dy;
-						}
-						click.setTo(HXP.engine.topScene().mouseX, HXP.engine.topScene().mouseY);
-					}
-				}
-				else
-				{
-					// check for drag selection
-					var moved = Math.abs(mx - click.x) + Math.abs(my - click.y);
-					if (moved > MIN_DRAG)
-					{
-						dragging = true;
-					}
-					if (dragging)
-					{
-						selBox.setTo(Math.min(mx, click.x), Math.min(my, click.y), Math.abs(mx - click.x), Math.abs(my - click.y));
-					}
-					if (Mouse.mouseReleased)
-					{
-						if (!dragging)
-						{
-							selBox.setTo(click.x, click.y, 1, 1);
-						}
-						setSelection();
-						clickActive = dragging = false;
-					}
-				}
-			}
-			if (!Mouse.mouseDown)
-			{
-				clickActive = dragging = panning = false;
-			}
+			updateScene(scene);
 		}
 
 		fpsChart.enabled =
@@ -300,16 +307,15 @@ class Console extends Scene
 		if (_stepping || !paused) return;
 		_stepping = true;
 		HXP.engine.update();
-		updateMetrics();
 		_stepping = false;
 	}
 
-	function updateMetrics()
+	function updateMetrics(scene:Scene)
 	{
 		var s = HXP.elapsed / SAMPLE_TIME;
 		_fps += 1 / HXP.elapsed * s;
 		_mem += flash.system.System.totalMemory / 1024 / 1024 * s;
-		_ent += HXP.engine.topScene().count * s;
+		_ent += scene.count * s;
 		_tri += Renderer.triangleCount * s;
 		_dc += Renderer.drawCallCount * s;
 		_t += s;
@@ -330,6 +336,7 @@ class Console extends Scene
 		{
 			for (scene in HXP.engine.visibleScenes)
 			{
+				if (scene == this) continue;
 				for (layer in scene._layerList)
 				{
 					if (!scene.layerVisible(layer)) continue;
@@ -353,11 +360,11 @@ class Console extends Scene
 		}
 	}
 
-	function setSelection()
+	function setSelection(scene:Scene)
 	{
 		var _rect = HXP.rect;
 		HXP.clear(selected);
-		for (entity in HXP.engine.topScene()._update)
+		for (entity in scene._update)
 		{
 			_rect.setTo(entity.x - 4, entity.y - 4, 8, 8);
 			if (selBox.intersects(_rect))
