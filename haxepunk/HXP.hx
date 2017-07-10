@@ -140,11 +140,6 @@ class HXP
 	}
 
 	/**
-	 * If we're currently rendering, this is the Scene being rendered now.
-	 */
-	public static var renderingScene:Scene;
-
-	/**
 	 * Empties an array of its' contents
 	 * @param array filled array
 	 */
@@ -434,9 +429,6 @@ class HXP
 		return _time;
 	}
 
-	// Console information.
-	static var _console:Console;
-
 	// Time information.
 	static var _time:Float;
 	@:dox(hide) public static var _updateTime:Float;
@@ -455,5 +447,4 @@ class HXP
 	@:dox(hide) public static var point2:Point = new Point();
 	@:dox(hide) public static var rect:Rectangle = new Rectangle();
 	@:dox(hide) public static var matrix:Matrix = new Matrix();
-	@:dox(hide) public static var entity:Entity;
 }

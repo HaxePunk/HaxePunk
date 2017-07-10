@@ -10,6 +10,7 @@ import flash.geom.Rectangle;
 import flash.Lib;
 import haxepunk.Signal;
 import haxepunk.debug.Console;
+import haxepunk.ds.Maybe;
 import haxepunk.graphics.hardware.EngineRenderer;
 import haxepunk.input.Input;
 import haxepunk.utils.Draw;
@@ -103,7 +104,6 @@ class Engine extends Sprite
 		// miscellaneous startup stuff
 		if (Random.randomSeed == 0) Random.randomizeSeed();
 
-		HXP.entity = new Entity();
 		HXP.time = Lib.getTimer();
 
 		paused = false;
@@ -128,6 +128,11 @@ class Engine extends Sprite
 		_iterator.reset();
 		return _iterator;
 	}
+
+	/**
+	 * The active scene during update and rendering
+	 */
+	public var activeScene(default, null):Maybe<Scene>;
 
 	/**
 	 * Override this, called after Engine has been added to the stage.
@@ -166,13 +171,14 @@ class Engine extends Sprite
 		if (HXP.tweener.active && HXP.tweener.hasTween) HXP.tweener.updateTweens(HXP.elapsed);
 		for (scene in _scenes)
 		{
-			if (scene.active)
-			{
-				if (scene.hasTween) scene.updateTweens(HXP.elapsed);
-				scene.update();
-			}
+			if (!scene.active) continue;
+
+			activeScene = scene;
+			if (scene.hasTween) scene.updateTweens(HXP.elapsed);
+			scene.update();
 			scene.updateLists();
 		}
+		activeScene = null;
 
 		updateLists();
 
@@ -224,10 +230,10 @@ class Engine extends Sprite
 
 		for (scene in visibleScenes)
 		{
-			HXP.renderingScene = scene;
+			activeScene = scene;
 			scene.render();
 		}
-		HXP.renderingScene = null;
+		activeScene = null;
 
 		postRender.invoke();
 

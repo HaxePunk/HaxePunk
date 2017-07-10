@@ -56,7 +56,7 @@ class SlopedScene extends DemoScene
 		entity.graphic = image;
 		add(entity);
 
-		HXP.console.debugDraw = true;
+		HXP.engine.console.debugDraw = true;
 	}
 
 	public override function update()

@@ -342,11 +342,11 @@ class Entity extends Tweener
 			if (_mask == null) return true;
 			_x = this.x; _y = this.y;
 			this.x = x; this.y = y;
-			HXP.entity.x = rX;
-			HXP.entity.y = rY;
-			HXP.entity.width = Std.int(rWidth);
-			HXP.entity.height = Std.int(rHeight);
-			if (_mask.collide(HXP.entity.HITBOX))
+			_TEMP.x = rX;
+			_TEMP.y = rY;
+			_TEMP.width = Std.int(rWidth);
+			_TEMP.height = Std.int(rHeight);
+			if (_mask.collide(_TEMP.HITBOX))
 			{
 				this.x = _x; this.y = _y;
 				return true;
@@ -375,11 +375,11 @@ class Entity extends Tweener
 			if (_mask == null) return true;
 			_x = this.x; _y = this.y;
 			this.x = x; this.y = y;
-			HXP.entity.x = pX;
-			HXP.entity.y = pY;
-			HXP.entity.width = 1;
-			HXP.entity.height = 1;
-			if (_mask.collide(HXP.entity.HITBOX))
+			_TEMP.x = pX;
+			_TEMP.y = pY;
+			_TEMP.width = 1;
+			_TEMP.height = 1;
+			if (_mask.collide(_TEMP.HITBOX))
 			{
 				this.x = _x; this.y = _y;
 				return true;
@@ -916,5 +916,6 @@ class Entity extends Tweener
 	// Rendering information.
 	var _point:Point;
 
-	static var _EMPTY:Entity = new Entity();
+	@:dox(hide) static var _EMPTY:Entity = new Entity();
+	@:dox(hide) static var _TEMP:Entity = new Entity();
 }
