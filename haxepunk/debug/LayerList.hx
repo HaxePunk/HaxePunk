@@ -108,6 +108,16 @@ class LayerList extends EntityList<LayerToggle>
 
 		var childY:Int = 8;
 
+		// hide scene labels and toggles until they are used
+		for (label in sceneLabels)
+		{
+			label.visible = false;
+		}
+		for (toggle in entities)
+		{
+			toggle.visible = false;
+		}
+
 		for (scene in HXP.engine.visibleScenes)
 		{
 			// skip console scene
@@ -115,6 +125,7 @@ class LayerList extends EntityList<LayerToggle>
 
 			// get or create scene label and update it's position
 			var sceneLabel = getSceneLabel(scene);
+			sceneLabel.visible = true;
 			sceneLabel.y = childY;
 			childY += sceneLabel.textHeight;
 
@@ -129,9 +140,27 @@ class LayerList extends EntityList<LayerToggle>
 					toggle.layerNumber = layer;
 					add(toggle);
 				}
+				toggle.visible = true;
 				toggle.localY = childY;
 				childY += toggle.height + 4;
 				toggle.update();
+			}
+		}
+
+		// remove any unused scene labels
+		for (sceneName in sceneLabels.keys())
+		{
+			if (!sceneLabels.get(sceneName).visible)
+			{
+				sceneLabels.remove(sceneName);
+			}
+		}
+		// remove any unused layer toggles
+		for (e in entities)
+		{
+			if (!e.visible)
+			{
+				remove(e);
 			}
 		}
 	}
