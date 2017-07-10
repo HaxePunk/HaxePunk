@@ -77,11 +77,6 @@ class HXP
 	public static var screen:Screen;
 
 	/**
-	 * A rectangle representing the size of the screen.
-	 */
-	public static var bounds:Rectangle;
-
-	/**
 	 * The default font file to use, by default: font/monofonto.ttf.
 	 */
 	public static var defaultFont:String = "font/monofonto.ttf";

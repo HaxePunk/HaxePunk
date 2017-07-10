@@ -90,7 +90,6 @@ class Engine extends Sprite
 		super();
 
 		// global game properties
-		HXP.bounds = new Rectangle(0, 0, width, height);
 		HXP.assignedFrameRate = frameRate;
 		HXP.fixed = fixed;
 
@@ -298,8 +297,8 @@ class Engine extends Sprite
 			HXP.screen.scaleMode.setBaseSize();
 		}
 		// calculate scale from width/height values
-		HXP.bounds.width = HXP.windowWidth = width;
-		HXP.bounds.height = HXP.windowHeight = height;
+		HXP.windowWidth = width;
+		HXP.windowHeight = height;
 		HXP.screen.needsResize = true;
 
 		onResize.invoke();
