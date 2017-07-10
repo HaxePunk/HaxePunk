@@ -1,6 +1,7 @@
 package haxepunk.debug;
 
 import haxe.ds.StringMap;
+import haxepunk.ds.Maybe;
 import haxepunk.graphics.text.Text;
 import haxepunk.input.MouseManager;
 import haxepunk.utils.Draw;
@@ -8,14 +9,20 @@ import haxepunk.utils.Draw;
 @:access(haxepunk.Scene)
 private class LayerToggle extends Entity
 {
-	public var controlScene:Scene;
-	public var layerNumber:Null<Int>;
+	public var controlScene(default, set):Maybe<Scene>;
+	inline function set_controlScene(value:Maybe<Scene>):Maybe<Scene>
+	{
+		visible = collidable = (value != null);
+		return controlScene = value;
+	}
+
+	public var layerNumber:Int;
 
 	var label:Text;
 
 	var display:Bool = true;
 
-	public function new(controlScene:Scene, mouseManager:MouseManager)
+	public function new(mouseManager:MouseManager)
 	{
 		super();
 		label = new Text("Layer");
@@ -23,32 +30,29 @@ private class LayerToggle extends Entity
 		addGraphic(label);
 		width = 220;
 		height = 24;
-		this.controlScene = controlScene;
 		type = mouseManager.type;
 		mouseManager.add(this, null, onClick, onEnter, onExit, true);
 	}
 
 	override public function update()
 	{
-		visible = collidable = layerNumber != null;
-		if (layerNumber != null)
+		controlScene.may(function(scene)
 		{
-			var entityCount = 0;
-			entityCount = controlScene._layers.exists(layerNumber) ? Lambda.count(controlScene._layers[layerNumber]) : 0;
+			var entityCount = scene._layers.exists(layerNumber) ? Lambda.count(scene._layers[layerNumber]) : 0;
 			var txt = "Layer " + layerNumber + " [" + entityCount + "]";
 			if (label.text != txt) label.text = txt;
-			label.color = controlScene.layerVisible(layerNumber) ? 0x00ff00 : 0xff0000;
-		}
+			label.color = scene.layerVisible(layerNumber) ? 0x00ff00 : 0xff0000;
+		});
 	}
 
 	function onClick()
 	{
-		if (layerNumber != null)
+		controlScene.may(function(scene)
 		{
-			var display = !controlScene.layerVisible(layerNumber);
-			controlScene.showLayer(layerNumber, display);
-			controlScene.updateLists();
-		}
+			var display = !scene.layerVisible(layerNumber);
+			scene.showLayer(layerNumber, display);
+			scene.updateLists();
+		});
 	}
 
 	function onEnter() label.alpha = 1;
@@ -71,18 +75,6 @@ class LayerList extends EntityList<LayerToggle>
 
 		type = mouseManager.type;
 		mouseManager.add(this, null, null, onEnter, onExit);
-	}
-
-	function getLayerToggle(scene:Scene, layerNumber:Int):Null<LayerToggle>
-	{
-		for (e in entities)
-		{
-			if (e.layerNumber == layerNumber && e.controlScene == scene)
-			{
-				return e;
-			}
-		}
-		return null;
 	}
 
 	function getSceneLabel(scene:Scene):Text
@@ -113,11 +105,8 @@ class LayerList extends EntityList<LayerToggle>
 		{
 			label.visible = false;
 		}
-		for (toggle in entities)
-		{
-			toggle.visible = false;
-		}
 
+		var entityId = 0;
 		for (scene in HXP.engine.visibleScenes)
 		{
 			// skip console scene
@@ -129,21 +118,23 @@ class LayerList extends EntityList<LayerToggle>
 			sceneLabel.y = childY;
 			childY += sceneLabel.textHeight;
 
-			var layers = [for (layer in scene._layerList) layer];
-			layers.sort(function(a, b) return a - b);
-			for (layer in layers)
+			for (layer in scene._layerList)
 			{
-				var toggle = getLayerToggle(scene, layer);
-				if (toggle == null)
+				var toggle:LayerToggle;
+				if (entities.length > entityId)
 				{
-					toggle = new LayerToggle(scene, mouseManager);
-					toggle.layerNumber = layer;
+					toggle = entities[entityId];
+				}
+				else
+				{
+					toggle = new LayerToggle(mouseManager);
 					add(toggle);
 				}
-				toggle.visible = true;
+				toggle.controlScene = scene;
+				toggle.layerNumber = layer;
 				toggle.localY = childY;
 				childY += toggle.height + 4;
-				toggle.update();
+				entityId += 1;
 			}
 		}
 
@@ -156,12 +147,9 @@ class LayerList extends EntityList<LayerToggle>
 			}
 		}
 		// remove any unused layer toggles
-		for (e in entities)
+		for (i in entityId...entities.length)
 		{
-			if (!e.visible)
-			{
-				remove(e);
-			}
+			entities[i].controlScene = null;
 		}
 	}
 
