@@ -1,5 +1,6 @@
 package haxepunk.debug;
 
+import haxe.ds.StringMap;
 import haxepunk.graphics.text.Text;
 import haxepunk.input.MouseManager;
 import haxepunk.utils.Draw;
@@ -7,13 +8,14 @@ import haxepunk.utils.Draw;
 @:access(haxepunk.Scene)
 private class LayerToggle extends Entity
 {
+	public var controlScene:Scene;
 	public var layerNumber:Null<Int>;
 
 	var label:Text;
 
 	var display:Bool = true;
 
-	public function new(mouseManager:MouseManager)
+	public function new(controlScene:Scene, mouseManager:MouseManager)
 	{
 		super();
 		label = new Text("Layer");
@@ -21,6 +23,7 @@ private class LayerToggle extends Entity
 		addGraphic(label);
 		width = 220;
 		height = 24;
+		this.controlScene = controlScene;
 		type = mouseManager.type;
 		mouseManager.add(this, null, onClick, onEnter, onExit, true);
 	}
@@ -31,16 +34,10 @@ private class LayerToggle extends Entity
 		if (layerNumber != null)
 		{
 			var entityCount = 0;
-			display = false;
-			for (scene in HXP.engine.visibleScenes)
-			{
-				if (scene == HXP.console) continue;
-				entityCount = scene._layers.exists(layerNumber) ? Lambda.count(scene._layers[layerNumber]) : 0;
-				display = display || scene.layerVisible(layerNumber);
-			}
+			entityCount = controlScene._layers.exists(layerNumber) ? Lambda.count(controlScene._layers[layerNumber]) : 0;
 			var txt = "Layer " + layerNumber + " [" + entityCount + "]";
 			if (label.text != txt) label.text = txt;
-			label.color = display ? 0x00ff00 : 0xff0000;
+			label.color = controlScene.layerVisible(layerNumber) ? 0x00ff00 : 0xff0000;
 		}
 	}
 
@@ -48,13 +45,9 @@ private class LayerToggle extends Entity
 	{
 		if (layerNumber != null)
 		{
-			for (scene in HXP.engine.visibleScenes)
-			{
-				if (scene == HXP.console) continue;
-				display = !display;
-				scene.showLayer(layerNumber, display);
-				scene.updateLists();
-			}
+			var display = !controlScene.layerVisible(layerNumber);
+			controlScene.showLayer(layerNumber, display);
+			controlScene.updateLists();
 		}
 	}
 
@@ -67,8 +60,7 @@ class LayerList extends EntityList<LayerToggle>
 {
 	var alpha:Float = 0.5;
 	var mouseManager:MouseManager;
-	var sceneLabel:Text;
-	var childY:Int = 8;
+	var sceneLabels:StringMap<Text> = new StringMap<Text>();
 
 	public function new(mouseManager:MouseManager)
 	{
@@ -77,20 +69,15 @@ class LayerList extends EntityList<LayerToggle>
 		width = 280;
 		height = 320;
 
-		sceneLabel = new Text("Scene");
-		sceneLabel.y = childY;
-		childY += sceneLabel.textHeight;
-		graphic = sceneLabel;
-
 		type = mouseManager.type;
 		mouseManager.add(this, null, null, onEnter, onExit);
 	}
 
-	function getLayerToggle(layerNumber:Int):Null<LayerToggle>
+	function getLayerToggle(scene:Scene, layerNumber:Int):Null<LayerToggle>
 	{
 		for (e in entities)
 		{
-			if (e.layerNumber == layerNumber)
+			if (e.layerNumber == layerNumber && e.controlScene == scene)
 			{
 				return e;
 			}
@@ -98,32 +85,54 @@ class LayerList extends EntityList<LayerToggle>
 		return null;
 	}
 
+	function getSceneLabel(scene:Scene):Text
+	{
+		var className = Type.getClassName(Type.getClass(scene));
+		if (sceneLabels.exists(className))
+		{
+			return sceneLabels.get(className);
+		}
+		else
+		{
+			var sceneLabel = new Text();
+			sceneLabel.text = className;
+			addGraphic(sceneLabel);
+			sceneLabels.set(className, sceneLabel);
+			return sceneLabel;
+		}
+	}
+
 	override public function update()
 	{
 		super.update();
 
+		var childY:Int = 8;
+
 		for (scene in HXP.engine.visibleScenes)
 		{
+			// skip console scene
 			if (scene == HXP.console) continue;
-			var layerCount = scene._layerList.length;
 
-			for (i in 0...layerCount)
+			// get or create scene label and update it's position
+			var sceneLabel = getSceneLabel(scene);
+			sceneLabel.y = childY;
+			childY += sceneLabel.textHeight;
+
+			var layers = [for (layer in scene._layerList) layer];
+			layers.sort(function(a, b) return a - b);
+			for (layer in layers)
 			{
-				var layerNumber = scene._layerList[i];
-				var toggle = getLayerToggle(layerNumber);
+				var toggle = getLayerToggle(scene, layer);
 				if (toggle == null)
 				{
-					toggle = new LayerToggle(mouseManager);
+					toggle = new LayerToggle(scene, mouseManager);
+					toggle.layerNumber = layer;
 					add(toggle);
-					toggle.layerNumber = layerNumber;
-					toggle.localY = childY;
-					childY += toggle.height + 4;
 				}
+				toggle.localY = childY;
+				childY += toggle.height + 4;
 				toggle.update();
 			}
-
-			var txt = Type.getClassName(Type.getClass(scene));
-			if (sceneLabel.text != txt) sceneLabel.text = txt;
 		}
 	}
 
