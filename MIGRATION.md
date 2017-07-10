@@ -74,13 +74,53 @@ Previously tween events were dispatched but are now using signals. Instead of pa
 var tween = new Tween(10, onComplete); // old style
 
 var tween = new Tween(10);
-tween.complete.bind(onComplete); // new style
+tween.onComplete.bind(onComplete); // new style
 ```
 
 In addition to the complete function you can also bind to start and update.
 
 ```haxe
 var tween = new Tween(10);
-tween.started.bind(function() trace("Tween started!"));
-tween.updated.bind(function() trace("Tween updated!"));
+tween.onStarted.bind(function() trace("Tween started!"));
+tween.onUpdated.bind(function() trace("Tween updated!"));
+```
+
+HXP Statics
+-----------
+
+Several static variables in HXP have either been removed or moved to a different class.
+
+| 2.x              | 4.x                                                          |
+|------------------|--------------------------------------------------------------|
+| HXP.bounds       | Removed                                                      |
+| HXP.camera       | Scene owns camera objects now                                |
+| HXP.console      | In Engine but for internal use                               |
+| HXP.entity       | Removed                                                      |
+| HXP.halfWidth    | Removed                                                      |
+| HXP.halfHeight   | Removed                                                      |
+| HXP.resetCamera  | Removed                                                      |
+| HXP.resize       | Removed                                                      |
+| HXP.setCamera    | Removed                                                      |
+| HXP.scene        | Removed because more than one scene can be active at a time. |
+| HXP.sprite       | Removed                                                      |
+| HXP.stage        | Removed (Using Stage class not advised)                      |
+| HXP.timeFlag     | Moved to Timer.flag                                          |
+
+Managing Scenes
+---------------
+
+HaxePunk can now render more than one scene at a time. If a scene is added to HaxePunk on top of another scene with a transparent background it will also render the underlying scene. This can be useful for ui overlays in a game. Due to this change, the way you add/remove scenes is a bit different than before.
+
+### Old Way
+```haxe
+HXP.scene = new MyScene();
+```
+
+### New Way
+```haxe
+HXP.engine.replace(new MyScene()); // replaces ALL scenes
+var overlay = new Overlay();
+HXP.engine.add(overlay); // add another scene on top of the current one
+// ...later in your code...
+HXP.engine.remove(overlay); // remove the overlay
 ```
