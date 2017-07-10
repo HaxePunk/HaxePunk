@@ -5,6 +5,6 @@ class {{PROJECT_CLASS}} extends Engine
 {
 	override public function init()
 	{
-		HXP.scene = new MainScene();
+		setScene(new MainScene());
 	}
 }
