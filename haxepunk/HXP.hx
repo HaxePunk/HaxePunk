@@ -298,10 +298,6 @@ class HXP
 		return e;
 	}
 
-	public static var console(get, set):Console;
-	static inline function get_console() return engine.console;
-	static inline function set_console(c:Console) return engine.console = c;
-
 	/**
 	 * Logs data to the console.
 	 * @param	...data		The data parameters to log, can be variables, objects, etc. Parameters will be separated by a space (" ").

@@ -111,7 +111,7 @@ class LayerList extends EntityList<LayerToggle>
 		for (scene in HXP.engine.visibleScenes)
 		{
 			// skip console scene
-			if (scene == HXP.console) continue;
+			if (scene == HXP.engine.console) continue;
 
 			// get or create scene label and update it's position
 			var sceneLabel = getSceneLabel(scene);

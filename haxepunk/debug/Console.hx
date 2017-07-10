@@ -14,7 +14,6 @@ import haxepunk.utils.CircularBuffer;
 import haxepunk.utils.DrawContext;
 
 @:access(haxepunk.graphics.hardware)
-@:access(haxepunk.Engine)
 class Console extends Scene
 {
 	static inline var SAMPLE_TIME:Float = 20 / 60;
