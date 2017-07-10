@@ -211,11 +211,6 @@ class Engine extends Sprite
 		});
 	}
 
-	public function topScene():Scene
-	{
-		return _scenes[_scenes.length-1];
-	}
-
 	/**
 	 * Renders the game, rendering the Scene and Entities.
 	 */

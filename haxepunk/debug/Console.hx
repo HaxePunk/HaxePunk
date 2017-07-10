@@ -151,6 +151,8 @@ class Console extends Scene
 
 	function updateScene(scene:Scene)
 	{
+		if (Key.check(Key.RIGHT_SQUARE_BRACKET)) step();
+
 		if (Key.check(Key.SHIFT))
 		{
 			var mx:Int = 0, my:Int = 0;
@@ -235,24 +237,27 @@ class Console extends Scene
 	{
 		super.update();
 
-		var scene = HXP.engine.topScene();
-
 		if (Key.pressed(Key.TILDE))
 		{
 			togglePause();
 			debugDraw = paused;
 		}
 
-		if (!paused || _stepping)
+		for (scene in HXP.engine.visibleScenes)
 		{
-			updateMetrics(scene);
-		}
+			if (scene == this) continue; // skip console
 
-		if (paused)
-		{
-			if (Key.check(Key.RIGHT_SQUARE_BRACKET)) step();
+			if (!paused || _stepping)
+			{
+				updateMetrics(scene);
+			}
 
-			updateScene(scene);
+			if (paused)
+			{
+				updateScene(scene);
+			}
+
+			break; // TODO: handle more than bottom scene?
 		}
 
 		fpsChart.enabled =
