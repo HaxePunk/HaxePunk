@@ -1,6 +1,5 @@
 package haxepunk;
 
-import haxe.Timer;
 import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
@@ -277,18 +276,6 @@ class HXP
 	}
 
 	/**
-	 * Sets a time flag.
-	 * @return	Time elapsed (in milliseconds) since the last time flag was set.
-	 */
-	public static inline function timeFlag():Float
-	{
-		var t:Float = Timer.stamp(),
-			e:Float = t - _time;
-		_time = t;
-		return e;
-	}
-
-	/**
 	 * Logs data to the console.
 	 * @param	...data		The data parameters to log, can be variables, objects, etc. Parameters will be separated by a space (" ").
 	 */
@@ -422,15 +409,7 @@ class HXP
 		}
 	}
 
-	public static var time(null, set):Float;
-	static inline function set_time(value:Float):Float
-	{
-		_time = value;
-		return _time;
-	}
-
 	// Time information.
-	static var _time:Float;
 	@:dox(hide) public static var _updateTime:Float;
 	@:dox(hide) public static var _renderTime:Float;
 	@:dox(hide) public static var _gameTime:Float;

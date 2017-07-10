@@ -14,6 +14,7 @@ import haxepunk.ds.Maybe;
 import haxepunk.graphics.hardware.EngineRenderer;
 import haxepunk.input.Input;
 import haxepunk.utils.Draw;
+import haxepunk.utils.Timer;
 import haxepunk.math.Random;
 
 /**
@@ -103,8 +104,6 @@ class Engine extends Sprite
 
 		// miscellaneous startup stuff
 		if (Random.randomSeed == 0) Random.randomizeSeed();
-
-		HXP.time = Lib.getTimer();
 
 		paused = false;
 		maxElapsed = 0.0333;
@@ -218,7 +217,7 @@ class Engine extends Sprite
 	public function render()
 	{
 		// timing stuff
-		var t:Float = Lib.getTimer();
+		var t:Float = Timer.getMillis();
 		if (_frameLast == 0) _frameLast = Std.int(t);
 
 		preRender.invoke();
@@ -233,7 +232,7 @@ class Engine extends Sprite
 		postRender.invoke();
 
 		// more timing stuff
-		t = Lib.getTimer();
+		t = Timer.getMillis();
 		_frameListSum += (_frameList[_frameList.length] = Std.int(t - _frameLast));
 		if (_frameList.length > 10) _frameListSum -= _frameList.shift();
 		HXP.frameRate = 1000 / (_frameListSum / _frameList.length);
@@ -325,7 +324,7 @@ class Engine extends Sprite
 		_rate = 1000 / HXP.assignedFrameRate;
 
 		// nonfixed framerate
-		_last = Lib.getTimer();
+		_last = Timer.getMillis();
 		addEventListener(Event.ENTER_FRAME, onEnterFrame);
 
 		#if (nme || openfl_legacy)
@@ -347,7 +346,7 @@ class Engine extends Sprite
 	/** @private Framerate independent game loop. */
 	function onEnterFrame(e:Event)
 	{
-		_time = _gameTime = Lib.getTimer();
+		_time = _gameTime = Timer.getMillis();
 		HXP._systemTime = _time - _systemTime;
 		_updateTime = _time;
 
@@ -374,7 +373,7 @@ class Engine extends Sprite
 		_last = _time;
 
 		// update timer
-		_time = _renderTime = Lib.getTimer();
+		_time = _renderTime = Timer.getMillis();
 		HXP._updateTime = _time - _updateTime;
 
 		// render loop
@@ -382,7 +381,7 @@ class Engine extends Sprite
 		if (!paused || Console.enabled) render();
 
 		// update timer
-		_time = _systemTime = Lib.getTimer();
+		_time = _systemTime = Timer.getMillis();
 		HXP._renderTime = _time - _renderTime;
 		HXP._gameTime = _time - _gameTime;
 	}
