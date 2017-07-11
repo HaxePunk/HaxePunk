@@ -26,14 +26,14 @@ class SceneTest
 		scene.add(e);
 		Assert.areEqual(0, scene.count);
 
-		scene.updateLists();
+		scene.updateEntityLists();
 		Assert.areEqual(1, scene.count);
 
 		scene.add(new Entity());
 		scene.add(new Entity());
 		scene.add(new Entity());
 		scene.remove(e);
-		scene.updateLists();
+		scene.updateEntityLists();
 		Assert.areEqual(3, scene.count);
 	}
 
@@ -44,7 +44,7 @@ class SceneTest
 		e.type = "foo";
 		scene.add(e);
 		scene.add(new Entity());
-		scene.updateLists();
+		scene.updateEntityLists();
 		Assert.areEqual(1, scene.typeCount("foo"));
 		Assert.areEqual(0, scene.typeCount("bar"));
 		Assert.areEqual(1, scene.uniqueTypes);
@@ -63,7 +63,7 @@ class SceneTest
 		var e = new Entity();
 		scene.add(e);
 		scene.add(new Entity());
-		scene.updateLists();
+		scene.updateEntityLists();
 		Assert.areEqual(0, scene.layerCount(15));
 		Assert.areEqual(1, scene.layers);
 
@@ -80,13 +80,13 @@ class SceneTest
 	{
 		var e:TestEntity = scene.create(TestEntity, false);
 		Assert.isTrue(Std.is(e, TestEntity));
-		scene.updateLists();
+		scene.updateEntityLists();
 		Assert.areEqual(0, countRecycled(scene));
 
 		scene.recycle(e);
 		scene.recycle(new Entity());
 		scene.recycle(new Entity()); // linked with previous entity _recycleNext
-		scene.updateLists();
+		scene.updateEntityLists();
 		Assert.areEqual(2, countRecycled(scene));
 
 		scene.clearRecycled(TestEntity);
@@ -102,7 +102,7 @@ class SceneTest
 		var e = new Entity();
 		e.name = "foo";
 		scene.add(e);
-		scene.updateLists();
+		scene.updateEntityLists();
 
 		Assert.areEqual(e, scene.getInstance("foo"));
 

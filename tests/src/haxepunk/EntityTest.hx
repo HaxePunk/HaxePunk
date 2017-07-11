@@ -28,7 +28,7 @@ class EntityTest
 	public function addToScene(e:Entity)
 	{
 		scene.add(e);
-		scene.updateLists(true);
+		scene.updateEntityLists(true);
 	}
 
 	@Test

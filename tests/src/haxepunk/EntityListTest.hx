@@ -25,18 +25,18 @@ class EntityListTest
 
 		list.add(child1);
 		scene.add(list);
-		scene.updateLists();
+		scene.updateEntityLists();
 
 		Assert.areEqual(scene, list.scene);
 		Assert.areEqual(scene, child1.scene);
 		Assert.isNull(child2.scene);
 
 		list.add(child2);
-		scene.updateLists();
+		scene.updateEntityLists();
 		Assert.areEqual(scene, child2.scene);
 
 		scene.remove(list);
-		scene.updateLists();
+		scene.updateEntityLists();
 		Assert.isNull(list.scene);
 		Assert.isNull(child1.scene);
 		Assert.isNull(child2.scene);

@@ -51,7 +51,7 @@ private class LayerToggle extends Entity
 		{
 			var display = !scene.layerVisible(layerNumber);
 			scene.showLayer(layerNumber, display);
-			scene.updateLists();
+			scene.updateEntityLists();
 		});
 	}
 

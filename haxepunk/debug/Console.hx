@@ -282,7 +282,7 @@ class Console extends Scene
 
 		bgAlpha = paused ? 0.75 : 0;
 
-		updateLists();
+		updateEntityLists();
 	}
 
 	public inline function log(data:Array<Dynamic>)

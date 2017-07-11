@@ -1114,7 +1114,7 @@ class Scene extends Tweener
 	 * Updates the add/remove lists at the end of the frame.
 	 * @param	shouldAdd	If new Entities should be added to the scene.
 	 */
-	public function updateLists(shouldAdd:Bool = true)
+	public function updateEntityLists(shouldAdd:Bool = true)
 	{
 		if (HXP.cursor != null)
 		{

@@ -175,16 +175,16 @@ class Engine extends Sprite
 			activeScene = scene;
 			if (scene.hasTween) scene.updateTweens(HXP.elapsed);
 			scene.update();
-			scene.updateLists();
+			scene.updateEntityLists();
 		}
 		activeScene = null;
 
-		updateLists();
+		updateSceneLists();
 
 		postUpdate.invoke();
 	}
 
-	function updateLists()
+	function updateSceneLists()
 	{
 		inline function loopList(list:Array<Scene>, func:Scene->Void)
 		{
@@ -198,14 +198,14 @@ class Engine extends Sprite
 		loopList(_remove, function(scene:Scene)
 		{
 			scene.end();
-			scene.updateLists();
+			scene.updateEntityLists();
 			if (scene.autoClear && scene.hasTween) scene.clearTweens();
 			_scenes.remove(scene);
 		});
 		loopList(_add, function(scene:Scene)
 		{
 			scene.begin();
-			scene.updateLists();
+			scene.updateEntityLists();
 			_scenes.push(scene);
 		});
 	}
@@ -315,7 +315,7 @@ class Engine extends Sprite
 		Input.enable();
 
 		// switch scenes
-		updateLists();
+		updateSceneLists();
 
 		// game start
 		init();
