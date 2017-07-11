@@ -11,10 +11,10 @@ class FixedScaleMode extends ScaleMode
 		super(false);
 	}
 
-	override public function resize(stageWidth:Int, stageHeight:Int)
+	override public function resizeScreen(screen:Screen, stageWidth:Int, stageHeight:Int)
 	{
-		HXP.screen.width = stageWidth;
-		HXP.screen.height = stageHeight;
-		HXP.screen.scale = HXP.screen.scaleX = HXP.screen.scaleY = 1;
+		screen.width = stageWidth;
+		screen.height = stageHeight;
+		screen.scale = screen.scaleX = screen.scaleY = 1;
 	}
 }

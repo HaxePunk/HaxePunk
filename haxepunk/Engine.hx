@@ -299,7 +299,7 @@ class Engine extends Sprite
 		// calculate scale from width/height values
 		HXP.windowWidth = width;
 		HXP.windowHeight = height;
-		HXP.screen.needsResize = true;
+		HXP.screen.resize(width, height);
 
 		onResize.invoke();
 	}

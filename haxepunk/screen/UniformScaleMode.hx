@@ -36,7 +36,7 @@ class UniformScaleMode extends ScaleMode
 		this.type = type;
 	}
 
-	override public function resize(stageWidth:Int, stageHeight:Int)
+	override public function resizeScreen(screen:Screen, stageWidth:Int, stageHeight:Int)
 	{
 		var scaleX = stageWidth / baseWidth,
 			scaleY = stageHeight / baseHeight;
@@ -49,21 +49,21 @@ class UniformScaleMode extends ScaleMode
 			if (scale < 1) scale = 1;
 		}
 
-		HXP.screen.scale = scale;
-		HXP.screen.scaleX = HXP.screen.scaleY = 1;
+		screen.scale = scale;
+		screen.scaleX = screen.scaleY = 1;
 		switch (type)
 		{
 			case Letterbox:
 				// fill only part of the window
-				HXP.screen.width = Std.int(baseWidth * scale);
-				HXP.screen.height = Std.int(baseHeight * scale);
-				HXP.screen.x = Std.int((stageWidth - HXP.screen.width) / 2);
-				HXP.screen.y = Std.int((stageHeight - HXP.screen.height) / 2);
+				screen.width = Std.int(baseWidth * scale);
+				screen.height = Std.int(baseHeight * scale);
+				screen.x = Std.int((stageWidth - screen.width) / 2);
+				screen.y = Std.int((stageHeight - screen.height) / 2);
 			case Expand, ZoomIn:
 				// fill the window
-				HXP.screen.x = HXP.screen.y = 0;
-				HXP.screen.width = stageWidth;
-				HXP.screen.height = stageHeight;
+				screen.x = screen.y = 0;
+				screen.width = stageWidth;
+				screen.height = stageHeight;
 		}
 	}
 }
