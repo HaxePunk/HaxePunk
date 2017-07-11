@@ -4,7 +4,6 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxepunk.Camera;
 import haxepunk.Graphic;
-import haxepunk.HXP;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.IAtlasRegion;
 import haxepunk.graphics.hardware.Texture;

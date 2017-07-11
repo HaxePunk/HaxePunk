@@ -125,7 +125,7 @@ class Touch
 		this.time = 0;
 	}
 
-	inline public function cameraOffset(camera:Camera):Vector2
+	public inline function cameraOffset(camera:Camera):Vector2
 	{
 		return new Vector2(x + camera.x, y + camera.y);
 	}

@@ -1,6 +1,5 @@
 package platformer;
 
-import haxepunk.HXP;
 import haxepunk.Entity;
 import haxepunk.graphics.atlas.TextureAtlas;
 import haxepunk.graphics.tile.Tilemap;

@@ -1,7 +1,4 @@
-import haxepunk.Engine;
-import haxepunk.HXP;
-
-class {{PROJECT_CLASS}} extends Engine
+class {{PROJECT_CLASS}} extends haxepunk.Engine
 {
 	override public function init()
 	{

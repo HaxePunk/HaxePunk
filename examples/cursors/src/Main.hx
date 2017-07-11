@@ -1,5 +1,4 @@
 import haxepunk.Engine;
-import haxepunk.HXP;
 import haxepunk.debug.Console;
 
 class Main extends Engine
@@ -9,6 +8,4 @@ class Main extends Engine
 		Console.enable();
 		add(new MainScene());
 	}
-
-	public static function main() { new Main(); }
 }

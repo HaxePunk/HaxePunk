@@ -5,7 +5,6 @@ import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.ui.Mouse;
 import haxepunk.Tween.TweenType;
-import haxepunk.debug.Console;
 import haxepunk.tweens.misc.Alarm;
 import haxepunk.tweens.misc.MultiVarTween;
 import haxepunk.utils.HaxelibInfo;

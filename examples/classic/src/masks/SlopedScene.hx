@@ -17,7 +17,7 @@ class SlopedScene extends DemoScene
 		super();
 	}
 
-	public override function begin()
+	override public function begin()
 	{
 		var grid = new SlopedGrid(320, 320, 32, 32);
 		grid.setRect(0, 0, 10, 1, Solid);
@@ -59,7 +59,7 @@ class SlopedScene extends DemoScene
 		HXP.engine.console.debugDraw = true;
 	}
 
-	public override function update()
+	override public function update()
 	{
 		entity.x = mouseX;
 		entity.y = mouseY;

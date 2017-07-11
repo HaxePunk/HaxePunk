@@ -24,7 +24,7 @@ class GameScene extends DemoScene
 		Key.define("right", [Key.RIGHT]);
 	}
 
-	public override function begin()
+	override public function begin()
 	{
 		// create a circle entity we can move around
 		circle = createCircle(25, 25, 30, 0xFF0000FF);
@@ -94,7 +94,7 @@ class GameScene extends DemoScene
 		return e;
 	}
 
-	public override function update()
+	override public function update()
 	{
 		super.update();
 		var x:Int = 0, y:Int = 0;
