@@ -16,7 +16,7 @@ class MainScene extends Scene
 	var explosionEmitter:Emitter;
 	var spawnAsteroid:Float = 0;
 
-	public override function begin()
+	override public function begin()
 	{
 		ship = new Ship();
 		ship.x = HXP.width/2;

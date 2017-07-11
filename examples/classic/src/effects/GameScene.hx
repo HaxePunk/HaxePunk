@@ -18,7 +18,7 @@ class GameScene extends DemoScene
 		super();
 	}
 
-	public override function begin()
+	override public function begin()
 	{
 #if !flash
 		atlas = TextureAtlas.loadTexturePacker("atlas/assets.xml");
@@ -36,7 +36,7 @@ class GameScene extends DemoScene
 		smokeEntity = addGraphic(smoke);
 	}
 
-	public override function end()
+	override public function end()
 	{
 #if !flash
 		atlas.destroy();
@@ -49,7 +49,7 @@ class GameScene extends DemoScene
 		smoke.emit("exhaust", offset.x, offset.y);
 	}
 
-	public override function update()
+	override public function update()
 	{
 #if mobile
 		if (Input.multiTouchSupported)
