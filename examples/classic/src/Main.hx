@@ -7,9 +7,7 @@ class Main extends Engine
 	override public function init()
 	{
 		Console.enable();
-		add(new effects.GameScene());
+		setScene(new effects.GameScene());
 	}
-
-	public static function main() { new Main(); }
 
 }

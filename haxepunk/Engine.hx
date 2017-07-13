@@ -167,6 +167,8 @@ class Engine extends Sprite
 
 		preUpdate.invoke();
 
+		updateSceneLists();
+
 		if (HXP.tweener.active && HXP.tweener.hasTween) HXP.tweener.updateTweens(HXP.elapsed);
 		for (scene in _scenes)
 		{
@@ -179,11 +181,12 @@ class Engine extends Sprite
 		}
 		activeScene = null;
 
-		updateSceneLists();
-
 		postUpdate.invoke();
 	}
 
+	/**
+	 * @private Adds and Removes scenes to the active scene list
+	 **/
 	function updateSceneLists()
 	{
 		inline function loopList(list:Array<Scene>, func:Scene->Void)
@@ -197,10 +200,18 @@ class Engine extends Sprite
 
 		loopList(_remove, function(scene:Scene)
 		{
-			scene.end();
-			scene.updateEntityLists();
-			if (scene.autoClear && scene.hasTween) scene.clearTweens();
-			_scenes.remove(scene);
+			// check if it is a scene that hasn't been added yet
+			if (_add.indexOf(scene) != -1)
+			{
+				_add.remove(scene);
+			}
+			else
+			{
+				scene.end();
+				scene.updateEntityLists();
+				if (scene.autoClear && scene.hasTween) scene.clearTweens();
+				_scenes.remove(scene);
+			}
 		});
 		loopList(_add, function(scene:Scene)
 		{
@@ -407,29 +418,75 @@ class Engine extends Sprite
 	public var clearColor(get, never):Null<Int>;
 	inline function get_clearColor():Null<Int> return stage.color;
 
-	public function replaceScene(scene:Scene)
+	/**
+	 * The number of scenes in the scene list
+	 * @since	4.0.0
+	 */
+	public var sceneCount(get, never):Int;
+	inline function get_sceneCount():Int return _scenes.length;
+
+	/**
+	 * Removes all other scenes and sets the new active scene during the next update.
+	 * @param value  The scene to replace other scenes
+	 * @since	4.0.0
+	 */
+	public function setScene(scene:Scene)
 	{
-		for (scene in _scenes) remove(scene);
-		add(scene);
+		removeAllScenes();
+		pushScene(scene);
 	}
 
 	/**
-	 * Add a scene. It will not become active until the next update.
+	 * Add a scene during the next update. It will be rendered in front of other scenes.
 	 * @param value  The scene to push
 	 * @since	2.5.3
 	 */
-	public function add(scene:Scene)
+	public function pushScene(scene:Scene)
 	{
 		_add[_add.length] = scene;
 	}
 
 	/**
-	 * Remove a scene. The current scenes will remain active until the next update.
+	 * Pop the top scene from the stack during the next update.
 	 * @since	2.5.3
 	 */
-	public function remove(scene:Scene)
+	public function popScene():Null<Scene>
+	{
+		var index = _scenes.length;
+		// search through removed scenes until we find one that hasn't been removed yet
+		while (index > 0)
+		{
+			index -= 1;
+			var scene = _scenes[index];
+			if (_remove.indexOf(scene) == -1)
+			{
+				removeScene(scene);
+				return scene;
+			}
+		}
+		// at this point the only scenes left are in the add buffer
+		return _add.pop();
+	}
+
+	/**
+	 * Remove a scene during the next update.
+	 * @since	4.0.0
+	 */
+	public function removeScene(scene:Scene)
 	{
 		_remove[_remove.length] = scene;
+	}
+
+	/**
+	 * Remove all scenes during the next update.
+	 * @since	4.0.0
+	 */
+	public function removeAllScenes()
+	{
+		for (scene in _scenes)
+		{
+			removeScene(scene);
+		}
 	}
 
 	// Scene information.

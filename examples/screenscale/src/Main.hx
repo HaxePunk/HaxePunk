@@ -7,7 +7,7 @@ class Main extends Engine
 	override public function init()
 	{
 		Console.enable();
-		add(new MainScene());
+		setScene(new MainScene());
 	}
 
 }

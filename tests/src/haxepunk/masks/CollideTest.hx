@@ -11,7 +11,7 @@ class CollideTest
 	{
 		var engine = new Engine(640, 480);
 		var scene = new Scene();
-        engine.add(scene);
+        engine.pushScene(scene);
 
 		hitbox = scene.addMask(new Hitbox(20, 20, -10, -10), "box");
 		circle = scene.addMask(new Circle(10), "circle");

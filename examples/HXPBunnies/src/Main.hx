@@ -7,7 +7,7 @@ class Main extends Engine
 
 	override public function init()
 	{
-		add(new scenes.GameScene());
+		setScene(new scenes.GameScene());
 
 		var fps:FPS = new FPS(10, 10, 0);
 		var format = fps.defaultTextFormat;
