@@ -374,7 +374,7 @@ class HardwareRenderer
 				GL.vertexAttribPointer(shader.attributeIndex("aTexCoord"), 2, GL.FLOAT, false, stride, 6 * FLOAT32_BYTES);
 			}
 
-			GL.scissor(Std.int(x0), Std.int(HXP.stage.stageHeight - y0 - rect.height), Std.int(rect.width), Std.int(rect.height));
+			GL.scissor(Std.int(x0), Std.int(y0), Std.int(HXP.screen.width), Std.int(HXP.screen.height));
 			GL.enable(GL.SCISSOR_TEST);
 			GL.drawArrays(GL.TRIANGLES, 0, items * 3);
 			GL.disable(GL.SCISSOR_TEST);
