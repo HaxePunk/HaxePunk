@@ -113,8 +113,8 @@ class DrawContext
 			nextPrev = new Vector2();
 		begin();
 
-		a.set(pos.x, pos.y);
-		b.set(pos.x, pos.y);
+		a.setTo(pos.x, pos.y);
+		b.setTo(pos.x, pos.y);
 
 		// calculate first cap
 		next.perpendicular();
@@ -288,8 +288,8 @@ class DrawContext
 			var theta = segment * radians;
 			var sin = Math.sin(theta);
 			var cos = Math.cos(theta);
-			inner.set(x + sin * innerRadius * scaleX, y + cos * innerRadius * scaleY);
-			outer.set(x + sin * outerRadius * scaleX, y + cos * outerRadius * scaleY);
+			inner.setTo(x + sin * innerRadius * scaleX, y + cos * innerRadius * scaleY);
+			outer.setTo(x + sin * outerRadius * scaleX, y + cos * outerRadius * scaleY);
 
 			if (segment != 0)
 			{

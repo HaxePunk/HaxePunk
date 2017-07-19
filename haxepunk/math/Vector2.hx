@@ -11,36 +11,56 @@ class Vector2
 		this.y = y;
 	}
 
-	public inline function length():Float
+	/**
+	 * The length of this vector
+	 **/
+	public var length(get, set):Float;
+	inline function get_length():Float return Math.sqrt(x * x + y * y);
+	inline function set_length(value:Float)
 	{
-		return Math.sqrt(x * x + y * y);
+		normalize(value);
+		return value;
 	}
 
-	public inline function set(x:Float, y:Float)
+	/**
+	 * Set the internal x, y values
+	 **/
+	public inline function setTo(x:Float, y:Float)
 	{
 		this.x = x;
 		this.y = y;
 	}
 
+	/**
+	 * Convert this vector to it's perpendicular counterpart
+	 **/
 	public inline function perpendicular()
 	{
-		var xx = x;
-		x = -y;
-		y = xx;
+		setTo(-y, x);
 	}
 
+	/**
+	 * Invert (negate) the vector contents
+	 **/
 	public inline function inverse():Void
 	{
 		x = -x;
 		y = -y;
 	}
 
+	/**
+	 * Copies the values from one vector into this one
+	 * @param other  The vector to copy from
+	 **/
 	public inline function copyFrom(other:Vector2):Void
 	{
 		x = other.x;
 		y = other.y;
 	}
 
+	/**
+	 * Scale the vector by a single value
+	 **/
 	public inline function scale(scalar:Float):Void
 	{
 		x *= scalar;
@@ -59,6 +79,11 @@ class Vector2
 		y -= other.y;
 	}
 
+	/**
+	 * Returns the distance between this and another point
+	 * @param other  The other point to use for distance calculation
+	 * @returns The distance between the two points
+	 **/
 	public inline function distance(other:Vector2):Float
 	{
 		var dx = this.x - other.x;
@@ -66,14 +91,29 @@ class Vector2
 		return Math.sqrt(dx * dx + dy * dy);
 	}
 
-	public inline function normalize(size:Float):Void
+	/**
+	 * Normalize the vector to a set length
+	 * @param size  The length of the resulting vector. Default: unit length (1)
+	 **/
+	public inline function normalize(size:Float=1):Void
 	{
 		if (!(x == 0 && y == 0))
 		{
-			var normal = size / length();
+			var normal = size / this.length;
 			x *= normal;
 			y *= normal;
 		}
+	}
+
+	/**
+	 * Rotate the vector around an angle
+	 * @param angle  The angle, in radians to rotate around (clockwise)
+	 **/
+	public inline function rotate(angle:Float):Void
+	{
+		var sin = Math.sin(angle);
+		var cos = Math.cos(angle);
+		setTo(cos * x - sin * y, sin * x + cos * y);
 	}
 
 	/**
