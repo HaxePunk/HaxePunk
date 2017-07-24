@@ -1,33 +1,9 @@
 {
 	"haxe.displayConfigurations": [
-		["export/flash/haxe/debug.hxml"],
-		["export/flash/haxe/release.hxml"],
-		["export/html5/haxe/debug.hxml"],
-		["export/html5/haxe/release.hxml"],
-		["export/windows/cpp/haxe/debug.hxml"],
-		["export/windows/cpp/haxe/release.hxml"],
-		["export/windows/neko/haxe/debug.hxml"],
-		["export/windows/neko/haxe/release.hxml"],
-		["export/linux64/cpp/haxe/debug.hxml"],
-		["export/linux64/cpp/haxe/release.hxml"],
-		["export/linux64/neko/haxe/debug.hxml"],
-		["export/linux64/neko/haxe/release.hxml"],
-		["export/mac64/cpp/haxe/debug.hxml"],
-		["export/mac64/cpp/haxe/release.hxml"],
-		["export/mac64/neko/haxe/debug.hxml"],
-		["export/mac64/neko/haxe/release.hxml"],
-		["export/android/haxe/debug.hxml"],
-		["export/android/haxe/release.hxml"],
-		["export/ios/haxe/debug.hxml"],
-		["export/ios/haxe/release.hxml"]
+		[".vscode/completion-openfl.hxml"]
 	],
 	"haxe.diagnosticsPathFilter": "${workspaceRoot}/source",
 	"search.exclude": {
 		"export/**/*.hx": true
-	},
-	"codedox": {
-		"commentdescription": "\n",
-		"paramFormat": "@param   ${name} ",
-		"returnFormat": "@return  ${type}"
 	}
 }

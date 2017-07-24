@@ -13,6 +13,8 @@
 
 	<haxelib name="HaxePunk"/>
 
+	<haxedef name="debug_console" if="debug" />
+
 	<assets path="assets/graphics" rename="graphics" include="*.png|*.jpg"/>
 	<assets path="assets/audio" rename="audio" include="*.mp3" if="flash"/>
 	<assets path="assets/audio" rename="audio" include="*.wav|*.ogg" unless="flash"/>
