@@ -23,33 +23,18 @@ class DrawContext
 	 * The blending mode used by Draw functions. This will not
 	 * apply to Draw.line(), but will apply to Draw.linePlus().
 	 */
-	public var blend(default, set):BlendMode = BlendMode.Alpha;
-	function set_blend(value:BlendMode):BlendMode
-	{
-		if (blend != value) needsCommand = true;
-		return blend = value;
-	}
+	public var blend:BlendMode = BlendMode.Alpha;
 
 	/**
 	 * The shader used by Draw functions. This will default to
 	 * a color shader if not set.
 	 */
-	public var shader(default, set):Shader;
-	function set_shader(value:Shader):Shader
-	{
-		if (shader != value) needsCommand = true;
-		return shader = value;
-	}
+	public var shader:Shader;
 
 	/**
 	 * Whether shapes should be drawn with antialiasing.
 	 */
-	public var smooth(default, set):Bool = true;
-	function set_smooth(value:Bool):Bool
-	{
-		if (smooth != value) needsCommand = true;
-		return smooth = value;
-	}
+	public var smooth:Bool = true;
 
 	/**
 	 * The red, green, and blue values in a single integer value.
@@ -404,13 +389,8 @@ class DrawContext
 	function begin()
 	{
 		var scene = this.scene.or(HXP.engine.activeScene.ensure());
-		if (needsCommand || scene != lastScene || command._next != null)
-		{
-			if (shader == null) shader = new ColorShader();
-			command = scene.renderer.batch.getDrawCommand(null, shader, smooth, blend, null);
-			needsCommand = false;
-			lastScene = scene;
-		}
+		if (shader == null) shader = new ColorShader();
+		command = scene.renderer.batch.getDrawCommand(null, shader, smooth, blend, null);
 	}
 
 	inline function drawTriangle(v1:Vector2, v2:Vector2, v3:Vector2):Void
@@ -427,6 +407,4 @@ class DrawContext
 
 	// Drawing information.
 	var command:DrawCommand;
-	var needsCommand:Bool = true;
-	var lastScene:Scene;
 }
