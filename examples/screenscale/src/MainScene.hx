@@ -61,7 +61,7 @@ class MainScene extends Scene
 	var scaleModeIndex:Int = 0;
 	var label:Text;
 
-	public override function begin()
+	override public function begin()
 	{
 		var tilemap = new Tilemap("graphics/tiles.png", 840, 512, 60, 60, 4, 4);
 		for (x in 0 ... Std.int(840/60))
