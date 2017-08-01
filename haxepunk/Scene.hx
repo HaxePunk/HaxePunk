@@ -1123,11 +1123,10 @@ class Scene extends Tweener
 
 		inline function loopList(list:Array<Entity>, func:Entity->Void)
 		{
-			for (i in 0...list.length)
+			while (list.length > 0)
 			{
-				func(list[i]);
+				func(list.pop());
 			}
-			HXP.clear(list);
 		}
 
 		loopList(_remove, removeEntity);

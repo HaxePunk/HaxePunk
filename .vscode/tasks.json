@@ -17,7 +17,7 @@
             "taskName": "Unit Tests",
             "command": "haxelib",
             "isShellCommand": true,
-            "args": ["run", "munit", "test", "test-openfl4.hxml", "-coverage"],
+            "args": ["run", "munit", "test", "test-openfl4.hxml"],
             "isBuildCommand": true,
             "showOutput": "silent",
             "options": {

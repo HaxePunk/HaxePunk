@@ -8,6 +8,14 @@ import haxepunk.Scene;
 
 // dummy entity for testing class types
 class TestEntity extends Entity {}
+class EntityAdder extends Entity
+{
+	public var addedEntity:Entity;
+	override public function added() {
+		addedEntity = new Entity();
+		scene.add(addedEntity);
+	}
+}
 
 @:access(haxepunk.Engine)
 class SceneTest
@@ -94,6 +102,17 @@ class SceneTest
 
 		scene.clearRecycledAll();
 		Assert.areEqual(0, countRecycled(scene));
+	}
+
+	@Test
+	public function testEntityAddedDuringAddedFunction()
+	{
+		var e = new EntityAdder();
+		scene.add(e);
+		scene.updateEntityLists();
+		scene.updateEntityLists();
+		Assert.isNotNull(e.addedEntity);
+		Assert.areEqual(scene, e.addedEntity.scene);
 	}
 
 	@Test
