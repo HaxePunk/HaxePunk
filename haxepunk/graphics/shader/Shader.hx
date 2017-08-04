@@ -1,8 +1,8 @@
 package haxepunk.graphics.shader;
 
-import flash.gl.GL;
-import flash.gl.GLProgram;
-import flash.gl.GLShader;
+import lime.graphics.opengl.GL;
+import lime.graphics.opengl.GLProgram;
+import lime.graphics.opengl.GLShader;
 import haxepunk.graphics.hardware.GLUtils;
 import haxepunk.graphics.hardware.DrawCommand;
 import haxepunk.graphics.hardware.Float32Array;

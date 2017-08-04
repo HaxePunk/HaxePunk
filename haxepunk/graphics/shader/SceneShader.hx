@@ -1,9 +1,9 @@
 package haxepunk.graphics.shader;
 
 import flash.Assets;
-import flash.gl.GL;
-import flash.gl.GLBuffer;
-import flash.gl.GLUniformLocation;
+import lime.graphics.opengl.GL;
+import lime.graphics.opengl.GLBuffer;
+import lime.graphics.opengl.GLUniformLocation;
 import haxepunk.graphics.hardware.Float32Array;
 import haxepunk.graphics.hardware.GLUtils;
 
