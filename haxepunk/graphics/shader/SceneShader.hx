@@ -1,9 +1,15 @@
 package haxepunk.graphics.shader;
 
 import flash.Assets;
+#if nme
+import flash.gl.GL;
+import flash.gl.GLBuffer;
+import flash.gl.GLUniformLocation;
+#else
 import lime.graphics.opengl.GL;
 import lime.graphics.opengl.GLBuffer;
 import lime.graphics.opengl.GLUniformLocation;
+#end
 import haxepunk.graphics.hardware.Float32Array;
 import haxepunk.graphics.hardware.GLUtils;
 

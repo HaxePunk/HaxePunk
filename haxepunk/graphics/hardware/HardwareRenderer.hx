@@ -3,8 +3,13 @@ package haxepunk.graphics.hardware;
 import haxe.PosInfos;
 import flash.geom.Rectangle;
 import flash.geom.Point;
+#if nme
+import flash.gl.GL;
+import flash.gl.GLFramebuffer;
+#else
 import lime.graphics.opengl.GL;
 import lime.graphics.opengl.GLFramebuffer;
+#end
 import haxepunk.HXP;
 import haxepunk.graphics.shader.SceneShader;
 import haxepunk.utils.BlendMode;
