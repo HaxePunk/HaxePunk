@@ -1,6 +1,6 @@
 package haxepunk.tweens.motion;
 
-import haxepunk.Tween;
+import haxepunk.utils.Ease.EaseFunction;
 import flash.geom.Point;
 
 /**
@@ -9,28 +9,11 @@ import flash.geom.Point;
 class LinearPath extends Motion
 {
 	/**
-	 * Constructor.
-	 * @param	complete	Optional completion callback.
-	 * @param	type		Tween type.
-	 */
-	public function new(?complete:Dynamic -> Void, ?type:TweenType)
-	{
-		_points = new Array<Point>();
-		_pointD = new Array<Float>();
-		_pointT = new Array<Float>();
-
-		distance = _speed = _index = 0;
-
-		super(0, complete, type, null);
-		_pointD[0] = _pointT[0] = 0;
-	}
-
-	/**
 	 * Starts moving along the path.
 	 * @param	duration		Duration of the movement.
 	 * @param	ease			Optional easer function.
 	 */
-	public function setMotion(duration:Float, ease:Float -> Float = null)
+	public function setMotion(duration:Float, ?ease:EaseFunction)
 	{
 		updatePath();
 		_target = duration;
@@ -44,7 +27,7 @@ class LinearPath extends Motion
 	 * @param	speed		Speed of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotionSpeed(speed:Float, ease:Float -> Float = null)
+	public function setMotionSpeed(speed:Float, ?ease:EaseFunction)
 	{
 		updatePath();
 		_target = distance / speed;
@@ -92,9 +75,8 @@ class LinearPath extends Motion
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update()
+	override function updateInternal()
 	{
-		super.update();
 		if (_index < _points.length - 1)
 		{
 			while (_t > _pointT[_index + 1]) _index++;
@@ -109,7 +91,7 @@ class LinearPath extends Motion
 	}
 
 	/** @private Updates the path, preparing it for motion. */
-	private function updatePath()
+	function updatePath()
 	{
 		if (_points.length < 2)
 			throw "A LinearPath must have at least 2 points to operate.";
@@ -126,23 +108,23 @@ class LinearPath extends Motion
 	/**
 	 * The full length of the path.
 	 */
-	public var distance(default, null):Float;
+	public var distance(default, null):Float = 0;
 
 	/**
 	 * How many points are on the path.
 	 */
 	public var pointCount(get, never):Float;
-	private function get_pointCount():Float return _points.length; 
+	function get_pointCount():Float return _points.length;
 
 	// Path information.
-	private var _points:Array<Point>;
-	private var _pointD:Array<Float>;
-	private var _pointT:Array<Float>;
-	private var _speed:Float;
-	private var _index:Int;
+	var _points:Array<Point> = [];
+	var _pointD:Array<Float> = [0];
+	var _pointT:Array<Float> = [0];
+	var _speed:Float = 0;
+	var _index:Int = 0;
 
 	// Line information.
-	private var _last:Point;
-	private var _prevPoint:Point;
-	private var _nextPoint:Point;
+	var _last:Point;
+	var _prevPoint:Point;
+	var _nextPoint:Point;
 }

@@ -1,8 +1,7 @@
-﻿package haxepunk.tweens.motion;
+package haxepunk.tweens.motion;
 
-import haxepunk.Tween;
 import haxepunk.HXP;
-import haxepunk.utils.Ease;
+import haxepunk.utils.Ease.EaseFunction;
 import flash.geom.Point;
 
 /**
@@ -11,17 +10,9 @@ import flash.geom.Point;
 class QuadMotion extends Motion
 {
 	/**
-	 * Constructor.
-	 * @param	complete	Optional completion callback.
-	 * @param	type		Tween type.
+	 * The distance of the entire curve.
 	 */
-	public function new(?complete:Dynamic -> Void, type:TweenType)
-	{
-		_distance = -1;
-		_fromX = _fromY = _toX = _toY = 0;
-		_controlX = _controlY = 0;
-		super(0, complete, type, null);
-	}
+	public var distance(default, null):Float = 0;
 
 	/**
 	 * Starts moving along the curve.
@@ -34,15 +25,9 @@ class QuadMotion extends Motion
 	 * @param	duration	Duration of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotion(fromX:Float, fromY:Float, controlX:Float, controlY:Float, toX:Float, toY:Float, duration:Float, ease:Float -> Float = null)
+	public function setMotion(fromX:Float, fromY:Float, controlX:Float, controlY:Float, toX:Float, toY:Float, duration:Float, ?ease:EaseFunction)
 	{
-		_distance = -1;
-		x = _fromX = fromX;
-		y = _fromY = fromY;
-		_controlX = controlX;
-		_controlY = controlY;
-		_toX = toX;
-		_toY = toY;
+		set(fromX, fromY, controlX, controlY, toX, toY);
 		_target = duration;
 		_ease = ease;
 		start();
@@ -59,15 +44,9 @@ class QuadMotion extends Motion
 	 * @param	speed		Speed of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotionSpeed(fromX:Float, fromY:Float, controlX:Float, controlY:Float, toX:Float, toY:Float, speed:Float, ease:Float -> Float = null)
+	public function setMotionSpeed(fromX:Float, fromY:Float, controlX:Float, controlY:Float, toX:Float, toY:Float, speed:Float, ?ease:EaseFunction)
 	{
-		_distance = -1;
-		x = _fromX = fromX;
-		y = _fromY = fromY;
-		_controlX = controlX;
-		_controlY = controlY;
-		_toX = toX;
-		_toY = toY;
+		set(fromX, fromY, controlX, controlY, toX, toY);
 		_target = distance / speed;
 		_ease = ease;
 		start();
@@ -75,43 +54,47 @@ class QuadMotion extends Motion
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update()
+	override function updateInternal()
 	{
-		super.update();
 		x = _fromX * (1 - _t) * (1 - _t) + _controlX * 2 * (1 - _t) * _t + _toX * _t * _t;
 		y = _fromY * (1 - _t) * (1 - _t) + _controlY * 2 * (1 - _t) * _t + _toY * _t * _t;
 	}
 
-	/**
-	 * The distance of the entire curve.
-	 */
-	public var distance(get, null):Float;
-	private function get_distance():Float
+	inline function set(fromX:Float, fromY:Float, controlX:Float, controlY:Float, toX:Float, toY:Float)
 	{
-		if (_distance >= 0) return _distance;
+		x = _fromX = fromX;
+		y = _fromY = fromY;
+		_controlX = controlX;
+		_controlY = controlY;
+		_toX = toX;
+		_toY = toY;
+		distance = calculateDistance();
+	}
+
+	function calculateDistance():Float
+	{
 		var a:Point = HXP.point,
 			b:Point = HXP.point2;
 		a.x = x - 2 * _controlX + _toX;
 		a.y = y - 2 * _controlY + _toY;
 		b.x = 2 * _controlX - 2 * x;
 		b.y = 2 * _controlY - 2 * y;
-		var A:Float = 4 * (a.x * a.x + a.y * a.y),
-			B:Float = 4 * (a.x * b.x + a.y * b.y),
-			C:Float = b.x * b.x + b.y * b.y,
-			ABC:Float = 2 * Math.sqrt(A + B + C),
-			A2:Float = Math.sqrt(A),
-			A32:Float = 2 * A * A2,
-			C2:Float = 2 * Math.sqrt(C),
-			BA:Float = B / A2;
-		return (A32 * ABC + A2 * B * (ABC - C2) + (4 * C * A - B * B) * Math.log((2 * A2 + BA + ABC) / (BA + C2))) / (4 * A32);
+		var a1:Float = 4 * (a.x * a.x + a.y * a.y),
+			b1:Float = 4 * (a.x * b.x + a.y * b.y),
+			c1:Float = b.x * b.x + b.y * b.y,
+			abc:Float = 2 * Math.sqrt(a1 + b1 + c1),
+			a2:Float = Math.sqrt(a1),
+			a32:Float = 2 * a1 * a2,
+			c2:Float = 2 * Math.sqrt(c1),
+			ba:Float = b1 / a2;
+		return (a32 * abc + a2 * b1 * (abc - c2) + (4 * c1 * a1 - b1 * b1) * Math.log((2 * a2 + ba + abc) / (ba + c2))) / (4 * a32);
 	}
 
 	// Curve information.
-	private var _distance:Float;
-	private var _fromX:Float;
-	private var _fromY:Float;
-	private var _toX:Float;
-	private var _toY:Float;
-	private var _controlX:Float;
-	private var _controlY:Float;
+	var _fromX:Float = 0;
+	var _fromY:Float = 0;
+	var _toX:Float = 0;
+	var _toY:Float = 0;
+	var _controlX:Float = 0;
+	var _controlY:Float = 0;
 }

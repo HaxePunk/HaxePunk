@@ -15,16 +15,16 @@ class ScaleMode
 	/**
 	 * @param	integer		Whether scale should be rounded to an integer.
 	 */
-	public function new(?integer:Bool = false)
+	public function new(integer:Bool = false)
 	{
 		this.integer = integer;
 		setBaseSize(HXP.width, HXP.height);
 	}
 
-	public function setBaseSize(?width:Int, ?height:Int)
+	public function setBaseSize(width:Int = -1, height:Int = -1)
 	{
-		if (width == null) width = HXP.width;
-		if (height == null) height = HXP.height;
+		if (width == -1) width = HXP.width;
+		if (height == -1) height = HXP.height;
 		baseWidth = width;
 		baseHeight = height;
 	}
@@ -32,20 +32,16 @@ class ScaleMode
 	public function resize(stageWidth:Int, stageHeight:Int)
 	{
 		HXP.screen.x = HXP.screen.y = 0;
-		HXP.screen.offsetX = HXP.screen.offsetY = 0;
-		var scaleXMult = HXP.screen._scaleXMult,
-			scaleYMult = HXP.screen._scaleYMult;
-		HXP.screen.scaleX = scaleXMult * stageWidth / baseWidth;
-		HXP.screen.scaleY = scaleYMult * stageHeight / baseHeight;
-		HXP.screen._scaleXMult = scaleXMult;
-		HXP.screen._scaleYMult = scaleYMult;
+		HXP.screen.scale = 1;
+		HXP.screen.scaleX = stageWidth / baseWidth;
+		HXP.screen.scaleY = stageHeight / baseHeight;
 		HXP.screen.width = stageWidth;
 		HXP.screen.height = stageHeight;
 
 		if (integer)
 		{
-			HXP.screen.scaleX = Std.int(HXP.screen.scaleX);
-			HXP.screen.scaleY = Std.int(HXP.screen.scaleY);
+			HXP.screen.scaleX = Std.int(Math.max(1, HXP.screen.scaleX));
+			HXP.screen.scaleY = Std.int(Math.max(1, HXP.screen.scaleY));
 		}
 	}
 }

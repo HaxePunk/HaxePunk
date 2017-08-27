@@ -8,15 +8,14 @@ import haxepunk.Tween;
 @:access(haxepunk.Tween)
 class Tweener
 {
-	public var active:Bool;
-	public var autoClear:Bool;
+	@:isVar public var active(get, set):Bool = true;
+	function get_active() return active;
+	function set_active(v:Bool) return active = v;
+
+	public var autoClear:Bool = false;
 
 	@:allow(haxepunk)
-	private function new()
-	{
-		active = true;
-		autoClear = false;
-	}
+	function new() {}
 
 	@:dox(hide)
 	public function update() {}
@@ -84,37 +83,34 @@ class Tweener
 	 */
 	public function clearTweens()
 	{
-		var t:Tween,
-			ft:Tween = _tween;
-		while (ft != null)
+		var t:Tween = _tween;
+		while (t != null)
 		{
-			removeTween(ft._next);
-			ft = ft._next;
+			var next = t._next;
+			removeTween(t);
+			t = next;
 		}
 	}
 
 	/**
 	 * Update all contained tweens.
 	 */
-	public function updateTweens()
+	public function updateTweens(elapsed:Float)
 	{
-		var t:Tween,
-			ft:Tween = _tween;
-		while (ft != null)
+		var t:Tween = _tween;
+		while (t != null)
 		{
-			t = cast(ft, Tween);
 			if (t.active)
 			{
-				t.update();
-				if (ft._finish) ft.finish();
+				t.update(elapsed);
 			}
-			ft = ft._next;
+			t = t._next;
 		}
 	}
 
 	/** If there is at least a tween. */
 	public var hasTween(get, never):Bool;
-	private function get_hasTween():Bool return (_tween != null); 
+	function get_hasTween():Bool return (_tween != null);
 
-	private var _tween:Tween;
+	var _tween:Tween;
 }

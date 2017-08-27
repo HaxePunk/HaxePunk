@@ -1,5 +1,6 @@
 package haxepunk.utils;
 
+import haxepunk.math.MathUtil;
 
 /**
  * An abstract with various color utility functions.
@@ -30,14 +31,14 @@ abstract Color(UInt) from UInt to UInt
 		}
 		else
 		{
-			var a:UInt = fromColor.a,
-				r:UInt = fromColor.r,
-				g:UInt = fromColor.g,
-				b:UInt = fromColor.b,
-				dA:UInt = toColor.a - a,
-				dR:UInt = toColor.r - r,
-				dG:UInt = toColor.g - g,
-				dB:UInt = toColor.b - b;
+			var a:Int = fromColor.a,
+				r:Int = fromColor.r,
+				g:Int = fromColor.g,
+				b:Int = fromColor.b,
+				dA:Int = toColor.a - a,
+				dR:Int = toColor.r - r,
+				dG:Int = toColor.g - g,
+				dB:Int = toColor.b - b;
 			a += Std.int(dA * t);
 			r += Std.int(dR * t);
 			g += Std.int(dG * t);
@@ -56,7 +57,17 @@ abstract Color(UInt) from UInt to UInt
 	 */
 	public static inline function getColorRGB(r:Int=0, g:Int=0, b:Int=0):Color
 	{
-		return r << 16 | g << 8 | b;
+		return (r & 0xff) << 16 | (g & 0xff) << 8 | (b & 0xff);
+	}
+
+	public static inline function getColorRGBFloat(r:Float, g:Float, b:Float):Color
+	{
+		inline function intColor(v:Float):Color
+		{
+			var c = Std.int(v * 0x100);
+			return MathUtil.iclamp(c, 0, 0xff);
+		}
+		return getColorRGB(intColor(r), intColor(g), intColor(b));
 	}
 
 	/**
@@ -108,9 +119,9 @@ abstract Color(UInt) from UInt to UInt
 
 	public inline function withAlpha(a:Float):Color
 	{
+		a = a < 0 ? 0 : (a > 1 ? 1 : a);
 		return (Std.int(0xff * a) << 24) | (this & 0xffffff);
 	}
-
 
 	/**
 	 * Finds the hue factor of a color.
@@ -182,5 +193,32 @@ abstract Color(UInt) from UInt to UInt
 		var v:Int = this & 0xFF;
 
 		return Std.int(Math.max(h, Math.max(s, v))) / 255;
+	}
+
+	public inline function getLuminance():Float
+	{
+		return (0.2126 * red + 0.7152 * green + 0.0722 * blue);
+	}
+
+	/**
+	 * Shortcut to lerp between this color and another.
+	 *
+	 * @param	toColor		Second color.
+	 * @param	t			Interpolation value. Clamped to the range [0, 1].
+	 */
+	public inline function lerp(toColor:Color, t:Float = 1):Color
+	{
+		return colorLerp(this, toColor, t);
+	}
+
+	public inline function multiply(other:Color):Color
+	{
+		return getColorRGBFloat(red * other.red, green * other.green, blue * other.blue);
+	}
+
+	public inline function toARGB(alpha:Float):UInt
+	{
+		alpha = MathUtil.clamp(alpha, 0, 1);
+		return (Std.int(0xff * alpha) << 24) | this;
 	}
 }

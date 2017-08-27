@@ -32,7 +32,7 @@ class HitboxTest extends TestSuite
 	}
 
 	@:access(haxepunk.masks.Hitbox)
-	private function collideHitbox(hitbox:Hitbox, x:Int, y:Int):Bool
+	function collideHitbox(hitbox:Hitbox, x:Int, y:Int):Bool
 	{
 		box._x = x;
 		box._y = y;
@@ -40,12 +40,12 @@ class HitboxTest extends TestSuite
 	}
 
 	@:access(haxepunk.masks.Circle)
-	private function collideCircle(circle:Circle, x:Int, y:Int):Bool
+	function collideCircle(circle:Circle, x:Int, y:Int):Bool
 	{
 		circle._x = x;
 		circle._y = y;
 		return circle.collideHitbox(box);
 	}
 
-	private var box:Hitbox;
+	var box:Hitbox;
 }

@@ -1,8 +1,10 @@
 package haxepunk.graphics.atlas;
 
-import flash.display.BlendMode;
+import haxepunk.utils.BlendMode;
 import flash.geom.Rectangle;
 import haxepunk.graphics.atlas.AtlasData;
+import haxepunk.graphics.shader.Shader;
+import haxepunk.utils.Color;
 
 class Atlas
 {
@@ -15,15 +17,15 @@ class Atlas
 	 * The width of this atlas
 	 */
 	public var width(get, never):Int;
-	private function get_width():Int return _data.width; 
+	function get_width():Int return _data.width;
 
 	/**
 	 * The height of this atlas
 	 */
 	public var height(get, never):Int;
-	private function get_height():Int return _data.height; 
+	function get_height():Int return _data.height;
 
-	private function new(source:AtlasDataType)
+	function new(?source:AtlasDataType)
 	{
 		_data = source;
 	}
@@ -52,7 +54,6 @@ class Atlas
 	 * @param  	rect   	The source rectangle to draw
 	 * @param	x		The x-axis location to draw the tile
 	 * @param	y		The y-axis location to draw the tile
-	 * @param	layer	The layer to draw on
 	 * @param	scaleX	The scale value for the x-axis
 	 * @param	scaleY	The scale value for the y-axis
 	 * @param	angle	An angle to rotate the tile
@@ -61,19 +62,19 @@ class Atlas
 	 * @param	blue	A blue tint value
 	 * @param	alpha	The tile's opacity
 	 */
-	public inline function prepareTile(rect:Rectangle, x:Float, y:Float, layer:Int,
+	public inline function prepareTile(rect:Rectangle, x:Float, y:Float,
 		scaleX:Float, scaleY:Float, angle:Float,
-		red:Float, green:Float, blue:Float, alpha:Float,
-		?smooth:Bool, ?blend:BlendMode)
+		color:Color, alpha:Float,
+		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
 	{
-		_data.prepareTile(rect, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha, smooth, blend);
+		_data.prepareTile(rect, x, y, scaleX, scaleY, angle, color, alpha, shader, smooth, blend, clipRect);
 	}
 
 	/**
 	 * How many Atlases are active.
 	 */
 	// public static var count(get, never):Int;
-	// private static inline function get_count():Int return _atlases.length; 
+	// static inline function get_count():Int return _atlases.length;
 
-	private var _data:AtlasData;
+	var _data:AtlasData;
 }

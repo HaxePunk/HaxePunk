@@ -1,8 +1,8 @@
-﻿package haxepunk.tweens.sound;
+package haxepunk.tweens.sound;
 
 import haxepunk.HXP;
 import haxepunk.Tween;
-import haxepunk.utils.Ease;
+import haxepunk.utils.Ease.EaseFunction;
 
 /**
  * Global volume fader.
@@ -14,18 +14,18 @@ class Fader extends Tween
 	 * @param	complete	Optional completion callback.
 	 * @param	type		Tween type.
 	 */
-	public function new(?complete:Dynamic -> Void, ?type:TweenType) 
+	public function new(?type:TweenType)
 	{
-		super(0, type, complete);
+		super(0, type);
 	}
-	
+
 	/**
 	 * Fades FP.volume to the target volume.
 	 * @param	volume		The volume to fade to.
 	 * @param	duration	Duration of the fade.
 	 * @param	ease		Optional easer function.
 	 */
-	public function fadeTo(volume:Float, duration:Float, ease:Float -> Float = null)
+	public function fadeTo(volume:Float, duration:Float, ?ease:EaseFunction)
 	{
 		if (volume < 0) volume = 0;
 		_start = HXP.volume;
@@ -34,16 +34,15 @@ class Fader extends Tween
 		_ease = ease;
 		start();
 	}
-	
+
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update() 
+	override function updateInternal()
 	{
-		super.update();
 		HXP.volume = _start + _range * _t;
 	}
-	
+
 	// Fader information.
-	private var _start:Float;
-	private var _range:Float;
+	var _start:Float;
+	var _range:Float;
 }

@@ -1,95 +1,72 @@
 package haxepunk;
 
-import haxepunk.ds.Either;
+import haxe.ds.Either;
+import haxepunk.utils.BlendMode;
+import flash.geom.Point;
+import flash.geom.Rectangle;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.TileAtlas;
 import haxepunk.graphics.atlas.AtlasRegion;
-import flash.display.BitmapData;
-import flash.geom.Point;
+import haxepunk.graphics.atlas.AtlasResolutions;
+import haxepunk.graphics.atlas.IAtlasRegion;
+import haxepunk.graphics.hardware.Texture;
+import haxepunk.graphics.shader.Shader;
+import haxepunk.graphics.shader.TextureShader;
+import haxepunk.utils.Color;
 
 /**
- * Abstract representing either a `String`, a `TileAtlas` or a `BitmapData`.
- * 
+ * Abstract representing either a `String`, a `TileAtlas` or a `Texture`.
+ *
  * Conversion is automatic, no need to use this.
  */
-abstract TileType(Either<BitmapData, TileAtlas>)
+abstract TileType(TileAtlas) from TileAtlas to TileAtlas
 {
-	private inline function new(e:Either<BitmapData, TileAtlas>) this = e;
-	@:dox(hide) public var type(get, never):Either<BitmapData, TileAtlas>;
-	@:to inline function get_type() return this;
-
-	@:dox(hide) @:from public static inline function fromString(tileset:String)
+	@:dox(hide) @:from public static inline function fromString(tileset:String):TileType
 	{
-		if (HXP.renderMode == RenderMode.HARDWARE)
-			return new TileType(Right(new TileAtlas(tileset)));
-		else
-			return new TileType(Left(HXP.getBitmap(tileset)));
+		return new TileAtlas(tileset);
 	}
-	@:dox(hide) @:from public static inline function fromTileAtlas(atlas:TileAtlas)
+	@:dox(hide) @:from public static inline function fromTileAtlas(atlas:TileAtlas):TileType
 	{
-		return new TileType(Right(atlas));
+		return atlas;
 	}
-	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData)
+	@:dox(hide) @:from public static inline function fromTexture(bd:Texture):TileType
 	{
-		if (HXP.renderMode == RenderMode.HARDWARE)
-			return new TileType(Right(new TileAtlas(bd)));
-		else
-			return new TileType(Left(bd));
+		return new TileAtlas(bd);
 	}
 }
 
 /**
- * Abstract representing either a `String`, a `TileAtlas`, a `BitmapData` or a `AtlasRegion`.
- * 
+ * Abstract representing either a `String`, a `TileAtlas`, a `Texture` or a `AtlasRegion`.
+ *
  * Conversion is automatic, no need to use this.
  */
-abstract ImageType(Either<BitmapData, AtlasRegion>)
+@:forward(width, height)
+abstract ImageType(IAtlasRegion) from IAtlasRegion to IAtlasRegion
 {
-	private inline function new(e:Either<BitmapData, AtlasRegion>) this = e;
-	@:dox(hide) public var type(get, never):Either<BitmapData, AtlasRegion>;
-	@:to inline function get_type() return this;
-
-	@:dox(hide) @:from public static inline function fromString(s:String)
+	@:dox(hide) @:from public static inline function fromString(s:String):ImageType
 	{
-		if (HXP.renderMode == RenderMode.HARDWARE)
-			return new ImageType(Right(Atlas.loadImageAsRegion(s)));
-		else
-			return new ImageType(Left(HXP.getBitmap(s)));
+		var region = AssetManager.getRegion(s);
+		return region == null ? Atlas.loadImageAsRegion(s) : region;
 	}
-	@:dox(hide) @:from public static inline function fromTileAtlas(atlas:TileAtlas)
+	@:dox(hide) @:from public static inline function fromTileAtlas(atlas:TileAtlas):ImageType
 	{
-		return new ImageType(Right(atlas.getRegion(0)));
+		return atlas.getRegion(0);
 	}
-	@:dox(hide) @:from public static inline function fromAtlasRegion(region:AtlasRegion)
+	@:dox(hide) @:from public static inline function fromAtlasRegion(region:IAtlasRegion):ImageType
 	{
-		return new ImageType(Right(region));
+		return region;
 	}
-	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData)
+	@:dox(hide) @:from public static inline function fromTexture(bd:Texture):ImageType
 	{
-		if (HXP.renderMode == RenderMode.HARDWARE)
-			return new ImageType(Right(Atlas.loadImageAsRegion(bd)));
-		else
-			return new ImageType(Left(bd));
+		return Atlas.loadImageAsRegion(bd);
 	}
-
-	public var width(get, never):Int;
-	inline function get_width()
+	@:dox(hide) @:from public static inline function fromStrings(v:Array<String>):ImageType
 	{
-		return Std.int(switch (this)
-		{
-			case Left(b): b.width;
-			case Right(a): a.width;
-		});
+		return new AtlasResolutions([for (image in v) Atlas.loadImageAsRegion(image)]);
 	}
-
-	public var height(get, never):Int;
-	inline function get_height()
+	@:dox(hide) @:from public static inline function fromAtlasRegions(v:Array<AtlasRegion>):ImageType
 	{
-		return Std.int(switch (this)
-		{
-			case Left(b): b.height;
-			case Right(a): a.height;
-		});
+		return new AtlasResolutions(v);
 	}
 }
 
@@ -98,20 +75,20 @@ abstract ImageType(Either<BitmapData, AtlasRegion>)
  *
  * Conversion is automatic, no need to use this.
  */
-abstract ImageOrTileType(Either<ImageType, TileType>)
+@:dox(hide)
+abstract ImageOrTileType(Either<ImageType, TileType>) from Either<ImageType, TileType>
 {
-	private inline function new(e:Either<ImageType, TileType>) this = e;
-	@:dox(hide) public var type(get, never):Either<ImageType, TileType>;
-	@:to inline function get_type() return this;
+	@:from public static inline function fromString(tileset:String):ImageOrTileType
+		return Right(TileType.fromString(tileset));
 
-	@:dox(hide) @:from public static inline function fromString(tileset:String):ImageOrTileType
-	return new ImageOrTileType(Right(TileType.fromString(tileset)));
-	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData):ImageOrTileType
-	return new ImageOrTileType(Right(TileType.fromBitmapData(bd)));
-	@:dox(hide) @:from public static inline function fromTileAtlas(atlas:TileAtlas):ImageOrTileType
-	return new ImageOrTileType(Right(TileType.fromTileAtlas(atlas)));
-	@:dox(hide) @:from public static inline function fromAtlasRegion(region:AtlasRegion):ImageOrTileType
-	return new ImageOrTileType(Left(ImageType.fromAtlasRegion(region)));
+	@:from public static inline function fromTexture(bd:Texture):ImageOrTileType
+		return Right(TileType.fromTexture(bd));
+
+	@:from public static inline function fromTileAtlas(atlas:TileAtlas):ImageOrTileType
+		return Right(TileType.fromTileAtlas(atlas));
+
+	@:from public static inline function fromAtlasRegion(region:AtlasRegion):ImageOrTileType
+		return Left(ImageType.fromAtlasRegion(region));
 }
 
 /**
@@ -123,66 +100,126 @@ class Graphic
 	/**
 	 * If the graphic should update.
 	 */
-	public var active:Bool;
+	public var active:Bool = false;
+
+	/**
+	 * If the image should be drawn transformed with pixel smoothing.
+	 * This will affect drawing performance, but look less pixelly.
+	 *
+	 * Default value: false if HXP.stage.quality is LOW, true otherwise.
+	 */
+	public var smooth:Bool;
+
+	/**
+	 * Optional blend mode to use when drawing this image.
+	 * Use constants from the haxepunk.utils.BlendMode class.
+	 */
+	public var blend:BlendMode = BlendMode.Alpha;
+
+	/**
+	 * Optional rectangle to clip the portion of this graphic that will be
+	 * drawn.
+	 * @since 4.0.0
+	 */
+	public var clipRect:Rectangle;
+
+	/**
+	 * The shader to use when drawing this graphic.
+	 * @since 4.0.0
+	 */
+	public var shader:Shader;
 
 	/**
 	 * If the graphic should render.
 	 */
 	public var visible(get, set):Bool;
-	private inline function get_visible():Bool return _visible;
-	private inline function set_visible(value:Bool):Bool return _visible = value;
+	inline function get_visible():Bool return _visible;
+	inline function set_visible(value:Bool):Bool return _visible = value;
 
 	/**
 	 * X offset.
 	 */
-	@:isVar public var x(get, set):Float;
-	private inline function get_x():Float return x;
-	private inline function set_x(value:Float):Float return x = value;
+	@:isVar public var x(get, set):Float = 0;
+	inline function get_x():Float return x;
+	inline function set_x(value:Float):Float return x = value;
 
 	/**
 	 * Y offset.
 	 */
-	@:isVar public var y(get, set):Float;
-	private inline function get_y():Float return y;
-	private inline function set_y(value:Float):Float return y = value;
+	@:isVar public var y(get, set):Float = 0;
+	inline function get_y():Float return y;
+	inline function set_y(value:Float):Float return y = value;
 
 	/**
 	 * X scrollfactor, effects how much the camera offsets the drawn graphic.
 	 * Can be used for parallax effect, eg. Set to 0 to follow the camera,
 	 * 0.5 to move at half-speed of the camera, or 1 (default) to stay still.
 	 */
-	public var scrollX:Float;
+	public var scrollX:Float = 1;
 
 	/**
 	 * Y scrollfactor, effects how much the camera offsets the drawn graphic.
 	 * Can be used for parallax effect, eg. Set to 0 to follow the camera,
 	 * 0.5 to move at half-speed of the camera, or 1 (default) to stay still.
 	 */
-	public var scrollY:Float;
+	public var scrollY:Float = 1;
+
+	/**
+	 * Change the opacity of the Image, a value from 0 to 1.
+	 */
+	public var alpha(default, set):Float = 1;
+	function set_alpha(value:Float):Float
+	{
+		return alpha = value < 0 ? 0 : (value > 1 ? 1 : value);
+	}
+
+	/**
+	 * The tinted color of the Image. Use 0xFFFFFF to draw the Image normally.
+	 */
+	public var color(default, set):Color;
+	function set_color(value:Color):Color
+	{
+		return color = value & 0xffffff;
+	}
 
 	/**
 	 * If the graphic should render at its position relative to its parent Entity's position.
 	 */
-	public var relative:Bool;
+	public var relative:Bool = true;
 
-	/**
-	 * If we can blit the graphic or not (flash/html5)
-	 */
-	public var blit(default, null):Bool;
+	var _screenClipRect:Rectangle;
+	inline function screenClipRect(camera:Camera, x:Float, y:Float)
+	{
+		if (clipRect != null)
+		{
+			if (_screenClipRect == null) _screenClipRect = new Rectangle();
+			_screenClipRect.setTo(
+				(x + clipRect.x) * camera.fullScaleX,
+				(y + clipRect.y) * camera.fullScaleY,
+				clipRect.width * camera.fullScaleX,
+				clipRect.height * camera.fullScaleY
+			);
+			return _screenClipRect;
+		}
+		else
+		{
+			return null;
+		}
+	}
 
 	/**
 	 * Constructor.
 	 */
 	@:allow(haxepunk)
-	private function new()
+	function new()
 	{
-		active = false;
-		visible = true;
-		x = y = 0;
-		scrollX = scrollY = 1;
-		relative = true;
-		_scroll = true;
-		_point = new Point();
+		if (HXP.stage != null)
+		{
+			smooth = (HXP.stage.quality != LOW);
+		}
+		color = Color.White;
+		shader = TextureShader.defaultShader;
+		_class = Type.getClassName(Type.getClass(this));
 	}
 
 	/**
@@ -197,22 +234,12 @@ class Graphic
 	public function destroy() {}
 
 	/**
-	 * Renders the graphic to the screen buffer.
-	 * @param  target     The buffer to draw to.
-	 * @param  point      The position to draw the graphic.
-	 * @param  camera     The camera offset.
-	 */
-	@:dox(hide)
-	public function render(target:BitmapData, point:Point, camera:Point) {}
-
-	/**
 	 * Renders the graphic as an atlas.
-	 * @param  layer      The layer to draw to.
 	 * @param  point      The position to draw the graphic.
 	 * @param  camera     The camera offset.
 	 */
 	@:dox(hide)
-	public function renderAtlas(layer:Int, point:Point, camera:Point) {}
+	public function render(point:Point, camera:Camera) {}
 
 	/**
 	 * Pause updating this graphic.
@@ -230,10 +257,11 @@ class Graphic
 		active = true;
 	}
 
-	// Graphic information.
-	private var _scroll:Bool;
-	private var _point:Point;
-	private var _entity:Entity;
+	public function toString():String return '[$_class]';
 
-	private var _visible:Bool;
+	var _class:String;
+	// Graphic information.
+	var _scroll:Bool = true;
+	var _point:Point = new Point();
+	var _visible:Bool = true;
 }

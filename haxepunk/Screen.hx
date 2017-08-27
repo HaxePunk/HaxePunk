@@ -1,14 +1,13 @@
 package haxepunk;
 
 import flash.display.Bitmap;
-import flash.display.PixelSnapping;
 import flash.display.Sprite;
 import flash.filters.BitmapFilter;
 import flash.geom.Matrix;
-import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.Image;
+import haxepunk.graphics.atlas.Atlas;
+import haxepunk.graphics.hardware.Renderer;
 import haxepunk.screen.ScaleMode;
-import haxepunk.utils.MathUtil;
 
 /**
  * Container for the main screen buffer. Can be used to transform the screen.
@@ -23,20 +22,21 @@ class Screen
 	public var scaleMode:ScaleMode = new ScaleMode();
 
 	/**
+	 * For hardware rendering.
+	 */
+	public var renderer:Renderer = new Renderer();
+
+	/**
 	 * Constructor.
 	 */
 	@:allow(haxepunk)
-	private function new()
+	function new()
 	{
 		_sprite = new Sprite();
 		_bitmap = new Array<Bitmap>();
-		init();
-	}
 
-	public function init()
-	{
-		x = y = originX = originY = 0;
-		_angle = _current = 0;
+		x = y = 0;
+		_current = 0;
 		scale = scaleX = scaleY = 1;
 		updateTransformation();
 
@@ -45,13 +45,24 @@ class Screen
 		{
 			HXP.engine.removeChild(_sprite);
 		}
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			HXP.engine.addChild(_sprite);
-		}
 	}
 
-	private inline function disposeBitmap(bd:Bitmap)
+	/** @private Re-applies transformation matrix. */
+	function updateTransformation()
+	{
+		if (_matrix == null)
+		{
+			_matrix = new Matrix();
+		}
+		_matrix.b = _matrix.c = 0;
+		_matrix.a = fullScaleX;
+		_matrix.d = fullScaleY;
+		_matrix.tx = x;
+		_matrix.ty = y;
+		_sprite.transform.matrix = _matrix;
+	}
+
+	inline function disposeBitmap(bd:Bitmap)
 	{
 		if (bd != null)
 		{
@@ -70,43 +81,13 @@ class Screen
 		var oldWidth:Int = HXP.width,
 			oldHeight:Int = HXP.height;
 
-		HXP.camera.x += HXP.screen.offsetX;
-		HXP.camera.y += HXP.screen.offsetY;
 		scaleMode.resize(width, height);
-		HXP.camera.x -= HXP.screen.offsetX;
-		HXP.camera.y -= HXP.screen.offsetY;
 
 		width = HXP.width = Std.int(HXP.screen.width / HXP.screen.fullScaleX);
 		height = HXP.height = Std.int(HXP.screen.height / HXP.screen.fullScaleY);
 
-		if (HXP.renderMode == RenderMode.BUFFER &&
-			(_bitmap.length == 0 || width != oldWidth || height != oldHeight))
-		{
-			disposeBitmap(_bitmap[0]);
-			disposeBitmap(_bitmap[1]);
-
-			_bitmap[0] = new Bitmap(HXP.createBitmap(width, height, true), PixelSnapping.NEVER);
-			_bitmap[1] = new Bitmap(HXP.createBitmap(width, height, true), PixelSnapping.NEVER);
-
-			_sprite.addChild(_bitmap[0]).visible = true;
-			_sprite.addChild(_bitmap[1]).visible = false;
-			HXP.buffer = _bitmap[0].bitmapData;
-		}
-
 		_current = 0;
 		needsResize = false;
-	}
-
-	/**
-	 * Swaps screen buffers.
-	 */
-	public function swap()
-	{
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			_current = 1 - _current;
-			HXP.buffer = _bitmap[_current].bitmapData;
-		}
 	}
 
 	/**
@@ -116,46 +97,6 @@ class Screen
 	public function addFilter(filter:Array<BitmapFilter>)
 	{
 		_sprite.filters = filter;
-	}
-
-	/**
-	 * Refreshes the screen.
-	 */
-	public function refresh()
-	{
-		// refreshes the screen
-		HXP.buffer.fillRect(HXP.bounds, 0xFF000000 | HXP.stage.color);
-	}
-
-	/**
-	 * Redraws the screen.
-	 */
-	public function redraw()
-	{
-		// refresh the buffers
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			_bitmap[_current].visible = true;
-			_bitmap[1 - _current].visible = false;
-		}
-	}
-
-	/** @private Re-applies transformation matrix. */
-	private function updateTransformation()
-	{
-		if (_matrix == null)
-		{
-			_matrix = new Matrix();
-		}
-		_matrix.b = _matrix.c = 0;
-		_matrix.a = fullScaleX;
-		_matrix.d = fullScaleY;
-		_matrix.tx = -originX * _matrix.a;
-		_matrix.ty = -originY * _matrix.d;
-		if (_angle != 0) _matrix.rotate(_angle);
-		_matrix.tx += originX * fullScaleX + x;
-		_matrix.ty += originY * fullScaleY + y;
-		_sprite.transform.matrix = _matrix;
 	}
 
 	@:dox(hide)
@@ -195,7 +136,7 @@ class Screen
 	 * X offset of the screen.
 	 */
 	public var x(default, set):Int = 0;
-	private function set_x(value:Int):Int
+	function set_x(value:Int):Int
 	{
 		if (x == value) return value;
 		HXP.engine.x = x = value;
@@ -207,7 +148,7 @@ class Screen
 	 * Y offset of the screen.
 	 */
 	public var y(default, set):Int = 0;
-	private function set_y(value:Int):Int
+	function set_y(value:Int):Int
 	{
 		if (y == value) return value;
 		HXP.engine.y = y = value;
@@ -216,69 +157,39 @@ class Screen
 	}
 
 	/**
-	 * X origin of transformations.
-	 */
-	public var originX(default, set):Int = 0;
-	private function set_originX(value:Int):Int
-	{
-		if (originX == value) return value;
-		originX = value;
-		updateTransformation();
-		return originX;
-	}
-
-	/**
-	 * Y origin of transformations.
-	 */
-	public var originY(default, set):Int = 0;
-	private function set_originY(value:Int):Int
-	{
-		if (originY == value) return value;
-		originY = value;
-		updateTransformation();
-		return originY;
-	}
-
-	/**
 	 * X scale of the screen.
 	 */
 	public var scaleX(default, set):Float = 1;
-	private function set_scaleX(value:Float):Float
+	function set_scaleX(value:Float):Float
 	{
 		if (scaleX == value) return value;
-		_scaleXMult *= value / scaleX;
 		scaleX = value;
 		fullScaleX = scaleX * scale;
 		updateTransformation();
 		needsResize = true;
 		return scaleX;
 	}
-	/* Track extra scale added by user */
-	var _scaleXMult:Float = 1;
 
 	/**
 	 * Y scale of the screen.
 	 */
 	public var scaleY(default, set):Float = 1;
-	private function set_scaleY(value:Float):Float
+	function set_scaleY(value:Float):Float
 	{
 		if (scaleY == value) return value;
-		_scaleYMult *= value / scaleY;
 		scaleY = value;
 		fullScaleY = scaleY * scale;
 		updateTransformation();
 		needsResize = true;
 		return scaleY;
 	}
-	/* Track extra scale added by user */
-	var _scaleYMult:Float = 1;
 
 	/**
 	 * Scale factor of the screen. Final scale is scaleX * scale by scaleY * scale, so
 	 * you can use this factor to scale the screen both horizontally and vertically.
 	 */
 	public var scale(default, set):Float = 1;
-	private function set_scale(value:Float):Float
+	function set_scale(value:Float):Float
 	{
 		if (scale == value) return value;
 		scale = value;
@@ -306,44 +217,16 @@ class Screen
 	public var needsResize(default, null):Bool = false;
 
 	/**
-	 * Rotation of the screen, in degrees.
-	 */
-	public var angle(get, set):Float;
-	private function get_angle():Float return _angle * MathUtil.DEG;
-	private function set_angle(value:Float):Float
-	{
-		if (_angle == value * MathUtil.RAD) return value;
-		_angle = value * MathUtil.RAD;
-		updateTransformation();
-		return _angle;
-	}
-
-	/**
 	 * Whether screen smoothing should be used or not.
 	 */
 	public var smoothing(get, set):Bool;
-	private function get_smoothing():Bool
+	function get_smoothing():Bool
 	{
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			return _bitmap[0].smoothing;
-		}
-		else
-		{
-			return Atlas.smooth;
-		}
+		return Atlas.smooth;
 	}
-	private function set_smoothing(value:Bool):Bool
+	function set_smoothing(value:Bool):Bool
 	{
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			_bitmap[0].smoothing = _bitmap[1].smoothing = value;
-		}
-		else
-		{
-			Atlas.smooth = value;
-		}
-		return value;
+		return Atlas.smooth = value;
 	}
 
 	/**
@@ -360,38 +243,21 @@ class Screen
 	 * X position of the mouse on the screen.
 	 */
 	public var mouseX(get, null):Int;
-	private function get_mouseX():Int return Std.int(_sprite.mouseX);
+	function get_mouseX():Int return Std.int(_sprite.mouseX);
 
 	/**
 	 * Y position of the mouse on the screen.
 	 */
 	public var mouseY(get, null):Int;
-	private function get_mouseY():Int return Std.int(_sprite.mouseY);
-
-	/**
-	 * X position offset applied to the camera.
-	 */
-	public var offsetX:Int = 0;
-	/**
-	 * Y position offset applied to the camera.
-	 */
-	public var offsetY:Int = 0;
+	function get_mouseY():Int return Std.int(_sprite.mouseY);
 
 	/**
 	 * Captures the current screen as an Image object.
-	 * Will only work in buffer rendermode (flash or html5).
 	 * @return	A new Image object.
 	 */
 	public function capture():Image
 	{
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			return new Image(_bitmap[_current].bitmapData.clone());
-		}
-		else
-		{
-			throw "Screen.capture only supported with buffer rendering";
-		}
+		throw "Screen.capture not currently supported";
 	}
 
 	/**
@@ -400,7 +266,7 @@ class Screen
 	 * @param	magnitude	Number of pixels to shake in any direction.
 	 * @since	2.5.3
 	 */
-	public function shake(?duration:Float = 0.5, ?magnitude:Int = 4)
+	public function shake(duration:Float = 0.5, magnitude:Int = 4)
 	{
 		if (_shakeTime < duration) _shakeTime = duration;
 		_shakeMagnitude = magnitude;
@@ -416,13 +282,12 @@ class Screen
 	}
 
 	// Screen infromation.
-	private var _sprite:Sprite;
-	private var _bitmap:Array<Bitmap>;
-	private var _current:Int;
-	private var _matrix:Matrix;
-	private var _angle:Float;
-	private var _shakeTime:Float=0;
-	private var _shakeMagnitude:Int=0;
-	private var _shakeX:Int=0;
-	private var _shakeY:Int=0;
+	var _sprite:Sprite;
+	var _bitmap:Array<Bitmap>;
+	var _current:Int;
+	var _matrix:Matrix;
+	var _shakeTime:Float=0;
+	var _shakeMagnitude:Int=0;
+	var _shakeX:Int=0;
+	var _shakeY:Int=0;
 }

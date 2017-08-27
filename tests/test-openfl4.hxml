@@ -1,13 +1,13 @@
 -cp ..
 -cp src
 -main TestMain
---macro include("haxepunk")
---macro haxepunk.utils.Platform.run()
 -lib munit
 -lib hamcrest
+--no-inline
 
 --each
 
+-D unit_test
 -D lime_cffi
 -D openfl="4.0.0"
 -D native

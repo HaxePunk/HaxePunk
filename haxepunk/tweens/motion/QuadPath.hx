@@ -1,7 +1,6 @@
-﻿package haxepunk.tweens.motion;
+package haxepunk.tweens.motion;
 
-import haxepunk.Tween;
-import haxepunk.utils.Ease;
+import haxepunk.utils.Ease.EaseFunction;
 import flash.geom.Point;
 
 /**
@@ -11,29 +10,11 @@ import flash.geom.Point;
 class QuadPath extends Motion
 {
 	/**
-	 * Constructor.
-	 * @param	complete	Optional completion callback.
-	 * @param	type		Tween type.
-	 */
-	public function new(?complete:Dynamic -> Void, type:TweenType)
-	{
-		_points = new Array<Point>();
-		_curve = new Array<Point>();
-		_curveD = new Array<Float>();
-		_curveT = new Array<Float>();
-		_distance = _speed = _index = 0;
-		_updateCurve = true;
-
-		super(0, complete, type, null);
-		_curveT[0] = 0;
-	}
-
-	/**
 	 * Starts moving along the path.
 	 * @param	duration	Duration of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotion(duration:Float, ease:Float -> Float = null)
+	public function setMotion(duration:Float, ?ease:EaseFunction)
 	{
 		updatePath();
 		_target = duration;
@@ -47,7 +28,7 @@ class QuadPath extends Motion
 	 * @param	speed		Speed of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotionSpeed(speed:Float, ease:Float -> Float = null)
+	public function setMotionSpeed(speed:Float, ?ease:EaseFunction)
 	{
 		updatePath();
 		_target = _distance / speed;
@@ -63,7 +44,7 @@ class QuadPath extends Motion
 	 */
 	public function addPoint(x:Float = 0, y:Float = 0)
 	{
-		_updateCurve = true;
+		updateInternalCurve = true;
 		if (_points.length == 0) _curve[0] = new Point(x, y);
 		_points[_points.length] = new Point(x, y);
 	}
@@ -91,9 +72,8 @@ class QuadPath extends Motion
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update()
+	override function updateInternal()
 	{
-		super.update();
 		if (_index < _curve.length - 1)
 		{
 			while (_t > _curveT[_index + 1]) _index++;
@@ -109,13 +89,13 @@ class QuadPath extends Motion
 	}
 
 	/** @private Updates the path, preparing the curve. */
-	private function updatePath()
+	function updatePath()
 	{
 		if (_points.length < 3)
 			throw "A QuadPath must have at least 3 points to operate.";
 
-		if (!_updateCurve) return;
-		_updateCurve = false;
+		if (!updateInternalCurve) return;
+		updateInternalCurve = false;
 
 		// produce the curve points
 		var p:Point,
@@ -165,10 +145,10 @@ class QuadPath extends Motion
 	 * Amount of points on the path.
 	 */
 	public var pointCount(get, null):Float;
-	private function get_pointCount():Float return _points.length; 
+	function get_pointCount():Float return _points.length;
 
 	/** @private Calculates the lenght of the curve. */
-	private function curveLength(start:Point, control:Point, finish:Point):Float
+	function curveLength(start:Point, control:Point, finish:Point):Float
 	{
 		var a:Point = HXP.point,
 			b:Point = HXP.point2;
@@ -176,31 +156,31 @@ class QuadPath extends Motion
 		a.y = start.y - 2 * control.y + finish.y;
 		b.x = 2 * control.x - 2 * start.x;
 		b.y = 2 * control.y - 2 * start.y;
-		var A:Float = 4 * (a.x * a.x + a.y * a.y),
-			B:Float = 4 * (a.x * b.x + a.y * b.y),
-			C:Float = b.x * b.x + b.y * b.y,
-			ABC:Float = 2 * Math.sqrt(A + B + C),
-			A2:Float = Math.sqrt(A),
-			A32:Float = 2 * A * A2,
-			C2:Float = 2 * Math.sqrt(C),
-			BA:Float = B / A2;
-		return (A32 * ABC + A2 * B * (ABC - C2) + (4 * C * A - B * B) * Math.log((2 * A2 + BA + ABC) / (BA + C2))) / (4 * A32);
+		var a1:Float = 4 * (a.x * a.x + a.y * a.y),
+			b1:Float = 4 * (a.x * b.x + a.y * b.y),
+			c1:Float = b.x * b.x + b.y * b.y,
+			abc:Float = 2 * Math.sqrt(a1 + b1 + c1),
+			a2:Float = Math.sqrt(a1),
+			a32:Float = 2 * a1 * a2,
+			c2:Float = 2 * Math.sqrt(c1),
+			ba:Float = b1 / a2;
+		return (a32 * abc + a2 * b1 * (abc - c2) + (4 * c1 * a1 - b1 * b1) * Math.log((2 * a2 + ba + abc) / (ba + c2))) / (4 * a32);
 	}
 
 	// Path information.
-	private var _points:Array<Point>;
-	private var _distance:Float;
-	private var _speed:Float;
-	private var _index:Int;
+	var _points:Array<Point> = [];
+	var _distance:Float = 0;
+	var _speed:Float = 0;
+	var _index:Int = 0;
 
 	// Curve information.
-	private var _updateCurve:Bool;
-	private var _curve:Array<Point>;
-	private var _curveT:Array<Float>;
-	private var _curveD:Array<Float>;
+	var updateInternalCurve:Bool = true;
+	var _curve:Array<Point> = [];
+	var _curveT:Array<Float> = [0];
+	var _curveD:Array<Float> = [];
 
 	// Curve points.
-	private var _a:Point;
-	private var _b:Point;
-	private var _c:Point;
+	var _a:Point;
+	var _b:Point;
+	var _c:Point;
 }

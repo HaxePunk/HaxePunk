@@ -54,7 +54,7 @@ class Terminal
 	//
 	// ERASE
 	//
-	private static inline function eraseMode(mode:EraseMode):Int
+	static inline function eraseMode(mode:EraseMode):Int
 	{
 		switch (mode)
 		{
@@ -72,7 +72,7 @@ class Terminal
 		return CSI + eraseMode(mode) + "K";
 	}
 
-	private static var format_regex = ~/\/(black|red|green|yellow|blue|magenta|cyan|white|reset|bold)/;
+	static var format_regex = ~/\/(black|red|green|yellow|blue|magenta|cyan|white|reset|bold)/;
 	public static function colorize(line:String, colorize:Bool):String
 	{
 		if (colorize)
@@ -125,5 +125,5 @@ class Terminal
 		return CSI + commands.join(";") + "m";
 	}
 
-	private static inline var CSI:String = "\x1B[";
+	static inline var CSI:String = "\x1B[";
 }

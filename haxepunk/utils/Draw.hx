@@ -1,216 +1,109 @@
 package haxepunk.utils;
 
-import flash.display.BitmapData;
-import flash.display.BlendMode;
-import flash.display.Graphics;
-import flash.display.LineScaleMode;
-import flash.display.Sprite;
-import flash.geom.Matrix;
-import flash.geom.Point;
-import flash.geom.Rectangle;
-import haxepunk.Entity;
-import haxepunk.HXP;
-import haxepunk.Graphic;
-import haxepunk.graphics.Text;
-import haxepunk.utils.Color;
+import haxepunk.utils.BlendMode;
+import haxepunk.graphics.shader.Shader;
 
 /**
  * Static class with access to miscellanious drawing functions.
  * These functions are not meant to replace Graphic components
  * for Entities, but rather to help with testing and debugging.
+ * The primitives are drawn in screen space and do not utilize
+ * camera movement unless passed as x/y values.
  */
 class Draw
 {
+	@:isVar static var instance(get, null):DrawContext;
+	static inline function get_instance()
+	{
+		if (instance == null) instance = new DrawContext();
+		return instance;
+	}
+
 	/**
 	 * The blending mode used by Draw functions. This will not
 	 * apply to Draw.line(), but will apply to Draw.linePlus().
 	 */
-	public static var blend:BlendMode;
+	public static var blend(get, set):BlendMode;
+	static inline function get_blend() return instance.blend;
+	static inline function set_blend(v:BlendMode) return instance.blend = v;
 
-	@:dox(hide)
-	public static function init()
+	/**
+	 * The shader used by Draw functions. This will default to
+	 * a color shader if not set.
+	 */
+	public static var shader(get, set):Shader;
+	static inline function get_shader() return instance.shader;
+	static inline function set_shader(v:Shader) return instance.shader = v;
+
+	/**
+	 * Whether shapes should be drawn with antialiasing.
+	 */
+	public static var smooth(get, set):Bool;
+	static inline function get_smooth() return instance.smooth;
+	static inline function set_smooth(v:Bool) return instance.smooth = v;
+
+	/**
+	 * The red, green, and blue values in a single integer value.
+	 */
+	public static var color(get, set):Color;
+	static inline function get_color() return instance.color;
+	static inline function set_color(v:Color) return instance.color = v;
+
+	/**
+	 * The alpha value to draw. Ranges between 0-1 where 0 is completely transparent and 1 is opaque.
+	 */
+	public static var alpha(get, set):Float;
+	static inline function get_alpha() return instance.alpha;
+	static inline function set_alpha(v:Float) return instance.alpha = v;
+
+	/**
+	 * The line thickness to use when drawing lines. Defaults to a single pixel wide.
+	 */
+	public static var lineThickness(get, set):Float;
+	static inline function get_lineThickness() return instance.lineThickness;
+	static inline function set_lineThickness(v:Float) return instance.lineThickness = v;
+
+	/**
+	 * Convenience function to set both color and alpha at the same time.
+	 */
+	public static inline function setColor(color:Color = 0xFFFFFF, alpha:Float = 1)
 	{
-		if (HXP.renderMode == RenderMode.HARDWARE)
-		{
-			var sprite = new Sprite();
-			HXP.stage.addChild(sprite);
-			_graphics = sprite.graphics;
-		}
-		else
-		{
-			_graphics = HXP.sprite.graphics;
-		}
-		_rect = HXP.rect;
+		Draw.color = color;
+		Draw.alpha = alpha;
 	}
 
 	/**
-	 * Sets the drawing target for Draw functions.
-	 * @param	target		The buffer to draw to.
-	 * @param	camera		The camera offset (use null for none).
-	 * @param	blend		The blend mode to use.
+	 * Draws a straight line.
+	 * @param	x1			Starting x position.
+	 * @param	y1			Starting y position.
+	 * @param	x2			Ending x position.
+	 * @param	y2			Ending y position.
 	 */
-	public static function setTarget(target:BitmapData, camera:Camera = null, blend:BlendMode = null)
+	public static function line(x1:Float, y1:Float, x2:Float, y2:Float)
 	{
-		_target = target;
-		_camera = (camera != null) ? camera : HXP.camera;
-		Draw.blend = blend;
+		instance.line(x1, y1, x2, y2);
 	}
 
 	/**
-	 * Resets the drawing target to the default. The same as calling Draw.setTarget(HXP.buffer, HXP.camera).
+	 * Draws a triangulated line polyline to the screen. This must be a closed loop of concave lines
+	 * @param	points		An array of floats containing the points of the polyline. The array is ordered in x, y format and must have an even number of values.
 	 */
-	public static function resetTarget()
+	public static function polyline(points:Array<Float>, miterJoint:Bool = false)
 	{
-		_target = HXP.buffer;
-		_camera = HXP.camera;
-		Draw.blend = null;
-		_graphics.clear();
-	}
-
-	private static inline function drawToScreen()
-	{
-		if (blend == null)
-		{
-			_target.draw(HXP.sprite);
-		}
-		else
-		{
-			_target.draw(HXP.sprite, null, null, blend);
-		}
+		instance.polyline(points, miterJoint);
 	}
 
 	/**
-	 * Draws a pixelated, non-antialiased line.
-	 * @param	x1		Starting x position.
-	 * @param	y1		Starting y position.
-	 * @param	x2		Ending x position.
-	 * @param	y2		Ending y position.
-	 * @param	color	Color of the line.
+	 * Draws a rectangle outline. Lines are drawn inside the width and height.
+	 * @param	x			X position of the rectangle.
+	 * @param	y			Y position of the rectangle.
+	 * @param	width		Width of the rectangle.
+	 * @param	height		Height of the rectangle.
+	 * @since	2.5.2
 	 */
-	public static function line(x1:Int, y1:Int, x2:Int, y2:Int, color:Color = 0xFFFFFF)
+	public static function rect(x:Float, y:Float, width:Float, height:Float)
 	{
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			color = 0xFF000000 | (0xFFFFFF & color);
-
-			// get the drawing difference
-			var screen:BitmapData = _target,
-				x:Float = Math.abs(x2 - x1),
-				y:Float = Math.abs(y2 - y1),
-				xx:Int,
-				yy:Int;
-
-			// get drawing positions
-			x1 -= Std.int(_camera.x);
-			y1 -= Std.int(_camera.y);
-			x2 -= Std.int(_camera.x);
-			y2 -= Std.int(_camera.y);
-
-			// draw a single pixel
-			if (x == 0)
-			{
-				if (y == 0)
-				{
-					screen.setPixel32(x1, y1, color);
-					return;
-				}
-				// draw a straight vertical line
-				yy = y2 > y1 ? 1 : -1;
-				while (y1 != y2)
-				{
-					screen.setPixel32(x1, y1, color);
-					y1 += yy;
-				}
-				screen.setPixel32(x2, y2, color);
-				return;
-			}
-
-			if (y == 0)
-			{
-				// draw a straight horizontal line
-				xx = x2 > x1 ? 1 : -1;
-				while (x1 != x2)
-				{
-					screen.setPixel32(x1, y1, color);
-					x1 += xx;
-				}
-				screen.setPixel32(x2, y2, color);
-				return;
-			}
-
-			xx = x2 > x1 ? 1 : -1;
-			yy = y2 > y1 ? 1 : -1;
-			var c:Float = 0,
-				slope:Float;
-
-			if (x > y)
-			{
-				slope = y / x;
-				c = .5;
-				while (x1 != x2)
-				{
-					screen.setPixel32(x1, y1, color);
-					x1 += xx;
-					c += slope;
-					if (c >= 1)
-					{
-						y1 += yy;
-						c -= 1;
-					}
-				}
-				screen.setPixel32(x2, y2, color);
-			}
-			else
-			{
-				slope = x / y;
-				c = .5;
-				while (y1 != y2)
-				{
-					screen.setPixel32(x1, y1, color);
-					y1 += yy;
-					c += slope;
-					if (c >= 1)
-					{
-						x1 += xx;
-						c -= 1;
-					}
-				}
-				screen.setPixel32(x2, y2, color);
-			}
-		}
-		else
-		{
-			linePlus(x1, y1, x2, y2, color);
-		}
-	}
-
-	/**
-	 * Draws a smooth, antialiased line with optional alpha and thickness.
-	 * @param	x1		Starting x position.
-	 * @param	y1		Starting y position.
-	 * @param	x2		Ending x position.
-	 * @param	y2		Ending y position.
-	 * @param	color	Color of the line.
-	 * @param	alpha	Alpha of the line.
-	 * @param	thick	The thickness of the line.
-	 */
-	public static function linePlus(x1:Int, y1:Int, x2:Int, y2:Int, color:Color = 0xFF000000, alpha:Float = 1, thick:Float = 1)
-	{
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			_graphics.clear();
-			_graphics.lineStyle(thick, color, alpha, false, LineScaleMode.NONE);
-			_graphics.moveTo(x1 - _camera.x, y1 - _camera.y);
-			_graphics.lineTo(x2 - _camera.x, y2 - _camera.y);
-			drawToScreen();
-		}
-		else
-		{
-			_graphics.lineStyle(thick, color, alpha, false, LineScaleMode.NONE);
-			_graphics.moveTo(x1 - _camera.x, y1 - _camera.y);
-			_graphics.lineTo(x2 - _camera.x, y2 - _camera.y);
-			_graphics.lineStyle(0);
-		}
+		instance.rect(x, y, width, height);
 	}
 
 	/**
@@ -219,117 +112,11 @@ class Draw
 	 * @param	y			Y position of the rectangle.
 	 * @param	width		Width of the rectangle.
 	 * @param	height		Height of the rectangle.
-	 * @param	color		Color of the rectangle.
-	 * @param	alpha		Alpha of the rectangle.
+	 * @since	4.0.0
 	 */
-	public static function rect(x:Int, y:Int, width:Int, height:Int, color:Color = 0xFFFFFF, alpha:Float = 1)
+	public static function rectFilled(x:Float, y:Float, width:Float, height:Float)
 	{
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			if (alpha >= 1 && blend == null)
-			{
-				color = 0xFF000000 | (0xFFFFFF & color);
-				_rect.x = x - _camera.x;
-				_rect.y = y - _camera.y;
-				_rect.width = width;
-				_rect.height = height;
-				_target.fillRect(_rect, color);
-				return;
-			}
-			_graphics.clear();
-			_graphics.beginFill(color, alpha);
-			_graphics.drawRect(x - _camera.x, y - _camera.y, width, height);
-			drawToScreen();
-		}
-		else
-		{
-			_graphics.beginFill(color, alpha);
-			_graphics.drawRect(x - _camera.x, y - _camera.y, width, height);
-			_graphics.endFill();
-		}
-	}
-
-	/**
-	 * Draws a rectangle.
-	 * @param	x			X position of the rectangle.
-	 * @param	y			Y position of the rectangle.
-	 * @param	width		Width of the rectangle.
-	 * @param	height		Height of the rectangle.
-	 * @param	color		Color of the rectangle.
-	 * @param	alpha		Alpha of the rectangle.
-	 * @param	fill		If the rectangle should be filled with the color (true) or just an outline (false).
-	 * @param	thick		How thick the outline should be (only applicable when fill = false).
-	 * @since	2.5.2
-	 */
-	public static function rectPlus(x:Float, y:Float, width:Float, height:Float, color:Color = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Float = 1)
-	{
-		color = 0xFFFFFF & color;
-		
-		if (HXP.renderMode == RenderMode.BUFFER) _graphics.clear();
-		
-		if (fill) 
-		{
-			_graphics.beginFill(color, alpha);
-		} 
-		else 
-		{
-			_graphics.lineStyle(thick, color, alpha);
-		}
-		
-		_graphics.drawRect(x - _camera.x, y - _camera.y, width, height);
-		_graphics.endFill();
-		
-		HXP.renderMode == RenderMode.BUFFER ? drawToScreen() : _graphics.lineStyle(0);
-	}
-		
-	/**
-	 * Draws a non-filled, pixelated circle.
-	 * @param	x			Center x position.
-	 * @param	y			Center y position.
-	 * @param	radius		Radius of the circle.
-	 * @param	color		Color of the circle.
-	 */
-	public static function circle(x:Int, y:Int, radius:Int, color:Color = 0xFFFFFF)
-	{
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			color = 0xFF000000 | (0xFFFFFF & color);
-			x -= Std.int(_camera.x);
-			y -= Std.int(_camera.y);
-			var f:Int = 1 - radius,
-				fx:Int = 1,
-				fy:Int = -2 * radius,
-				xx:Int = 0,
-				yy:Int = radius;
-			_target.setPixel32(x, y + radius, color);
-			_target.setPixel32(x, y - radius, color);
-			_target.setPixel32(x + radius, y, color);
-			_target.setPixel32(x - radius, y, color);
-			while (xx < yy)
-			{
-				if (f >= 0)
-				{
-					yy--;
-					fy += 2;
-					f += fy;
-				}
-				xx++;
-				fx += 2;
-				f += fx;
-				_target.setPixel32(x + xx, y + yy, color);
-				_target.setPixel32(x - xx, y + yy, color);
-				_target.setPixel32(x + xx, y - yy, color);
-				_target.setPixel32(x - xx, y - yy, color);
-				_target.setPixel32(x + yy, y + xx, color);
-				_target.setPixel32(x - yy, y + xx, color);
-				_target.setPixel32(x + yy, y - xx, color);
-				_target.setPixel32(x - yy, y - xx, color);
-			}
-		}
-		else
-		{
-			circlePlus(x, y, radius, color, 1.0, false);
-		}
+		instance.rectFilled(x, y, width, height);
 	}
 
 	/**
@@ -337,149 +124,55 @@ class Draw
 	 * @param	x			X position of the circle's center.
 	 * @param	y			Y position of the circle's center.
 	 * @param	radius		Radius of the circle.
-	 * @param	color		Color of the circle.
-	 * @param	alpha		Alpha of the circle.
-	 * @param	fill		If the circle should be filled with the color (true) or just an outline (false).
-	 * @param	thick		How thick the outline should be (only applicable when fill = false).
+	 * @param	segments	Increasing will smooth the circle but takes longer to render. Must be a value greater than zero.
+	 * @param	scaleX		Scales the circle horizontally.
+	 * @param	scaleY		Scales the circle vertically.
 	 */
-	public static function circlePlus(x:Int, y:Int, radius:Float, color:Color = 0xFFFFFF, alpha:Float = 1, fill:Bool = true, thick:Int = 1)
+	public static inline function circle(x:Float, y:Float, radius:Float, segments:Int = 25, scaleX:Float = 1, scaleY:Float = 1)
 	{
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			_graphics.clear();
-			if (fill)
-			{
-				_graphics.beginFill(color & 0xFFFFFF, alpha);
-				_graphics.drawCircle(x - _camera.x, y - _camera.y, radius);
-				_graphics.endFill();
-			}
-			else
-			{
-				_graphics.lineStyle(thick, color & 0xFFFFFF, alpha);
-				_graphics.drawCircle(x - _camera.x, y - _camera.y, radius);
-			}
-			drawToScreen();
-		}
-		else
-		{
-			if (fill)
-			{
-				_graphics.beginFill(color & 0xFFFFFF, alpha);
-				_graphics.drawCircle(x - _camera.x, y - _camera.y, radius);
-				_graphics.endFill();
-			}
-			else
-			{
-				_graphics.lineStyle(thick, color & 0xFFFFFF, alpha);
-				_graphics.drawCircle(x - _camera.x, y - _camera.y, radius);
-				_graphics.lineStyle(0);
-			}
-		}
+		instance.circle(x, y, radius, segments, scaleX, scaleY);
 	}
 
 	/**
-	 * Draws the Entity's hitbox.
-	 * @param	e			The Entity whose hitbox is to be drawn.
-	 * @param	outline		If just the hitbox's outline should be drawn.
-	 * @param	color		Color of the hitbox.
-	 * @param	alpha		Alpha of the hitbox.
+	 * Draws a circle to the screen.
+	 * @param	x			X position of the circle's center.
+	 * @param	y			Y position of the circle's center.
+	 * @param	radius		Radius of the circle.
+	 * @param	segments	Increasing will smooth the circle but takes longer to render. Must be a value greater than zero.
+	 * @param	scaleX		Scales the circle horizontally.
+	 * @param	scaleY		Scales the circle vertically.
 	 */
-	public static function hitbox(e:Entity, outline:Bool = true, color:Color = 0xFFFFFF, alpha:Float = 1)
+	public static function circleFilled(x:Float, y:Float, radius:Float, segments:Int = 25, scaleX:Float = 1, scaleY:Float = 1)
 	{
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			if (outline)
-			{
-				color = 0xFF000000 | (0xFFFFFF & color);
-				var x:Int = Std.int(e.x - e.originX - _camera.x),
-					y:Int = Std.int(e.y - e.originY - _camera.y);
-				_rect.x = x;
-				_rect.y = y;
-				_rect.width = e.width;
-				_rect.height = 1;
-				_target.fillRect(_rect, color);
-				_rect.y += e.height - 1;
-				_target.fillRect(_rect, color);
-				_rect.y = y;
-				_rect.width = 1;
-				_rect.height = e.height;
-				_target.fillRect(_rect, color);
-				_rect.x += e.width - 1;
-				_target.fillRect(_rect, color);
-				return;
-			}
-			if (alpha >= 1 && blend == null)
-			{
-				color = 0xFF000000 | (0xFFFFFF & color);
-				_rect.x = e.x - e.originX - _camera.x;
-				_rect.y = e.y - e.originY - _camera.y;
-				_rect.width = e.width;
-				_rect.height = e.height;
-				_target.fillRect(_rect, color);
-				return;
-			}
+		instance.circleFilled(x, y, radius, segments, scaleX, scaleY);
+	}
 
-			_graphics.clear();
-			_graphics.beginFill(color, alpha);
-			_graphics.drawRect(e.x - e.originX - _camera.x, e.y - e.originY - _camera.y, e.width, e.height);
-			drawToScreen();
-		}
-		else
-		{
-			_graphics.beginFill(color, alpha);
-			_graphics.drawRect(e.x - e.originX - _camera.x, e.y - e.originY - _camera.y, e.width, e.height);
-			_graphics.endFill();
-		}
+	/**
+	 * Draws a circle to the screen.
+	 * @param	x			X position of the circle's center.
+	 * @param	y			Y position of the circle's center.
+	 * @param	radius		Radius of the circle.
+	 * @param	start		The starting angle in radians.
+	 * @param	angle		The arc size in radians.
+	 * @param	segments	Increasing will smooth the circle but takes longer to render. Must be a value greater than zero.
+	 */
+	public static function arc(x:Float, y:Float, radius:Float, start:Float, angle:Float, segments:Int = 25)
+	{
+		instance.arc(x, y, radius, start, angle, segments);
 	}
 
 	/**
 	 * Draws a quadratic curve.
-	 * @param	x1		X start.
-	 * @param	y1		Y start.
-	 * @param	x2		X control point, used to determine the curve.
-	 * @param	y2		Y control point, used to determine the curve.
-	 * @param	x3		X finish.
-	 * @param	y3		Y finish.
-	 * @param	thick	The thickness of the curve.
-	 * @param	color	Color of the curve
-	 * @param	alpha	Alpha transparency.
+	 * @param	x1			X start.
+	 * @param	y1			Y start.
+	 * @param	x2			X control point, used to determine the curve.
+	 * @param	y2			Y control point, used to determine the curve.
+	 * @param	x3			X finish.
+	 * @param	y3			Y finish.
+	 * @param	segments	Increasing will smooth the curve but takes longer to render. Must be a value greater than zero.
 	 */
-	public static function curve(x1:Int, y1:Int, x2:Int, y2:Int, x3:Int, y3:Int, thick:Float = 1, color:Color = 0, alpha:Float = 1)
+	public static function curve(x1:Int, y1:Int, x2:Int, y2:Int, x3:Int, y3:Int, segments:Int = 25)
 	{
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			_graphics.clear();
-			_graphics.lineStyle(thick, color, alpha);
-			_graphics.moveTo(x1 - _camera.x, y1 - _camera.y);
-			_graphics.curveTo(x2 - _camera.x, y2 - _camera.y, x3 - _camera.x, y3 - _camera.y);
-			drawToScreen();
-		}
-		else
-		{
-			_graphics.lineStyle(thick, color, alpha);
-			_graphics.moveTo(x1 - _camera.x, y1 - _camera.y);
-			_graphics.curveTo(x2 - _camera.x, y2 - _camera.y, x3 - _camera.x, y3 - _camera.y);
-			_graphics.lineStyle(0);
-		}
+		instance.curve(x1, y1, x2, y2, x3, y3, segments);
 	}
-
-	/**
-	 * Draws text.
-	 * @param  text    The text to render.
-	 * @param  x       X position.
-	 * @param  y       Y position.
-	 * @param  options Options (see Text constructor).
-	 */
-	public static function text(text:String, ?x:Float = 0, ?y:Float = 0, ?options:TextOptions)
-	{
-		var textGfx:Text = new Text(text, x, y, 0, 0, options);
-		textGfx.render(_target, HXP.zero, _camera);
-	}
-
-	// Drawing information.
-	private static var _target:BitmapData;
-	private static var _camera:Camera;
-	private static var _graphics:Graphics;
-	private static var _rect:Rectangle;
-	private static var _matrix:Matrix = new Matrix();
 }

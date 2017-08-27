@@ -1,6 +1,7 @@
 package haxepunk.tweens.misc;
 
 import haxepunk.Tween;
+import haxepunk.utils.Ease.EaseFunction;
 
 /**
  * Tweens multiple numeric public properties of an Object simultaneously.
@@ -12,13 +13,13 @@ class MultiVarTween extends Tween
 	 * @param	complete		Optional completion callback.
 	 * @param	type			Tween type.
 	 */
-	public function new(?complete:Dynamic -> Void, ?type:TweenType)
+	public function new(?type:TweenType)
 	{
 		_vars = new Array<String>();
 		_start = new Array<Float>();
 		_range = new Array<Float>();
 
-		super(0, type, complete);
+		super(0, type);
 	}
 
 	/**
@@ -28,7 +29,7 @@ class MultiVarTween extends Tween
 	 * @param	duration	Duration of the tween.
 	 * @param	ease		Optional easer function.
 	 */
-	public function tween(object:Dynamic, properties:Dynamic, duration:Float, ease:Float -> Float = null)
+	public function tween(object:Dynamic, properties:Dynamic, duration:Float, ?ease:EaseFunction)
 	{
 		_object = object;
 		HXP.clear(_vars);
@@ -54,7 +55,7 @@ class MultiVarTween extends Tween
 
 			if (Math.isNaN(a))
 			{
-				throw "The property \"" + p + "\" is not numeric.";
+				throw 'The property $p is not numeric.';
 			}
 			_vars.push(p);
 			_start.push(a);
@@ -65,9 +66,8 @@ class MultiVarTween extends Tween
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update()
+	override function updateInternal()
 	{
-		super.update();
 		var i:Int = _vars.length;
 
 		while (i-- > 0)
@@ -77,8 +77,8 @@ class MultiVarTween extends Tween
 	}
 
 	// Tween information.
-	private var _object:Dynamic;
-	private var _vars:Array<String>;
-	private var _start:Array<Float>;
-	private var _range:Array<Float>;
+	var _object:Dynamic;
+	var _vars:Array<String>;
+	var _start:Array<Float>;
+	var _range:Array<Float>;
 }

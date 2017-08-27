@@ -1,30 +1,25 @@
 package haxepunk;
 
 import haxe.Timer;
-import flash.display.BitmapData;
 import flash.display.Sprite;
 import flash.display.Stage;
 import flash.display.StageDisplayState;
 import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
-#if flash
-import flash.media.SoundMixer;
-#end
-import flash.media.SoundTransform;
-import openfl.ui.Mouse;
+import flash.ui.Mouse;
 import haxepunk.Tween.TweenType;
 import haxepunk.debug.Console;
 import haxepunk.tweens.misc.Alarm;
 import haxepunk.tweens.misc.MultiVarTween;
-import haxepunk.utils.Color;
 import haxepunk.utils.HaxelibInfo;
-import haxepunk.utils.MathUtil;
-import haxepunk.utils.Random;
+import haxepunk.math.MathUtil;
+import haxepunk.math.Random;
 
 /**
  * Static catch-all class used to access global properties and functions.
  */
+@:access(haxepunk.Engine)
 class HXP
 {
 	/**
@@ -32,11 +27,6 @@ class HXP
 	 * Format: Major.Minor.Patch
 	 */
 	public static inline var VERSION:String = HaxelibInfo.version;
-
-	/**
-	 * Deprecated, use 0 instead. The color black (as an Int).
-	 */
-	@:deprecated public static inline var blackColor:Color = 0x00000000;
 
 	/**
 	 * Width of the game.
@@ -74,12 +64,13 @@ class HXP
 	public static var assignedFrameRate:Float;
 
 	/**
-	 * Time elapsed since the last frame (non-fixed framerate only).
+	 * Game time elapsed since the last frame. For fixed framerate, this will be
+	 * a constant 1/framerate.
 	 */
 	public static var elapsed:Float;
 
 	/**
-	 * Timescale applied to HXP.elapsed (non-fixed framerate only).
+	 * Timescale applied to HXP.elapsed.
 	 */
 	public static var rate:Float = 1;
 
@@ -89,25 +80,20 @@ class HXP
 	public static var screen:Screen;
 
 	/**
-	 * The current screen buffer, drawn to in the render loop.
-	 * Only available for flash, html5 and buffer rendermode, null otherwise.
-	 */
-	public static var buffer:BitmapData;
-
-	/**
 	 * A rectangle representing the size of the screen.
 	 */
 	public static var bounds:Rectangle;
 
 	/**
-	 * The default font file to use, by default: font/04B_03__.ttf.
+	 * The default font file to use, by default: font/monofonto.ttf.
 	 */
-	public static var defaultFont:String = "font/04B_03__.ttf";
+	public static var defaultFont:String = "font/monofonto.ttf";
 
 	/**
 	 * Point used to determine drawing offset in the render loop.
 	 */
-	public static var camera:Point = new Point();
+	public static var camera(get, never):Camera;
+	static inline function get_camera() return scene == null ? null : scene.camera;
 
 	/**
 	 * Global tweener for tweening between multiple scenes
@@ -135,7 +121,7 @@ class HXP
 	public static var orientations:Array<Int> = [];
 
 	public static var cursor(default, set):Cursor;
-	private static inline function set_cursor(cursor:Cursor = null):Cursor
+	static inline function set_cursor(cursor:Cursor = null):Cursor
 	{
 		if (HXP.cursor == cursor) return cursor;
 		if (cursor == null) Mouse.show();
@@ -144,33 +130,14 @@ class HXP
 	}
 
 	/**
-	 * Defines how to render the scene
-	 */
-	public static var renderMode(default, set):RenderMode;
-	private static inline function set_renderMode(value:RenderMode):RenderMode
-	{
-		renderMode = value;
-
-		// recreate screen for buffer rendering
-		if (HXP.screen == null)
-		{
-			HXP.screen = new Screen();
-		}
-		else
-			HXP.screen.init();
-
-		return value;
-	}
-
-	/**
 	 * The choose function randomly chooses and returns one of the provided values.
 	 */
 	public static var choose(get, null):Dynamic;
-	private static function get_choose():Dynamic
+	static function get_choose():Dynamic
 	{
 		return Reflect.makeVarArgs(_choose);
 	}
-	private static inline function _choose(objs:Array<Dynamic>):Dynamic
+	static inline function _choose(objs:Array<Dynamic>):Dynamic
 	{
 		if (objs == null || objs.length == 0)
 		{
@@ -201,8 +168,13 @@ class HXP
 	 * to switch, but won't actually do so until the end of the current frame.
 	 */
 	public static var scene(get, set):Scene;
-	private static inline function get_scene():Scene return engine.scene; 
-	private static inline function set_scene(value:Scene):Scene return engine.scene = value; 
+	static inline function get_scene():Scene return engine.scene;
+	static inline function set_scene(value:Scene):Scene return engine.scene = value;
+
+	/**
+	 * If we're currently rendering, this is the Scene being rendered now.
+	 */
+	public static var renderingScene:Scene;
 
 	/**
 	 * Resize the screen.
@@ -219,7 +191,7 @@ class HXP
 		HXP.halfHeight = HXP.height / 2;
 		HXP.bounds.width = width;
 		HXP.bounds.height = height;
-		HXP.scene.resize();
+		HXP.scene._resize();
 	}
 
 	/**
@@ -228,8 +200,10 @@ class HXP
 	 */
 	public static inline function clear(array:Array<Dynamic>)
 	{
-#if (cpp || php)
-		array.splice(0, array.length);
+#if cpp
+		// splice causes Array allocation, so prefer pop for most arrays
+		if (array.length > 256) array.splice(0, array.length);
+		else while (array.length > 0) array.pop();
 #else
 		untyped array.length = 0;
 #end
@@ -258,8 +232,8 @@ class HXP
 	 * Toggles between windowed and fullscreen modes
 	 */
 	public static var fullscreen(get, set):Bool;
-	private static inline function get_fullscreen():Bool return HXP.stage.displayState == StageDisplayState.FULL_SCREEN; 
-	private static inline function set_fullscreen(value:Bool):Bool
+	static inline function get_fullscreen():Bool return HXP.stage.displayState == StageDisplayState.FULL_SCREEN;
+	static inline function set_fullscreen(value:Bool):Bool
 	{
 		if (value) HXP.stage.displayState = StageDisplayState.FULL_SCREEN;
 		else HXP.stage.displayState = StageDisplayState.NORMAL;
@@ -269,20 +243,14 @@ class HXP
 	/**
 	 * Global volume factor for all sounds, a value from 0 to 1.
 	 */
-	public static var volume(get, set):Float;
-	private static inline function get_volume():Float return _volume; 
-	private static function set_volume(value:Float):Float
+	public static var volume(default, set):Float = 1;
+	static function set_volume(value:Float):Float
 	{
-		if (value < 0) value = 0;
-		if (_volume == value) return value;
-		_volume = value;
-		#if flash
-		_soundTransform.volume = value;
-		SoundMixer.soundTransform = _soundTransform;
-		#else
+		value = MathUtil.clamp(value, 0, 1);
+		if (volume == value) return value;
+		volume = value;
 		Sfx.onGlobalUpdated(false);
-		#end
-		return _volume;
+		return volume;
 	}
 
 	/**
@@ -290,19 +258,14 @@ class HXP
 	 * Panning only applies to mono sounds. It is ignored on stereo.
 	 */
 	public static var pan(get, set):Float;
-	private static inline function get_pan():Float return _pan; 
-	private static function set_pan(value:Float):Float
+	static inline function get_pan():Float return _pan;
+	static function set_pan(value:Float):Float
 	{
 		if (value < -1) value = -1;
 		if (value > 1) value = 1;
 		if (_pan == value) return value;
 		_pan = value;
-		#if flash
-		_soundTransform.pan = value;
-		SoundMixer.soundTransform = _soundTransform;
-		#else
 		Sfx.onGlobalUpdated(true);
-		#end
 		return _pan;
 	}
 
@@ -319,12 +282,10 @@ class HXP
 	{
 		#if (haxe_ver >= 3.1)
 		return arr.indexOf(v);
+		#elseif js
+		return untyped arr.indexOf(v);
 		#else
-			#if (flash || js)
-			return untyped arr.indexOf(v);
-			#else
-			return std.Lambda.indexOf(arr, v);
-			#end
+		return std.Lambda.indexOf(arr, v);
 		#end
 	}
 
@@ -395,81 +356,6 @@ class HXP
 	}
 
 	/**
-	 * Fetches a stored BitmapData object represented by the source.
-	 * @param	source		Embedded Bitmap class.
-	 * @return	The stored BitmapData object.
-	 */
-	public static function getBitmap(name:String):BitmapData
-	{
-		if (_bitmap.exists(name))
-			return _bitmap.get(name);
-
-		var data:BitmapData = openfl.Assets.getBitmapData(name, false);
-
-		if (data != null)
-			_bitmap.set(name, data);
-
-		return data;
-	}
-
-	/**
-	 * Overwrites the image cache for a given name
-	 * @param name  The name of the BitmapData to overwrite.
-	 * @param data  The BitmapData object.
-	 * @return True if the prior bitmap was removed.
-	 */
-	public static function overwriteBitmapCache(name:String, data:BitmapData):Bool
-	{
-		_bitmap.set(name, data);
-		return removeBitmap(name);
-	}
-
-	/**
-	 * Removes a bitmap from the cache
-	 * @param name  The name of the bitmap to remove.
-	 * @return True if the bitmap was removed.
-	 */
-	public static function removeBitmap(name:String):Bool
-	{
-		if (_bitmap.exists(name))
-		{
-			var bitmap = _bitmap.get(name);
-			bitmap.dispose();
-			bitmap = null;
-			return _bitmap.remove(name);
-		}
-		return false;
-	}
-
-	/**
-	 * Creates BitmapData based on platform specifics
-	 *
-	 * @param	width			BitmapData's width.
-	 * @param	height			BitmapData's height.
-	 * @param	transparent		If the BitmapData can have transparency.
-	 * @param	color			BitmapData's color.
-	 *
-	 * @return	The BitmapData.
-	 */
-	public static function createBitmap(width:Int, height:Int, ?transparent:Bool = false, ?color:Color = 0):BitmapData
-	{
-#if flash
-	#if flash8
-		var sizeError:Bool = (width > 2880 || height > 2880);
-	#else
-		var sizeError:Bool = (width * height > 16777215 || width > 8191 || height > 8191); // flash 10 requires size to be under 16,777,215
-	#end
-		if (sizeError)
-		{
-			trace("BitmapData is too large (" + width + ", " + height + ")");
-			return null;
-		}
-#end // flash
-
-		return new BitmapData(width, height, transparent, color);
-	}
-
-	/**
 	 * Sets a time flag.
 	 * @return	Time elapsed (in milliseconds) since the last time flag was set.
 	 */
@@ -481,23 +367,9 @@ class HXP
 		return e;
 	}
 
-	/**
-	 * The global Console object.
-	 */
-	public static var console(get, never):Console;
-	private static inline function get_console():Console
-	{
-		if (_console == null) _console = new Console();
-		return _console;
-	}
-
-	/**
-	 * Checks if the console is enabled.
-	 */
-	public static function consoleEnabled()
-	{
-		return _console != null;
-	}
+	public static var console(get, set):Console;
+	static inline function get_console() return engine.console;
+	static inline function set_console(c:Console) return engine.console = c;
 
 	/**
 	 * Logs data to the console.
@@ -505,9 +377,9 @@ class HXP
 	 */
 	public static var log = Reflect.makeVarArgs(function(data:Array<Dynamic>)
 	{
-		if (_console != null)
+		if (engine.console != null)
 		{
-			_console.log(data);
+			engine.console.log(data);
 		}
 	});
 
@@ -517,9 +389,9 @@ class HXP
 	 */
 	public static var watch = Reflect.makeVarArgs(function(properties:Array<Dynamic>)
 	{
-		if (_console != null)
+		if (engine.console != null)
 		{
-			_console.watch(properties);
+			engine.console.watch(properties);
 		}
 	});
 
@@ -543,12 +415,12 @@ class HXP
 		{
 			var delay:Float = options.delay;
 			Reflect.deleteField( options, "delay" );
-			HXP.alarm(delay, function (o:Dynamic) HXP.tween(object, values, duration, options));
+			HXP.alarm(delay, function () HXP.tween(object, values, duration, options));
 			return null;
 		}
 
 		var type:TweenType = TweenType.OneShot,
-			complete:Dynamic -> Void = null,
+			complete:Void -> Void = null,
 			ease:Float -> Float = null,
 			tweener:Tweener = HXP.tweener;
 		if (Std.is(object, Tweener)) tweener = cast(object, Tweener);
@@ -559,7 +431,8 @@ class HXP
 			if (Reflect.hasField(options, "ease")) ease = options.ease;
 			if (Reflect.hasField(options, "tweener")) tweener = options.tweener;
 		}
-		var tween:MultiVarTween = new MultiVarTween(complete, type);
+		var tween:MultiVarTween = new MultiVarTween(type);
+		if (complete != null) tween.onComplete.bind(complete);
 		tween.tween(object, values, duration, ease);
 		tweener.addTween(tween, true);
 		return tween;
@@ -575,12 +448,13 @@ class HXP
 	 *
 	 * Example: HXP.alarm(5.0, callbackFunction, TweenType.Looping); // Calls callbackFunction every 5 seconds
 	 */
-	public static function alarm(delay:Float, complete:Dynamic -> Void, ?type:TweenType, tweener:Tweener = null):Alarm
+	public static function alarm(delay:Float, complete:Void -> Void, ?type:TweenType, ?tweener:Tweener):Alarm
 	{
 		if (type == null) type = TweenType.OneShot;
 		if (tweener == null) tweener = HXP.tweener;
 
-		var alarm:Alarm = new Alarm(delay, complete, type);
+		var alarm:Alarm = new Alarm(delay, type);
+		if (complete != null) alarm.onComplete.bind(complete);
 		tweener.addTween(alarm, true);
 		return alarm;
 	}
@@ -632,7 +506,7 @@ class HXP
 	}
 
 	/**
-	 * Resize the stage, not available on flash or html5.
+	 * Resize the stage, not available on html5.
 	 *
 	 * @param	width	New width.
 	 * @param	height	New height.
@@ -652,34 +526,26 @@ class HXP
 	}
 
 	public static var time(null, set):Float;
-	private static inline function set_time(value:Float):Float
+	static inline function set_time(value:Float):Float
 	{
 		_time = value;
 		return _time;
 	}
 
 	// Console information.
-	private static var _console:Console;
+	static var _console:Console;
 
 	// Time information.
-	private static var _time:Float;
+	static var _time:Float;
 	@:dox(hide) public static var _updateTime:Float;
 	@:dox(hide) public static var _renderTime:Float;
 	@:dox(hide) public static var _gameTime:Float;
 	@:dox(hide) public static var _systemTime:Float;
 
-	// Bitmap storage.
-	private static var _bitmap:Map<String, BitmapData> = new Map<String, BitmapData>();
-
 	// Volume control.
-	private static var _volume:Float = 1;
-	private static var _pan:Float = 0;
-	#if flash
-	private static var _soundTransform:SoundTransform = new SoundTransform();
-	#end
+	static var _pan:Float = 0;
 
-	// Global Flash objects.
-	/** The flash stage. */
+	/** The stage. */
 	public static var stage:Stage;
 	/** The Engine instance. */
 	public static var engine:Engine;
@@ -688,6 +554,7 @@ class HXP
 	@:dox(hide) public static var point:Point = new Point();
 	@:dox(hide) public static var point2:Point = new Point();
 	@:dox(hide) public static var zero:Point = new Point();
+	@:dox(hide) public static var zeroCamera:Camera = new Camera();
 	@:dox(hide) public static var rect:Rectangle = new Rectangle();
 	@:dox(hide) public static var matrix:Matrix = new Matrix();
 	@:dox(hide) public static var sprite:Sprite = new Sprite();

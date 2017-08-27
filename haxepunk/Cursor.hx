@@ -25,13 +25,18 @@ class Cursor extends Entity
 		super.update();
 		x = scene.mouseX;
 		y = scene.mouseY;
+	}
+
+	override public function render(camera:Camera)
+	{
 		var img:Image = cast graphic;
 		if (img != null)
 		{
 			// scale to 1
-			img.scaleX = 1 / HXP.screen.fullScaleX;
-			img.scaleY = 1 / HXP.screen.fullScaleY;
+			img.scaleX = 1 / camera.fullScaleX;
+			img.scaleY = 1 / camera.fullScaleY;
 		}
+		super.render(camera);
 	}
 
 	/**

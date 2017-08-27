@@ -2,7 +2,7 @@
     "folders":
     [
         {
-            "path": "src",
+            "path": "source",
             "name": "{{PROJECT_NAME}} Source Code",
             "follow_symlinks": true
         },
@@ -23,10 +23,6 @@
             "shell_cmd": "lime test neko"
         },
         {
-        	"name": "Test (Flash)",
-        	"shell_cmd": "lime test flash"
-        },
-        {
             "name": "Test (Windows)",
             "shell_cmd": "lime test windows"
         },
@@ -41,10 +37,6 @@
         {
         	"name":"Debug (Neko)",
         	"shell_cmd": "lime test neko -debug"
-        },
-        {
-        	"name":"Debug (Flash)",
-        	"shell_cmd": "lime test flash -debug"
         },
         {
             "name": "Debug (Windows)",

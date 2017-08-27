@@ -1,8 +1,6 @@
-﻿package haxepunk.tweens.motion;
+package haxepunk.tweens.motion;
 
-import haxepunk.Tween;
-import haxepunk.utils.Ease;
-import flash.geom.Point;
+import haxepunk.utils.Ease.EaseFunction;
 
 /**
  * Determines motion along a line, from one point to another.
@@ -10,16 +8,9 @@ import flash.geom.Point;
 class LinearMotion extends Motion
 {
 	/**
-	 * Constructor.
-	 * @param	complete	Optional completion callback.
-	 * @param	type		Tween type.
+	 * Length of the current line of movement.
 	 */
-	public function new(?complete:Dynamic -> Void, ?type:TweenType)
-	{
-		_fromX = _fromY = _moveX = _moveY = 0;
-		_distance = -1;
-		super(0, complete, type, null);
-	}
+	public var distance(default, null):Float = 0;
 
 	/**
 	 * Starts moving along a line.
@@ -30,13 +21,9 @@ class LinearMotion extends Motion
 	 * @param	duration	Duration of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotion(fromX:Float, fromY:Float, toX:Float, toY:Float, duration:Float, ease:Float -> Float = null)
+	public function setMotion(fromX:Float, fromY:Float, toX:Float, toY:Float, duration:Float, ?ease:EaseFunction)
 	{
-		_distance = -1;
-		x = _fromX = fromX;
-		y = _fromY = fromY;
-		_moveX = toX - fromX;
-		_moveY = toY - fromY;
+		set(fromX, fromY, toX, toY);
 		_target = duration;
 		_ease = ease;
 		start();
@@ -48,16 +35,12 @@ class LinearMotion extends Motion
 	 * @param	fromY		Y start.
 	 * @param	toX			X finish.
 	 * @param	toY			Y finish.
-	 * @param	speed		Speed of the movement.
+	 * @param	speed		Speed of the movement (units per second).
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotionSpeed(fromX:Float, fromY:Float, toX:Float, toY:Float, speed:Float, ease:Float -> Float = null)
+	public function setMotionSpeed(fromX:Float, fromY:Float, toX:Float, toY:Float, speed:Float, ?ease:EaseFunction)
 	{
-		_distance = -1;
-		x = _fromX = fromX;
-		y = _fromY = fromY;
-		_moveX = toX - fromX;
-		_moveY = toY - fromY;
+		set(fromX, fromY, toX, toY);
 		_target = distance / speed;
 		_ease = ease;
 		start();
@@ -65,32 +48,24 @@ class LinearMotion extends Motion
 
 	/** @private Updates the Tween. */
 	@:dox(hide)
-	override public function update()
+	override function updateInternal()
 	{
-		super.update();
 		x = _fromX + _moveX * _t;
 		y = _fromY + _moveY * _t;
-		if (x == _fromX + _moveX && y == _fromY + _moveY && active)
-		{
-			super.update();
-			finish();
-		}
 	}
 
-	/**
-	 * Length of the current line of movement.
-	 */
-	public var distance(get, never):Float;
-	private function get_distance():Float
+	inline function set(fromX:Float, fromY:Float, toX:Float, toY:Float):Void
 	{
-		if (_distance >= 0) return _distance;
-		return (_distance = Math.sqrt(_moveX * _moveX + _moveY * _moveY));
+		x = _fromX = fromX;
+		y = _fromY = fromY;
+		_moveX = toX - fromX;
+		_moveY = toY - fromY;
+		distance = Math.sqrt(_moveX * _moveX + _moveY * _moveY);
 	}
 
 	// Line information.
-	private var _fromX:Float;
-	private var _fromY:Float;
-	private var _moveX:Float;
-	private var _moveY:Float;
-	private var _distance:Float;
+	var _fromX:Float = 0;
+	var _fromY:Float = 0;
+	var _moveX:Float = 0;
+	var _moveY:Float = 0;
 }

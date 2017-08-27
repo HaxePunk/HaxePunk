@@ -1,9 +1,9 @@
 package haxepunk.graphics;
 
-import flash.display.BitmapData;
 import flash.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Graphic;
+import haxepunk.utils.Color;
 
 /**
  * A Graphic that can contain multiple Graphics of one or various types.
@@ -11,6 +11,24 @@ import haxepunk.Graphic;
  */
 class Graphiclist extends Graphic
 {
+	override function set_alpha(v:Float):Float
+	{
+		for (graphic in _graphics)
+		{
+			graphic.alpha = v;
+		}
+		return super.set_alpha(v);
+	}
+
+	override function set_color(v:Color):Color
+	{
+		for (graphic in _graphics)
+		{
+			graphic.color = v;
+		}
+		return super.set_color(v);
+	}
+
 	/**
 	 * Constructor.
 	 * @param	graphic		Graphic objects to add to the list.
@@ -19,8 +37,7 @@ class Graphiclist extends Graphic
 	{
 		_graphics = new Array<Graphic>();
 		_temp = new Array<Graphic>();
-		_camera = new Point();
-		_count = 0;
+		_camera = new Camera();
 
 		super();
 
@@ -47,47 +64,31 @@ class Graphiclist extends Graphic
 	 */
 	@:arrayAccess
 	public function get(i:Int):Graphic
-	{	
+	{
 		if ( i >= _graphics.length || i < 0 ) throw "Index out of bounds.";
 		else return _graphics[i];
 	}
 
-	private inline function renderList(renderFunc:Graphic->Void, point:Point, camera:Point)
+	/** @private Renders the Graphics in the list. */
+	override public function render(point:Point, camera:Camera)
 	{
-		point.x += x;
-		point.y += y;
-		camera.x *= scrollX;
-		camera.y *= scrollY;
-
+		var cx = camera.x,
+			cy = camera.y;
+		camera.setTo(cx * scrollX, cy * scrollY);
 		for (g in _graphics)
 		{
 			if (g.visible)
 			{
 				if (g.relative)
 				{
-					_point.x = point.x;
-					_point.y = point.y;
+					_point.x = camera.floorX(point.x) + camera.floorX(x);
+					_point.y = camera.floorY(point.y) + camera.floorY(y);
 				}
 				else _point.x = _point.y = 0;
-				_camera.x = camera.x;
-				_camera.y = camera.y;
-				renderFunc(g);
+				g.render(_point, camera);
 			}
 		}
-	}
-
-	/** @private Renders the Graphics in the list. */
-	@:dox(hide)
-	override public function render(target:BitmapData, point:Point, camera:Point)
-	{
-		renderList(function(g:Graphic) g.render(target, _point, _camera), point, camera);
-	}
-
-	/** @private Renders the Graphics in the list. */
-	@:dox(hide)
-	override public function renderAtlas(layer:Int, point:Point, camera:Point)
-	{
-		renderList(function(g:Graphic) g.renderAtlas(layer, _point, _camera), point, camera);
+		camera.setTo(cx, cy);
 	}
 
 	/**
@@ -110,11 +111,7 @@ class Graphiclist extends Graphic
 	{
 		if (graphic == null) return graphic;
 
-		// set blit mode on first add
-		if (_count == 0) blit = graphic.blit;
-		else if (blit != graphic.blit) throw "Can't add graphic objects with different render methods.";
-
-		_graphics[_count++] = graphic;
+		_graphics[count++] = graphic;
 		if (!active) active = graphic.active;
 		return graphic;
 	}
@@ -131,7 +128,7 @@ class Graphiclist extends Graphic
 
 		for (g in _graphics)
 		{
-			if (g == graphic) _count--;
+			if (g == graphic) count--;
 			else _temp[_temp.length] = g;
 		}
 		var temp:Array<Graphic> = _graphics;
@@ -160,7 +157,7 @@ class Graphiclist extends Graphic
 	{
 		HXP.clear(_graphics);
 		HXP.clear(_temp);
-		_count = 0;
+		count = 0;
 		active = false;
 	}
 
@@ -168,18 +165,17 @@ class Graphiclist extends Graphic
 	 * All Graphics in this list.
 	 */
 	public var children(get, null):Array<Graphic>;
-	private function get_children():Array<Graphic> return _graphics; 
+	function get_children():Array<Graphic> return _graphics;
 
 	/**
 	 * Amount of Graphics in this list.
 	 */
-	public var count(get, null):Int;
-	private function get_count():Int return _count; 
+	public var count(default, null):Int = 0;
 
 	/**
 	 * Check if the Graphiclist should update.
 	 */
-	private function updateCheck()
+	function updateCheck()
 	{
 		active = false;
 		for (g in _graphics)
@@ -193,8 +189,7 @@ class Graphiclist extends Graphic
 	}
 
 	// List information.
-	private var _graphics:Array<Graphic>;
-	private var _temp:Array<Graphic>;
-	private var _count:Int;
-	private var _camera:Point;
+	var _graphics:Array<Graphic>;
+	var _temp:Array<Graphic>;
+	var _camera:Camera;
 }

@@ -1,7 +1,8 @@
 package haxepunk;
 
-import haxepunk.tweens.TweenEvent;
-import flash.events.EventDispatcher;
+import haxepunk.Signal.Signal0;
+import haxepunk.ds.Maybe;
+import haxepunk.utils.Ease.EaseFunction;
 
 /**
  * The type of the tween.
@@ -13,10 +14,10 @@ enum TweenType
 	 * be started again with the start() method.
 	 */
 	Persist;
-	
+
 	/** The tween will loop. */
 	Looping;
-	
+
 	/** The tween will be removed after it ended. */
 	OneShot;
 
@@ -35,52 +36,68 @@ enum TweenType
  * Do not use this directly, instead use the classes in haxepunk.tweens.*
  * </p>
  */
-class Tween extends EventDispatcher
+class Tween
 {
 	/** If the tween is active. */
-	public var active:Bool;
+	public var active:Bool = false;
 
 	/** Whether tween is currently running forward. For TweenType.PingPong. */
 	public var forward:Bool = true;
+
+	/** Signal fires when tween starts */
+	public var onStart = new Signal0();
+
+	/** Signal fires when tween updates */
+	public var onUpdate = new Signal0();
+
+	/** Signal fires when tween is completed */
+	public var onComplete = new Signal0();
 
 	/**
 	 * Constructor. Specify basic information about the Tween.
 	 * @param	duration		Duration of the tween (in seconds).
 	 * @param	type			Tween type, one of Tween.PERSIST (default), Tween.LOOPING, or Tween.ONESHOT.
-	 * @param	complete		Optional callback for when the Tween completes.
 	 * @param	ease			Optional easer function to apply to the Tweened value.
 	 */
-	public function new(duration:Float, ?type:TweenType, ?complete:Dynamic -> Void, ?ease:Float -> Float)
+	public function new(duration:Float, ?type:TweenType, ?ease:EaseFunction)
 	{
+		if (duration < 0)
+		{
+			throw "Tween duration must be positive!";
+		}
 		_target = duration;
-		if (type == null) type = TweenType.Persist;
-		_type = type;
+		_type = type == null ? TweenType.Persist : type;
 		_ease = ease;
 		_t = 0;
-		_callback = complete;
-		super();
-
-		if (_callback != null)
-		{
-			addEventListener(TweenEvent.FINISH, _callback);
-		}
 	}
+
+	/** @private Update function for override in subclasses */
+	function updateInternal() {}
 
 	/**
 	 * Updates the Tween, called by World.
 	 */
 	@:dox(hide)
-	public function update()
+	public function update(elapsed:Float)
 	{
-		_time += HXP.elapsed;
-		_t = percent;
-		if (_ease != null && _t > 0 && _t < 1) _t = _ease(_t);
-		if (_time >= _target)
+		var isFinished = false;
+		if (active)
 		{
-			_t = forward ? 1 : 0;
-			_finish = true;
+			_time += elapsed;
+			_t = percent;
+			if (_t > 0 && _t < 1) _ease.may(function(f) _t = f(_t));
+			if (_time >= _target)
+			{
+				_t = forward ? 1 : 0;
+				isFinished = true;
+			}
+			updateInternal();
+			onUpdate.invoke();
 		}
-		dispatchEvent(new TweenEvent(TweenEvent.UPDATE));
+		if (isFinished)
+		{
+			finish();
+		}
 	}
 
 	/**
@@ -92,17 +109,17 @@ class Tween extends EventDispatcher
 		if (_target == 0)
 		{
 			active = false;
-			dispatchEvent(new TweenEvent(TweenEvent.FINISH));
+			onComplete.invoke();
 		}
 		else
 		{
 			active = true;
-			dispatchEvent(new TweenEvent(TweenEvent.START));
+			onStart.invoke();
 		}
 	}
 
 	/** @private Called when the Tween completes. */
-	private function finish()
+	function finish()
 	{
 		switch (_type)
 		{
@@ -114,15 +131,13 @@ class Tween extends EventDispatcher
 				start();
 			case OneShot:
 				_time = _target;
-				active = false;
-				_parent.removeTween(this);
+				cancel();
 		}
-		_finish = false;
-		dispatchEvent(new TweenEvent(TweenEvent.FINISH));
-		
-		if (_type == TweenType.OneShot && _callback != null)
+		onComplete.invoke();
+
+		if (_type == TweenType.OneShot)
 		{
-			removeEventListener(TweenEvent.FINISH, _callback);
+			onComplete.clear();
 		}
 	}
 
@@ -140,22 +155,20 @@ class Tween extends EventDispatcher
 
 	/** Progression of the tween, between 0 and 1. */
 	public var percent(get, set):Float;
-	private function get_percent():Float return (forward ? _time : (_target - _time)) / _target;
-	private function set_percent(value:Float):Float return _time = _target * value;
+	function get_percent():Float return _target == 0 ? 0 : ((forward ? _time : (_target - _time)) / _target);
+	function set_percent(value:Float):Float return _time = _target * value;
 
 	public var scale(get, null):Float;
-	private function get_scale():Float return _t; 
+	function get_scale():Float return _t;
 
-	private var _type:TweenType;
-	private var _ease:Float -> Float;
-	private var _t:Float;
+	var _type:TweenType;
+	var _ease:Maybe<EaseFunction>;
+	var _t:Float;
 
-	private var _time:Float;
-	private var _target:Float;
+	var _time:Float = 0;
+	var _target:Float;
 
-	private var _callback:Dynamic -> Void;
-	private var _finish:Bool;
-	private var _parent:Tweener;
-	private var _prev:Tween;
-	private var _next:Tween;
+	var _parent:Tweener;
+	var _prev:Tween;
+	var _next:Tween;
 }

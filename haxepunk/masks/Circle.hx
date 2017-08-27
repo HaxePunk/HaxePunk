@@ -4,9 +4,9 @@ import haxepunk.Graphic;
 import haxepunk.Mask;
 import haxepunk.masks.Grid;
 import haxepunk.masks.SlopedGrid;
-import haxepunk.utils.Projection;
-import haxepunk.utils.Vector;
-import flash.display.Graphics;
+import haxepunk.utils.Draw;
+import haxepunk.math.Projection;
+import haxepunk.math.Vector2;
 import flash.geom.Point;
 
 /**
@@ -35,7 +35,7 @@ class Circle extends Hitbox
 	}
 
 	/** @private Collides against an Entity. */
-	override private function collideMask(other:Mask):Bool
+	override function collideMask(other:Mask):Bool
 	{
 		var distanceX = Math.abs(_parent.x + _x - other._parent.x - other._parent.width * 0.5),
 			distanceY = Math.abs(_parent.y + _y - other._parent.y - other._parent.height * 0.5);
@@ -55,14 +55,14 @@ class Circle extends Hitbox
 		return distanceToCorner <= _squaredRadius;
 	}
 
-	private function collideCircle(other:Circle):Bool
+	function collideCircle(other:Circle):Bool
 	{
 		var dx:Float = (_parent.x + _x) - (other._parent.x + other._x);
 		var dy:Float = (_parent.y + _y) - (other._parent.y + other._y);
 		return (dx * dx + dy * dy) < Math.pow(_radius + other._radius, 2);
 	}
 
-	private inline function collideGridTile(mx:Float, my:Float, hTileWidth:Float, hTileHeight:Float, thisX:Float, thisY:Float)
+	inline function collideGridTile(mx:Float, my:Float, hTileWidth:Float, hTileHeight:Float, thisX:Float, thisY:Float)
 	{
 		var collide = false;
 		var dx = Math.abs(thisX - mx);
@@ -90,7 +90,7 @@ class Circle extends Hitbox
 		return collide;
 	}
 
-	private function collideGrid(other:Grid):Bool
+	function collideGrid(other:Grid):Bool
 	{
 		var thisX:Float = _x + _parent.x,
 			thisY:Float = _y + _parent.y;
@@ -133,7 +133,7 @@ class Circle extends Hitbox
 		return false;
 	}
 
-	private function collideSlopedGrid(other:SlopedGrid):Bool
+	function collideSlopedGrid(other:SlopedGrid):Bool
 	{
 		var thisX:Float = _x + _parent.x,
 			thisY:Float = _y + _parent.y;
@@ -213,7 +213,7 @@ class Circle extends Hitbox
 	}
 
 	/** @private Collides against a Hitbox. */
-	override private function collideHitbox(other:Hitbox):Bool
+	override function collideHitbox(other:Hitbox):Bool
 	{
 		var _otherHalfWidth:Float = other._width * 0.5;
 		var _otherHalfHeight:Float = other._height * 0.5;
@@ -246,27 +246,31 @@ class Circle extends Hitbox
 	}
 
 	@:dox(hide)
-	override public function project(axis:Vector, projection:Projection):Void
+	override public function project(axis:Vector2, projection:Projection):Void
 	{
 		projection.min = -_radius;
 		projection.max = _radius;
 	}
 
 	@:dox(hide)
-	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
+	override public function debugDraw(camera:Camera):Void
 	{
-		graphics.drawCircle((_parent.x + _x - HXP.camera.x) * scaleX, (_parent.y + _y - HXP.camera.y) * scaleY, radius * scaleX);
+		Mask.drawContext.lineThickness = 2;
+		Mask.drawContext.setColor(0xff0000, 0.25);
+		Mask.drawContext.circleFilled((_parent.x + _x - camera.x) * camera.fullScaleX, (_parent.y + _y - camera.y) * camera.fullScaleY, radius, camera.fullScaleX, camera.fullScaleY);
+		Mask.drawContext.setColor(0xff0000, 0.5);
+		Mask.drawContext.circle((_parent.x + _x - camera.x) * camera.fullScaleX, (_parent.y + _y - camera.y) * camera.fullScaleY, radius, camera.fullScaleX, camera.fullScaleY);
 	}
 
-	override private function get_x():Int return _x - _radius; 
-	override private function get_y():Int return _y - _radius; 
+	override function get_x():Int return _x - _radius;
+	override function get_y():Int return _y - _radius;
 
 	/**
 	 * Radius.
 	 */
 	public var radius(get, set):Int;
-	private inline function get_radius():Int return _radius; 
-	private function set_radius(value:Int):Int
+	inline function get_radius():Int return _radius;
+	function set_radius(value:Int):Int
 	{
 		if (_radius == value) return value;
 		_radius = value;
@@ -295,6 +299,6 @@ class Circle extends Hitbox
 	}
 
 	// Hitbox information.
-	private var _radius:Int;
-	private var _squaredRadius:Int; //Set automatically through the setter for radius
+	var _radius:Int;
+	var _squaredRadius:Int; //Set automatically through the setter for radius
 }

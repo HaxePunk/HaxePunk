@@ -1,202 +1,112 @@
 package haxepunk.debug;
 
-import haxe.ds.IntMap;
-import flash.display.Bitmap;
-import flash.display.Sprite;
-import flash.events.MouseEvent;
-import flash.text.TextField;
-import flash.text.TextFormat;
-import openfl.Assets;
+import haxepunk.graphics.text.Text;
+import haxepunk.input.MouseManager;
+import haxepunk.utils.Draw;
 
-@:dox(hide)
-class VisibleLabel extends Sprite
+@:access(haxepunk.Scene)
+private class LayerToggle extends Entity
 {
-	public function new(textFormat:TextFormat)
+	public var layerNumber:Null<Int>;
+
+	var label:Text;
+
+	public function new(mouseManager:MouseManager)
 	{
 		super();
-
-		active = new Bitmap(Assets.getBitmapData("graphics/debug/console_visible.png"));
-		inactive = new Bitmap(Assets.getBitmapData("graphics/debug/console_hidden.png"));
-
-		label = new TextField();
-		label.defaultTextFormat = textFormat;
-		label.selectable = false;
-		label.width = 150;
-		label.height = 14;
-
-		label.x = 24;
-		label.y = 2;
-#if flash
-		label.embedFonts = true;
-#end
-
-		this.x = 6;
-
-		addChild(active);
-		addChild(label);
-
-		addEventListener("click", onClick, true);
+		label = new Text("Layer");
+		label.alpha = 0.75;
+		addGraphic(label);
+		width = 220;
+		height = 24;
+		type = mouseManager.type;
+		mouseManager.add(this, null, onClick, onEnter, onExit, true);
 	}
 
-	public var display(default, set):Bool = true;
-	private function set_display(value:Bool):Bool
+	override public function update()
 	{
-		if (value != display)
+		visible = collidable = layerNumber != null;
+		if (layerNumber != null)
 		{
-			display = value;
-			if (value)
-			{
-				removeChild(inactive);
-				addChild(active);
-			}
-			else
-			{
-				removeChild(active);
-				addChild(inactive);
-			}
+			var entityCount = HXP.scene._layers.exists(layerNumber) ? Lambda.count(HXP.scene._layers[layerNumber]) : 0;
+			var txt = "Layer " + layerNumber + " [" + entityCount + "]";
+			if (label.text != txt) label.text = txt;
+			label.color = HXP.scene.layerVisible(layerNumber) ? 0x00ff00 : 0xff0000;
 		}
-		return value;
 	}
 
-	private function onClick(e:MouseEvent)
+	function onClick()
 	{
-		display = !display;
+		if (layerNumber != null)
+		{
+			var display = !HXP.scene.layerVisible(layerNumber);
+			HXP.scene.showLayer(layerNumber, display);
+			HXP.scene.updateLists();
+		}
 	}
 
-	private var active:Bitmap;
-	private var inactive:Bitmap;
-	private var label:TextField;
-
+	function onEnter() label.alpha = 1;
+	function onExit() label.alpha = 0.75;
 }
 
-@:dox(hide)
-class MaskLabel extends VisibleLabel
+@:access(haxepunk.Scene)
+class LayerList extends EntityList<LayerToggle>
 {
-	public function new(textFormat:TextFormat)
-	{
-		super(textFormat);
-		label.text = "Masks";
-	}
+	var alpha:Float = 0.5;
+	var mouseManager:MouseManager;
+	var sceneLabel:Text;
+	var childY:Int = 8;
 
-	override private function onClick(e:MouseEvent)
-	{
-		super.onClick(e);
-		HXP.console.debugDraw = display;
-		HXP.console.update();
-	}
-}
-
-@:dox(hide)
-class LayerLabel extends VisibleLabel
-{
-
-	public var layer(default, null):Int;
-
-	public function new(layer:Int, textFormat:TextFormat)
-	{
-		super(textFormat);
-
-		this.layer = layer;
-		this.count = 0;
-	}
-
-	public var count(never, set):Int;
-	private function set_count(value:Int):Int
-	{
-		label.text = 'Layer $layer [$value]';
-		return value;
-	}
-
-	override private function onClick(e:MouseEvent)
-	{
-		super.onClick(e);
-		HXP.scene.showLayer(layer, display);
-		HXP.engine.render();
-		HXP.console.debugDraw = HXP.console.debugDraw; // redraw masks
-	}
-
-}
-
-@:dox(hide)
-class LayerList extends Sprite
-{
-	public function new(width:Int=250, height:Int=400)
+	public function new(mouseManager:MouseManager)
 	{
 		super();
+		this.mouseManager = mouseManager;
+		width = 280;
+		height = 320;
 
-		var mask = new Sprite();
-		mask.graphics.beginFill(0);
-		mask.graphics.drawRect(0, 0, width, height);
-		mask.graphics.endFill();
-		addChild(mask);
-		this.mask = mask;
+		sceneLabel = new Text("Scene");
+		sceneLabel.y = childY;
+		childY += sceneLabel.textHeight;
+		graphic = sceneLabel;
 
-		graphics.beginFill(0, .15);
-		graphics.drawRect(0, 0, width, height);
-		graphics.endFill();
-
-		var font = Assets.getFont("font/04B_03__.ttf");
-		if (font == null)
-		{
-			font = Assets.getFont(HXP.defaultFont);
-		}
-		_textFormat = new TextFormat(font.fontName, 16, 0xFFFFFF);
-
-		_labels = new IntMap<LayerLabel>();
+		type = mouseManager.type;
+		mouseManager.add(this, null, null, onEnter, onExit);
 	}
 
-	private function layerSort(a:Int, b:Int):Int
+	override public function update()
 	{
-		return a - b;
+		super.update();
+
+		var layerCount = HXP.scene._layerList.length;
+		while (entities.length < layerCount)
+		{
+			var toggle = new LayerToggle(mouseManager);
+			add(toggle);
+			toggle.localY = childY;
+			childY += toggle.height + 4;
+		}
+
+		for (i in 0 ... entities.length)
+		{
+			entities[i].layerNumber = i >= HXP.scene._layerList.length ? null : HXP.scene._layerList[i];
+			entities[i].update();
+		}
+
+		var txt = Type.getClassName(Type.getClass(HXP.scene));
+		if (sceneLabel.text != txt) sceneLabel.text = txt;
 	}
 
-	public function set(list:IntMap<Int>)
+	override public function render(camera:Camera)
 	{
-		// remove added children
-		for (key in _labels.keys())
-		{
-			removeChild(_labels.get(key));
-			_labels.remove(key);
-		}
+		var fsx:Float = camera.fullScaleX,
+			fsy:Float = camera.fullScaleY;
+		Draw.setColor(0, alpha);
+		Draw.lineThickness = 4;
+		Draw.rectFilled(x * fsx, y * fsy, width * fsx, height * fsy);
 
-		// filter and sort layers
-		var keys = new Array<Int>();
-		for (key in list.keys())
-		{
-			if (list.get(key) > 0)
-				keys.push(key);
-		}
-		keys.sort(layerSort);
-
-		var i = 0, scene = HXP.scene;
-		for (layer in keys)
-		{
-			var label:LayerLabel;
-			if (_labels.exists(layer))
-			{
-				label = _labels.get(layer);
-			}
-			else
-			{
-				label = new LayerLabel(layer, _textFormat);
-				_labels.set(layer, label);
-			}
-			label.count = list.get(layer);
-			label.display = scene.layerVisible(layer);
-			label.y = i++ * 20 + 5;
-			addChild(label);
-		}
-
-		// add and move mask label
-		if (_maskLabel == null)
-		{
-			_maskLabel = new MaskLabel(_textFormat);
-			addChild(_maskLabel);
-		}
-		_maskLabel.y = i++ * 20 + 5;
+		super.render(camera);
 	}
 
-	private var _labels:IntMap<LayerLabel>;
-	private var _maskLabel:MaskLabel;
-	private var _textFormat:TextFormat;
+	function onEnter() alpha = 0.75;
+	function onExit() alpha = 0.5;
 }

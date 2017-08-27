@@ -1,54 +1,32 @@
 package haxepunk.graphics.atlas;
 
-import flash.display.BitmapData;
-import flash.display.BlendMode;
+import haxepunk.utils.BlendMode;
 import flash.geom.Rectangle;
 import flash.geom.Point;
 import flash.geom.Matrix;
 import haxepunk.Scene;
-import haxepunk.utils.MathUtil;
-
-/**
- * Abstract representing either a `String`, a `AtlasData` or a `BitmapData`.
- * 
- * Conversion is automatic, no need to use this.
- */
-abstract AtlasDataType(AtlasData)
-{
-	private inline function new(data:AtlasData) this = data;
-	@:dox(hide) @:to public inline function toAtlasData():AtlasData return this;
-
-	@:dox(hide) @:from public static inline function fromString(s:String)
-	{
-		return new AtlasDataType(AtlasData.getAtlasDataByName(s, true));
-	}
-	@:dox(hide) @:from public static inline function fromBitmapData(bd:BitmapData)
-	{
-		return new AtlasDataType(new AtlasData(bd));
-	}
-	@:dox(hide) @:from public static inline function fromAtlasData(data:AtlasData)
-	{
-		return new AtlasDataType(data);
-	}
-}
+import haxepunk.graphics.shader.Shader;
+import haxepunk.graphics.hardware.Texture;
+import haxepunk.utils.Color;
+import haxepunk.math.MathUtil;
 
 class AtlasData
 {
 	public var width(default, null):Int;
 	public var height(default, null):Int;
-	public var bitmapData:BitmapData;
+	public var texture:Texture;
 
 	/**
 	 * Creates a new AtlasData class
-	 * 
+	 *
 	 * **NOTE**: Only create one instance of AtlasData per name. An error will be thrown if you try to create a duplicate.
-	 * 
-	 * @param bd     BitmapData image to use for rendering
-	 * @param name   A reference to the image data, used with destroy and for setting rendering flags
+	 *
+	 * @param texture Texture image to use for rendering
+	 * @param name    A reference to the image data, used with destroy and for setting rendering flags
 	 */
-	public function new(bd:BitmapData, ?name:String)
+	public function new(texture:Texture, ?name:String)
 	{
-		bitmapData = bd;
+		this.texture = texture;
 
 		_name = name;
 
@@ -64,8 +42,8 @@ class AtlasData
 			}
 		}
 
-		width = bd.width;
-		height = bd.height;
+		width = texture.width;
+		height = texture.height;
 	}
 
 	/**
@@ -82,10 +60,10 @@ class AtlasData
 		}
 		else if (create)
 		{
-			var bitmap:BitmapData = HXP.getBitmap(name);
-			if (bitmap != null)
+			var texture:Texture = Texture.fromAsset(name);
+			if (texture != null)
 			{
-				data = new AtlasData(bitmap, name);
+				data = new AtlasData(texture, name);
 			}
 		}
 		return data;
@@ -95,20 +73,20 @@ class AtlasData
 	 * String representation of AtlasData
 	 * @return the name of the AtlasData
 	 */
-	public function toString():String
+	public inline function toString():String
 	{
-		return (_name == null ? "AtlasData" : _name); 
+		return (_name == null ? "AtlasData" : _name);
 	}
 
 	/**
 	 * Reloads the image for a particular atlas object
 	 */
-	public function reload(bd:BitmapData):Bool
+	public function reload(texture:Texture):Bool
 	{
 		if (_name != null)
 		{
-			bitmapData = bd;
-			return HXP.overwriteBitmapCache(_name, bd);
+			this.texture = texture;
+			return Texture.overwriteCache(_name, texture);
 		}
 		return false;
 	}
@@ -118,7 +96,7 @@ class AtlasData
 	 * @param	scene	The scene object to set
 	 */
 	@:allow(haxepunk.Scene)
-	private static inline function startScene(scene:Scene):Void
+	static inline function startScene(scene:Scene):Void
 	{
 		_scene = scene;
 	}
@@ -130,7 +108,7 @@ class AtlasData
 	{
 		if (_name != null)
 		{
-			HXP.removeBitmap(_name);
+			Texture.remove(_name);
 			_dataPool.remove(_name);
 		}
 	}
@@ -161,7 +139,6 @@ class AtlasData
 	/**
 	 * Prepares a tile to be drawn using a matrix
 	 * @param  rect   The source rectangle to draw
-	 * @param  layer The layer to draw on
 	 * @param  tx    X-Axis translation
 	 * @param  ty    Y-Axis translation
 	 * @param  a     Top-left
@@ -174,14 +151,18 @@ class AtlasData
 	 * @param  alpha Alpha value
 	 */
 	public inline function prepareTileMatrix(
-		rect:Rectangle, layer:Int,
+		rect:Rectangle,
 		tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
-		red:Float, green:Float, blue:Float, alpha:Float,
-		?smooth:Bool, ?blend:BlendMode)
+		color:Color, alpha:Float,
+		shader:Shader, smooth:Bool=false, blend:BlendMode, ?clipRect:Rectangle)
 	{
-		if (smooth == null) smooth = Atlas.smooth;
-		var command = _scene.sprite.getDrawCommand(bitmapData, smooth, blend);
-		command.addRect(rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, red, green, blue, alpha);
+		var batch = _scene.renderer.batch;
+		batch.addRect(
+			texture, shader, smooth, blend, clipRect,
+			rect.x, rect.y, rect.width, rect.height,
+			a, b, c, d, tx, ty,
+			color, alpha
+		);
 	}
 
 	/**
@@ -189,7 +170,6 @@ class AtlasData
 	 * @param  rect   The source rectangle to draw
 	 * @param  x      The x-axis value
 	 * @param  y      The y-axis value
-	 * @param  layer  The layer to draw on
 	 * @param  scaleX X-Axis scale
 	 * @param  scaleY Y-Axis scale
 	 * @param  angle  Angle (in degrees)
@@ -199,13 +179,11 @@ class AtlasData
 	 * @param  alpha  Alpha value
 	 */
 	public inline function prepareTile(
-		rect:Rectangle, tx:Float, ty:Float, layer:Int,
+		rect:Rectangle, tx:Float, ty:Float,
 		scaleX:Float, scaleY:Float, angle:Float,
-		red:Float, green:Float, blue:Float, alpha:Float,
-		?smooth:Bool, ?blend:BlendMode):Void
+		color:Color, alpha:Float,
+		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void
 	{
-		if (smooth == null) smooth = Atlas.smooth;
-
 		var a:Float, b:Float, c:Float, d:Float;
 
 		// matrix transformation
@@ -227,25 +205,49 @@ class AtlasData
 			d = cos * scaleY; // m11
 		}
 
-		var command = _scene.sprite.getDrawCommand(bitmapData, smooth, blend);
-		command.addRect(rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, red, green, blue, alpha);
+		var batch = _scene.renderer.batch;
+		batch.addRect(texture, shader, smooth, blend, clipRect, rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, color, alpha);
 	}
 
+	/**
+	 * Prepares a triangle draw command
+	 * @param  tx1    The first vertex x position
+	 * @param  ty1    The first vertex y position
+	 * @param  uvx1   The first vertex uv x coord (0-1)
+	 * @param  uvy1   The first vertex uv y coord (0-1)
+	 * @param  tx2    The second vertex x position
+	 * @param  ty2    The second vertex y position
+	 * @param  uvx2   The second vertex uv x coord (0-1)
+	 * @param  uvy2   The second vertex uv y coord (0-1)
+	 * @param  tx3    The third vertex x position
+	 * @param  ty3    The third vertex y position
+	 * @param  uvx3   The third vertex uv x coord (0-1)
+	 * @param  uvy3   The third vertex uv y coord (0-1)
+	 * @param  red    Red color value
+	 * @param  green  Green color value
+	 * @param  blue   Blue color value
+	 * @param  alpha  Alpha value
+	 * @param  shader Shader to use for rendering
+	 * @param  smooth Enables linear smoothing on texture
+	 * @param  blend  Blend mode to use for rendering
+	 * @param  clipRect The rectangle used for clipping
+	 */
 	public function prepareTriangle(
 		tx1:Float, ty1:Float, uvx1:Float, uvy1:Float,
 		tx2:Float, ty2:Float, uvx2:Float, uvy2:Float,
 		tx3:Float, ty3:Float, uvx3:Float, uvy3:Float,
-		red:Float, green:Float, blue:Float, alpha:Float,
-		?smooth:Bool, ?blend:BlendMode):Void
+		color:Color, alpha:Float,
+		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void
 	{
-		var command = _scene.sprite.getDrawCommand(bitmapData, smooth, blend);
-		command.addTriangle(tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, red, green, blue, alpha);
+		var batch = _scene.renderer.batch;
+		batch.addTriangle(texture, shader, smooth, blend, clipRect, tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, color, alpha);
 	}
 
 	// used for pooling
-	private var _name:String;
+	var _name:String;
 
-	private static var _scene:Scene;
-	private static var _dataPool:Map<String, AtlasData> = new Map<String, AtlasData>();
-	private static var _uniqueId:Int = 0; // allows for unique names
+	static var _scene:Scene;
+	static var _dataPool:Map<String, AtlasData> = new Map<String, AtlasData>();
+	static var _uniqueId:Int = 0; // allows for unique names
+	static var _rect:Rectangle = new Rectangle();
 }

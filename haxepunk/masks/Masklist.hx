@@ -1,10 +1,9 @@
 package haxepunk.masks;
 
-import flash.display.Graphics;
 import haxepunk.Entity;
 import haxepunk.HXP;
 import haxepunk.Mask;
-import haxepunk.utils.MathUtil;
+import haxepunk.math.MathUtil;
 
 /**
  * A Mask that can contain multiple Masks of one or various types.
@@ -40,7 +39,7 @@ class Masklist extends Hitbox
 	}
 
 	/** @private Collide against a Masklist. */
-	override private function collideMasklist(other:Masklist):Bool
+	override function collideMasklist(other:Masklist):Bool
 	{
 		for (a in _masks)
 		{
@@ -155,10 +154,10 @@ class Masklist extends Hitbox
 		r = b = MathUtil.INT_MIN_VALUE;
 		var h:Hitbox;
 		var p:Polygon;
-		
+
 		for (m in _masks)
 		{
-			if (Std.is(m, Polygon)) 
+			if (Std.is(m, Polygon))
 			{
 				p = cast m;
 				if (p != null)
@@ -168,7 +167,7 @@ class Masklist extends Hitbox
 					if (p.maxX > r) r = p.maxX;
 					if (p.maxY > b) b = p.maxY;
 				}
-			} 
+			}
 			else if ((h = cast(m, Hitbox)) != null)
 			{
 				if (h.x < l) l = h.x;
@@ -187,19 +186,19 @@ class Masklist extends Hitbox
 	}
 
 	@:dox(hide)
-	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
+	override public function debugDraw(camera:Camera):Void
 	{
-		for (m in _masks) m.debugDraw(graphics, scaleX, scaleY);
+		for (m in _masks) m.debugDraw(camera);
 	}
 
 	/**
 	 * Amount of Masks in the list.
 	 */
 	public var count(get, null):Int;
-	private function get_count():Int return _count; 
+	function get_count():Int return _count;
 
 	// List information.
-	private var _masks:Array<Mask>;
-	private var _temp:Array<Mask>;
-	private var _count:Int;
+	var _masks:Array<Mask>;
+	var _temp:Array<Mask>;
+	var _count:Int;
 }

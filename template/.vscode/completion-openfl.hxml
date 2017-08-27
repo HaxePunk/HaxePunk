@@ -1,0 +1,10 @@
+-lib HaxePunk
+-lib openfl
+-lib lime
+-cp source
+-D source-header=haxe
+-D debug_console
+-D no-compilation
+-D lime-opengl
+-D native
+--remap flash:openfl

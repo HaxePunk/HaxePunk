@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
-	<app preloader="haxepunk.Preloader" unless="noHaxepunkPreloader || html5"/>
+	<app preloader="haxepunk.Preloader" unless="no_haxepunk_preloader"/>
 	<app swf-version="11.7" if="flash"/>
 
 	<assets path="assets/graphics" rename="graphics" include="*.png" embed="true"/>
@@ -8,7 +8,6 @@
 
 	<haxedef name="source-header" value="haxe"/>
 	<haxedef name="webgl" if="html5"/>
-	<haxedef name="hardware_render" unless="flash"/>
 	<haxeflag name="--macro" value="haxepunk.utils.Platform.run()"/>
 
 	<haxelib name="openfl"/>

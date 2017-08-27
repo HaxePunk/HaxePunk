@@ -1,6 +1,5 @@
 package haxepunk.masks;
 
-import flash.display.Graphics;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxepunk.HXP;
@@ -96,7 +95,7 @@ class Grid extends Hitbox
 	 * @param	y			Tile row.
 	 * @param	solid		If the tile should be solid.
 	 */
-	private function setTileXY(x:Int = 0, y:Int = 0, solid:Bool = true)
+	function setTileXY(x:Int = 0, y:Int = 0, solid:Bool = true)
 	{
 		if (!checkTile(x, y)) return;
 		data[y][x] = solid;
@@ -112,7 +111,7 @@ class Grid extends Hitbox
 		setTile(column, row, false);
 	}
 
-	private inline function checkTile(column:Int, row:Int):Bool
+	inline function checkTile(column:Int, row:Int):Bool
 	{
 		// check that tile is valid
 		return !(column < 0 || column > columns - 1 || row < 0 || row > rows - 1);
@@ -141,7 +140,7 @@ class Grid extends Hitbox
 	 * @param	row			Tile row.
 	 * @return	tile value.
 	*/
-	private function getTileXY(x:Int = 0, y:Int = 0):Bool
+	function getTileXY(x:Int = 0, y:Int = 0):Bool
 	{
 		if (!checkTile(x, y)) return false;
 		return data[y][x];
@@ -271,13 +270,13 @@ class Grid extends Hitbox
 	 * The tile width.
 	 */
 	public var tileWidth(get, never):Int;
-	private inline function get_tileWidth():Int return Std.int(_tile.width); 
+	inline function get_tileWidth():Int return Std.int(_tile.width);
 
 	/**
 	 * The tile height.
 	 */
 	public var tileHeight(get, never):Int;
-	private inline function get_tileHeight():Int return Std.int(_tile.height); 
+	inline function get_tileHeight():Int return Std.int(_tile.height);
 
 	/**
 	 * How many columns the grid has
@@ -295,7 +294,7 @@ class Grid extends Hitbox
 	public var data(default, null):Array<Array<Bool>>;
 
 	/** @private Collides against an Entity. */
-	override private function collideMask(other:Mask):Bool
+	override function collideMask(other:Mask):Bool
 	{
 		var rectX:Int, rectY:Int, pointX:Int, pointY:Int;
 		_rect.x = other._parent.x - other._parent.originX - _parent.x + _parent.originX;
@@ -319,7 +318,7 @@ class Grid extends Hitbox
 	}
 
 	/** @private Collides against a Hitbox. */
-	override private function collideHitbox(other:Hitbox):Bool
+	override function collideHitbox(other:Hitbox):Bool
 	{
 		var rectX:Int, rectY:Int, pointX:Int, pointY:Int;
 		_rect.x = other._parent.x - other._x - _parent.x + _x;
@@ -343,49 +342,8 @@ class Grid extends Hitbox
 	}
 
 	/** @private Collides against a Pixelmask. */
-	private function collidePixelmask(other:Pixelmask):Bool
+	function collidePixelmask(other:Pixelmask):Bool
 	{
-#if flash
-		var x1:Int = Std.int(other._parent.x + other.x - _parent.x - _x),
-			y1:Int = Std.int(other._parent.y + other.y - _parent.y - _y),
-			x2:Int = Std.int((x1 + other.width - 1) / _tile.width),
-			y2:Int = Std.int((y1 + other.height - 1) / _tile.height);
-		_point.x = x1;
-		_point.y = y1;
-		x1 = Std.int(x1 / _tile.width);
-		y1 = Std.int(y1 / _tile.height);
-		_tile.x = x1 * _tile.width;
-		_tile.y = y1 * _tile.height;
-		var xx:Int = x1;
-		while (y1 <= y2)
-		{
-			if (y1 < 0 || y1 >= data.length)
-			{
-				y1++;
-				continue;
-			}
-
-			while (x1 <= x2)
-			{
-				if (x1 < 0 || x1 >= data[0].length)
-				{
-					x1++;
-					continue;
-				}
-
-				if (data[y1][x1])
-				{
-					if (other.data.hitTest(_point, 1, _tile)) return true;
-				}
-				x1++;
-				_tile.x += _tile.width;
-			}
-			x1 = xx;
-			y1++;
-			_tile.x = x1 * _tile.width;
-			_tile.y += _tile.height;
-		}
-#else
 		_point.x = _parent.x + _x - _parent.originX;
 		_point.y = _parent.y + _y - _parent.originY;
 		if (Std.instance(other, Imagemask) != null) // 'other' inherits from Imagemask
@@ -401,31 +359,30 @@ class Grid extends Hitbox
 			_rect.width = other.width;
 			_rect.height = other.height;
 		}
-		
+
 		var r1 = new Rectangle(_point.x, _point.y, _width, _height);
-		
+
 		var intersect = r1.intersection(_rect);
-		
+
 		if (intersect.isEmpty())
 			return false;
-		
+
 		for (dx in Math.floor(intersect.x - _rect.x) ...Math.floor(intersect.x - _rect.x + intersect.width))
 		{
 			for (dy in Math.floor(intersect.y - _rect.y) ...Math.floor(intersect.y - _rect.y + intersect.height))
 			{
 				var tx = Std.int((dx + _rect.x) / _tile.width), ty = Std.int((dy + _rect.y) / _tile.height);
-				if (data[ty][tx] && (other.data.getPixel32(dx, dy) >> 24) & 0xFF > 0)
+				if (data[ty][tx] && (other.data.getPixel(dx, dy) >> 24) & 0xFF > 0)
 				{
 					return true;
 				}
 			}
 		}
-#end
 		return false;
 	}
 
 	/** @private Collides against a Grid. */
-	private function collideGrid(other:Grid):Bool
+	function collideGrid(other:Grid):Bool
 	{
 		// Find the X edges
 		var ax1:Float = _parent.x + _x;
@@ -517,8 +474,12 @@ class Grid extends Hitbox
 	}
 
 	@:dox(hide)
-	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
+	override public function debugDraw(camera:Camera):Void
 	{
+		var dc = Mask.drawContext,
+			scaleX = camera.fullScaleX,
+			scaleY = camera.fullScaleY;
+
 		var cellX:Float, cellY:Float,
 			stepX = tileWidth * scaleX,
 			stepY = tileHeight * scaleY;
@@ -556,39 +517,32 @@ class Grid extends Hitbox
 			{
 				if (row[x])
 				{
-					graphics.lineStyle(1, 0xFFFFFF, 0.3);
-					graphics.drawRect(cellX, cellY, stepX, stepY);
+					dc.lineThickness = 2;
+					dc.setColor(0xffffff, 0.3);
+					dc.rect(cellX, cellY, stepX, stepY);
+					dc.setColor(0x0000ff, 1);
 
 					if (x < columns - 1 && !row[x + 1])
 					{
-						graphics.lineStyle(1, 0x0000FF);
-						graphics.moveTo(cellX + stepX, cellY);
-						graphics.lineTo(cellX + stepX, cellY + stepY);
+						dc.line(cellX + stepX, cellY, cellX + stepX, cellY + stepY);
 					}
 					if (x > 0 && !row[x - 1])
 					{
-						graphics.lineStyle(1, 0x0000FF);
-						graphics.moveTo(cellX, cellY);
-						graphics.lineTo(cellX, cellY + stepY);
+						dc.line(cellX, cellY, cellX, cellY + stepY);
 					}
 					if (y < rows - 1 && !data[y + 1][x])
 					{
-						graphics.lineStyle(1, 0x0000FF);
-						graphics.moveTo(cellX, cellY + stepY);
-						graphics.lineTo(cellX + stepX, cellY + stepY);
+						dc.line(cellX, cellY + stepY, cellX + stepX, cellY + stepY);
 					}
 					if (y > 0 && !data[y - 1][x])
 					{
-						graphics.lineStyle(1, 0x0000FF);
-						graphics.moveTo(cellX, cellY);
-						graphics.lineTo(cellX + stepX, cellY);
+						dc.line(cellX, cellY, cellX + stepX, cellY);
 					}
 				}
 				cellX += stepX;
 			}
 			cellY += stepY;
 		}
-
 	}
 
 	@:dox(hide)
@@ -607,8 +561,8 @@ class Grid extends Hitbox
 	}
 
 	// Grid information.
-	private var _tile:Rectangle;
-	private var _rect:Rectangle;
-	private var _point:Point;
-	private var _point2:Point;
+	var _tile:Rectangle;
+	var _rect:Rectangle;
+	var _point:Point;
+	var _point2:Point;
 }

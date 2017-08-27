@@ -1,12 +1,14 @@
 package haxepunk.graphics.atlas;
 
-import flash.display.BlendMode;
+import haxepunk.utils.BlendMode;
 import flash.geom.Rectangle;
 import flash.geom.Point;
 import flash.geom.Matrix;
-import haxepunk.utils.MathUtil;
+import haxepunk.utils.Color;
+import haxepunk.math.MathUtil;
+import haxepunk.graphics.shader.Shader;
 
-class AtlasRegion
+class AtlasRegion implements IAtlasRegion
 {
 	/**
 	 * If the region is rotated by 90 degress (used for sprite packing)
@@ -18,11 +20,11 @@ class AtlasRegion
 	/**
 	 * Width of this region
 	 */
-	public var width(get, never):Float;
+	public var width(get, never):Int;
 	/**
 	 * Height of this region
 	 */
-	public var height(get, never):Float;
+	public var height(get, never):Int;
 
 	/**
 	 * Creates a new AtlasRegion
@@ -45,7 +47,7 @@ class AtlasRegion
 	public function clip(clipRect:Rectangle, ?center:Point):AtlasRegion
 	{
 		// make a copy of clipRect, to avoid modifying the original
-		var clipRectCopy = new Rectangle( clipRect.x, clipRect.y, clipRect.width, clipRect.height );
+		var clipRectCopy = clipRect.clone();
 
 		// only clip within the current region
 		if (clipRectCopy.x + clipRectCopy.width > _rect.width)
@@ -65,63 +67,71 @@ class AtlasRegion
 
 	/**
 	 * Prepares tile data for rendering
-	 * @param	x		The x-axis location to draw the tile
-	 * @param	y		The y-axis location to draw the tile
-	 * @param	layer	The layer to draw on
-	 * @param	scaleX	The scale value for the x-axis
-	 * @param	scaleY	The scale value for the y-axis
-	 * @param	angle	An angle to rotate the tile in degrees
-	 * @param	red		A red tint value
-	 * @param	green	A green tint value
-	 * @param	blue	A blue tint value
-	 * @param	alpha	The tile's opacity
-	 * @param	smooth	Whther to draw with antialiasing
-	 * @param	blend	Blend mode
+	 * @param	x			The x-axis location to draw the tile
+	 * @param	y			The y-axis location to draw the tile
+	 * @param	shader		The shader to use for drawing
+	 * @param	scaleX		The scale value for the x-axis
+	 * @param	scaleY		The scale value for the y-axis
+	 * @param	angle		An angle to rotate the tile in degrees
+	 * @param	red			A red tint value
+	 * @param	green		A green tint value
+	 * @param	blue		A blue tint value
+	 * @param	alpha		The tile's opacity
+	 * @param	smooth		Whether to draw with antialiasing
+	 * @param	blend		Blend mode
+	 * @param	clipRect	Clipping rectangle
 	 */
-	public inline function draw(x:Float, y:Float, layer:Int,
+	public inline function draw(x:Float, y:Float,
 		scaleX:Float=1, scaleY:Float=1, angle:Float=0,
-		red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1,
-		?smooth:Bool, ?blend:BlendMode)
+		color:Color=Color.White, alpha:Float=1,
+		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
 	{
-		if (smooth == null) smooth = Atlas.smooth;
 		if (rotated) angle = angle + 90;
 
-		_parent.prepareTile(_rect, x, y, layer, scaleX, scaleY, angle, red, green, blue, alpha, smooth, blend);
+		_parent.prepareTile(_rect, x, y,
+			scaleX, scaleY, angle,
+			color, alpha,
+			shader, smooth, blend, clipRect);
 	}
 
 	/**
 	 * Prepares tile data for rendering using a matrix
-	 * @param	tx		X-Axis translation
-	 * @param	ty		Y-Axis translation
-	 * @param	a		Top-left
-	 * @param	b		Top-right
-	 * @param	c		Bottom-left
-	 * @param	d		Bottom-right
-	 * @param	layer	The layer to draw on
-	 * @param	red		Red color value
-	 * @param	green	Green color value
-	 * @param	blue	Blue color value
-	 * @param	alpha	The tile's opacity
-	 * @param	smooth	Whther to draw with antialiasing
-	 * @param	blend	Blend mode
+	 * @param	tx			X-Axis translation
+	 * @param	ty			Y-Axis translation
+	 * @param	a			Top-left
+	 * @param	b			Top-right
+	 * @param	c			Bottom-left
+	 * @param	d			Bottom-right
+	 * @param	shader		The shader to use for drawing
+	 * @param	red			Red color value
+	 * @param	green		Green color value
+	 * @param	blue		Blue color value
+	 * @param	alpha		The tile's opacity
+	 * @param	smooth		Whether to draw with antialiasing
+	 * @param	blend		Blend mode
+	 * @param	clipRect	Clipping rectangle
 	 */
 	public inline function drawMatrix(tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
-		layer:Int, red:Float=1, green:Float=1, blue:Float=1, alpha:Float=1,
-		?smooth:Bool, ?blend:BlendMode)
+		color:Color=Color.White, alpha:Float=1,
+		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void
 	{
-		if (smooth == null) smooth = Atlas.smooth;
-
 		if (rotated)
 		{
 			var matrix = new Matrix(a, b, c, d, tx, ty);
 			matrix.rotate(90 * MathUtil.RAD);
-			_parent.prepareTileMatrix(_rect, layer,
+			_parent.prepareTileMatrix(_rect,
 				matrix.tx, matrix.ty, matrix.a, matrix.b, matrix.c, matrix.d,
-				red, green, blue, alpha, smooth, blend);
+				color, alpha,
+				shader, smooth, blend, clipRect
+			);
 		}
 		else
 		{
-			_parent.prepareTileMatrix(_rect, layer, tx, ty, a, b, c, d, red, green, blue, alpha, smooth, blend);
+			_parent.prepareTileMatrix(_rect,
+				tx, ty, a, b, c, d,
+				color, alpha,
+				shader, smooth, blend, clipRect
+			);
 		}
 	}
 
@@ -139,15 +149,15 @@ class AtlasRegion
 	 *
 	 * @return	String version of the object.
 	 */
-	public function toString():String
+	public inline function toString():String
 	{
 		return "[AtlasRegion " + _rect + "]";
 	}
 
 	inline function get_x():Float return _rect.x;
 	inline function get_y():Float return _rect.y;
-	inline function get_width():Float return _rect.width;
-	inline function get_height():Float return _rect.height;
+	inline function get_width():Int return Std.int(_rect.width);
+	inline function get_height():Int return Std.int(_rect.height);
 
 	var _rect:Rectangle;
 	var _parent:AtlasData;

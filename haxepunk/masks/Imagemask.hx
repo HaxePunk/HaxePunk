@@ -1,13 +1,13 @@
 package haxepunk.masks;
 
 import haxepunk.Mask;
-import flash.display.BitmapData;
 import flash.geom.Point;
 import flash.geom.Matrix;
 import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.graphics.Image;
-import haxepunk.utils.MathUtil;
+import haxepunk.graphics.hardware.Texture;
+import haxepunk.math.MathUtil;
 
 
 /**
@@ -31,7 +31,7 @@ import haxepunk.utils.MathUtil;
  * Remember to call "mask.update()" when you update the image.
  *
  * If you are using `RenderMode.HARDWARE` mode, Imagemask will still work, but only if your
- * Image source is created with a BitmapData. `AtlasData` is not currently
+ * Image source is created with a Texture. `AtlasData` is not currently
  * supported.
  *
  */
@@ -45,7 +45,7 @@ class Imagemask extends Pixelmask
 	 */
 	public function new(source:Image)
 	{
-		super(new BitmapData(1, 1));
+		super(Texture.create(1, 1));
 		_class = Type.getClassName(Type.getSuperClass(Type.getClass(this)));
 		_source = source;
 		update();
@@ -75,8 +75,9 @@ class Imagemask extends Pixelmask
 		_width = Math.ceil(r.width);
 		_height = Math.ceil(r.height);
 
-		_data = new BitmapData(_width, _height, true, 0x00000000);
-		_source.render(_data, new Point(-_x, -_y), new Point(0, 0));
+		_data = Texture.create(_width, _height, true, 0x00000000);
+		// TODO: get rid of this class???
+		// _source.render(_data, new Camera(-_x, -_y), new Camera(0, 0));
 
 		super.update();
 	}
@@ -116,63 +117,55 @@ class Imagemask extends Pixelmask
 
 		return r;
 	}
-	
+
 	/** @private Collide against a Pixelmask or an Imagemask. */
-	override private function collidePixelmask(other:Pixelmask):Bool
+	override function collidePixelmask(other:Pixelmask):Bool
 	{
-		#if flash
-			_point.x = _parent.x + _x;
-			_point.y = _parent.y + _y;
-			_point2.x = other._parent.x + other._x;
-			_point2.y = other._parent.y + other._y;
-			return _data.hitTest(_point, threshold, other._data, _point2, other.threshold);
-		#else
-			var rect = getBounds();
-			rect.x += _parent.x;
-			rect.y += _parent.y;
-			
-			if (Std.instance(other, Imagemask) != null) // 'other' inherits from Imagemask
-			{
-				_rect = cast(other, Imagemask).getBounds();
-				_rect.x += other._parent.x;
-				_rect.y += other._parent.y;
-			}
-			else
-			{
-				_rect.x = other._parent.x + other.x - other._parent.originX;
-				_rect.y = other._parent.y + other.y - other._parent.originY;
-				_rect.width = other.width;
-				_rect.height = other.height;
-			}
-			
-			var intersect = rect.intersection(_rect);
+		var rect = getBounds();
+		rect.x += _parent.x;
+		rect.y += _parent.y;
 
-			if (intersect.isEmpty())
-			{
-				return false;
-			}
+		if (Std.instance(other, Imagemask) != null) // 'other' inherits from Imagemask
+		{
+			_rect = cast(other, Imagemask).getBounds();
+			_rect.x += other._parent.x;
+			_rect.y += other._parent.y;
+		}
+		else
+		{
+			_rect.x = other._parent.x + other.x - other._parent.originX;
+			_rect.y = other._parent.y + other.y - other._parent.originY;
+			_rect.width = other.width;
+			_rect.height = other.height;
+		}
 
-			for (dx in Math.floor(intersect.x)...Math.floor(intersect.x + intersect.width))
+		var intersect = rect.intersection(_rect);
+
+		if (intersect.isEmpty())
+		{
+			return false;
+		}
+
+		for (dx in Math.floor(intersect.x)...Math.floor(intersect.x + intersect.width))
+		{
+			for (dy in Math.floor(intersect.y)...Math.floor(intersect.y + intersect.height))
 			{
-				for (dy in Math.floor(intersect.y)...Math.floor(intersect.y + intersect.height))
+				var p1 = (_data.getPixel(Std.int(dx - rect.x), Std.int(dy - rect.y)) >> 24) & 0xFF;
+				var p2 = (other._data.getPixel(Std.int(dx - _rect.x),
+						Std.int(dy - _rect.y)) >> 24) & 0xFF;
+
+				if (p1 > 0 && p2 > 0)
 				{
-					var p1 = (_data.getPixel32(Std.int(dx - rect.x), Std.int(dy - rect.y)) >> 24) & 0xFF;
-					var p2 = (other._data.getPixel32(Std.int(dx - _rect.x),
-							Std.int(dy - _rect.y)) >> 24) & 0xFF;
-
-					if (p1 > 0 && p2 > 0)
-					{
-						return true;
-					}
+					return true;
 				}
 			}
+		}
 
-			return false;
-		#end
+		return false;
 	}
-	
+
 	/**
 	 * Current Image mask.
 	 */
-	private var _source:Image;
+	var _source:Image;
 }

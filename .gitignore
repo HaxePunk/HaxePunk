@@ -11,6 +11,11 @@ bin
 log.txt
 tests/report
 .temp
+dump
+
+TestMain.hx
+TestSuite.hx
+ExampleTest.hx
 
 # OS specific files
 .DS_Store

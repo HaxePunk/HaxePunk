@@ -1,25 +1,13 @@
 package haxepunk;
 
-import flash.display.BitmapData;
 import flash.geom.Point;
+import haxe.ds.Either.Left;
+import haxe.ds.Either.Right;
+import haxepunk.ds.OneOf;
 import haxepunk.graphics.Graphiclist;
-import haxepunk.ds.Either;
-import haxepunk.utils.MathUtil;
+import haxepunk.math.MathUtil;
 
-
-/**
- * Abstract representing either a `String` or a `Array<String>`.
- * 
- * Conversion is automatic, no need to use this.
- */
-abstract SolidType(Either<String, Array<String>>)
-{
-	@:dox(hide) public inline function new( e:Either<String, Array<String>> ) this = e;
-	@:dox(hide) public var type(get, never):Either<String, Array<String>>;
-	@:to inline function get_type() return this;
-	@:from static function fromLeft(v:String) return new SolidType(Left(v));
-	@:from static function fromRight(v:Array<String>) return new SolidType(Right(v));
-}
+typedef SolidType = OneOf<String, Array<String>>;
 
 /**
  * Main game Entity class updated by `Scene`.
@@ -28,66 +16,97 @@ abstract SolidType(Either<String, Array<String>>)
 @:allow(haxepunk.Scene)
 class Entity extends Tweener
 {
+	@:dox(hide) @:to public static inline function toPosition(entity:Entity):Position return new Position(entity);
+
+	/**
+	 * The entity's parent, if any. This entity's position will be offset by
+	 * the parent's position.
+	 * @since 4.0.0
+	 */
+	public var parent:Null<Entity>;
+
 	/**
 	 * If the Entity should render.
 	 */
-	public var visible:Bool = true;
+	@:isVar public var visible(get, set):Bool = true;
+	function get_visible() return visible && (parent == null || parent.visible);
+	function set_visible(v:Bool) return visible = v;
+
+	override function get_active() return active && (parent == null || parent.active);
 
 	/**
 	 * If the Entity should respond to collision checks.
 	 */
-	public var collidable:Bool = true;
+	@:isVar public var collidable(get, set):Bool = true;
+	function get_collidable() return collidable && (parent == null || parent.collidable);
+	function set_collidable(v:Bool) return collidable = v;
+
+	public var enabled(get, set):Bool;
+	inline function get_enabled() return active && visible && collidable;
+	inline function set_enabled(v:Bool) return active = visible = collidable = v;
 
 	/**
 	 * X position of the Entity in the Scene.
 	 */
 	@:isVar public var x(get, set):Float = 0;
-	private function get_x():Float
+	function get_x():Float
 	{
-		if (followCamera)
-			return x + HXP.camera.x;
-		else
-			return x;
+		var parentX:Float = (parent == null) ? 0 : parent.x;
+		return parentX + x + (followCamera == null ? 0 : followCamera.x);
 	}
-	private function set_x(v:Float):Float
+	function set_x(v:Float):Float
 	{
-		return x = v;
+		var parentX:Float = (parent == null) ? 0 : parent.x;
+		return x = (v - parentX);
 	}
 
 	/**
 	 * Y position of the Entity in the Scene.
 	 */
 	@:isVar public var y(get, set):Float = 0;
-	private function get_y():Float
+	function get_y():Float
 	{
-		if (followCamera)
-			return y + HXP.camera.y;
-		else
-			return y;
+		var parentY:Float = (parent == null) ? 0 : parent.y;
+		return parentY + y + (followCamera == null ? 0 : followCamera.y);
 	}
-	private function set_y(v:Float):Float
+	function set_y(v:Float):Float
 	{
-		return y = v;
+		var parentY:Float = (parent == null) ? 0 : parent.y;
+		return y = (v - parentY);
 	}
 
 	/**
-	 * If the entity should follow the camera.
+	 * Local X position. If this entity has a parent, this value is relative
+	 * to the parent's position.
+	 * @since 4.0.0
 	 */
-	public var followCamera:Bool = false;
+	public var localX(get, set):Float;
+	function get_localX() return x - (parent == null ? 0 : parent.x);
+	function set_localX(v:Float) return x = (parent == null ? 0 : parent.x) + v;
+
+	/**
+	 * Local Y position. If this entity has a parent, this value is relative
+	 * to the parent's position.
+	 * @since 4.0.0
+	 */
+	public var localY(get, set):Float;
+	function get_localY() return y - (parent == null ? 0 : parent.y);
+	function set_localY(v:Float) return y = (parent == null ? 0 : parent.y) + v;
+
+	/**
+	 * Set to the camera the entity should follow. If null it won't follow any camera.
+	 */
+	public var followCamera:Null<Camera> = null;
 
 	/**
 	 * Width of the Entity's hitbox.
 	 */
-	@:isVar public var width(get, set):Int = 0;
-	function get_width() return width;
-	function set_width(w:Int) return width = w;
+	public var width:Int = 0;
 
 	/**
 	 * Height of the Entity's hitbox.
 	 */
-	@:isVar public var height(get, set):Int = 0;
-	function get_height() return height;
-	function set_height(h:Int) return height = h;
+	public var height:Int = 0;
 
 	/**
 	 * X origin of the Entity's hitbox.
@@ -98,11 +117,6 @@ class Entity extends Tweener
 	 * Y origin of the Entity's hitbox.
 	 */
 	public var originY:Int = 0;
-
-	/**
-	 * The BitmapData target to draw the Entity to. Leave as null to render to the current screen buffer (default).
-	 */
-	public var renderTarget:BitmapData;
 
 	/**
 	 * Constructor. Can be used to place the Entity and assign a graphic and mask.
@@ -125,7 +139,6 @@ class Entity extends Tweener
 
 		HITBOX = new Mask();
 		_point = HXP.point;
-		_camera = HXP.point2;
 
 		layer = 0;
 
@@ -159,27 +172,39 @@ class Entity extends Tweener
 	 * Renders the Entity. If you override this for special behaviour,
 	 * remember to call super.render() to render the Entity's graphic.
 	 */
-	public function render():Void
+	public function render(camera:Camera):Void
 	{
-		if (_graphic != null && _graphic.visible)
+		if (graphic != null && graphic.visible)
 		{
-			if (_graphic.relative)
+			if (graphic.relative)
 			{
 				_point.x = x;
 				_point.y = y;
 			}
-			else _point.x = _point.y = 0;
-			_camera.x = _scene == null ? HXP.camera.x : _scene.camera.x;
-			_camera.y = _scene == null ? HXP.camera.y : _scene.camera.y;
-			if (_graphic.blit)
-			{
-				_graphic.render((renderTarget != null) ? renderTarget : HXP.buffer, _point, _camera);
-			}
 			else
 			{
-				_graphic.renderAtlas(layer, _point, _camera);
+				_point.x = _point.y = 0;
 			}
+			graphic.render(_point, camera);
 		}
+	}
+
+	public function debugDraw(camera:Camera, selected:Bool=false)
+	{
+		if (mask == null && width > 0 && height > 0 && collidable)
+		{
+			Mask.drawContext.lineThickness = 2;
+			Mask.drawContext.setColor(0xff0000, 0.25);
+			Mask.drawContext.rectFilled((x - camera.x - originX) * camera.fullScaleX, (y - camera.y - originY) * camera.fullScaleY, width * camera.fullScaleX, height * camera.fullScaleY);
+			Mask.drawContext.setColor(0xff0000, 0.5);
+			Mask.drawContext.rect((x - camera.x - originX) * camera.fullScaleX, (y - camera.y - originY) * camera.fullScaleY, width * camera.fullScaleX, height * camera.fullScaleY);
+		}
+		else if (mask != null)
+		{
+			mask.debugDraw(camera);
+		}
+		Mask.drawContext.setColor(selected ? 0x00ff00 : 0xffffff, 1);
+		Mask.drawContext.circle((x - camera.x) * camera.fullScaleX, (y - camera.y) * camera.fullScaleY, 3, 8);
 	}
 
 	/**
@@ -248,9 +273,7 @@ class Entity extends Tweener
 	 */
 	public function collideTypes(types:SolidType, x:Float, y:Float):Entity
 	{
-		if (_scene == null) return null;
-
-		switch (types.type)
+		switch (types)
 		{
 			case Left(s):
 				return collide(s, x, y);
@@ -439,26 +462,10 @@ class Entity extends Tweener
 	}
 
 	/**
-	 * If the Entity collides with the camera rectangle.
-	 */
-	public var onCamera(get, null):Bool;
-	private inline function get_onCamera():Bool
-	{
-		if (_scene == null)
-		{
-			return false;
-		}
-		else
-		{
-			return collideRect(x, y, _scene.camera.x, _scene.camera.y, HXP.width, HXP.height);
-		}
-	}
-
-	/**
 	 * The Scene object this Entity has been added to.
 	 */
 	public var scene(get, never):Scene;
-	private inline function get_scene():Scene
+	inline function get_scene():Scene
 	{
 		return _scene;
 	}
@@ -467,62 +474,61 @@ class Entity extends Tweener
 	 * Half the Entity's width.
 	 */
 	public var halfWidth(get, null):Float;
-	private inline function get_halfWidth():Float return width / 2;
+	inline function get_halfWidth():Float return width / 2;
 
 	/**
 	 * Half the Entity's height.
 	 */
 	public var halfHeight(get, null):Float;
-	private inline function get_halfHeight():Float return height / 2;
+	inline function get_halfHeight():Float return height / 2;
 
 	/**
 	 * The center x position of the Entity's hitbox.
 	 */
 	public var centerX(get, null):Float;
-	private inline function get_centerX():Float return x - originX + width / 2;
+	inline function get_centerX():Float return left + halfWidth;
 
 	/**
 	 * The center y position of the Entity's hitbox.
 	 */
 	public var centerY(get, null):Float;
-	private inline function get_centerY():Float return y - originY + height / 2;
+	inline function get_centerY():Float return top + halfHeight;
 
 	/**
 	 * The leftmost position of the Entity's hitbox.
 	 */
 	public var left(get, null):Float;
-	private inline function get_left():Float return x - originX;
+	inline function get_left():Float return x - originX;
 
 	/**
 	 * The rightmost position of the Entity's hitbox.
 	 */
 	public var right(get, null):Float;
-	private inline function get_right():Float return x - originX + width;
+	inline function get_right():Float return left + width;
 
 	/**
 	 * The topmost position of the Entity's hitbox.
 	 */
 	public var top(get, null):Float;
-	private inline function get_top():Float return y - originY;
+	inline function get_top():Float return y - originY;
 
 	/**
 	 * The bottommost position of the Entity's hitbox.
 	 */
 	public var bottom(get, null):Float;
-	private inline function get_bottom():Float return y - originY + height;
+	inline function get_bottom():Float return top + height;
 
 	/**
 	 * The rendering layer of this Entity. Higher layers are rendered first.
 	 */
 	public var layer(get, set):Int;
-	private inline function get_layer():Int return _layer;
-	private function set_layer(value:Int):Int
+	inline function get_layer():Int return _layer;
+	function set_layer(value:Int):Int
 	{
 		if (_layer == value) return _layer;
 		if (_scene == null)
 		{
-			_layer = value;
-			return _layer;
+			return _layer = value;
 		}
 		_scene.removeRender(this);
 		_layer = value;
@@ -534,14 +540,13 @@ class Entity extends Tweener
 	 * The collision type, used for collision checking.
 	 */
 	public var type(get, set):String;
-	private inline function get_type():String return _type;
-	private function set_type(value:String):String
+	inline function get_type():String return _type;
+	function set_type(value:String):String
 	{
 		if (_type == value) return _type;
 		if (_scene == null)
 		{
-			_type = value;
-			return _type;
+			return _type = value;
 		}
 		if (_type != "") _scene.removeType(this);
 		_type = value;
@@ -554,8 +559,8 @@ class Entity extends Tweener
 	 * not assigned, collision checks will use the Entity's hitbox by default.
 	 */
 	public var mask(get, set):Mask;
-	private inline function get_mask():Mask return _mask;
-	private function set_mask(value:Mask):Mask
+	inline function get_mask():Mask return _mask;
+	function set_mask(value:Mask):Mask
 	{
 		if (_mask == value) return value;
 		if (_mask != null) _mask.parent = null;
@@ -567,27 +572,19 @@ class Entity extends Tweener
 	/**
 	 * Graphical component to render to the screen.
 	 */
-	public var graphic(get, set):Graphic;
-	private inline function get_graphic():Graphic return _graphic;
-	private function set_graphic(value:Graphic):Graphic
-	{
-		if (_graphic == value) return value;
-		_graphic = value;
-		return _graphic;
-	}
+	public var graphic:Graphic;
 
 	/**
 	 * An optional name for the entity.
 	 */
 	public var name(get, set):String;
-	private inline function get_name():String return _name;
-	private function set_name(value:String):String
+	inline function get_name():String return _name;
+	function set_name(value:String):String
 	{
 		if (_name == value) return _name;
 		if (_scene == null)
 		{
-			_name = value;
-			return _name;
+			return _name = value;
 		}
 		if (_name != "") _scene.unregisterName(this);
 		_name = value;
@@ -642,22 +639,23 @@ class Entity extends Tweener
 	 */
 	public function setHitboxTo(o:Dynamic)
 	{
-		width = Reflect.getProperty(o, "width");
-		height = Reflect.getProperty(o, "height");
-
-		if (Reflect.hasField(o, "originX") && Reflect.hasField(o, "originY"))
+		inline function getInt(o:Dynamic, prop:String, defaultValue:Int=0):Int
 		{
-			originX = Reflect.getProperty(o, "originX");
-			originY = Reflect.getProperty(o, "originY");
-		}
-		else
-		{
-			originX = Reflect.getProperty(o, "x");
-			originY = Reflect.getProperty(o, "y");
+			return try
+			{
+				Std.int(Reflect.getProperty(o, prop));
+			}
+			catch (e:Dynamic)
+			{
+				defaultValue;
+			}
+		};
 
-			originX = -originX;
-			originY = -originY;
-		}
+		width = getInt(o, "width");
+		height = getInt(o, "height");
+
+		originX = getInt(o, "originX", -getInt(o, "x"));
+		originY = getInt(o, "originY", -getInt(o, "y"));
 	}
 
 	/**
@@ -904,26 +902,24 @@ class Entity extends Tweener
 	}
 
 	// Entity information.
-	private var _class:String;
-	private var _scene:Scene;
-	private var _type:String;
-	private var _layer:Int = 0;
-	private var _name:String;
+	var _class:String;
+	var _scene:Scene;
+	var _type:String;
+	var _layer:Int = 0;
+	var _name:String;
 
-	private var _recycleNext:Entity;
+	var _recycleNext:Entity;
 
 	// Collision information.
-	private var HITBOX:Mask;
-	private var _mask:Mask;
-	private var _x:Float = 0;
-	private var _y:Float = 0;
-	private var _moveX:Float = 0;
-	private var _moveY:Float = 0;
+	var HITBOX:Mask;
+	var _mask:Mask;
+	var _x:Float = 0;
+	var _y:Float = 0;
+	var _moveX:Float = 0;
+	var _moveY:Float = 0;
 
 	// Rendering information.
-	private var _graphic:Graphic;
-	private var _point:Point;
-	private var _camera:Point;
+	var _point:Point;
 
 	static var _EMPTY:Entity = new Entity();
 }

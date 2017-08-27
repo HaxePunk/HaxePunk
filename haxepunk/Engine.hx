@@ -8,19 +8,23 @@ import flash.display.StageScaleMode;
 import flash.events.Event;
 import flash.geom.Rectangle;
 import flash.Lib;
-import haxe.Timer;
-import haxepunk.utils.Draw;
+import haxepunk.Signal;
+import haxepunk.debug.Console;
+import haxepunk.graphics.hardware.EngineRenderer;
 import haxepunk.input.Input;
-import haxepunk.utils.Random;
+import haxepunk.utils.Draw;
+import haxepunk.math.Random;
 
 /**
- * Main game Sprite class, added to the Flash Stage.
+ * Main game Sprite class, added to the Stage.
  * Manages the game loop.
- * 
+ *
  * Your main class **needs** to extends this.
  */
 class Engine extends Sprite
 {
+	public var console:Console;
+
 	/**
 	 * If the game should stop updating/rendering.
 	 */
@@ -42,14 +46,50 @@ class Engine extends Sprite
 	public var tickRate:Int;
 
 	/**
+	 * Invoked before the update cycle begins each frame.
+	 */
+	public var preUpdate:Signal0 = new Signal0();
+	/**
+	 * Invoked after update cycle.
+	 */
+	public var postUpdate:Signal0 = new Signal0();
+	/**
+	 * Invoked before rendering begins each frame.
+	 */
+	public var preRender:Signal0 = new Signal0();
+	/**
+	 * Invoked after rendering completes.
+	 */
+	public var postRender:Signal0 = new Signal0();
+	/**
+	 * Invoked after the screen is resized.
+	 */
+	public var onResize:Signal0 = new Signal0();
+	/**
+	 * Invoked when input is received.
+	 */
+	public var onInputPressed:Signals = new Signals();
+	/**
+	 * Invoked when input is received.
+	 */
+	public var onInputReleased:Signals = new Signals();
+	/**
+	 * Invoked after the scene is switched.
+	 */
+	public var onSceneSwitch:Signal0 = new Signal0();
+	/**
+	 * Invoked when the application is closed.
+	 */
+	public var onClose:Signal0 = new Signal0();
+
+	/**
 	 * Constructor. Defines startup information about your game.
 	 * @param	width			The width of your game.
 	 * @param	height			The height of your game.
 	 * @param	frameRate		The game framerate, in frames per second.
 	 * @param	fixed			If a fixed-framerate should be used.
-	 * @param   renderMode      Overrides the default render mode for this target
 	 */
-	public function new(width:Int = 0, height:Int = 0, frameRate:Float = 60, fixed:Bool = false, ?renderMode:RenderMode)
+	public function new(width:Int = 0, height:Int = 0, frameRate:Float = 60, fixed:Bool = false)
 	{
 		super();
 
@@ -63,14 +103,7 @@ class Engine extends Sprite
 		HXP.width = width;
 		HXP.height = height;
 
-		if (renderMode != null)
-		{
-			HXP.renderMode = renderMode;
-		}
-		else
-		{
-			HXP.renderMode = #if (flash) RenderMode.BUFFER #else RenderMode.HARDWARE #end;
-		}
+		HXP.screen = new Screen();
 
 		// miscellaneous startup stuff
 		if (Random.randomSeed == 0) Random.randomizeSeed();
@@ -82,18 +115,20 @@ class Engine extends Sprite
 		maxElapsed = 0.0333;
 		maxFrameSkip = 5;
 		tickRate = 4;
-		_frameList = new Array<Int>();
-		_systemTime = _delta = _frameListSum = 0;
-		_frameLast = 0;
+		_frameList = new Array();
 
 		// on-stage event listener
-#if flash
-		if (Lib.current.stage != null) onStage();
-		else Lib.current.addEventListener(Event.ADDED_TO_STAGE, onStage);
-#else
 		addEventListener(Event.ADDED_TO_STAGE, onStage);
 		Lib.current.addChild(this);
-#end
+
+		addChild(_renderSurface = new EngineRenderer());
+		_iterator = new VisibleSceneIterator(this);
+	}
+
+	public function iterator():VisibleSceneIterator
+	{
+		_iterator.reset();
+		return _iterator;
 	}
 
 	/**
@@ -116,16 +151,23 @@ class Engine extends Sprite
 	 */
 	public function update()
 	{
+		if (HXP.screen.needsResize) HXP.resize(HXP.windowWidth, HXP.windowHeight);
+		HXP.screen.update();
+
 		_scene.updateLists();
 		checkScene();
-		if (HXP.tweener.active && HXP.tweener.hasTween) HXP.tweener.updateTweens();
+
+		preUpdate.invoke();
+
+		if (HXP.tweener.active && HXP.tweener.hasTween) HXP.tweener.updateTweens(HXP.elapsed);
 		if (_scene.active)
 		{
-			if (_scene.hasTween) _scene.updateTweens();
+			if (_scene.hasTween) _scene.updateTweens(HXP.elapsed);
 			_scene.update();
 		}
 		_scene.updateLists(false);
-		HXP.screen.update();
+
+		postUpdate.invoke();
 	}
 
 	/**
@@ -134,45 +176,20 @@ class Engine extends Sprite
 	@:dox(hide)
 	public function render()
 	{
-		if (HXP.screen.needsResize) HXP.resize(HXP.windowWidth, HXP.windowHeight);
-
 		// timing stuff
 		var t:Float = Lib.getTimer();
 		if (_frameLast == 0) _frameLast = Std.int(t);
 
-		// render loop
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			HXP.screen.swap();
-			HXP.screen.refresh();
-		}
-		Draw.resetTarget();
+		preRender.invoke();
 
-		if (_scenes.length > 0)
+		for (scene in this)
 		{
-			// find the last visible scene, falling through transparent scenes
-			var visibleScene:Int = _scenes.length - 1;
-			while (_scenes[visibleScene].alpha < 1 && visibleScene > 0)
-			{
-				--visibleScene;
-			}
-			for (i in 0 ... visibleScene)
-			{
-				_scenes[i]._drawn = false;
-			}
-			// render all visible scenes back to front
-			while (visibleScene < _scenes.length)
-			{
-				var scene = _scenes[visibleScene++];
-				scene._drawn = true;
-				if (scene.visible) scene.render();
-			}
+			HXP.renderingScene = scene;
+			scene.render();
 		}
+		HXP.renderingScene = null;
 
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			HXP.screen.redraw();
-		}
+		postRender.invoke();
 
 		// more timing stuff
 		t = Lib.getTimer();
@@ -185,7 +202,7 @@ class Engine extends Sprite
 	/**
 	 * Sets the game's stage properties. Override this to set them differently.
 	 */
-	private function setStageProperties()
+	function setStageProperties()
 	{
 		HXP.stage.frameRate = HXP.assignedFrameRate;
 		HXP.stage.align = StageAlign.TOP_LEFT;
@@ -195,10 +212,10 @@ class Engine extends Sprite
 		HXP.stage.scaleMode = StageScaleMode.NO_SCALE;
 		HXP.stage.displayState = StageDisplayState.NORMAL;
 
-		resize(); // call resize once to initialize the screen
+		_resize(); // call resize once to initialize the screen
 
 		// set resize event
-		HXP.stage.addEventListener(Event.RESIZE, function (e:Event) resize());
+		HXP.stage.addEventListener(Event.RESIZE, function (e:Event) _resize());
 
 		HXP.stage.addEventListener(Event.ACTIVATE, function (e:Event)
 		{
@@ -214,21 +231,21 @@ class Engine extends Sprite
 			_scene.focusLost();
 		});
 
-#if (!(flash || html5) && openfl_legacy)
+#if (!html5 && openfl_legacy)
 		flash.display.Stage.shouldRotateInterface = function(orientation:Int):Bool
 		{
 			if (HXP.indexOf(HXP.orientations, orientation) == -1) return false;
 			var tmp = HXP.height;
 			HXP.height = HXP.width;
 			HXP.width = tmp;
-			resize();
+			_resize();
 			return true;
 		}
 #end
 	}
 
 	/** @private Event handler for stage resize */
-	private function resize()
+	function _resize()
 	{
 		if (HXP.width == 0 || HXP.height == 0)
 		{
@@ -242,21 +259,16 @@ class Engine extends Sprite
 		_scrollRect.width = HXP.screen.width;
 		_scrollRect.height = HXP.screen.height;
 		scrollRect = _scrollRect;
+
+		onResize.invoke();
 	}
 
 	/** @private Event handler for stage entry. */
-	private function onStage(?e:Event)
+	function onStage(?e:Event)
 	{
 		// remove event listener
-#if flash
-		if (e != null)
-			Lib.current.removeEventListener(Event.ADDED_TO_STAGE, onStage);
-		HXP.stage = Lib.current.stage;
-		HXP.stage.addChild(this);
-#else
 		removeEventListener(Event.ADDED_TO_STAGE, onStage);
 		HXP.stage = stage;
-#end
 		setStageProperties();
 
 		// enable input
@@ -266,61 +278,59 @@ class Engine extends Sprite
 		checkScene();
 
 		// game start
-		Draw.init();
 		init();
 
 		// start game loop
 		_rate = 1000 / HXP.assignedFrameRate;
-		if (HXP.fixed)
-		{
-			// fixed framerate
-			_skip = _rate * (maxFrameSkip + 1);
-			_last = _prev = Lib.getTimer();
-			_timer = new Timer(tickRate);
-			_timer.run = onTimer;
-		}
-		else
-		{
-			// nonfixed framerate
-			_last = Lib.getTimer();
-			addEventListener(Event.ENTER_FRAME, onEnterFrame);
-		}
 
-		// Warnings when forcing RenderMode
-		if (HXP.renderMode == RenderMode.BUFFER)
-		{
-			#if (!(flash || js) && debug)
-			HXP.console.log(["Warning: Using RenderMode.BUFFER on native target may result in bad performance"]);
-			#end
+		// nonfixed framerate
+		_last = Lib.getTimer();
+		addEventListener(Event.ENTER_FRAME, onEnterFrame);
+
+		#if (nme || openfl_legacy)
+		Lib.stage.onQuit = function() {
+			onClose.invoke();
+			Lib.close();
 		}
-		else
-		{
-			#if ((flash) && debug)
-			HXP.console.log(["Warning: Using RenderMode.HARDWARE on flash target may result in corrupt graphics"]);
-			#end
-		}
+		#else
+		openfl.Lib.current.stage.application.onExit.add(function(_) {
+			onClose.invoke();
+		});
+		#end
+
+		#if debug_console
+		Console.enabled = true;
+		#end
 	}
 
 	/** @private Framerate independent game loop. */
-	private function onEnterFrame(e:Event)
+	function onEnterFrame(e:Event)
 	{
-		// update timer
 		_time = _gameTime = Lib.getTimer();
 		HXP._systemTime = _time - _systemTime;
 		_updateTime = _time;
-		HXP.elapsed = (_time - _last) / 1000;
-		if (HXP.elapsed > maxElapsed) HXP.elapsed = maxElapsed;
-		HXP.elapsed *= HXP.rate;
+
+		// update timer
+		var elapsed = (_time - _last) / 1000;
+		if (HXP.fixed)
+		{
+			_elapsed += elapsed;
+			HXP.elapsed = 1 / HXP.assignedFrameRate;
+			if (_elapsed > HXP.elapsed * maxFrameSkip) _elapsed = HXP.elapsed * maxFrameSkip;
+			while (_elapsed > HXP.elapsed)
+			{
+				_elapsed -= HXP.elapsed;
+				step();
+			}
+		}
+		else
+		{
+			HXP.elapsed = elapsed;
+			if (HXP.elapsed > maxElapsed) HXP.elapsed = maxElapsed;
+			HXP.elapsed *= HXP.rate;
+			step();
+		}
 		_last = _time;
-
-		// update input
-		Input.update();
-
-		// update loop
-		if (!paused) update();
-
-		// update console
-		if (HXP.consoleEnabled()) HXP.console.update();
 
 		// update timer
 		_time = _renderTime = Lib.getTimer();
@@ -328,7 +338,7 @@ class Engine extends Sprite
 
 		// render loop
 		if (paused) _frameLast = _time; // continue updating frame timer
-		else render();
+		if (!paused || Console.enabled) render();
 
 		// update timer
 		_time = _systemTime = Lib.getTimer();
@@ -336,60 +346,22 @@ class Engine extends Sprite
 		HXP._gameTime = _time - _gameTime;
 	}
 
-	/** @private Fixed framerate game loop. */
-	private function onTimer()
+	function step()
 	{
-		// update timer
-		_time = Lib.getTimer();
-		_delta += (_time - _last);
-		_last = _time;
-
-		// quit if a frame hasn't passed
-		if (_delta < _rate) return;
-
-		// update timer
-		_gameTime = Std.int(_time);
-		HXP._systemTime = _time - _systemTime;
+		// update input
+		Input.update();
 
 		// update loop
-		if (_delta > _skip) _delta = _skip;
-		while (_delta >= _rate)
-		{
-			HXP.elapsed = _rate * HXP.rate * 0.001;
+		if (!paused) update();
 
-			// update timer
-			_updateTime = _time;
-			_delta -= _rate;
-			_prev = _time;
+		// update console
+		if (console != null) console.update();
 
-			// update loop
-			if (!paused) update();
-
-			// update console
-			if (HXP.consoleEnabled()) HXP.console.update();
-
-			// update input
-			Input.update();
-
-			// update timer
-			_time = Lib.getTimer();
-			HXP._updateTime = _time - _updateTime;
-		}
-
-		// update timer
-		_renderTime = _time;
-
-		// render loop
-		if (!paused) render();
-
-		// update timer
-		_time = _systemTime = Lib.getTimer();
-		HXP._renderTime = _time - _renderTime;
-		HXP._gameTime =  _time - _gameTime;
+		Input.postUpdate();
 	}
 
 	/** @private Switch scenes if they've changed. */
-	private inline function checkScene()
+	inline function checkScene()
 	{
 		if (_scene != null && _scenes.length > 0 && _scenes[_scenes.length - 1] != _scene)
 		{
@@ -399,11 +371,11 @@ class Engine extends Sprite
 
 			_scene = _scenes[_scenes.length - 1];
 
-			addChild(_scene.sprite);
-			HXP.camera = _scene.camera;
 			_scene.updateLists();
 			_scene.begin();
 			_scene.updateLists();
+
+			onSceneSwitch.invoke();
 		}
 	}
 
@@ -424,10 +396,6 @@ class Engine extends Sprite
 	public function popScene():Scene
 	{
 		var scene = _scenes.pop();
-		if (contains(scene.sprite))
-		{
-			removeChild(scene.sprite);
-		}
 		return scene;
 	}
 
@@ -436,8 +404,8 @@ class Engine extends Sprite
 	 * to switch, but won't actually do so until the end of the current frame.
 	 */
 	public var scene(get, set):Scene;
-	private inline function get_scene():Scene return _scene;
-	private function set_scene(value:Scene):Scene
+	inline function get_scene():Scene return _scene;
+	function set_scene(value:Scene):Scene
 	{
 		if (_scene == value) return value;
 		if (_scenes.length > 0)
@@ -449,28 +417,69 @@ class Engine extends Sprite
 	}
 
 	// Scene information.
-	private var _scene:Scene = new Scene();
-	private var _scenes:Array<Scene> = new Array<Scene>();
+	var _scene:Scene = new Scene();
+	var _scenes:Array<Scene> = new Array<Scene>();
 
 	// Timing information.
-	private var _delta:Float;
-	private var _time:Float;
-	private var _last:Float;
-	private var _timer:Timer;
-	private var	_rate:Float;
-	private var	_skip:Float;
-	private var _prev:Float;
+	var _delta:Float = 0;
+	var _time:Float = 0;
+	var _last:Float = 0;
+	var _rate:Float = 0;
+	var _skip:Float = 0;
+	var _prev:Float = 0;
+	var _elapsed:Float = 0;
 
 	// Debug timing information.
-	private var _updateTime:Float;
-	private var _renderTime:Float;
-	private var _gameTime:Float;
-	private var _systemTime:Float;
+	var _updateTime:Float = 0;
+	var _renderTime:Float = 0;
+	var _gameTime:Float = 0;
+	var _systemTime:Float = 0;
 
 	// FrameRate tracking.
-	private var _frameLast:Float;
-	private var _frameListSum:Int;
-	private var _frameList:Array<Int>;
+	var _frameLast:Float = 0;
+	var _frameListSum:Int = 0;
+	var _frameList:Array<Int>;
 
-	private var _scrollRect:Rectangle = new Rectangle();
+	var _scrollRect:Rectangle = new Rectangle();
+	var _renderSurface:EngineRenderer;
+	var _iterator:VisibleSceneIterator;
+}
+
+@:access(haxepunk.Engine)
+private class VisibleSceneIterator
+{
+	var engine:Engine;
+	var i:Int = 0;
+
+	public function new(engine:Engine)
+	{
+		this.engine = engine;
+	}
+
+	public inline function hasNext():Bool
+	{
+		return i < engine._scenes.length ||
+			(i == engine._scenes.length && engine.console != null);
+	}
+
+	public inline function next():Scene
+	{
+		var next = i < engine._scenes.length ? engine._scenes[i] : engine.console;
+		i++;
+		return next;
+	}
+
+	public inline function reset():Void
+	{
+		var _scenes = engine._scenes;
+		if (_scenes.length > 0)
+		{
+			// find the last visible scene, falling through transparent scenes
+			i = _scenes.length - 1;
+			while (_scenes[i].bgAlpha < 1 && i > 0)
+			{
+				--i;
+			}
+		}
+	}
 }

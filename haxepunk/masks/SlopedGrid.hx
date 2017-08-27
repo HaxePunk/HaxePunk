@@ -1,24 +1,23 @@
 package haxepunk.masks;
 
-import flash.display.Graphics;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.Mask;
-import haxepunk.utils.MathUtil;
+import haxepunk.math.MathUtil;
 
-
-enum TileType
+@:enum
+abstract TileType(Int)
 {
-	Empty;
-	Solid;
-	AboveSlope;
-	BelowSlope;
+	var Empty = 0;
+	var Solid = 1;
+	var AboveSlope = 2;
+	var BelowSlope = 3;
 	// quick types
-	TopLeft;
-	TopRight;
-	BottomLeft;
-	BottomRight;
+	var TopLeft = 4;
+	var TopRight = 5;
+	var BottomLeft = 6;
+	var BottomRight = 7;
 }
 
 typedef Tile =
@@ -81,12 +80,10 @@ class SlopedGrid extends Hitbox
 		for (x in 0...rows)
 		{
 			data.push(new Array<Tile>());
-#if (neko || cpp) // initialize to false instead of null
 			for (y in 0...columns)
 			{
 				data[x][y] = _emptyTile;
 			}
-#end
 		}
 	}
 
@@ -98,7 +95,7 @@ class SlopedGrid extends Hitbox
 	 */
 	public function collidePoint(cx:Float, cy:Float):Bool
 	{
-		var px:Float = _x + _parent.x, 
+		var px:Float = _x + _parent.x,
 			py:Float = _y + _parent.y;
 
 		var column = Std.int((cx - px) / _tile.width),
@@ -132,14 +129,12 @@ class SlopedGrid extends Hitbox
 	 * @return If the point collides with a slope
 	 */
 	@:allow(haxepunk.masks.Circle)
-	private inline function collidePointInSlope(x1:Float, y1:Float, px:Float, py:Float, tile:Tile):Bool
+	inline function collidePointInSlope(x1:Float, y1:Float, px:Float, py:Float, tile:Tile):Bool
 	{
 		y1 += tile.yOffset;
 
-		var yoff = tile.slope * _tile.width;
-
-		var x2 = x1 + yoff / tile.slope,
-			y2 = y1 + yoff;
+		var x2 = x1 + _tile.width,
+			y2 = y1 + tile.slope * _tile.width;
 
 		var left:Bool = (x2 - x1) * (py - y1) > (y2 - y1) * (px - x1);
 
@@ -212,7 +207,7 @@ class SlopedGrid extends Hitbox
 		setTile(column, row, Empty);
 	}
 
-	private inline function checkTile(column:Int, row:Int):Bool
+	inline function checkTile(column:Int, row:Int):Bool
 	{
 		// check that tile is valid
 		return (column >= 0 && column < columns && row >= 0 && row < rows);
@@ -288,13 +283,13 @@ class SlopedGrid extends Hitbox
 	 * The tile width.
 	 */
 	public var tileWidth(get, never):Int;
-	private inline function get_tileWidth():Int return Std.int(_tile.width); 
+	inline function get_tileWidth():Int return Std.int(_tile.width);
 
 	/**
 	 * The tile height.
 	 */
 	public var tileHeight(get, never):Int;
-	private inline function get_tileHeight():Int return Std.int(_tile.height); 
+	inline function get_tileHeight():Int return Std.int(_tile.height);
 
 	/**
 	 * How many columns the grid has
@@ -311,7 +306,7 @@ class SlopedGrid extends Hitbox
 	 */
 	public var data(default, null):Array<Array<Tile>>;
 
-	private function collideBox(opx:Float, opy:Float, opw:Float, oph:Float, px:Float, py:Float):Bool
+	function collideBox(opx:Float, opy:Float, opw:Float, oph:Float, px:Float, py:Float):Bool
 	{
 		_rect.x = opx - px;
 		_rect.y = opy - py;
@@ -365,11 +360,11 @@ class SlopedGrid extends Hitbox
 	}
 
 	/** @private Collides against an Entity. */
-	override private function collideMask(other:Mask):Bool
+	override function collideMask(other:Mask):Bool
 	{
-		var x:Float = _x + _parent.x, 
+		var x:Float = _x + _parent.x,
 			y:Float = _y + _parent.y;
-			
+
 		return collideBox(other._parent.x - other._parent.originX,
 				other._parent.y - other._parent.originY,
 				other._parent.width, other._parent.height,
@@ -377,26 +372,29 @@ class SlopedGrid extends Hitbox
 	}
 
 	/** @private Collides against a Hitbox. */
-	override private function collideHitbox(other:Hitbox):Bool
+	override function collideHitbox(other:Hitbox):Bool
 	{
-		var x:Float = _x + _parent.x, 
+		var x:Float = _x + _parent.x,
 			y:Float = _y + _parent.y,
-			ox:Float = other._x + other._parent.x, 
+			ox:Float = other._x + other._parent.x,
 			oy:Float = other._y + other._parent.y;
-		
+
 		return collideBox(ox, oy, other._width, other._height, x, y);
 	}
 
 	@:dox(hide)
-	override public function debugDraw(graphics:Graphics, scaleX:Float, scaleY:Float):Void
+	override public function debugDraw(camera:Camera):Void
 	{
+		var dc = Mask.drawContext,
+			scaleX = camera.fullScaleX,
+			scaleY = camera.fullScaleY;
 		var cellX:Float, cellY:Float,
 			stepX = tileWidth * scaleX,
 			stepY = tileHeight * scaleY;
 
 		// determine drawing location
-		var px = _x + _parent.x - HXP.camera.x;
-		var py = _y + _parent.y - HXP.camera.y;
+		var px = _x + _parent.x - camera.x;
+		var py = _y + _parent.y - camera.y;
 
 		// determine start and end tiles to draw (optimization)
 		var startx = Math.floor( -px / tileWidth),
@@ -417,6 +415,8 @@ class SlopedGrid extends Hitbox
 		px = (px + (startx * tileWidth)) * scaleX;
 		py = (py + (starty * tileHeight)) * scaleY;
 
+		dc.lineThickness = 2;
+
 		var row:Array<Tile>;
 		cellY = py;
 		for (y in starty...desty)
@@ -426,49 +426,43 @@ class SlopedGrid extends Hitbox
 			for (x in startx...destx)
 			{
 				var tile = row[x];
-				if (tile == null || tile.type == null) {}
+				if (tile == null) {}
 				else if (tile.type == Solid)
 				{
-					graphics.lineStyle(1, 0xFFFFFF, 0.3);
-					graphics.drawRect(cellX, cellY, stepX, stepY);
+					dc.setColor(0xffffff, 0.3);
+					dc.rect(cellX, cellY, stepX, stepY);
+					dc.setColor(0x0000ff, 1);
 
 					if (x < columns - 1 && row[x + 1].type == Empty)
 					{
-						graphics.lineStyle(1, 0x0000FF);
-						graphics.moveTo(cellX + stepX, cellY);
-						graphics.lineTo(cellX + stepX, cellY + stepY);
+						dc.line(cellX + stepX, cellY, cellX + stepX, cellY + stepY);
 					}
 					if (x > 0 && row[x - 1].type == Empty)
 					{
-						graphics.lineStyle(1, 0x0000FF);
-						graphics.moveTo(cellX, cellY);
-						graphics.lineTo(cellX, cellY + stepY);
+						dc.line(cellX, cellY, cellX, cellY + stepY);
 					}
 					if (y < rows - 1 && data[y + 1][x].type == Empty)
 					{
-						graphics.lineStyle(1, 0x0000FF);
-						graphics.moveTo(cellX, cellY + stepY);
-						graphics.lineTo(cellX + stepX, cellY + stepY);
+						dc.line(cellX, cellY + stepY, cellX + stepX, cellY + stepY);
 					}
 					if (y > 0 && data[y - 1][x].type == Empty)
 					{
-						graphics.lineStyle(1, 0x0000FF);
-						graphics.moveTo(cellX, cellY);
-						graphics.lineTo(cellX + stepX, cellY);
+						dc.line(cellX, cellY, cellX + stepX, cellY);
 					}
 				}
 				else if (tile.type == BelowSlope || tile.type == AboveSlope)
 				{
-					var offset = tile.yOffset * scaleY;
-					var xpos = cellX,
-						endx = stepX,
-						ypos = cellY + offset,
-						endy = tile.slope * endx;
+					var offset:Float = tile.yOffset * scaleY;
+					var slope = tile.slope * scaleY / scaleX;
+					var xpos:Float = cellX,
+						endx:Float = stepX,
+						ypos:Float = cellY + offset,
+						endy:Float = slope * endx;
 
 					// draw a flat line if slope goes past tile boundaries
 					if (offset < 0)
 					{
-						var fx = -offset / tile.slope; // find x where y = 0
+						var fx = -offset / slope; // find x where y = 0
 						endx = stepX - fx;
 						xpos = cellX + fx;
 						ypos = cellY;
@@ -476,13 +470,12 @@ class SlopedGrid extends Hitbox
 						// only draw line if next to solid
 						if (y <= 0 || data[y - 1][x].type == Solid)
 						{
-							graphics.moveTo(cellX, ypos);
-							graphics.lineTo(xpos, ypos);
+							dc.line(cellX, ypos, xpos, ypos);
 						}
 					}
-					else if (offset > tileHeight)
+					else if (offset > stepY)
 					{
-						var fx = -(offset - tileWidth) / tile.slope; // find x where y = 0
+						var fx = -(offset - stepX) / slope; // find x where y = 0
 						endx = stepX - fx;
 						xpos = cellX + fx;
 						ypos = cellY + stepY;
@@ -490,41 +483,36 @@ class SlopedGrid extends Hitbox
 						// only draw line if next to solid
 						if (y >= rows - 1 || data[y + 1][x].type == Solid)
 						{
-							graphics.moveTo(cellX, ypos);
-							graphics.lineTo(xpos, ypos);
+							dc.line(cellX, ypos, xpos, ypos);
 						}
 					}
 					else if (offset + endy < 0)
 					{
-						var fx = -offset / tile.slope; // find x where y = 0
+						var fx = -offset / slope; // find x where y = 0
 						endx = fx;
 
 						// only draw line if next to solid
 						if (y <= 0 || data[y - 1][x].type == Solid)
 						{
-							graphics.moveTo(cellX + fx, cellY);
-							graphics.lineTo(cellX + stepX, cellY);
+							dc.line(cellX + fx, cellY, cellX + stepX, cellY);
 						}
 					}
-					else if (offset + endy > tileHeight)
+					else if (offset + endy > stepY)
 					{
-						var fx = -(offset - tileWidth) / tile.slope; // find x where y = 0
+						var fx = -(offset - stepX) / slope; // find x where y = 0
 						endx = fx;
 
 						// only draw line if next to solid
 						if (y >= rows - 1 || data[y + 1][x].type == Solid)
 						{
-							graphics.moveTo(cellX + fx, cellY + stepY);
-							graphics.lineTo(cellX + stepX, cellY + stepY);
+							dc.line(cellX + fx, cellY + stepY, cellX + stepX, cellY + stepY);
 						}
 					}
 
 					// recalculate if there's a new endx
-					endy = tile.slope * endx;
+					endy = slope * endx;
 
-					graphics.lineStyle(1, 0x0000FF);
-					graphics.moveTo(xpos, ypos);
-					graphics.lineTo(xpos + endx, ypos + endy);
+					dc.line(xpos, ypos, xpos + endx, ypos + endy);
 				}
 
 				cellX += stepX;
@@ -534,10 +522,10 @@ class SlopedGrid extends Hitbox
 	}
 
 	// Grid information.
-	private var _tile:Rectangle;
-	private var _rect:Rectangle;
-	private var _point:Point;
-	private var _point2:Point;
+	var _tile:Rectangle;
+	var _rect:Rectangle;
+	var _point:Point;
+	var _point2:Point;
 
-	private static var _emptyTile:Tile = { type: Empty }; // prevent recreation of empty tile
+	static var _emptyTile:Tile = { type: Empty }; // prevent recreation of empty tile
 }

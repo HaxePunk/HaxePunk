@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	<meta title="screenscale" package="com.example.app" version="1.0.0" company=""/>
+
+	<app file="screenscale" main="Main" path="bin"/>
+
+	<window fps="60" background="0x000000"/>
+	<window width="800" height="480" resizable="true" unless="mobile"/>
+	<window fullscreen="true" if="mobile"/>
+	<window orientation="landscape" vsync="true"/>
+	<window antialiasing="4"/>
+
+	<source path="src"/>
+
+	<haxelib name="HaxePunk"/>
+
+	<assets path="assets/graphics" rename="graphics" include="*.png|*.jpg" type="image" embed="true"/>
+</project>

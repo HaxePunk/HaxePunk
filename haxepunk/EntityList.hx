@@ -35,7 +35,11 @@ class EntityList<T:Entity> extends Entity
 		else
 			entities.insert(index, entity);
 		if (type != "") entity.type = type;
-		if (scene != null) scene.add(entity);
+		if (scene != null)
+		{
+			scene.add(entity);
+		}
+		entity.parent = this;
 		entity.layer = layer;
 		return entity;
 	}
@@ -48,7 +52,25 @@ class EntityList<T:Entity> extends Entity
 	public function remove(entity:T):T
 	{
 		entities.remove(entity);
-		if (scene != null) scene.remove(entity);
+		if (scene != null)
+		{
+			scene.remove(entity);
+		}
+		entity.parent = null;
+		return entity;
+	}
+
+	public function pop():T
+	{
+		var entity = entities.pop();
+		if (entity != null)
+		{
+			if (scene != null)
+			{
+				scene.remove(entity);
+			}
+			entity.parent = null;
+		}
 		return entity;
 	}
 
@@ -92,20 +114,6 @@ class EntityList<T:Entity> extends Entity
 		super.removed();
 	}
 
-	override function set_x(v:Float):Float
-	{
-		var diff = v - x;
-		for (entity in entities) entity.x += diff;
-		return x = v;
-	}
-
-	override function set_y(v:Float):Float
-	{
-		var diff = v - y;
-		for (entity in entities) entity.y += diff;
-		return y = v;
-	}
-
 	override function set_type(value:String):String
 	{
 		if (value != "") for (entity in entities) entity.type = value;
@@ -114,8 +122,10 @@ class EntityList<T:Entity> extends Entity
 
 	override function set_layer(value:Int):Int
 	{
+		var originalLayer = layer;
 		var value = super.set_layer(value);
-		for (entity in entities) entity.layer = value;
+		for (entity in entities)
+			entity.layer = entity.layer - originalLayer + value;
 		return value;
 	}
 
