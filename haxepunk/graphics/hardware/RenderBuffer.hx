@@ -46,6 +46,11 @@ class RenderBuffer
 
 	public function ensureSize(triangles:Int, floatsPerTriangle:Int)
 	{
+		if (GLUtils.invalid(glBuffer))
+		{
+			buffer = null;
+			init();
+		}
 		var bufferLength = buffer == null ? 0 : buffer.length;
 		if (bufferLength < triangles * floatsPerTriangle)
 		{
