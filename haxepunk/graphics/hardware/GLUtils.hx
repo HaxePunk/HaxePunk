@@ -18,7 +18,7 @@ class GLUtils
 	{
 		GL.activeTexture(index);
 		#if lime
-		var renderer = cast HXP.stage.__renderer;
+		var renderer = cast HXP.engine.stage.__renderer;
 		var renderSession = renderer.renderSession;
 		GL.bindTexture(GL.TEXTURE_2D, texture.bitmap.getTexture(renderSession.gl));
 		#elseif nme

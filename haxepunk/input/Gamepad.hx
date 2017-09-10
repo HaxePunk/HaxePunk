@@ -50,11 +50,11 @@ class Gamepad
 		LimeGamepad.onConnect.add(onJoyDeviceAdded);
 		for (device in LimeGamepad.devices) onJoyDeviceAdded(device);
 		#else
-		HXP.stage.addEventListener(JoystickEvent.AXIS_MOVE, onJoyAxisMove);
-		HXP.stage.addEventListener(JoystickEvent.BUTTON_DOWN, onJoyButtonDown);
-		HXP.stage.addEventListener(JoystickEvent.BUTTON_UP, onJoyButtonUp);
-		HXP.stage.addEventListener(JoystickEvent.DEVICE_ADDED, onJoyDeviceAdded);
-		HXP.stage.addEventListener(JoystickEvent.DEVICE_REMOVED, onJoyDeviceRemoved);
+		HXP.engine.stage.addEventListener(JoystickEvent.AXIS_MOVE, onJoyAxisMove);
+		HXP.engine.stage.addEventListener(JoystickEvent.BUTTON_DOWN, onJoyButtonDown);
+		HXP.engine.stage.addEventListener(JoystickEvent.BUTTON_UP, onJoyButtonUp);
+		HXP.engine.stage.addEventListener(JoystickEvent.DEVICE_ADDED, onJoyDeviceAdded);
+		HXP.engine.stage.addEventListener(JoystickEvent.DEVICE_REMOVED, onJoyDeviceRemoved);
 		#end
 	}
 

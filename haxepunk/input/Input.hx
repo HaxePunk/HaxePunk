@@ -101,7 +101,7 @@ class Input
 	@:dox(hide)
 	public static function enable()
 	{
-		if (!_enabled && HXP.stage != null)
+		if (!_enabled && HXP.engine.stage != null)
 		{
 			Key.init();
 			Mouse.init();
@@ -145,12 +145,18 @@ class Input
 			{
 				case PRESS:
 					trigger(HXP.engine.onInputPressed);
-					trigger(HXP.scene.onInputPressed);
-					if (Console.enabled) trigger(HXP.scene.onInputPressed);
+					for (scene in HXP.engine.visibleScenes)
+					{
+						trigger(scene.onInputPressed);
+						if (Console.enabled) trigger(scene.onInputPressed);
+					}
 				case RELEASE:
 					trigger(HXP.engine.onInputReleased);
-					trigger(HXP.scene.onInputReleased);
-					if (Console.enabled) trigger(HXP.scene.onInputReleased);
+					for (scene in HXP.engine.visibleScenes)
+					{
+						trigger(scene.onInputReleased);
+						if (Console.enabled) trigger(scene.onInputReleased);
+					}
 				default: {}
 			}
 		}

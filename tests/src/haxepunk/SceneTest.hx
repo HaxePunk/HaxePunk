@@ -8,26 +8,22 @@ import haxepunk.Scene;
 
 // dummy entity for testing class types
 class TestEntity extends Entity {}
+class EntityAdder extends Entity
+{
+	public var addedEntity:Entity;
+	override public function added() {
+		addedEntity = new Entity();
+		scene.add(addedEntity);
+	}
+}
 
 @:access(haxepunk.Engine)
-class SceneTest extends TestSuite
+class SceneTest
 {
 	@Before
 	public function setup()
 	{
-		new Engine();
 		scene = new Scene();
-	}
-
-	@Test
-	public function testScene()
-	{
-		HXP.scene = scene;
-		Assert.isFalse(HXP.scene == scene);
-
-		// update to set the scene as active
-		HXP.engine.update();
-		Assert.isTrue(HXP.scene == scene);
 	}
 
 	@Test
@@ -38,14 +34,14 @@ class SceneTest extends TestSuite
 		scene.add(e);
 		Assert.areEqual(0, scene.count);
 
-		scene.updateLists();
+		scene.updateEntityLists();
 		Assert.areEqual(1, scene.count);
 
 		scene.add(new Entity());
 		scene.add(new Entity());
 		scene.add(new Entity());
 		scene.remove(e);
-		scene.updateLists();
+		scene.updateEntityLists();
 		Assert.areEqual(3, scene.count);
 	}
 
@@ -56,7 +52,7 @@ class SceneTest extends TestSuite
 		e.type = "foo";
 		scene.add(e);
 		scene.add(new Entity());
-		scene.updateLists();
+		scene.updateEntityLists();
 		Assert.areEqual(1, scene.typeCount("foo"));
 		Assert.areEqual(0, scene.typeCount("bar"));
 		Assert.areEqual(1, scene.uniqueTypes);
@@ -75,7 +71,7 @@ class SceneTest extends TestSuite
 		var e = new Entity();
 		scene.add(e);
 		scene.add(new Entity());
-		scene.updateLists();
+		scene.updateEntityLists();
 		Assert.areEqual(0, scene.layerCount(15));
 		Assert.areEqual(1, scene.layers);
 
@@ -92,13 +88,13 @@ class SceneTest extends TestSuite
 	{
 		var e:TestEntity = scene.create(TestEntity, false);
 		Assert.isTrue(Std.is(e, TestEntity));
-		scene.updateLists();
+		scene.updateEntityLists();
 		Assert.areEqual(0, countRecycled(scene));
 
 		scene.recycle(e);
 		scene.recycle(new Entity());
 		scene.recycle(new Entity()); // linked with previous entity _recycleNext
-		scene.updateLists();
+		scene.updateEntityLists();
 		Assert.areEqual(2, countRecycled(scene));
 
 		scene.clearRecycled(TestEntity);
@@ -109,51 +105,29 @@ class SceneTest extends TestSuite
 	}
 
 	@Test
+	public function testEntityAddedDuringAddedFunction()
+	{
+		var e = new EntityAdder();
+		scene.add(e);
+		scene.updateEntityLists();
+		scene.updateEntityLists();
+		Assert.isNotNull(e.addedEntity);
+		Assert.areEqual(scene, e.addedEntity.scene);
+	}
+
+	@Test
 	public function testEntityName()
 	{
 		var e = new Entity();
 		e.name = "foo";
 		scene.add(e);
-		scene.updateLists();
+		scene.updateEntityLists();
 
 		Assert.areEqual(e, scene.getInstance("foo"));
 
 		e.name = "bar";
 		Assert.areEqual(e, scene.getInstance("bar"));
 		Assert.areEqual(null, scene.getInstance("foo"));
-	}
-
-	@Test
-	public function testSceneStack()
-	{
-		HXP.engine.scene = scene;
-		HXP.engine.update();
-
-		var scene1 = new Scene(),
-			scene2 = new Scene();
-
-		// pushed new scenes, no update yet, scene hasn't changed
-		HXP.engine.pushScene(scene1);
-		HXP.engine.pushScene(scene2);
-		Assert.areEqual(scene, HXP.engine._scene);
-
-		// after update, last scene pushed is active
-		HXP.engine.update();
-		Assert.areEqual(scene2, HXP.engine._scene);
-
-		// pop scene, scene doesn't change
-		Assert.areEqual(scene2, HXP.engine.popScene());
-		Assert.areEqual(scene2, HXP.engine._scene);
-
-		// after update, previous scene is active
-		HXP.engine.update();
-		Assert.areEqual(scene1, HXP.engine._scene);
-		Assert.areEqual(scene1, HXP.engine.popScene());
-		Assert.areEqual(scene1, HXP.engine._scene);
-
-		// after pop and update, original scene is active
-		HXP.engine.update();
-		Assert.areEqual(scene, HXP.engine._scene);
 	}
 
 	@:access(haxepunk.Scene)

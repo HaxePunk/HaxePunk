@@ -61,10 +61,8 @@ class MainScene extends Scene
 	var scaleModeIndex:Int = 0;
 	var label:Text;
 
-	public override function begin()
+	override public function begin()
 	{
-		HXP.stage.color = 0;
-
 		var tilemap = new Tilemap("graphics/tiles.png", 840, 512, 60, 60, 4, 4);
 		for (x in 0 ... Std.int(840/60))
 		{
@@ -103,10 +101,10 @@ class MainScene extends Scene
 	override public function update()
 	{
 		var move = HXP.elapsed * CAMERA_MOVE_PER_SECOND;
-		if (Input.check("up")) HXP.camera.y -= move;
-		if (Input.check("down")) HXP.camera.y += move;
-		if (Input.check("left")) HXP.camera.x -= move;
-		if (Input.check("right")) HXP.camera.x += move;
+		if (Input.check("up")) camera.y -= move;
+		if (Input.check("down")) camera.y += move;
+		if (Input.check("left")) camera.x -= move;
+		if (Input.check("right")) camera.x += move;
 
 		super.update();
 	}
@@ -117,6 +115,5 @@ class MainScene extends Scene
 
 		HXP.screen.scaleMode = scaleModes[scaleModeIndex].mode;
 		HXP.screen.scaleMode.setBaseSize(640, 480);
-		HXP.resize(HXP.windowWidth, HXP.windowHeight);
 	}
 }

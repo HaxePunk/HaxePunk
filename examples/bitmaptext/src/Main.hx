@@ -1,5 +1,4 @@
 import haxepunk.Engine;
-import haxepunk.HXP;
 import haxepunk.debug.Console;
 
 class Main extends Engine
@@ -7,6 +6,6 @@ class Main extends Engine
 	override public function init()
 	{
 		Console.enable();
-		HXP.scene = new MainScene();
+		setScene(new MainScene());
 	}
 }

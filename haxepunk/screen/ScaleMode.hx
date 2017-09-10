@@ -29,19 +29,19 @@ class ScaleMode
 		baseHeight = height;
 	}
 
-	public function resize(stageWidth:Int, stageHeight:Int)
+	public function resizeScreen(screen:Screen, stageWidth:Int, stageHeight:Int)
 	{
-		HXP.screen.x = HXP.screen.y = 0;
-		HXP.screen.scale = 1;
-		HXP.screen.scaleX = stageWidth / baseWidth;
-		HXP.screen.scaleY = stageHeight / baseHeight;
-		HXP.screen.width = stageWidth;
-		HXP.screen.height = stageHeight;
+		screen.x = screen.y = 0;
+		screen.scale = 1;
+		screen.scaleX = stageWidth / baseWidth;
+		screen.scaleY = stageHeight / baseHeight;
+		screen.width = stageWidth;
+		screen.height = stageHeight;
 
 		if (integer)
 		{
-			HXP.screen.scaleX = Std.int(Math.max(1, HXP.screen.scaleX));
-			HXP.screen.scaleY = Std.int(Math.max(1, HXP.screen.scaleY));
+			screen.scaleX = Std.int(Math.max(1, screen.scaleX));
+			screen.scaleY = Std.int(Math.max(1, screen.scaleY));
 		}
 	}
 }

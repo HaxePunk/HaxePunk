@@ -213,10 +213,11 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 
 		// remove background color
 		var bgColor32:Int = bitmap.getPixel32(0, 0);
-		bitmap.threshold(bitmap, bitmap.rect, HXP.zero, "==", bgColor32, 0x00000000, 0xFFFFFFFF, true);
+		HXP.point.x = HXP.point.y = 0;
+		bitmap.threshold(bitmap, bitmap.rect, HXP.point, "==", bgColor32, 0x00000000, 0xFFFFFFFF, true);
 
 		if (options.glyphBGColor != null)
-			bitmap.threshold(bitmap, bitmap.rect, HXP.zero, "==", options.glyphBGColor, 0x00000000, 0xFFFFFFFF, true);
+			bitmap.threshold(bitmap, bitmap.rect, HXP.point, "==", options.glyphBGColor, 0x00000000, 0xFFFFFFFF, true);
 
 		return atlas;
 	}

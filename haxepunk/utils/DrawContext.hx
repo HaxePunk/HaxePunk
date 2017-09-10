@@ -1,14 +1,15 @@
 package haxepunk.utils;
 
-import haxepunk.utils.BlendMode;
 import haxepunk.Entity;
 import haxepunk.HXP;
 import haxepunk.Graphic;
+import haxepunk.ds.Maybe;
 import haxepunk.graphics.text.Text;
 import haxepunk.graphics.hardware.DrawCommand;
 import haxepunk.graphics.shader.ColorShader;
 import haxepunk.graphics.shader.Shader;
 import haxepunk.math.Vector2;
+import haxepunk.utils.BlendMode;
 import haxepunk.utils.Color;
 
 class DrawContext
@@ -16,7 +17,7 @@ class DrawContext
 	/**
 	 * The Scene to draw to. If null, will draw to the current active scene.
 	 */
-	public var scene:Scene;
+	public var scene:Maybe<Scene>;
 
 	/**
 	 * The blending mode used by Draw functions. This will not
@@ -384,10 +385,11 @@ class DrawContext
 
 	/** @private Helper function to grab a DrawCommand object from the current scene */
 	@:access(haxepunk.graphics.hardware.SceneRenderer)
-	inline function begin()
+	@:access(haxepunk.graphics.hardware.DrawCommand)
+	function begin()
 	{
+		var scene = this.scene.or(HXP.engine.activeScene.ensure());
 		if (shader == null) shader = new ColorShader();
-		var scene = (this.scene == null) ? (HXP.renderingScene == null ? HXP.scene : HXP.renderingScene) : this.scene;
 		command = scene.renderer.batch.getDrawCommand(null, shader, smooth, blend, null);
 	}
 

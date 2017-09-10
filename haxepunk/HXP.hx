@@ -1,15 +1,10 @@
 package haxepunk;
 
-import haxe.Timer;
-import flash.display.Sprite;
-import flash.display.Stage;
-import flash.display.StageDisplayState;
 import flash.geom.Matrix;
 import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.ui.Mouse;
 import haxepunk.Tween.TweenType;
-import haxepunk.debug.Console;
 import haxepunk.tweens.misc.Alarm;
 import haxepunk.tweens.misc.MultiVarTween;
 import haxepunk.utils.HaxelibInfo;
@@ -54,12 +49,12 @@ class HXP
 	public static var fixed:Bool;
 
 	/**
-	 * The framerate assigned to the stage.
+	 * The framerate.
 	 */
 	public static var frameRate:Float = 0;
 
 	/**
-	 * The framerate assigned to the stage.
+	 * The framerate assigned.
 	 */
 	public static var assignedFrameRate:Float;
 
@@ -80,20 +75,9 @@ class HXP
 	public static var screen:Screen;
 
 	/**
-	 * A rectangle representing the size of the screen.
-	 */
-	public static var bounds:Rectangle;
-
-	/**
 	 * The default font file to use, by default: font/monofonto.ttf.
 	 */
 	public static var defaultFont:String = "font/monofonto.ttf";
-
-	/**
-	 * Point used to determine drawing offset in the render loop.
-	 */
-	public static var camera(get, never):Camera;
-	static inline function get_camera() return scene == null ? null : scene.camera;
 
 	/**
 	 * Global tweener for tweening between multiple scenes
@@ -104,16 +88,6 @@ class HXP
 	 * Whether the game has focus or not
 	 */
 	public static var focused:Bool = false;
-
-	/**
-	 * Half the screen width.
-	 */
-	public static var halfWidth(default, null):Float;
-
-	/**
-	 * Half the screen height.
-	 */
-	public static var halfHeight(default, null):Float;
 
 	/**
 	 * Defines the allowed orientations
@@ -164,37 +138,6 @@ class HXP
 	}
 
 	/**
-	 * The currently active Scene object. When you set this, the Scene is flagged
-	 * to switch, but won't actually do so until the end of the current frame.
-	 */
-	public static var scene(get, set):Scene;
-	static inline function get_scene():Scene return engine.scene;
-	static inline function set_scene(value:Scene):Scene return engine.scene = value;
-
-	/**
-	 * If we're currently rendering, this is the Scene being rendered now.
-	 */
-	public static var renderingScene:Scene;
-
-	/**
-	 * Resize the screen.
-	 * @param width		New width.
-	 * @param height	New height.
-	 */
-	public static function resize(width:Int, height:Int)
-	{
-		// resize scene to scale
-		HXP.windowWidth = width;
-		HXP.windowHeight = height;
-		HXP.screen.resize(width, height);
-		HXP.halfWidth = HXP.width / 2;
-		HXP.halfHeight = HXP.height / 2;
-		HXP.bounds.width = width;
-		HXP.bounds.height = height;
-		HXP.scene._resize();
-	}
-
-	/**
 	 * Empties an array of its' contents
 	 * @param array filled array
 	 */
@@ -210,35 +153,11 @@ class HXP
 	}
 
 	/**
-	 * Sets the camera position.
-	 * @param	x	X position.
-	 * @param	y	Y position.
-	 */
-	public static inline function setCamera(x:Float = 0, y:Float = 0)
-	{
-		camera.x = x;
-		camera.y = y;
-	}
-
-	/**
-	 * Resets the camera position.
-	 */
-	public static inline function resetCamera()
-	{
-		camera.x = camera.y = 0;
-	}
-
-	/**
 	 * Toggles between windowed and fullscreen modes
 	 */
 	public static var fullscreen(get, set):Bool;
-	static inline function get_fullscreen():Bool return HXP.stage.displayState == StageDisplayState.FULL_SCREEN;
-	static inline function set_fullscreen(value:Bool):Bool
-	{
-		if (value) HXP.stage.displayState = StageDisplayState.FULL_SCREEN;
-		else HXP.stage.displayState = StageDisplayState.NORMAL;
-		return value;
-	}
+	static inline function get_fullscreen():Bool return engine.fullscreen;
+	static inline function set_fullscreen(value:Bool):Bool return engine.fullscreen = value;
 
 	/**
 	 * Global volume factor for all sounds, a value from 0 to 1.
@@ -354,22 +273,6 @@ class HXP
 
 		list.insert(result > 0 ? mid : mid + 1, key);
 	}
-
-	/**
-	 * Sets a time flag.
-	 * @return	Time elapsed (in milliseconds) since the last time flag was set.
-	 */
-	public static inline function timeFlag():Float
-	{
-		var t:Float = Timer.stamp(),
-			e:Float = t - _time;
-		_time = t;
-		return e;
-	}
-
-	public static var console(get, set):Console;
-	static inline function get_console() return engine.console;
-	static inline function set_console(c:Console) return engine.console = c;
 
 	/**
 	 * Logs data to the console.
@@ -505,38 +408,7 @@ class HXP
 		}
 	}
 
-	/**
-	 * Resize the stage, not available on html5.
-	 *
-	 * @param	width	New width.
-	 * @param	height	New height.
-	 */
-	public static function resizeStage(width:Int, height:Int)
-	{
-		#if (cpp || neko)
-		#if (openfl_legacy || nme)
-		HXP.stage.resize(width, height);
-		#else
-		openfl.Lib.application.window.resize(width, height);
-		#end
-		resize(width, height);
-		#elseif debug
-		trace("Can only resize the stage in cpp or neko targets.");
-		#end
-	}
-
-	public static var time(null, set):Float;
-	static inline function set_time(value:Float):Float
-	{
-		_time = value;
-		return _time;
-	}
-
-	// Console information.
-	static var _console:Console;
-
 	// Time information.
-	static var _time:Float;
 	@:dox(hide) public static var _updateTime:Float;
 	@:dox(hide) public static var _renderTime:Float;
 	@:dox(hide) public static var _gameTime:Float;
@@ -545,18 +417,12 @@ class HXP
 	// Volume control.
 	static var _pan:Float = 0;
 
-	/** The stage. */
-	public static var stage:Stage;
 	/** The Engine instance. */
 	public static var engine:Engine;
 
 	// Global objects used for rendering, collision, etc.
 	@:dox(hide) public static var point:Point = new Point();
 	@:dox(hide) public static var point2:Point = new Point();
-	@:dox(hide) public static var zero:Point = new Point();
-	@:dox(hide) public static var zeroCamera:Camera = new Camera();
 	@:dox(hide) public static var rect:Rectangle = new Rectangle();
 	@:dox(hide) public static var matrix:Matrix = new Matrix();
-	@:dox(hide) public static var sprite:Sprite = new Sprite();
-	@:dox(hide) public static var entity:Entity;
 }

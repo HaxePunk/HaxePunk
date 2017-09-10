@@ -15,7 +15,7 @@ class LayerScene extends DemoScene
 		super();
 	}
 
-	public override function begin()
+	override public function begin()
 	{
 		var e = new Entity();
 		e.layer = 50;
@@ -49,7 +49,7 @@ class LayerScene extends DemoScene
 		text.richText = "<welcome>Welcome</welcome> to <orange>HaxePunk</orange>!";
 		text.smooth = true;
 		text.centerOrigin();
-		addGraphic(text, -5, HXP.halfWidth, HXP.halfHeight);
+		addGraphic(text, -5, HXP.width / 2, HXP.height / 2);
 	}
 
 }

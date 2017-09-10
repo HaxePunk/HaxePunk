@@ -1,5 +1,7 @@
 package haxepunk.debug;
 
+import haxe.ds.StringMap;
+import haxepunk.ds.Maybe;
 import haxepunk.graphics.text.Text;
 import haxepunk.input.MouseManager;
 import haxepunk.utils.Draw;
@@ -7,9 +9,18 @@ import haxepunk.utils.Draw;
 @:access(haxepunk.Scene)
 private class LayerToggle extends Entity
 {
-	public var layerNumber:Null<Int>;
+	public var controlScene(default, set):Maybe<Scene>;
+	inline function set_controlScene(value:Maybe<Scene>):Maybe<Scene>
+	{
+		visible = collidable = (value != null);
+		return controlScene = value;
+	}
+
+	public var layerNumber:Int;
 
 	var label:Text;
+
+	var display:Bool = true;
 
 	public function new(mouseManager:MouseManager)
 	{
@@ -25,24 +36,23 @@ private class LayerToggle extends Entity
 
 	override public function update()
 	{
-		visible = collidable = layerNumber != null;
-		if (layerNumber != null)
+		controlScene.may(function(scene)
 		{
-			var entityCount = HXP.scene._layers.exists(layerNumber) ? Lambda.count(HXP.scene._layers[layerNumber]) : 0;
+			var entityCount = scene._layers.exists(layerNumber) ? Lambda.count(scene._layers[layerNumber]) : 0;
 			var txt = "Layer " + layerNumber + " [" + entityCount + "]";
 			if (label.text != txt) label.text = txt;
-			label.color = HXP.scene.layerVisible(layerNumber) ? 0x00ff00 : 0xff0000;
-		}
+			label.color = scene.layerVisible(layerNumber) ? 0x00ff00 : 0xff0000;
+		});
 	}
 
 	function onClick()
 	{
-		if (layerNumber != null)
+		controlScene.may(function(scene)
 		{
-			var display = !HXP.scene.layerVisible(layerNumber);
-			HXP.scene.showLayer(layerNumber, display);
-			HXP.scene.updateLists();
-		}
+			var display = !scene.layerVisible(layerNumber);
+			scene.showLayer(layerNumber, display);
+			scene.updateEntityLists();
+		});
 	}
 
 	function onEnter() label.alpha = 1;
@@ -54,8 +64,7 @@ class LayerList extends EntityList<LayerToggle>
 {
 	var alpha:Float = 0.5;
 	var mouseManager:MouseManager;
-	var sceneLabel:Text;
-	var childY:Int = 8;
+	var sceneLabels:StringMap<Text> = new StringMap<Text>();
 
 	public function new(mouseManager:MouseManager)
 	{
@@ -64,36 +73,84 @@ class LayerList extends EntityList<LayerToggle>
 		width = 280;
 		height = 320;
 
-		sceneLabel = new Text("Scene");
-		sceneLabel.y = childY;
-		childY += sceneLabel.textHeight;
-		graphic = sceneLabel;
-
 		type = mouseManager.type;
 		mouseManager.add(this, null, null, onEnter, onExit);
+	}
+
+	function getSceneLabel(scene:Scene):Text
+	{
+		var className = Type.getClassName(Type.getClass(scene));
+		if (sceneLabels.exists(className))
+		{
+			return sceneLabels.get(className);
+		}
+		else
+		{
+			var sceneLabel = new Text();
+			sceneLabel.text = className;
+			addGraphic(sceneLabel);
+			sceneLabels.set(className, sceneLabel);
+			return sceneLabel;
+		}
 	}
 
 	override public function update()
 	{
 		super.update();
 
-		var layerCount = HXP.scene._layerList.length;
-		while (entities.length < layerCount)
+		var childY:Int = 8;
+
+		// hide scene labels and toggles until they are used
+		for (label in sceneLabels)
 		{
-			var toggle = new LayerToggle(mouseManager);
-			add(toggle);
-			toggle.localY = childY;
-			childY += toggle.height + 4;
+			label.visible = false;
 		}
 
-		for (i in 0 ... entities.length)
+		var entityId = 0;
+		for (scene in HXP.engine.visibleScenes)
 		{
-			entities[i].layerNumber = i >= HXP.scene._layerList.length ? null : HXP.scene._layerList[i];
-			entities[i].update();
+			// skip console scene
+			if (scene == HXP.engine.console) continue;
+
+			// get or create scene label and update it's position
+			var sceneLabel = getSceneLabel(scene);
+			sceneLabel.visible = true;
+			sceneLabel.y = childY;
+			childY += sceneLabel.textHeight;
+
+			for (layer in scene._layerList)
+			{
+				var toggle:LayerToggle;
+				if (entities.length > entityId)
+				{
+					toggle = entities[entityId];
+				}
+				else
+				{
+					toggle = new LayerToggle(mouseManager);
+					add(toggle);
+				}
+				toggle.controlScene = scene;
+				toggle.layerNumber = layer;
+				toggle.localY = childY;
+				childY += toggle.height + 4;
+				entityId += 1;
+			}
 		}
 
-		var txt = Type.getClassName(Type.getClass(HXP.scene));
-		if (sceneLabel.text != txt) sceneLabel.text = txt;
+		// remove any unused scene labels
+		for (sceneName in sceneLabels.keys())
+		{
+			if (!sceneLabels.get(sceneName).visible)
+			{
+				sceneLabels.remove(sceneName);
+			}
+		}
+		// remove any unused layer toggles
+		for (i in entityId...entities.length)
+		{
+			entities[i].controlScene = null;
+		}
 	}
 
 	override public function render(camera:Camera)

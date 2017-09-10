@@ -10,9 +10,11 @@ import flash.geom.Rectangle;
 import flash.Lib;
 import haxepunk.Signal;
 import haxepunk.debug.Console;
+import haxepunk.ds.Maybe;
 import haxepunk.graphics.hardware.EngineRenderer;
 import haxepunk.input.Input;
 import haxepunk.utils.Draw;
+import haxepunk.utils.Timer;
 import haxepunk.math.Random;
 
 /**
@@ -74,10 +76,6 @@ class Engine extends Sprite
 	 */
 	public var onInputReleased:Signals = new Signals();
 	/**
-	 * Invoked after the scene is switched.
-	 */
-	public var onSceneSwitch:Signal0 = new Signal0();
-	/**
 	 * Invoked when the application is closed.
 	 */
 	public var onClose:Signal0 = new Signal0();
@@ -94,7 +92,6 @@ class Engine extends Sprite
 		super();
 
 		// global game properties
-		HXP.bounds = new Rectangle(0, 0, width, height);
 		HXP.assignedFrameRate = frameRate;
 		HXP.fixed = fixed;
 
@@ -108,14 +105,13 @@ class Engine extends Sprite
 		// miscellaneous startup stuff
 		if (Random.randomSeed == 0) Random.randomizeSeed();
 
-		HXP.entity = new Entity();
-		HXP.time = Lib.getTimer();
-
 		paused = false;
 		maxElapsed = 0.0333;
 		maxFrameSkip = 5;
 		tickRate = 4;
 		_frameList = new Array();
+
+		scrollRect = new Rectangle();
 
 		// on-stage event listener
 		addEventListener(Event.ADDED_TO_STAGE, onStage);
@@ -125,11 +121,17 @@ class Engine extends Sprite
 		_iterator = new VisibleSceneIterator(this);
 	}
 
-	public function iterator():VisibleSceneIterator
+	public var visibleScenes(get, never):VisibleSceneIterator;
+	function get_visibleScenes():VisibleSceneIterator
 	{
 		_iterator.reset();
 		return _iterator;
 	}
+
+	/**
+	 * The active scene during update and rendering
+	 */
+	public var activeScene(default, null):Maybe<Scene>;
 
 	/**
 	 * Override this, called after Engine has been added to the stage.
@@ -147,27 +149,76 @@ class Engine extends Sprite
 	public function focusLost() {}
 
 	/**
+	 * Toggles between windowed and fullscreen modes
+	 */
+	public var fullscreen(default, set):Bool = false;
+	inline function set_fullscreen(value:Bool):Bool
+	{
+		stage.displayState = value ? StageDisplayState.FULL_SCREEN : StageDisplayState.NORMAL;
+		return fullscreen = value;
+	}
+
+	/**
 	 * Updates the game, updating the Scene and Entities.
 	 */
 	public function update()
 	{
-		if (HXP.screen.needsResize) HXP.resize(HXP.windowWidth, HXP.windowHeight);
 		HXP.screen.update();
-
-		_scene.updateLists();
-		checkScene();
 
 		preUpdate.invoke();
 
+		updateSceneLists();
+
 		if (HXP.tweener.active && HXP.tweener.hasTween) HXP.tweener.updateTweens(HXP.elapsed);
-		if (_scene.active)
+		for (scene in _scenes)
 		{
-			if (_scene.hasTween) _scene.updateTweens(HXP.elapsed);
-			_scene.update();
+			if (!scene.active) continue;
+
+			activeScene = scene;
+			if (scene.hasTween) scene.updateTweens(HXP.elapsed);
+			scene.update();
+			scene.updateEntityLists();
 		}
-		_scene.updateLists(false);
+		activeScene = null;
 
 		postUpdate.invoke();
+	}
+
+	/**
+	 * @private Adds and Removes scenes to the active scene list
+	 **/
+	function updateSceneLists()
+	{
+		inline function loopList(list:Array<Scene>, func:Scene->Void)
+		{
+			for (i in 0...list.length)
+			{
+				func(list[i]);
+			}
+			HXP.clear(list);
+		}
+
+		loopList(_remove, function(scene:Scene)
+		{
+			// check if it is a scene that hasn't been added yet
+			if (_add.indexOf(scene) != -1)
+			{
+				_add.remove(scene);
+			}
+			else
+			{
+				scene.end();
+				scene.updateEntityLists();
+				if (scene.autoClear && scene.hasTween) scene.clearTweens();
+				_scenes.remove(scene);
+			}
+		});
+		loopList(_add, function(scene:Scene)
+		{
+			scene.begin();
+			scene.updateEntityLists();
+			_scenes.push(scene);
+		});
 	}
 
 	/**
@@ -177,22 +228,22 @@ class Engine extends Sprite
 	public function render()
 	{
 		// timing stuff
-		var t:Float = Lib.getTimer();
+		var t:Float = Timer.getMillis();
 		if (_frameLast == 0) _frameLast = Std.int(t);
 
 		preRender.invoke();
 
-		for (scene in this)
+		for (scene in visibleScenes)
 		{
-			HXP.renderingScene = scene;
+			activeScene = scene;
 			scene.render();
 		}
-		HXP.renderingScene = null;
+		activeScene = null;
 
 		postRender.invoke();
 
 		// more timing stuff
-		t = Lib.getTimer();
+		t = Timer.getMillis();
 		_frameListSum += (_frameList[_frameList.length] = Std.int(t - _frameLast));
 		if (_frameList.length > 10) _frameListSum -= _frameList.shift();
 		HXP.frameRate = 1000 / (_frameListSum / _frameList.length);
@@ -204,31 +255,33 @@ class Engine extends Sprite
 	 */
 	function setStageProperties()
 	{
-		HXP.stage.frameRate = HXP.assignedFrameRate;
-		HXP.stage.align = StageAlign.TOP_LEFT;
+		stage.frameRate = HXP.assignedFrameRate;
+		stage.align = StageAlign.TOP_LEFT;
 #if !js
-		HXP.stage.quality = StageQuality.HIGH;
+		stage.quality = StageQuality.HIGH;
 #end
-		HXP.stage.scaleMode = StageScaleMode.NO_SCALE;
-		HXP.stage.displayState = StageDisplayState.NORMAL;
+		stage.scaleMode = StageScaleMode.NO_SCALE;
+		stage.displayState = StageDisplayState.NORMAL;
 
-		_resize(); // call resize once to initialize the screen
+		Graphic.defaultSmooth = stage.quality != StageQuality.LOW;
+
+		resize(stage.stageWidth, stage.stageHeight); // call resize once to initialize the screen
 
 		// set resize event
-		HXP.stage.addEventListener(Event.RESIZE, function (e:Event) _resize());
+		stage.addEventListener(Event.RESIZE, function (e:Event) resize(stage.stageWidth, stage.stageHeight));
 
-		HXP.stage.addEventListener(Event.ACTIVATE, function (e:Event)
+		stage.addEventListener(Event.ACTIVATE, function (e:Event)
 		{
 			HXP.focused = true;
 			focusGained();
-			_scene.focusGained();
+			for (scene in _scenes) scene.focusGained();
 		});
 
-		HXP.stage.addEventListener(Event.DEACTIVATE, function (e:Event)
+		stage.addEventListener(Event.DEACTIVATE, function (e:Event)
 		{
 			HXP.focused = false;
 			focusLost();
-			_scene.focusLost();
+			for (scene in _scenes) scene.focusLost();
 		});
 
 #if (!html5 && openfl_legacy)
@@ -238,27 +291,26 @@ class Engine extends Sprite
 			var tmp = HXP.height;
 			HXP.height = HXP.width;
 			HXP.width = tmp;
-			_resize();
+			resize(stage.stageWidth, stage.stageHeight);
 			return true;
 		}
 #end
 	}
 
 	/** @private Event handler for stage resize */
-	function _resize()
+	function resize(width:Int, height:Int)
 	{
 		if (HXP.width == 0 || HXP.height == 0)
 		{
 			// set initial size
-			HXP.width = HXP.stage.stageWidth;
-			HXP.height = HXP.stage.stageHeight;
+			HXP.width = width;
+			HXP.height = height;
 			HXP.screen.scaleMode.setBaseSize();
 		}
 		// calculate scale from width/height values
-		HXP.resize(HXP.stage.stageWidth, HXP.stage.stageHeight);
-		_scrollRect.width = HXP.screen.width;
-		_scrollRect.height = HXP.screen.height;
-		scrollRect = _scrollRect;
+		HXP.windowWidth = width;
+		HXP.windowHeight = height;
+		HXP.screen.resize(width, height);
 
 		onResize.invoke();
 	}
@@ -268,14 +320,13 @@ class Engine extends Sprite
 	{
 		// remove event listener
 		removeEventListener(Event.ADDED_TO_STAGE, onStage);
-		HXP.stage = stage;
 		setStageProperties();
 
 		// enable input
 		Input.enable();
 
 		// switch scenes
-		checkScene();
+		updateSceneLists();
 
 		// game start
 		init();
@@ -284,7 +335,7 @@ class Engine extends Sprite
 		_rate = 1000 / HXP.assignedFrameRate;
 
 		// nonfixed framerate
-		_last = Lib.getTimer();
+		_last = Timer.getMillis();
 		addEventListener(Event.ENTER_FRAME, onEnterFrame);
 
 		#if (nme || openfl_legacy)
@@ -306,7 +357,7 @@ class Engine extends Sprite
 	/** @private Framerate independent game loop. */
 	function onEnterFrame(e:Event)
 	{
-		_time = _gameTime = Lib.getTimer();
+		_time = _gameTime = Timer.getMillis();
 		HXP._systemTime = _time - _systemTime;
 		_updateTime = _time;
 
@@ -333,7 +384,7 @@ class Engine extends Sprite
 		_last = _time;
 
 		// update timer
-		_time = _renderTime = Lib.getTimer();
+		_time = _renderTime = Timer.getMillis();
 		HXP._updateTime = _time - _updateTime;
 
 		// render loop
@@ -341,7 +392,7 @@ class Engine extends Sprite
 		if (!paused || Console.enabled) render();
 
 		// update timer
-		_time = _systemTime = Lib.getTimer();
+		_time = _systemTime = Timer.getMillis();
 		HXP._renderTime = _time - _renderTime;
 		HXP._gameTime = _time - _gameTime;
 	}
@@ -360,64 +411,87 @@ class Engine extends Sprite
 		Input.postUpdate();
 	}
 
-	/** @private Switch scenes if they've changed. */
-	inline function checkScene()
+	/**
+	 * Color to clear the screen
+	 * @since	4.0.0
+	 **/
+	public var clearColor(get, never):Null<Int>;
+	inline function get_clearColor():Null<Int> return stage.color;
+
+	/**
+	 * The number of scenes in the scene list
+	 * @since	4.0.0
+	 */
+	public var sceneCount(get, never):Int;
+	inline function get_sceneCount():Int return _scenes.length;
+
+	/**
+	 * Removes all other scenes and sets the new active scene during the next update.
+	 * @param value  The scene to replace other scenes
+	 * @since	4.0.0
+	 */
+	public function setScene(scene:Scene)
 	{
-		if (_scene != null && _scenes.length > 0 && _scenes[_scenes.length - 1] != _scene)
-		{
-			_scene.end();
-			_scene.updateLists();
-			if (_scene.autoClear && _scene.hasTween) _scene.clearTweens();
-
-			_scene = _scenes[_scenes.length - 1];
-
-			_scene.updateLists();
-			_scene.begin();
-			_scene.updateLists();
-
-			onSceneSwitch.invoke();
-		}
+		removeAllScenes();
+		pushScene(scene);
 	}
 
 	/**
-	 * Push a scene onto the stack. It will not become active until the next update.
+	 * Add a scene during the next update. It will be rendered in front of other scenes.
 	 * @param value  The scene to push
 	 * @since	2.5.3
 	 */
-	public function pushScene(value:Scene):Void
+	public function pushScene(scene:Scene)
 	{
-		_scenes.push(value);
+		_add[_add.length] = scene;
 	}
 
 	/**
-	 * Pop a scene from the stack. The current scene will remain active until the next update.
+	 * Pop the top scene from the stack during the next update.
 	 * @since	2.5.3
 	 */
-	public function popScene():Scene
+	public function popScene():Null<Scene>
 	{
-		var scene = _scenes.pop();
-		return scene;
+		var index = _scenes.length;
+		// search through removed scenes until we find one that hasn't been removed yet
+		while (index > 0)
+		{
+			index -= 1;
+			var scene = _scenes[index];
+			if (_remove.indexOf(scene) == -1)
+			{
+				removeScene(scene);
+				return scene;
+			}
+		}
+		// at this point the only scenes left are in the add buffer
+		return _add.pop();
 	}
 
 	/**
-	 * The currently active Scene object. When you set this, the Scene is flagged
-	 * to switch, but won't actually do so until the end of the current frame.
+	 * Remove a scene during the next update.
+	 * @since	4.0.0
 	 */
-	public var scene(get, set):Scene;
-	inline function get_scene():Scene return _scene;
-	function set_scene(value:Scene):Scene
+	public function removeScene(scene:Scene)
 	{
-		if (_scene == value) return value;
-		if (_scenes.length > 0)
+		_remove[_remove.length] = scene;
+	}
+
+	/**
+	 * Remove all scenes during the next update.
+	 * @since	4.0.0
+	 */
+	public function removeAllScenes()
+	{
+		for (scene in _scenes)
 		{
-			popScene();
+			removeScene(scene);
 		}
-		_scenes.push(value);
-		return _scene;
 	}
 
 	// Scene information.
-	var _scene:Scene = new Scene();
+	var _add:Array<Scene> = new Array<Scene>();
+	var _remove:Array<Scene> = new Array<Scene>();
 	var _scenes:Array<Scene> = new Array<Scene>();
 
 	// Timing information.
@@ -440,7 +514,6 @@ class Engine extends Sprite
 	var _frameListSum:Int = 0;
 	var _frameList:Array<Int>;
 
-	var _scrollRect:Rectangle = new Rectangle();
 	var _renderSurface:EngineRenderer;
 	var _iterator:VisibleSceneIterator;
 }

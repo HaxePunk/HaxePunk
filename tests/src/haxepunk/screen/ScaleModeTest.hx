@@ -4,21 +4,30 @@ import massive.munit.Assert;
 import haxepunk.Engine;
 import haxepunk.HXP;
 
-class ScaleModeTest extends TestSuite
+class ScaleModeTest
 {
+	var engine:Engine;
+
 	@Before
 	public function setup()
 	{
 		HXP.windowWidth = 320;
 		HXP.windowHeight = 480;
-		var engine = new Engine(HXP.windowWidth, HXP.windowHeight);
+		engine = new Engine(HXP.windowWidth, HXP.windowHeight);
+	}
+
+	@:access(haxepunk.Engine)
+	function resize(width:Int, height:Int)
+	{
+		engine.resize(width, height);
+		engine.update();
 	}
 
 	@Test
 	public function testScale()
 	{
 		HXP.screen.scaleMode = new ScaleMode();
-		HXP.resize(640, 960);
+		resize(640, 960);
 		Assert.areEqual(2, HXP.screen.scaleX);
 		Assert.areEqual(2, HXP.screen.scaleY);
 		Assert.areEqual(320, HXP.width);
@@ -27,7 +36,7 @@ class ScaleModeTest extends TestSuite
 		Assert.areEqual(960, HXP.windowHeight);
 
 		HXP.screen.scaleMode = new ScaleMode();
-		HXP.resize(960, 960);
+		resize(960, 960);
 		Assert.areEqual(3, HXP.screen.scaleX);
 		Assert.areEqual(2, HXP.screen.scaleY);
 		Assert.areEqual(320, HXP.width);
@@ -36,7 +45,7 @@ class ScaleModeTest extends TestSuite
 		Assert.areEqual(960, HXP.windowHeight);
 
 		HXP.screen.scaleMode = new ScaleMode(true);
-		HXP.resize(320, 480);
+		resize(320, 480);
 		Assert.areEqual(1, HXP.screen.scaleX);
 		Assert.areEqual(1, HXP.screen.scaleY);
 		Assert.areEqual(320, HXP.width);

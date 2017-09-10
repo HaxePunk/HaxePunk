@@ -19,7 +19,12 @@ class Screen
 	/**
 	 * Controls how the game scale changes when the window is resized.
 	 */
-	public var scaleMode:ScaleMode = new ScaleMode();
+	public var scaleMode(default, set):ScaleMode = new ScaleMode();
+	inline function set_scaleMode(value:ScaleMode):ScaleMode
+	{
+		needsResize = true;
+		return scaleMode = value;
+	}
 
 	/**
 	 * For hardware rendering.
@@ -36,7 +41,6 @@ class Screen
 		_bitmap = new Array<Bitmap>();
 
 		x = y = 0;
-		_current = 0;
 		scale = scaleX = scaleY = 1;
 		updateTransformation();
 
@@ -75,18 +79,17 @@ class Screen
 	 * Resizes the screen by recreating the bitmap buffer.
 	 */
 	@:dox(hide)
-	@:allow(haxepunk.HXP)
+	@:allow(haxepunk.Engine)
 	function resize(width:Int, height:Int)
 	{
-		var oldWidth:Int = HXP.width,
-			oldHeight:Int = HXP.height;
+		scaleMode.resizeScreen(this, width, height);
 
-		scaleMode.resize(width, height);
+		HXP.width = Std.int(this.width / this.fullScaleX);
+		HXP.height = Std.int(this.height / this.fullScaleY);
 
-		width = HXP.width = Std.int(HXP.screen.width / HXP.screen.fullScaleX);
-		height = HXP.height = Std.int(HXP.screen.height / HXP.screen.fullScaleY);
+		HXP.engine.scrollRect.width = this.width;
+		HXP.engine.scrollRect.height = this.height;
 
-		_current = 0;
 		needsResize = false;
 	}
 
@@ -102,6 +105,11 @@ class Screen
 	@:dox(hide)
 	public function update()
 	{
+		if (needsResize)
+		{
+			resize(HXP.windowWidth, HXP.windowHeight);
+		}
+
 		// screen shake
 		if (_shakeTime > 0)
 		{
@@ -124,13 +132,6 @@ class Screen
 			_shakeX = _shakeY = 0;
 		}
 	}
-
-	/**
-	 * Refresh color of the screen.
-	 */
-	public var color(get, set):Int;
-	inline function get_color():Null<Int> return HXP.stage.color;
-	inline function set_color(value:Null<Int>):Null<Int> return HXP.stage.color = value;
 
 	/**
 	 * X offset of the screen.
@@ -284,7 +285,6 @@ class Screen
 	// Screen infromation.
 	var _sprite:Sprite;
 	var _bitmap:Array<Bitmap>;
-	var _current:Int;
 	var _matrix:Matrix;
 	var _shakeTime:Float=0;
 	var _shakeMagnitude:Int=0;

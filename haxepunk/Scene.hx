@@ -42,8 +42,13 @@ class Scene extends Tweener
 	 */
 	public var camera:Camera;
 
-	public var width:Int = 0;
-	public var height:Int = 0;
+	public var width(get, set):Int;
+	inline function get_width():Int return HXP.width;
+	inline function set_width(value:Int):Int return HXP.width = value;
+
+	public var height(get, set):Int;
+	inline function get_height():Int return HXP.height;
+	inline function set_height(value:Int):Int return HXP.height = value;
 
 	/**
 	 * Array of shaders which will be used to process the final result of
@@ -69,10 +74,6 @@ class Scene extends Tweener
 	 * Invoked after rendering this Scene completes.
 	 */
 	public var postRender:Signal0 = new Signal0();
-	/**
-	 * Invoked after this Scene is resized.
-	 */
-	public var onResize:Signal0 = new Signal0();
 	/**
 	 * Invoked when input is received while this Scene is active.
 	 */
@@ -117,21 +118,6 @@ class Scene extends Tweener
 	 * Override this; called when Scene is changed, and the active scene is no longer this.
 	 */
 	public function end() {}
-
-	@:allow(haxepunk.HXP)
-	function _resize()
-	{
-		if (width != HXP.width || height != HXP.height)
-		{
-			width = HXP.width;
-			height = HXP.height;
-			for (e in _update)
-			{
-				e.resized();
-			}
-			onResize.invoke();
-		}
-	}
 
 	/**
 	 * Override this, called when game gains focus
@@ -218,8 +204,8 @@ class Scene extends Tweener
 		{
 			drawContext.scene = this;
 			drawContext.blend = BlendMode.Alpha;
-			drawContext.setColor(bgColor == null ? HXP.stage.color : bgColor, bgAlpha);
-			drawContext.rectFilled(0, 0, HXP.width, HXP.height);
+			drawContext.setColor(bgColor == null ? HXP.engine.clearColor : bgColor, bgAlpha);
+			drawContext.rectFilled(0, 0, width, height);
 		}
 
 		preRender.invoke();
@@ -235,7 +221,7 @@ class Scene extends Tweener
 		}
 
 		// render the cursor if this is the topmost scene
-		if (HXP.cursor != null && HXP.cursor.visible && this == HXP.scene)
+		if (HXP.cursor != null && HXP.cursor.visible)
 		{
 			HXP.cursor.render(camera);
 		}
@@ -1080,72 +1066,75 @@ class Scene extends Tweener
 		return _entityNames.get(name);
 	}
 
+	/** @private Remove Entity from the scene. */
+	function removeEntity(e:Entity)
+	{
+		if (e._scene == null)
+		{
+			var idx = HXP.indexOf(_add, e);
+			if (idx >= 0) _add.splice(idx, 1);
+			return;
+		}
+		if (e._scene != this)
+		{
+			return;
+		}
+		e.removed();
+		e._scene = null;
+		removeUpdate(e);
+		removeRender(e);
+		if (e._type != "") removeType(e);
+		if (e._name != "") unregisterName(e);
+		if (e.autoClear && e.hasTween) e.clearTweens();
+	}
+
+	/** @private Add Entity to the scene. */
+	function addEntity(e:Entity)
+	{
+		if (e._scene != null) return;
+		e._scene = this;
+		addUpdate(e);
+		addRender(e);
+		if (e._type != "") addType(e);
+		if (e._name != "") registerName(e);
+		e.added();
+	}
+
+	/** @private Recycles Entity object. */
+	function recycleEntity(e:Entity)
+	{
+		if (e._scene != null || e._recycleNext != null)
+			return;
+
+		e._recycleNext = _recycled.get(e._class);
+		_recycled.set(e._class, e);
+	}
+
 	/**
 	 * Updates the add/remove lists at the end of the frame.
 	 * @param	shouldAdd	If new Entities should be added to the scene.
 	 */
-	public function updateLists(shouldAdd:Bool = true)
+	public function updateEntityLists(shouldAdd:Bool = true)
 	{
-		var e:Entity;
-
 		if (HXP.cursor != null)
 		{
 			HXP.cursor._scene = this;
 		}
 
-		// remove entities
-		if (_remove.length > 0)
+		inline function loopList(list:Array<Entity>, func:Entity->Void)
 		{
-			for (e in _remove)
+			while (list.length > 0)
 			{
-				if (e._scene == null)
-				{
-					var idx = HXP.indexOf(_add, e);
-					if (idx >= 0) _add.splice(idx, 1);
-					continue;
-				}
-				if (e._scene != this)
-					continue;
-				e.removed();
-				e._scene = null;
-				removeUpdate(e);
-				removeRender(e);
-				if (e._type != "") removeType(e);
-				if (e._name != "") unregisterName(e);
-				if (e.autoClear && e.hasTween) e.clearTweens();
+				func(list.pop());
 			}
-			HXP.clear(_remove);
 		}
 
-		// add entities
-		if (shouldAdd && _add.length > 0)
+		loopList(_remove, removeEntity);
+		if (shouldAdd)
 		{
-			for (e in _add)
-			{
-				if (e._scene != null) continue;
-				e._scene = this;
-				addUpdate(e);
-				addRender(e);
-				if (e._type != "") addType(e);
-				if (e._name != "") registerName(e);
-				e.added();
-			}
-			HXP.clear(_add);
+			loopList(_add, addEntity);
 		}
-
-		// recycle entities
-		if (_recycle.length > 0)
-		{
-			for (e in _recycle)
-			{
-				if (e._scene != null || e._recycleNext != null)
-					continue;
-
-				e._recycleNext = _recycled.get(e._class);
-				_recycled.set(e._class, e);
-			}
-			HXP.clear(_recycle);
-		}
+		loopList(_recycle, recycleEntity);
 	}
 
 	/** @private Adds Entity to the update list. */

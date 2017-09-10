@@ -4,13 +4,14 @@ import massive.munit.Assert;
 import haxepunk.*;
 import haxepunk.masks.*;
 
-class CollideTest extends TestSuite
+class CollideTest
 {
 	@Before
 	public function setup()
 	{
 		var engine = new Engine(640, 480);
-		HXP.scene = scene = new Scene();
+		var scene = new Scene();
+        engine.pushScene(scene);
 
 		hitbox = scene.addMask(new Hitbox(20, 20, -10, -10), "box");
 		circle = scene.addMask(new Circle(10), "circle");
@@ -37,7 +38,6 @@ class CollideTest extends TestSuite
 		Assert.isTrue(hitbox.x == 40 && hitbox.y == 30);
 	}
 
-	var scene:Scene;
 	var hitbox:Entity;
 	var circle:Entity;
 }

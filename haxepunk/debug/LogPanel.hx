@@ -56,8 +56,11 @@ class LogPanel extends Entity
 		{
 			if (logMessages.length > 0) txt += logMessages.last + "\n";
 		}
-		var mouseLabel = StringTools.rpad("Mouse: " + HXP.scene.mouseX + "," + HXP.scene.mouseY, " ", 20);
-		txt += mouseLabel + "Camera: " + HXP.scene.camera.x + "," + HXP.scene.camera.y;
+		for (scene in HXP.engine.visibleScenes)
+		{
+			var mouseLabel = StringTools.rpad("Mouse: " + scene.mouseX + "," + scene.mouseY, " ", 20);
+			txt += mouseLabel + "Camera: " + scene.camera.x + "," + scene.camera.y;
+		}
 		if (label.text != txt) label.text = txt;
 		label.y = height - label.textHeight - 4;
 	}

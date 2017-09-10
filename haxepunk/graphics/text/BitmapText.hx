@@ -571,6 +571,8 @@ class BitmapText extends Graphic
 			lineSpacing:Float = lineSpacing * scale * scaleY,
 			thisLineHeight:Float = 0,
 			lineOffsetX:Float = 0;
+		var zeroPoint = new Point(),
+			zeroCamera = new Camera();
 		var currentColor:Color = color,
 			currentAlpha:Float = alpha,
 			currentScale:Float = 1,
@@ -658,7 +660,7 @@ class BitmapText extends Graphic
 					image.alpha = currentAlpha;
 					image.scaleX *= this.scale * this.scaleX * currentScale;
 					image.scaleY *= this.scale * this.scaleY * currentScale;
-					image.render(HXP.zero, HXP.zeroCamera);
+					image.render(zeroPoint, zeroCamera);
 					image.x = originalX;
 					image.y = originalY;
 					image.scaleX = originalScaleX;

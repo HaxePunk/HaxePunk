@@ -106,9 +106,14 @@ class Graphic
 	 * If the image should be drawn transformed with pixel smoothing.
 	 * This will affect drawing performance, but look less pixelly.
 	 *
-	 * Default value: false if HXP.stage.quality is LOW, true otherwise.
+	 * Defaults to the value of Graphic.defaultSmooth
 	 */
 	public var smooth:Bool;
+
+	/**
+	 * Default value for smoothing all graphics
+	 **/
+	public static var defaultSmooth:Bool = true;
 
 	/**
 	 * Optional blend mode to use when drawing this image.
@@ -213,10 +218,7 @@ class Graphic
 	@:allow(haxepunk)
 	function new()
 	{
-		if (HXP.stage != null)
-		{
-			smooth = (HXP.stage.quality != LOW);
-		}
+		smooth = Graphic.defaultSmooth;
 		color = Color.White;
 		shader = TextureShader.defaultShader;
 		_class = Type.getClassName(Type.getClass(this));
