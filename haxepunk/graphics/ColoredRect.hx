@@ -31,7 +31,7 @@ class ColoredRect extends Graphic
 
 		var fsx = camera.fullScaleX,
 			fsy = camera.fullScaleY;
-		var x1 = (camera.floorX(point.x) - camera.floorX(camera.x) + camera.floorX(x)) * fsx,
+		var x1 = (floorX(camera, point.x) - floorX(camera, camera.x) + floorX(camera, x)) * fsx,
 			x2 = x1 + width * fsx,
 			y1 = (camera.floorY(point.y) - camera.floorY(camera.y) + camera.floorY(y)) * fsy,
 			y2 = y1 + height * fsy;

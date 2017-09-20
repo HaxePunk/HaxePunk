@@ -28,22 +28,17 @@ class Engine extends Sprite
 	/**
 	 * If the game should stop updating/rendering.
 	 */
-	public var paused:Bool;
+	public var paused:Bool = false;
 
 	/**
 	 * Cap on the elapsed time (default at 30 FPS). Raise this to allow for lower framerates (eg. 1 / 10).
 	 */
-	public var maxElapsed:Float;
+	public var maxElapsed:Float = 0.0333;
 
 	/**
 	 * The max amount of frames that can be skipped in fixed framerate mode.
 	 */
-	public var maxFrameSkip:Int;
-
-	/**
-	 * The amount of milliseconds between ticks in fixed framerate mode.
-	 */
-	public var tickRate:Int;
+	public var maxFrameSkip:Int = 5;
 
 	/**
 	 * Invoked before the update cycle begins each frame.
@@ -111,10 +106,6 @@ class Engine extends Sprite
 		HXP.entity = new Entity();
 		HXP.time = Lib.getTimer();
 
-		paused = false;
-		maxElapsed = 0.0333;
-		maxFrameSkip = 5;
-		tickRate = 4;
 		_frameList = new Array();
 
 		// on-stage event listener
@@ -293,7 +284,7 @@ class Engine extends Sprite
 			Lib.close();
 		}
 		#else
-		openfl.Lib.current.stage.application.onExit.add(function(_) {
+		flash.Lib.current.stage.application.onExit.add(function(_) {
 			onClose.invoke();
 		});
 		#end

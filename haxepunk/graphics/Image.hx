@@ -95,13 +95,13 @@ class Image extends Graphic
 			fsx = camera.fullScaleX,
 			fsy = camera.fullScaleY;
 
-		var x = camera.floorX(x);
-		var y = camera.floorY(y);
+		var x = floorX(camera, x);
+		var y = floorY(camera, y);
 
 		if (angle == 0)
 		{
-			_point.x = camera.floorX(point.x) - camera.floorX(originX * sx) - camera.floorX(camera.x * scrollX) + x;
-			_point.y = camera.floorY(point.y) - camera.floorY(originY * sy) - camera.floorY(camera.y * scrollY) + y;
+			_point.x = floorX(camera, point.x) - floorX(camera, originX * sx) - floorX(camera, camera.x * scrollX) + x;
+			_point.y = floorY(camera, point.y) - floorY(camera, originY * sy) - floorY(camera, camera.y * scrollY) + y;
 
 			// render without rotation
 			var clipRect = screenClipRect(camera, _point.x, _point.y);
@@ -113,8 +113,8 @@ class Image extends Graphic
 		}
 		else
 		{
-			_point.x = camera.floorX(point.x) - camera.floorX(originX) - camera.floorX(camera.x * scrollX) + x;
-			_point.y = camera.floorY(point.y) - camera.floorY(originY) - camera.floorY(camera.y * scrollY) + y;
+			_point.x = floorX(camera, point.x) - floorX(camera, originX) - floorX(camera, camera.x * scrollX) + x;
+			_point.y = floorY(camera, point.y) - floorY(camera, originY) - floorY(camera, camera.y * scrollY) + y;
 			var angle = angle * MathUtil.RAD;
 			var cos = Math.cos(angle);
 			var sin = Math.sin(angle);

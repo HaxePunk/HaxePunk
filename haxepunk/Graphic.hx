@@ -111,6 +111,12 @@ class Graphic
 	public var smooth:Bool;
 
 	/**
+	 * Whether this graphic will be snapped to the nearest whole number pixel
+	 * position when rendering.
+	 */
+	public var pixelSnapping:Bool = true;
+
+	/**
 	 * Optional blend mode to use when drawing this image.
 	 * Use constants from the haxepunk.utils.BlendMode class.
 	 */
@@ -221,6 +227,9 @@ class Graphic
 		shader = TextureShader.defaultShader;
 		_class = Type.getClassName(Type.getClass(this));
 	}
+
+	public inline function floorX(camera:Camera, x:Float) return pixelSnapping ? camera.floorX(x) : x;
+	public inline function floorY(camera:Camera, y:Float) return pixelSnapping ? camera.floorY(y) : y;
 
 	/**
 	 * Updates the graphic.

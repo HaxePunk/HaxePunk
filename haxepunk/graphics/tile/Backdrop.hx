@@ -47,7 +47,7 @@ class Backdrop extends Graphic
 	@:dox(hide)
 	override public function render(point:Point, camera:Camera)
 	{
-		_point.x = camera.floorX(point.x) - camera.floorX(camera.x * scrollX) + camera.floorX(x);
+		_point.x = floorX(camera, point.x) - floorX(camera, camera.x * scrollX) + floorX(camera, x);
 		_point.y = camera.floorY(point.y) - camera.floorY(camera.y * scrollY) + camera.floorY(y);
 		_point.x *= camera.fullScaleX;
 		_point.y *= camera.fullScaleY;

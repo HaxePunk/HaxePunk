@@ -95,19 +95,19 @@ class NineSlice extends Graphic
 		var leftWidth:Float, rightWidth:Float, topHeight:Float, bottomHeight:Float;
 		if (scaleBorder)
 		{
-			leftWidth = camera.floorX(_sliceRect.left);
-			rightWidth = camera.floorX(source.width - _sliceRect.width);
+			leftWidth = floorX(camera, _sliceRect.left);
+			rightWidth = floorX(camera, source.width - _sliceRect.width);
 			topHeight = camera.floorY(_sliceRect.top);
 			bottomHeight = camera.floorY(source.height - _sliceRect.height);
 		}
 		else
 		{
-			leftWidth = camera.floorX(_sliceRect.left) / camera.fullScaleX;
-			rightWidth = camera.floorX(source.width - _sliceRect.width) / camera.fullScaleX;
+			leftWidth = floorX(camera, _sliceRect.left) / camera.fullScaleX;
+			rightWidth = floorX(camera, source.width - _sliceRect.width) / camera.fullScaleX;
 			topHeight = camera.floorY(_sliceRect.top) / camera.fullScaleY;
 			bottomHeight = camera.floorY(source.height - _sliceRect.height) / camera.fullScaleY;
 		}
-		var centerWidth:Float = camera.floorX(width) - leftWidth - rightWidth,
+		var centerWidth:Float = floorX(camera, width) - leftWidth - rightWidth,
 			centerHeight:Float = camera.floorY(height) - topHeight - bottomHeight;
 
 		var leftX = 0, centerX = leftWidth, rightX = leftWidth + centerWidth,
@@ -117,9 +117,9 @@ class NineSlice extends Graphic
 		{
 			if (segment != null && segment.visible)
 			{
-				segment.x = camera.floorX(this.x) + x;
+				segment.x = floorX(camera, this.x) + x;
 				segment.y = camera.floorY(this.y) + y;
-				segment.scaleX = (camera.floorX(x + width) - camera.floorX(x)) / segment.width;
+				segment.scaleX = (floorX(camera, x + width) - floorX(camera, x)) / segment.width;
 				segment.scaleY = (camera.floorY(y + height) - camera.floorY(y)) / segment.height;
 				if (clipRect != null)
 				{

@@ -11,6 +11,15 @@ class Camera extends Point
 	public var scaleX:Float = 1;
 	public var scaleY:Float = 1;
 
+	/**
+	 * Whether this graphic will be snapped to the nearest whole number pixel
+	 * position when rendering.
+	 *
+	 * This must be true for both the Graphic and the Camera to take effect;
+	 * otherwise no snapping will occur.
+	 */
+	public var pixelSnapping:Bool = true;
+
 	public var fullScaleX(get, never):Float;
 	inline function get_fullScaleX() return scale * scaleX * HXP.screen.fullScaleX;
 	public var fullScaleY(get, never):Float;
@@ -25,11 +34,11 @@ class Camera extends Point
 	/**
 	 * Return an X value that, after scaling, will result in an integer.
 	 */
-	public inline function floorX(x:Float) return Math.floor(x * fullScaleX) / fullScaleX;
+	public inline function floorX(x:Float) return pixelSnapping ? (Math.floor(x * fullScaleX) / fullScaleX) : x;
 	/**
 	 * Return a Y value that, after scaling, will result in an integer.
 	 */
-	public inline function floorY(y:Float) return Math.floor(y * fullScaleY) / fullScaleY;
+	public inline function floorY(y:Float) return pixelSnapping ? (Math.floor(y * fullScaleY) / fullScaleY) : y;
 
 	var anchorTarget:Null<Position>;
 	var anchorX:Float = 0;
