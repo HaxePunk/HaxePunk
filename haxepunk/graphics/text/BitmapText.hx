@@ -562,7 +562,7 @@ class BitmapText extends Graphic
 		var fsx = camera.fullScaleX,
 			fsy = camera.fullScaleY;
 
-		_point.x = camera.floorX(point.x) + camera.floorX(x) - camera.floorX(camera.x * scrollX);
+		_point.x = floorX(camera, point.x) + floorX(camera, x) - floorX(camera, camera.x * scrollX);
 		_point.y = camera.floorY(point.y) + camera.floorY(y) - camera.floorY(camera.y * scrollY);
 
 		var sx = scale * scaleX * size,

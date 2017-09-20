@@ -87,7 +87,7 @@ class Imagemask extends Pixelmask
 	 * transformation.
 	 * @return  the bound box in local coordinates.
 	 */
-	public function getBounds():flash.geom.Rectangle
+	public function getBounds():Rectangle
 	{
 		var sx = _source.scale * _source.scaleX;
 		var sy = _source.scale * _source.scaleY;

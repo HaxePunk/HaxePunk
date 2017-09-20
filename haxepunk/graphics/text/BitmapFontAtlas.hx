@@ -56,8 +56,6 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 	 */
 	public static function loadXMLFont(file:String):BitmapFontAtlas
 	{
-		var atlas = new BitmapFontAtlas(StringTools.replace(file, ".fnt", ".png"));
-
 		var xmlText = Assets.getText(file);
 		if (xmlText == null) throw 'BitmapFontAtlas: "$file" not found!';
 
@@ -66,6 +64,8 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 		if (firstElement == null) throw 'BitmapFontAtlas: "$file" contains invalid XML!';
 		var fast = new Fast(firstElement);
 
+		var imageFile = new haxe.io.Path(file).dir + "/" + fast.node.pages.node.page.att.file;
+		var atlas = new BitmapFontAtlas(imageFile);
 		atlas.lineHeight = Std.parseInt(fast.node.common.att.lineHeight);
 		atlas.fontSize = Std.parseInt(fast.node.info.att.size);
 		var chars = fast.node.chars;
