@@ -53,7 +53,7 @@ class Shader
 
 	public var glProgram:GLProgram;
 	public var floatsPerVertex(get, never):Int;
-	inline function get_floatsPerVertex():Int return 2 + (texCoord.isEnabled ? 2 : 0) + (color.isEnabled ? 1 : 0);
+	function get_floatsPerVertex():Int return 2 + (texCoord.isEnabled ? 2 : 0) + (color.isEnabled ? 1 : 0);
 
 	var vertexSource:String;
 	var fragmentSource:String;
