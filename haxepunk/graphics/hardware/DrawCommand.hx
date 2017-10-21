@@ -296,6 +296,7 @@ class DrawCommand
 	inline function recycleData()
 	{
 		triangleCount = 0;
+		texture = null;
 		if (data != null)
 		{
 			_lastData._next = _dataPool;

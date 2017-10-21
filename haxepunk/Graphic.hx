@@ -117,6 +117,12 @@ class Graphic
 	public var pixelSnapping:Bool = true;
 
 	/**
+	 * If true, this graphic may sometimes "fall through" other textures to
+	 * reduce the number of draw calls. This can affect layering.
+	 */
+	public var flexibleLayer:Bool = false;
+
+	/**
 	 * Optional blend mode to use when drawing this image.
 	 * Use constants from the haxepunk.utils.BlendMode class.
 	 */

@@ -386,7 +386,7 @@ class Tilemap extends Graphic
 
 		// determine drawing location
 		_point.x = floorX(camera, point.x) + floorX(camera, x) - floorX(camera, camera.x * scrollX);
-		_point.y = camera.floorY(point.y) + camera.floorY(y) - camera.floorY(camera.y * scrollY);
+		_point.y = floorY(camera, point.y) + floorY(camera, y) - floorY(camera, camera.y * scrollY);
 
 		var scx = scale * scaleX,
 			scy = scale * scaleY,
@@ -414,10 +414,10 @@ class Tilemap extends Graphic
 
 		_point.x *= fullScaleX;
 		_point.y *= fullScaleY;
-		wy = camera.floorY(starty * th) * fullScaleY;
+		wy = floorY(camera, starty * th) * fullScaleY;
 		for (y in starty...desty)
 		{
-			ny = camera.floorY((y + 1) * th) * fullScaleY;
+			ny = floorY(camera, (y + 1) * th) * fullScaleY;
 			// ensure no vertical overlap between this and next tile
 			scy = (ny - wy) / tileHeight;
 			wx = floorX(camera, startx * tw) * fullScaleX;
