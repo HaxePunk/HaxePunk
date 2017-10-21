@@ -1,4 +1,3 @@
-import flash.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Entity;
 import haxepunk.Scene;
@@ -11,20 +10,20 @@ class MainScene extends Scene
 	static var _shakeChars:Map<String, Float> = new Map();
 	static var _shake:Float = 0;
 
-	static function shakeChar(char:String, point:Point):Point
+	static function shakeChar(txt:BitmapText, data:RenderData)
 	{
+		var char = data.char;
+		if (char == null) char = '*';
 		if (!_shakeChars.exists(char) || _shake > 1)
 		{
 			_shakeChars[char] = Math.random() * 2 - 1;
 		}
-		point.y += _shakeChars[char];
-		return point;
+		data.y += _shakeChars[char];
 	}
 
-	static function sineWave(char:String, point:Point):Point
+	static function sineWave(txt:BitmapText, data:RenderData)
 	{
-		point.y += (Math.sin(_time * 4 - point.x / 4) - 0.5) * 2;
-		return point;
+		data.y += (Math.sin(_time * 4 - data.x / 4) - 0.5) * 2;
 	}
 
 	public function new()
@@ -36,8 +35,8 @@ class MainScene extends Scene
 		BitmapText.defineFormatTag("ghost", {alpha: 0.5});
 		BitmapText.defineFormatTag("big", {scale: 1.5});
 		BitmapText.defineFormatTag("big_green", {color: 0x55d400, scale: 1.5});
-		BitmapText.defineMoveTag("shake", shakeChar);
-		BitmapText.defineMoveTag("sine", sineWave);
+		BitmapText.defineCustomTag("shake", shakeChar);
+		BitmapText.defineCustomTag("sine", sineWave);
 		var img = new Image("assets/graphics/star.png");
 		img.scale = 0.25;
 		img.smooth = true;
