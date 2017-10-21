@@ -163,7 +163,15 @@ class Scene extends Tweener
 			if (e.active)
 			{
 				if (e.hasTween) e.updateTweens(HXP.elapsed);
-				if (e.active) e.update();
+				if (e.active)
+				{
+					if (e.shouldUpdate())
+					{
+						e.preUpdate.invoke();
+						e.update();
+						e.postUpdate.invoke();
+					}
+				}
 			}
 			if (e.graphic != null && e.graphic.active) e.graphic.update();
 		}

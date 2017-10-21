@@ -3,6 +3,7 @@ package haxepunk;
 import flash.geom.Point;
 import haxe.ds.Either.Left;
 import haxe.ds.Either.Right;
+import haxepunk.Signal.Signal0;
 import haxepunk.ds.OneOf;
 import haxepunk.graphics.Graphiclist;
 import haxepunk.math.MathUtil;
@@ -24,6 +25,11 @@ class Entity extends Tweener
 	 * @since 4.0.0
 	 */
 	public var parent:Null<Entity>;
+
+	/**
+	 * If set, skip every N update frames.
+	 */
+	public var skipFrames:Int = 0;
 
 	/**
 	 * If the Entity should render.
@@ -122,6 +128,9 @@ class Entity extends Tweener
 	 */
 	public var originY:Int = 0;
 
+	public var preUpdate:Signal0 = new Signal0();
+	public var postUpdate:Signal0 = new Signal0();
+
 	/**
 	 * Constructor. Can be used to place the Entity and assign a graphic and mask.
 	 * @param	x			X position to place the Entity.
@@ -166,6 +175,17 @@ class Entity extends Tweener
 	 * Override this, called when the Scene is resized.
 	 */
 	public function resized():Void {}
+
+	public function shouldUpdate():Bool
+	{
+		if (skipFrames == 0) return true;
+		else if (++_frames % skipFrames == 0)
+		{
+			_frames %= skipFrames;
+			return true;
+		}
+		else return false;
+	}
 
 	/**
 	 * Updates the Entity.
@@ -911,6 +931,7 @@ class Entity extends Tweener
 	var _type:String;
 	var _layer:Int = 0;
 	var _name:String;
+	var _frames:Int = -1;
 
 	var _recycleNext:Entity;
 
