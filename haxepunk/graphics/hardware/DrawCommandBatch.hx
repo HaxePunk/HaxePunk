@@ -8,7 +8,6 @@ import haxepunk.utils.Color;
 @:dox(hide)
 class DrawCommandBatch
 {
-	public static var maxLookbackDrawCalls:Int = 16;
 	public static var maxTriangleChecks:Int = 128;
 
 	static var _bounds:Rectangle = new Rectangle();
@@ -27,7 +26,7 @@ class DrawCommandBatch
 		head = last = null;
 	}
 
-	public function getDrawCommand(texture:Texture, shader:Shader, smooth:Bool, blend:BlendMode, clipRect:Rectangle, x1:Float=0, y1:Float=0, x2:Float=0, y2:Float=0, x3:Float=0, y3:Float=0)
+	public function getDrawCommand(texture:Texture, shader:Shader, smooth:Bool, blend:BlendMode, clipRect:Rectangle, x1:Float=0, y1:Float=0, x2:Float=0, y2:Float=0, x3:Float=0, y3:Float=0, flexibleLayer:Bool=false)
 	{
 		if (texture == null)
 		{
@@ -40,23 +39,18 @@ class DrawCommandBatch
 			return last;
 		}
 		#if !no_render_batch
-		else if (x1 != 0 && y1 != 0 && x2 != 0 && y2 != 0)
+		else if ((x1 != 0 || x2 != 0 || x3 != 0) && (y1 != 0 || y2 != 0 || y3 != 0))
 		{
 			// look back to see if we can add this to a previous draw call
-			var rx1 = minOf3(x1, x2, x3),
-				rx2 = maxOf3(x1, x2, x3),
-				ry1 = minOf3(y1, y2, y3),
-				ry2 = maxOf3(y1, y2, y3);
-			_bounds.setTo(rx1, ry1, rx2 - rx1, ry2 - ry1);
-			var i:Int = 0,
-				t:Int = 0,
+			var t:Int = 0,
 				current:DrawCommand = last,
 				found:Bool = false;
-			while (current != null && i++ < maxLookbackDrawCalls && t < maxTriangleChecks)
+			while (current != null && t < maxTriangleChecks)
 			{
 				if (current.match(texture, shader, smooth, blend, clipRect))
 				{
 					found = true;
+					if (flexibleLayer) return current;
 					break;
 				}
 				t += current.triangleCount;
@@ -64,9 +58,14 @@ class DrawCommandBatch
 			}
 			if (found)
 			{
-				i = t = 0;
+				var rx1 = minOf3(x1, x2, x3),
+					rx2 = maxOf3(x1, x2, x3),
+					ry1 = minOf3(y1, y2, y3),
+					ry2 = maxOf3(y1, y2, y3);
+				_bounds.setTo(rx1, ry1, rx2 - rx1, ry2 - ry1);
+				t = 0;
 				current = last;
-				while (current != null && i++ < maxLookbackDrawCalls)
+				while (current != null)
 				{
 					if (current.match(texture, shader, smooth, blend, clipRect))
 					{
@@ -120,7 +119,7 @@ class DrawCommandBatch
 		rx:Float, ry:Float, rw:Float, rh:Float,
 		a:Float, b:Float, c:Float, d:Float,
 		tx:Float, ty:Float,
-		color:Color, alpha:Float):Void
+		color:Color, alpha:Float, flexibleLayer:Bool = false):Void
 	{
 		if (alpha > 0)
 		{
@@ -147,7 +146,7 @@ class DrawCommandBatch
 			var xc = rh * c + tx;
 			var yd = rh * d + ty;
 
-			var command = getDrawCommand(texture, shader, smooth, blend, clipRect);
+			var command = getDrawCommand(texture, shader, smooth, blend, clipRect, tx, ty, xa, yb, xc, yd, flexibleLayer);
 
 			command.addTriangle(
 				tx, ty, uvx1, uvy1,
@@ -170,11 +169,11 @@ class DrawCommandBatch
 		tx1:Float, ty1:Float, uvx1:Float, uvy1:Float,
 		tx2:Float, ty2:Float, uvx2:Float, uvy2:Float,
 		tx3:Float, ty3:Float, uvx3:Float, uvy3:Float,
-		color:Color, alpha:Float):Void
+		color:Color, alpha:Float, flexibleLayer:Bool = false):Void
 	{
 		if (alpha > 0)
 		{
-			var command = getDrawCommand(texture, shader, smooth, blend, clipRect, tx1, ty1, tx2, ty2, tx3, ty3);
+			var command = getDrawCommand(texture, shader, smooth, blend, clipRect, tx1, ty1, tx2, ty2, tx3, ty3, flexibleLayer);
 			command.addTriangle(tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, color, alpha);
 		}
 	}

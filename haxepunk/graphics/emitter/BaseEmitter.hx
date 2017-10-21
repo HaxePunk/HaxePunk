@@ -57,6 +57,7 @@ import haxepunk.math.Random;
 			type = p._type;
 
 			_source.smooth = smooth;
+			_source.flexibleLayer = flexibleLayer;
 			_source.pixelSnapping = pixelSnapping;
 			_source.blend = type._blendMode == null ? this.blend : type._blendMode;
 

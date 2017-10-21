@@ -84,14 +84,14 @@ class AtlasRegion implements IAtlasRegion
 	public inline function draw(x:Float, y:Float,
 		scaleX:Float=1, scaleY:Float=1, angle:Float=0,
 		color:Color=Color.White, alpha:Float=1,
-		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
+		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle, flexibleLayer:Bool = false)
 	{
 		if (rotated) angle = angle + 90;
 
 		_parent.prepareTile(_rect, x, y,
 			scaleX, scaleY, angle,
 			color, alpha,
-			shader, smooth, blend, clipRect);
+			shader, smooth, blend, clipRect, flexibleLayer);
 	}
 
 	/**
@@ -113,7 +113,8 @@ class AtlasRegion implements IAtlasRegion
 	 */
 	public inline function drawMatrix(tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
 		color:Color=Color.White, alpha:Float=1,
-		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void
+		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle,
+		flexibleLayer:Bool = false):Void
 	{
 		if (rotated)
 		{
@@ -122,7 +123,7 @@ class AtlasRegion implements IAtlasRegion
 			_parent.prepareTileMatrix(_rect,
 				matrix.tx, matrix.ty, matrix.a, matrix.b, matrix.c, matrix.d,
 				color, alpha,
-				shader, smooth, blend, clipRect
+				shader, smooth, blend, clipRect, flexibleLayer
 			);
 		}
 		else
