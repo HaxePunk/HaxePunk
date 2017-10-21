@@ -30,9 +30,30 @@ abstract AlignType(Int)
 	var Left = 0;
 	var Center = 1;
 	var Right = 2;
+
+	public var floatValue(get, never):Float;
+	inline function get_floatValue() return switch (this)
+	{
+		case Center: 0.5;
+		case Right: 1;
+		default: 0;
+	};
 }
 
-typedef GlyphMoveFunction = String -> Point -> Point;
+class RenderData
+{
+	public var char:Null<String>;
+	public var img:Null<Image>;
+	public var x:Float = 0;
+	public var y:Float = 0;
+	public var color:Color = Color.White;
+	public var alpha:Float = 1;
+	public var scale:Float = 1;
+
+	public function new() {}
+}
+
+typedef CustomRenderFunction = BitmapText -> RenderData -> Void;
 
 /**
  * Rendering opcodes. Text is parsed into an array of these opcodes which
@@ -50,12 +71,12 @@ enum TextOpcode
 	NewLine(width:Float, height:Float, align:AlignType);
 	Image(image:Image, padding:Int);
 	Align(alignType:AlignType);
-	MoveText(f:GlyphMoveFunction);
+	Custom(f:CustomRenderFunction);
 	PopColor;
 	PopAlpha;
 	PopScale;
 	PopSize;
-	PopMoveText;
+	PopCustom;
 }
 
 /**
@@ -83,8 +104,8 @@ class BitmapText extends Graphic
 	static var _scaleStack:Array<Float> = new Array();
 	static var _sizeStack:Array<Int> = new Array();
 	static var _word:Array<TextOpcode> = new Array();
-	static var _moveStack:Array<GlyphMoveFunction> = new Array();
-	static var _renderPoint:Point = new Point();
+	static var _customStack:Array<CustomRenderFunction> = new Array();
+	static var _renderData:RenderData = new RenderData();
 
 	/**
 	 * Define a new format tag which can be used to modify the formatting of a
@@ -138,12 +159,22 @@ class BitmapText extends Graphic
 		formatTags[tag] = [Image(image, padding)];
 	}
 
-	public static function defineMoveTag(tag:String, func:GlyphMoveFunction)
+	/**
+	 * Define a custom text rendering tag. Custom tags include a function which
+	 * takes the BitmapText and a RenderData object as parameters, and are
+	 * called before a glyph or image are rendered. Any modifications to the
+	 * RenderData object will be reflected in the rendered text; however, note
+	 * that you shouldn't hold onto the object reference, as it may be reused.
+	 * @param tag The tag name, e.g. "shake" (used as "<shake>text</shake>")
+	 * @param func The CustomRenderFunction
+	 * @since 4.0.0
+	 */
+	public static function defineCustomTag(tag:String, func:CustomRenderFunction)
 	{
 		if (formatTags.exists(tag)) throw 'Duplicate format tag: <$tag> already exists';
 		var closeTag = '/$tag';
-		formatTags[tag] = [MoveText(func)];
-		formatTags[closeTag] = [PopMoveText];
+		formatTags[tag] = [Custom(func)];
+		formatTags[closeTag] = [PopCustom];
 	}
 
 	/**
@@ -312,10 +343,8 @@ class BitmapText extends Graphic
 		if (this.text != text)
 		{
 			this.text = text;
-
-			parseText();
+			_dirty = true;
 		}
-
 		return text;
 	}
 
@@ -556,14 +585,14 @@ class BitmapText extends Graphic
 	override public function render(point:Point, camera:Camera)
 	{
 		if (_dirty) parseText();
-		HXP.clear(_moveStack);
+		HXP.clear(_customStack);
 
 		// determine drawing location
 		var fsx = camera.fullScaleX,
 			fsy = camera.fullScaleY;
 
 		_point.x = floorX(camera, point.x) + floorX(camera, x) - floorX(camera, camera.x * scrollX);
-		_point.y = camera.floorY(point.y) + camera.floorY(y) - camera.floorY(camera.y * scrollY);
+		_point.y = floorY(camera, point.y) + floorY(camera, y) - floorY(camera, camera.y * scrollY);
 
 		var sx = scale * scaleX * size,
 			sy = scale * scaleY * size;
@@ -578,15 +607,9 @@ class BitmapText extends Graphic
 			cursorX:Float = 0,
 			cursorY:Float = 0,
 			charCount:Int = 0;
-		inline function getRenderPoint(char:String = "")
+		inline function applyCustomFunctions(data:RenderData)
 		{
-			var point = _renderPoint;
-			point.setTo(cursorX, cursorY);
-			for (func in _moveStack)
-			{
-				point = func(char, point);
-			}
-			return point;
+			for (func in _customStack) func(this, data);
 		}
 		for (op in opCodes)
 		{
@@ -619,14 +642,21 @@ class BitmapText extends Graphic
 						else
 						{
 							// draw the character
-							var point = getRenderPoint(char);
-							var x = point.x + lineOffsetX + gd.xOffset * gd.scale / fsx,
-								y = point.y + gd.yOffset * gd.scale * sy / maxFullScale + thisLineHeight - (lineHeight * currentScale * currentSizeRatio);
+							_renderData.char = char;
+							_renderData.img = null;
+							_renderData.x = cursorX;
+							_renderData.y = cursorY;
+							_renderData.color = currentColor;
+							_renderData.alpha = currentAlpha;
+							_renderData.scale = currentScale;
+							applyCustomFunctions(_renderData);
+							var x = _renderData.x + lineOffsetX + gd.xOffset * gd.scale / fsx,
+								y = _renderData.y + gd.yOffset * gd.scale * sy / maxFullScale + thisLineHeight - (lineHeight * currentScale * currentSizeRatio);
 							gd.region.draw(
 								(_point.x + x) * fsx, (_point.y + y) * fsy,
 								gd.scale, gd.scale * sy * fsy / maxFullScale, 0,
-								currentColor, currentAlpha,
-								shader, smooth, blend
+								_renderData.color, _renderData.alpha,
+								shader, smooth, blend, clipRect, flexibleLayer
 							);
 							// advance cursor position
 							cursorX += gd.xAdvance * gd.scale / fsx + charSpacing * currentScale * currentSizeRatio;
@@ -636,12 +666,7 @@ class BitmapText extends Graphic
 					// advance to next line and set the new line height
 					cursorX = 0;
 					cursorY += thisLineHeight + ((cursorY > 0 && thisLineHeight > 0) ? lineSpacing : 0);
-					lineOffsetX = Std.int((width - lineWidth) * switch (alignType)
-					{
-						case Left: 0;
-						case Center: 0.5;
-						case Right: 1;
-					});
+					lineOffsetX = Std.int((width - lineWidth) * alignType.floatValue);
 					thisLineHeight = lineHeight;
 					if (cursorY != 0) ++charCount;
 				case Image(image, padding):
@@ -651,25 +676,33 @@ class BitmapText extends Graphic
 						originalScaleX = image.scaleX,
 						originalScaleY = image.scaleY;
 					image.originX = image.originY = 0;
-					var point = getRenderPoint();
-					image.x = _point.x + point.x + lineOffsetX + originalX + padding;
-					image.y = _point.y + point.y + thisLineHeight + originalY - image.height * image.scale * image.scaleY * currentScale * this.scale * this.scaleY;
-					image.color = currentColor;
-					image.alpha = currentAlpha;
-					image.scaleX *= this.scale * this.scaleX * currentScale;
-					image.scaleY *= this.scale * this.scaleY * currentScale;
+					_renderData.char = null;
+					_renderData.img = image;
+					_renderData.x = cursorX;
+					_renderData.y = cursorY;
+					_renderData.color = currentColor;
+					_renderData.alpha = currentAlpha;
+					_renderData.scale = currentScale;
+					applyCustomFunctions(_renderData);
+					image.x = _point.x + _renderData.x + lineOffsetX + originalX + padding;
+					image.y = _point.y + _renderData.y + thisLineHeight + originalY - image.height * image.scale * image.scaleY * _renderData.scale * this.scale * this.scaleY;
+					image.color = _renderData.color;
+					image.alpha = _renderData.alpha;
+					image.scaleX *= this.scale * this.scaleX * _renderData.scale;
+					image.scaleY *= this.scale * this.scaleY * _renderData.scale;
 					image.render(HXP.zero, HXP.zeroCamera);
 					image.x = originalX;
 					image.y = originalY;
 					image.scaleX = originalScaleX;
 					image.scaleY = originalScaleY;
+					image.flexibleLayer = flexibleLayer;
 					// advance cursor position
-					cursorX += ((image.width * image.scale * image.scaleX * this.scale * this.scaleX) + charSpacing + padding * 2) * currentScale;
+					cursorX += ((image.width * image.scale * image.scaleX * this.scale * this.scaleX) + charSpacing + padding * 2) * _renderData.scale;
 					++charCount;
-				case MoveText(func):
-					_moveStack.push(func);
-				case PopMoveText:
-					_moveStack.pop();
+				case Custom(func):
+					_customStack.push(func);
+				case PopCustom:
+					_customStack.pop();
 				case PopSize, PopScale, PopColor, PopAlpha: {}
 				case Align(_): {}
 			}
