@@ -1,10 +1,6 @@
-package haxepunk.graphics.hardware;
+package haxepunk.graphics.hardware.opengl;
 
-#if nme
-import flash.gl.GL;
-#else
-import lime.graphics.opengl.GL;
-#end
+import haxepunk.graphics.hardware.opengl.GL;
 import haxepunk.HXP;
 
 @:dox(hide)

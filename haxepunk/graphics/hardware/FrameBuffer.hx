@@ -1,14 +1,9 @@
 package haxepunk.graphics.hardware;
 
-#if nme
-import flash.gl.GL;
-import flash.gl.GLFramebuffer;
-import flash.gl.GLTexture;
-#else
-import lime.graphics.opengl.GL;
-import lime.graphics.opengl.GLFramebuffer;
-import lime.graphics.opengl.GLTexture;
-#end
+import haxepunk.graphics.hardware.opengl.GL;
+import haxepunk.graphics.hardware.opengl.GLFramebuffer;
+import haxepunk.graphics.hardware.opengl.GLTexture;
+import haxepunk.graphics.hardware.opengl.GLUtils;
 
 @:dox(hide)
 class FrameBuffer
