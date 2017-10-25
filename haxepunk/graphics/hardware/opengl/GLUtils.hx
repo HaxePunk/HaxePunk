@@ -1,6 +1,5 @@
 package haxepunk.graphics.hardware.opengl;
 
-import haxepunk.graphics.hardware.opengl.GL;
 import haxepunk.HXP;
 
 @:dox(hide)
