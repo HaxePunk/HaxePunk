@@ -5,6 +5,7 @@ import js.html.Int32Array;
 #end
 import haxepunk.graphics.hardware.opengl.GL;
 import haxepunk.graphics.hardware.opengl.GLBuffer;
+import haxepunk.graphics.hardware.opengl.GLUtils;
 
 class RenderBuffer
 {
