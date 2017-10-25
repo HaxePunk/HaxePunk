@@ -1,6 +1,6 @@
-package haxepunk.graphics.hardware;
+package haxepunk.graphics.hardware.opengl;
 
-import flash.gl.GL;
+import haxepunk.graphics.hardware.opengl.GL;
 import haxepunk.HXP;
 
 @:dox(hide)

@@ -3,8 +3,9 @@ package haxepunk.graphics.hardware;
 import haxe.PosInfos;
 import flash.geom.Rectangle;
 import flash.geom.Point;
-import flash.gl.GL;
-import flash.gl.GLFramebuffer;
+import haxepunk.graphics.hardware.opengl.GL;
+import haxepunk.graphics.hardware.opengl.GLFramebuffer;
+import haxepunk.graphics.hardware.opengl.GLUtils;
 import haxepunk.HXP;
 import haxepunk.graphics.shader.SceneShader;
 import haxepunk.utils.BlendMode;
@@ -190,6 +191,7 @@ class HardwareRenderer
 			destroy();
 			init();
 		}
+
 
 		var postProcess:Array<SceneShader> = scene.shaders;
 		if (postProcess != null && postProcess.length > 0)

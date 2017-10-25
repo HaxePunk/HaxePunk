@@ -3,8 +3,8 @@ package haxepunk.graphics.hardware;
 #if js
 import js.html.Int32Array;
 #end
-import flash.gl.GL;
-import flash.gl.GLBuffer;
+import haxepunk.graphics.hardware.opengl.GL;
+import haxepunk.graphics.hardware.opengl.GLBuffer;
 
 class RenderBuffer
 {
