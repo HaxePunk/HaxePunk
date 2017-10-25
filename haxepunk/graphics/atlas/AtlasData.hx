@@ -6,6 +6,7 @@ import flash.geom.Point;
 import flash.geom.Matrix;
 import haxepunk.Scene;
 import haxepunk.graphics.shader.Shader;
+import haxepunk.graphics.hardware.DrawCommandBatch;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.utils.Color;
 import haxepunk.math.MathUtil;
@@ -96,9 +97,10 @@ class AtlasData
 	 * @param	scene	The scene object to set
 	 */
 	@:allow(haxepunk.Scene)
-	static inline function startScene(scene:Scene):Void
+	static inline function startScene(batch:DrawCommandBatch):Void
 	{
-		_scene = scene;
+		_batch = batch;
+		batch.recycle();
 	}
 
 	/**
@@ -156,8 +158,7 @@ class AtlasData
 		color:Color, alpha:Float,
 		shader:Shader, smooth:Bool=false, blend:BlendMode, ?clipRect:Rectangle)
 	{
-		var batch = _scene.renderer.batch;
-		batch.addRect(
+		_batch.addRect(
 			texture, shader, smooth, blend, clipRect,
 			rect.x, rect.y, rect.width, rect.height,
 			a, b, c, d, tx, ty,
@@ -205,8 +206,7 @@ class AtlasData
 			d = cos * scaleY; // m11
 		}
 
-		var batch = _scene.renderer.batch;
-		batch.addRect(texture, shader, smooth, blend, clipRect, rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, color, alpha);
+		_batch.addRect(texture, shader, smooth, blend, clipRect, rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, color, alpha);
 	}
 
 	/**
@@ -239,14 +239,13 @@ class AtlasData
 		color:Color, alpha:Float,
 		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void
 	{
-		var batch = _scene.renderer.batch;
-		batch.addTriangle(texture, shader, smooth, blend, clipRect, tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, color, alpha);
+		_batch.addTriangle(texture, shader, smooth, blend, clipRect, tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, color, alpha);
 	}
 
 	// used for pooling
 	var _name:String;
 
-	static var _scene:Scene;
+	static var _batch:DrawCommandBatch;
 	static var _dataPool:Map<String, AtlasData> = new Map<String, AtlasData>();
 	static var _uniqueId:Int = 0; // allows for unique names
 	static var _rect:Rectangle = new Rectangle();

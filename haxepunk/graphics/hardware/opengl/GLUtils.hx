@@ -1,5 +1,6 @@
 package haxepunk.graphics.hardware.opengl;
 
+import haxe.PosInfos;
 import haxepunk.HXP;
 
 @:dox(hide)
@@ -33,6 +34,19 @@ class GLUtils
 		}
 		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
 		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
+	}
+
+	public static inline function checkForErrors(?pos:PosInfos)
+	{
+		#if gl_debug
+		var error = GL.getError();
+		if (error != GL.NO_ERROR)
+			throw "GL Error found at " + pos.fileName + ":" + pos.lineNumber + ": " + error;
+		#elseif debug
+		var error = GL.getError();
+		if (error != GL.NO_ERROR)
+			trace("GL Error found at " + pos.fileName + ":" + pos.lineNumber + ": " + error);
+		#end
 	}
 
 #if lime

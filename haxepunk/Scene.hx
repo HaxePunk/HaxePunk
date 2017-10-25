@@ -4,8 +4,8 @@ import haxe.ds.IntMap;
 import flash.geom.Point;
 import haxepunk.Signal;
 import haxepunk.graphics.atlas.AtlasData;
-import haxepunk.graphics.hardware.SceneRenderer;
 import haxepunk.graphics.shader.SceneShader;
+import haxepunk.graphics.hardware.DrawCommandBatch;
 import haxepunk.utils.BlendMode;
 import haxepunk.utils.Color;
 import haxepunk.utils.DrawContext;
@@ -44,6 +44,8 @@ class Scene extends Tweener
 
 	public var width:Int = 0;
 	public var height:Int = 0;
+
+	public var batch:DrawCommandBatch;
 
 	/**
 	 * Array of shaders which will be used to process the final result of
@@ -90,7 +92,7 @@ class Scene extends Tweener
 		super();
 
 		camera = new Camera();
-		renderer = new SceneRenderer(this);
+		batch = new DrawCommandBatch();
 
 		_layerList = new Array<Int>();
 
@@ -211,8 +213,7 @@ class Scene extends Tweener
 	 */
 	public function render()
 	{
-		renderer.startFrame();
-		AtlasData.startScene(this);
+		AtlasData.startScene(batch);
 
 		if (bgAlpha > 0)
 		{
@@ -241,7 +242,6 @@ class Scene extends Tweener
 		}
 
 		postRender.invoke();
-		renderer.endFrame();
 	}
 
 	/**
@@ -261,11 +261,6 @@ class Scene extends Tweener
 	{
 		return Std.int((HXP.screen.mouseY / camera.scaleY + camera.y));
 	}
-
-	/**
-	 * Used to store render data.
-	 */
-	public var renderer(default, null):SceneRenderer;
 
 	/**
 	 * Adds the Entity to the Scene at the end of the frame.
