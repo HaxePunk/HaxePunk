@@ -16,20 +16,22 @@ class EngineRenderer extends OpenGLView
 
 	function renderScenes(rect:Rectangle)
 	{
-		HXP.screen.renderer.startFrame();
+		var renderer = HXP.screen.renderer;
+		renderer.startFrame();
 		for (scene in HXP.engine)
 		{
-			renderScene(scene, rect);
+			if (scene.visible)
+			{
+				renderer.startScene(scene);
+				var currentDraw:DrawCommand = scene.batch.head;
+				while (currentDraw != null)
+				{
+					renderer.render(currentDraw, scene, rect);
+					currentDraw = currentDraw._next;
+				}
+				renderer.flushScene(scene);
+			}
 		}
-		HXP.screen.renderer.endFrame();
+		renderer.endFrame();
 	}
-
-	inline function renderScene(scene:Scene, rect:Rectangle)
-	{
-		scene.renderer.renderScene(rect);
-	}
-
-	public function startScene(scene:Scene) {}
-
-	public function endScene(scene:Scene) {}
 }

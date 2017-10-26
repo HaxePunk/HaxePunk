@@ -1,15 +1,9 @@
 package haxepunk.graphics.shader;
 
-#if nme
-import flash.gl.GL;
-import flash.gl.GLProgram;
-import flash.gl.GLShader;
-#else
-import lime.graphics.opengl.GL;
-import lime.graphics.opengl.GLProgram;
-import lime.graphics.opengl.GLShader;
-#end
-import haxepunk.graphics.hardware.GLUtils;
+import haxepunk.graphics.hardware.opengl.GL;
+import haxepunk.graphics.hardware.opengl.GLProgram;
+import haxepunk.graphics.hardware.opengl.GLShader;
+import haxepunk.graphics.hardware.opengl.GLUtils;
 import haxepunk.graphics.hardware.DrawCommand;
 import haxepunk.graphics.hardware.Float32Array;
 import haxepunk.graphics.hardware.RenderBuffer;

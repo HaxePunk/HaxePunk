@@ -388,7 +388,7 @@ class DrawContext
 	{
 		if (shader == null) shader = new ColorShader();
 		var scene = (this.scene == null) ? (HXP.renderingScene == null ? HXP.scene : HXP.renderingScene) : this.scene;
-		command = scene.renderer.batch.getDrawCommand(null, shader, smooth, blend, null);
+		command = scene.batch.getDrawCommand(null, shader, smooth, blend, null);
 	}
 
 	inline function drawTriangle(v1:Vector2, v2:Vector2, v3:Vector2):Void

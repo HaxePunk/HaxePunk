@@ -1,17 +1,11 @@
 package haxepunk.graphics.shader;
 
 import flash.Assets;
-#if nme
-import flash.gl.GL;
-import flash.gl.GLBuffer;
-import flash.gl.GLUniformLocation;
-#else
-import lime.graphics.opengl.GL;
-import lime.graphics.opengl.GLBuffer;
-import lime.graphics.opengl.GLUniformLocation;
-#end
+import haxepunk.graphics.hardware.opengl.GL;
+import haxepunk.graphics.hardware.opengl.GLBuffer;
+import haxepunk.graphics.hardware.opengl.GLUniformLocation;
+import haxepunk.graphics.hardware.opengl.GLUtils;
 import haxepunk.graphics.hardware.Float32Array;
-import haxepunk.graphics.hardware.GLUtils;
 
 /**
  * Used to create a custom shader.

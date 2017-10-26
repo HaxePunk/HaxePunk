@@ -3,14 +3,9 @@ package haxepunk.graphics.hardware;
 #if js
 import js.html.Int32Array;
 #end
-
-#if nme
-import flash.gl.GL;
-import flash.gl.GLBuffer;
-#else
-import lime.graphics.opengl.GL;
-import lime.graphics.opengl.GLBuffer;
-#end
+import haxepunk.graphics.hardware.opengl.GL;
+import haxepunk.graphics.hardware.opengl.GLBuffer;
+import haxepunk.graphics.hardware.opengl.GLUtils;
 
 class RenderBuffer
 {

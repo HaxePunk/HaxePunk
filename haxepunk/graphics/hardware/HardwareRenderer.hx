@@ -1,15 +1,10 @@
 package haxepunk.graphics.hardware;
 
-import haxe.PosInfos;
 import flash.geom.Rectangle;
 import flash.geom.Point;
-#if nme
-import flash.gl.GL;
-import flash.gl.GLFramebuffer;
-#else
-import lime.graphics.opengl.GL;
-import lime.graphics.opengl.GLFramebuffer;
-#end
+import haxepunk.graphics.hardware.opengl.GL;
+import haxepunk.graphics.hardware.opengl.GLFramebuffer;
+import haxepunk.graphics.hardware.opengl.GLUtils;
 import haxepunk.HXP;
 import haxepunk.graphics.shader.SceneShader;
 import haxepunk.utils.BlendMode;
@@ -30,19 +25,6 @@ class HardwareRenderer
 	static var triangleCount:Int = 0;
 	static var drawCallCount:Int = 0;
 	static var _tracking:Bool = true;
-
-	static inline function checkForGLErrors(?pos:PosInfos)
-	{
-		#if gl_debug
-		var error = GL.getError();
-		if (error != GL.NO_ERROR)
-			throw "GL Error found at " + pos.fileName + ":" + pos.lineNumber + ": " + error;
-		#elseif debug
-		var error = GL.getError();
-		if (error != GL.NO_ERROR)
-			trace("GL Error found at " + pos.fileName + ":" + pos.lineNumber + ": " + error);
-		#end
-	}
 
 	static inline function ortho(x0:Float, x1:Float, y0:Float, y1:Float, zNear:Float, zFar:Float)
 	{
@@ -108,7 +90,7 @@ class HardwareRenderer
 	@:access(haxepunk.graphics.hardware.DrawCommand)
 	public function render(drawCommand:DrawCommand, scene:Scene, rect:Rectangle):Void
 	{
-		#if (gl_debug || debug) checkForGLErrors(); #end
+		GLUtils.checkForErrors();
 
 		if (drawCommand != null && drawCommand.triangleCount > 0)
 		{
@@ -149,17 +131,17 @@ class HardwareRenderer
 				GL.uniformMatrix4fv(shader.uniformIndex(UNIFORM_MATRIX), false, _ortho);
 				#end
 
-				#if (gl_debug || debug) checkForGLErrors(); #end
+				GLUtils.checkForErrors();
 
 				var texture:Texture = drawCommand.texture;
 				if (texture.bitmap != null) GLUtils.bindTexture(texture, drawCommand.smooth);
 
-				#if (gl_debug || debug) checkForGLErrors(); #end
+				GLUtils.checkForErrors();
 
 				GL.bindBuffer(GL.ARRAY_BUFFER, buffer.glBuffer);
 				shader.prepare(drawCommand, buffer);
 
-				#if (gl_debug || debug) checkForGLErrors(); #end
+				GLUtils.checkForErrors();
 
 				setBlendMode(drawCommand.blend);
 
@@ -174,14 +156,14 @@ class HardwareRenderer
 
 				GL.drawArrays(GL.TRIANGLES, 0, triangles * 3);
 
-				#if (gl_debug || debug) checkForGLErrors(); #end
+				GLUtils.checkForErrors();
 
 				GL.disable(GL.SCISSOR_TEST);
 
 				GL.bindBuffer(GL.ARRAY_BUFFER, null);
 				shader.unbind();
 
-				#if (gl_debug || debug) checkForGLErrors(); #end
+				GLUtils.checkForErrors();
 			}
 		}
 	}
