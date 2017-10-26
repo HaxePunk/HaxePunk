@@ -97,6 +97,8 @@ class Tilemap extends Graphic
 		_setColumns = Std.int(_atlas.width / tileWidth);
 		_setRows = Std.int(_atlas.height / tileHeight);
 		_setCount = _setColumns * _setRows;
+
+		pixelSnapping = true;
 	}
 
 	/**

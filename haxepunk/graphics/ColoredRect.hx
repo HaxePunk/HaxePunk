@@ -32,7 +32,7 @@ class ColoredRect extends Graphic
 			fsy = camera.fullScaleY;
 		var x1 = (floorX(camera, point.x) - floorX(camera, camera.x) + floorX(camera, x)) * fsx,
 			x2 = x1 + width * fsx,
-			y1 = (camera.floorY(point.y) - camera.floorY(camera.y) + camera.floorY(y)) * fsy,
+			y1 = (floorY(camera, point.y) - floorY(camera, camera.y) + floorY(camera, y)) * fsy,
 			y2 = y1 + height * fsy;
 
 		command.addTriangle(x1, y1, 0, 0, x2, y1, 0, 0, x1, y2, 0, 0, color, alpha);

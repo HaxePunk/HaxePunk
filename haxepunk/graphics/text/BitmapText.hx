@@ -413,7 +413,7 @@ class BitmapText extends Graphic
 		// start the next line
 		inline function addNewLine()
 		{
-			opCodes[newLineIndex] = NewLine(Std.int(cursorX), Std.int(thisLineHeight), currentAlign);
+			opCodes[newLineIndex] = NewLine(cursorX, thisLineHeight, currentAlign);
 			cursorX = 0;
 			cursorY += thisLineHeight + (cursorY == 0 ? 0 : lineSpacing);
 			thisLineHeight = lineHeight * currentScale * currentSizeRatio;
@@ -586,13 +586,14 @@ class BitmapText extends Graphic
 	{
 		if (_dirty) parseText();
 		HXP.clear(_customStack);
+		var pixelPerfect = isPixelPerfect(camera);
 
 		// determine drawing location
 		var fsx = camera.fullScaleX,
 			fsy = camera.fullScaleY;
 
-		_point.x = floorX(camera, point.x) + floorX(camera, x) - floorX(camera, camera.x * scrollX);
-		_point.y = floorY(camera, point.y) + floorY(camera, y) - floorY(camera, camera.y * scrollY);
+		_point.x = point.x + floorX(camera, x) - floorX(camera, camera.x * scrollX);
+		_point.y = point.y + floorY(camera, y) - floorY(camera, camera.y * scrollY);
 
 		var sx = scale * scaleX * size,
 			sy = scale * scaleY * size;
@@ -653,7 +654,8 @@ class BitmapText extends Graphic
 							var x = _renderData.x + lineOffsetX + gd.xOffset * gd.scale / fsx,
 								y = _renderData.y + gd.yOffset * gd.scale * sy / maxFullScale + thisLineHeight - (lineHeight * currentScale * currentSizeRatio);
 							gd.region.draw(
-								(_point.x + x) * fsx, (_point.y + y) * fsy,
+								(_point.x + floorX(camera, x)) * fsx,
+								(_point.y + floorY(camera, y)) * fsy,
 								gd.scale, gd.scale * sy * fsy / maxFullScale, 0,
 								_renderData.color, _renderData.alpha,
 								shader, smooth, blend, clipRect, flexibleLayer
@@ -666,7 +668,7 @@ class BitmapText extends Graphic
 					// advance to next line and set the new line height
 					cursorX = 0;
 					cursorY += thisLineHeight + ((cursorY > 0 && thisLineHeight > 0) ? lineSpacing : 0);
-					lineOffsetX = Std.int((width - lineWidth) * alignType.floatValue);
+					lineOffsetX = (width - lineWidth) * alignType.floatValue;
 					thisLineHeight = lineHeight;
 					if (cursorY != 0) ++charCount;
 				case Image(image, padding):
@@ -690,6 +692,7 @@ class BitmapText extends Graphic
 					image.alpha = _renderData.alpha;
 					image.scaleX *= this.scale * this.scaleX * _renderData.scale;
 					image.scaleY *= this.scale * this.scaleY * _renderData.scale;
+					image.pixelSnapping = pixelPerfect;
 					image.render(HXP.zero, HXP.zeroCamera);
 					image.x = originalX;
 					image.y = originalY;
