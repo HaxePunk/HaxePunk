@@ -178,7 +178,6 @@ class HardwareRenderer
 			init();
 		}
 
-
 		var postProcess:Array<SceneShader> = scene.shaders;
 		if (postProcess != null && postProcess.length > 0)
 		{
