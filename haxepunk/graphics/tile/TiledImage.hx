@@ -54,6 +54,41 @@ class TiledImage extends Image
 		}
 	}
 
+	override public function pixelPerfectRender(point:Point, camera:Camera)
+	{
+		// determine drawing location
+		var fsx = camera.fullScaleX,
+			fsy = camera.fullScaleY,
+			sx = scale * scaleX,
+			sy = scale * scaleY;
+		_point.x = (point.x + floorX(camera, x - originX) - floorX(camera, camera.x * scrollX)) * fsx;
+		_point.y = (point.y + floorY(camera, y - originY) - floorY(camera, camera.y * scrollY)) * fsy;
+
+		var x:Float = 0, y:Float = 0,
+			x1:Float = 0, y1:Float = 0,
+			x2:Float = 0, y2:Float = 0;
+		while (y < _height)
+		{
+			y += _sourceRect.height * sy;
+			y2 = floorY(camera, y) * fsy;
+			while (x1 < _width * fsx)
+			{
+				x += _sourceRect.width * sx;
+				x2 = floorX(camera, x) * fsx;
+				_region.draw(
+					_point.x + x1,
+					_point.y + y1,
+					(x2 - x1) / _region.width, (y2 - y1) / _region.height, angle,
+					color, alpha,
+					shader, smooth, blend
+				);
+				x1 = x2;
+			}
+			x1 = x2 = 0;
+			y1 = y2;
+		}
+	}
+
 	/**
 	 * The x-offset of the texture.
 	 */

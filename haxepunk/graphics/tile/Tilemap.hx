@@ -385,8 +385,65 @@ class Tilemap extends Graphic
 			fullScaleY:Float = camera.fullScaleY;
 
 		// determine drawing location
-		_point.x = floorX(camera, point.x) + floorX(camera, x) - floorX(camera, camera.x * scrollX);
-		_point.y = floorY(camera, point.y) + floorY(camera, y) - floorY(camera, camera.y * scrollY);
+		_point.x = point.x + x - camera.x * scrollX;
+		_point.y = point.y + y - camera.y * scrollY;
+
+		var scx = scale * scaleX,
+			scy = scale * scaleY,
+			tw = tileWidth * scx,
+			th = tileHeight * scy;
+
+		// determine start and end tiles to draw (optimization)
+		var startx = Math.floor(-_point.x / tw),
+			starty = Math.floor(-_point.y / th),
+			destx = startx + 1 + Math.ceil(HXP.width / tw),
+			desty = starty + 1 + Math.ceil(HXP.height / th);
+
+		// nothing will render if we're completely off screen
+		if (startx > _columns || starty > _rows || destx < 0 || desty < 0)
+			return;
+
+		// clamp values to boundaries
+		if (startx < 0) startx = 0;
+		if (destx > _columns) destx = _columns;
+		if (starty < 0) starty = 0;
+		if (desty > _rows) desty = _rows;
+
+		var wx:Float, wy:Float, nx:Float, ny:Float,
+			tile:Int = 0;
+
+		_point.x *= fullScaleX;
+		_point.y *= fullScaleY;
+		for (y in starty...desty)
+		{
+			for (x in startx...destx)
+			{
+				tile = _map[y % _rows][x % _columns];
+				if (tile >= 0)
+				{
+					updateTileRect(tile);
+					_atlas.prepareTile(
+						_tile,
+						_point.x + x * tw * fullScaleX,
+						_point.y + y * th * fullScaleY,
+						scx * fullScaleX, scy * fullScaleY, 0,
+						color, alpha,
+						shader, smooth, blend
+					);
+				}
+			}
+		}
+	}
+
+	@:dox(hide)
+	override public function pixelPerfectRender(point:Point, camera:Camera)
+	{
+		var fullScaleX:Float = camera.fullScaleX,
+			fullScaleY:Float = camera.fullScaleY;
+
+		// determine drawing location
+		_point.x = point.x + floorX(camera, x) - floorX(camera, camera.x * scrollX);
+		_point.y = point.y + floorY(camera, y) - floorY(camera, camera.y * scrollY);
 
 		var scx = scale * scaleX,
 			scy = scale * scaleY,
