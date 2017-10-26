@@ -228,7 +228,7 @@ class Scene extends Tweener
 			drawContext.scene = this;
 			drawContext.blend = BlendMode.Alpha;
 			drawContext.setColor(bgColor == null ? HXP.stage.color : bgColor, bgAlpha);
-			drawContext.rectFilled(0, 0, HXP.width, HXP.height);
+			drawContext.rectFilled(0, 0, HXP.screen.width, HXP.screen.height);
 		}
 
 		preRender.invoke();
