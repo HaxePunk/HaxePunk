@@ -132,12 +132,10 @@ class DrawCommandBatch
 			}
 			else
 			{
-				// linear filter requires half pixel offset
-				var offset = smooth ? 0.5 : 0;
-				uvx1 = (rx + offset) / texture.width;
-				uvy1 = (ry + offset) / texture.height;
-				uvx2 = (rx + rw - offset) / texture.width;
-				uvy2 = (ry + rh - offset) / texture.height;
+				uvx1 = rx / texture.width;
+				uvy1 = ry / texture.height;
+				uvx2 = (rx + rw) / texture.width;
+				uvy2 = (ry + rh) / texture.height;
 			}
 
 			// matrix transformations

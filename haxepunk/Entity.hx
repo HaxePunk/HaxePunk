@@ -209,7 +209,7 @@ class Entity extends Tweener
 			{
 				_point.x = _point.y = 0;
 			}
-			graphic.render(_point, camera);
+			graphic.doRender(_point, camera);
 		}
 	}
 

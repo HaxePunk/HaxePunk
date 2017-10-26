@@ -82,10 +82,10 @@ class Graphiclist extends Graphic
 				if (g.relative)
 				{
 					_point.x = floorX(camera, point.x) + floorX(camera, x);
-					_point.y = camera.floorY(point.y) + camera.floorY(y);
+					_point.y = floorY(camera, point.y) + floorY(camera, y);
 				}
 				else _point.x = _point.y = 0;
-				g.render(_point, camera);
+				g.doRender(_point, camera);
 			}
 		}
 		camera.setTo(cx, cy);

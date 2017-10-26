@@ -249,12 +249,35 @@ class Graphic
 	public function destroy() {}
 
 	/**
-	 * Renders the graphic as an atlas.
+	 * Renders the graphic. This may call render or pixelPerfectRender
+	 * depending on settings.
+	 * @param  point      The position to draw the graphic.
+	 * @param  camera     The camera offset.
+	 */
+	@:dox(hide)
+	public function doRender(point:Point, camera:Camera)
+	{
+		if (pixelSnapping && camera.pixelSnapping) pixelPerfectRender(point, camera);
+		else render(point, camera);
+	}
+
+	/**
+	 * Renders the graphic.
 	 * @param  point      The position to draw the graphic.
 	 * @param  camera     The camera offset.
 	 */
 	@:dox(hide)
 	public function render(point:Point, camera:Camera) {}
+
+	/**
+	 * Renders the graphic, taking extra care to snap pixel locations and
+	 * lengths to whole number positions. Not all graphics need a separate
+	 * pixelPerfectRender implementation; by default this will just call
+	 * render.
+	 * @param  point      The position to draw the graphic.
+	 * @param  camera     The camera offset.
+	 */
+	public function pixelPerfectRender(point:Point, camera:Camera) render(point, camera);
 
 	/**
 	 * Pause updating this graphic.
