@@ -174,11 +174,11 @@ class Input
 				case PRESS:
 					trigger(HXP.engine.onInputPressed);
 					trigger(HXP.scene.onInputPressed);
-					if (Console.enabled) trigger(HXP.scene.onInputPressed);
+					if (Console.enabled) trigger(HXP.console.onInputPressed);
 				case RELEASE:
 					trigger(HXP.engine.onInputReleased);
 					trigger(HXP.scene.onInputReleased);
-					if (Console.enabled) trigger(HXP.scene.onInputReleased);
+					if (Console.enabled) trigger(HXP.console.onInputReleased);
 				default: {}
 			}
 		}
