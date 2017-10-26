@@ -22,6 +22,8 @@ class TiledImage extends Image
 		_width = width;
 		_height = height;
 		super(texture, clipRect);
+
+		pixelSnapping = true;
 	}
 
 	/** Renders the image. */
@@ -67,11 +69,11 @@ class TiledImage extends Image
 		var x:Float = 0, y:Float = 0,
 			x1:Float = 0, y1:Float = 0,
 			x2:Float = 0, y2:Float = 0;
-		while (y < _height)
+		while (y < _height * sy)
 		{
 			y += _sourceRect.height * sy;
 			y2 = floorY(camera, y) * fsy;
-			while (x1 < _width * fsx)
+			while (x1 < _width * sx)
 			{
 				x += _sourceRect.width * sx;
 				x2 = floorX(camera, x) * fsx;

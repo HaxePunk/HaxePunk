@@ -42,15 +42,56 @@ class Backdrop extends Graphic
 		_repeatY = repeatY;
 
 		super();
+
+		pixelSnapping = true;
 	}
 
 	@:dox(hide)
 	override public function render(point:Point, camera:Camera)
 	{
-		_point.x = floorX(camera, point.x) - floorX(camera, camera.x * scrollX) + floorX(camera, x);
-		_point.y = camera.floorY(point.y) - camera.floorY(camera.y * scrollY) + camera.floorY(y);
-		_point.x *= camera.fullScaleX;
-		_point.y *= camera.fullScaleY;
+		_point.x = (point.x - camera.x * scrollX + x) * camera.fullScaleX;
+		_point.y = (point.y - camera.y * scrollY + y) * camera.fullScaleY;
+
+		var sx = scale * scaleX * camera.fullScaleX,
+			sy = scale * scaleY * camera.fullScaleY,
+			scaledWidth = _width * sx,
+			scaledHeight = _height * sy;
+
+		var xi:Int = 1,
+			yi:Int = 1;
+		if (_repeatX)
+		{
+			_point.x %= scaledWidth;
+			if (_point.x > 0) _point.x -= scaledWidth;
+			xi = Std.int(Math.ceil((HXP.screen.width - _point.x) / scaledWidth));
+		}
+		if (_repeatY)
+		{
+			_point.y %= scaledHeight;
+			if (_point.y > 0) _point.y -= scaledHeight;
+			yi = Std.int(Math.ceil((HXP.screen.height - _point.y) / scaledHeight));
+		}
+
+		for (y in 0 ... yi)
+		{
+			for (x in 0 ... xi)
+			{
+				_region.draw(
+					_point.x + x * scaledWidth,
+					_point.y + y * scaledHeight,
+					sx, sy, 0,
+					color, alpha,
+					shader, smooth, blend
+				);
+			}
+		}
+	}
+
+	@:dox(hide)
+	override public function pixelPerfectRender(point:Point, camera:Camera)
+	{
+		_point.x = (point.x - floorX(camera, camera.x * scrollX) + floorX(camera, x)) * camera.fullScaleX;
+		_point.y = (point.y - floorY(camera, camera.y * scrollY) + floorY(camera, y)) * camera.fullScaleY;
 
 		var sx = scale * scaleX * camera.fullScaleX,
 			sy = scale * scaleY * camera.fullScaleY,

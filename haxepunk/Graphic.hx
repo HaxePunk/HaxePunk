@@ -112,9 +112,11 @@ class Graphic
 
 	/**
 	 * Whether this graphic will be snapped to the nearest whole number pixel
-	 * position when rendering.
+	 * position when rendering. If pixelSnapping is set to `true` on the
+	 * Camera, snapping will occur regardless of this setting. Some graphics
+	 * like Tilemap set this to true by default.
 	 */
-	public var pixelSnapping:Bool = true;
+	public var pixelSnapping:Bool = false;
 
 	/**
 	 * If true, this graphic may sometimes "fall through" other textures to
@@ -234,8 +236,8 @@ class Graphic
 		_class = Type.getClassName(Type.getClass(this));
 	}
 
-	public inline function floorX(camera:Camera, x:Float) return pixelSnapping ? camera.floorX(x) : x;
-	public inline function floorY(camera:Camera, y:Float) return pixelSnapping ? camera.floorY(y) : y;
+	public inline function floorX(camera:Camera, x:Float) return (pixelSnapping || camera.pixelSnapping) ? camera.floorX(x) : x;
+	public inline function floorY(camera:Camera, y:Float) return (pixelSnapping || camera.pixelSnapping) ? camera.floorY(y) : y;
 
 	/**
 	 * Updates the graphic.
@@ -248,6 +250,11 @@ class Graphic
 	 */
 	public function destroy() {}
 
+	public inline function isPixelPerfect(camera:Camera):Bool
+	{
+		return pixelSnapping || camera.pixelSnapping;
+	}
+
 	/**
 	 * Renders the graphic. This may call render or pixelPerfectRender
 	 * depending on settings.
@@ -257,7 +264,7 @@ class Graphic
 	@:dox(hide)
 	public function doRender(point:Point, camera:Camera)
 	{
-		if (pixelSnapping && camera.pixelSnapping) pixelPerfectRender(point, camera);
+		if (isPixelPerfect(camera)) pixelPerfectRender(point, camera);
 		else render(point, camera);
 	}
 

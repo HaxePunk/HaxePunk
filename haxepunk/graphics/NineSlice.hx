@@ -81,6 +81,7 @@ class NineSlice extends Graphic
 
 		width = w;
 		height = h;
+		pixelSnapping = false;
 	}
 
 	inline function getSegment(source:ImageType, x:Int, y:Int, width:Int, height:Int):Image
@@ -97,18 +98,18 @@ class NineSlice extends Graphic
 		{
 			leftWidth = floorX(camera, _sliceRect.left);
 			rightWidth = floorX(camera, source.width - _sliceRect.width);
-			topHeight = camera.floorY(_sliceRect.top);
-			bottomHeight = camera.floorY(source.height - _sliceRect.height);
+			topHeight = floorY(camera, _sliceRect.top);
+			bottomHeight = floorY(camera, source.height - _sliceRect.height);
 		}
 		else
 		{
 			leftWidth = floorX(camera, _sliceRect.left) / camera.fullScaleX;
 			rightWidth = floorX(camera, source.width - _sliceRect.width) / camera.fullScaleX;
-			topHeight = camera.floorY(_sliceRect.top) / camera.fullScaleY;
-			bottomHeight = camera.floorY(source.height - _sliceRect.height) / camera.fullScaleY;
+			topHeight = floorY(camera, _sliceRect.top) / camera.fullScaleY;
+			bottomHeight = floorY(camera, source.height - _sliceRect.height) / camera.fullScaleY;
 		}
 		var centerWidth:Float = floorX(camera, width) - leftWidth - rightWidth,
-			centerHeight:Float = camera.floorY(height) - topHeight - bottomHeight;
+			centerHeight:Float = floorY(camera, height) - topHeight - bottomHeight;
 
 		var leftX = 0, centerX = leftWidth, rightX = leftWidth + centerWidth,
 			topY = 0, centerY = topHeight, bottomY = topHeight + centerHeight;
@@ -118,9 +119,9 @@ class NineSlice extends Graphic
 			if (segment != null && segment.visible)
 			{
 				segment.x = floorX(camera, this.x) + x;
-				segment.y = camera.floorY(this.y) + y;
+				segment.y = floorY(camera, this.y) + y;
 				segment.scaleX = (floorX(camera, x + width) - floorX(camera, x)) / segment.width;
-				segment.scaleY = (camera.floorY(y + height) - camera.floorY(y)) / segment.height;
+				segment.scaleY = (floorY(camera, y + height) - floorY(camera, y)) / segment.height;
 				if (clipRect != null)
 				{
 					_clipRect.setTo(clipRect.x - x, clipRect.y - y, clipRect.width, clipRect.height);
