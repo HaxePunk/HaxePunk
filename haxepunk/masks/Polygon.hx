@@ -9,11 +9,12 @@ import haxepunk.masks.Hitbox;
 import haxepunk.math.Projection;
 import haxepunk.math.Vector2;
 import haxepunk.math.MathUtil;
+import haxepunk.math.MakeConvex;
 import flash.geom.Point;
 
 
 /**
- * Uses polygonal structure to check for collisions.
+ * Uses a convex polygonal structure to check for collisions.
  */
 class Polygon extends Hitbox
 {
@@ -31,13 +32,28 @@ class Polygon extends Hitbox
 	public var maxX(default, null):Int = 0;
 	/** Bottom y bounding box position. */
 	public var maxY(default, null):Int = 0;
-
+	
 	/**
-	 * Constructor.
-	 * @param	points		An array of coordinates that define the polygon (must have at least 3).
+	 * Creates a list of convex polygonal masks based on an array of vertices defined counter-clockwise.
+	 * The polygon must be simple (non-self-intersecting), but not necessarily convex.
+	 * @param	points		An array of coordinates that define the polygon (must have at least 3 and defined counter-clockwise).
 	 * @param	origin	 	Pivot point for rotations.
 	 */
-	public function new(points:Array<Vector2>, ?origin:Point)
+	public static function fromPoints(points:Array<Vector2>, ?origin:Point) : Masklist
+	{
+		var cp = MakeConvex.run(points);
+		var list = new Masklist();
+		for (p in cp)
+			list.add(new Polygon(p, origin));
+		return list;
+	}
+	
+	/**
+	 * Constructor. The passed polygon must be convex.
+	 * @param	points		An array of coordinates that define the polygon (must have at least 3 and be convex).
+	 * @param	origin	 	Pivot point for rotations.
+	 */
+	private function new(points:Array<Vector2>, ?origin:Point)
 	{
 		super();
 		if (points.length < 3) throw "The polygon needs at least 3 sides.";
