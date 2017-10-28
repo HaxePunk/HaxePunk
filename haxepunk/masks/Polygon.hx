@@ -39,11 +39,11 @@ class Polygon extends Hitbox
 	 * @param	points		An array of coordinates that define the polygon (must have at least 3 and defined counter-clockwise).
 	 * @param	origin	 	Pivot point for rotations.
 	 */
-	static public function fromPoints(points:Array<Vector2>, ?origin:Point) : Masklist
+	public static function fromPoints(points:Array<Vector2>, ?origin:Point) : Masklist
 	{
 		var cp = MakeConvex.run(points);
 		var list = new Masklist();
-		for(p in cp)
+		for (p in cp)
 			list.add(new Polygon(p, origin));
 		return list;
 	}

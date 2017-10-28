@@ -1,7 +1,5 @@
 package haxepunk.math;
 
-import haxepunk.math.Vector2;
-
 // A polygon is a path along points CCW
 typedef Polygon = Array<Point>;
 
@@ -14,18 +12,18 @@ typedef Polygon = Array<Point>;
 class MakeConvex
 {
 	// Find all invalid vertices, that is, vertices that form an invalid angle (> 180°)
-	static private function findInvalid(p:Polygon) : Array<Int>
+	private static function findInvalid(p:Polygon) : Array<Int>
 	{
 		var invalidVertices = new Array<Int>();
 		var np = p.length;
-		for(currentVIndex in 0 ... np)
+		for (currentVIndex in 0 ... np)
 		{
 			var currentV = p[currentVIndex];
 			var nextV = p[(currentVIndex + 1) % np];
 			var nextNextV = p[(currentVIndex + 2) % np];
 			var currentEdge = nextV - currentV;
 			var nextEdge = nextNextV - nextV;
-			if(currentEdge.orthoR().dot(nextEdge) < 0)
+			if (currentEdge.orthoR().dot(nextEdge) < 0)
 				invalidVertices.push((currentVIndex + 1) % np);
 		}
 		return invalidVertices;
@@ -34,7 +32,7 @@ class MakeConvex
 	/**
 	 * Decomposes a counter-clockwise simple polygon into convex polygons.
 	 */
-	static public function run(polygon:Polygon) : Array<Polygon>
+	public static function run(polygon:Polygon) : Array<Polygon>
 	{
 		var p = polygon.copy();
 		var r = new Array<Polygon>();
@@ -42,14 +40,14 @@ class MakeConvex
 		var np = p.length;
 		
 		var n:Int = invalidVertices.length;
-		while((n = invalidVertices.length) > 0)
+		while ((n = invalidVertices.length) > 0)
 		{
 			// Find the starting vertex ; it's any invalid vertex that has a valid vertex after it
 			// we know this exists because a polygon must have at least one valid vertex
 			var startIndex:Int = 0;
-			for(i in 0 ... n)
+			for (i in 0 ... n)
 			{
-				if(n == 1 || (invalidVertices[i] + 1) % np != invalidVertices[(i + 1) % n])
+				if (n == 1 || (invalidVertices[i] + 1) % np != invalidVertices[(i + 1) % n])
 				{
 					startIndex = invalidVertices[i];
 					break;
@@ -63,34 +61,34 @@ class MakeConvex
 			var startVertex = p[startIndex];
 			var firstEdge = p[(startIndex + 1) % np] - startVertex;
 			var found = false, target:Int = 0;
-			for(i in 2 ... np)
+			for (i in 2 ... np)
 			{
 				var curIndex = (startIndex + i) % np,
 					curVertex = p[curIndex];
 				
 				// This vertex is invalid
-				if(invalidVertices.indexOf(curIndex) > -1)
+				if (invalidVertices.indexOf(curIndex) > -1)
 				{
 					found = true;
 					target = curIndex;
 				}
 				// This vertex, if added, would turn the polygon from convex to concave.
 				// Thus, the correct vertex is the previous one
-				else if((startVertex - curVertex).orthoR().dot(firstEdge) < 0)
+				else if ((startVertex - curVertex).orthoR().dot(firstEdge) < 0)
 				{
 					found = true;
 					target = (startIndex + i - 1) % np;
 				}
 				
-				if(found)
+				if (found)
 				{
 					// Extract vertices startIndex to "target" ; they make up a convex polygon
 					var newPoly = new Polygon(),
 						k = startIndex;
-					while(true)
+					while (true)
 					{
 						newPoly.push(p[k]);
-						if(k == target)
+						if (k == target)
 							break;
 						k = (k + 1) % np;
 					}
@@ -100,7 +98,7 @@ class MakeConvex
 					np = p.length;
 					// Rearrange the indices in invalidVertices as well, since the contents of p will change
 					invalidVertices = findInvalid(p);
-					if(invalidVertices.length == 0)
+					if (invalidVertices.length == 0)
 						r.push(p);
 					break;
 				}
@@ -121,7 +119,7 @@ abstract Point(Vector2) from Vector2 to Vector2
 		this = new Vector2(x, y);
 	}
 	
-	@:from static public function fromStruct(v:{x:Float, y:Float}) : Point
+	@:from public static function fromStruct(v:{x:Float, y:Float}) : Point
 	{
 		return new Point(v.x, v.y);
 	}
