@@ -90,13 +90,15 @@ class Backdrop extends Graphic
 	@:dox(hide)
 	override public function pixelPerfectRender(point:Point, camera:Camera)
 	{
-		_point.x = (point.x - floorX(camera, camera.x * scrollX) + floorX(camera, x)) * camera.fullScaleX;
-		_point.y = (point.y - floorY(camera, camera.y * scrollY) + floorY(camera, y)) * camera.fullScaleY;
+		var fsx = camera.fullScaleX,
+			fsy = camera.fullScaleY,
+			sx = scale * scaleX,
+			sy = scale * scaleY;
+		_point.x = (point.x - floorX(camera, camera.x * scrollX) + floorX(camera, x)) * fsx;
+		_point.y = (point.y - floorY(camera, camera.y * scrollY) + floorY(camera, y)) * fsy;
 
-		var sx = scale * scaleX * camera.fullScaleX,
-			sy = scale * scaleY * camera.fullScaleY,
-			scaledWidth = _width * sx,
-			scaledHeight = _height * sy;
+		var scaledWidth = _width * sx * fsx,
+			scaledHeight = _height * sy * fsy;
 
 		var xi:Int = 1,
 			yi:Int = 1;
@@ -113,18 +115,25 @@ class Backdrop extends Graphic
 			yi = Std.int(Math.ceil((HXP.screen.height - _point.y) / Std.int(scaledHeight)));
 		}
 
+		var x1:Float = 0, y1:Float = 0,
+			x2:Float = 0, y2:Float = 0;
 		for (y in 0 ... yi)
 		{
+			y2 = floorY(camera, (y + 1) * _height * sy) * fsy;
 			for (x in 0 ... xi)
 			{
+				x2 = floorX(camera, (x + 1) * _width * sx) * fsx;
 				_region.draw(
-					_point.x + x * scaledWidth,
-					_point.y + y * scaledHeight,
-					sx, sy, 0,
+					_point.x + x1,
+					_point.y + y1,
+					(x2 - x1) / _width, (y2 - y1) / _height, 0,
 					color, alpha,
 					shader, smooth, blend
 				);
+				x1 = x2;
 			}
+			x1 = x2 = 0;
+			y1 = y2;
 		}
 	}
 
