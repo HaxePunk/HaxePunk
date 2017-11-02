@@ -21,6 +21,11 @@ class NineSlice extends Graphic
 	 */
 	public var scaleBorder:Bool = false;
 
+	/**
+	 * Set this to false to skip the center, drawing only the border segments.
+	 */
+	public var drawCenter:Bool = true;
+
 	override function set_color(v:Color):Color
 	{
 		return topL.color =
@@ -137,7 +142,7 @@ class NineSlice extends Graphic
 		drawSegment(topC, centerX, topY, centerWidth, topHeight);
 		drawSegment(topR, rightX, topY, rightWidth, topHeight);
 		drawSegment(medL, leftX, centerY, leftWidth, centerHeight);
-		drawSegment(medC, centerX, centerY, centerWidth, centerHeight);
+		if (drawCenter) drawSegment(medC, centerX, centerY, centerWidth, centerHeight);
 		drawSegment(medR, rightX, centerY, rightWidth, centerHeight);
 		drawSegment(botL, leftX, bottomY, leftWidth, bottomHeight);
 		drawSegment(botC, centerX, bottomY, centerWidth, bottomHeight);
