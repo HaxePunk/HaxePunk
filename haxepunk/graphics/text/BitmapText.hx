@@ -204,14 +204,14 @@ class BitmapText extends Graphic
 	}
 	inline function set_textHeight(v:Int) return textHeight = v;
 
-	public var width(default, set):Float = 0;
-	inline function set_width(v:Float)
+	public var width(default, set):Int = 0;
+	inline function set_width(v:Int)
 	{
 		if (v != width) _dirty = true;
 		return width = v;
 	}
-	public var height(default, set):Float = 0;
-	inline function set_height(v:Float)
+	public var height(default, set):Int = 0;
+	inline function set_height(v:Int)
 	{
 		if (v != height) _dirty = true;
 		return height = v;
@@ -298,7 +298,7 @@ class BitmapText extends Graphic
 	 * 						leading		Vertical space between lines. (Currently ignored.)
 	 *						richText	If the text field uses a rich text string. (Currently ignored.)
 	 */
-	public function new(text:String, x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0, ?options:BitmapTextOptions)
+	public function new(text:String, x:Float = 0, y:Float = 0, width:Int = 0, height:Int = 0, ?options:BitmapTextOptions)
 	{
 		super();
 
@@ -376,14 +376,17 @@ class BitmapText extends Graphic
 		var remaining = text;
 		var cursorX:Float = 0,
 			cursorY:Float = 0,
+			trailingWhitespace:Float = 0,
 			block:String = "",
 			currentWord:String = "",
 			wordLength:Float = 0,
+			wordTrailingWhitespace:Float = 0,
 			wordHeight:Float = 0,
 			currentScale:Float = 1,
 			currentSizeRatio:Float = 1,
 			currentAlign:AlignType = AlignType.Left,
-			wrapping:Bool = false;
+			wrapping:Bool = false,
+			currentWordTrailingWhitespace:Float = 0;
 
 		var textWidth = 0;
 		charCount = 0;
@@ -413,8 +416,8 @@ class BitmapText extends Graphic
 		// start the next line
 		inline function addNewLine()
 		{
-			opCodes[newLineIndex] = NewLine(cursorX, thisLineHeight, currentAlign);
-			cursorX = 0;
+			opCodes[newLineIndex] = NewLine(cursorX - trailingWhitespace, thisLineHeight, currentAlign);
+			cursorX = trailingWhitespace = 0;
 			cursorY += thisLineHeight + (cursorY == 0 ? 0 : lineSpacing);
 			thisLineHeight = lineHeight * currentScale * currentSizeRatio;
 			opCodes.push(null);
@@ -428,6 +431,8 @@ class BitmapText extends Graphic
 			{
 				_word.push(TextBlock(currentWord));
 				currentWord = "";
+				wordTrailingWhitespace = currentWordTrailingWhitespace;
+				currentWordTrailingWhitespace = 0;
 			}
 		}
 		// add a word of text
@@ -436,7 +441,7 @@ class BitmapText extends Graphic
 			flushCurrentWord();
 			if (_word.length != 0)
 			{
-				if (wrap && cursorX + wordLength > width)
+				if (wrap && cursorX - wordTrailingWhitespace + wordLength > width)
 				{
 					addNewLine();
 					cursorX = wordLength;
@@ -454,6 +459,8 @@ class BitmapText extends Graphic
 				HXP.clear(_word);
 				wordLength = 0;
 				wordHeight = 0;
+				trailingWhitespace = wordTrailingWhitespace;
+				wordTrailingWhitespace = 0;
 			}
 		}
 
@@ -468,13 +475,17 @@ class BitmapText extends Graphic
 				{
 					var char:String = line.charAt(i);
 					wordHeight = Math.max(wordHeight, lineHeight * currentScale * currentSizeRatio);
-					inline function addChar()
+					inline function addChar(whitespace:Bool = false)
 					{
 						var maxFullScale = sx * fsx;
 						var gd = _font.getChar(char, maxFullScale * currentScale * currentSizeRatio);
 						var charWidth = gd.xAdvance * gd.scale / fsx;
 						currentWord += char;
-						wordLength += charWidth + charSpacing * currentScale * currentSizeRatio;
+						var charLength = charWidth + charSpacing * currentScale * currentSizeRatio;
+						if (whitespace)
+							currentWordTrailingWhitespace += charLength;
+						else currentWordTrailingWhitespace = 0;
+						wordLength += charLength;
 						++charCount;
 					}
 					switch (char)
@@ -483,7 +494,7 @@ class BitmapText extends Graphic
 							flushWord();
 							addNewLine();
 						case " ":
-							addChar();
+							addChar(true);
 							flushWord();
 						case "-":
 							var hyphen = currentWord != "";
@@ -517,6 +528,7 @@ class BitmapText extends Graphic
 							case Image(image, padding):
 								var imageWidth = ((image.width * image.scale * image.scaleX * this.scale * this.scaleX) + charSpacing) * currentScale;
 								_word.push(tag);
+								currentWordTrailingWhitespace = 0;
 								wordLength += imageWidth + padding * 2;
 								wordHeight = Math.max(wordHeight, image.height * currentScale * image.scale * image.scaleY * this.scale * this.scaleY);
 								if (cursorX > textWidth) textWidth = Std.int(cursorX);
@@ -638,7 +650,7 @@ class BitmapText extends Graphic
 						if (char == ' ')
 						{
 							// it's a space, just move the cursor
-							cursorX += gd.xAdvance * gd.scale / fsx;
+							cursorX += gd.xAdvance * gd.scale / fsx + charSpacing * currentScale * currentSizeRatio;
 						}
 						else
 						{
