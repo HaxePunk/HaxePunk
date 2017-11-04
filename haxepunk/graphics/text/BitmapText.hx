@@ -441,7 +441,7 @@ class BitmapText extends Graphic
 			flushCurrentWord();
 			if (_word.length != 0)
 			{
-				if (wrap && cursorX - wordTrailingWhitespace + wordLength > width)
+				if (wrap && cursorX > 0 && cursorX - wordTrailingWhitespace + wordLength > width)
 				{
 					addNewLine();
 					cursorX = wordLength;
