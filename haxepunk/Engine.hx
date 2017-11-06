@@ -1,5 +1,6 @@
 package haxepunk;
 
+import flash.display.OpenGLView;
 import flash.display.Sprite;
 import flash.display.StageAlign;
 import flash.display.StageDisplayState;
@@ -10,7 +11,7 @@ import flash.geom.Rectangle;
 import flash.Lib;
 import haxepunk.Signal;
 import haxepunk.debug.Console;
-import haxepunk.graphics.hardware.EngineRenderer;
+import haxepunk.graphics.hardware.HardwareRenderer;
 import haxepunk.input.Input;
 import haxepunk.utils.Draw;
 import haxepunk.math.Random;
@@ -112,7 +113,6 @@ class Engine extends Sprite
 		addEventListener(Event.ADDED_TO_STAGE, onStage);
 		Lib.current.addChild(this);
 
-		addChild(_renderSurface = new EngineRenderer());
 		_iterator = new VisibleSceneIterator(this);
 	}
 
@@ -191,6 +191,27 @@ class Engine extends Sprite
 	}
 
 	/**
+	 * Called from OpenGLView render. Any visible scene will have its draw commands rendered to OpenGL.
+	 */
+	function renderGL(rect:Rectangle)
+	{
+		_renderer.startFrame();
+		for (scene in this)
+		{
+			if (scene.visible)
+			{
+				_renderer.startScene(scene);
+				for (commands in scene.batch)
+				{
+					_renderer.render(commands, scene, rect);
+				}
+				_renderer.flushScene(scene);
+			}
+		}
+		_renderer.endFrame();
+	}
+
+	/**
 	 * Sets the game's stage properties. Override this to set them differently.
 	 */
 	function setStageProperties()
@@ -261,6 +282,11 @@ class Engine extends Sprite
 		removeEventListener(Event.ADDED_TO_STAGE, onStage);
 		HXP.stage = stage;
 		setStageProperties();
+
+		// create an OpenGLView object and use the engine's render method
+		var view = new OpenGLView();
+		view.render = this.renderGL;
+		addChild(view);
 
 		// enable input
 		Input.enable();
@@ -431,8 +457,9 @@ class Engine extends Sprite
 	var _frameListSum:Int = 0;
 	var _frameList:Array<Int>;
 
+	var _renderer:HardwareRenderer = new HardwareRenderer();
+
 	var _scrollRect:Rectangle = new Rectangle();
-	var _renderSurface:EngineRenderer;
 	var _iterator:VisibleSceneIterator;
 }
 

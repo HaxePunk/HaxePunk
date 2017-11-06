@@ -5,6 +5,33 @@ import flash.geom.Rectangle;
 import haxepunk.graphics.shader.Shader;
 import haxepunk.utils.Color;
 
+class DrawCommandIterator
+{
+	@:allow(haxepunk.graphics.hardware.DrawCommandBatch)
+	var command:DrawCommand = null;
+
+	public function new() {}
+
+	public function hasNext():Bool
+	{
+		return command != null;
+	}
+
+	@:access(haxepunk.graphics.hardware.DrawCommand)
+	public function next():DrawCommand
+	{
+		var result = command;
+		command = command._next;
+		return result;
+	}
+
+	public function recycle()
+	{
+		if (command != null) command.recycle();
+		command = null;
+	}
+}
+
 @:dox(hide)
 class DrawCommandBatch
 {
@@ -15,15 +42,23 @@ class DrawCommandBatch
 	public static inline function minOf3(a:Float, b:Float, c:Float) return Math.min(Math.min(a, b), c);
 	public static inline function maxOf3(a:Float, b:Float, c:Float) return Math.max(Math.max(a, b), c);
 
-	public var head:DrawCommand;
+	var head = new DrawCommandIterator();
 	var last:DrawCommand;
 
 	public function new() {}
 
 	public inline function recycle()
 	{
-		if (head != null) head.recycle();
-		head = last = null;
+		head.recycle();
+		last = null;
+	}
+
+	/**
+	 * Allows DrawCommandBatch to be used in a for loop.
+	 */
+	public function iterator():DrawCommandIterator
+	{
+		return head;
 	}
 
 	public function getDrawCommand(texture:Texture, shader:Shader, smooth:Bool, blend:BlendMode, clipRect:Rectangle, x1:Float=0, y1:Float=0, x2:Float=0, y2:Float=0, x3:Float=0, y3:Float=0, flexibleLayer:Bool=false)
@@ -101,7 +136,7 @@ class DrawCommandBatch
 		var command = DrawCommand.create(texture, shader, smooth, blend, clipRect);
 		if (last == null)
 		{
-			head = last = command;
+			head.command = last = command;
 			command._prev = null;
 		}
 		else
