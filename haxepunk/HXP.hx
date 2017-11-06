@@ -538,7 +538,6 @@ class HXP
 	// Time information.
 	static var _time:Float;
 	@:dox(hide) public static var _updateTime:Float;
-	@:dox(hide) public static var _renderTime:Float;
 	@:dox(hide) public static var _gameTime:Float;
 	@:dox(hide) public static var _systemTime:Float;
 
