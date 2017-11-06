@@ -112,15 +112,14 @@ class DrawCommandBatch
 						// an intermediate draw command may have drawn over this
 						// region; let's investigate
 						var collision = false;
-						var triangle = current.data;
-						while (triangle != null && t++ < maxTriangleChecks)
+						for (triangle in current.triangles)
 						{
+							if (t++ >= maxTriangleChecks) break;
 							if (triangle.intersectsTriangle(x1, y1, x2, y2, x3, y3))
 							{
 								collision = true;
 								break;
 							}
-							triangle = triangle._next;
 						}
 						if (collision)
 						{

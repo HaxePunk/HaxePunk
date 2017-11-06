@@ -72,6 +72,8 @@ class RenderBuffer
 	{
 		#if js
 		intArray[pos] = v;
+		#elseif lime
+		lime.utils.ArrayBufferView.ArrayBufferIO.setUint32(buffer.buffer, pos * 4, v);
 		#else
 		buffer.buffer.setInt32(pos * 4, v);
 		#end

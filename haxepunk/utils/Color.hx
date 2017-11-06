@@ -119,8 +119,14 @@ abstract Color(UInt) from UInt to UInt
 
 	public inline function withAlpha(a:Float):Color
 	{
-		a = a < 0 ? 0 : (a > 1 ? 1 : a);
-		return (Std.int(0xff * a) << 24) | (this & 0xffffff);
+		var alpha = if (a <= 0) { // transparent
+			0;
+		} else if (a >= 1) { // opaque
+			0xFF << 24;
+		} else { // somewhere inbetween
+			(Std.int(0xff * a) << 24);
+		};
+		return (this & 0xffffff) | alpha;
 	}
 
 	/**

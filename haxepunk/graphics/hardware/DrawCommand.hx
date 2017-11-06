@@ -5,9 +5,7 @@ import haxepunk.graphics.shader.Shader;
 import haxepunk.utils.BlendMode;
 import haxepunk.utils.Color;
 
-@:allow(haxepunk.graphics.hardware.DrawCommand)
-@:allow(haxepunk.graphics.hardware.DrawCommandBatch)
-@:allow(haxepunk.graphics.hardware.HardwareRenderer)
+@:allow(haxepunk.graphics.hardware)
 private class DrawTriangle
 {
 	public function new() {}
@@ -92,6 +90,33 @@ private class DrawTriangle
 	static inline function cross(ux:Float, uy:Float, vx:Float, vy:Float):Float return ux * vy - uy * vx;
 
 	var _next:DrawTriangle;
+}
+
+class TriangleIterator
+{
+	var triangle:DrawTriangle = null;
+
+	public function new()
+	{
+
+	}
+
+	public inline function reset(triangle:DrawTriangle)
+	{
+		this.triangle = triangle;
+	}
+
+	public inline function hasNext():Bool
+	{
+		return triangle != null;
+	}
+
+	public inline function next():DrawTriangle
+	{
+		var current = triangle;
+		triangle = triangle._next;
+		return current;
+	}
 }
 
 /**
@@ -226,15 +251,11 @@ class DrawCommand
 		_pool = this;
 	}
 
-	@:access(haxepunk.graphics.hardware.DrawTriangle)
-	public inline function loopTriangles(callback:DrawTriangle->Void)
+	public var triangles(get, never):TriangleIterator;
+	inline function get_triangles():TriangleIterator
 	{
-		var data = this.data;
-		while (data != null)
-		{
-			callback(data);
-			data = data._next;
-		}
+		_iterator.reset(data);
+		return _iterator;
 	}
 
 	inline function getData():DrawTriangle
@@ -308,6 +329,7 @@ class DrawCommand
 		#end
 	}
 
+	var _iterator = new TriangleIterator();
 	var data:DrawTriangle;
 	var _lastData:DrawTriangle;
 	var _prev:DrawCommand;

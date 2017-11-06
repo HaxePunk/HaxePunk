@@ -123,10 +123,11 @@ class Shader
 
 		var hasTexCoord = texCoord.isEnabled;
 		var hasColor = color.isEnabled;
+		var triangleColor:UInt = 0;
 
-		drawCommand.loopTriangles(function(data)
+		for (tri in drawCommand.triangles)
 		{
-			var c:UInt = hasColor ? data.color.withAlpha(data.alpha) : 0;
+			if (hasColor) triangleColor = tri.color.withAlpha(tri.alpha);
 
 			inline function addTriangle(tx:Float, ty:Float, uvx:Float, uvy:Float)
 			{
@@ -139,14 +140,14 @@ class Shader
 				}
 				if (hasColor)
 				{
-					buffer.setInt32(++bufferPos, c);
+					buffer.setInt32(++bufferPos, triangleColor);
 				}
 			}
 
-			addTriangle(data.tx1, data.ty1, data.uvx1, data.uvy1);
-			addTriangle(data.tx2, data.ty2, data.uvx2, data.uvy2);
-			addTriangle(data.tx3, data.ty3, data.uvx3, data.uvy3);
-		});
+			addTriangle(tri.tx1, tri.ty1, tri.uvx1, tri.uvy1);
+			addTriangle(tri.tx2, tri.ty2, tri.uvx2, tri.uvy2);
+			addTriangle(tri.tx3, tri.ty3, tri.uvx3, tri.uvy3);
+		}
 
 		#if (lime >= "4.0.0")
 		GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer.length * Float32Array.BYTES_PER_ELEMENT, buffer.buffer);
