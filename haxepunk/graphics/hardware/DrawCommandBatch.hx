@@ -4,6 +4,7 @@ import haxepunk.utils.BlendMode;
 import flash.geom.Rectangle;
 import haxepunk.graphics.shader.Shader;
 import haxepunk.utils.Color;
+import haxepunk.math.MathUtil;
 
 class DrawCommandIterator
 {
@@ -38,9 +39,6 @@ class DrawCommandBatch
 	public static var maxTriangleChecks:Int = 128;
 
 	static var _bounds:Rectangle = new Rectangle();
-
-	public static inline function minOf3(a:Float, b:Float, c:Float) return Math.min(Math.min(a, b), c);
-	public static inline function maxOf3(a:Float, b:Float, c:Float) return Math.max(Math.max(a, b), c);
 
 	var head = new DrawCommandIterator();
 	var last:DrawCommand;
@@ -93,10 +91,10 @@ class DrawCommandBatch
 			}
 			if (found)
 			{
-				var rx1 = minOf3(x1, x2, x3),
-					rx2 = maxOf3(x1, x2, x3),
-					ry1 = minOf3(y1, y2, y3),
-					ry2 = maxOf3(y1, y2, y3);
+				var rx1 = MathUtil.minOf3(x1, x2, x3),
+					rx2 = MathUtil.maxOf3(x1, x2, x3),
+					ry1 = MathUtil.minOf3(y1, y2, y3),
+					ry2 = MathUtil.maxOf3(y1, y2, y3);
 				_bounds.setTo(rx1, ry1, rx2 - rx1, ry2 - ry1);
 				t = 0;
 				current = last;

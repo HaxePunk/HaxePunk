@@ -2,6 +2,7 @@ package haxepunk.graphics.hardware;
 
 import flash.geom.Rectangle;
 import haxepunk.graphics.shader.Shader;
+import haxepunk.math.MathUtil;
 import haxepunk.utils.BlendMode;
 import haxepunk.utils.Color;
 
@@ -26,13 +27,13 @@ private class DrawTriangle
 	public var alpha:Float = 0;
 
 	public var x1(get, never):Float;
-	public inline function get_x1() return DrawCommandBatch.minOf3(tx1, tx2, tx3);
+	public inline function get_x1() return MathUtil.minOf3(tx1, tx2, tx3);
 	public var x2(get, never):Float;
-	public inline function get_x2() return DrawCommandBatch.maxOf3(tx1, tx2, tx3);
+	public inline function get_x2() return MathUtil.maxOf3(tx1, tx2, tx3);
 	public var y1(get, never):Float;
-	public inline function get_y1() return DrawCommandBatch.minOf3(ty1, ty2, ty3);
+	public inline function get_y1() return MathUtil.minOf3(ty1, ty2, ty3);
 	public var y2(get, never):Float;
-	public inline function get_y2() return DrawCommandBatch.maxOf3(ty1, ty2, ty3);
+	public inline function get_y2() return MathUtil.maxOf3(ty1, ty2, ty3);
 
 	public inline function intersectsTriangle(x1:Float, y1:Float, x2:Float, y2:Float, x3:Float, y3:Float):Bool
 	{
