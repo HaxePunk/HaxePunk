@@ -27,7 +27,14 @@ class RenderBuffer
 
 	#if js
 	var intArray:Int32Array;
+	var intOffset:Int;
 	#end
+
+	#if cpp
+	var bytesData:haxe.io.BytesData;
+	#end
+
+	var byteOffset:Int;
 
 	public function new()
 	{
@@ -63,19 +70,118 @@ class RenderBuffer
 		}
 	}
 
-	public inline function set(pos:Int, v:Float)
+	public function reset()
 	{
-		buffer[pos] = v;
+#if cpp
+		byteOffset = buffer.byteOffset;
+		bytesData = buffer.buffer.getData();
+#else
+		byteOffset = 0;
+	#if js
+		intOffset = 0;
+	#end
+#end
 	}
 
-	public inline function setInt32(pos:Int, v:Int)
+	public inline function addVec(x:Float, y:Float)
 	{
-		#if js
-		intArray[pos] = v;
-		#elseif lime
-		lime.utils.ArrayBufferView.ArrayBufferIO.setUint32(buffer.buffer, pos * 4, v);
+#if cpp
+		var bytesData = bytesData;
+		var offset = byteOffset; // helps hxcpp generator
+		untyped __global__.__hxcpp_memory_set_float(bytesData, offset, x);
+		untyped __global__.__hxcpp_memory_set_float(bytesData, offset+4, y);
+		byteOffset = offset + 8;
+#else
+		buffer[byteOffset] = x;
+		buffer[byteOffset+1] = y;
+		byteOffset += 2;
+#end
+	}
+
+	public inline function addInt(value:Int)
+	{
+#if cpp
+		untyped __global__.__hxcpp_memory_set_ui32(bytesData, byteOffset, value);
+		byteOffset += 4;
+#elseif js
+		intArray[intOffset] = value;
+		intOffset += 1;
+#else
+		buffer[byteOffset] = value;
+		byteOffset += 1;
+#end
+	}
+
+	public inline function updateGraphicsCard()
+	{
+		#if (lime >= "4.0.0")
+		GL.bufferSubData(GL.ARRAY_BUFFER, 0, length * Float32Array.BYTES_PER_ELEMENT, buffer);
 		#else
-		buffer.buffer.setInt32(pos * 4, v);
+		GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer);
 		#end
+	}
+
+	public function prepareVertexOnly(drawCommand:DrawCommand)
+	{
+		for (tri in drawCommand.triangles)
+		{
+			addVec(tri.tx1, tri.ty1);
+			addVec(tri.tx2, tri.ty2);
+			addVec(tri.tx3, tri.ty3);
+		}
+	}
+
+	public function prepareVertexAndColor(drawCommand:DrawCommand)
+	{
+		var triangleColor:UInt = 0;
+		for (tri in drawCommand.triangles)
+		{
+			triangleColor = tri.color.withAlpha(tri.alpha);
+
+			addVec(tri.tx1, tri.ty1);
+			addInt(triangleColor);
+
+			addVec(tri.tx2, tri.ty2);
+			addInt(triangleColor);
+
+			addVec(tri.tx3, tri.ty3);
+			addInt(triangleColor);
+		}
+	}
+
+	public function prepareVertexAndUV(drawCommand:DrawCommand)
+	{
+		for (tri in drawCommand.triangles)
+		{
+			addVec(tri.tx1, tri.ty1);
+			addVec(tri.uvx1, tri.uvy1);
+
+			addVec(tri.tx2, tri.ty2);
+			addVec(tri.uvx2, tri.uvy2);
+
+			addVec(tri.tx3, tri.ty3);
+			addVec(tri.uvx3, tri.uvy3);
+		}
+	}
+
+	public function prepareVertexUVandColor(drawCommand:DrawCommand)
+	{
+		var triangleColor:UInt = 0;
+		for (tri in drawCommand.triangles)
+		{
+			triangleColor = tri.color.withAlpha(tri.alpha);
+
+			addVec(tri.tx1, tri.ty1);
+			addVec(tri.uvx1, tri.uvy1);
+			addInt(triangleColor);
+
+			addVec(tri.tx2, tri.ty2);
+			addVec(tri.uvx2, tri.uvy2);
+			addInt(triangleColor);
+
+			addVec(tri.tx3, tri.ty3);
+			addVec(tri.uvx3, tri.uvy3);
+			addInt(triangleColor);
+		}
 	}
 }
