@@ -61,7 +61,7 @@ class RenderBuffer
 			intArray = new Int32Array(buffer.buffer);
 			#end
 
-			GL.bindBuffer(GL.ARRAY_BUFFER, glBuffer);
+			use();
 			#if (lime >= "4.0.0")
 			GL.bufferData(GL.ARRAY_BUFFER, buffer.length * Float32Array.BYTES_PER_ELEMENT, buffer, GL.DYNAMIC_DRAW);
 			#else
@@ -70,8 +70,9 @@ class RenderBuffer
 		}
 	}
 
-	public function reset()
+	public function use()
 	{
+		GL.bindBuffer(GL.ARRAY_BUFFER, glBuffer);
 #if cpp
 		byteOffset = buffer.byteOffset;
 		bytesData = buffer.buffer.getData();
@@ -121,6 +122,7 @@ class RenderBuffer
 		#end
 	}
 
+	// Add DrawCommand triangle position only
 	public function prepareVertexOnly(drawCommand:DrawCommand)
 	{
 		for (tri in drawCommand.triangles)

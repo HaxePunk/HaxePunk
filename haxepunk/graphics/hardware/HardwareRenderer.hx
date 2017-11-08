@@ -135,7 +135,6 @@ class HardwareRenderer
 
 				GLUtils.checkForErrors();
 
-				GL.bindBuffer(GL.ARRAY_BUFFER, buffer.glBuffer);
 				shader.prepare(drawCommand, buffer);
 
 				GLUtils.checkForErrors();

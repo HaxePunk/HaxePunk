@@ -119,7 +119,7 @@ class Shader
 	{
 		if (!position.isEnabled) return;
 
-		buffer.reset();
+		buffer.use();
 		if (texCoord.isEnabled)
 		{
 			if (color.isEnabled)
@@ -140,6 +140,7 @@ class Shader
 			buffer.prepareVertexOnly(drawCommand);
 		}
 		buffer.updateGraphicsCard();
+
 		setAttributePointers();
 	}
 
