@@ -27,7 +27,6 @@ class RenderBuffer
 
 	#if js
 	var intArray:Int32Array;
-	var intOffset:Int;
 	#end
 
 	#if cpp
@@ -78,9 +77,6 @@ class RenderBuffer
 		bytesData = buffer.buffer.getData();
 #else
 		byteOffset = 0;
-	#if js
-		intOffset = 0;
-	#end
 #end
 	}
 
@@ -105,8 +101,8 @@ class RenderBuffer
 		untyped __global__.__hxcpp_memory_set_ui32(bytesData, byteOffset, value);
 		byteOffset += 4;
 #elseif js
-		intArray[intOffset] = value;
-		intOffset += 1;
+		intArray[byteOffset] = value;
+		byteOffset += 1;
 #else
 		buffer.buffer.setInt32(byteOffset * 4, value);
 		byteOffset += 1;
