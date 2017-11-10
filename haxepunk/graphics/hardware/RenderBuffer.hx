@@ -108,7 +108,7 @@ class RenderBuffer
 		intArray[intOffset] = value;
 		intOffset += 1;
 #else
-		buffer[byteOffset] = value;
+		buffer.buffer.setInt32(byteOffset * 4, value);
 		byteOffset += 1;
 #end
 	}
