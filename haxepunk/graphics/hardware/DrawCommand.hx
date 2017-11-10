@@ -97,10 +97,7 @@ class TriangleIterator
 {
 	var triangle:DrawTriangle = null;
 
-	public function new()
-	{
-
-	}
+	public function new() {}
 
 	public inline function reset(triangle:DrawTriangle)
 	{

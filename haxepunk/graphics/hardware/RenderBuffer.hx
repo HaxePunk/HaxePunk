@@ -90,7 +90,7 @@ class RenderBuffer
 		byteOffset = offset + 8;
 #else
 		buffer[byteOffset] = x;
-		buffer[byteOffset+1] = y;
+		buffer[byteOffset + 1] = y;
 		byteOffset += 2;
 #end
 	}
