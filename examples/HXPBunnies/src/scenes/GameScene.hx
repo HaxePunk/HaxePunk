@@ -58,19 +58,18 @@ class GameScene extends Scene
 		bunny = new Entity();
 		bunnyList = new Graphiclist([]);
 		bunny.graphic = bunnyList;
+		add(bunny);
 
 		// and some big pirate
 		pirate = new Image(atlas.getRegion("pirate.png"));
-		addGraphic(pirate, -1);// displayed in front of bunnies
+		addGraphic(pirate);
 
 		overlayText = new Text("numBunnies = " + numBunnies, 0, 0, 0, 0, { color:0x000000, size:30 } );
 		overlayText.resizable = true;
 		var overlay:Entity = new Entity(0, HXP.screen.height - 40, overlayText);
-		overlay.layer = -1000; // displayed in the very front
 		add(overlay);
 
 		addBunnies(numBunnies);
-		add(bunny);
 	}
 
 	function addBunnies(numToAdd:Int):Void
