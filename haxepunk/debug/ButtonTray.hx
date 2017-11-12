@@ -28,11 +28,11 @@ class ButtonTray extends EntityList<DebugButton>
 
 	function resetDrawCallDebug()
 	{
-		haxepunk.graphics.hardware.Renderer.drawCallLimit = -1;
+		haxepunk.graphics.hardware.HardwareRenderer.drawCallLimit = -1;
 	}
 
 	function incrementDrawCallDebug()
 	{
-		haxepunk.graphics.hardware.Renderer.drawCallLimit++;
+		haxepunk.graphics.hardware.HardwareRenderer.drawCallLimit++;
 	}
 }

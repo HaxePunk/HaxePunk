@@ -6,7 +6,7 @@ import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.cameras.UICamera;
 import haxepunk.graphics.Image;
-import haxepunk.graphics.hardware.Renderer;
+import haxepunk.graphics.hardware.HardwareRenderer;
 import haxepunk.input.Key;
 import haxepunk.input.Mouse;
 import haxepunk.input.MouseManager;
@@ -310,8 +310,8 @@ class Console extends Scene
 		_fps += 1 / HXP.elapsed * s;
 		_mem += flash.system.System.totalMemory / 1024 / 1024 * s;
 		_ent += HXP.scene.count * s;
-		_tri += Renderer.triangleCount * s;
-		_dc += Renderer.drawCallCount * s;
+		_tri += HardwareRenderer.triangleCount * s;
+		_dc += HardwareRenderer.drawCallCount * s;
 		_t += s;
 		if (_t >= 1)
 		{

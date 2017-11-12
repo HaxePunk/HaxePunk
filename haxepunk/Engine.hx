@@ -1,5 +1,6 @@
 package haxepunk;
 
+import flash.display.OpenGLView;
 import flash.display.Sprite;
 import flash.display.StageAlign;
 import flash.display.StageDisplayState;
@@ -10,7 +11,7 @@ import flash.geom.Rectangle;
 import flash.Lib;
 import haxepunk.Signal;
 import haxepunk.debug.Console;
-import haxepunk.graphics.hardware.EngineRenderer;
+import haxepunk.graphics.hardware.HardwareRenderer;
 import haxepunk.input.Input;
 import haxepunk.utils.Draw;
 import haxepunk.math.Random;
@@ -112,14 +113,7 @@ class Engine extends Sprite
 		addEventListener(Event.ADDED_TO_STAGE, onStage);
 		Lib.current.addChild(this);
 
-		addChild(_renderSurface = new EngineRenderer());
-		_iterator = new VisibleSceneIterator(this);
-	}
-
-	public function iterator():VisibleSceneIterator
-	{
-		_iterator.reset();
-		return _iterator;
+		_iterator = new VisibleSceneIterator();
 	}
 
 	/**
@@ -162,23 +156,35 @@ class Engine extends Sprite
 	}
 
 	/**
-	 * Renders the game, rendering the Scene and Entities.
+	 * Called from OpenGLView render. Any visible scene will have its draw commands rendered to OpenGL.
 	 */
-	@:dox(hide)
-	public function render()
+	function render(rect:Rectangle)
 	{
 		// timing stuff
 		var t:Float = Lib.getTimer();
+		if (paused)
+		{
+			_frameLast = t; // continue updating frame timer
+			if (!Console.enabled) return; // skip rendering if paused and console is not enabled
+		}
 		if (_frameLast == 0) _frameLast = Std.int(t);
 
 		preRender.invoke();
 
-		for (scene in this)
+		_renderer.startFrame();
+		for (scene in _iterator.reset(this))
 		{
+			_renderer.startScene(scene);
 			HXP.renderingScene = scene;
 			scene.render();
+			for (commands in scene.batch)
+			{
+				_renderer.render(commands);
+			}
+			_renderer.flushScene(scene);
 		}
 		HXP.renderingScene = null;
+		_renderer.endFrame();
 
 		postRender.invoke();
 
@@ -262,6 +268,11 @@ class Engine extends Sprite
 		HXP.stage = stage;
 		setStageProperties();
 
+		// create an OpenGLView object and use the engine's render method
+		var view = new OpenGLView();
+		view.render = this.render;
+		addChild(view);
+
 		// enable input
 		Input.enable();
 
@@ -324,16 +335,11 @@ class Engine extends Sprite
 		_last = _time;
 
 		// update timer
-		_time = _renderTime = Lib.getTimer();
+		_time = Lib.getTimer();
 		HXP._updateTime = _time - _updateTime;
-
-		// render loop
-		if (paused) _frameLast = _time; // continue updating frame timer
-		if (!paused || Console.enabled) render();
 
 		// update timer
 		_time = _systemTime = Lib.getTimer();
-		HXP._renderTime = _time - _renderTime;
 		HXP._gameTime = _time - _gameTime;
 	}
 
@@ -422,7 +428,6 @@ class Engine extends Sprite
 
 	// Debug timing information.
 	var _updateTime:Float = 0;
-	var _renderTime:Float = 0;
 	var _gameTime:Float = 0;
 	var _systemTime:Float = 0;
 
@@ -431,46 +436,48 @@ class Engine extends Sprite
 	var _frameListSum:Int = 0;
 	var _frameList:Array<Int>;
 
+	var _renderer:HardwareRenderer = new HardwareRenderer();
+
 	var _scrollRect:Rectangle = new Rectangle();
-	var _renderSurface:EngineRenderer;
 	var _iterator:VisibleSceneIterator;
 }
 
-@:access(haxepunk.Engine)
 private class VisibleSceneIterator
 {
-	var engine:Engine;
-	var i:Int = 0;
-
-	public function new(engine:Engine)
-	{
-		this.engine = engine;
-	}
+	public function new() {}
 
 	public inline function hasNext():Bool
 	{
-		return i < engine._scenes.length ||
-			(i == engine._scenes.length && engine.console != null);
+		return scenes.length > 0;
 	}
 
 	public inline function next():Scene
 	{
-		var next = i < engine._scenes.length ? engine._scenes[i] : engine.console;
-		i++;
-		return next;
+		return scenes.shift();
 	}
 
-	public inline function reset():Void
+	@:access(haxepunk.Engine)
+	public function reset(engine:Engine):VisibleSceneIterator
 	{
-		var _scenes = engine._scenes;
-		if (_scenes.length > 0)
+		var scene:Scene;
+		var i = engine._scenes.length - 1;
+		while (i >= 0)
 		{
-			// find the last visible scene, falling through transparent scenes
-			i = _scenes.length - 1;
-			while (_scenes[i].bgAlpha < 1 && i > 0)
+			scene = engine._scenes[i];
+			if (scene.visible)
 			{
-				--i;
+				scenes.push(scene);
 			}
+			// if this scene has a solid background, stop adding scenes
+			if (scene.bgAlpha == 1) break;
+			--i;
 		}
+		if (engine.console != null)
+		{
+			scenes.push(engine.console);
+		}
+		return this;
 	}
+
+	var scenes:Array<Scene> = [];
 }

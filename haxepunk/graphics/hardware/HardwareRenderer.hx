@@ -1,7 +1,5 @@
 package haxepunk.graphics.hardware;
 
-import flash.geom.Rectangle;
-import flash.geom.Point;
 import haxepunk.graphics.hardware.opengl.GL;
 import haxepunk.graphics.hardware.opengl.GLFramebuffer;
 import haxepunk.graphics.hardware.opengl.GLUtils;
@@ -61,7 +59,6 @@ class HardwareRenderer
 		}
 	}
 
-	static var _point:Point = new Point();
 	static var _ortho:Float32Array;
 
 	// for render to texture
@@ -88,7 +85,7 @@ class HardwareRenderer
 	}
 
 	@:access(haxepunk.graphics.hardware.DrawCommand)
-	public function render(drawCommand:DrawCommand, scene:Scene, rect:Rectangle):Void
+	public function render(drawCommand:DrawCommand):Void
 	{
 		GLUtils.checkForErrors();
 
@@ -138,7 +135,6 @@ class HardwareRenderer
 
 				GLUtils.checkForErrors();
 
-				GL.bindBuffer(GL.ARRAY_BUFFER, buffer.glBuffer);
 				shader.prepare(drawCommand, buffer);
 
 				GLUtils.checkForErrors();

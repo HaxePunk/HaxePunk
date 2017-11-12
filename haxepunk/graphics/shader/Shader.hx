@@ -22,12 +22,12 @@ class Attribute
 	public inline function set_name(value:String):String
 	{
 		name = value;
+		isEnabled = (name != null);
 		rebind(); // requires name to be set
 		return name;
 	}
 
-	public var isEnabled(get, never):Bool;
-	inline function get_isEnabled():Bool return name != null;
+	public var isEnabled(default, null):Bool = false;
 
 	var parent:Shader;
 
@@ -119,50 +119,48 @@ class Shader
 	{
 		if (!position.isEnabled) return;
 
-		var bufferPos:Int = -1;
-
-		var hasTexCoord = texCoord.isEnabled;
-		var hasColor = color.isEnabled;
-
-		drawCommand.loopTriangles(function(data)
+		buffer.use();
+		if (texCoord.isEnabled)
 		{
-			var c:UInt = hasColor ? data.color.withAlpha(data.alpha) : 0;
-
-			inline function addTriangle(tx:Float, ty:Float, uvx:Float, uvy:Float)
+			if (color.isEnabled)
 			{
-				buffer.set(++bufferPos, tx);
-				buffer.set(++bufferPos, ty);
-				if (hasTexCoord)
-				{
-					buffer.set(++bufferPos, uvx);
-					buffer.set(++bufferPos, uvy);
-				}
-				if (hasColor)
-				{
-					buffer.setInt32(++bufferPos, c);
-				}
+				buffer.prepareVertexUVandColor(drawCommand);
 			}
-
-			addTriangle(data.tx1, data.ty1, data.uvx1, data.uvy1);
-			addTriangle(data.tx2, data.ty2, data.uvx2, data.uvy2);
-			addTriangle(data.tx3, data.ty3, data.uvx3, data.uvy3);
-		});
-
-		#if (lime >= "4.0.0")
-		GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer.length * Float32Array.BYTES_PER_ELEMENT, buffer.buffer);
-		#else
-		GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer.buffer);
-		#end
-
-		var stride:Int = floatsPerVertex * Float32Array.BYTES_PER_ELEMENT;
-		GL.vertexAttribPointer(position.index, 2, GL.FLOAT, false, stride, 0);
-		if (hasTexCoord)
-		{
-			GL.vertexAttribPointer(texCoord.index, 2, GL.FLOAT, false, stride, 2 * Float32Array.BYTES_PER_ELEMENT);
+			else
+			{
+				buffer.prepareVertexAndUV(drawCommand);
+			}
 		}
-		if (hasColor)
+		else if (color.isEnabled)
 		{
-			GL.vertexAttribPointer(color.index, 4, GL.UNSIGNED_BYTE, true, stride, (hasTexCoord ? 4 : 2) * Float32Array.BYTES_PER_ELEMENT);
+			buffer.prepareVertexAndColor(drawCommand);
+		}
+		else
+		{
+			buffer.prepareVertexOnly(drawCommand);
+		}
+		buffer.updateGraphicsCard();
+
+		setAttributePointers();
+	}
+
+	function setAttributePointers()
+	{
+		var offset:Int = 0;
+		var stride:Int = floatsPerVertex * Float32Array.BYTES_PER_ELEMENT;
+		GL.vertexAttribPointer(position.index, 2, GL.FLOAT, false, stride, offset);
+		offset += 2 * Float32Array.BYTES_PER_ELEMENT;
+
+		if (texCoord.isEnabled)
+		{
+			GL.vertexAttribPointer(texCoord.index, 2, GL.FLOAT, false, stride, offset);
+			offset += 2 * Float32Array.BYTES_PER_ELEMENT;
+		}
+
+		if (color.isEnabled)
+		{
+			GL.vertexAttribPointer(color.index, 4, GL.UNSIGNED_BYTE, true, stride, offset);
+			// offset += 4 * Float32Array.BYTES_PER_ELEMENT;
 		}
 	}
 

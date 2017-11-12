@@ -2,12 +2,11 @@ package haxepunk.graphics.hardware;
 
 import flash.geom.Rectangle;
 import haxepunk.graphics.shader.Shader;
+import haxepunk.math.MathUtil;
 import haxepunk.utils.BlendMode;
 import haxepunk.utils.Color;
 
-@:allow(haxepunk.graphics.hardware.DrawCommand)
-@:allow(haxepunk.graphics.hardware.DrawCommandBatch)
-@:allow(haxepunk.graphics.hardware.HardwareRenderer)
+@:allow(haxepunk.graphics.hardware)
 private class DrawTriangle
 {
 	public function new() {}
@@ -28,13 +27,13 @@ private class DrawTriangle
 	public var alpha:Float = 0;
 
 	public var x1(get, never):Float;
-	public inline function get_x1() return DrawCommandBatch.minOf3(tx1, tx2, tx3);
+	public inline function get_x1() return MathUtil.minOf3(tx1, tx2, tx3);
 	public var x2(get, never):Float;
-	public inline function get_x2() return DrawCommandBatch.maxOf3(tx1, tx2, tx3);
+	public inline function get_x2() return MathUtil.maxOf3(tx1, tx2, tx3);
 	public var y1(get, never):Float;
-	public inline function get_y1() return DrawCommandBatch.minOf3(ty1, ty2, ty3);
+	public inline function get_y1() return MathUtil.minOf3(ty1, ty2, ty3);
 	public var y2(get, never):Float;
-	public inline function get_y2() return DrawCommandBatch.maxOf3(ty1, ty2, ty3);
+	public inline function get_y2() return MathUtil.maxOf3(ty1, ty2, ty3);
 
 	public inline function intersectsTriangle(x1:Float, y1:Float, x2:Float, y2:Float, x3:Float, y3:Float):Bool
 	{
@@ -92,6 +91,30 @@ private class DrawTriangle
 	static inline function cross(ux:Float, uy:Float, vx:Float, vy:Float):Float return ux * vy - uy * vx;
 
 	var _next:DrawTriangle;
+}
+
+class TriangleIterator
+{
+	var triangle:DrawTriangle = null;
+
+	public function new() {}
+
+	public inline function reset(triangle:DrawTriangle)
+	{
+		this.triangle = triangle;
+	}
+
+	public inline function hasNext():Bool
+	{
+		return triangle != null;
+	}
+
+	public inline function next():DrawTriangle
+	{
+		var current = triangle;
+		triangle = triangle._next;
+		return current;
+	}
 }
 
 /**
@@ -226,15 +249,11 @@ class DrawCommand
 		_pool = this;
 	}
 
-	@:access(haxepunk.graphics.hardware.DrawTriangle)
-	public inline function loopTriangles(callback:DrawTriangle->Void)
+	public var triangles(get, never):TriangleIterator;
+	inline function get_triangles():TriangleIterator
 	{
-		var data = this.data;
-		while (data != null)
-		{
-			callback(data);
-			data = data._next;
-		}
+		_iterator.reset(data);
+		return _iterator;
 	}
 
 	inline function getData():DrawTriangle
@@ -308,6 +327,7 @@ class DrawCommand
 		#end
 	}
 
+	var _iterator = new TriangleIterator();
 	var data:DrawTriangle;
 	var _lastData:DrawTriangle;
 	var _prev:DrawCommand;

@@ -4,6 +4,34 @@ import haxepunk.utils.BlendMode;
 import flash.geom.Rectangle;
 import haxepunk.graphics.shader.Shader;
 import haxepunk.utils.Color;
+import haxepunk.math.MathUtil;
+
+class DrawCommandIterator
+{
+	@:allow(haxepunk.graphics.hardware.DrawCommandBatch)
+	var command:DrawCommand = null;
+
+	public function new() {}
+
+	public function hasNext():Bool
+	{
+		return command != null;
+	}
+
+	@:access(haxepunk.graphics.hardware.DrawCommand)
+	public function next():DrawCommand
+	{
+		var result = command;
+		command = command._next;
+		return result;
+	}
+
+	public function recycle()
+	{
+		if (command != null) command.recycle();
+		command = null;
+	}
+}
 
 @:dox(hide)
 class DrawCommandBatch
@@ -12,18 +40,23 @@ class DrawCommandBatch
 
 	static var _bounds:Rectangle = new Rectangle();
 
-	public static inline function minOf3(a:Float, b:Float, c:Float) return Math.min(Math.min(a, b), c);
-	public static inline function maxOf3(a:Float, b:Float, c:Float) return Math.max(Math.max(a, b), c);
-
-	public var head:DrawCommand;
+	var head = new DrawCommandIterator();
 	var last:DrawCommand;
 
 	public function new() {}
 
 	public inline function recycle()
 	{
-		if (head != null) head.recycle();
-		head = last = null;
+		head.recycle();
+		last = null;
+	}
+
+	/**
+	 * Allows DrawCommandBatch to be used in a for loop.
+	 */
+	public function iterator():DrawCommandIterator
+	{
+		return head;
 	}
 
 	public function getDrawCommand(texture:Texture, shader:Shader, smooth:Bool, blend:BlendMode, clipRect:Rectangle, x1:Float=0, y1:Float=0, x2:Float=0, y2:Float=0, x3:Float=0, y3:Float=0, flexibleLayer:Bool=false)
@@ -58,10 +91,10 @@ class DrawCommandBatch
 			}
 			if (found)
 			{
-				var rx1 = minOf3(x1, x2, x3),
-					rx2 = maxOf3(x1, x2, x3),
-					ry1 = minOf3(y1, y2, y3),
-					ry2 = maxOf3(y1, y2, y3);
+				var rx1 = MathUtil.minOf3(x1, x2, x3),
+					rx2 = MathUtil.maxOf3(x1, x2, x3),
+					ry1 = MathUtil.minOf3(y1, y2, y3),
+					ry2 = MathUtil.maxOf3(y1, y2, y3);
 				_bounds.setTo(rx1, ry1, rx2 - rx1, ry2 - ry1);
 				t = 0;
 				current = last;
@@ -77,15 +110,14 @@ class DrawCommandBatch
 						// an intermediate draw command may have drawn over this
 						// region; let's investigate
 						var collision = false;
-						var triangle = current.data;
-						while (triangle != null && t++ < maxTriangleChecks)
+						for (triangle in current.triangles)
 						{
+							if (t++ >= maxTriangleChecks) break;
 							if (triangle.intersectsTriangle(x1, y1, x2, y2, x3, y3))
 							{
 								collision = true;
 								break;
 							}
-							triangle = triangle._next;
 						}
 						if (collision)
 						{
@@ -101,7 +133,7 @@ class DrawCommandBatch
 		var command = DrawCommand.create(texture, shader, smooth, blend, clipRect);
 		if (last == null)
 		{
-			head = last = command;
+			head.command = last = command;
 			command._prev = null;
 		}
 		else
