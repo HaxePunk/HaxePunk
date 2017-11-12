@@ -61,6 +61,7 @@ class GameScene extends Scene
 
 		// and some big pirate
 		pirate = new Image(atlas.getRegion("pirate.png"));
+		addGraphic(pirate, -1);// displayed in front of bunnies
 
 		overlayText = new Text("numBunnies = " + numBunnies, 0, 0, 0, 0, { color:0x000000, size:30 } );
 		overlayText.resizable = true;
