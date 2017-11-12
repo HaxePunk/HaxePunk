@@ -543,7 +543,9 @@ class Entity extends Tweener
 	inline function get_bottom():Float return top + height;
 
 	/**
-	 * The rendering layer of this Entity. Higher layers are rendered first.
+	 * The rendering layer of this Entity. Layers are drawn in a descending order. 
+         * Backgrounds will have large(positive) numbers, foregrounds will have 
+         * small(negative) numbers.
 	 */
 	public var layer(get, set):Int;
 	inline function get_layer():Int return _layer;
