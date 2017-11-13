@@ -125,7 +125,7 @@ class RenderBuffer
 	
 	public inline function addVertexAttribData(attribs:Array<Attribute>)
 	{
-		for(attrib in attribs)
+		for (attrib in attribs)
 		{
 			var vPe = attrib.valuesPerElement;
 			var vecs = Std.int(vPe / 2),

@@ -32,7 +32,7 @@ class Attribute
 	{
 		name = value;
 		rebind(); // requires name to be set
-		if(index == -1)
+		if (index == -1)
 			trace("Warning : attribute '" + name + "' is not declared or not used in shader source.");
 		return name;
 	}
@@ -62,7 +62,7 @@ class Shader
 	{
 		var a = 2 + (texCoord.isEnabled ? 2 : 0) + (color.isEnabled ? 1 : 0);
 		for (v in attributes.iterator())
-			if(v.isEnabled)
+			if (v.isEnabled)
 				a += v.valuesPerElement;
 		return a;
 	}
@@ -190,7 +190,7 @@ class Shader
 		for (n in attributeNames)
 		{
 			var attrib = attributes[n];
-			if(attrib.isEnabled)
+			if (attrib.isEnabled)
 			{
 				GL.vertexAttribPointer(attrib.index, attrib.valuesPerElement, GL.FLOAT, false, stride, offset);
 				offset += attrib.valuesPerElement * Float32Array.BYTES_PER_ELEMENT;
@@ -229,8 +229,8 @@ class Shader
 		GL.disableVertexAttribArray(position.index);
 		if (texCoord.isEnabled) GL.disableVertexAttribArray(texCoord.index);
 		if (color.isEnabled) GL.disableVertexAttribArray(color.index);
-		for(n in attributeNames)
-			if(attributes[n].isEnabled)
+		for (n in attributeNames)
+			if (attributes[n].isEnabled)
 				GL.disableVertexAttribArray(attributes[n].index);
 	}
 
@@ -299,7 +299,7 @@ class Shader
 			throw "appendVertexAttribData : attribute '" + name + "' was not declared";
 		else
 			attrib = attributes[name];
-		if(values.length % attrib.valuesPerElement != 0)
+		if (values.length % attrib.valuesPerElement != 0)
 			throw "appendVertexAttribData : values per element do not match";
 		attrib.data = attrib.data.concat(values);
 	}
