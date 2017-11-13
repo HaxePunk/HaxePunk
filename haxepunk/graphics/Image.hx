@@ -1,6 +1,5 @@
 package haxepunk.graphics;
 
-import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxepunk.Camera;
 import haxepunk.Graphic;
@@ -10,6 +9,7 @@ import haxepunk.graphics.atlas.IAtlasRegion;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.utils.Color;
 import haxepunk.math.MathUtil;
+import haxepunk.math.Vector2;
 
 /**
  * Performance-optimized non-animated image. Can be drawn to the screen with transformations.
@@ -88,7 +88,7 @@ class Image extends Graphic
 	}
 
 	@:dox(hide)
-	override public function render(point:Point, camera:Camera)
+	override public function render(point:Vector2, camera:Camera)
 	{
 		var sx = scale * scaleX,
 			sy = scale * scaleY,

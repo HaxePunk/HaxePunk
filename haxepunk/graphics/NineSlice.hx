@@ -1,11 +1,11 @@
 package haxepunk.graphics;
 
-import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.Graphic;
 import haxepunk.graphics.Image;
 import haxepunk.utils.Color;
+import haxepunk.math.Vector2;
 
 /**
  * Automatic scaling 9-slice graphic.
@@ -96,7 +96,7 @@ class NineSlice extends Graphic
 		return segment;
 	}
 
-	override public function render(point:Point, camera:Camera)
+	override public function render(point:Vector2, camera:Camera)
 	{
 		var leftWidth:Float, rightWidth:Float, topHeight:Float, bottomHeight:Float;
 		if (scaleBorder)

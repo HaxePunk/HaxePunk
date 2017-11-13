@@ -1,10 +1,10 @@
 package haxepunk.masks;
 
 import haxepunk.Mask;
-import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.graphics.hardware.Texture;
+import haxepunk.math.Vector2;
 
 /**
  * A bitmap mask used for pixel-perfect collision.
@@ -163,6 +163,6 @@ class Pixelmask extends Hitbox
 
 	// Global objects.
 	var _rect:Rectangle;
-	var _point:Point;
-	var _point2:Point;
+	var _point:Vector2;
+	var _point2:Vector2;
 }

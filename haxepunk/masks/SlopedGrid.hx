@@ -1,10 +1,10 @@
 package haxepunk.masks;
 
-import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.Mask;
 import haxepunk.math.MathUtil;
+import haxepunk.math.Vector2;
 
 @:enum
 abstract TileType(Int)
@@ -524,8 +524,8 @@ class SlopedGrid extends Hitbox
 	// Grid information.
 	var _tile:Rectangle;
 	var _rect:Rectangle;
-	var _point:Point;
-	var _point2:Point;
+	var _point:Vector2;
+	var _point2:Vector2;
 
 	static var _emptyTile:Tile = { type: Empty }; // prevent recreation of empty tile
 }

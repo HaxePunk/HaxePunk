@@ -1,7 +1,7 @@
 package haxepunk.tweens.motion;
 
 import haxepunk.utils.Ease.EaseFunction;
-import flash.geom.Point;
+import haxepunk.math.Vector2;
 
 /**
  * Determines linear motion along a set of points.
@@ -49,7 +49,7 @@ class LinearPath extends Motion
 			distance += Math.sqrt((x - _last.x) * (x - _last.x) + (y - _last.y) * (y - _last.y));
 			_pointD[_points.length] = distance;
 		}
-		_points[_points.length] = _last = new Point(x, y);
+		_points[_points.length] = _last = new Vector2(x, y);
 	}
 
 	/**
@@ -57,7 +57,7 @@ class LinearPath extends Motion
 	 * @param	index		Index of the point.
 	 * @return	The Point object.
 	 */
-	public function getPoint(index:Int = 0):Point
+	public function getPoint(index:Int = 0):Vector2
 	{
 		if (_points.length == 0)
 			throw "No points have been added to the path yet.";
@@ -117,14 +117,14 @@ class LinearPath extends Motion
 	function get_pointCount():Float return _points.length;
 
 	// Path information.
-	var _points:Array<Point> = [];
+	var _points:Array<Vector2> = [];
 	var _pointD:Array<Float> = [0];
 	var _pointT:Array<Float> = [0];
 	var _speed:Float = 0;
 	var _index:Int = 0;
 
 	// Line information.
-	var _last:Point;
-	var _prevPoint:Point;
-	var _nextPoint:Point;
+	var _last:Vector2;
+	var _prevPoint:Vector2;
+	var _nextPoint:Vector2;
 }

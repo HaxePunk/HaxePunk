@@ -1,9 +1,9 @@
 package haxepunk.masks;
 
-import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.Mask;
+import haxepunk.math.Vector2;
 
 /**
  * Uses a hash grid to determine collision, faster than
@@ -546,7 +546,7 @@ class Grid extends Hitbox
 	}
 
 	@:dox(hide)
-	public function squareProjection(axis:Point, point:Point):Void
+	public function squareProjection(axis:Vector2, point:Vector2):Void
 	{
 		if (axis.x < axis.y)
 		{
@@ -563,6 +563,6 @@ class Grid extends Hitbox
 	// Grid information.
 	var _tile:Rectangle;
 	var _rect:Rectangle;
-	var _point:Point;
-	var _point2:Point;
+	var _point:Vector2;
+	var _point2:Vector2;
 }

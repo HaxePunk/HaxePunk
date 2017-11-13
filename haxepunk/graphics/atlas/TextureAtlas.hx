@@ -4,11 +4,11 @@ import haxe.io.Eof;
 import haxe.io.Input;
 import haxe.io.Path;
 import haxe.io.StringInput;
-import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.Assets;
 import haxepunk.HXP;
 import haxepunk.graphics.atlas.AtlasData;
+import haxepunk.math.Vector2;
 using StringTools;
 
 class TextureAtlas extends Atlas
@@ -90,7 +90,7 @@ class TextureAtlas extends Atlas
 	 *
 	 * @return	The new AtlasRegion object.
 	 */
-	public function defineRegion(name:String, rect:Rectangle, ?center:Point, ?page:String):AtlasRegion
+	public function defineRegion(name:String, rect:Rectangle, ?center:Vector2, ?page:String):AtlasRegion
 	{
 		var data = _pages == null ? this._data : _pages.get(page);
 		var region = data.createRegion(rect, center);

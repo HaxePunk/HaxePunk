@@ -1,9 +1,9 @@
 package haxepunk;
 
+import flash.geom.Rectangle;
 import haxe.ds.Either;
 import haxepunk.utils.BlendMode;
-import flash.geom.Point;
-import flash.geom.Rectangle;
+import haxepunk.math.Vector2;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.TileAtlas;
 import haxepunk.graphics.atlas.AtlasRegion;
@@ -262,7 +262,7 @@ class Graphic
 	 * @param  camera     The camera offset.
 	 */
 	@:dox(hide)
-	public function doRender(point:Point, camera:Camera)
+	public function doRender(point:Vector2, camera:Camera)
 	{
 		if (isPixelPerfect(camera)) pixelPerfectRender(point, camera);
 		else render(point, camera);
@@ -274,7 +274,7 @@ class Graphic
 	 * @param  camera     The camera offset.
 	 */
 	@:dox(hide)
-	public function render(point:Point, camera:Camera) {}
+	public function render(point:Vector2, camera:Camera) {}
 
 	/**
 	 * Renders the graphic, taking extra care to snap pixel locations and
@@ -284,7 +284,7 @@ class Graphic
 	 * @param  point      The position to draw the graphic.
 	 * @param  camera     The camera offset.
 	 */
-	public function pixelPerfectRender(point:Point, camera:Camera) render(point, camera);
+	public function pixelPerfectRender(point:Vector2, camera:Camera) render(point, camera);
 
 	/**
 	 * Pause updating this graphic.
@@ -307,6 +307,6 @@ class Graphic
 	var _class:String;
 	// Graphic information.
 	var _scroll:Bool = true;
-	var _point:Point = new Point();
+	var _point:Vector2 = new Vector2();
 	var _visible:Bool = true;
 }

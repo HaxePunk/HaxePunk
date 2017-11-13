@@ -1,6 +1,5 @@
 package haxepunk.input;
 
-import flash.geom.Point;
 #if lime
 import lime.ui.Gamepad as LimeGamepad;
 #else
@@ -8,6 +7,7 @@ import flash.events.JoystickEvent;
 #end
 import haxepunk.HXP;
 import haxepunk.Signal;
+import haxepunk.math.Vector2;
 
 typedef GamepadID = Int;
 typedef GamepadButton = Int;
@@ -166,7 +166,7 @@ class Gamepad
 	/**
 	 * A Point containing the gamepad's hat value.
 	 */
-	public var hat:Point = new Point();
+	public var hat:Vector2 = new Vector2();
 
 	/**
 	 * Creates and initializes a new Gamepad.

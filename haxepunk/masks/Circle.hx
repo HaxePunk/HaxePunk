@@ -7,7 +7,6 @@ import haxepunk.masks.SlopedGrid;
 import haxepunk.utils.Draw;
 import haxepunk.math.Projection;
 import haxepunk.math.Vector2;
-import flash.geom.Point;
 
 /**
  * Uses circular area to determine collision.

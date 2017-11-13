@@ -5,7 +5,6 @@ import flash.display.Sprite;
 import flash.display.Stage;
 import flash.display.StageDisplayState;
 import flash.geom.Matrix;
-import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.ui.Mouse;
 import haxepunk.Tween.TweenType;
@@ -14,6 +13,7 @@ import haxepunk.tweens.misc.Alarm;
 import haxepunk.tweens.misc.MultiVarTween;
 import haxepunk.utils.HaxelibInfo;
 import haxepunk.math.MathUtil;
+import haxepunk.math.Vector2;
 import haxepunk.math.Random;
 
 /**
@@ -550,9 +550,8 @@ class HXP
 	public static var engine:Engine;
 
 	// Global objects used for rendering, collision, etc.
-	@:dox(hide) public static var point:Point = new Point();
-	@:dox(hide) public static var point2:Point = new Point();
-	@:dox(hide) public static var zero:Point = new Point();
+	@:dox(hide) public static var point:Vector2 = new Vector2();
+	@:dox(hide) public static var point2:Vector2 = new Vector2();
 	@:dox(hide) public static var zeroCamera:Camera = new Camera();
 	@:dox(hide) public static var rect:Rectangle = new Rectangle();
 	@:dox(hide) public static var matrix:Matrix = new Matrix();

@@ -1,7 +1,7 @@
 package haxepunk.tweens.motion;
 
 import haxepunk.utils.Ease.EaseFunction;
-import flash.geom.Point;
+import haxepunk.math.Vector2;
 
 /**
  * A series of points which will determine a path from the
@@ -45,8 +45,8 @@ class QuadPath extends Motion
 	public function addPoint(x:Float = 0, y:Float = 0)
 	{
 		updateInternalCurve = true;
-		if (_points.length == 0) _curve[0] = new Point(x, y);
-		_points[_points.length] = new Point(x, y);
+		if (_points.length == 0) _curve[0] = new Vector2(x, y);
+		_points[_points.length] = new Vector2(x, y);
 	}
 
 	/**
@@ -54,7 +54,7 @@ class QuadPath extends Motion
 	 * @param	index		Index of the point.
 	 * @return	The Point object.
 	 */
-	public function getPoint(index:Int = 0):Point
+	public function getPoint(index:Int = 0):Vector2
 	{
 		if (_points.length == 0)
 			throw "No points have been added to the path yet.";
@@ -98,15 +98,15 @@ class QuadPath extends Motion
 		updateInternalCurve = false;
 
 		// produce the curve points
-		var p:Point,
-			c:Point,
-			l:Point = _points[1],
+		var p:Vector2,
+			c:Vector2,
+			l:Vector2 = _points[1],
 			i:Int = 2;
 		while (i < _points.length)
 		{
 			p = _points[i];
 			if (_curve.length > i - 1) c = _curve[i - 1];
-			else c = _curve[i - 1] = new Point();
+			else c = _curve[i - 1] = new Vector2();
 			if (i < _points.length - 1)
 			{
 				c.x = l.x + (p.x - l.x) / 2;
@@ -148,10 +148,10 @@ class QuadPath extends Motion
 	function get_pointCount():Float return _points.length;
 
 	/** @private Calculates the lenght of the curve. */
-	function curveLength(start:Point, control:Point, finish:Point):Float
+	function curveLength(start:Vector2, control:Vector2, finish:Vector2):Float
 	{
-		var a:Point = HXP.point,
-			b:Point = HXP.point2;
+		var a:Vector2 = HXP.point,
+			b:Vector2 = HXP.point2;
 		a.x = start.x - 2 * control.x + finish.x;
 		a.y = start.y - 2 * control.y + finish.y;
 		b.x = 2 * control.x - 2 * start.x;
@@ -168,19 +168,19 @@ class QuadPath extends Motion
 	}
 
 	// Path information.
-	var _points:Array<Point> = [];
+	var _points:Array<Vector2> = [];
 	var _distance:Float = 0;
 	var _speed:Float = 0;
 	var _index:Int = 0;
 
 	// Curve information.
 	var updateInternalCurve:Bool = true;
-	var _curve:Array<Point> = [];
+	var _curve:Array<Vector2> = [];
 	var _curveT:Array<Float> = [0];
 	var _curveD:Array<Float> = [];
 
 	// Curve points.
-	var _a:Point;
-	var _b:Point;
-	var _c:Point;
+	var _a:Vector2;
+	var _b:Vector2;
+	var _c:Vector2;
 }

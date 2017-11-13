@@ -2,7 +2,6 @@ package haxepunk.graphics.atlas;
 
 import haxepunk.utils.BlendMode;
 import flash.geom.Rectangle;
-import flash.geom.Point;
 import flash.geom.Matrix;
 import haxepunk.Scene;
 import haxepunk.graphics.shader.Shader;
@@ -10,6 +9,7 @@ import haxepunk.graphics.hardware.DrawCommandBatch;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.utils.Color;
 import haxepunk.math.MathUtil;
+import haxepunk.math.Vector2;
 
 class AtlasData
 {
@@ -133,7 +133,7 @@ class AtlasData
 	 *
 	 * @return The new AtlasRegion object.
 	 */
-	public inline function createRegion(rect:Rectangle, ?center:Point):AtlasRegion
+	public inline function createRegion(rect:Rectangle, ?center:Vector2):AtlasRegion
 	{
 		return new AtlasRegion(this, rect.clone());
 	}

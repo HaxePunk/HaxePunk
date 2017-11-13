@@ -1,7 +1,7 @@
 package haxepunk.debug;
 
 import haxepunk.utils.BlendMode;
-import flash.geom.Point;
+import haxepunk.math.Vector2;
 import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.cameras.UICamera;
@@ -75,7 +75,7 @@ class Console extends Scene
 	var _dc:Float = 0;
 	var _t:Float = 0;
 
-	var click:Point = new Point();
+	var click:Vector2 = new Vector2();
 	var selBox:Rectangle = new Rectangle();
 	var clickActive:Bool = false;
 	var dragging:Bool = false;

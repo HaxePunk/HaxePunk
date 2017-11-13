@@ -1,9 +1,9 @@
 package haxepunk.graphics;
 
-import flash.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Graphic;
 import haxepunk.utils.Color;
+import haxepunk.math.Vector2;
 
 /**
  * A Graphic that can contain multiple Graphics of one or various types.
@@ -70,7 +70,7 @@ class Graphiclist extends Graphic
 	}
 
 	/** @private Renders the Graphics in the list. */
-	override public function render(point:Point, camera:Camera)
+	override public function render(point:Vector2, camera:Camera)
 	{
 		var cx = camera.x,
 			cy = camera.y;
