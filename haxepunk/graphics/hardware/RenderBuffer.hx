@@ -6,6 +6,7 @@ import js.html.Int32Array;
 import haxepunk.graphics.hardware.opengl.GL;
 import haxepunk.graphics.hardware.opengl.GLBuffer;
 import haxepunk.graphics.hardware.opengl.GLUtils;
+import haxepunk.graphics.shader.Shader.Attribute;
 
 class RenderBuffer
 {
@@ -79,7 +80,20 @@ class RenderBuffer
 		byteOffset = 0;
 #end
 	}
-
+	
+	public inline function addFloat(v:Float)
+	{
+#if cpp
+		var bytesData = bytesData;
+		var offset = byteOffset; // helps hxcpp generator
+		untyped __global__.__hxcpp_memory_set_float(bytesData, offset, v);
+		byteOffset = offset + 4;
+#else
+		buffer[byteOffset] = v;
+		byteOffset += 1;
+#end
+	}
+	
 	public inline function addVec(x:Float, y:Float)
 	{
 #if cpp
@@ -108,6 +122,22 @@ class RenderBuffer
 		byteOffset += 1;
 #end
 	}
+	
+	public inline function addVertexAttribData(attribs:Array<Attribute>)
+	{
+		for(attrib in attribs)
+		{
+			var vPe = attrib.valuesPerElement;
+			var vecs = Std.int(vPe / 2),
+				ladies = vPe % 2; // 'cause it's a single float ! Hah !
+			var attribData = attrib.data;
+			
+			for (k in 0 ... vecs)
+				addVec(attribData[++attrib.dataPos], attribData[++attrib.dataPos]);
+			if (ladies != 0)
+				addFloat(attribData[++attrib.dataPos]);
+		}
+	}
 
 	public inline function updateGraphicsCard()
 	{
@@ -119,17 +149,20 @@ class RenderBuffer
 	}
 
 	// Add DrawCommand triangle position only
-	public function prepareVertexOnly(drawCommand:DrawCommand)
+	public function prepareVertexOnly(drawCommand:DrawCommand, attribs:Array<Attribute>)
 	{
 		for (tri in drawCommand.triangles)
 		{
 			addVec(tri.tx1, tri.ty1);
+			addVertexAttribData(attribs);
 			addVec(tri.tx2, tri.ty2);
+			addVertexAttribData(attribs);
 			addVec(tri.tx3, tri.ty3);
+			addVertexAttribData(attribs);
 		}
 	}
 
-	public function prepareVertexAndColor(drawCommand:DrawCommand)
+	public function prepareVertexAndColor(drawCommand:DrawCommand, attribs:Array<Attribute>)
 	{
 		var triangleColor:UInt = 0;
 		for (tri in drawCommand.triangles)
@@ -138,31 +171,37 @@ class RenderBuffer
 
 			addVec(tri.tx1, tri.ty1);
 			addInt(triangleColor);
+			addVertexAttribData(attribs);
 
 			addVec(tri.tx2, tri.ty2);
 			addInt(triangleColor);
+			addVertexAttribData(attribs);
 
 			addVec(tri.tx3, tri.ty3);
 			addInt(triangleColor);
+			addVertexAttribData(attribs);
 		}
 	}
 
-	public function prepareVertexAndUV(drawCommand:DrawCommand)
+	public function prepareVertexAndUV(drawCommand:DrawCommand, attribs:Array<Attribute>)
 	{
 		for (tri in drawCommand.triangles)
 		{
 			addVec(tri.tx1, tri.ty1);
 			addVec(tri.uvx1, tri.uvy1);
+			addVertexAttribData(attribs);
 
 			addVec(tri.tx2, tri.ty2);
 			addVec(tri.uvx2, tri.uvy2);
+			addVertexAttribData(attribs);
 
 			addVec(tri.tx3, tri.ty3);
 			addVec(tri.uvx3, tri.uvy3);
+			addVertexAttribData(attribs);
 		}
 	}
 
-	public function prepareVertexUVandColor(drawCommand:DrawCommand)
+	public function prepareVertexUVandColor(drawCommand:DrawCommand, attribs:Array<Attribute>)
 	{
 		var triangleColor:UInt = 0;
 		for (tri in drawCommand.triangles)
@@ -172,14 +211,17 @@ class RenderBuffer
 			addVec(tri.tx1, tri.ty1);
 			addVec(tri.uvx1, tri.uvy1);
 			addInt(triangleColor);
+			addVertexAttribData(attribs);
 
 			addVec(tri.tx2, tri.ty2);
 			addVec(tri.uvx2, tri.uvy2);
 			addInt(triangleColor);
+			addVertexAttribData(attribs);
 
 			addVec(tri.tx3, tri.ty3);
 			addVec(tri.uvx3, tri.uvy3);
 			addInt(triangleColor);
+			addVertexAttribData(attribs);
 		}
 	}
 }

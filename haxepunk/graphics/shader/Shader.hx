@@ -16,18 +16,29 @@ typedef GLUniformLocation = Int;
 
 class Attribute
 {
-	public var index(default, null):Int;
+	public var index(default, null):Int = -1;
+	public var data:Array<Float>;
+	public var valuesPerElement:Int;
+	
+	@:allow(haxepunk.graphics.hardware.RenderBuffer)
+	private var dataPos(default, set):Int = -1; // for use by RenderBuffer to push data in VBOs
+	private function set_dataPos(v:Int) : Int
+	{
+		return dataPos = data != null ? (v + data.length) % data.length : v;
+	}
 
 	public var name(default, set):String;
 	public inline function set_name(value:String):String
 	{
 		name = value;
-		isEnabled = (name != null);
 		rebind(); // requires name to be set
+		if(index == -1)
+			trace("Warning : attribute '" + name + "' is not declared or not used in shader source.");
 		return name;
 	}
 
-	public var isEnabled(default, null):Bool = false;
+	public var isEnabled(get, null):Bool;
+	private function get_isEnabled() : Bool return name != null && index != -1;
 
 	var parent:Shader;
 
@@ -38,18 +49,25 @@ class Attribute
 
 	public function rebind()
 	{
-		if (isEnabled) index = parent.attributeIndex(name);
+		if (name != null) index = parent.attributeIndex(name);
+		dataPos = -1;
 	}
 }
 
 class Shader
 {
-
 	public var glProgram:GLProgram;
 	public var floatsPerVertex(get, never):Int;
-	function get_floatsPerVertex():Int return 2 + (texCoord.isEnabled ? 2 : 0) + (color.isEnabled ? 1 : 0);
+	function get_floatsPerVertex():Int
+	{
+		var a = 2 + (texCoord.isEnabled ? 2 : 0) + (color.isEnabled ? 1 : 0);
+		for (v in attributes.iterator())
+			if(v.isEnabled)
+				a += v.valuesPerElement;
+		return a;
+	}
 
-	var vertexSource:String;
+	public var vertexSource:String;
 	var fragmentSource:String;
 
 	public var id(default, null):Int;
@@ -59,8 +77,9 @@ class Shader
 	public var texCoord:Attribute;
 	public var color:Attribute;
 
+	var attributeNames:Array<String> = new Array();
+	var attributes:Map<String, Attribute> = new Map();
 	var uniformIndices:Map<String, GLUniformLocation> = new Map();
-	var attributeIndices:Map<String, Int> = new Map();
 	var uniformNames:Array<String> = new Array();
 	var uniformValues:Map<String, Float> = new Map();
 
@@ -95,6 +114,8 @@ class Shader
 		position.rebind();
 		texCoord.rebind();
 		color.rebind();
+		for (v in attributes.iterator())
+			v.rebind();
 	}
 
 	function compile(type:Int, source:String):GLShader
@@ -112,35 +133,37 @@ class Shader
 	public function destroy()
 	{
 		for (key in uniformIndices.keys()) uniformIndices.remove(key);
-		for (key in attributeIndices.keys()) attributeIndices.remove(key);
+		for (key in attributes.keys()) attributes.remove(key);
 	}
 
 	public function prepare(drawCommand:DrawCommand, buffer:RenderBuffer)
 	{
 		if (!position.isEnabled) return;
+		var attribs = attributeNames.map(function(n) return attributes[n]);
 
 		buffer.use();
 		if (texCoord.isEnabled)
 		{
 			if (color.isEnabled)
 			{
-				buffer.prepareVertexUVandColor(drawCommand);
+				buffer.prepareVertexUVandColor(drawCommand, attribs);
 			}
 			else
 			{
-				buffer.prepareVertexAndUV(drawCommand);
+				buffer.prepareVertexAndUV(drawCommand, attribs);
 			}
 		}
 		else if (color.isEnabled)
 		{
-			buffer.prepareVertexAndColor(drawCommand);
+			buffer.prepareVertexAndColor(drawCommand, attribs);
 		}
 		else
 		{
-			buffer.prepareVertexOnly(drawCommand);
+			buffer.prepareVertexOnly(drawCommand, attribs);
 		}
+		
 		buffer.updateGraphicsCard();
-
+		
 		setAttributePointers();
 	}
 
@@ -160,7 +183,18 @@ class Shader
 		if (color.isEnabled)
 		{
 			GL.vertexAttribPointer(color.index, 4, GL.UNSIGNED_BYTE, true, stride, offset);
-			// offset += 4 * Float32Array.BYTES_PER_ELEMENT;
+			offset += 1 * Float32Array.BYTES_PER_ELEMENT;
+		}
+		
+		// Use an array of names to preserve order, since the order of keys in a Map is undefined
+		for (n in attributeNames)
+		{
+			var attrib = attributes[n];
+			if(attrib.isEnabled)
+			{
+				GL.vertexAttribPointer(attrib.index, attrib.valuesPerElement, GL.FLOAT, false, stride, offset);
+				offset += attrib.valuesPerElement * Float32Array.BYTES_PER_ELEMENT;
+			}
 		}
 	}
 
@@ -182,6 +216,11 @@ class Shader
 		GL.enableVertexAttribArray(position.index);
 		if (texCoord.isEnabled) GL.enableVertexAttribArray(texCoord.index);
 		if (color.isEnabled) GL.enableVertexAttribArray(color.index);
+		for (n in attributeNames)
+			if (attributes[n].isEnabled)
+				GL.enableVertexAttribArray(attributes[n].index);
+		
+		GLUtils.checkForErrors();
 	}
 
 	public function unbind()
@@ -190,6 +229,9 @@ class Shader
 		GL.disableVertexAttribArray(position.index);
 		if (texCoord.isEnabled) GL.disableVertexAttribArray(texCoord.index);
 		if (color.isEnabled) GL.disableVertexAttribArray(color.index);
+		for(n in attributeNames)
+			if(attributes[n].isEnabled)
+				GL.disableVertexAttribArray(attributes[n].index);
 	}
 
 	/**
@@ -200,11 +242,7 @@ class Shader
 #if unit_test
 		return 0;
 #else
-		if (!attributeIndices.exists(name))
-		{
-			attributeIndices[name] = GL.getAttribLocation(glProgram, name);
-		}
-		return attributeIndices[name];
+		return GL.getAttribLocation(glProgram, name);
 #end
 	}
 
@@ -230,5 +268,39 @@ class Shader
 			uniformNames.push(name);
 		}
 		uniformValues[name] = value;
+	}
+	
+	/**
+	 * Set or change the values of a named vertex attribute.
+	 */
+	public function setVertexAttribData(name:String, values:Array<Float>, valuesPerElement:Int)
+	{
+		var attrib:Attribute;
+		if (!attributes.exists(name))
+		{
+			attrib = new Attribute(this);
+			attrib.name = name;
+			attributes[name] = attrib;
+			attributeNames.push(name);
+		}
+		else
+			attrib = attributes[name];
+		attrib.data = values;
+		attrib.valuesPerElement = valuesPerElement;
+	}
+	
+	/**
+	 * Add extra values to a named vertex attribute.
+	 */
+	public function appendVertexAttribData(name:String, values:Array<Float>)
+	{
+		var attrib:Attribute;
+		if (!attributes.exists(name))
+			throw "appendVertexAttribData : attribute '" + name + "' was not declared";
+		else
+			attrib = attributes[name];
+		if(values.length % attrib.valuesPerElement != 0)
+			throw "appendVertexAttribData : values per element do not match";
+		attrib.data = attrib.data.concat(values);
 	}
 }
