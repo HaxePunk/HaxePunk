@@ -669,7 +669,7 @@ class Entity extends Tweener
 		{
 			#if (html5||flash)
 			return {
-				if( Reflect.getProperty(o, prop) == null )
+				if ( Reflect.getProperty(o, prop) == null )
 				{
 					defaultValue;
 				}
