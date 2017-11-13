@@ -47,7 +47,7 @@ void main(void) {
 	 */
 	public static inline function fromAsset(name:String):TextureShader
 	{
-		return new TextureShader(Assets.getText(name));
+		return new TextureShader(null, Assets.getText(name));
 	}
 
 	public function new(?vertex:String, ?fragment:String)
