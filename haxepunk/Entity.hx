@@ -666,6 +666,14 @@ class Entity extends Tweener
 	{
 		inline function getInt(o:Dynamic, prop:String, defaultValue:Int=0):Int
 		{
+			#if html5
+			return if ( Reflect.getProperty(o, prop) == null ){
+				defaultValue;
+			}
+			else{
+				Std.int(Reflect.getProperty(o, prop));
+			}
+			#else
 			return try
 			{
 				Std.int(Reflect.getProperty(o, prop));
@@ -674,6 +682,7 @@ class Entity extends Tweener
 			{
 				defaultValue;
 			}
+			#end
 		};
 
 		width = getInt(o, "width");
