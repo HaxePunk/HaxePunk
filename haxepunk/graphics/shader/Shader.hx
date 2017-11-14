@@ -162,15 +162,18 @@ class Shader
 			buffer.prepareVertexOnly(drawCommand, attribs);
 		}
 		
+		buffer.addVertexAttribData(attribs, drawCommand.triangleCount * 3);
+		
 		buffer.updateGraphicsCard();
 		
-		setAttributePointers();
+		setAttributePointers(drawCommand.triangleCount);
 	}
 
-	function setAttributePointers()
+	function setAttributePointers(nbTriangles:Int)
 	{
 		var offset:Int = 0;
-		var stride:Int = floatsPerVertex * Float32Array.BYTES_PER_ELEMENT;
+		// var stride:Int = floatsPerVertex * Float32Array.BYTES_PER_ELEMENT;
+		var stride:Int = (2 + (texCoord.isEnabled ? 2 : 0) + (color.isEnabled ? 1 : 0)) * Float32Array.BYTES_PER_ELEMENT;
 		GL.vertexAttribPointer(position.index, 2, GL.FLOAT, false, stride, offset);
 		offset += 2 * Float32Array.BYTES_PER_ELEMENT;
 
@@ -186,14 +189,18 @@ class Shader
 			offset += 1 * Float32Array.BYTES_PER_ELEMENT;
 		}
 		
+		// Custom vertex attrib data is at the end of the buffer to speed up construction.
+		
+		offset *= nbTriangles * 3;
+		
 		// Use an array of names to preserve order, since the order of keys in a Map is undefined
 		for (n in attributeNames)
 		{
 			var attrib = attributes[n];
 			if (attrib.isEnabled)
 			{
-				GL.vertexAttribPointer(attrib.index, attrib.valuesPerElement, GL.FLOAT, false, stride, offset);
-				offset += attrib.valuesPerElement * Float32Array.BYTES_PER_ELEMENT;
+				GL.vertexAttribPointer(attrib.index, attrib.valuesPerElement, GL.FLOAT, false, 0, offset);
+				offset += nbTriangles * 3 * attrib.valuesPerElement * Float32Array.BYTES_PER_ELEMENT;
 			}
 		}
 	}

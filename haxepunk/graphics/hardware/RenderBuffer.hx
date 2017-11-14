@@ -123,18 +123,17 @@ class RenderBuffer
 #end
 	}
 	
-	public inline function addVertexAttribData(attribs:Array<Attribute>)
+	/**
+	 * Add vertex attribute data, at the end of the DrawCommand. While position, texture coords
+	 * and color are interleaved, custom vertex attrib data is at the end of the buffer to speed
+	 * up construction.
+	 */
+	public inline function addVertexAttribData(attribs:Array<Attribute>, nbVertices:Int)
 	{
 		for (attrib in attribs)
 		{
-			var vPe = attrib.valuesPerElement;
-			var vecs = Std.int(vPe / 2),
-				ladies = vPe % 2; // 'cause it's a single float ! Hah !
 			var attribData = attrib.data;
-			
-			for (k in 0 ... vecs)
-				addVec(attribData[++attrib.dataPos], attribData[++attrib.dataPos]);
-			if (ladies != 0)
+			for (k in 0 ... nbVertices * attrib.valuesPerElement)
 				addFloat(attribData[++attrib.dataPos]);
 		}
 	}
@@ -154,11 +153,8 @@ class RenderBuffer
 		for (tri in drawCommand.triangles)
 		{
 			addVec(tri.tx1, tri.ty1);
-			addVertexAttribData(attribs);
 			addVec(tri.tx2, tri.ty2);
-			addVertexAttribData(attribs);
 			addVec(tri.tx3, tri.ty3);
-			addVertexAttribData(attribs);
 		}
 	}
 
@@ -171,15 +167,12 @@ class RenderBuffer
 
 			addVec(tri.tx1, tri.ty1);
 			addInt(triangleColor);
-			addVertexAttribData(attribs);
 
 			addVec(tri.tx2, tri.ty2);
 			addInt(triangleColor);
-			addVertexAttribData(attribs);
 
 			addVec(tri.tx3, tri.ty3);
 			addInt(triangleColor);
-			addVertexAttribData(attribs);
 		}
 	}
 
@@ -189,15 +182,12 @@ class RenderBuffer
 		{
 			addVec(tri.tx1, tri.ty1);
 			addVec(tri.uvx1, tri.uvy1);
-			addVertexAttribData(attribs);
 
 			addVec(tri.tx2, tri.ty2);
 			addVec(tri.uvx2, tri.uvy2);
-			addVertexAttribData(attribs);
 
 			addVec(tri.tx3, tri.ty3);
 			addVec(tri.uvx3, tri.uvy3);
-			addVertexAttribData(attribs);
 		}
 	}
 
@@ -211,17 +201,14 @@ class RenderBuffer
 			addVec(tri.tx1, tri.ty1);
 			addVec(tri.uvx1, tri.uvy1);
 			addInt(triangleColor);
-			addVertexAttribData(attribs);
 
 			addVec(tri.tx2, tri.ty2);
 			addVec(tri.uvx2, tri.uvy2);
 			addInt(triangleColor);
-			addVertexAttribData(attribs);
 
 			addVec(tri.tx3, tri.ty3);
 			addVec(tri.uvx3, tri.uvy3);
 			addInt(triangleColor);
-			addVertexAttribData(attribs);
 		}
 	}
 }
