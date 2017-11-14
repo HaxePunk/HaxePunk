@@ -139,7 +139,7 @@ class Shader
 	public function prepare(drawCommand:DrawCommand, buffer:RenderBuffer)
 	{
 		if (!position.isEnabled) return;
-		var attribs = attributeNames.map(function(n) return attributes[n]);
+		var attribs = attributeNames.map(function(n) return attributes[n]).filter(function (a) return a.isEnabled);
 
 		buffer.use();
 		if (texCoord.isEnabled)
