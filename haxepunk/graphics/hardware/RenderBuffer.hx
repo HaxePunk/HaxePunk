@@ -148,7 +148,7 @@ class RenderBuffer
 	}
 
 	// Add DrawCommand triangle position only
-	public function prepareVertexOnly(drawCommand:DrawCommand, attribs:Array<Attribute>)
+	public function prepareVertexOnly(drawCommand:DrawCommand)
 	{
 		for (tri in drawCommand.triangles)
 		{
@@ -158,7 +158,7 @@ class RenderBuffer
 		}
 	}
 
-	public function prepareVertexAndColor(drawCommand:DrawCommand, attribs:Array<Attribute>)
+	public function prepareVertexAndColor(drawCommand:DrawCommand)
 	{
 		var triangleColor:UInt = 0;
 		for (tri in drawCommand.triangles)
@@ -176,7 +176,7 @@ class RenderBuffer
 		}
 	}
 
-	public function prepareVertexAndUV(drawCommand:DrawCommand, attribs:Array<Attribute>)
+	public function prepareVertexAndUV(drawCommand:DrawCommand)
 	{
 		for (tri in drawCommand.triangles)
 		{
@@ -191,7 +191,7 @@ class RenderBuffer
 		}
 	}
 
-	public function prepareVertexUVandColor(drawCommand:DrawCommand, attribs:Array<Attribute>)
+	public function prepareVertexUVandColor(drawCommand:DrawCommand)
 	{
 		var triangleColor:UInt = 0;
 		for (tri in drawCommand.triangles)

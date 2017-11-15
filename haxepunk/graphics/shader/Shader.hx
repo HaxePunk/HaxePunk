@@ -146,20 +146,20 @@ class Shader
 		{
 			if (color.isEnabled)
 			{
-				buffer.prepareVertexUVandColor(drawCommand, attribs);
+				buffer.prepareVertexUVandColor(drawCommand);
 			}
 			else
 			{
-				buffer.prepareVertexAndUV(drawCommand, attribs);
+				buffer.prepareVertexAndUV(drawCommand);
 			}
 		}
 		else if (color.isEnabled)
 		{
-			buffer.prepareVertexAndColor(drawCommand, attribs);
+			buffer.prepareVertexAndColor(drawCommand);
 		}
 		else
 		{
-			buffer.prepareVertexOnly(drawCommand, attribs);
+			buffer.prepareVertexOnly(drawCommand);
 		}
 		
 		buffer.addVertexAttribData(attribs, drawCommand.triangleCount * 3);
