@@ -659,8 +659,9 @@ class Entity extends Tweener
 	}
 
 	#if html5 
-	static function getInt( value:Dynamic, defaultValue:Int = 0 ): Int{
-		return if( Std.is(value, Int) || Std.is(value, Float) ) 
+	static function getInt( value:Dynamic, defaultValue:Int = 0 ): Int
+	{
+		return if (Std.is(value, Int) || Std.is(value, Float)) 
 			value;
 		else 
 			defaulValue;
