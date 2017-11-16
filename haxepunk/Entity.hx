@@ -658,24 +658,30 @@ class Entity extends Tweener
 		this.originY = originY;
 	}
 
+	#if html5 
+	static function getInt( value:Dynamic, defaultValue:Int = 0 ): Int{
+		return if( Std.is(value, Int) || Std.is(value, Float) ) 
+			value;
+		else 
+			defaulValue;
+	}
+	#end 
+
 	/**
 	 * Sets the Entity's hitbox to match that of the provided object.
 	 * @param	o		The object defining the hitbox (eg. an Image or Rectangle).
 	 */
 	public function setHitboxTo(o:Dynamic)
 	{
+		#if html5 
+		width = getInt(o.width);
+		height = getInt(o.height);
+
+		originX = getInt(o.originX, -getInt(o.x));
+		originY = getInt(o.originY, -getInt(o.y));
+		#else
 		inline function getInt(o:Dynamic, prop:String, defaultValue:Int=0):Int
 		{
-			#if html5
-			return if ( Reflect.getProperty(o, prop) == null )
-			{
-				defaultValue;
-			}
-			else
-			{
-				Std.int(Reflect.getProperty(o, prop));
-			}
-			#else
 			return try
 			{
 				Std.int(Reflect.getProperty(o, prop));
@@ -684,14 +690,13 @@ class Entity extends Tweener
 			{
 				defaultValue;
 			}
-			#end
 		};
-
 		width = getInt(o, "width");
 		height = getInt(o, "height");
 
 		originX = getInt(o, "originX", -getInt(o, "x"));
 		originY = getInt(o, "originY", -getInt(o, "y"));
+		#end 
 	}
 
 	/**
