@@ -1,7 +1,6 @@
 package haxepunk;
 
 import haxe.ds.IntMap;
-import flash.geom.Point;
 import haxepunk.Signal;
 import haxepunk.graphics.atlas.AtlasData;
 import haxepunk.graphics.shader.SceneShader;
@@ -10,6 +9,7 @@ import haxepunk.utils.BlendMode;
 import haxepunk.utils.Color;
 import haxepunk.utils.DrawContext;
 import haxepunk.math.MathUtil;
+import haxepunk.math.Vector2;
 
 /**
  * Updated by `Engine`, main game container that holds all currently active Entities.
@@ -564,7 +564,7 @@ class Scene extends Tweener
 	 * @param	p           If non-null, will have its x and y values set to the point of collision.
 	 * @return	The first Entity to collide, or null if none collide.
 	 */
-	public function collideLine(type:String, fromX:Int, fromY:Int, toX:Int, toY:Int, precision:Int = 1, p:Point = null):Entity
+	public function collideLine(type:String, fromX:Int, fromY:Int, toX:Int, toY:Int, precision:Int = 1, p:Vector2 = null):Entity
 	{
 		// If the distance is less than precision, do the short sweep.
 		if (precision < 1) precision = 1;

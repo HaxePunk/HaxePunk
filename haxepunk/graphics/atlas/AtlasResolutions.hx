@@ -1,9 +1,9 @@
 package haxepunk.graphics.atlas;
 
-import haxepunk.utils.BlendMode;
 import flash.geom.Rectangle;
-import flash.geom.Point;
+import haxepunk.utils.BlendMode;
 import haxepunk.graphics.shader.Shader;
+import haxepunk.math.Vector2;
 import haxepunk.utils.Color;
 
 /**
@@ -118,7 +118,7 @@ class AtlasResolutions implements IAtlasRegion
 		);
 	}
 
-	public function clip(clipRect:Rectangle, ?center:Point):IAtlasRegion
+	public function clip(clipRect:Rectangle, ?center:Vector2):IAtlasRegion
 	{
 		var clippedRegions:Array<AtlasRegion> = new Array();
 		clippedRegions.push(base.clip(clipRect, center));
@@ -164,5 +164,5 @@ class AtlasResolutions implements IAtlasRegion
 	}
 
 	static var _rect:Rectangle = new Rectangle();
-	static var _point:Point = new Point();
+	static var _point:Vector2 = new Vector2();
 }

@@ -1,8 +1,8 @@
 package haxepunk.graphics.tile;
 
-import flash.geom.Point;
 import flash.geom.Rectangle;
 import haxepunk.Graphic.ImageType;
+import haxepunk.math.Vector2;
 
 /**
  * Special Image object that can display blocks of tiles.
@@ -28,7 +28,7 @@ class TiledImage extends Image
 
 	/** Renders the image. */
 	@:dox(hide)
-	override public function render(point:Point, camera:Camera)
+	override public function render(point:Vector2, camera:Camera)
 	{
 		// determine drawing location
 		_point.x = point.x + x - originX - camera.x * scrollX;
@@ -56,7 +56,7 @@ class TiledImage extends Image
 		}
 	}
 
-	override public function pixelPerfectRender(point:Point, camera:Camera)
+	override public function pixelPerfectRender(point:Vector2, camera:Camera)
 	{
 		// determine drawing location
 		var fsx = camera.fullScaleX,

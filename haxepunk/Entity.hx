@@ -1,6 +1,5 @@
 package haxepunk;
 
-import flash.geom.Point;
 import haxe.ds.Either.Left;
 import haxe.ds.Either.Right;
 import haxepunk.Signal.Signal0;
@@ -151,7 +150,6 @@ class Entity extends Tweener
 		_name = "";
 
 		HITBOX = new Mask();
-		_point = HXP.point;
 
 		layer = 0;
 
@@ -202,14 +200,14 @@ class Entity extends Tweener
 		{
 			if (graphic.relative)
 			{
-				_point.x = x;
-				_point.y = y;
+				HXP.point.x = x;
+				HXP.point.y = y;
 			}
 			else
 			{
-				_point.x = _point.y = 0;
+				HXP.point.x = HXP.point.y = 0;
 			}
-			graphic.doRender(_point, camera);
+			graphic.doRender(HXP.point, camera);
 		}
 	}
 
@@ -543,8 +541,8 @@ class Entity extends Tweener
 	inline function get_bottom():Float return top + height;
 
 	/**
-	 * The rendering layer of this Entity. Layers are drawn in descending order. 
-	 * Backgrounds will have large (positive) numbers, foregrounds will have 
+	 * The rendering layer of this Entity. Layers are drawn in descending order.
+	 * Backgrounds will have large (positive) numbers, foregrounds will have
 	 * small (negative) numbers.
 	 */
 	public var layer(get, set):Int;
@@ -841,13 +839,13 @@ class Entity extends Tweener
 	 */
 	public inline function moveTowards(x:Float, y:Float, amount:Float, ?solidType:SolidType, sweep:Bool = false)
 	{
-		_point.x = x - this.x;
-		_point.y = y - this.y;
-		if (_point.x * _point.x + _point.y * _point.y > amount * amount)
+		HXP.point.x = x - this.x;
+		HXP.point.y = y - this.y;
+		if (HXP.point.x * HXP.point.x + HXP.point.y * HXP.point.y > amount * amount)
 		{
-			_point.normalize(amount);
+			HXP.point.normalize(amount);
 		}
-		moveBy(_point.x, _point.y, solidType, sweep);
+		moveBy(HXP.point.x, HXP.point.y, solidType, sweep);
 	}
 
 	/**
@@ -944,9 +942,6 @@ class Entity extends Tweener
 	var _y:Float = 0;
 	var _moveX:Float = 0;
 	var _moveY:Float = 0;
-
-	// Rendering information.
-	var _point:Point;
 
 	static var _EMPTY:Entity = new Entity();
 }

@@ -1,9 +1,9 @@
 package haxepunk.graphics.atlas;
 
-import haxepunk.utils.BlendMode;
-import flash.geom.Point;
 import flash.geom.Rectangle;
+import haxepunk.utils.BlendMode;
 import haxepunk.graphics.shader.Shader;
+import haxepunk.math.Vector2;
 import haxepunk.utils.Color;
 
 interface IAtlasRegion
@@ -22,6 +22,6 @@ interface IAtlasRegion
 		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle,
 		flexibleLayer:Bool=false):Void;
 
-	public function clip(clipRect:Rectangle, ?center:Point):IAtlasRegion;
+	public function clip(clipRect:Rectangle, ?center:Vector2):IAtlasRegion;
 	public function destroy():Void;
 }

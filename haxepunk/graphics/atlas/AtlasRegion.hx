@@ -2,11 +2,11 @@ package haxepunk.graphics.atlas;
 
 import haxepunk.utils.BlendMode;
 import flash.geom.Rectangle;
-import flash.geom.Point;
 import flash.geom.Matrix;
 import haxepunk.utils.Color;
 import haxepunk.math.MathUtil;
 import haxepunk.graphics.shader.Shader;
+import haxepunk.math.Vector2;
 
 class AtlasRegion implements IAtlasRegion
 {
@@ -44,7 +44,7 @@ class AtlasRegion implements IAtlasRegion
 	 * @param	center		The new center point
 	 * @return	A new atlas region with the clipped coordinates
 	 */
-	public function clip(clipRect:Rectangle, ?center:Point):AtlasRegion
+	public function clip(clipRect:Rectangle, ?center:Vector2):AtlasRegion
 	{
 		// make a copy of clipRect, to avoid modifying the original
 		var clipRectCopy = clipRect.clone();

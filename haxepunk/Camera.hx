@@ -1,15 +1,27 @@
 package haxepunk;
 
-import flash.geom.Point;
-
 /**
  * @since 4.0.0
  */
-class Camera extends Point
+class Camera
 {
+	public var x:Float;
+	public var y:Float;
+
 	public var scale:Float = 1;
 	public var scaleX:Float = 1;
 	public var scaleY:Float = 1;
+
+	public function new(x:Float = 0, y:Float = 0)
+	{
+		setTo(x, y);
+	}
+
+	public inline function setTo(x:Float, y:Float)
+	{
+		this.x = x;
+		this.y = y;
+	}
 
 	/**
 	 * Whether this graphic will be snapped to the nearest whole number pixel

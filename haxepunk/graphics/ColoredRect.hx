@@ -1,10 +1,10 @@
 package haxepunk.graphics;
 
-import flash.geom.Point;
 import haxepunk.Graphic;
 import haxepunk.graphics.atlas.AtlasData;
 import haxepunk.graphics.shader.ColorShader;
 import haxepunk.utils.Color;
+import haxepunk.math.Vector2;
 
 class ColoredRect extends Graphic
 {
@@ -23,7 +23,7 @@ class ColoredRect extends Graphic
 
 	@:access(haxepunk.graphics.atlas.AtlasData)
 	@:access(haxepunk.graphics.hardware.SceneRenderer)
-	override public function render(point:Point, camera:Camera)
+	override public function render(point:Vector2, camera:Camera)
 	{
 		var command = AtlasData._batch.getDrawCommand(null, shader,
 				false, blend, screenClipRect(camera, point.x, point.y));

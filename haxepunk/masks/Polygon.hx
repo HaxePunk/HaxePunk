@@ -10,7 +10,6 @@ import haxepunk.math.Projection;
 import haxepunk.math.Vector2;
 import haxepunk.math.MathUtil;
 import haxepunk.math.MakeConvex;
-import flash.geom.Point;
 
 
 /**
@@ -21,7 +20,7 @@ class Polygon extends Hitbox
 	/**
 	 * The polygon rotates around this point when the angle is set.
 	 */
-	public var origin:Point;
+	public var origin:Vector2;
 
 	// Polygon bounding box.
 	/** Left x bounding box position. */
@@ -39,7 +38,7 @@ class Polygon extends Hitbox
 	 * @param	points		An array of coordinates that define the polygon (must have at least 3 and defined counter-clockwise).
 	 * @param	origin	 	Pivot point for rotations.
 	 */
-	public static function fromPoints(points:Array<Vector2>, ?origin:Point):Masklist
+	public static function fromPoints(points:Array<Vector2>, ?origin:Vector2):Masklist
 	{
 		var cp = MakeConvex.run(points);
 		var list = new Masklist();
@@ -53,7 +52,7 @@ class Polygon extends Hitbox
 	 * @param	points		An array of coordinates that define the polygon (must have at least 3 and be convex).
 	 * @param	origin	 	Pivot point for rotations.
 	 */
-	function new(points:Array<Vector2>, ?origin:Point)
+	function new(points:Array<Vector2>, ?origin:Vector2)
 	{
 		super();
 		if (points.length < 3) throw "The polygon needs at least 3 sides.";
@@ -68,7 +67,7 @@ class Polygon extends Hitbox
 		_check.set(Type.getClassName(Circle), collideCircle);
 		_check.set(Type.getClassName(Polygon), collidePolygon);
 
-		this.origin = origin != null ? origin : new Point();
+		this.origin = origin != null ? origin : new Vector2();
 		_angle = 0;
 
 		updateAxes();

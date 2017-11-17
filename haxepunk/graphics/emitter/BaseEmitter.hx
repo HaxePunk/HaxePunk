@@ -1,13 +1,13 @@
 package haxepunk.graphics.emitter;
 
 import haxepunk.utils.BlendMode;
-import flash.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Graphic;
 import haxepunk.utils.Color;
 import haxepunk.utils.Ease.EaseFunction;
 import haxepunk.math.MathUtil;
 import haxepunk.math.Random;
+import haxepunk.math.Vector2;
 
 @:generic class BaseEmitter<T:Graphic> extends Graphic
 {
@@ -28,7 +28,7 @@ import haxepunk.math.Random;
 		particleCount = 0;
 	}
 
-	override public function render(point:Point, camera:Camera)
+	override public function render(point:Vector2, camera:Camera)
 	{
 		var p:Particle = _particle;
 

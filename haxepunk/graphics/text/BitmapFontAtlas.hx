@@ -1,6 +1,7 @@
 package haxepunk.graphics.text;
 
 import flash.Assets;
+import flash.geom.Point;
 import haxe.xml.Fast;
 import haxepunk.HXP;
 import haxepunk.graphics.atlas.AtlasDataType;
@@ -213,10 +214,10 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 
 		// remove background color
 		var bgColor32:Int = bitmap.getPixel32(0, 0);
-		bitmap.threshold(bitmap, bitmap.rect, HXP.zero, "==", bgColor32, 0x00000000, 0xFFFFFFFF, true);
+		bitmap.threshold(bitmap, bitmap.rect, _zero, "==", bgColor32, 0x00000000, 0xFFFFFFFF, true);
 
 		if (options.glyphBGColor != null)
-			bitmap.threshold(bitmap, bitmap.rect, HXP.zero, "==", options.glyphBGColor, 0x00000000, 0xFFFFFFFF, true);
+			bitmap.threshold(bitmap, bitmap.rect, _zero, "==", options.glyphBGColor, 0x00000000, 0xFFFFFFFF, true);
 
 		return atlas;
 	}
@@ -243,6 +244,7 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 		return lineHeight * size / fontSize;
 	}
 
+	static var _zero:Point = new Point(0, 0);
 	static var _fonts:Map<String, BitmapFontAtlas>;
 	static var _DEFAULT_GLYPHS:String = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 }

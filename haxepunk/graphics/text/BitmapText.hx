@@ -1,10 +1,10 @@
 package haxepunk.graphics.text;
 
-import flash.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Graphic;
 import haxepunk.utils.Color;
 import haxepunk.graphics.text.BitmapFontAtlas.BitmapFontFormat;
+import haxepunk.math.Vector2;
 
 /**
  * Text option including the font, size, color, font format...
@@ -594,7 +594,7 @@ class BitmapText extends Graphic
 	}
 
 	@:dox(hide)
-	override public function render(point:Point, camera:Camera)
+	override public function render(point:Vector2, camera:Camera)
 	{
 		if (_dirty) parseText();
 		HXP.clear(_customStack);
@@ -705,7 +705,8 @@ class BitmapText extends Graphic
 					image.scaleX *= this.scale * this.scaleX * _renderData.scale;
 					image.scaleY *= this.scale * this.scaleY * _renderData.scale;
 					image.pixelSnapping = pixelPerfect;
-					image.render(HXP.zero, HXP.zeroCamera);
+					HXP.point.setTo(0, 0);
+					image.render(HXP.point, HXP.zeroCamera);
 					image.x = originalX;
 					image.y = originalY;
 					image.scaleX = originalScaleX;

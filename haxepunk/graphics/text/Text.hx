@@ -3,17 +3,18 @@ package haxepunk.graphics.text;
 import haxe.ds.StringMap;
 import flash.geom.ColorTransform;
 import flash.geom.Matrix;
-import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
 import flash.Assets;
+import flash.geom.Point;
 import haxepunk.HXP;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.AtlasRegion;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.utils.Color;
+import haxepunk.math.Vector2;
 
 /**
  * Used for drawing text using embedded fonts.
@@ -539,7 +540,7 @@ class Text extends Image
 	var bufferMargin(get, null):Float;
 	inline function get_bufferMargin() return 2 + (border == null ? 0 : border.size);
 
-	override public function render(point:Point, camera:Camera)
+	override public function render(point:Vector2, camera:Camera)
 	{
 		if (_needsUpdate) updateTextBuffer();
 

@@ -1,6 +1,5 @@
 package haxepunk.masks;
 
-import flash.geom.Point;
 import haxepunk.Mask;
 import haxepunk.utils.Draw;
 import haxepunk.math.Projection;

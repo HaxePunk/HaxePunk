@@ -1,9 +1,9 @@
 package haxepunk.graphics.tile;
 
-import flash.geom.Point;
 import haxepunk.graphics.atlas.IAtlasRegion;
 import haxepunk.HXP;
 import haxepunk.Graphic;
+import haxepunk.math.Vector2;
 
 /**
  * A background texture that can be repeated horizontally and vertically
@@ -47,7 +47,7 @@ class Backdrop extends Graphic
 	}
 
 	@:dox(hide)
-	override public function render(point:Point, camera:Camera)
+	override public function render(point:Vector2, camera:Camera)
 	{
 		_point.x = (point.x - camera.x * scrollX + x) * camera.fullScaleX;
 		_point.y = (point.y - camera.y * scrollY + y) * camera.fullScaleY;
@@ -88,7 +88,7 @@ class Backdrop extends Graphic
 	}
 
 	@:dox(hide)
-	override public function pixelPerfectRender(point:Point, camera:Camera)
+	override public function pixelPerfectRender(point:Vector2, camera:Camera)
 	{
 		var fsx = camera.fullScaleX,
 			fsy = camera.fullScaleY,
