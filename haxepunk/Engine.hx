@@ -253,9 +253,12 @@ class Engine extends Sprite
 		}
 		// calculate scale from width/height values
 		HXP.resize(HXP.stage.stageWidth, HXP.stage.stageHeight);
-		_scrollRect.width = HXP.screen.width;
-		_scrollRect.height = HXP.screen.height;
-		scrollRect = _scrollRect;
+		if (scrollRect == null)
+		{
+			scrollRect = new Rectangle();
+		}
+		scrollRect.width = HXP.screen.width;
+		scrollRect.height = HXP.screen.height;
 
 		onResize.invoke();
 	}
@@ -438,7 +441,6 @@ class Engine extends Sprite
 
 	var _renderer:HardwareRenderer = new HardwareRenderer();
 
-	var _scrollRect:Rectangle = new Rectangle();
 	var _iterator:VisibleSceneIterator;
 }
 

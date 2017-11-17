@@ -2,32 +2,44 @@ package haxepunk.math;
 
 class Rectangle
 {
-	public var left:Float;
-	public var right:Float;
-	public var top:Float;
-	public var bottom:Float;
+	public var x:Float;
+	public var y:Float;
+	public var width:Float;
+	public var height:Float;
 
-	public var x(get, set):Float;
-	inline function get_x():Float return left;
-	inline function set_x(value:Float):Float return left = value;
+	/**
+	 * The left-most x-axis value. Identical to x.
+	 */
+	public var left(get, set):Float;
+	inline function get_left():Float return x;
+	inline function set_left(value:Float):Float return x = value;
 
-	public var y(get, set):Float;
-	inline function get_y():Float return top;
-	inline function set_y(value:Float):Float return top = value;
-
-	public var width(get, set):Float;
-	inline function get_width():Float return right - left;
-	inline function set_width(value:Float):Float
+	/**
+	 * The right-most x-axis value. When set it will push the x value, keeping the same width.
+	 */
+	public var right(get, set):Float;
+	inline function get_right():Float return x + width;
+	inline function set_right(value:Float):Float
 	{
-		right = left + value;
+		x = value - width;
 		return value;
 	}
 
-	public var height(get, set):Float;
-	inline function get_height():Float return bottom - top;
-	inline function set_height(value:Float):Float
+	/**
+	 * The top-most y-axis value. Identical to y.
+	 */
+	public var top(get, set):Float;
+	inline function get_top():Float return y;
+	inline function set_top(value:Float):Float return y = value;
+
+	/**
+	 * The bottom-most y-axis value. When set it will push the y value, keeping the same height.
+	 */
+	public var bottom(get, set):Float;
+	inline function get_bottom():Float return y + height;
+	inline function set_bottom(value:Float):Float
 	{
-		bottom = top + value;
+		y = value - height;
 		return value;
 	}
 
@@ -38,8 +50,8 @@ class Rectangle
 
 	public function setTo(x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0)
 	{
-		left = x;
-		top = y;
+		this.x = x;
+		this.y = y;
 		this.width = width;
 		this.height = height;
 	}
@@ -49,11 +61,17 @@ class Rectangle
 		return new Rectangle(x, y, width, height);
 	}
 
+	/**
+	 * Checks if the rectangle width and height values are at or less than zero.
+	 */
 	public function isEmpty():Bool
 	{
-		return width == 0 && height == 0;
+		return width <= 0 && height <= 0;
 	}
 
+	/**
+	 * Checks if the rectangle intersects another rectangle.
+	 */
 	public function intersects(other:Rectangle):Bool
 	{
 		return left <= other.right &&
@@ -62,7 +80,10 @@ class Rectangle
 			other.top <= bottom;
 	}
 
-	public function intersection(other:Rectangle):Rectangle
+	/**
+	 * If the rectangle intersects another rectangle, it returns an overlapping rectangle. Otherwise, it returns null.
+	 */
+	public function intersection(other:Rectangle):Null<Rectangle>
 	{
 		var left = Math.max(left, other.left);
 		var right = Math.min(right, other.right);
@@ -75,7 +96,7 @@ class Rectangle
 		}
 		else
 		{
-			return new Rectangle();
+			return null;
 		}
 	}
 }

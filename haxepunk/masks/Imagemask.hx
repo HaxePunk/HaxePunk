@@ -141,7 +141,7 @@ class Imagemask extends Pixelmask
 
 		var intersect = rect.intersection(_rect);
 
-		if (intersect.isEmpty())
+		if (intersect == null)
 		{
 			return false;
 		}
