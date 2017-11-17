@@ -1,10 +1,10 @@
 package haxepunk.graphics;
 
-import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.Graphic;
 import haxepunk.graphics.Image;
 import haxepunk.utils.Color;
+import haxepunk.math.Rectangle;
 import haxepunk.math.Vector2;
 
 /**

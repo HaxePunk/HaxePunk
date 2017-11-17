@@ -1,6 +1,6 @@
 package haxepunk.graphics.tile;
 
-import flash.geom.Rectangle;
+import haxepunk.math.Rectangle;
 import haxepunk.Graphic;
 import haxepunk.HXP;
 import haxepunk.graphics.atlas.TileAtlas;

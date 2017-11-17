@@ -5,7 +5,6 @@ import flash.display.Sprite;
 import flash.display.Stage;
 import flash.display.StageDisplayState;
 import flash.geom.Matrix;
-import flash.geom.Rectangle;
 import flash.ui.Mouse;
 import haxepunk.Tween.TweenType;
 import haxepunk.debug.Console;
@@ -13,8 +12,9 @@ import haxepunk.tweens.misc.Alarm;
 import haxepunk.tweens.misc.MultiVarTween;
 import haxepunk.utils.HaxelibInfo;
 import haxepunk.math.MathUtil;
-import haxepunk.math.Vector2;
 import haxepunk.math.Random;
+import haxepunk.math.Rectangle;
+import haxepunk.math.Vector2;
 
 /**
  * Static catch-all class used to access global properties and functions.

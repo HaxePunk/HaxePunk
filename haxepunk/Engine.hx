@@ -13,8 +13,8 @@ import haxepunk.Signal;
 import haxepunk.debug.Console;
 import haxepunk.graphics.hardware.HardwareRenderer;
 import haxepunk.input.Input;
-import haxepunk.utils.Draw;
 import haxepunk.math.Random;
+import haxepunk.utils.Draw;
 
 /**
  * Main game Sprite class, added to the Stage.
@@ -90,7 +90,7 @@ class Engine extends Sprite
 		super();
 
 		// global game properties
-		HXP.bounds = new Rectangle(0, 0, width, height);
+		HXP.bounds = new haxepunk.math.Rectangle(0, 0, width, height);
 		HXP.assignedFrameRate = frameRate;
 		HXP.fixed = fixed;
 

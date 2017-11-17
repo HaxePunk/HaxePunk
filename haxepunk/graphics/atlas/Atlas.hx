@@ -1,9 +1,9 @@
 package haxepunk.graphics.atlas;
 
 import haxepunk.utils.BlendMode;
-import flash.geom.Rectangle;
 import haxepunk.graphics.atlas.AtlasData;
 import haxepunk.graphics.shader.Shader;
+import haxepunk.math.Rectangle;
 import haxepunk.utils.Color;
 
 class Atlas

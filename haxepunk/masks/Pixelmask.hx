@@ -1,9 +1,9 @@
 package haxepunk.masks;
 
 import haxepunk.Mask;
-import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.graphics.hardware.Texture;
+import haxepunk.math.Rectangle;
 import haxepunk.math.Vector2;
 
 /**

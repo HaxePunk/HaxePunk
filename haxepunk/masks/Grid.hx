@@ -1,6 +1,6 @@
 package haxepunk.masks;
 
-import flash.geom.Rectangle;
+import haxepunk.math.Rectangle;
 import haxepunk.HXP;
 import haxepunk.Mask;
 import haxepunk.math.Vector2;

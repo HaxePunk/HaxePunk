@@ -2,7 +2,7 @@ package haxepunk.debug;
 
 import haxepunk.utils.BlendMode;
 import haxepunk.math.Vector2;
-import flash.geom.Rectangle;
+import haxepunk.math.Rectangle;
 import haxepunk.HXP;
 import haxepunk.cameras.UICamera;
 import haxepunk.graphics.Image;
