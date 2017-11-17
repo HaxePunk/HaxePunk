@@ -6,6 +6,7 @@ import js.html.Int32Array;
 import haxepunk.graphics.hardware.opengl.GL;
 import haxepunk.graphics.hardware.opengl.GLBuffer;
 import haxepunk.graphics.hardware.opengl.GLUtils;
+import haxepunk.graphics.shader.Shader.Attribute;
 
 class RenderBuffer
 {
@@ -79,7 +80,20 @@ class RenderBuffer
 		byteOffset = 0;
 #end
 	}
-
+	
+	public inline function addFloat(v:Float)
+	{
+#if cpp
+		var bytesData = bytesData;
+		var offset = byteOffset; // helps hxcpp generator
+		untyped __global__.__hxcpp_memory_set_float(bytesData, offset, v);
+		byteOffset = offset + 4;
+#else
+		buffer[byteOffset] = v;
+		byteOffset += 1;
+#end
+	}
+	
 	public inline function addVec(x:Float, y:Float)
 	{
 #if cpp
@@ -107,6 +121,21 @@ class RenderBuffer
 		buffer.buffer.setInt32(byteOffset * 4, value);
 		byteOffset += 1;
 #end
+	}
+	
+	/**
+	 * Add vertex attribute data, at the end of the DrawCommand. While position, texture coords
+	 * and color are interleaved, custom vertex attrib data is at the end of the buffer to speed
+	 * up construction.
+	 */
+	public inline function addVertexAttribData(attribs:Array<Attribute>, nbVertices:Int)
+	{
+		for (attrib in attribs)
+		{
+			var attribData = attrib.data;
+			for (k in 0 ... nbVertices * attrib.valuesPerElement)
+				addFloat(attribData[++attrib.dataPos]);
+		}
 	}
 
 	public inline function updateGraphicsCard()

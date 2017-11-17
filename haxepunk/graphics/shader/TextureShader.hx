@@ -47,12 +47,12 @@ void main(void) {
 	 */
 	public static inline function fromAsset(name:String):TextureShader
 	{
-		return new TextureShader(Assets.getText(name));
+		return new TextureShader(null, Assets.getText(name));
 	}
 
-	public function new(?fragment:String)
+	public function new(?vertex:String, ?fragment:String)
 	{
-		super(VERTEX_SHADER, fragment == null ? FRAGMENT_SHADER : fragment);
+		super(vertex == null ? VERTEX_SHADER : vertex, fragment == null ? FRAGMENT_SHADER : fragment);
 		position.name = "aPosition";
 		texCoord.name = "aTexCoord";
 		color.name = "aColor";
