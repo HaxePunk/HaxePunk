@@ -1,5 +1,6 @@
 package haxepunk.math;
 
+@:structInit
 class Rectangle
 {
 	public var x:Float;
