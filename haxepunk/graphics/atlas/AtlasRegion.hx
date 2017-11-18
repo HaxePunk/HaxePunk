@@ -1,11 +1,11 @@
 package haxepunk.graphics.atlas;
 
 import haxepunk.utils.BlendMode;
-import flash.geom.Rectangle;
 import flash.geom.Matrix;
 import haxepunk.utils.Color;
-import haxepunk.math.MathUtil;
 import haxepunk.graphics.shader.Shader;
+import haxepunk.math.MathUtil;
+import haxepunk.math.Rectangle;
 import haxepunk.math.Vector2;
 
 class AtlasRegion implements IAtlasRegion
@@ -50,10 +50,8 @@ class AtlasRegion implements IAtlasRegion
 		var clipRectCopy = clipRect.clone();
 
 		// only clip within the current region
-		if (clipRectCopy.x + clipRectCopy.width > _rect.width)
-			clipRectCopy.width = _rect.width - clipRectCopy.x;
-		if (clipRectCopy.y + clipRectCopy.height > _rect.height)
-			clipRectCopy.height = _rect.height - clipRectCopy.y;
+		if (clipRectCopy.right > _rect.width) clipRectCopy.right = _rect.width;
+		if (clipRectCopy.bottom > _rect.height) clipRectCopy.bottom = _rect.height;
 
 		// do not allow negative width/height
 		if (clipRectCopy.width < 0) clipRectCopy.width = 0;

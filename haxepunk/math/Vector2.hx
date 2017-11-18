@@ -1,5 +1,6 @@
 package haxepunk.math;
 
+@:structInit
 class Vector2
 {
 	public var x:Float;

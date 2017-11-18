@@ -1,9 +1,9 @@
 package haxepunk.masks;
 
 import haxepunk.Mask;
-import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.graphics.hardware.Texture;
+import haxepunk.math.Rectangle;
 import haxepunk.math.Vector2;
 
 /**
@@ -70,7 +70,7 @@ class Pixelmask extends Hitbox
 
 		var intersect = r1.intersection(r2);
 
-		if (intersect.isEmpty())
+		if (intersect == null)
 			return false;
 
 		for (dx in Math.floor(intersect.x)...Math.floor(intersect.x + intersect.width + 1))
@@ -98,7 +98,7 @@ class Pixelmask extends Hitbox
 
 		var intersect = r1.intersection(r2);
 
-		if (intersect.isEmpty())
+		if (intersect == null)
 			return false;
 
 		for (dx in Math.floor(intersect.x)...Math.floor(intersect.x + intersect.width + 1))
@@ -121,7 +121,7 @@ class Pixelmask extends Hitbox
 
 		var intersect = r1.intersection(r2);
 
-		if (intersect.isEmpty())
+		if (intersect == null)
 		{
 			return false;
 		}

@@ -1,6 +1,5 @@
 package haxepunk.graphics;
 
-import flash.geom.Rectangle;
 import haxepunk.Camera;
 import haxepunk.Graphic;
 import haxepunk.HXP;
@@ -9,6 +8,7 @@ import haxepunk.graphics.atlas.IAtlasRegion;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.utils.Color;
 import haxepunk.math.MathUtil;
+import haxepunk.math.Rectangle;
 import haxepunk.math.Vector2;
 
 /**

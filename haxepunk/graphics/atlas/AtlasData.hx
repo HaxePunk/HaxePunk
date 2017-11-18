@@ -1,7 +1,6 @@
 package haxepunk.graphics.atlas;
 
 import haxepunk.utils.BlendMode;
-import flash.geom.Rectangle;
 import flash.geom.Matrix;
 import haxepunk.Scene;
 import haxepunk.graphics.shader.Shader;
@@ -9,6 +8,7 @@ import haxepunk.graphics.hardware.DrawCommandBatch;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.utils.Color;
 import haxepunk.math.MathUtil;
+import haxepunk.math.Rectangle;
 import haxepunk.math.Vector2;
 
 class AtlasData

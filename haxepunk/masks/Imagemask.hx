@@ -3,11 +3,11 @@ package haxepunk.masks;
 import haxepunk.Mask;
 import flash.geom.Point;
 import flash.geom.Matrix;
-import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.graphics.Image;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.math.MathUtil;
+import haxepunk.math.Rectangle;
 
 
 /**
@@ -141,7 +141,7 @@ class Imagemask extends Pixelmask
 
 		var intersect = rect.intersection(_rect);
 
-		if (intersect.isEmpty())
+		if (intersect == null)
 		{
 			return false;
 		}

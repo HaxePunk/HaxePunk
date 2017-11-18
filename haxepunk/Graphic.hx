@@ -1,6 +1,5 @@
 package haxepunk;
 
-import flash.geom.Rectangle;
 import haxe.ds.Either;
 import haxepunk.utils.BlendMode;
 import haxepunk.math.Vector2;
@@ -12,6 +11,7 @@ import haxepunk.graphics.atlas.IAtlasRegion;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.graphics.shader.Shader;
 import haxepunk.graphics.shader.TextureShader;
+import haxepunk.math.Rectangle;
 import haxepunk.utils.Color;
 
 /**

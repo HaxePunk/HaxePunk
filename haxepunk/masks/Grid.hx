@@ -1,6 +1,6 @@
 package haxepunk.masks;
 
-import flash.geom.Rectangle;
+import haxepunk.math.Rectangle;
 import haxepunk.HXP;
 import haxepunk.Mask;
 import haxepunk.math.Vector2;
@@ -364,7 +364,7 @@ class Grid extends Hitbox
 
 		var intersect = r1.intersection(_rect);
 
-		if (intersect.isEmpty())
+		if (intersect == null)
 			return false;
 
 		for (dx in Math.floor(intersect.x - _rect.x) ...Math.floor(intersect.x - _rect.x + intersect.width))

@@ -3,12 +3,12 @@ package haxepunk.graphics.text;
 import haxe.ds.StringMap;
 import flash.geom.ColorTransform;
 import flash.geom.Matrix;
-import flash.geom.Rectangle;
 import flash.text.TextField;
 import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
 import flash.Assets;
 import flash.geom.Point;
+import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.AtlasRegion;
@@ -128,7 +128,7 @@ class Text extends Image
 
 		var source = Texture.create(_width, _height, true);
 		_source = source;
-		_sourceRect = source.bitmap.rect;
+		setFlashRect(source.bitmap.rect);
 		_region = Atlas.loadImageAsRegion(_source);
 		super();
 
@@ -142,6 +142,16 @@ class Text extends Image
 		this.color = options.color;
 
 		_needsUpdate = true;
+	}
+
+	function setFlashRect(flashRect:Rectangle)
+	{
+		if (_sourceRect == null) _sourceRect = new haxepunk.math.Rectangle();
+		_sourceRect.x = flashRect.x;
+		_sourceRect.y = flashRect.y;
+		_sourceRect.width = flashRect.width;
+		_sourceRect.height = flashRect.height;
+		_flashRect = flashRect;
 	}
 
 	/**
@@ -227,8 +237,8 @@ class Text extends Image
 		}
 		else
 		{
-			_source.bitmap.fillRect(_sourceRect, 0);
-			if (border != null && border.alpha > 0) _borderSource.bitmap.fillRect(_sourceRect, 0);
+			_source.bitmap.fillRect(_flashRect, 0);
+			if (border != null && border.alpha > 0) _borderSource.bitmap.fillRect(_flashRect, 0);
 		}
 
 		_field.width = _width;
@@ -257,7 +267,6 @@ class Text extends Image
 			_borderBackBuffer.dispose();
 			_borderBackBuffer = _buffer.clone();
 		}
-		_bufferRect = _buffer.bitmap.rect;
 	}
 
 	/**
@@ -268,11 +277,11 @@ class Text extends Image
 	{
 		if (clearBefore)
 		{
-			_buffer.bitmap.fillRect(_bufferRect, 0);
+			_buffer.bitmap.fillRect(_buffer.bitmap.rect, 0);
 			if (border != null && border.alpha > 0)
 			{
-				_borderBuffer.bitmap.fillRect(_bufferRect, 0);
-				_borderBackBuffer.bitmap.fillRect(_bufferRect, 0);
+				_borderBuffer.bitmap.fillRect(_buffer.bitmap.rect, 0);
+				_borderBackBuffer.bitmap.fillRect(_buffer.bitmap.rect, 0);
 			}
 		}
 		if (_source == null) return;
@@ -292,9 +301,9 @@ class Text extends Image
 				_borderBackBuffer = _swap;
 
 				_offset.setTo(0, 0);
-				_borderBuffer.bitmap.copyPixels(_borderBackBuffer.bitmap, _bufferRect, _offset, true);
+				_borderBuffer.bitmap.copyPixels(_borderBackBuffer.bitmap, _buffer.bitmap.rect, _offset, true);
 				_offset.setTo(ox, oy);
-				_borderBuffer.bitmap.copyPixels(_borderBackBuffer.bitmap, _bufferRect, _offset, true);
+				_borderBuffer.bitmap.copyPixels(_borderBackBuffer.bitmap, _buffer.bitmap.rect, _offset, true);
 			}
 			switch (border.style)
 			{
@@ -349,7 +358,7 @@ class Text extends Image
 				true
 			);
 
-			_sourceRect = _source.bitmap.rect;
+			setFlashRect(_source.bitmap.rect);
 
 			if (border != null && border.alpha > 0)
 			{
@@ -573,7 +582,7 @@ class Text extends Image
 	var _styles:StringMap<TextFormat>;
 	var _source:Texture;
 	var _buffer:Texture;
-	var _bufferRect:Rectangle;
+	var _flashRect:Rectangle;
 
 	var _offset:Point = new Point();
 	var _whiteTint:ColorTransform = new ColorTransform(1, 1, 1, 1, 0xff, 0xff, 0xff, 1);

@@ -4,10 +4,10 @@ import haxe.io.Eof;
 import haxe.io.Input;
 import haxe.io.Path;
 import haxe.io.StringInput;
-import flash.geom.Rectangle;
 import flash.Assets;
 import haxepunk.HXP;
 import haxepunk.graphics.atlas.AtlasData;
+import haxepunk.math.Rectangle;
 import haxepunk.math.Vector2;
 using StringTools;
 
