@@ -1,7 +1,6 @@
 package haxepunk.graphics.atlas;
 
 import haxepunk.utils.BlendMode;
-import flash.geom.Matrix;
 import haxepunk.Scene;
 import haxepunk.graphics.shader.Shader;
 import haxepunk.graphics.hardware.DrawCommandBatch;
