@@ -1,7 +1,6 @@
 package haxepunk.graphics.atlas;
 
 import haxepunk.utils.BlendMode;
-import flash.geom.Matrix;
 import haxepunk.utils.Color;
 import haxepunk.graphics.shader.Shader;
 import haxepunk.math.MathUtil;
@@ -116,10 +115,9 @@ class AtlasRegion implements IAtlasRegion
 	{
 		if (rotated)
 		{
-			var matrix = new Matrix(a, b, c, d, tx, ty);
-			matrix.rotate(90 * MathUtil.RAD);
+			// rotate 90 degrees by inverting values
 			_parent.prepareTileMatrix(_rect,
-				matrix.tx, matrix.ty, matrix.a, matrix.b, matrix.c, matrix.d,
+				-ty, tx, -b, a, -d, c,
 				color, alpha,
 				shader, smooth, blend, clipRect, flexibleLayer
 			);

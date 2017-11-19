@@ -4,7 +4,6 @@ import haxe.Timer;
 import flash.display.Sprite;
 import flash.display.Stage;
 import flash.display.StageDisplayState;
-import flash.geom.Matrix;
 import flash.ui.Mouse;
 import haxepunk.Tween.TweenType;
 import haxepunk.debug.Console;
@@ -554,7 +553,6 @@ class HXP
 	@:dox(hide) public static var point2:Vector2 = new Vector2();
 	@:dox(hide) public static var zeroCamera:Camera = new Camera();
 	@:dox(hide) public static var rect:Rectangle = new Rectangle();
-	@:dox(hide) public static var matrix:Matrix = new Matrix();
 	@:dox(hide) public static var sprite:Sprite = new Sprite();
 	@:dox(hide) public static var entity:Entity;
 }
