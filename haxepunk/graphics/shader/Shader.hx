@@ -17,14 +17,19 @@ typedef GLUniformLocation = Int;
 class Attribute
 {
 	public var index(default, null):Int = -1;
-	public var data:Array<Float>;
+	public var data(default, set):Array<Float>;
+	private function set_data(v:Array<Float>) : Array<Float>
+	{
+		dataPos = -1;
+		return data = v;
+	}
 	public var valuesPerElement:Int;
 	
 	@:allow(haxepunk.graphics.hardware.RenderBuffer)
 	private var dataPos(default, set):Int = -1; // for use by RenderBuffer to push data in VBOs
 	private function set_dataPos(v:Int) : Int
 	{
-		return dataPos = data != null ? (v + data.length) % data.length : v;
+		return dataPos = v > -1 && data != null ? v % data.length : v;
 	}
 
 	public var name(default, set):String;
