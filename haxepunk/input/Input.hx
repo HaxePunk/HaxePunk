@@ -121,7 +121,7 @@ class Input
 		if (!_enabled)
 		{
 			#if (lime || nme)
-			if (HXP.stage == null) return;
+			if (HXP.engine.stage == null) return;
 			multiTouchSupported = flash.ui.Multitouch.supportsTouchEvents;
 			#else
 			multiTouchSupported = false;
@@ -179,11 +179,9 @@ class Input
 				case PRESS:
 					trigger(HXP.engine.onInputPressed);
 					trigger(HXP.scene.onInputPressed);
-					if (Console.enabled) trigger(HXP.console.onInputPressed);
 				case RELEASE:
 					trigger(HXP.engine.onInputReleased);
 					trigger(HXP.scene.onInputReleased);
-					if (Console.enabled) trigger(HXP.console.onInputReleased);
 				default: {}
 			}
 		}

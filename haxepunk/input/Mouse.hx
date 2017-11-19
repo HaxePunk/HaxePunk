@@ -19,15 +19,15 @@ class Mouse
 #if (lime || nme)
 	public static function init()
 	{
-		HXP.stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown, false,  2);
-		HXP.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false,  2);
-		HXP.stage.addEventListener(MouseEvent.MOUSE_WHEEL, function(e:MouseEvent) {
+		HXP.engine.stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown, false,  2);
+		HXP.engine.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false,  2);
+		HXP.engine.stage.addEventListener(MouseEvent.MOUSE_WHEEL, function(e:MouseEvent) {
 			onMouseWheel(e.delta);
 		}, false,  2);
-		HXP.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, onMiddleMouseDown, false, 2);
-		HXP.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, onMiddleMouseUp, false, 2);
-		HXP.stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN, onRightMouseDown, false, 2);
-		HXP.stage.addEventListener(MouseEvent.RIGHT_MOUSE_UP, onRightMouseUp, false, 2);
+		HXP.engine.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, onMiddleMouseDown, false, 2);
+		HXP.engine.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, onMiddleMouseUp, false, 2);
+		HXP.engine.stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN, onRightMouseDown, false, 2);
+		HXP.engine.stage.addEventListener(MouseEvent.RIGHT_MOUSE_UP, onRightMouseUp, false, 2);
 	}
 
 	/**
@@ -36,7 +36,7 @@ class Mouse
 	public static var mouseFlashX(get, never):Int;
 	static function get_mouseFlashX():Int
 	{
-		return Std.int(HXP.stage.mouseX - HXP.screen.x);
+		return Std.int(HXP.engine.stage.mouseX - HXP.screen.x);
 	}
 
 	/**
@@ -45,7 +45,7 @@ class Mouse
 	public static var mouseFlashY(get, never):Int;
 	static function get_mouseFlashY():Int
 	{
-		return Std.int(HXP.stage.mouseY - HXP.screen.y);
+		return Std.int(HXP.engine.stage.mouseY - HXP.screen.y);
 	}
 #else
 	public static function init() {}

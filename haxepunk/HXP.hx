@@ -2,7 +2,6 @@ package haxepunk;
 
 import haxe.Timer;
 import haxepunk.Tween.TweenType;
-import haxepunk.debug.Console;
 import haxepunk.input.Mouse;
 import haxepunk.math.MathUtil;
 import haxepunk.math.Random;
@@ -13,7 +12,6 @@ import haxepunk.tweens.misc.MultiVarTween;
 import haxepunk.utils.HaxelibInfo;
 
 #if (lime || nme)
-import flash.display.Stage;
 import flash.display.StageDisplayState;
 #end
 
@@ -229,19 +227,12 @@ class HXP
 		camera.x = camera.y = 0;
 	}
 
-	#if (lime || nme)
 	/**
 	 * Toggles between windowed and fullscreen modes
 	 */
 	public static var fullscreen(get, set):Bool;
-	static inline function get_fullscreen():Bool return HXP.stage.displayState == StageDisplayState.FULL_SCREEN;
-	static inline function set_fullscreen(value:Bool):Bool
-	{
-		if (value) HXP.stage.displayState = StageDisplayState.FULL_SCREEN;
-		else HXP.stage.displayState = StageDisplayState.NORMAL;
-		return value;
-	}
-	#end
+	static inline function get_fullscreen():Bool return HXP.engine.fullscreen;
+	static inline function set_fullscreen(value:Bool):Bool return HXP.engine.fullscreen = value;
 
 	/**
 	 * Global volume factor for all sounds, a value from 0 to 1.
@@ -369,34 +360,6 @@ class HXP
 		_time = t;
 		return e;
 	}
-
-	public static var console(get, set):Console;
-	static inline function get_console() return engine.console;
-	static inline function set_console(c:Console) return engine.console = c;
-
-	/**
-	 * Logs data to the console.
-	 * @param	...data		The data parameters to log, can be variables, objects, etc. Parameters will be separated by a space (" ").
-	 */
-	public static var log = Reflect.makeVarArgs(function(data:Array<Dynamic>)
-	{
-		if (engine.console != null)
-		{
-			engine.console.log(data);
-		}
-	});
-
-	/**
-	 * Adds properties to watch in the console's debug panel.
-	 * @param	...properties		The properties (strings) to watch.
-	 */
-	public static var watch = Reflect.makeVarArgs(function(properties:Array<Dynamic>)
-	{
-		if (engine.console != null)
-		{
-			engine.console.watch(properties);
-		}
-	});
 
 	/**
 	 * Tweens numeric public properties of an Object. Shorthand for creating a MultiVarTween tween, starting it and adding it to a Tweener.
@@ -535,9 +498,6 @@ class HXP
 		return _time;
 	}
 
-	// Console information.
-	static var _console:Console;
-
 	// Time information.
 	static var _time:Float;
 	@:dox(hide) public static var _updateTime:Float;
@@ -546,11 +506,6 @@ class HXP
 
 	// Volume control.
 	static var _pan:Float = 0;
-
-	#if (lime || nme)
-	/** The stage. */
-	public static var stage:Stage;
-	#end
 
 	/** The Engine instance. */
 	public static var engine:Engine;

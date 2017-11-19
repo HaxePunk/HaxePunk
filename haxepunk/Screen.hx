@@ -134,8 +134,8 @@ class Screen
 	 */
 	#if (lime || nme)
 	public var color(get, set):Int;
-	inline function get_color():Null<Int> return HXP.stage.color;
-	inline function set_color(value:Null<Int>):Null<Int> return HXP.stage.color = value;
+	inline function get_color():Null<Int> return HXP.engine.stage.color;
+	inline function set_color(value:Null<Int>):Null<Int> return HXP.engine.stage.color = value;
 	#else
 	public var color:Int;
 	#end

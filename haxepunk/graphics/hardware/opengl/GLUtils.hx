@@ -6,22 +6,10 @@ import haxepunk.HXP;
 @:dox(hide)
 class GLUtils
 {
-	#if lime
-	@:access(openfl.display.Stage)
-	@:access(lime._internal.renderer.opengl.GLRenderer)
-	#end
 	public static function bindTexture(texture:Texture, smooth:Bool, index:Int=GL.TEXTURE0)
 	{
 		GL.activeTexture(index);
-		#if lime
-		var renderer = cast HXP.stage.__renderer;
-		var renderSession = renderer.renderSession;
-		GL.bindTexture(GL.TEXTURE_2D, texture.image.getTexture(renderSession.gl));
-		#elseif nme
-		var bitmap = texture.image;
-		if (!bitmap.premultipliedAlpha) bitmap.premultipliedAlpha = true;
-		GL.bindBitmapDataTexture(bitmap);
-		#end
+		bindTextureInternal(texture);
 		if (smooth)
 		{
 			GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
@@ -50,17 +38,35 @@ class GLUtils
 	}
 
 #if lime
+	@:access(openfl.display.Stage)
+	@:access(lime._internal.renderer.opengl.GLRenderer)
+	static function bindTextureInternal(texture:Texture)
+	{
+		var renderer = cast HXP.engine.stage.__renderer;
+		var renderSession = renderer.renderSession;
+		GL.bindTexture(GL.TEXTURE_2D, texture.image.getTexture(renderSession.gl));
+	}
+
 	public static inline function invalid(object:Dynamic)
 	{
 		// FIXME: Lime WebGL objects are native, don't extend GLObject
 		return object == null;
 	}
 #elseif nme
+	static function bindTextureInternal(texture:Texture)
+	{
+		var bitmap = texture.image;
+		if (!bitmap.premultipliedAlpha) bitmap.premultipliedAlpha = true;
+		GL.bindBitmapDataTexture(bitmap);
+	}
+
 	public static inline function invalid(object:flash.gl.GLObject)
 	{
 		return object == null || !object.isValid();
 	}
 #else
+	static function bindTextureInternal(texture:Texture) {}
+
 	public static inline function invalid(object:UInt)
 	{
 		return object == 0;

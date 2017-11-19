@@ -112,8 +112,8 @@ class MouseManager extends Entity
 		super.update();
 
 		#if (lime || nme)
-		var mouseX = HXP.stage.mouseX;
-		var mouseY = HXP.stage.mouseY;
+		var mouseX = HXP.engine.stage.mouseX;
+		var mouseY = HXP.engine.stage.mouseY;
 		#else
 		throw "Unimplemented";
 		var mouseX = 0;

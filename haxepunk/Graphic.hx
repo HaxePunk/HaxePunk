@@ -228,9 +228,9 @@ class Graphic
 	function new()
 	{
 		#if (lime || nme)
-		if (HXP.stage != null)
+		if (HXP.engine.stage != null)
 		{
-			smooth = (HXP.stage.quality != LOW);
+			smooth = (HXP.engine.stage.quality != LOW);
 		}
 		#else
 		smooth = true;

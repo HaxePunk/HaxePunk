@@ -14,9 +14,9 @@ class Touch
 	public static function init()
 	{
 		Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
-		HXP.stage.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
-		HXP.stage.addEventListener(TouchEvent.TOUCH_MOVE, onTouchMove);
-		HXP.stage.addEventListener(TouchEvent.TOUCH_END, onTouchEnd);
+		HXP.engine.stage.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);
+		HXP.engine.stage.addEventListener(TouchEvent.TOUCH_MOVE, onTouchMove);
+		HXP.engine.stage.addEventListener(TouchEvent.TOUCH_END, onTouchEnd);
 	}
 
 	static function onTouchBegin(e:TouchEvent)

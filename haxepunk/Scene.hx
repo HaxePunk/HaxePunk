@@ -38,6 +38,12 @@ class Scene extends Tweener
 	public var bgAlpha:Float = 1;
 
 	/**
+	 * Whether or not to track draw calls for this scene
+	 * @since	4.0.0
+	 */
+	public var trackDrawCalls:Bool = true;
+
+	/**
 	 * Point used to determine drawing offset in the render loop.
 	 */
 	public var camera:Camera;
@@ -225,14 +231,11 @@ class Scene extends Tweener
 
 		if (bgAlpha > 0)
 		{
+			var screen = HXP.screen;
 			drawContext.scene = this;
 			drawContext.blend = BlendMode.Alpha;
-			#if (lime || nme)
-			drawContext.setColor(bgColor == null ? HXP.stage.color : bgColor, bgAlpha);
-			#else
-			drawContext.setColor(bgColor, bgAlpha);
-			#end
-			drawContext.rectFilled(0, 0, HXP.screen.width, HXP.screen.height);
+			drawContext.setColor(bgColor == null ? screen.color : bgColor, bgAlpha);
+			drawContext.rectFilled(0, 0, screen.width, screen.height);
 		}
 
 		preRender.invoke();

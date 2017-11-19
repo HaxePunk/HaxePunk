@@ -16,8 +16,6 @@ import haxepunk.utils.Draw;
  */
 class Engine extends App
 {
-	public var console:Console;
-
 	/**
 	 * If the game should stop updating/rendering.
 	 */
@@ -95,7 +93,7 @@ class Engine extends App
 		if (Random.randomSeed == 0) Random.randomizeSeed();
 
 		HXP.entity = new Entity();
-		HXP.time = getTime();
+		HXP.time = getTimeMillis();
 
 		_frameList = new Array();
 
@@ -149,11 +147,10 @@ class Engine extends App
 	public function onRender()
 	{
 		// timing stuff
-		var t:Float = getTime();
+		var t:Float = getTimeMillis();
 		if (paused)
 		{
 			_frameLast = t; // continue updating frame timer
-			if (!Console.enabled) return; // skip rendering if paused and console is not enabled
 		}
 		if (_frameLast == 0) _frameLast = Std.int(t);
 
@@ -177,7 +174,7 @@ class Engine extends App
 		postRender.invoke();
 
 		// more timing stuff
-		t = getTime();
+		t = getTimeMillis();
 		_frameListSum += (_frameList[_frameList.length] = Std.int(t - _frameLast));
 		if (_frameList.length > 10) _frameListSum -= _frameList.shift();
 		HXP.frameRate = 1000 / (_frameListSum / _frameList.length);
@@ -187,7 +184,7 @@ class Engine extends App
 	/** @private Framerate independent game loop. */
 	public function onUpdate()
 	{
-		_time = _gameTime = getTime();
+		_time = _gameTime = getTimeMillis();
 		HXP._systemTime = _time - _systemTime;
 		_updateTime = _time;
 
@@ -214,11 +211,11 @@ class Engine extends App
 		_last = _time;
 
 		// update timer
-		_time = getTime();
+		_time = getTimeMillis();
 		HXP._updateTime = _time - _updateTime;
 
 		// update timer
-		_time = _systemTime = getTime();
+		_time = _systemTime = getTimeMillis();
 		HXP._gameTime = _time - _gameTime;
 	}
 
@@ -229,9 +226,6 @@ class Engine extends App
 
 		// update loop
 		if (!paused) update();
-
-		// update console
-		if (console != null) console.update();
 
 		Input.postUpdate();
 	}
@@ -349,10 +343,6 @@ private class VisibleSceneIterator
 			// if this scene has a solid background, stop adding scenes
 			if (scene.bgAlpha == 1) break;
 			--i;
-		}
-		if (engine.console != null)
-		{
-			scenes.push(engine.console);
 		}
 		return this;
 	}

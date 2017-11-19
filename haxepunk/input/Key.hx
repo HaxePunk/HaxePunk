@@ -199,8 +199,8 @@ abstract Key(Int) from Int to Int
 
 	public static function init()
 	{
-		HXP.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownCallback, false,  2);
-		HXP.stage.addEventListener(KeyboardEvent.KEY_UP, keyUpCallback, false,  2);
+		HXP.engine.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownCallback, false,  2);
+		HXP.engine.stage.addEventListener(KeyboardEvent.KEY_UP, keyUpCallback, false,  2);
 #if !(js)
 		_nativeCorrection.set("0_64", Key.INSERT);
 		_nativeCorrection.set("0_65", Key.END);

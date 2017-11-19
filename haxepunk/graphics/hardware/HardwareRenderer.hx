@@ -165,7 +165,7 @@ class HardwareRenderer
 
 	public function startScene(scene:Scene)
 	{
-		_tracking = scene != HXP.engine.console;
+		_tracking = scene.trackDrawCalls;
 
 		if (buffer == null || GLUtils.invalid(buffer.glBuffer))
 		{

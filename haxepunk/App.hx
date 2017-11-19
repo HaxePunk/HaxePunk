@@ -14,6 +14,18 @@ import flash.Lib;
 
 class App extends Sprite
 {
+	/**
+	 * Toggles between windowed and fullscreen modes
+	 */
+	public var fullscreen(get, set):Bool;
+	inline function get_fullscreen():Bool return stage.displayState == StageDisplayState.FULL_SCREEN;
+	inline function set_fullscreen(value:Bool):Bool
+	{
+		if (value) stage.displayState = StageDisplayState.FULL_SCREEN;
+		else stage.displayState = StageDisplayState.NORMAL;
+		return value;
+	}
+
 	var engine:Engine;
 	public function new(engine:Engine)
 	{
@@ -24,7 +36,7 @@ class App extends Sprite
 		super();
 	}
 
-	function getTime():Float
+	function getTimeMillis():Float
 	{
 		return Lib.getTimer();
 	}
@@ -40,7 +52,6 @@ class App extends Sprite
 	{
 		// remove event listener
 		removeEventListener(Event.ADDED_TO_STAGE, onStage);
-		HXP.stage = stage;
 		setStageProperties();
 
 		// create an OpenGLView object and use the engine's render method
@@ -64,7 +75,7 @@ class App extends Sprite
 		engine._rate = 1000 / HXP.assignedFrameRate;
 
 		// nonfixed framerate
-		engine._last = getTime();
+		engine._last = getTimeMillis();
 		addEventListener(Event.ENTER_FRAME, onEnterFrame);
 
 		#if (nme || openfl_legacy)
@@ -79,7 +90,7 @@ class App extends Sprite
 		#end
 
 		#if debug_console
-		Console.enabled = true;
+		engine.add(new Console(engine));
 		#end
 	}
 
@@ -88,27 +99,27 @@ class App extends Sprite
 	 */
 	function setStageProperties()
 	{
-		HXP.stage.frameRate = HXP.assignedFrameRate;
-		HXP.stage.align = StageAlign.TOP_LEFT;
+		stage.frameRate = HXP.assignedFrameRate;
+		stage.align = StageAlign.TOP_LEFT;
 #if !js
-		HXP.stage.quality = StageQuality.HIGH;
+		stage.quality = StageQuality.HIGH;
 #end
-		HXP.stage.scaleMode = StageScaleMode.NO_SCALE;
-		HXP.stage.displayState = StageDisplayState.NORMAL;
+		stage.scaleMode = StageScaleMode.NO_SCALE;
+		stage.displayState = StageDisplayState.NORMAL;
 
 		_resize(); // call resize once to initialize the screen
 
 		// set resize event
-		HXP.stage.addEventListener(Event.RESIZE, function (e:Event) _resize());
+		stage.addEventListener(Event.RESIZE, function (e:Event) _resize());
 
-		HXP.stage.addEventListener(Event.ACTIVATE, function (e:Event)
+		stage.addEventListener(Event.ACTIVATE, function (e:Event)
 		{
 			HXP.focused = true;
 			engine.focusGained();
 			engine.scene.focusGained();
 		});
 
-		HXP.stage.addEventListener(Event.DEACTIVATE, function (e:Event)
+		stage.addEventListener(Event.DEACTIVATE, function (e:Event)
 		{
 			HXP.focused = false;
 			engine.focusLost();
@@ -135,12 +146,12 @@ class App extends Sprite
 		if (HXP.width == 0 || HXP.height == 0)
 		{
 			// set initial size
-			HXP.width = HXP.stage.stageWidth;
-			HXP.height = HXP.stage.stageHeight;
+			HXP.width = stage.stageWidth;
+			HXP.height = stage.stageHeight;
 			HXP.screen.scaleMode.setBaseSize();
 		}
 		// calculate scale from width/height values
-		HXP.resize(HXP.stage.stageWidth, HXP.stage.stageHeight);
+		HXP.resize(stage.stageWidth, stage.stageHeight);
 		if (scrollRect == null)
 		{
 			scrollRect = new flash.geom.Rectangle();
@@ -157,9 +168,14 @@ class App extends Sprite
 
 class App
 {
+	/**
+	 * Toggles between windowed and fullscreen modes
+	 */
+	public var fullscreen:Bool;
+
 	public function new(engine:Engine) {}
 
-	function getTime():Float
+	function getTimeMillis():Float
 	{
 		return 0;
 	}
