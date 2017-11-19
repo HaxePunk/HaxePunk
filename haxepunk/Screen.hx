@@ -1,12 +1,15 @@
 package haxepunk;
 
+import haxepunk.graphics.Image;
+import haxepunk.graphics.atlas.Atlas;
+import haxepunk.screen.ScaleMode;
+
+#if (lime || nme)
 import flash.display.Bitmap;
 import flash.display.Sprite;
 import flash.filters.BitmapFilter;
 import flash.geom.Matrix;
-import haxepunk.graphics.Image;
-import haxepunk.graphics.atlas.Atlas;
-import haxepunk.screen.ScaleMode;
+#end
 
 /**
  * Container for the main screen buffer. Can be used to transform the screen.
@@ -26,24 +29,26 @@ class Screen
 	@:allow(haxepunk)
 	function new()
 	{
+		#if (lime || nme)
 		_sprite = new Sprite();
 		_bitmap = new Array<Bitmap>();
-
-		x = y = 0;
-		_current = 0;
-		scale = scaleX = scaleY = 1;
-		updateTransformation();
-
 		// create screen buffers
 		if (HXP.engine.contains(_sprite))
 		{
 			HXP.engine.removeChild(_sprite);
 		}
+		#end
+
+		x = y = 0;
+		_current = 0;
+		scale = scaleX = scaleY = 1;
+		updateTransformation();
 	}
 
 	/** @private Re-applies transformation matrix. */
 	function updateTransformation()
 	{
+		#if (lime || nme)
 		if (_matrix == null)
 		{
 			_matrix = new Matrix();
@@ -54,8 +59,10 @@ class Screen
 		_matrix.tx = x;
 		_matrix.ty = y;
 		_sprite.transform.matrix = _matrix;
+		#end
 	}
 
+	#if (lime || nme)
 	inline function disposeBitmap(bd:Bitmap)
 	{
 		if (bd != null)
@@ -64,6 +71,7 @@ class Screen
 			bd.bitmapData.dispose();
 		}
 	}
+	#end
 
 	/**
 	 * Resizes the screen by recreating the bitmap buffer.
@@ -84,6 +92,7 @@ class Screen
 		needsResize = false;
 	}
 
+	#if (lime || nme)
 	/**
 	 * Add a filter.
 	 * @param	filter	The filter to add.
@@ -92,6 +101,7 @@ class Screen
 	{
 		_sprite.filters = filter;
 	}
+	#end
 
 	@:dox(hide)
 	public function update()
@@ -122,9 +132,13 @@ class Screen
 	/**
 	 * Refresh color of the screen.
 	 */
+	#if (lime || nme)
 	public var color(get, set):Int;
 	inline function get_color():Null<Int> return HXP.stage.color;
 	inline function set_color(value:Null<Int>):Null<Int> return HXP.stage.color = value;
+	#else
+	public var color:Int;
+	#end
 
 	/**
 	 * X offset of the screen.
@@ -133,7 +147,8 @@ class Screen
 	function set_x(value:Int):Int
 	{
 		if (x == value) return value;
-		HXP.engine.x = x = value;
+		#if (lime || nme) HXP.engine.x = value; #end
+		x = value;
 		updateTransformation();
 		return x;
 	}
@@ -145,7 +160,8 @@ class Screen
 	function set_y(value:Int):Int
 	{
 		if (y == value) return value;
-		HXP.engine.y = y = value;
+		#if (lime || nme) HXP.engine.y = value; #end
+		y = value;
 		updateTransformation();
 		return y;
 	}
@@ -237,13 +253,21 @@ class Screen
 	 * X position of the mouse on the screen.
 	 */
 	public var mouseX(get, null):Int;
+	#if (lime || nme)
 	function get_mouseX():Int return Std.int(_sprite.mouseX);
+	#else
+	function get_mouseX():Int throw "Unimplemented";
+	#end
 
 	/**
 	 * Y position of the mouse on the screen.
 	 */
 	public var mouseY(get, null):Int;
+	#if (lime || nme)
 	function get_mouseY():Int return Std.int(_sprite.mouseY);
+	#else
+	function get_mouseY():Int throw "Unimplemented";
+	#end
 
 	/**
 	 * Captures the current screen as an Image object.
@@ -275,11 +299,14 @@ class Screen
 		_shakeTime = 0;
 	}
 
-	// Screen infromation.
+	// Screen information.
+	#if (lime || nme)
 	var _sprite:Sprite;
 	var _bitmap:Array<Bitmap>;
-	var _current:Int;
 	var _matrix:Matrix;
+	#end
+
+	var _current:Int;
 	var _shakeTime:Float=0;
 	var _shakeMagnitude:Int=0;
 	var _shakeX:Int=0;

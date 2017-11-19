@@ -16,9 +16,9 @@ class GLUtils
 		#if lime
 		var renderer = cast HXP.stage.__renderer;
 		var renderSession = renderer.renderSession;
-		GL.bindTexture(GL.TEXTURE_2D, texture.bitmap.getTexture(renderSession.gl));
+		GL.bindTexture(GL.TEXTURE_2D, texture.image.getTexture(renderSession.gl));
 		#elseif nme
-		var bitmap = texture.bitmap;
+		var bitmap = texture.image;
 		if (!bitmap.premultipliedAlpha) bitmap.premultipliedAlpha = true;
 		GL.bindBitmapDataTexture(bitmap);
 		#end
@@ -55,10 +55,15 @@ class GLUtils
 		// FIXME: Lime WebGL objects are native, don't extend GLObject
 		return object == null;
 	}
-#else
+#elseif nme
 	public static inline function invalid(object:flash.gl.GLObject)
 	{
 		return object == null || !object.isValid();
+	}
+#else
+	public static inline function invalid(object:UInt)
+	{
+		return object == 0;
 	}
 #end
 }

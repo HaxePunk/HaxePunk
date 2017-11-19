@@ -1,6 +1,5 @@
 package haxepunk.input;
 
-import flash.ui.Multitouch;
 import haxepunk.HXP;
 import haxepunk.Signal.Signals;
 import haxepunk.debug.Console;
@@ -119,13 +118,19 @@ class Input
 	@:dox(hide)
 	public static function enable()
 	{
-		if (!_enabled && HXP.stage != null)
+		if (!_enabled)
 		{
+			#if (lime || nme)
+			if (HXP.stage == null) return;
+			multiTouchSupported = flash.ui.Multitouch.supportsTouchEvents;
+			#else
+			multiTouchSupported = false;
+			#end
+
 			Key.init();
 			Mouse.init();
 			Gamepad.init();
 
-			multiTouchSupported = Multitouch.supportsTouchEvents;
 			if (multiTouchSupported)
 			{
 				Touch.init();

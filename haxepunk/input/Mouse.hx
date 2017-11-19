@@ -1,8 +1,10 @@
 package haxepunk.input;
 
-import flash.events.MouseEvent;
-import flash.ui.Mouse as FlashMouse;
 import haxepunk.HXP;
+
+#if (lime || nme)
+import flash.events.MouseEvent;
+#end
 
 @:enum
 abstract MouseButton(Int) from Int to Int
@@ -14,33 +16,18 @@ abstract MouseButton(Int) from Int to Int
 
 class Mouse
 {
+#if (lime || nme)
 	public static function init()
 	{
 		HXP.stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown, false,  2);
 		HXP.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false,  2);
-		HXP.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel, false,  2);
+		HXP.stage.addEventListener(MouseEvent.MOUSE_WHEEL, function(e:MouseEvent) {
+			onMouseWheel(e.delta);
+		}, false,  2);
 		HXP.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, onMiddleMouseDown, false, 2);
 		HXP.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, onMiddleMouseUp, false, 2);
 		HXP.stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN, onRightMouseDown, false, 2);
 		HXP.stage.addEventListener(MouseEvent.RIGHT_MOUSE_UP, onRightMouseUp, false, 2);
-	}
-
-	/**
-	 * X position of the mouse on the screen.
-	 */
-	public static var mouseX(get, never):Int;
-	static function get_mouseX():Int
-	{
-		return HXP.screen.mouseX;
-	}
-
-	/**
-	 * Y position of the mouse on the screen.
-	 */
-	public static var mouseY(get, never):Int;
-	static function get_mouseY():Int
-	{
-		return HXP.screen.mouseY;
 	}
 
 	/**
@@ -59,6 +46,27 @@ class Mouse
 	static function get_mouseFlashY():Int
 	{
 		return Std.int(HXP.stage.mouseY - HXP.screen.y);
+	}
+#else
+	public static function init() {}
+#end
+
+	/**
+	 * X position of the mouse on the screen.
+	 */
+	public static var mouseX(get, never):Int;
+	static function get_mouseX():Int
+	{
+		return HXP.screen.mouseX;
+	}
+
+	/**
+	 * Y position of the mouse on the screen.
+	 */
+	public static var mouseY(get, never):Int;
+	static function get_mouseY():Int
+	{
+		return HXP.screen.mouseY;
 	}
 
 	/**
@@ -136,7 +144,11 @@ class Mouse
 	 */
 	public static function showCursor()
 	{
-		FlashMouse.show();
+		#if (lime || nme)
+		flash.ui.Mouse.show();
+		#else
+		throw "Unimplemented";
+		#end
 	}
 
 	/**
@@ -144,7 +156,11 @@ class Mouse
 	 */
 	public static function hideCursor()
 	{
-		FlashMouse.hide();
+		#if (lime || nme)
+		flash.ui.Mouse.hide();
+		#else
+		throw "Unimplemented";
+		#end
 	}
 
 	public static inline function define(input:InputType, button:MouseButton)
@@ -214,7 +230,7 @@ class Mouse
 		mousePressed = mouseReleased = middleMousePressed = middleMouseReleased = rightMousePressed = rightMouseReleased = false;
 	}
 
-	static function onMouseDown(e:MouseEvent)
+	static function onMouseDown(_)
 	{
 		if (!mouseDown)
 		{
@@ -225,7 +241,7 @@ class Mouse
 		}
 	}
 
-	static function onMouseUp(e:MouseEvent)
+	static function onMouseUp(_)
 	{
 		mouseDown = false;
 		mouseUp = true;
@@ -233,13 +249,13 @@ class Mouse
 		if (_buttonMap.exists(MouseButton.LEFT)) for (input in _buttonMap[MouseButton.LEFT]) Input.triggerRelease(input);
 	}
 
-	static function onMouseWheel(e:MouseEvent)
+	static function onMouseWheel(delta:Int)
 	{
 		mouseWheel = true;
-		_mouseWheelDelta = e.delta;
+		_mouseWheelDelta = delta;
 	}
 
-	static function onMiddleMouseDown(e:MouseEvent)
+	static function onMiddleMouseDown(_)
 	{
 		if (!middleMouseDown)
 		{
@@ -250,7 +266,7 @@ class Mouse
 		}
 	}
 
-	static function onMiddleMouseUp(e:MouseEvent)
+	static function onMiddleMouseUp(_)
 	{
 		middleMouseDown = false;
 		middleMouseUp = true;
@@ -258,7 +274,7 @@ class Mouse
 		if (_buttonMap.exists(MouseButton.MIDDLE)) for (input in _buttonMap[MouseButton.MIDDLE]) Input.triggerRelease(input);
 	}
 
-	static function onRightMouseDown(e:MouseEvent)
+	static function onRightMouseDown(_)
 	{
 		if (!rightMouseDown)
 		{
@@ -269,7 +285,7 @@ class Mouse
 		}
 	}
 
-	static function onRightMouseUp(e:MouseEvent)
+	static function onRightMouseUp(_)
 	{
 		rightMouseDown = false;
 		rightMouseUp = true;

@@ -1,7 +1,8 @@
 package haxepunk.input;
 
+#if (lime || nme)
 import flash.events.KeyboardEvent;
-import flash.ui.Keyboard;
+#end
 
 /**
  * List of keys to be used with `Input`.
@@ -169,11 +170,38 @@ abstract Key(Int) from Int to Int
 		}
 	}
 
+#if (lime || nme)
+	static inline function keyCode(e:KeyboardEvent):Int
+	{
+	#if (js)
+		return e.keyCode;
+	#else
+		var code = _nativeCorrection.get(e.charCode + "_" + e.keyCode);
+		return code == null ? e.keyCode : code;
+	#end
+	}
+
+	static function keyDownCallback(?e:KeyboardEvent)
+	{
+		var code:Int = keyCode(e);
+		if (code == -1) // No key
+			return;
+		onKeyDown(code, e.shiftKey);
+	}
+
+	static function keyUpCallback(?e:KeyboardEvent)
+	{
+		var code:Int = keyCode(e);
+		if (code == -1) // No key
+			return;
+		onKeyUp(code);
+	}
+
 	public static function init()
 	{
-		HXP.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, false,  2);
-		HXP.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp, false,  2);
-#if !(flash || js)
+		HXP.stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownCallback, false,  2);
+		HXP.stage.addEventListener(KeyboardEvent.KEY_UP, keyUpCallback, false,  2);
+#if !(js)
 		_nativeCorrection.set("0_64", Key.INSERT);
 		_nativeCorrection.set("0_65", Key.END);
 		_nativeCorrection.set("0_66", Key.DOWN);
@@ -231,6 +259,12 @@ abstract Key(Int) from Int to Int
 		_nativeCorrection.set("47_267", Key.NUMPAD_DIVIDE);
 #end
 	}
+
+#else
+
+	public static function init() {}
+
+#end // lime || nme
 
 	public static inline function define(input:InputType, keys:Array<Key>)
 	{
@@ -309,12 +343,8 @@ abstract Key(Int) from Int to Int
 		while (_releaseNum > 0) _release[--_releaseNum] = -1;
 	}
 
-	static function onKeyDown(?e:KeyboardEvent)
+	static function onKeyDown(code:Int, shift:Bool)
 	{
-		var code:Int = keyCode(e);
-		if (code == -1) // No key
-			return;
-
 		lastKey = code;
 
 		if (code == Key.BACKSPACE) keyString = keyString.substr(0, keyString.length - 1);
@@ -323,7 +353,7 @@ abstract Key(Int) from Int to Int
 			if (keyString.length > kKeyStringMax) keyString = keyString.substr(1);
 			var char:String = String.fromCharCode(code);
 
-			if (e.shiftKey != #if flash Keyboard.capsLock #else Key.check(Key.CAPS_LOCK) #end)
+			if (shift != Key.check(Key.CAPS_LOCK))
 				char = char.toUpperCase();
 			else char = char.toLowerCase();
 
@@ -346,12 +376,8 @@ abstract Key(Int) from Int to Int
 		}
 	}
 
-	static function onKeyUp(?e:KeyboardEvent)
+	static function onKeyUp(code:Int)
 	{
-		var code:Int = keyCode(e);
-		if (code == -1) // No key
-			return;
-
 		if (_key[code])
 		{
 			_key[code] = false;
@@ -366,16 +392,6 @@ abstract Key(Int) from Int to Int
 				}
 			}
 		}
-	}
-
-	static inline function keyCode(e:KeyboardEvent):Int
-	{
-	#if (flash || js)
-		return e.keyCode;
-	#else
-		var code = _nativeCorrection.get(e.charCode + "_" + e.keyCode);
-		return code == null ? e.keyCode : code;
-	#end
 	}
 
 	static inline var kKeyStringMax = 100;

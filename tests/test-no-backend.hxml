@@ -1,0 +1,8 @@
+-cp ..
+-cp src
+-main TestMain
+-lib munit
+-lib hamcrest
+--no-inline
+-D unit_test
+-neko test.n

@@ -1,5 +1,7 @@
 package haxepunk.graphics.text;
 
+#if (lime || nme)
+
 import haxe.ds.StringMap;
 import flash.geom.ColorTransform;
 import flash.geom.Matrix;
@@ -128,7 +130,7 @@ class Text extends Image
 
 		var source = Texture.create(_width, _height, true);
 		_source = source;
-		setFlashRect(source.bitmap.rect);
+		setFlashRect(source.image.rect);
 		_region = Atlas.loadImageAsRegion(_source);
 		super();
 
@@ -237,8 +239,8 @@ class Text extends Image
 		}
 		else
 		{
-			_source.bitmap.fillRect(_flashRect, 0);
-			if (border != null && border.alpha > 0) _borderSource.bitmap.fillRect(_flashRect, 0);
+			_source.image.fillRect(_flashRect, 0);
+			if (border != null && border.alpha > 0) _borderSource.image.fillRect(_flashRect, 0);
 		}
 
 		_field.width = _width;
@@ -247,9 +249,9 @@ class Text extends Image
 		updateBuffer(true);
 		if (border != null && border.alpha > 0)
 		{
-			_borderSource.bitmap.draw(_borderBuffer.bitmap);
+			_borderSource.image.draw(_borderBuffer.image);
 		}
-		_source.bitmap.draw(_buffer.bitmap);
+		_source.image.draw(_buffer.image);
 	}
 
 	function createBuffer()
@@ -277,11 +279,11 @@ class Text extends Image
 	{
 		if (clearBefore)
 		{
-			_buffer.bitmap.fillRect(_buffer.bitmap.rect, 0);
+			_buffer.image.fillRect(_buffer.image.rect, 0);
 			if (border != null && border.alpha > 0)
 			{
-				_borderBuffer.bitmap.fillRect(_buffer.bitmap.rect, 0);
-				_borderBackBuffer.bitmap.fillRect(_buffer.bitmap.rect, 0);
+				_borderBuffer.image.fillRect(_buffer.image.rect, 0);
+				_borderBackBuffer.image.fillRect(_buffer.image.rect, 0);
 			}
 		}
 		if (_source == null) return;
@@ -290,7 +292,7 @@ class Text extends Image
 
 		if (border != null)
 		{
-			_borderBuffer.bitmap.draw(_field, _matrix, _whiteTint);
+			_borderBuffer.image.draw(_field, _matrix, _whiteTint);
 
 			inline function drawBorder(ox, oy)
 			{
@@ -301,9 +303,9 @@ class Text extends Image
 				_borderBackBuffer = _swap;
 
 				_offset.setTo(0, 0);
-				_borderBuffer.bitmap.copyPixels(_borderBackBuffer.bitmap, _buffer.bitmap.rect, _offset, true);
+				_borderBuffer.image.copyPixels(_borderBackBuffer.image, _buffer.image.rect, _offset, true);
 				_offset.setTo(ox, oy);
-				_borderBuffer.bitmap.copyPixels(_borderBackBuffer.bitmap, _buffer.bitmap.rect, _offset, true);
+				_borderBuffer.image.copyPixels(_borderBackBuffer.image, _buffer.image.rect, _offset, true);
 			}
 			switch (border.style)
 			{
@@ -331,7 +333,7 @@ class Text extends Image
 			}
 		}
 
-		_buffer.bitmap.draw(_field, _matrix);
+		_buffer.image.draw(_field, _matrix);
 	}
 
 	/**
@@ -358,7 +360,7 @@ class Text extends Image
 				true
 			);
 
-			setFlashRect(_source.bitmap.rect);
+			setFlashRect(_source.image.rect);
 
 			if (border != null && border.alpha > 0)
 			{
@@ -594,3 +596,19 @@ class Text extends Image
 	var _borderRegion:AtlasRegion;
 	var _borderSource:Texture;
 }
+
+#else
+
+class Text extends Graphic
+{
+	public var text:String;
+	public var textHeight:Int = 0;
+
+	public function new(text:String = "", x:Float = 0, y:Float = 0, width:Int = 0, height:Int = 0, ?options:TextOptions)
+	{
+		super();
+		this.text = text;
+	}
+}
+
+#end // lime || nme

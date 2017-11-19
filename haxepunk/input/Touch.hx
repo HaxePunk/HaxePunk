@@ -1,12 +1,16 @@
 package haxepunk.input;
 
+import haxepunk.HXP;
+
+#if (lime || nme)
 import flash.events.TouchEvent;
 import flash.ui.Multitouch;
 import flash.ui.MultitouchInputMode;
-import haxepunk.HXP;
+#end
 
 class Touch
 {
+	#if (lime || nme)
 	public static function init()
 	{
 		Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
@@ -14,6 +18,35 @@ class Touch
 		HXP.stage.addEventListener(TouchEvent.TOUCH_MOVE, onTouchMove);
 		HXP.stage.addEventListener(TouchEvent.TOUCH_END, onTouchEnd);
 	}
+
+	static function onTouchBegin(e:TouchEvent)
+	{
+		var touchPoint = new Touch(e.stageX / HXP.screen.fullScaleX, e.stageY / HXP.screen.fullScaleY, e.touchPointID);
+		_touches.set(e.touchPointID, touchPoint);
+		_touchOrder.push(e.touchPointID);
+	}
+
+	static function onTouchMove(e:TouchEvent)
+	{
+		// maybe we missed the begin event sometimes?
+		if (_touches.exists(e.touchPointID))
+		{
+			var point = _touches.get(e.touchPointID);
+			point.x = e.stageX / HXP.screen.fullScaleX;
+			point.y = e.stageY / HXP.screen.fullScaleY;
+		}
+	}
+
+	static function onTouchEnd(e:TouchEvent)
+	{
+		if (_touches.exists(e.touchPointID))
+		{
+			_touches.get(e.touchPointID).released = true;
+		}
+	}
+	#else
+	public static function init() {}
+	#end
 
 	public static function update()
 	{
@@ -58,32 +91,6 @@ class Touch
 
 	static var _touches:Map<Int, Touch> = new Map<Int, Touch>();
 	static var _touchOrder:Array<Int> = new Array();
-
-	static function onTouchBegin(e:TouchEvent)
-	{
-		var touchPoint = new Touch(e.stageX / HXP.screen.fullScaleX, e.stageY / HXP.screen.fullScaleY, e.touchPointID);
-		_touches.set(e.touchPointID, touchPoint);
-		_touchOrder.push(e.touchPointID);
-	}
-
-	static function onTouchMove(e:TouchEvent)
-	{
-		// maybe we missed the begin event sometimes?
-		if (_touches.exists(e.touchPointID))
-		{
-			var point = _touches.get(e.touchPointID);
-			point.x = e.stageX / HXP.screen.fullScaleX;
-			point.y = e.stageY / HXP.screen.fullScaleY;
-		}
-	}
-
-	static function onTouchEnd(e:TouchEvent)
-	{
-		if (_touches.exists(e.touchPointID))
-		{
-			_touches.get(e.touchPointID).released = true;
-		}
-	}
 
 	/**
 	 * Touch id used for multiple touches

@@ -1,19 +1,11 @@
 package haxepunk;
 
-import flash.display.OpenGLView;
-import flash.display.Sprite;
-import flash.display.StageAlign;
-import flash.display.StageDisplayState;
-import flash.display.StageQuality;
-import flash.display.StageScaleMode;
-import flash.events.Event;
-import flash.geom.Rectangle;
-import flash.Lib;
 import haxepunk.Signal;
 import haxepunk.debug.Console;
 import haxepunk.graphics.hardware.HardwareRenderer;
 import haxepunk.input.Input;
 import haxepunk.math.Random;
+import haxepunk.math.Rectangle;
 import haxepunk.utils.Draw;
 
 /**
@@ -22,7 +14,7 @@ import haxepunk.utils.Draw;
  *
  * Your main class **needs** to extends this.
  */
-class Engine extends Sprite
+class Engine extends App
 {
 	public var console:Console;
 
@@ -87,10 +79,8 @@ class Engine extends Sprite
 	 */
 	public function new(width:Int = 0, height:Int = 0, frameRate:Float = 60, fixed:Bool = false)
 	{
-		super();
-
 		// global game properties
-		HXP.bounds = new haxepunk.math.Rectangle(0, 0, width, height);
+		HXP.bounds = new Rectangle(0, 0, width, height);
 		HXP.assignedFrameRate = frameRate;
 		HXP.fixed = fixed;
 
@@ -105,13 +95,11 @@ class Engine extends Sprite
 		if (Random.randomSeed == 0) Random.randomizeSeed();
 
 		HXP.entity = new Entity();
-		HXP.time = Lib.getTimer();
+		HXP.time = getTime();
 
 		_frameList = new Array();
 
-		// on-stage event listener
-		addEventListener(Event.ADDED_TO_STAGE, onStage);
-		Lib.current.addChild(this);
+		super(this);
 
 		_iterator = new VisibleSceneIterator();
 	}
@@ -158,10 +146,10 @@ class Engine extends Sprite
 	/**
 	 * Called from OpenGLView render. Any visible scene will have its draw commands rendered to OpenGL.
 	 */
-	function render(rect:Rectangle)
+	public function onRender()
 	{
 		// timing stuff
-		var t:Float = Lib.getTimer();
+		var t:Float = getTime();
 		if (paused)
 		{
 			_frameLast = t; // continue updating frame timer
@@ -189,129 +177,17 @@ class Engine extends Sprite
 		postRender.invoke();
 
 		// more timing stuff
-		t = Lib.getTimer();
+		t = getTime();
 		_frameListSum += (_frameList[_frameList.length] = Std.int(t - _frameLast));
 		if (_frameList.length > 10) _frameListSum -= _frameList.shift();
 		HXP.frameRate = 1000 / (_frameListSum / _frameList.length);
 		_frameLast = t;
 	}
 
-	/**
-	 * Sets the game's stage properties. Override this to set them differently.
-	 */
-	function setStageProperties()
-	{
-		HXP.stage.frameRate = HXP.assignedFrameRate;
-		HXP.stage.align = StageAlign.TOP_LEFT;
-#if !js
-		HXP.stage.quality = StageQuality.HIGH;
-#end
-		HXP.stage.scaleMode = StageScaleMode.NO_SCALE;
-		HXP.stage.displayState = StageDisplayState.NORMAL;
-
-		_resize(); // call resize once to initialize the screen
-
-		// set resize event
-		HXP.stage.addEventListener(Event.RESIZE, function (e:Event) _resize());
-
-		HXP.stage.addEventListener(Event.ACTIVATE, function (e:Event)
-		{
-			HXP.focused = true;
-			focusGained();
-			_scene.focusGained();
-		});
-
-		HXP.stage.addEventListener(Event.DEACTIVATE, function (e:Event)
-		{
-			HXP.focused = false;
-			focusLost();
-			_scene.focusLost();
-		});
-
-#if (!html5 && openfl_legacy)
-		flash.display.Stage.shouldRotateInterface = function(orientation:Int):Bool
-		{
-			if (HXP.indexOf(HXP.orientations, orientation) == -1) return false;
-			var tmp = HXP.height;
-			HXP.height = HXP.width;
-			HXP.width = tmp;
-			_resize();
-			return true;
-		}
-#end
-	}
-
-	/** @private Event handler for stage resize */
-	function _resize()
-	{
-		if (HXP.width == 0 || HXP.height == 0)
-		{
-			// set initial size
-			HXP.width = HXP.stage.stageWidth;
-			HXP.height = HXP.stage.stageHeight;
-			HXP.screen.scaleMode.setBaseSize();
-		}
-		// calculate scale from width/height values
-		HXP.resize(HXP.stage.stageWidth, HXP.stage.stageHeight);
-		if (scrollRect == null)
-		{
-			scrollRect = new Rectangle();
-		}
-		scrollRect.width = HXP.screen.width;
-		scrollRect.height = HXP.screen.height;
-
-		onResize.invoke();
-	}
-
-	/** @private Event handler for stage entry. */
-	function onStage(?e:Event)
-	{
-		// remove event listener
-		removeEventListener(Event.ADDED_TO_STAGE, onStage);
-		HXP.stage = stage;
-		setStageProperties();
-
-		// create an OpenGLView object and use the engine's render method
-		var view = new OpenGLView();
-		view.render = this.render;
-		addChild(view);
-
-		// enable input
-		Input.enable();
-
-		// switch scenes
-		checkScene();
-
-		// game start
-		init();
-
-		// start game loop
-		_rate = 1000 / HXP.assignedFrameRate;
-
-		// nonfixed framerate
-		_last = Lib.getTimer();
-		addEventListener(Event.ENTER_FRAME, onEnterFrame);
-
-		#if (nme || openfl_legacy)
-		Lib.stage.onQuit = function() {
-			onClose.invoke();
-			Lib.close();
-		}
-		#else
-		flash.Lib.current.stage.application.onExit.add(function(_) {
-			onClose.invoke();
-		});
-		#end
-
-		#if debug_console
-		Console.enabled = true;
-		#end
-	}
-
 	/** @private Framerate independent game loop. */
-	function onEnterFrame(e:Event)
+	public function onUpdate()
 	{
-		_time = _gameTime = Lib.getTimer();
+		_time = _gameTime = getTime();
 		HXP._systemTime = _time - _systemTime;
 		_updateTime = _time;
 
@@ -338,11 +214,11 @@ class Engine extends Sprite
 		_last = _time;
 
 		// update timer
-		_time = Lib.getTimer();
+		_time = getTime();
 		HXP._updateTime = _time - _updateTime;
 
 		// update timer
-		_time = _systemTime = Lib.getTimer();
+		_time = _systemTime = getTime();
 		HXP._gameTime = _time - _gameTime;
 	}
 

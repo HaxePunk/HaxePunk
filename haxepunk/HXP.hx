@@ -1,19 +1,21 @@
 package haxepunk;
 
 import haxe.Timer;
-import flash.display.Sprite;
-import flash.display.Stage;
-import flash.display.StageDisplayState;
-import flash.ui.Mouse;
 import haxepunk.Tween.TweenType;
 import haxepunk.debug.Console;
-import haxepunk.tweens.misc.Alarm;
-import haxepunk.tweens.misc.MultiVarTween;
-import haxepunk.utils.HaxelibInfo;
+import haxepunk.input.Mouse;
 import haxepunk.math.MathUtil;
 import haxepunk.math.Random;
 import haxepunk.math.Rectangle;
 import haxepunk.math.Vector2;
+import haxepunk.tweens.misc.Alarm;
+import haxepunk.tweens.misc.MultiVarTween;
+import haxepunk.utils.HaxelibInfo;
+
+#if (lime || nme)
+import flash.display.Stage;
+import flash.display.StageDisplayState;
+#end
 
 /**
  * Static catch-all class used to access global properties and functions.
@@ -123,8 +125,8 @@ class HXP
 	static inline function set_cursor(cursor:Cursor = null):Cursor
 	{
 		if (HXP.cursor == cursor) return cursor;
-		if (cursor == null) Mouse.show();
-		else Mouse.hide();
+		if (cursor == null) Mouse.showCursor();
+		else Mouse.hideCursor();
 		return HXP.cursor = cursor;
 	}
 
@@ -227,6 +229,7 @@ class HXP
 		camera.x = camera.y = 0;
 	}
 
+	#if (lime || nme)
 	/**
 	 * Toggles between windowed and fullscreen modes
 	 */
@@ -238,6 +241,7 @@ class HXP
 		else HXP.stage.displayState = StageDisplayState.NORMAL;
 		return value;
 	}
+	#end
 
 	/**
 	 * Global volume factor for all sounds, a value from 0 to 1.
@@ -515,8 +519,8 @@ class HXP
 		#if (cpp || neko)
 		#if (openfl_legacy || nme)
 		HXP.stage.resize(width, height);
-		#else
-		openfl.Lib.application.window.resize(width, height);
+		#elseif lime
+		flash.Lib.application.window.resize(width, height);
 		#end
 		resize(width, height);
 		#elseif debug
@@ -543,8 +547,11 @@ class HXP
 	// Volume control.
 	static var _pan:Float = 0;
 
+	#if (lime || nme)
 	/** The stage. */
 	public static var stage:Stage;
+	#end
+
 	/** The Engine instance. */
 	public static var engine:Engine;
 
@@ -553,6 +560,5 @@ class HXP
 	@:dox(hide) public static var point2:Vector2 = new Vector2();
 	@:dox(hide) public static var zeroCamera:Camera = new Camera();
 	@:dox(hide) public static var rect:Rectangle = new Rectangle();
-	@:dox(hide) public static var sprite:Sprite = new Sprite();
 	@:dox(hide) public static var entity:Entity;
 }

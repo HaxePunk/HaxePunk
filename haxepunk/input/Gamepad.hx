@@ -2,7 +2,7 @@ package haxepunk.input;
 
 #if lime
 import lime.ui.Gamepad as LimeGamepad;
-#else
+#elseif nme
 import flash.events.JoystickEvent;
 #end
 import haxepunk.HXP;
@@ -49,7 +49,7 @@ class Gamepad
 		#if lime
 		LimeGamepad.onConnect.add(onJoyDeviceAdded);
 		for (device in LimeGamepad.devices) onJoyDeviceAdded(device);
-		#else
+		#elseif nme
 		HXP.stage.addEventListener(JoystickEvent.AXIS_MOVE, onJoyAxisMove);
 		HXP.stage.addEventListener(JoystickEvent.BUTTON_DOWN, onJoyButtonDown);
 		HXP.stage.addEventListener(JoystickEvent.BUTTON_UP, onJoyButtonUp);
@@ -105,7 +105,7 @@ class Gamepad
 		var joy:Gamepad = gamepad(limeGamepad.id);
 		joy.onAxisMove(a, v);
 	}
-#else
+#elseif nme
 	static function onJoyAxisMove(e:JoystickEvent)
 	{
 		var joy:Gamepad = gamepad(e.device);

@@ -1,5 +1,7 @@
 package haxepunk.graphics.text;
 
+#if (lime || nme)
+
 import flash.text.TextFormat;
 
 /**
@@ -34,3 +36,7 @@ abstract StyleType(TextFormat)
 		return new StyleType(format);
 	}
 }
+
+#else
+
+#end

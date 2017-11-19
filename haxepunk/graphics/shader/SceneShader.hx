@@ -1,6 +1,5 @@
 package haxepunk.graphics.shader;
 
-import flash.Assets;
 import haxepunk.graphics.hardware.opengl.GL;
 import haxepunk.graphics.hardware.opengl.GLBuffer;
 import haxepunk.graphics.hardware.opengl.GLUniformLocation;
@@ -26,13 +25,15 @@ void main() {
 	gl_Position = aPosition;
 }";
 
+	#if (lime || nme)
 	/**
 	 * Create a custom shader from a text asset.
 	 */
 	public static inline function fromAsset(name:String):SceneShader
 	{
-		return new SceneShader(Assets.getText(name));
+		return new SceneShader(flash.Assets.getText(name));
 	}
+	#end
 
 	/**
 	 * Create a custom shader from a string.

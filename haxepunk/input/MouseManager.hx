@@ -111,12 +111,21 @@ class MouseManager extends Entity
 	{
 		super.update();
 
+		#if (lime || nme)
+		var mouseX = HXP.stage.mouseX;
+		var mouseY = HXP.stage.mouseY;
+		#else
+		throw "Unimplemented";
+		var mouseX = 0;
+		var mouseY = 0;
+		#end
+
 		var collisions:Array<Entity> = _collisions;
 		// make sure the mouse is onscreen before checking for collisions
-		if (HXP.stage.mouseX >= HXP.screen.x &&
-			HXP.stage.mouseY >= HXP.screen.y &&
-			HXP.stage.mouseX <= HXP.screen.x + HXP.screen.width &&
-			HXP.stage.mouseY <= HXP.screen.y + HXP.screen.height)
+		if (mouseX >= HXP.screen.x &&
+			mouseY >= HXP.screen.y &&
+			mouseX <= HXP.screen.x + HXP.screen.width &&
+			mouseY <= HXP.screen.y + HXP.screen.height)
 		{
 			scene.collidePointInto(type, scene.mouseX, scene.mouseY, collisions);
 		}
