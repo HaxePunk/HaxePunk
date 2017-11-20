@@ -664,7 +664,7 @@ class Entity extends Tweener
 		return if (Std.is(value, Int) || Std.is(value, Float)) 
 			value;
 		else 
-			defaulValue;
+			defaultValue;
 	}
 	#end 
 
