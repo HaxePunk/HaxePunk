@@ -16,6 +16,8 @@ import haxepunk.utils.Draw;
  */
 class Engine extends App
 {
+	public var console:Console;
+
 	/**
 	 * If the game should stop updating/rendering.
 	 */
@@ -151,6 +153,7 @@ class Engine extends App
 		if (paused)
 		{
 			_frameLast = t; // continue updating frame timer
+			if (!Console.enabled) return; // skip rendering if paused and console is not enabled
 		}
 		if (_frameLast == 0) _frameLast = Std.int(t);
 
@@ -226,6 +229,9 @@ class Engine extends App
 
 		// update loop
 		if (!paused) update();
+
+		// update console
+		if (console != null) console.update();
 
 		Input.postUpdate();
 	}
@@ -343,6 +349,10 @@ private class VisibleSceneIterator
 			// if this scene has a solid background, stop adding scenes
 			if (scene.bgAlpha == 1) break;
 			--i;
+		}
+		if (engine.console != null)
+		{
+			scenes.push(engine.console);
 		}
 		return this;
 	}

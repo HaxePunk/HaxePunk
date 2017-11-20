@@ -18,7 +18,6 @@ class MainScene extends Scene
 
 	public override function begin()
 	{
-		HXP.stage.color = 0;
 		ship = new Ship();
 		ship.x = HXP.width/2;
 		ship.y = HXP.height/2;

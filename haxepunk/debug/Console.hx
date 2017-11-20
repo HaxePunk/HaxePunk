@@ -22,6 +22,16 @@ class Console extends Scene
 	static inline var CAMERA_PAN_PER_SECOND:Float = 256;
 	static inline var MIN_DRAG:Int = 8;
 
+	public static function enable():Void enabled = true;
+
+	public static var enabled(get, set):Bool;
+	static inline function get_enabled() return HXP.engine.console != null;
+	static inline function set_enabled(v:Bool)
+	{
+		HXP.engine.console = new Console();
+		return true;
+	}
+
 	static inline function avg<T:Float>(buffer:CircularBuffer<T>):Float
 	{
 		return buffer.length == 0 ? 0 : (Lambda.fold(buffer, add2, 0) / buffer.length);
@@ -38,15 +48,14 @@ class Console extends Scene
 	public var drawCalls:CircularBuffer<Int>;
 
 	public var paused(get, set):Bool;
-	inline function get_paused() return engine.paused;
+	inline function get_paused() return HXP.engine.paused;
 	inline function set_paused(v:Bool)
 	{
-		return engine.paused = v;
+		return HXP.engine.paused = v;
 	}
 
 	public var debugDraw:Bool = false;
 
-	var engine:Engine;
 	var logo:Image;
 	var buttonTray:ButtonTray;
 	var logPanel:LogPanel;
@@ -74,10 +83,9 @@ class Console extends Scene
 
 	var mouseManager:MouseManager;
 
-	function new(engine:Engine)
+	function new()
 	{
 		super();
-		this.engine = engine;
 		trackDrawCalls = false;
 		fps = new CircularBuffer(DATA_SIZE);
 		memory = new CircularBuffer(DATA_SIZE);
@@ -292,7 +300,7 @@ class Console extends Scene
 	{
 		if (_stepping || !paused) return;
 		_stepping = true;
-		engine.update();
+		HXP.engine.update();
 		updateMetrics();
 		_stepping = false;
 	}

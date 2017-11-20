@@ -10,6 +10,7 @@ import flash.display.StageDisplayState;
 import flash.display.StageQuality;
 import flash.display.StageScaleMode;
 import flash.events.Event;
+import flash.geom.Rectangle;
 import flash.Lib;
 
 class App extends Sprite
@@ -29,11 +30,12 @@ class App extends Sprite
 	var engine:Engine;
 	public function new(engine:Engine)
 	{
+		this.engine = engine;
+		super();
+
 		// on-stage event listener
 		addEventListener(Event.ADDED_TO_STAGE, onStage);
 		Lib.current.addChild(this);
-		this.engine = engine;
-		super();
 	}
 
 	function getTimeMillis():Float
@@ -56,7 +58,7 @@ class App extends Sprite
 
 		// create an OpenGLView object and use the engine's render method
 		var view = new OpenGLView();
-		view.render = function(rect:flash.geom.Rectangle)
+		view.render = function(rect:Rectangle)
 		{
 			engine.onRender();
 		};
@@ -90,7 +92,7 @@ class App extends Sprite
 		#end
 
 		#if debug_console
-		engine.add(new Console(engine));
+		Console.enabled = true;
 		#end
 	}
 
@@ -154,7 +156,7 @@ class App extends Sprite
 		HXP.resize(stage.stageWidth, stage.stageHeight);
 		if (scrollRect == null)
 		{
-			scrollRect = new flash.geom.Rectangle();
+			scrollRect = new Rectangle();
 		}
 		scrollRect.width = HXP.screen.width;
 		scrollRect.height = HXP.screen.height;

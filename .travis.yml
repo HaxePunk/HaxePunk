@@ -9,22 +9,19 @@ matrix:
   fast_finish: true
 
 env:
-  - TARGET=neko COMMAND=nme NME=5.6.4 OPENFL=3.6.1 LIME=2.9.1 TEST=nme
-  - TARGET=cpp COMMAND=nme NME=5.6.4 OPENFL=3.6.1 LIME=2.9.1
-  - TARGET=neko COMMAND=openfl OPENFL=3.6.1 LIME=2.9.1 TEST=openfl3 DOCS=1
-  - TARGET=cpp COMMAND=openfl OPENFL=3.6.1 LIME=2.9.1
-  - TARGET=html5 COMMAND=openfl OPENFL=3.6.1 LIME=2.9.1
-  - TARGET=neko COMMAND=openfl OPENFL=4.6.0 LIME=3.6.2 TEST=openfl4 DOCS=1
-  - TARGET=cpp COMMAND=openfl OPENFL=4.6.0 LIME=3.6.2
-  - TARGET=html5 COMMAND=openfl OPENFL=4.6.0 LIME=3.6.2
-  - TARGET=neko COMMAND=openfl OPENFL=5.0.0 LIME=4.1.0 TEST=openfl5
-  - TARGET=cpp COMMAND=openfl OPENFL=5.0.0 LIME=4.1.0
-  - TARGET=html5 COMMAND=openfl OPENFL=5.0.0 LIME=4.1.0
+  global:
+    - HXCPP=3.4.49
+  matrix:
+    - TEST=no-backend
+    - TEST=nme NME=5.6.4
+    - TEST=openfl3 OPENFL=3.6.1 LIME=2.9.1 DOCS=1
+    - TEST=openfl4 OPENFL=4.6.0 LIME=3.6.2 DOCS=1
+    - TEST=openfl5 OPENFL=5.0.0 LIME=4.1.0
 
 sudo: false
 
 install:
-  - yes | haxelib install hxcpp 3.4.49 > log.txt || cat log.txt
+  - yes | haxelib install hxcpp $HXCPP > log.txt || cat log.txt
   - if [[ $TEST ]]; then
         yes | haxelib git munit https://github.com/massiveinteractive/MassiveUnit.git master src > log.txt || cat log.txt;
         yes | haxelib git mlib https://github.com/massiveinteractive/mlib.git master src > log.txt || cat log.txt;
@@ -35,16 +32,12 @@ install:
   - if [[ $OPENFL ]]; then yes | haxelib install openfl $OPENFL > log.txt || cat log.txt; fi
   - if [[ $NME ]]; then yes | haxelib install nme $NME > log.txt || cat log.txt; fi
   - yes | haxelib install dox > log.txt || cat log.txt
-  - haxelib set hxcpp 3.4.49
   - haxelib dev HaxePunk $TRAVIS_BUILD_DIR
   - haxelib list
 
 script:
   - export HXCPP_COMPILE_CACHE=~/.hxcpp_cache
-  - make clean tools COMMAND=$COMMAND TARGET=$TARGET
-  - if [[ $TEST ]]; then make unit TEST=$TEST; fi
-  - make examples COMMAND=$COMMAND TARGET=$TARGET
-  - if [[ $DOCS ]]; then make docs COMMAND=$COMMAND TARGET=$TARGET; fi
+  - ./travis-build.sh
 
 cache:
   directories:
