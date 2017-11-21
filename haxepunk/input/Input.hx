@@ -113,32 +113,6 @@ class Input
 	}
 
 	/**
-	 * Enables input handling
-	 */
-	@:dox(hide)
-	public static function enable()
-	{
-		if (!_enabled)
-		{
-			#if (lime || nme)
-			if (HXP.engine.stage == null) return;
-			multiTouchSupported = flash.ui.Multitouch.supportsTouchEvents;
-			#else
-			multiTouchSupported = false;
-			#end
-
-			Key.init();
-			Mouse.init();
-			Gamepad.init();
-
-			if (multiTouchSupported)
-			{
-				Touch.init();
-			}
-		}
-	}
-
-	/**
 	 * Updates the input states
 	 */
 	@:dox(hide)

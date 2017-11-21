@@ -14,7 +14,7 @@ import haxepunk.utils.Draw;
  *
  * Your main class **needs** to extends this.
  */
-class Engine extends App
+class Engine
 {
 	public var console:Console;
 
@@ -90,16 +90,15 @@ class Engine extends App
 		HXP.height = height;
 
 		HXP.screen = new Screen();
+		HXP.app = app = new App(this);
 
 		// miscellaneous startup stuff
 		if (Random.randomSeed == 0) Random.randomizeSeed();
 
 		HXP.entity = new Entity();
-		HXP.time = getTimeMillis();
+		HXP.time = app.getTimeMillis();
 
 		_frameList = new Array();
-
-		super(this);
 
 		_iterator = new VisibleSceneIterator();
 	}
@@ -149,7 +148,7 @@ class Engine extends App
 	public function onRender()
 	{
 		// timing stuff
-		var t:Float = getTimeMillis();
+		var t:Float = app.getTimeMillis();
 		if (paused)
 		{
 			_frameLast = t; // continue updating frame timer
@@ -177,7 +176,7 @@ class Engine extends App
 		postRender.invoke();
 
 		// more timing stuff
-		t = getTimeMillis();
+		t = app.getTimeMillis();
 		_frameListSum += (_frameList[_frameList.length] = Std.int(t - _frameLast));
 		if (_frameList.length > 10) _frameListSum -= _frameList.shift();
 		HXP.frameRate = 1000 / (_frameListSum / _frameList.length);
@@ -187,7 +186,7 @@ class Engine extends App
 	/** @private Framerate independent game loop. */
 	public function onUpdate()
 	{
-		_time = _gameTime = getTimeMillis();
+		_time = _gameTime = app.getTimeMillis();
 		HXP._systemTime = _time - _systemTime;
 		_updateTime = _time;
 
@@ -214,11 +213,11 @@ class Engine extends App
 		_last = _time;
 
 		// update timer
-		_time = getTimeMillis();
+		_time = app.getTimeMillis();
 		HXP._updateTime = _time - _updateTime;
 
 		// update timer
-		_time = _systemTime = getTimeMillis();
+		_time = _systemTime = app.getTimeMillis();
 		HXP._gameTime = _time - _gameTime;
 	}
 
@@ -291,6 +290,10 @@ class Engine extends App
 		_scenes.push(value);
 		return _scene;
 	}
+
+	public function iterator() return _iterator.reset(this);
+
+	var app:App;
 
 	// Scene information.
 	var _scene:Scene = new Scene();

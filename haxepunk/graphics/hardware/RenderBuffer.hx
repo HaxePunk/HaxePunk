@@ -80,7 +80,7 @@ class RenderBuffer
 		byteOffset = 0;
 #end
 	}
-	
+
 	public inline function addFloat(v:Float)
 	{
 #if cpp
@@ -93,7 +93,7 @@ class RenderBuffer
 		byteOffset += 1;
 #end
 	}
-	
+
 	public inline function addVec(x:Float, y:Float)
 	{
 #if cpp
@@ -122,7 +122,7 @@ class RenderBuffer
 		byteOffset += 1;
 #end
 	}
-	
+
 	/**
 	 * Add vertex attribute data, at the end of the DrawCommand. While position, texture coords
 	 * and color are interleaved, custom vertex attrib data is at the end of the buffer to speed

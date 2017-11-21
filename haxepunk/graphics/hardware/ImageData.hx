@@ -2,9 +2,13 @@ package haxepunk.graphics.hardware;
 
 import haxepunk.utils.Color;
 
-#if (lime || nme)
+#if lime
 
-typedef ImageData = flash.display.BitmapData;
+typedef ImageData = haxepunk.backend.lime.ImageData;
+
+#elseif nme
+
+typedef ImageData = haxepunk.backend.nme.ImageData;
 
 #else
 

@@ -2,10 +2,6 @@ package haxepunk.input;
 
 import haxepunk.HXP;
 
-#if (lime || nme)
-import flash.events.MouseEvent;
-#end
-
 @:enum
 abstract MouseButton(Int) from Int to Int
 {
@@ -16,41 +12,6 @@ abstract MouseButton(Int) from Int to Int
 
 class Mouse
 {
-#if (lime || nme)
-	public static function init()
-	{
-		HXP.engine.stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown, false,  2);
-		HXP.engine.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false,  2);
-		HXP.engine.stage.addEventListener(MouseEvent.MOUSE_WHEEL, function(e:MouseEvent) {
-			onMouseWheel(e.delta);
-		}, false,  2);
-		HXP.engine.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, onMiddleMouseDown, false, 2);
-		HXP.engine.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, onMiddleMouseUp, false, 2);
-		HXP.engine.stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN, onRightMouseDown, false, 2);
-		HXP.engine.stage.addEventListener(MouseEvent.RIGHT_MOUSE_UP, onRightMouseUp, false, 2);
-	}
-
-	/**
-	 * The absolute mouse x position on the screen (unscaled).
-	 */
-	public static var mouseFlashX(get, never):Int;
-	static function get_mouseFlashX():Int
-	{
-		return Std.int(HXP.engine.stage.mouseX - HXP.screen.x);
-	}
-
-	/**
-	 * The absolute mouse y position on the screen (unscaled).
-	 */
-	public static var mouseFlashY(get, never):Int;
-	static function get_mouseFlashY():Int
-	{
-		return Std.int(HXP.engine.stage.mouseY - HXP.screen.y);
-	}
-#else
-	public static function init() {}
-#end
-
 	/**
 	 * X position of the mouse on the screen.
 	 */
