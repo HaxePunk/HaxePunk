@@ -197,7 +197,7 @@ class HXP
 	 * Empties an array of its' contents
 	 * @param array filled array
 	 */
-	public static inline function clear(array:Array<Dynamic>)
+	public static inline function clear<T>(array:Array<T>)
 	{
 #if cpp
 		// splice causes Array allocation, so prefer pop for most arrays
