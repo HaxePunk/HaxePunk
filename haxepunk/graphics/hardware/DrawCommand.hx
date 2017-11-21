@@ -292,22 +292,22 @@ class DrawCommand
 		if (bounds.width == 0)
 		{
 			bounds.x = x1;
-			bounds.right = x2;
+			bounds.width = x2 - x1;
 		}
 		else
 		{
 			if (x1 < bounds.left) bounds.left = x1;
-			if (x2 > bounds.right) bounds.right = x2;
+			if (x2 > bounds.right) bounds.width = x2 - bounds.left;
 		}
 		if (bounds.height == 0)
 		{
 			bounds.y = y1;
-			bounds.bottom = y2;
+			bounds.height = y2 - y1;
 		}
 		else
 		{
 			if (y1 < bounds.top) bounds.top = y1;
-			if (y2 > bounds.bottom) bounds.bottom = y2;
+			if (y2 > bounds.bottom) bounds.height = y2 - bounds.top;
 		}
 		#end
 	}
