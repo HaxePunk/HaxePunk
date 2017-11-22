@@ -82,7 +82,7 @@ class HXP
 	/**
 	 * The default font file to use, by default: font/monofonto.ttf.
 	 */
-	public static var defaultFont:String = "font/monofonto.ttf";
+	public static var defaultFont:String = "font/monofonto";
 
 	/**
 	 * Point used to determine drawing offset in the render loop.

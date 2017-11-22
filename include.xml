@@ -5,6 +5,8 @@
 
 	<assets path="assets/graphics" rename="graphics" include="*.png" embed="true"/>
 	<assets path="assets/font" rename="font" include="*.ttf" embed="true"/>
+	<assets path="assets/font" rename="font" include="*.fnt" type="text" embed="true"/>
+	<assets path="assets/font" rename="font" include="*.png" type="image" embed="true"/>
 
 	<haxedef name="source-header" value="haxe"/>
 	<haxedef name="webgl" if="html5"/>
