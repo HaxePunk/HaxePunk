@@ -1,6 +1,7 @@
 package haxepunk.backend.flash;
 
 import haxepunk.debug.Console;
+import haxepunk.graphics.hardware.ImageData;
 import haxepunk.input.Input;
 import haxepunk.utils.Color;
 
@@ -36,6 +37,10 @@ class FlashApiApp extends Sprite
 
 		// on-stage event listener
 		addEventListener(Event.ADDED_TO_STAGE, onStage);
+	}
+
+	public function init()
+	{
 		Lib.current.addChild(this);
 	}
 
@@ -52,6 +57,11 @@ class FlashApiApp extends Sprite
 	public function multiTouchSupported():Bool
 	{
 		return flash.ui.Multitouch.supportsTouchEvents;
+	}
+
+	public function getImageData(name:String):ImageData
+	{
+		return flash.Assets.getBitmapData(name, false);
 	}
 
 	function onEnterFrame(e:Event)

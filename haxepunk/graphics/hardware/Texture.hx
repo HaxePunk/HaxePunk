@@ -40,15 +40,13 @@ class Texture
 			return _texture.get(name);
 
 		var texture:Texture = null;
-		#if (lime || nme)
-		var data = flash.Assets.getBitmapData(name, false);
+		var data = HXP.app.getImageData(name);
 
 		if (data != null)
 		{
 			texture = new Texture(data);
 			_texture.set(name, texture);
 		}
-		#end
 
 		return texture;
 	}

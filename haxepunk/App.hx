@@ -21,11 +21,15 @@ class App
 
 	public function new(engine:Engine) {}
 
+	public function init() {}
+
 	public function getTimeMillis():Float return 0;
 
 	public function setScreenColor(color:Color) {}
 
 	public function multiTouchSupported():Bool return false;
+
+	public function getImageData(name:String):ImageData return null;
 
 	public var getMouseX():Float return 0;
 	public var getMouseY():Float return 0;

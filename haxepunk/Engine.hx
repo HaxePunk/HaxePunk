@@ -101,6 +101,8 @@ class Engine
 		_frameList = new Array();
 
 		_iterator = new VisibleSceneIterator();
+
+		app.init();
 	}
 
 	/**
