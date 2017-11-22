@@ -24,7 +24,7 @@ class Attribute
 		return data = v;
 	}
 	public var valuesPerElement:Int;
-	
+
 	@:allow(haxepunk.graphics.hardware.RenderBuffer)
 	private var dataPos(default, set):Int = -1; // for use by RenderBuffer to push data in VBOs
 	private function set_dataPos(v:Int) : Int
@@ -166,11 +166,11 @@ class Shader
 		{
 			buffer.prepareVertexOnly(drawCommand);
 		}
-		
+
 		buffer.addVertexAttribData(attribs, drawCommand.triangleCount * 3);
-		
+
 		buffer.updateGraphicsCard();
-		
+
 		setAttributePointers(drawCommand.triangleCount);
 	}
 
@@ -193,11 +193,11 @@ class Shader
 			GL.vertexAttribPointer(color.index, 4, GL.UNSIGNED_BYTE, true, stride, offset);
 			offset += 1 * Float32Array.BYTES_PER_ELEMENT;
 		}
-		
+
 		// Custom vertex attrib data is at the end of the buffer to speed up construction.
-		
+
 		offset *= nbTriangles * 3;
-		
+
 		// Use an array of names to preserve order, since the order of keys in a Map is undefined
 		for (n in attributeNames)
 		{
@@ -231,7 +231,7 @@ class Shader
 		for (n in attributeNames)
 			if (attributes[n].isEnabled)
 				GL.enableVertexAttribArray(attributes[n].index);
-		
+
 		GLUtils.checkForErrors();
 	}
 
@@ -281,7 +281,7 @@ class Shader
 		}
 		uniformValues[name] = value;
 	}
-	
+
 	/**
 	 * Set or change the values of a named vertex attribute.
 	 */
@@ -300,7 +300,7 @@ class Shader
 		attrib.data = values;
 		attrib.valuesPerElement = valuesPerElement;
 	}
-	
+
 	/**
 	 * Add extra values to a named vertex attribute.
 	 */

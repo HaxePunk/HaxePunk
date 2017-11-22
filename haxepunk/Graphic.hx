@@ -227,14 +227,8 @@ class Graphic
 	@:allow(haxepunk)
 	function new()
 	{
-		#if (lime || nme)
-		if (HXP.engine.stage != null)
-		{
-			smooth = (HXP.engine.stage.quality != LOW);
-		}
-		#else
+		// TODO: smooth default
 		smooth = true;
-		#end
 		color = Color.White;
 		shader = TextureShader.defaultShader;
 		_class = Type.getClassName(Type.getClass(this));

@@ -1,6 +1,6 @@
 package haxepunk.debug;
 
-import haxepunk.graphics.text.Text;
+import haxepunk.graphics.text.BitmapText;
 import haxepunk.input.MouseManager;
 import haxepunk.utils.Draw;
 
@@ -9,12 +9,12 @@ private class LayerToggle extends Entity
 {
 	public var layerNumber:Null<Int>;
 
-	var label:Text;
+	var label:BitmapText;
 
 	public function new(mouseManager:MouseManager)
 	{
 		super();
-		label = new Text("Layer");
+		label = new BitmapText("Layer");
 		label.alpha = 0.75;
 		addGraphic(label);
 		width = 220;
@@ -54,7 +54,7 @@ class LayerList extends EntityList<LayerToggle>
 {
 	var alpha:Float = 0.5;
 	var mouseManager:MouseManager;
-	var sceneLabel:Text;
+	var sceneLabel:BitmapText;
 	var childY:Int = 8;
 
 	public function new(mouseManager:MouseManager)
@@ -64,7 +64,7 @@ class LayerList extends EntityList<LayerToggle>
 		width = 280;
 		height = 320;
 
-		sceneLabel = new Text("Scene");
+		sceneLabel = new BitmapText("Scene");
 		sceneLabel.y = childY;
 		childY += sceneLabel.textHeight;
 		graphic = sceneLabel;

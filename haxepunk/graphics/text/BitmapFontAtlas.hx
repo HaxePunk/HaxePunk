@@ -37,7 +37,6 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 		if (_fonts == null) _fonts = new Map();
 
 		if (format == null) format = XML;
-		if (fontName == HXP.defaultFont + ".png") format = XNA;
 
 		if (!_fonts.exists(fontName))
 		{

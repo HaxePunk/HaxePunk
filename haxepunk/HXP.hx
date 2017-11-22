@@ -11,10 +11,6 @@ import haxepunk.tweens.misc.Alarm;
 import haxepunk.tweens.misc.MultiVarTween;
 import haxepunk.utils.HaxelibInfo;
 
-#if (lime || nme)
-import flash.display.StageDisplayState;
-#end
-
 /**
  * Static catch-all class used to access global properties and functions.
  */
@@ -86,7 +82,7 @@ class HXP
 	/**
 	 * The default font file to use, by default: font/monofonto.ttf.
 	 */
-	public static var defaultFont:String = "font/monofonto.ttf";
+	public static var defaultFont:String = "font/monofonto";
 
 	/**
 	 * Point used to determine drawing offset in the render loop.
@@ -231,8 +227,8 @@ class HXP
 	 * Toggles between windowed and fullscreen modes
 	 */
 	public static var fullscreen(get, set):Bool;
-	static inline function get_fullscreen():Bool return HXP.engine.fullscreen;
-	static inline function set_fullscreen(value:Bool):Bool return HXP.engine.fullscreen = value;
+	static inline function get_fullscreen():Bool return HXP.app.fullscreen;
+	static inline function set_fullscreen(value:Bool):Bool return HXP.app.fullscreen = value;
 
 	/**
 	 * Global volume factor for all sounds, a value from 0 to 1.
@@ -471,26 +467,6 @@ class HXP
 		}
 	}
 
-	/**
-	 * Resize the stage, not available on html5.
-	 *
-	 * @param	width	New width.
-	 * @param	height	New height.
-	 */
-	public static function resizeStage(width:Int, height:Int)
-	{
-		#if (cpp || neko)
-		#if (openfl_legacy || nme)
-		HXP.stage.resize(width, height);
-		#elseif lime
-		flash.Lib.application.window.resize(width, height);
-		#end
-		resize(width, height);
-		#elseif debug
-		trace("Can only resize the stage in cpp or neko targets.");
-		#end
-	}
-
 	public static var time(null, set):Float;
 	static inline function set_time(value:Float):Float
 	{
@@ -509,6 +485,8 @@ class HXP
 
 	/** The Engine instance. */
 	public static var engine:Engine;
+
+	public static var app:App;
 
 	// Global objects used for rendering, collision, etc.
 	@:dox(hide) public static var point:Vector2 = new Vector2();

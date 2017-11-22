@@ -2,7 +2,7 @@ package haxepunk;
 
 #if (lime || nme)
 
-typedef Assets = flash.Assets;
+typedef Assets = haxepunk.backend.flash.Assets;
 
 #else
 
