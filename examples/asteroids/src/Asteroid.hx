@@ -3,7 +3,7 @@ import haxepunk.Entity;
 import haxepunk.graphics.Spritemap;
 import haxepunk.graphics.emitter.Emitter;
 import haxepunk.math.MathUtil;
-
+import haxepunk.utils.Color;
 
 class Asteroid extends Entity
 {
@@ -44,6 +44,7 @@ class Asteroid extends Entity
 		}
 
 		asteroid = new Spritemap("graphics/asteroid.png", 128, 128);
+		asteroid.color = Color.getColorRGBFloat(0.25 + Math.random() * 0.75, 0.25 + Math.random() * 0.75, 0.25 + Math.random() * 0.75);
 		asteroid.frame = size;
 		asteroid.centerOrigin();
 

@@ -49,8 +49,8 @@ class AtlasRegion implements IAtlasRegion
 		var clipRectCopy = clipRect.clone();
 
 		// only clip within the current region
-		if (clipRectCopy.right > _rect.width) clipRectCopy.right = _rect.width;
-		if (clipRectCopy.bottom > _rect.height) clipRectCopy.bottom = _rect.height;
+		if (clipRectCopy.right > _rect.width) clipRectCopy.width = _rect.width - clipRectCopy.x;
+		if (clipRectCopy.bottom > _rect.height) clipRectCopy.height = _rect.height - clipRectCopy.y;
 
 		// do not allow negative width/height
 		if (clipRectCopy.width < 0) clipRectCopy.width = 0;

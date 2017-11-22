@@ -2,6 +2,7 @@ import haxepunk.HXP;
 import haxepunk.Entity;
 import haxepunk.Scene;
 import haxepunk.graphics.emitter.Emitter;
+import haxepunk.graphics.shader.SceneShader;
 import haxepunk.input.Input;
 import haxepunk.input.Key;
 import haxepunk.utils.Ease;
@@ -42,6 +43,8 @@ class MainScene extends Scene
 		add(e);
 
 		for (i in 0 ... 4) newAsteroid();
+
+		shaders = [SceneShader.fromAsset("shaders/pixel.frag")];
 	}
 
 	override public function update()

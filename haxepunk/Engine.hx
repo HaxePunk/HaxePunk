@@ -297,7 +297,7 @@ class Engine
 
 	var app:App;
 
-	// Scene information.
+  // Scene information.
 	var _scene:Scene = new Scene();
 	var _scenes:Array<Scene> = new Array<Scene>();
 
@@ -336,12 +336,19 @@ private class VisibleSceneIterator
 
 	public inline function next():Scene
 	{
-		return scenes.shift();
+		return scenes.pop();
 	}
 
 	@:access(haxepunk.Engine)
 	public function reset(engine:Engine):VisibleSceneIterator
 	{
+		HXP.clear(scenes);
+
+		if (engine.console != null)
+		{
+			scenes.push(engine.console);
+		}
+
 		var scene:Scene;
 		var i = engine._scenes.length - 1;
 		while (i >= 0)
@@ -354,10 +361,6 @@ private class VisibleSceneIterator
 			// if this scene has a solid background, stop adding scenes
 			if (scene.bgAlpha == 1) break;
 			--i;
-		}
-		if (engine.console != null)
-		{
-			scenes.push(engine.console);
 		}
 		return this;
 	}

@@ -27,7 +27,7 @@ class Ship extends Entity
 		super();
 
 		body = new Image("graphics/ship.png");
-		body.color = 0xff008080;
+		body.color = 0x80ffff;
 		body.centerOrigin();
 
 		bullet = new Emitter("graphics/bullet.png");

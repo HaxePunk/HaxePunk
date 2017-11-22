@@ -28,8 +28,11 @@ class Console extends Scene
 	static inline function get_enabled() return HXP.engine.console != null;
 	static inline function set_enabled(v:Bool)
 	{
-		HXP.engine.console = new Console();
-		return true;
+		if (v != enabled)
+		{
+			HXP.engine.console = v ? new Console() : null;
+		}
+		return v;
 	}
 
 	static inline function avg<T:Float>(buffer:CircularBuffer<T>):Float

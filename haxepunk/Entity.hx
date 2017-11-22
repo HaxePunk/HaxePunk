@@ -6,6 +6,7 @@ import haxepunk.Signal.Signal0;
 import haxepunk.ds.OneOf;
 import haxepunk.graphics.Graphiclist;
 import haxepunk.math.MathUtil;
+import haxepunk.math.Vector2;
 
 typedef SolidType = OneOf<String, Array<String>>;
 
@@ -200,14 +201,14 @@ class Entity extends Tweener
 		{
 			if (graphic.relative)
 			{
-				HXP.point.x = x;
-				HXP.point.y = y;
+				_point.x = x;
+				_point.y = y;
 			}
 			else
 			{
-				HXP.point.x = HXP.point.y = 0;
+				_point.x = _point.y = 0;
 			}
-			graphic.doRender(HXP.point, camera);
+			graphic.doRender(_point, camera);
 		}
 	}
 
@@ -839,13 +840,13 @@ class Entity extends Tweener
 	 */
 	public inline function moveTowards(x:Float, y:Float, amount:Float, ?solidType:SolidType, sweep:Bool = false)
 	{
-		HXP.point.x = x - this.x;
-		HXP.point.y = y - this.y;
-		if (HXP.point.x * HXP.point.x + HXP.point.y * HXP.point.y > amount * amount)
+		_point.x = x - this.x;
+		_point.y = y - this.y;
+		if (_point.x * _point.x + _point.y * _point.y > amount * amount)
 		{
-			HXP.point.normalize(amount);
+			_point.normalize(amount);
 		}
-		moveBy(HXP.point.x, HXP.point.y, solidType, sweep);
+		moveBy(_point.x, _point.y, solidType, sweep);
 	}
 
 	/**
@@ -944,4 +945,5 @@ class Entity extends Tweener
 	var _moveY:Float = 0;
 
 	static var _EMPTY:Entity = new Entity();
+	static var _point:Vector2 = new Vector2();
 }
