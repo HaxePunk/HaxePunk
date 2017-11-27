@@ -25,6 +25,7 @@ install:
   - if [[ $TEST ]]; then
         yes | haxelib git munit https://github.com/massiveinteractive/MassiveUnit.git master src > log.txt || cat log.txt;
         yes | haxelib git mlib https://github.com/massiveinteractive/mlib.git master src > log.txt || cat log.txt;
+        yes | haxelib install mcover > log.txt || cat log.txt;
         yes | haxelib install hamcrest > log.txt || cat log.txt;
     fi
   - if [[ $LIME ]]; then yes | haxelib install lime $LIME > log.txt || cat log.txt; fi
