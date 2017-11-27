@@ -8,7 +8,6 @@ import flash.text.TextFormat;
 import flash.text.TextFormatAlign;
 import flash.Assets;
 import flash.geom.Point;
-import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.debug.Console;
 import haxepunk.graphics.Image;
@@ -66,8 +65,8 @@ class Text extends Image
 			// create a second buffer for the border, to allow independently
 			// changing its alpha/color without a full buffer update
 			_borderBuffer = Texture.create(
-				Std.int(_sourceRect.width + bufferMargin * 2),
-				Std.int(_sourceRect.height + bufferMargin * 2),
+				Std.int(_source.width + bufferMargin * 2),
+				Std.int(_source.height + bufferMargin * 2),
 				true
 			);
 			_borderBackBuffer = _borderBuffer.clone();
@@ -134,7 +133,6 @@ class Text extends Image
 
 		var source = Texture.create(_width, _height, true);
 		_source = source;
-		setFlashRect(source.image.rect);
 		_region = Atlas.loadImageAsRegion(_source);
 		super();
 
@@ -148,16 +146,6 @@ class Text extends Image
 		this.color = options.color;
 
 		_needsUpdate = true;
-	}
-
-	function setFlashRect(flashRect:Rectangle)
-	{
-		if (_sourceRect == null) _sourceRect = new haxepunk.math.Rectangle();
-		_sourceRect.x = flashRect.x;
-		_sourceRect.y = flashRect.y;
-		_sourceRect.width = flashRect.width;
-		_sourceRect.height = flashRect.height;
-		_flashRect = flashRect;
 	}
 
 	/**
@@ -213,6 +201,11 @@ class Text extends Image
 #end
 	}
 
+	inline function getBitmapData(t:Texture):flash.display.BitmapData
+	{
+		return cast(t.image, haxepunk.backend.flash.BitmapImageData).data;
+	}
+
 	/** @private Updates the drawing buffer. */
 	public function updateTextBuffer()
 	{
@@ -243,8 +236,8 @@ class Text extends Image
 		}
 		else
 		{
-			_source.image.fillRect(_flashRect, 0);
-			if (border != null && border.alpha > 0) _borderSource.image.fillRect(_flashRect, 0);
+			_source.image.clearColor(0);
+			if (border != null && border.alpha > 0) _borderSource.image.clearColor(0);
 		}
 
 		_field.width = _width;
@@ -253,17 +246,17 @@ class Text extends Image
 		updateBuffer(true);
 		if (border != null && border.alpha > 0)
 		{
-			_borderSource.image.draw(_borderBuffer.image);
+			getBitmapData(_borderSource).draw(getBitmapData(_borderBuffer));
 		}
-		_source.image.draw(_buffer.image);
+		getBitmapData(_source).draw(getBitmapData(_buffer));
 	}
 
 	function createBuffer()
 	{
 		if (_buffer != null) _buffer.dispose();
 		_buffer = Texture.create(
-			Std.int(_sourceRect.width + bufferMargin * 2),
-			Std.int(_sourceRect.height + bufferMargin * 2),
+			Std.int(_source.width + bufferMargin * 2),
+			Std.int(_source.height + bufferMargin * 2),
 			true
 		);
 		if (_borderBuffer != null)
@@ -283,11 +276,11 @@ class Text extends Image
 	{
 		if (clearBefore)
 		{
-			_buffer.image.fillRect(_buffer.image.rect, 0);
+			_buffer.image.clearColor(0);
 			if (border != null && border.alpha > 0)
 			{
-				_borderBuffer.image.fillRect(_buffer.image.rect, 0);
-				_borderBackBuffer.image.fillRect(_buffer.image.rect, 0);
+				_borderBuffer.image.clearColor(0);
+				_borderBackBuffer.image.clearColor(0);
 			}
 		}
 		if (_source == null) return;
@@ -296,48 +289,56 @@ class Text extends Image
 
 		if (border != null)
 		{
-			_borderBuffer.image.draw(_field, _matrix, _whiteTint);
-
-			inline function drawBorder(ox, oy)
-			{
-				// two buffers are used because copyPixels from the same
-				// BitmapData forces an expensive clone
-				var _swap = _borderBuffer;
-				_borderBuffer = _borderBackBuffer;
-				_borderBackBuffer = _swap;
-
-				_offset.setTo(0, 0);
-				_borderBuffer.image.copyPixels(_borderBackBuffer.image, _buffer.image.rect, _offset, true);
-				_offset.setTo(ox, oy);
-				_borderBuffer.image.copyPixels(_borderBackBuffer.image, _buffer.image.rect, _offset, true);
-			}
-			switch (border.style)
-			{
-				case FastShadow:
-					drawBorder(border.size, border.size);
-				case Shadow:
-					for (_ in 0 ... border.size)
-					{
-						drawBorder(1, 0);
-						drawBorder(0, 1);
-					}
-				case FastOutline:
-					drawBorder(0, -border.size);
-					drawBorder(-border.size, 0);
-					drawBorder(border.size, 0);
-					drawBorder(0, border.size);
-				case Outline:
-					for (_ in 0 ... border.size)
-					{
-						drawBorder(0, -1);
-						drawBorder(-1, 0);
-						drawBorder(1, 0);
-						drawBorder(0, 1);
-					}
-			}
+			drawBorder();
 		}
 
-		_buffer.image.draw(_field, _matrix);
+		getBitmapData(_buffer).draw(_field, _matrix);
+	}
+
+	function drawBorder()
+	{
+		var bd = getBitmapData(_borderBuffer);
+		var bbd = getBitmapData(_borderBackBuffer);
+		bd.draw(_field, _matrix, _whiteTint);
+
+		inline function drawBorder(ox, oy)
+		{
+			// two buffers are used because copyPixels from the same
+			// BitmapData forces an expensive clone
+			var _swap = bd;
+			bd = bbd;
+			bbd = _swap;
+
+			var rect = getBitmapData(_buffer).rect;
+			_offset.setTo(0, 0);
+			bd.copyPixels(bbd, rect, _offset, true);
+			_offset.setTo(ox, oy);
+			bd.copyPixels(bbd, rect, _offset, true);
+		}
+		switch (border.style)
+		{
+			case FastShadow:
+				drawBorder(border.size, border.size);
+			case Shadow:
+				for (_ in 0 ... border.size)
+				{
+					drawBorder(1, 0);
+					drawBorder(0, 1);
+				}
+			case FastOutline:
+				drawBorder(0, -border.size);
+				drawBorder(-border.size, 0);
+				drawBorder(border.size, 0);
+				drawBorder(0, border.size);
+			case Outline:
+				for (_ in 0 ... border.size)
+				{
+					drawBorder(0, -1);
+					drawBorder(-1, 0);
+					drawBorder(1, 0);
+					drawBorder(0, 1);
+				}
+		}
 	}
 
 	/**
@@ -363,8 +364,6 @@ class Text extends Image
 				Std.int(Math.max(_height, _source.height)),
 				true
 			);
-
-			setFlashRect(_source.image.rect);
 
 			if (border != null && border.alpha > 0)
 			{
@@ -588,7 +587,6 @@ class Text extends Image
 	var _styles:StringMap<TextFormat>;
 	var _source:Texture;
 	var _buffer:Texture;
-	var _flashRect:Rectangle;
 
 	var _offset:Point = new Point();
 	var _whiteTint:ColorTransform = new ColorTransform(1, 1, 1, 1, 0xff, 0xff, 0xff, 1);

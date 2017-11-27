@@ -3,37 +3,50 @@ package haxepunk;
 import haxepunk.graphics.hardware.ImageData;
 import haxepunk.utils.Color;
 
-#if lime
-
-typedef App = haxepunk.backend.lime.App;
-
-#elseif nme
-
-typedef App = haxepunk.backend.nme.App;
-
-#else
-
-class App
+interface App
 {
 	/**
 	 * Toggles between windowed and fullscreen modes
 	 */
-	public var fullscreen:Bool;
+	public var fullscreen(get, set):Bool;
 
-	public function new(engine:Engine) {}
+	/**
+	 * Initialize the app with an instance of Engine
+	 */
+	public function init(engine:Engine):Void;
 
-	public function init() {}
+	/**
+	 * Get the time value in milliseconds. This is an incremental value starting at zero when the app starts.
+	 */
+	public function getTimeMillis():Float;
 
-	public function getTimeMillis():Float return 0;
+	/**
+	 * Set the app default screen clear color.
+	 */
+	public function setScreenColor(color:Color):Void;
 
-	public function setScreenColor(color:Color) {}
+	/**
+	 * Returns true if multitouch is supported on this platform
+	 */
+	public function multiTouchSupported():Bool;
 
-	public function multiTouchSupported():Bool return false;
+	/**
+	 * Creates an ImageData instance
+	 */
+	public function createImageData(width:Int, height:Int, transparent:Bool, color:Color):ImageData;
 
-	public function getImageData(name:String):ImageData return null;
+	/**
+	 * Retrieves a named ImageData if it exists in the app assets, otherwise it returns null
+	 */
+	public function getImageData(name:String):Null<ImageData>;
 
-	public function getMouseX():Float return 0;
-	public function getMouseY():Float return 0;
+	/**
+	 * The mouse position relative to the app window starting at zero in the upper left
+	 */
+	public function getMouseX():Float;
+
+	/**
+	 * The mouse position relative to the app window starting at zero in the upper left
+	 */
+	public function getMouseY():Float;
 }
-
-#end

@@ -90,7 +90,8 @@ class Engine
 		HXP.height = height;
 
 		HXP.screen = new Screen();
-		HXP.app = app = new App(this);
+		HXP.app = app = createApp();
+		app.init(this);
 
 		// miscellaneous startup stuff
 		if (Random.randomSeed == 0) Random.randomizeSeed();
@@ -101,8 +102,20 @@ class Engine
 		_frameList = new Array();
 
 		_iterator = new VisibleSceneIterator();
+	}
 
-		app.init();
+	/**
+	 * @private This should be the only place an App instance is created
+	 */
+	function createApp():App
+	{
+#if lime
+		return new haxepunk.backend.lime.App();
+#elseif nme
+		return new haxepunk.backend.nme.App();
+#else
+		return new haxepunk.backend.dummy.App();
+#end
 	}
 
 	/**

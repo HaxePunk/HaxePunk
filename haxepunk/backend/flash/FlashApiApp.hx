@@ -1,7 +1,6 @@
 package haxepunk.backend.flash;
 
 import haxepunk.debug.Console;
-import haxepunk.graphics.hardware.ImageData;
 import haxepunk.utils.Color;
 
 import flash.display.OpenGLView;
@@ -14,7 +13,7 @@ import flash.events.Event;
 import flash.geom.Rectangle;
 import flash.Lib;
 
-class FlashApiApp extends Sprite
+class FlashApiApp extends Sprite implements haxepunk.App
 {
 	/**
 	 * Toggles between windowed and fullscreen modes
@@ -29,17 +28,18 @@ class FlashApiApp extends Sprite
 	}
 
 	var engine:Engine;
-	public function new(engine:Engine)
+
+	public function new()
 	{
-		this.engine = engine;
 		super();
 
 		// on-stage event listener
 		addEventListener(Event.ADDED_TO_STAGE, onStage);
 	}
 
-	public function init()
+	public function init(engine:Engine)
 	{
+		this.engine = engine;
 		Lib.current.addChild(this);
 	}
 
@@ -58,9 +58,14 @@ class FlashApiApp extends Sprite
 		return flash.ui.Multitouch.supportsTouchEvents;
 	}
 
-	public function getImageData(name:String):ImageData
+	public function createImageData(width:Int, height:Int, transparent:Bool, color:Color):BitmapImageData
 	{
-		return flash.Assets.getBitmapData(name, false);
+		return BitmapImageData.create(width, height, transparent, color);
+	}
+
+	public function getImageData(name:String):BitmapImageData
+	{
+		return BitmapImageData.get(name);
 	}
 
 	function onEnterFrame(e:Event)

@@ -24,10 +24,7 @@ class Texture
 		this.image = image;
 	}
 
-	public inline function getPixel(x:Int, y:Int)
-	{
-		return image.getPixel32(x, y);
-	}
+	public inline function getPixel(x:Int, y:Int):Int return image.getPixel(x, y);
 
 	/**
 	 * Fetches a stored Texture object represented by the source.
@@ -104,7 +101,7 @@ class Texture
 	 */
 	public static function create(width:Int, height:Int, transparent:Bool = false, color:Color = Color.Black):Texture
 	{
-		return new Texture(new ImageData(width, height, transparent, color));
+		return new Texture(HXP.app.createImageData(width, height, transparent, color));
 	}
 
 	// image storage.

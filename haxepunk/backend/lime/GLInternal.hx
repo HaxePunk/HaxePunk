@@ -2,6 +2,7 @@ package haxepunk.backend.lime;
 
 import lime.graphics.opengl.GL;
 import haxepunk.graphics.hardware.Texture;
+import haxepunk.backend.flash.BitmapImageData;
 
 class GLInternal
 {
@@ -10,9 +11,9 @@ class GLInternal
 	@:allow(haxepunk.graphics.hardware.opengl.GLUtils)
 	static function bindTexture(texture:Texture)
 	{
-		var renderer = cast HXP.app.stage.__renderer;
+		var renderer = cast cast(HXP.app, flash.display.Sprite).stage.__renderer;
 		var renderSession = renderer.renderSession;
-		GL.bindTexture(GL.TEXTURE_2D, texture.image.getTexture(renderSession.gl));
+		GL.bindTexture(GL.TEXTURE_2D, cast(texture.image, BitmapImageData).data.getTexture(renderSession.gl));
 	}
 
 	public static inline function invalid(object:Dynamic)
