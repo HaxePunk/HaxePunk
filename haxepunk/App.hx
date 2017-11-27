@@ -1,5 +1,6 @@
 package haxepunk;
 
+import haxepunk.graphics.hardware.ImageData;
 import haxepunk.utils.Color;
 
 #if lime
@@ -31,8 +32,8 @@ class App
 
 	public function getImageData(name:String):ImageData return null;
 
-	public var getMouseX():Float return 0;
-	public var getMouseY():Float return 0;
+	public function getMouseX():Float return 0;
+	public function getMouseY():Float return 0;
 }
 
 #end

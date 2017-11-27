@@ -41,7 +41,7 @@ test: unit
 
 unit:
 	@echo "Running unit tests"
-	@cd tests && haxelib run munit test test-${TEST}.hxml -coverage
+	@cd tests && haxelib run munit test test-${TEST}.hxml
 
 checkstyle:
 	haxelib run checkstyle -c checkstyle.json -s haxepunk
