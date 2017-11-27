@@ -2,7 +2,6 @@ package haxepunk.backend.flash;
 
 import haxepunk.debug.Console;
 import haxepunk.graphics.hardware.ImageData;
-import haxepunk.input.Input;
 import haxepunk.utils.Color;
 
 import flash.display.OpenGLView;

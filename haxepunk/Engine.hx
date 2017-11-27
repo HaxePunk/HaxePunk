@@ -297,7 +297,7 @@ class Engine
 
 	var app:App;
 
-  // Scene information.
+	// Scene information.
 	var _scene:Scene = new Scene();
 	var _scenes:Array<Scene> = new Array<Scene>();
 

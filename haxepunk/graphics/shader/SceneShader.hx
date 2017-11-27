@@ -25,15 +25,13 @@ void main() {
 	gl_Position = aPosition;
 }";
 
-	#if (lime || nme)
 	/**
 	 * Create a custom shader from a text asset.
 	 */
 	public static inline function fromAsset(name:String):SceneShader
 	{
-		return new SceneShader(flash.Assets.getText(name));
+		return new SceneShader(Assets.getText(name));
 	}
-	#end
 
 	/**
 	 * Create a custom shader from a string.

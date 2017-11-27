@@ -136,7 +136,7 @@ class Sfx
 	}
 
 	/** @private Event handler for sound completion. */
-	function onComplete(e:Event = null)
+	function onComplete(?e:Event)
 	{
 		if (_looping) loop(_volume, _pan);
 		else stop();

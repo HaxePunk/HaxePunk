@@ -1,7 +1,6 @@
 package haxepunk.graphics.hardware.opengl;
 
 import haxe.PosInfos;
-import haxepunk.HXP;
 
 @:dox(hide)
 class GLUtils

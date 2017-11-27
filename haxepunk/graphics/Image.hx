@@ -2,7 +2,6 @@ package haxepunk.graphics;
 
 import haxepunk.Camera;
 import haxepunk.Graphic;
-import haxepunk.HXP;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.IAtlasRegion;
 import haxepunk.graphics.hardware.Texture;

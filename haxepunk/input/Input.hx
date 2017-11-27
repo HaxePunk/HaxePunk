@@ -2,7 +2,6 @@ package haxepunk.input;
 
 import haxepunk.HXP;
 import haxepunk.Signal.Signals;
-import haxepunk.debug.Console;
 #if cpp
 import cpp.vm.Deque;
 #elseif neko

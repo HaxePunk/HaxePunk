@@ -83,7 +83,7 @@ class Data
 	 * @param	defaultValue	Default value.
 	 * @return	The property value, or defaultValue if the property is not assigned.
 	 */
-	public static function read(name:String, defaultValue:Dynamic = null):Dynamic
+	public static function read(name:String, ?defaultValue:Dynamic):Dynamic
 	{
 		if (_data.get(name) != null) return _data.get(name);
 		return defaultValue;
