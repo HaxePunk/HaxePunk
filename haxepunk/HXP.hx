@@ -1,19 +1,15 @@
 package haxepunk;
 
 import haxe.Timer;
-import flash.display.Sprite;
-import flash.display.Stage;
-import flash.display.StageDisplayState;
-import flash.ui.Mouse;
 import haxepunk.Tween.TweenType;
-import haxepunk.debug.Console;
-import haxepunk.tweens.misc.Alarm;
-import haxepunk.tweens.misc.MultiVarTween;
-import haxepunk.utils.HaxelibInfo;
+import haxepunk.input.Mouse;
 import haxepunk.math.MathUtil;
 import haxepunk.math.Random;
 import haxepunk.math.Rectangle;
 import haxepunk.math.Vector2;
+import haxepunk.tweens.misc.Alarm;
+import haxepunk.tweens.misc.MultiVarTween;
+import haxepunk.utils.HaxelibInfo;
 
 /**
  * Static catch-all class used to access global properties and functions.
@@ -86,7 +82,7 @@ class HXP
 	/**
 	 * The default font file to use, by default: font/monofonto.ttf.
 	 */
-	public static var defaultFont:String = "font/monofonto.ttf";
+	public static var defaultFont:String = "font/monofonto";
 
 	/**
 	 * Point used to determine drawing offset in the render loop.
@@ -123,8 +119,8 @@ class HXP
 	static inline function set_cursor(cursor:Cursor = null):Cursor
 	{
 		if (HXP.cursor == cursor) return cursor;
-		if (cursor == null) Mouse.show();
-		else Mouse.hide();
+		if (cursor == null) Mouse.showCursor();
+		else Mouse.hideCursor();
 		return HXP.cursor = cursor;
 	}
 
@@ -231,13 +227,8 @@ class HXP
 	 * Toggles between windowed and fullscreen modes
 	 */
 	public static var fullscreen(get, set):Bool;
-	static inline function get_fullscreen():Bool return HXP.stage.displayState == StageDisplayState.FULL_SCREEN;
-	static inline function set_fullscreen(value:Bool):Bool
-	{
-		if (value) HXP.stage.displayState = StageDisplayState.FULL_SCREEN;
-		else HXP.stage.displayState = StageDisplayState.NORMAL;
-		return value;
-	}
+	static inline function get_fullscreen():Bool return HXP.app.fullscreen;
+	static inline function set_fullscreen(value:Bool):Bool return HXP.app.fullscreen = value;
 
 	/**
 	 * Global volume factor for all sounds, a value from 0 to 1.
@@ -366,34 +357,6 @@ class HXP
 		return e;
 	}
 
-	public static var console(get, set):Console;
-	static inline function get_console() return engine.console;
-	static inline function set_console(c:Console) return engine.console = c;
-
-	/**
-	 * Logs data to the console.
-	 * @param	...data		The data parameters to log, can be variables, objects, etc. Parameters will be separated by a space (" ").
-	 */
-	public static var log = Reflect.makeVarArgs(function(data:Array<Dynamic>)
-	{
-		if (engine.console != null)
-		{
-			engine.console.log(data);
-		}
-	});
-
-	/**
-	 * Adds properties to watch in the console's debug panel.
-	 * @param	...properties		The properties (strings) to watch.
-	 */
-	public static var watch = Reflect.makeVarArgs(function(properties:Array<Dynamic>)
-	{
-		if (engine.console != null)
-		{
-			engine.console.watch(properties);
-		}
-	});
-
 	/**
 	 * Tweens numeric public properties of an Object. Shorthand for creating a MultiVarTween tween, starting it and adding it to a Tweener.
 	 * @param	object		The object containing the properties to tween.
@@ -504,35 +467,12 @@ class HXP
 		}
 	}
 
-	/**
-	 * Resize the stage, not available on html5.
-	 *
-	 * @param	width	New width.
-	 * @param	height	New height.
-	 */
-	public static function resizeStage(width:Int, height:Int)
-	{
-		#if (cpp || neko)
-		#if (openfl_legacy || nme)
-		HXP.stage.resize(width, height);
-		#else
-		openfl.Lib.application.window.resize(width, height);
-		#end
-		resize(width, height);
-		#elseif debug
-		trace("Can only resize the stage in cpp or neko targets.");
-		#end
-	}
-
 	public static var time(null, set):Float;
 	static inline function set_time(value:Float):Float
 	{
 		_time = value;
 		return _time;
 	}
-
-	// Console information.
-	static var _console:Console;
 
 	// Time information.
 	static var _time:Float;
@@ -543,16 +483,15 @@ class HXP
 	// Volume control.
 	static var _pan:Float = 0;
 
-	/** The stage. */
-	public static var stage:Stage;
 	/** The Engine instance. */
 	public static var engine:Engine;
+
+	public static var app:App;
 
 	// Global objects used for rendering, collision, etc.
 	@:dox(hide) public static var point:Vector2 = new Vector2();
 	@:dox(hide) public static var point2:Vector2 = new Vector2();
 	@:dox(hide) public static var zeroCamera:Camera = new Camera();
 	@:dox(hide) public static var rect:Rectangle = new Rectangle();
-	@:dox(hide) public static var sprite:Sprite = new Sprite();
 	@:dox(hide) public static var entity:Entity;
 }

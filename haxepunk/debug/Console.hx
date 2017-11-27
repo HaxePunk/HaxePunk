@@ -89,6 +89,7 @@ class Console extends Scene
 	function new()
 	{
 		super();
+		trackDrawCalls = false;
 		fps = new CircularBuffer(DATA_SIZE);
 		memory = new CircularBuffer(DATA_SIZE);
 		entities = new CircularBuffer(DATA_SIZE);
@@ -307,11 +308,20 @@ class Console extends Scene
 		_stepping = false;
 	}
 
+	inline function getMemory():Float
+	{
+		#if (lime || nme)
+		return flash.system.System.totalMemory;
+		#else
+		return 0;
+		#end
+	}
+
 	function updateMetrics()
 	{
 		var s = HXP.elapsed / SAMPLE_TIME;
 		_fps += 1 / HXP.elapsed * s;
-		_mem += flash.system.System.totalMemory / 1024 / 1024 * s;
+		_mem += getMemory() / 1024 / 1024 * s;
 		_ent += HXP.scene.count * s;
 		_tri += HardwareRenderer.triangleCount * s;
 		_dc += HardwareRenderer.drawCallCount * s;

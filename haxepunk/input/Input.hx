@@ -1,9 +1,7 @@
 package haxepunk.input;
 
-import flash.ui.Multitouch;
 import haxepunk.HXP;
 import haxepunk.Signal.Signals;
-import haxepunk.debug.Console;
 #if cpp
 import cpp.vm.Deque;
 #elseif neko
@@ -114,26 +112,6 @@ class Input
 	}
 
 	/**
-	 * Enables input handling
-	 */
-	@:dox(hide)
-	public static function enable()
-	{
-		if (!_enabled && HXP.stage != null)
-		{
-			Key.init();
-			Mouse.init();
-			Gamepad.init();
-
-			multiTouchSupported = Multitouch.supportsTouchEvents;
-			if (multiTouchSupported)
-			{
-				Touch.init();
-			}
-		}
-	}
-
-	/**
 	 * Updates the input states
 	 */
 	@:dox(hide)
@@ -174,11 +152,9 @@ class Input
 				case PRESS:
 					trigger(HXP.engine.onInputPressed);
 					trigger(HXP.scene.onInputPressed);
-					if (Console.enabled) trigger(HXP.console.onInputPressed);
 				case RELEASE:
 					trigger(HXP.engine.onInputReleased);
 					trigger(HXP.scene.onInputReleased);
-					if (Console.enabled) trigger(HXP.console.onInputReleased);
 				default: {}
 			}
 		}

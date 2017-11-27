@@ -77,7 +77,7 @@ class DemoScene extends Scene
 		loadScene();
 	}
 
-	public override function update()
+	override public function update()
 	{
 		tapTime -= HXP.elapsed;
 		if (Mouse.mousePressed)

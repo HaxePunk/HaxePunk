@@ -82,8 +82,6 @@ class MainScene extends Scene
 
 	override public function begin()
 	{
-		HXP.stage.color = 0;
-
 		var tilemap = new Tilemap("graphics/tiles.png", 840, 512, 60, 60, 4, 4);
 		for (x in 0 ... Std.int(840/60))
 		{

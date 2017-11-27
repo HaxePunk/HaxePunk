@@ -1,10 +1,8 @@
 package haxepunk.graphics.text;
 
-import flash.text.TextFormatAlign;
-
 @:dox(hide)
 #if lime
-typedef TextAlignType = TextFormatAlign;
+typedef TextAlignType = haxepunk.backend.lime.TextAlignType;
 #else
 typedef TextAlignType = String;
 #end

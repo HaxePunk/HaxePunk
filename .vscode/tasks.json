@@ -2,10 +2,10 @@
     "version": "0.1.0",
     "command": "haxelib",
     "isShellCommand": true,
-    "args": ["run", "munit", "test", "test-openfl4.hxml", "-coverage"],
+    "args": ["run", "munit", "test", "test-no-backend.hxml", "-coverage"],
     "taskName": "Massive Unit",
     "isBuildCommand": true,
-    "showOutput": "silent",
+    "showOutput": "always",
     "options": {
         "cwd": "${workspaceRoot}/tests"
     },

@@ -1,10 +1,5 @@
 package haxepunk.input;
 
-#if lime
-import lime.ui.Gamepad as LimeGamepad;
-#else
-import flash.events.JoystickEvent;
-#end
 import haxepunk.HXP;
 import haxepunk.Signal;
 import haxepunk.math.Vector2;
@@ -44,20 +39,6 @@ class Gamepad
 	public static var onConnect:Signal1<Gamepad> = new Signal1();
 	public static var onDisconnect:Signal1<Gamepad> = new Signal1();
 
-	public static function init()
-	{
-		#if lime
-		LimeGamepad.onConnect.add(onJoyDeviceAdded);
-		for (device in LimeGamepad.devices) onJoyDeviceAdded(device);
-		#else
-		HXP.stage.addEventListener(JoystickEvent.AXIS_MOVE, onJoyAxisMove);
-		HXP.stage.addEventListener(JoystickEvent.BUTTON_DOWN, onJoyButtonDown);
-		HXP.stage.addEventListener(JoystickEvent.BUTTON_UP, onJoyButtonUp);
-		HXP.stage.addEventListener(JoystickEvent.DEVICE_ADDED, onJoyDeviceAdded);
-		HXP.stage.addEventListener(JoystickEvent.DEVICE_REMOVED, onJoyDeviceRemoved);
-		#end
-	}
-
 	/**
 	 * Returns a gamepad object, or null if none exists at this ID.
 	 * @param  id The id of the gamepad, starting with 0
@@ -72,80 +53,6 @@ class Gamepad
 	 * Returns the number of connected gamepads
 	 */
 	public static var gamepadCount(default, null):Int = 0;
-
-#if lime
-	static function onJoyDeviceAdded(limeGamepad:LimeGamepad)
-	{
-		var joy:Gamepad = new Gamepad(limeGamepad.id);
-		gamepads[limeGamepad.id] = joy;
-		++gamepadCount;
-
-		limeGamepad.onButtonUp.add(joy.onButtonUp);
-		limeGamepad.onButtonDown.add(joy.onButtonDown);
-		limeGamepad.onAxisMove.add(onJoyAxisMove.bind(limeGamepad));
-		limeGamepad.onDisconnect.add(onJoyDeviceRemoved.bind(limeGamepad));
-
-		Input.handlers.push(joy);
-		onConnect.invoke(joy);
-	}
-
-	static function onJoyDeviceRemoved(limeGamepad:LimeGamepad)
-	{
-		var joy:Gamepad = gamepad(limeGamepad.id);
-		joy.connected = false;
-		gamepads.remove(limeGamepad.id);
-		--gamepadCount;
-
-		if (Input.handlers.indexOf(joy) > -1) Input.handlers.remove(joy);
-		onDisconnect.invoke(joy);
-	}
-
-	static function onJoyAxisMove(limeGamepad:LimeGamepad, a:GamepadAxis, v:Float)
-	{
-		var joy:Gamepad = gamepad(limeGamepad.id);
-		joy.onAxisMove(a, v);
-	}
-#else
-	static function onJoyAxisMove(e:JoystickEvent)
-	{
-		var joy:Gamepad = gamepad(e.device);
-		for (i in 0 ... e.axis.length)
-		{
-			joy.onAxisMove(i, e.axis[i]);
-		}
-	}
-
-	static function onJoyButtonDown(e:JoystickEvent)
-	{
-		var joy:Gamepad = gamepad(e.device);
-		joy.onButtonDown(e.id);
-	}
-
-	static function onJoyButtonUp(e:JoystickEvent)
-	{
-		var joy:Gamepad = gamepad(e.device);
-		joy.buttons.set(e.id, BUTTON_RELEASED);
-	}
-
-	static function onJoyDeviceAdded(e:JoystickEvent)
-	{
-		var joy = new Gamepad(e.device);
-		gamepads[e.device] = joy;
-		++gamepadCount;
-		Input.handlers.push(joy);
-		onConnect.invoke(joy);
-	}
-
-	static function onJoyDeviceRemoved(e:JoystickEvent)
-	{
-		var joy:Gamepad = gamepad(e.device);
-		joy.connected = false;
-		gamepads.remove(e.device);
-		--gamepadCount;
-		if (Input.handlers.indexOf(joy) > -1) Input.handlers.remove(joy);
-		onDisconnect.invoke(joy);
-	}
-#end
 
 	public var id:Int = 0;
 

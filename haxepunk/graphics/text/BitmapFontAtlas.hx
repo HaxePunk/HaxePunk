@@ -1,8 +1,7 @@
 package haxepunk.graphics.text;
 
-import flash.Assets;
-import flash.geom.Point;
 import haxe.xml.Fast;
+import haxepunk.Assets;
 import haxepunk.HXP;
 import haxepunk.graphics.atlas.AtlasDataType;
 import haxepunk.graphics.atlas.TextureAtlas;
@@ -38,7 +37,6 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 		if (_fonts == null) _fonts = new Map();
 
 		if (format == null) format = XML;
-		if (fontName == HXP.defaultFont + ".png") format = XNA;
 
 		if (!_fonts.exists(fontName))
 		{
@@ -139,7 +137,8 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 		if (texture == null)
 			throw 'Invalid XNA font asset "$asset": no Texture found.';
 
-		var bitmap = texture.bitmap;
+		#if (lime || nme)
+		var bitmap = texture.image;
 
 		if (options == null)
 			options = {};
@@ -218,6 +217,7 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 
 		if (options.glyphBGColor != null)
 			bitmap.threshold(bitmap, bitmap.rect, _zero, "==", options.glyphBGColor, 0x00000000, 0xFFFFFFFF, true);
+		#end // lime || nme
 
 		return atlas;
 	}
@@ -244,7 +244,9 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 		return lineHeight * size / fontSize;
 	}
 
-	static var _zero:Point = new Point(0, 0);
+	#if (lime || nme)
+	static var _zero = new flash.geom.Point(0, 0);
+	#end
 	static var _fonts:Map<String, BitmapFontAtlas>;
 	static var _DEFAULT_GLYPHS:String = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 }

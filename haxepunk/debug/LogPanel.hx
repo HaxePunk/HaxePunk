@@ -1,7 +1,7 @@
 package haxepunk.debug;
 
 import haxepunk.HXP;
-import haxepunk.graphics.text.Text;
+import haxepunk.graphics.text.BitmapText;
 import haxepunk.input.MouseManager;
 import haxepunk.utils.CircularBuffer;
 import haxepunk.utils.Draw;
@@ -11,7 +11,7 @@ class LogPanel extends Entity
 	static inline var EXPAND_PER_SECOND:Int = 2048;
 	static inline var LOG_LINES:Int = 24;
 
-	var label:Text;
+	var label:BitmapText;
 	var expanded:Bool = false;
 	var alpha:Float = 0.5;
 	var logMessages:CircularBuffer<String> = new CircularBuffer(LOG_LINES);
@@ -19,7 +19,7 @@ class LogPanel extends Entity
 	public function new(mouseManager:MouseManager)
 	{
 		super();
-		label = new Text("Mouse");
+		label = new BitmapText("Mouse");
 		addGraphic(label);
 		height = 48;
 		type = mouseManager.type;

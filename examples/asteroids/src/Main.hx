@@ -11,6 +11,4 @@ class Main extends Engine
 		HXP.scene = new MainScene();
 	}
 
-	public static function main() { new Main(); }
-
 }

@@ -1,6 +1,7 @@
-package haxepunk.graphics.text;
+package haxepunk.backend.flash;
 
 import flash.text.TextFormat;
+import haxepunk.graphics.text.TextOptions;
 
 /**
  * Abstract representing either a `TextFormat` or a `TextOptions`.

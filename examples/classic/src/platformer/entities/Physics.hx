@@ -63,7 +63,7 @@ class Physics extends Entity
 		}
 	}
 
-	public override function moveCollideY(e:Entity):Bool
+	override public function moveCollideY(e:Entity):Bool
 	{
 		if (velocity.y * MathUtil.sign(gravity.y) > 0)
 		{
@@ -76,7 +76,7 @@ class Physics extends Entity
 		return true;
 	}
 
-	public override function moveCollideX(e:Entity):Bool
+	override public function moveCollideX(e:Entity):Bool
 	{
 		velocity.x = 0;
 

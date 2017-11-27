@@ -1,6 +1,5 @@
 package haxepunk.graphics.atlas;
 
-import flash.Assets;
 import haxepunk.HXP;
 import haxepunk.graphics.atlas.AtlasData;
 

@@ -1,7 +1,5 @@
 package haxepunk.graphics.hardware;
 
-import flash.Assets;
-import flash.display.BitmapData;
 import haxe.ds.StringMap;
 import haxepunk.utils.Color;
 
@@ -11,24 +9,24 @@ class Texture
 	static var idSeq:Int = 0;
 
 	public var width(get, never):Int;
-	inline function get_width():Int return bitmap.width;
+	inline function get_width():Int return image.width;
 
 	public var height(get, never):Int;
-	inline function get_height():Int return bitmap.height;
+	inline function get_height():Int return image.height;
 
-	public var bitmap(default, null):BitmapData;
+	public var image(default, null):ImageData;
 
 	public static var nullTexture:Texture = new Texture(null);
 
-	public function new(bitmapData:BitmapData)
+	public function new(image:ImageData)
 	{
 		id = idSeq++;
-		bitmap = bitmapData;
+		this.image = image;
 	}
 
 	public inline function getPixel(x:Int, y:Int)
 	{
-		return bitmap.getPixel32(x, y);
+		return image.getPixel32(x, y);
 	}
 
 	/**
@@ -41,8 +39,8 @@ class Texture
 		if (_texture.exists(name))
 			return _texture.get(name);
 
-		var data:BitmapData = Assets.getBitmapData(name, false);
 		var texture:Texture = null;
+		var data = HXP.app.getImageData(name);
 
 		if (data != null)
 		{
@@ -57,7 +55,7 @@ class Texture
 	 * Overwrites the image cache for a given name
 	 * @param name  The name of the Texture to overwrite.
 	 * @param data  The Texture object.
-	 * @return True if the prior bitmap was removed.
+	 * @return True if the prior image was removed.
 	 */
 	public static function overwriteCache(name:String, data:Texture):Bool
 	{
@@ -67,9 +65,9 @@ class Texture
 	}
 
 	/**
-	 * Removes a bitmap from the cache
-	 * @param name  The name of the bitmap to remove.
-	 * @return True if the bitmap was removed.
+	 * Removes a image from the cache
+	 * @param name  The name of the image to remove.
+	 * @return True if the image was removed.
 	 */
 	public static function remove(name:String):Bool
 	{
@@ -85,13 +83,13 @@ class Texture
 
 	public function dispose()
 	{
-		bitmap.dispose();
-		bitmap = null;
+		image.dispose();
+		image = null;
 	}
 
 	public function clone():Texture
 	{
-		return new Texture(bitmap);
+		return new Texture(image);
 	}
 
 	/**
@@ -106,9 +104,9 @@ class Texture
 	 */
 	public static function create(width:Int, height:Int, transparent:Bool = false, color:Color = Color.Black):Texture
 	{
-		return new Texture(new BitmapData(width, height, transparent, color));
+		return new Texture(new ImageData(width, height, transparent, color));
 	}
 
-	// Bitmap storage.
+	// image storage.
 	static var _texture:StringMap<Texture> = new StringMap<Texture>();
 }
