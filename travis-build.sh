@@ -5,6 +5,10 @@ set -e
 TARGETS="neko cpp html5"
 BUILD_DIR=${TRAVIS_BUILD_DIR:-$(pwd)}
 
+# Set command
+if [[ $NME ]]; then COMMAND=nme; fi
+if [[ $LIME ]]; then COMMAND=lime; fi
+
 # HaxePunk tool
 echo "Compiling tool.n"
 cd $BUILD_DIR/tools

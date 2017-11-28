@@ -36,12 +36,12 @@ class BitmapImageData implements ImageData
 		return data.getPixel32(x, y);
 	}
 
-	public inline function removeColor(color:Int)
+	public inline function removeColor(color:Color)
 	{
 		data.threshold(data, data.rect, _zero, "==", color, 0x00000000, 0xFFFFFFFF, true);
 	}
 
-	public inline function clearColor(color:Int)
+	public inline function clearColor(color:Color)
 	{
 		data.fillRect(data.rect, color);
 	}

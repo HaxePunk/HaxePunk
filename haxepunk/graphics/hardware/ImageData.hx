@@ -22,12 +22,12 @@ interface ImageData
 	/**
 	 * Removes a color from the image
 	 */
-	public function removeColor(color:Int):Void;
+	public function removeColor(color:Color):Void;
 
 	/**
 	 * Fills the entire image using a single color
 	 */
-	public function clearColor(color:Int):Void;
+	public function clearColor(color:Color):Void;
 
 	/**
 	 * Draw a circle to the image data

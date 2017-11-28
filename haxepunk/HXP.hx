@@ -14,7 +14,6 @@ import haxepunk.utils.HaxelibInfo;
 /**
  * Static catch-all class used to access global properties and functions.
  */
-@:access(haxepunk.Engine)
 class HXP
 {
 	/**
