@@ -7,10 +7,6 @@
 	"version": "4.0.0",
 	"releasenote": "See CHANGELOG.md",
 	"contributors": ["heardtheword", "_ibilon", "bendmorris"],
-	"dependencies": {
-		"lime": "",
-		"openfl": ""
-	},
 	"install": {
 		"munit": ""
 	}
