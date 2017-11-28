@@ -1,5 +1,7 @@
 package haxepunk.backend.flash;
 
+#if (lime || nme)
+
 import flash.net.SharedObject;
 
 /**
@@ -116,3 +118,5 @@ class Data
 	static inline var DEFAULT_FILE:String = "_file";
 	static inline var SIZE:Int = 10000;
 }
+
+#end

@@ -1,5 +1,7 @@
 package haxepunk.backend.lime;
 
+#if lime
+
 import lime.ui.Gamepad as LimeGamepad;
 import haxepunk.input.Gamepad;
 import haxepunk.input.Input;
@@ -45,3 +47,5 @@ class GamepadInput
 		joy.onAxisMove(a, v);
 	}
 }
+
+#end

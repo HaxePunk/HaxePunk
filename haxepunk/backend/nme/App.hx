@@ -1,5 +1,7 @@
 package haxepunk.backend.nme;
 
+#if nme
+
 class App extends haxepunk.backend.flash.FlashApiApp
 {
 	override public function initGamepadInput()
@@ -7,3 +9,5 @@ class App extends haxepunk.backend.flash.FlashApiApp
 		GamepadInput.init(this);
 	}
 }
+
+#end

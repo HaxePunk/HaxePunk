@@ -1,5 +1,7 @@
 package haxepunk.backend.flash;
 
+#if (lime || nme)
+
 import flash.events.KeyboardEvent;
 import haxepunk.input.Key;
 
@@ -100,3 +102,5 @@ class KeyInput
 
 	static var _nativeCorrection:Map<String, Int> = new Map<String, Int>();
 }
+
+#end

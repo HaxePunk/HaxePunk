@@ -1,5 +1,7 @@
 package haxepunk.backend.nme;
 
+#if nme
+
 import nme.events.JoystickEvent;
 import haxepunk.input.Gamepad;
 import haxepunk.input.Input;
@@ -57,3 +59,5 @@ class GamepadInput
 		Gamepad.onDisconnect.invoke(joy);
 	}
 }
+
+#end

@@ -1,5 +1,7 @@
 package haxepunk.backend.flash;
 
+#if (lime || nme)
+
 import flash.events.MouseEvent;
 import haxepunk.input.Mouse;
 
@@ -21,3 +23,5 @@ class MouseInput
 		stage.addEventListener(MouseEvent.RIGHT_MOUSE_UP, Mouse.onRightMouseUp, false, 2);
 	}
 }
+
+#end

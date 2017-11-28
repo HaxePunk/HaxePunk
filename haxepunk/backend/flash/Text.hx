@@ -1,5 +1,7 @@
 package haxepunk.backend.flash;
 
+#if (lime || nme)
+
 import haxe.ds.StringMap;
 import flash.geom.ColorTransform;
 import flash.geom.Matrix;
@@ -598,3 +600,5 @@ class Text extends Image
 	var _borderRegion:AtlasRegion;
 	var _borderSource:Texture;
 }
+
+#end

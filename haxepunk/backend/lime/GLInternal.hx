@@ -1,5 +1,7 @@
 package haxepunk.backend.lime;
 
+#if lime
+
 import lime.graphics.opengl.GL;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.backend.flash.BitmapImageData;
@@ -22,3 +24,5 @@ class GLInternal
 		return object == null;
 	}
 }
+
+#end

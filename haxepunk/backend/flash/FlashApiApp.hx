@@ -1,5 +1,7 @@
 package haxepunk.backend.flash;
 
+#if (lime || nme)
+
 import haxepunk.debug.Console;
 import haxepunk.utils.Color;
 
@@ -214,3 +216,5 @@ class FlashApiApp extends Sprite implements haxepunk.App
 		engine.onResize.invoke();
 	}
 }
+
+#end

@@ -1,5 +1,7 @@
 package haxepunk.backend.flash;
 
+#if (lime || nme)
+
 import haxepunk.graphics.hardware.ImageData;
 import haxepunk.utils.Color;
 
@@ -63,3 +65,5 @@ class BitmapImageData implements ImageData
 
 	static var _zero = new Point(0, 0);
 }
+
+#end

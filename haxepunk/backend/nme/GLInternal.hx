@@ -1,5 +1,7 @@
 package haxepunk.backend.nme;
 
+#if nme
+
 import nme.gl.GL;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.backend.flash.BitmapImageData;
@@ -19,3 +21,5 @@ class GLInternal
 		return object == null || !object.isValid();
 	}
 }
+
+#end
