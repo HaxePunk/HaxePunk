@@ -18,7 +18,7 @@ haxe tool.hxml || exit 1
 if [[ $TEST ]]; then
     echo "Running unit tests"
     cd $BUILD_DIR/tests
-    haxelib run munit test test-${TEST}.hxml || exit 1
+    haxelib run munit test test-${TEST}.hxml -coverage || exit 1
 fi
 
 # Examples
