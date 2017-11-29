@@ -50,11 +50,6 @@ class FlashApiApp extends Sprite implements haxepunk.App
 		return Lib.getTimer();
 	}
 
-	public function setScreenColor(color:Color)
-	{
-		stage.color = color;
-	}
-
 	public function multiTouchSupported():Bool
 	{
 		return flash.ui.Multitouch.supportsTouchEvents;
@@ -141,6 +136,8 @@ class FlashApiApp extends Sprite implements haxepunk.App
 		#end
 		stage.scaleMode = StageScaleMode.NO_SCALE;
 		stage.displayState = StageDisplayState.NORMAL;
+
+		HXP.screen.color = stage.color;
 
 		_resize(); // call resize once to initialize the screen
 

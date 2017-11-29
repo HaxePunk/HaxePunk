@@ -21,11 +21,6 @@ interface App
 	public function getTimeMillis():Float;
 
 	/**
-	 * Set the app default screen clear color.
-	 */
-	public function setScreenColor(color:Color):Void;
-
-	/**
 	 * Returns true if multitouch is supported on this platform
 	 */
 	public function multiTouchSupported():Bool;

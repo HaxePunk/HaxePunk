@@ -15,8 +15,6 @@ class App implements haxepunk.App
 
 	public function getTimeMillis():Float return 0;
 
-	public function setScreenColor(color:Color):Void {}
-
 	public function multiTouchSupported():Bool return false;
 
 	public function createImageData(width:Int, height:Int, transparent:Bool, color:Color):Null<ImageData> return null;
