@@ -13,7 +13,7 @@ interface App
 	/**
 	 * Initialize the app with an instance of Engine
 	 */
-	public function init(engine:Engine):Void;
+	public function init():Void;
 
 	/**
 	 * Get the time value in milliseconds. This is an incremental value starting at zero when the app starts.

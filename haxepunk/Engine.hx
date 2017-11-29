@@ -91,7 +91,6 @@ class Engine
 
 		HXP.screen = new Screen();
 		HXP.app = app = createApp();
-		app.init(this);
 
 		// miscellaneous startup stuff
 		if (Random.randomSeed == 0) Random.randomizeSeed();
@@ -102,6 +101,8 @@ class Engine
 		_frameList = new Array();
 
 		_iterator = new VisibleSceneIterator();
+
+		app.init();
 	}
 
 	/**
@@ -110,9 +111,9 @@ class Engine
 	function createApp():App
 	{
 #if lime
-		return new haxepunk.backend.lime.App();
+		return new haxepunk.backend.lime.App(this);
 #elseif nme
-		return new haxepunk.backend.nme.App();
+		return new haxepunk.backend.nme.App(this);
 #else
 		return new haxepunk.backend.dummy.App();
 #end

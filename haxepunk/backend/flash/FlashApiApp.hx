@@ -31,17 +31,17 @@ class FlashApiApp extends Sprite implements haxepunk.App
 
 	var engine:Engine;
 
-	public function new()
+	public function new(engine:Engine)
 	{
 		super();
+		this.engine = engine;
 
 		// on-stage event listener
 		addEventListener(Event.ADDED_TO_STAGE, onStage);
 	}
 
-	public function init(engine:Engine)
+	public function init()
 	{
-		this.engine = engine;
 		Lib.current.addChild(this);
 	}
 

@@ -11,7 +11,7 @@ class App implements haxepunk.App
 
 	public function new() {}
 
-	public function init(engine:Engine) {}
+	public function init() {}
 
 	public function getTimeMillis():Float return 0;
 
