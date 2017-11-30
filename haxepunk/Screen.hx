@@ -37,17 +37,6 @@ class Screen
 
 		width = HXP.width = Std.int(HXP.screen.width / HXP.screen.scaleX);
 		height = HXP.height = Std.int(HXP.screen.height / HXP.screen.scaleY);
-
-		_needsResize = false;
-	}
-
-	@:dox(hide)
-	public function update()
-	{
-		if (_needsResize)
-		{
-			HXP.resize(HXP.windowWidth, HXP.windowHeight);
-		}
 	}
 
 	/**
@@ -72,7 +61,7 @@ class Screen
 	function set_scaleX(value:Float):Float
 	{
 		scaleX = value;
-		_needsResize = true;
+		HXP.needsResize = true;
 		return scaleX;
 	}
 
@@ -83,7 +72,7 @@ class Screen
 	function set_scaleY(value:Float):Float
 	{
 		scaleY = value;
-		_needsResize = true;
+		HXP.needsResize = true;
 		return scaleY;
 	}
 
@@ -130,9 +119,4 @@ class Screen
 	{
 		throw "Screen.capture not currently supported";
 	}
-
-	/**
-	 * True if the scale of the screen has changed.
-	 */
-	var _needsResize:Bool = false;
 }
