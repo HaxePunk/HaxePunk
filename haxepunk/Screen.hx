@@ -76,12 +76,7 @@ class Screen
 	/**
 	 * Refresh color of the screen.
 	 */
-	@:isVar public var color(default, set):Color = Color.Black;
-	inline function set_color(value:Color):Color
-	{
-		HXP.app.setScreenColor(color);
-		return color = value;
-	}
+	public var color:Color = Color.Black;
 
 	/**
 	 * X offset of the screen.

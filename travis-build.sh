@@ -2,8 +2,17 @@
 
 set -e
 
-TARGETS="neko cpp html5"
 BUILD_DIR=${TRAVIS_BUILD_DIR:-$(pwd)}
+
+# Set command
+if [[ $NME ]]; then
+    COMMAND=nme
+    TARGETS="neko cpp"
+fi
+if [[ $LIME ]]; then
+    COMMAND=lime
+    TARGETS="neko cpp html5"
+fi
 
 # HaxePunk tool
 echo "Compiling tool.n"
@@ -14,7 +23,7 @@ haxe tool.hxml || exit 1
 if [[ $TEST ]]; then
     echo "Running unit tests"
     cd $BUILD_DIR/tests
-    haxelib run munit test test-${TEST}.hxml || exit 1
+    haxelib run munit test test-${TEST}.hxml -coverage || exit 1
 fi
 
 # Examples
@@ -34,9 +43,7 @@ fi
 if [[ $COMMAND ]] && [[ $DOCS ]]; then
     echo "Generating documentation"
 	cd $BUILD_DIR/doc
-    for TARGET in $TARGETS; do
-        haxelib run $COMMAND build $TARGET -xml
-    done
+    haxelib run $COMMAND build neko -xml
     haxelib run dox -i `find bin -name 'types.xml'` -o pages/ -theme theme/ \
         -in haxepunk --title "HaxePunk" \
         -D source-path "https://github.com/HaxePunk/HaxePunk/tree/master" > log.txt || {

@@ -1,5 +1,7 @@
 package haxepunk.backend.flash;
 
+#if (lime || nme)
+
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Sprite;
@@ -121,3 +123,5 @@ class Preloader extends #if (openfl >= "4.4.1") openfl.display.Preloader.Default
 
 	var scaleIncrement:Float;
 }
+
+#end

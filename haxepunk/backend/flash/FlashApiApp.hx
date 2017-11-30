@@ -1,7 +1,8 @@
 package haxepunk.backend.flash;
 
+#if (lime || nme)
+
 import haxepunk.debug.Console;
-import haxepunk.graphics.hardware.ImageData;
 import haxepunk.utils.Color;
 
 import flash.display.OpenGLView;
@@ -14,7 +15,7 @@ import flash.events.Event;
 import flash.geom.Rectangle;
 import flash.Lib;
 
-class FlashApiApp extends Sprite
+class FlashApiApp extends Sprite implements haxepunk.App
 {
 	/**
 	 * Toggles between windowed and fullscreen modes
@@ -29,10 +30,11 @@ class FlashApiApp extends Sprite
 	}
 
 	var engine:Engine;
+
 	public function new(engine:Engine)
 	{
-		this.engine = engine;
 		super();
+		this.engine = engine;
 
 		// on-stage event listener
 		addEventListener(Event.ADDED_TO_STAGE, onStage);
@@ -48,19 +50,19 @@ class FlashApiApp extends Sprite
 		return Lib.getTimer();
 	}
 
-	public function setScreenColor(color:Color)
-	{
-		stage.color = color;
-	}
-
 	public function multiTouchSupported():Bool
 	{
 		return flash.ui.Multitouch.supportsTouchEvents;
 	}
 
-	public function getImageData(name:String):ImageData
+	public function createImageData(width:Int, height:Int, transparent:Bool, color:Color):BitmapImageData
 	{
-		return flash.Assets.getBitmapData(name, false);
+		return BitmapImageData.create(width, height, transparent, color);
+	}
+
+	public function getImageData(name:String):BitmapImageData
+	{
+		return BitmapImageData.get(name);
 	}
 
 	function onEnterFrame(e:Event)
@@ -134,6 +136,8 @@ class FlashApiApp extends Sprite
 		#end
 		stage.scaleMode = StageScaleMode.NO_SCALE;
 		stage.displayState = StageDisplayState.NORMAL;
+
+		HXP.screen.color = stage.color;
 
 		_resize(); // call resize once to initialize the screen
 
@@ -209,3 +213,5 @@ class FlashApiApp extends Sprite
 		engine.onResize.invoke();
 	}
 }
+
+#end

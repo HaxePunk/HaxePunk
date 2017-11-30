@@ -1,5 +1,7 @@
 package haxepunk.backend.flash;
 
+#if (lime || nme)
+
 import flash.events.Event;
 import flash.media.Sound;
 import flash.media.SoundChannel;
@@ -383,3 +385,5 @@ class Sfx
 	static var _typePlaying:Map<String, Array<Sfx>> = new Map<String, Array<Sfx>>();
 	static var _typeTransforms:Map<String, SoundTransform> = new Map<String, SoundTransform>();
 }
+
+#end

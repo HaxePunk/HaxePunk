@@ -137,8 +137,7 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 		if (texture == null)
 			throw 'Invalid XNA font asset "$asset": no Texture found.';
 
-		#if (lime || nme)
-		var bitmap = texture.image;
+		var image = texture.image;
 
 		if (options == null)
 			options = {};
@@ -151,29 +150,29 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 			options.glyphBGColor = 0xFF202020;
 
 		var glyphString:String = options.letters;
-		var globalBGColor:Int = bitmap.getPixel(0, 0);
+		var globalBGColor:Int = image.getPixel(0, 0);
 		var cy:Int = 0;
 		var cx:Int;
 		var letterIdx:Int = 0;
 		var glyph:String;
 		var alphabetLength = glyphString.length;
 
-		while (cy < bitmap.height && letterIdx < alphabetLength)
+		while (cy < image.height && letterIdx < alphabetLength)
 		{
 			var rowHeight:Int = 0;
 			cx = 0;
 
-			while (cx < bitmap.width && letterIdx < alphabetLength)
+			while (cx < image.width && letterIdx < alphabetLength)
 			{
-				if (Std.int(bitmap.getPixel(cx, cy)) != globalBGColor)
+				if (Std.int(image.getPixel(cx, cy)) != globalBGColor)
 				{
 					// found non bg pixel
 					var gx:Int = cx;
 					var gy:Int = cy;
 
 					// find width and height of glyph
-					while (Std.int(bitmap.getPixel(gx, cy)) != globalBGColor) gx++;
-					while (Std.int(bitmap.getPixel(cx, gy)) != globalBGColor) gy++;
+					while (Std.int(image.getPixel(gx, cy)) != globalBGColor) gx++;
+					while (Std.int(image.getPixel(cx, gy)) != globalBGColor) gy++;
 
 					var gw:Int = gx - cx;
 					var gh:Int = gy - cy;
@@ -212,12 +211,13 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 		atlas.lineHeight = atlas.fontSize;
 
 		// remove background color
-		var bgColor32:Int = bitmap.getPixel32(0, 0);
-		bitmap.threshold(bitmap, bitmap.rect, _zero, "==", bgColor32, 0x00000000, 0xFFFFFFFF, true);
+		var bgColor32:Int = image.getPixel(0, 0);
+		image.removeColor(bgColor32);
 
 		if (options.glyphBGColor != null)
-			bitmap.threshold(bitmap, bitmap.rect, _zero, "==", options.glyphBGColor, 0x00000000, 0xFFFFFFFF, true);
-		#end // lime || nme
+		{
+			image.removeColor(options.glyphBGColor);
+		}
 
 		return atlas;
 	}
@@ -244,9 +244,6 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 		return lineHeight * size / fontSize;
 	}
 
-	#if (lime || nme)
-	static var _zero = new flash.geom.Point(0, 0);
-	#end
 	static var _fonts:Map<String, BitmapFontAtlas>;
 	static var _DEFAULT_GLYPHS:String = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
 }

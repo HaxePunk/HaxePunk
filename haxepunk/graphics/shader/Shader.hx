@@ -3,16 +3,11 @@ package haxepunk.graphics.shader;
 import haxepunk.graphics.hardware.opengl.GL;
 import haxepunk.graphics.hardware.opengl.GLProgram;
 import haxepunk.graphics.hardware.opengl.GLShader;
+import haxepunk.graphics.hardware.opengl.GLUniformLocation;
 import haxepunk.graphics.hardware.opengl.GLUtils;
 import haxepunk.graphics.hardware.DrawCommand;
 import haxepunk.graphics.hardware.Float32Array;
 import haxepunk.graphics.hardware.RenderBuffer;
-
-#if js
-typedef GLUniformLocation = js.html.webgl.UniformLocation;
-#else
-typedef GLUniformLocation = Int;
-#end
 
 class Attribute
 {

@@ -1,5 +1,7 @@
 package haxepunk.backend.flash;
 
+#if (lime || nme)
+
 import flash.events.TouchEvent;
 import flash.ui.Multitouch;
 import flash.ui.MultitouchInputMode;
@@ -43,3 +45,5 @@ class TouchInput
 		}
 	}
 }
+
+#end

@@ -1,5 +1,7 @@
 package haxepunk.backend.flash;
 
+#if (lime || nme)
+
 import flash.text.TextFormat;
 import haxepunk.graphics.text.TextOptions;
 
@@ -35,3 +37,5 @@ abstract StyleType(TextFormat)
 		return new StyleType(format);
 	}
 }
+
+#end
