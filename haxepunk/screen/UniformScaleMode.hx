@@ -49,8 +49,7 @@ class UniformScaleMode extends ScaleMode
 			if (scale < 1) scale = 1;
 		}
 
-		HXP.screen.scale = scale;
-		HXP.screen.scaleX = HXP.screen.scaleY = 1;
+		HXP.screen.scaleX = HXP.screen.scaleY = scale;
 		switch (type)
 		{
 			case Letterbox:

@@ -35,8 +35,8 @@ class Screen
 
 		scaleMode.resize(width, height);
 
-		width = HXP.width = Std.int(HXP.screen.width / HXP.screen.fullScaleX);
-		height = HXP.height = Std.int(HXP.screen.height / HXP.screen.fullScaleY);
+		width = HXP.width = Std.int(HXP.screen.width / HXP.screen.scaleX);
+		height = HXP.height = Std.int(HXP.screen.height / HXP.screen.scaleY);
 
 		_needsResize = false;
 	}
@@ -94,7 +94,6 @@ class Screen
 	function set_scaleX(value:Float):Float
 	{
 		scaleX = value;
-		fullScaleX = scaleX * scale;
 		_needsResize = true;
 		return scaleX;
 	}
@@ -106,34 +105,9 @@ class Screen
 	function set_scaleY(value:Float):Float
 	{
 		scaleY = value;
-		fullScaleY = scaleY * scale;
 		_needsResize = true;
 		return scaleY;
 	}
-
-	/**
-	 * Scale factor of the screen. Final scale is scaleX * scale by scaleY * scale, so
-	 * you can use this factor to scale the screen both horizontally and vertically.
-	 */
-	public var scale(default, set):Float = 1;
-	function set_scale(value:Float):Float
-	{
-		scale = value;
-		fullScaleX = scaleX * scale;
-		fullScaleY = scaleY * scale;
-		_needsResize = true;
-		return scale;
-	}
-
-	/**
-	 * Final X scale value of the screen
-	 */
-	public var fullScaleX(default, null):Float = 1;
-
-	/**
-	 * Final Y scale value of the screen
-	 */
-	public var fullScaleY(default, null):Float = 1;
 
 	/**
 	 * Whether screen smoothing should be used or not.
@@ -162,13 +136,13 @@ class Screen
 	 * X position of the mouse on the screen.
 	 */
 	public var mouseX(get, null):Int;
-	inline function get_mouseX():Int return Std.int((HXP.app.getMouseX() - x) / fullScaleX);
+	inline function get_mouseX():Int return Std.int((HXP.app.getMouseX() - x) / scaleX);
 
 	/**
 	 * Y position of the mouse on the screen.
 	 */
 	public var mouseY(get, null):Int;
-	inline function get_mouseY():Int return Std.int((HXP.app.getMouseY() - y) / fullScaleY);
+	inline function get_mouseY():Int return Std.int((HXP.app.getMouseY() - y) / scaleY);
 
 	/**
 	 * Captures the current screen as an Image object.

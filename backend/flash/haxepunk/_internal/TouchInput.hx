@@ -19,7 +19,7 @@ class TouchInput
 
 	static function onTouchBegin(e:TouchEvent)
 	{
-		var touchPoint = new Touch(e.stageX / HXP.screen.fullScaleX, e.stageY / HXP.screen.fullScaleY, e.touchPointID);
+		var touchPoint = new Touch(e.stageX / HXP.screen.scaleX, e.stageY / HXP.screen.scaleY, e.touchPointID);
 		Touch._touches.set(e.touchPointID, touchPoint);
 		Touch._touchOrder.push(e.touchPointID);
 	}
@@ -30,8 +30,8 @@ class TouchInput
 		if (Touch._touches.exists(e.touchPointID))
 		{
 			var point = Touch._touches.get(e.touchPointID);
-			point.x = e.stageX / HXP.screen.fullScaleX;
-			point.y = e.stageY / HXP.screen.fullScaleY;
+			point.x = e.stageX / HXP.screen.scaleX;
+			point.y = e.stageY / HXP.screen.scaleY;
 		}
 	}
 

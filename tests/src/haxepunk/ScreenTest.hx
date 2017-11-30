@@ -20,6 +20,7 @@ class ScreenTest extends TestSuite
 	{
 		Assert.areEqual(320, HXP.width);
 		Assert.areEqual(480, HXP.height);
-		Assert.areEqual(1.0, HXP.screen.scale);
+		Assert.areEqual(1.0, HXP.screen.scaleX);
+		Assert.areEqual(1.0, HXP.screen.scaleY);
 	}
 }
