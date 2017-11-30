@@ -114,6 +114,11 @@ class HXP
 	 */
 	public static var orientations:Array<Int> = [];
 
+	/**
+	 * True if the scale of the screen has changed.
+	 */
+	public static var needsResize:Bool = false;
+
 	public static var cursor(default, set):Cursor;
 	static inline function set_cursor(cursor:Cursor = null):Cursor
 	{
@@ -186,6 +191,7 @@ class HXP
 		HXP.bounds.width = width;
 		HXP.bounds.height = height;
 		for (scene in HXP.engine) scene._resize();
+		HXP.needsResize = false;
 	}
 
 	/**
