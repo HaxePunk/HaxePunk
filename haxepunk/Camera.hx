@@ -42,9 +42,9 @@ class Camera
 	inline function get_fullScaleY() return scale * scaleY;
 
 	public var screenScaleX(get, never):Float;
-	inline function get_screenScaleX() return fullScaleX * HXP.screen.fullScaleX;
+	inline function get_screenScaleX() return fullScaleX * HXP.screen.scaleX;
 	public var screenScaleY(get, never):Float;
-	inline function get_screenScaleY() return fullScaleY * HXP.screen.fullScaleY;
+	inline function get_screenScaleY() return fullScaleY * HXP.screen.scaleY;
 
 	public var width(get, never):Float;
 	inline function get_width() return HXP.screen.width / screenScaleX;

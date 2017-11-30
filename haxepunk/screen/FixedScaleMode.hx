@@ -15,6 +15,6 @@ class FixedScaleMode extends ScaleMode
 	{
 		HXP.screen.width = stageWidth;
 		HXP.screen.height = stageHeight;
-		HXP.screen.scale = HXP.screen.scaleX = HXP.screen.scaleY = 1;
+		HXP.screen.scaleX = HXP.screen.scaleY = 1;
 	}
 }

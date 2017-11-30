@@ -11,7 +11,7 @@ class UICamera extends StaticCamera
 	{
 		super.update();
 		scale = 1;
-		scaleX = 1 / HXP.screen.fullScaleX;
-		scaleY = 1 / HXP.screen.fullScaleY;
+		scaleX = 1 / HXP.screen.scaleX;
+		scaleY = 1 / HXP.screen.scaleY;
 	}
 }

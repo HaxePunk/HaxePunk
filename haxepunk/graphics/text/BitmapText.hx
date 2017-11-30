@@ -392,8 +392,8 @@ class BitmapText extends Graphic
 		_scaleStack.push(1);
 		_colorStack.push(color);
 		_alphaStack.push(alpha);
-		var fsx:Float = HXP.screen.fullScaleX,
-			fsy:Float = HXP.screen.fullScaleY;
+		var fsx:Float = HXP.screen.scaleX,
+			fsy:Float = HXP.screen.scaleY;
 		var sx:Float = size * scale * scaleX,
 			sy:Float = size * scale * scaleY;
 		var lineHeight:Float = _font.getLineHeight(sy * fsy) / fsy,

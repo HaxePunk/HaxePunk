@@ -16,8 +16,7 @@ class FixedHeightScaleMode extends ScaleMode
 	{
 		var scale = stageHeight / baseHeight;
 
-		HXP.screen.scale = scale;
-		HXP.screen.scaleX = HXP.screen.scaleY = 1;
+		HXP.screen.scaleX = HXP.screen.scaleY = scale;
 		HXP.screen.x = HXP.screen.y = 0;
 		HXP.screen.width = stageWidth;
 		HXP.screen.height = stageHeight;
