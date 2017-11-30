@@ -62,7 +62,7 @@ class Ship extends Entity
 		hit = cast collide("asteroid", x, y);
 		if (hit != null)
 		{
-			HXP.screen.shake(0.1,4);
+			scene.camera.shake(0.1,4);
 		}
 
 		while (p != null)
