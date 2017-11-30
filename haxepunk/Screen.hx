@@ -9,7 +9,6 @@ import haxepunk.utils.Color;
  * Container for the main screen buffer. Can be used to transform the screen.
  * To be used through `HXP.screen`.
  */
-@:allow(haxepunk.screen)
 class Screen
 {
 	/**
@@ -55,6 +54,18 @@ class Screen
 	public var y:Int = 0;
 
 	/**
+	 * Width of the screen.
+	 */
+	@:allow(haxepunk.screen)
+	public var width(default, null):Int = 0;
+
+	/**
+	 * Height of the screen.
+	 */
+	@:allow(haxepunk.screen)
+	public var height(default, null):Int = 0;
+
+	/**
 	 * X scale of the screen.
 	 */
 	public var scaleX(default, set):Float = 1;
@@ -88,16 +99,6 @@ class Screen
 	{
 		return Atlas.smooth = value;
 	}
-
-	/**
-	 * Width of the screen.
-	 */
-	public var width(default, null):Int = 0;
-
-	/**
-	 * Height of the screen.
-	 */
-	public var height(default, null):Int = 0;
 
 	/**
 	 * X position of the mouse on the screen.
