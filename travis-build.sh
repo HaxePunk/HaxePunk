@@ -43,9 +43,7 @@ fi
 if [[ $COMMAND ]] && [[ $DOCS ]]; then
     echo "Generating documentation"
 	cd $BUILD_DIR/doc
-    for TARGET in $TARGETS; do
-        haxelib run $COMMAND build $TARGET -xml
-    done
+    haxelib run $COMMAND build neko -xml
     haxelib run dox -i `find bin -name 'types.xml'` -o pages/ -theme theme/ \
         -in haxepunk --title "HaxePunk" \
         -D source-path "https://github.com/HaxePunk/HaxePunk/tree/master" > log.txt || {
