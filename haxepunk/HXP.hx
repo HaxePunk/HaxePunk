@@ -35,12 +35,12 @@ class HXP
 	/**
 	 * Width of the window.
 	 */
-	public static var windowWidth:Int;
+	public static var windowWidth:Int = 0;
 
 	/**
 	 * Height of the window.
 	 */
-	public static var windowHeight:Int;
+	public static var windowHeight:Int = 0;
 
 	/**
 	 * If the game is running at a fixed framerate.

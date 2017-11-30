@@ -133,7 +133,6 @@ class Engine
 	 */
 	public function update()
 	{
-		if (HXP.screen.needsResize) HXP.resize(HXP.windowWidth, HXP.windowHeight);
 		HXP.screen.update();
 
 		_scene.updateLists();

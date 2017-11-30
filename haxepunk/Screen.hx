@@ -21,12 +21,7 @@ class Screen
 	 * Constructor.
 	 */
 	@:allow(haxepunk)
-	function new()
-	{
-		x = y = 0;
-		_current = 0;
-		scale = scaleX = scaleY = 1;
-	}
+	function new() {}
 
 	/**
 	 * Resizes the screen.
@@ -43,13 +38,17 @@ class Screen
 		width = HXP.width = Std.int(HXP.screen.width / HXP.screen.fullScaleX);
 		height = HXP.height = Std.int(HXP.screen.height / HXP.screen.fullScaleY);
 
-		_current = 0;
-		needsResize = false;
+		_needsResize = false;
 	}
 
 	@:dox(hide)
 	public function update()
 	{
+		if (_needsResize)
+		{
+			HXP.resize(HXP.windowWidth, HXP.windowHeight);
+		}
+
 		// screen shake
 		if (_shakeTime > 0)
 		{
@@ -81,24 +80,12 @@ class Screen
 	/**
 	 * X offset of the screen.
 	 */
-	public var x(default, set):Int = 0;
-	function set_x(value:Int):Int
-	{
-		if (x == value) return value;
-		x = value;
-		return x;
-	}
+	public var x:Int = 0;
 
 	/**
 	 * Y offset of the screen.
 	 */
-	public var y(default, set):Int = 0;
-	function set_y(value:Int):Int
-	{
-		if (y == value) return value;
-		y = value;
-		return y;
-	}
+	public var y:Int = 0;
 
 	/**
 	 * X scale of the screen.
@@ -106,10 +93,9 @@ class Screen
 	public var scaleX(default, set):Float = 1;
 	function set_scaleX(value:Float):Float
 	{
-		if (scaleX == value) return value;
 		scaleX = value;
 		fullScaleX = scaleX * scale;
-		needsResize = true;
+		_needsResize = true;
 		return scaleX;
 	}
 
@@ -119,10 +105,9 @@ class Screen
 	public var scaleY(default, set):Float = 1;
 	function set_scaleY(value:Float):Float
 	{
-		if (scaleY == value) return value;
 		scaleY = value;
 		fullScaleY = scaleY * scale;
-		needsResize = true;
+		_needsResize = true;
 		return scaleY;
 	}
 
@@ -133,11 +118,10 @@ class Screen
 	public var scale(default, set):Float = 1;
 	function set_scale(value:Float):Float
 	{
-		if (scale == value) return value;
 		scale = value;
 		fullScaleX = scaleX * scale;
 		fullScaleY = scaleY * scale;
-		needsResize = true;
+		_needsResize = true;
 		return scale;
 	}
 
@@ -150,12 +134,6 @@ class Screen
 	 * Final Y scale value of the screen
 	 */
 	public var fullScaleY(default, null):Float = 1;
-
-	/**
-	 * True if the scale of the screen has changed.
-	 */
-	@:dox(hide)
-	public var needsResize(default, null):Bool = false;
 
 	/**
 	 * Whether screen smoothing should be used or not.
@@ -222,7 +200,11 @@ class Screen
 		_shakeTime = 0;
 	}
 
-	var _current:Int;
+	/**
+	 * True if the scale of the screen has changed.
+	 */
+	var _needsResize:Bool = false;
+
 	var _shakeTime:Float=0;
 	var _shakeMagnitude:Int=0;
 	var _shakeX:Int=0;
