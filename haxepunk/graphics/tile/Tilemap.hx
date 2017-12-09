@@ -423,14 +423,11 @@ class Tilemap extends Graphic
 				tile = _map[y % _rows][x % _columns];
 				if (tile >= 0)
 				{
-					updateTileRect(tile);
-					_atlas.prepareTile(
-						_tile,
+					drawTile(
+						tile, x, y,
 						_point.x + x * tw * fullScaleX,
 						_point.y + y * th * fullScaleY,
-						scx * fullScaleX, scy * fullScaleY, 0,
-						color, alpha,
-						shader, smooth, blend
+						scx * fullScaleX, scy * fullScaleY
 					);
 				}
 			}
@@ -489,22 +486,25 @@ class Tilemap extends Graphic
 				{
 					// ensure no horizontal overlap between this and next tile
 					scx = (nx - wx) / tileWidth;
-
-					updateTileRect(tile);
-					_atlas.prepareTile(
-						_tile,
-						_point.x + wx,
-						_point.y + wy,
-						scx, scy, 0,
-						color, alpha,
-						shader, smooth, blend
-					);
+					drawTile(tile, x, y, _point.x + wx, _point.y + wy, scx, scy);
 				}
 				wx = nx;
 			}
 
 			wy = ny;
 		}
+	}
+
+	function drawTile(tile:Int, tx:Int, ty:Int, x:Float, y:Float, scx:Float, scy:Float)
+	{
+		updateTileRect(tile);
+		_atlas.prepareTile(
+			_tile,
+			x, y,
+			scx, scy, 0,
+			color, alpha,
+			shader, smooth, blend
+		);
 	}
 
 	/**
