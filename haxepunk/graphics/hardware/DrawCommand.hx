@@ -296,7 +296,11 @@ class DrawCommand
 		}
 		else
 		{
-			if (x1 < bounds.left) bounds.left = x1;
+			if (x1 < bounds.left)
+			{
+				bounds.width += bounds.left - x1;
+				bounds.left = x1;
+			}
 			if (x2 > bounds.right) bounds.width = x2 - bounds.left;
 		}
 		if (bounds.height == 0)
@@ -306,7 +310,11 @@ class DrawCommand
 		}
 		else
 		{
-			if (y1 < bounds.top) bounds.top = y1;
+			if (y1 < bounds.top)
+			{
+				bounds.height += bounds.top - y1;
+				bounds.top = y1;
+			}
 			if (y2 > bounds.bottom) bounds.height = y2 - bounds.top;
 		}
 		#end

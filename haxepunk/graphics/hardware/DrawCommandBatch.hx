@@ -10,26 +10,32 @@ class DrawCommandIterator
 {
 	@:allow(haxepunk.graphics.hardware.DrawCommandBatch)
 	var command:DrawCommand = null;
+	var current:DrawCommand = null;
 
 	public function new() {}
 
+	public function reset()
+	{
+		current = command;
+	}
+
 	public function hasNext():Bool
 	{
-		return command != null;
+		return current != null;
 	}
 
 	@:access(haxepunk.graphics.hardware.DrawCommand)
 	public function next():DrawCommand
 	{
-		var result = command;
-		command = command._next;
+		var result = current;
+		current = current._next;
 		return result;
 	}
 
 	public function recycle()
 	{
 		if (command != null) command.recycle();
-		command = null;
+		command = current = null;
 	}
 }
 
@@ -56,6 +62,7 @@ class DrawCommandBatch
 	 */
 	public function iterator():DrawCommandIterator
 	{
+		head.reset();
 		return head;
 	}
 
