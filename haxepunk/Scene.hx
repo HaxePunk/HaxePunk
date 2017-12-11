@@ -246,7 +246,7 @@ class Scene extends Tweener
 			if (!layerVisible(layer)) continue;
 			for (e in _layers.get(layer))
 			{
-				if (e.visible) e.render(camera);
+				if (e.visible) e.render(e.camera == null ? camera : e.camera);
 			}
 		}
 
@@ -265,7 +265,7 @@ class Scene extends Tweener
 	public var mouseX(get, null):Int;
 	inline function get_mouseX():Int
 	{
-		return Std.int((HXP.screen.mouseX / camera.scaleX + camera.x));
+		return Std.int((HXP.app.getMouseX() - HXP.screen.x - x) / camera.screenScaleX + camera.x);
 	}
 
 	/**
@@ -274,7 +274,7 @@ class Scene extends Tweener
 	public var mouseY(get, null):Int;
 	inline function get_mouseY():Int
 	{
-		return Std.int((HXP.screen.mouseY / camera.scaleY + camera.y));
+		return Std.int((HXP.app.getMouseY() - HXP.screen.y - y) / camera.screenScaleY + camera.y);
 	}
 
 	/**
@@ -741,13 +741,25 @@ class Scene extends Tweener
 	 * @param	pY			Y position.
 	 * @param	into		The Array or Vector to populate with collided Entities.
 	 */
-	public function collidePointInto<E:Entity>(type:String, pX:Float, pY:Float, into:Array<E>)
+	public function collidePointInto<E:Entity>(type:String, pX:Float, pY:Float, into:Array<E>, cameraAdjust:Bool = false)
 	{
 		if (!_types.exists(type)) return;
 		var n:Int = into.length;
 		for (e in _types.get(type))
 		{
-			if (e.collidable && e.collidePoint(e.x, e.y, pX, pY)) into[n++] = cast e;
+			if (e.collidable)
+			{
+				if (cameraAdjust && e.camera != null)
+				{
+					var px = (pX + e.camera.x - camera.x) * camera.fullScaleX / e.camera.fullScaleX,
+						py = (pY + e.camera.y - camera.y) * camera.fullScaleY / e.camera.fullScaleY;
+					if (e.collidePoint(e.x, e.y, px, py)) into[n++] = cast e;
+				}
+				else
+				{
+					if (e.collidePoint(e.x, e.y, pX, pY)) into[n++] = cast e;
+				}
+			}
 		}
 	}
 

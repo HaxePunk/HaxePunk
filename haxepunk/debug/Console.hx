@@ -347,7 +347,7 @@ class Console extends Scene
 				if (!scene.layerVisible(layer)) continue;
 				for (e in scene._layers.get(layer))
 				{
-					e.debugDraw(scene.camera, selected.indexOf(e) > -1);
+					e.debugDraw(e.camera == null ? scene.camera : e.camera, selected.indexOf(e) > -1);
 				}
 			}
 		}
@@ -357,10 +357,10 @@ class Console extends Scene
 			drawContext.setColor(0xffffff, 0.9);
 			var camera = HXP.scene.camera;
 			drawContext.rect(
-				(selBox.x - camera.x) * camera.fullScaleX,
-				(selBox.y - camera.y) * camera.fullScaleY,
-				selBox.width * camera.fullScaleX,
-				selBox.height * camera.fullScaleY
+				(selBox.x - camera.x) * camera.screenScaleX,
+				(selBox.y - camera.y) * camera.screenScaleY,
+				selBox.width * camera.screenScaleX,
+				selBox.height * camera.screenScaleY
 			);
 		}
 	}

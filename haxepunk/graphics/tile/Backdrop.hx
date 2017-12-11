@@ -49,11 +49,11 @@ class Backdrop extends Graphic
 	@:dox(hide)
 	override public function render(point:Vector2, camera:Camera)
 	{
-		_point.x = (point.x - camera.x * scrollX + x) * camera.fullScaleX;
-		_point.y = (point.y - camera.y * scrollY + y) * camera.fullScaleY;
+		_point.x = (point.x - camera.x * scrollX + x) * camera.screenScaleX;
+		_point.y = (point.y - camera.y * scrollY + y) * camera.screenScaleY;
 
-		var sx = scale * scaleX * camera.fullScaleX,
-			sy = scale * scaleY * camera.fullScaleY,
+		var sx = scale * scaleX * camera.screenScaleX,
+			sy = scale * scaleY * camera.screenScaleY,
 			scaledWidth = _width * sx,
 			scaledHeight = _height * sy;
 
@@ -90,8 +90,8 @@ class Backdrop extends Graphic
 	@:dox(hide)
 	override public function pixelPerfectRender(point:Vector2, camera:Camera)
 	{
-		var fsx = camera.fullScaleX,
-			fsy = camera.fullScaleY,
+		var fsx = camera.screenScaleX,
+			fsy = camera.screenScaleY,
 			sx = scale * scaleX,
 			sy = scale * scaleY;
 		_point.x = (point.x - floorX(camera, camera.x * scrollX) + floorX(camera, x)) * fsx;

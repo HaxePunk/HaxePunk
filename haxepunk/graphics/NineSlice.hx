@@ -108,10 +108,10 @@ class NineSlice extends Graphic
 		}
 		else
 		{
-			leftWidth = floorX(camera, _sliceRect.left) / camera.fullScaleX;
-			rightWidth = floorX(camera, source.width - _sliceRect.width) / camera.fullScaleX;
-			topHeight = floorY(camera, _sliceRect.top) / camera.fullScaleY;
-			bottomHeight = floorY(camera, source.height - _sliceRect.height) / camera.fullScaleY;
+			leftWidth = floorX(camera, _sliceRect.left) / camera.screenScaleX;
+			rightWidth = floorX(camera, source.width - _sliceRect.width) / camera.screenScaleX;
+			topHeight = floorY(camera, _sliceRect.top) / camera.screenScaleY;
+			bottomHeight = floorY(camera, source.height - _sliceRect.height) / camera.screenScaleY;
 		}
 		var centerWidth:Float = floorX(camera, width) - leftWidth - rightWidth,
 			centerHeight:Float = floorY(camera, height) - topHeight - bottomHeight;

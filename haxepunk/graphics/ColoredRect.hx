@@ -28,8 +28,8 @@ class ColoredRect extends Graphic
 		var command = AtlasData._batch.getDrawCommand(null, shader,
 				false, blend, screenClipRect(camera, point.x, point.y));
 
-		var fsx = camera.fullScaleX,
-			fsy = camera.fullScaleY;
+		var fsx = camera.screenScaleX,
+			fsy = camera.screenScaleY;
 		var x1 = (floorX(camera, point.x) - floorX(camera, camera.x) + floorX(camera, x)) * fsx,
 			x2 = x1 + width * fsx,
 			y1 = (floorY(camera, point.y) - floorY(camera, camera.y) + floorY(camera, y)) * fsy,

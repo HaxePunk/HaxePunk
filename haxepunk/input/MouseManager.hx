@@ -121,7 +121,7 @@ class MouseManager extends Entity
 			mouseX <= HXP.screen.x + HXP.screen.width &&
 			mouseY <= HXP.screen.y + HXP.screen.height)
 		{
-			scene.collidePointInto(type, scene.mouseX, scene.mouseY, collisions);
+			scene.collidePointInto(type, scene.mouseX, scene.mouseY, collisions, true);
 		}
 
 		var fallthrough:Bool = true;

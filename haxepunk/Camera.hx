@@ -31,24 +31,29 @@ class Camera
 	public var pixelSnapping:Bool = false;
 
 	public var fullScaleX(get, never):Float;
-	inline function get_fullScaleX() return scale * scaleX * HXP.screen.fullScaleX;
+	inline function get_fullScaleX() return scale * scaleX;
 	public var fullScaleY(get, never):Float;
-	inline function get_fullScaleY() return scale * scaleY * HXP.screen.fullScaleY;
+	inline function get_fullScaleY() return scale * scaleY;
+
+	public var screenScaleX(get, never):Float;
+	inline function get_screenScaleX() return fullScaleX * HXP.screen.fullScaleX;
+	public var screenScaleY(get, never):Float;
+	inline function get_screenScaleY() return fullScaleY * HXP.screen.fullScaleY;
 
 	public var width(get, never):Float;
-	inline function get_width() return HXP.screen.width / fullScaleX;
+	inline function get_width() return HXP.screen.width / screenScaleX;
 
 	public var height(get, never):Float;
-	inline function get_height() return HXP.screen.height / fullScaleY;
+	inline function get_height() return HXP.screen.height / screenScaleY;
 
 	/**
 	 * Return an X value that, after scaling, will result in an integer.
 	 */
-	public inline function floorX(x:Float) return Math.floor(x * fullScaleX) / fullScaleX;
+	public inline function floorX(x:Float) return Math.floor(x * screenScaleX) / screenScaleX;
 	/**
 	 * Return a Y value that, after scaling, will result in an integer.
 	 */
-	public inline function floorY(y:Float) return Math.floor(y * fullScaleY) / fullScaleY;
+	public inline function floorY(y:Float) return Math.floor(y * screenScaleY) / screenScaleY;
 
 	var anchorTarget:Null<Position>;
 	var anchorX:Float = 0;
@@ -83,8 +88,8 @@ class Camera
 				tx += e.width / 2;
 				ty += e.height / 2;
 			}
-			x = tx - (HXP.width * anchorX);
-			y = ty - (HXP.height * anchorY);
+			x = tx - (HXP.width / fullScaleX * anchorX);
+			y = ty - (HXP.height / fullScaleY * anchorY);
 		}
 	}
 }

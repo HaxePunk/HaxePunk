@@ -98,8 +98,8 @@ class LayerList extends EntityList<LayerToggle>
 
 	override public function render(camera:Camera)
 	{
-		var fsx:Float = camera.fullScaleX,
-			fsy:Float = camera.fullScaleY;
+		var fsx:Float = camera.screenScaleX,
+			fsy:Float = camera.screenScaleY;
 		Draw.setColor(0, alpha);
 		Draw.lineThickness = 4;
 		Draw.rectFilled(x * fsx, y * fsy, width * fsx, height * fsy);

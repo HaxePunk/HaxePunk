@@ -383,8 +383,8 @@ class Polygon extends Hitbox
 	{
 		var offsetX:Float = _parent.x + _x - camera.x,
 			offsetY:Float = _parent.y + _y - camera.y,
-			scaleX = camera.fullScaleX,
-			scaleY = camera.fullScaleY;
+			scaleX = camera.screenScaleX,
+			scaleY = camera.screenScaleY;
 
 		var dc = Mask.drawContext;
 		dc.setColor(0x0000ff, 0.3);
