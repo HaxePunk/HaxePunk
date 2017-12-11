@@ -477,8 +477,8 @@ class Grid extends Hitbox
 	override public function debugDraw(camera:Camera):Void
 	{
 		var dc = Mask.drawContext,
-			scaleX = camera.fullScaleX,
-			scaleY = camera.fullScaleY;
+			scaleX = camera.screenScaleX,
+			scaleY = camera.screenScaleY;
 
 		var cellX:Float, cellY:Float,
 			stepX = tileWidth * scaleX,

@@ -91,8 +91,8 @@ class Image extends Graphic
 	{
 		var sx = scale * scaleX,
 			sy = scale * scaleY,
-			fsx = camera.fullScaleX,
-			fsy = camera.fullScaleY;
+			fsx = camera.screenScaleX,
+			fsy = camera.screenScaleY;
 
 		var x = floorX(camera, x);
 		var y = floorY(camera, y);

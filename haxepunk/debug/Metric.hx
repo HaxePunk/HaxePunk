@@ -48,8 +48,8 @@ class Metric<T:Float> extends Entity
 
 	override public function render(camera:Camera)
 	{
-		var fsx:Float = camera.fullScaleX,
-			fsy:Float = camera.fullScaleY;
+		var fsx:Float = camera.screenScaleX,
+			fsy:Float = camera.screenScaleY;
 
 		drawContext.scene = scene;
 		drawContext.setColor(color.lerp(0, 0.9), 0.8);

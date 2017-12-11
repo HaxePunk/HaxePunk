@@ -601,8 +601,8 @@ class BitmapText extends Graphic
 		var pixelPerfect = isPixelPerfect(camera);
 
 		// determine drawing location
-		var fsx = camera.fullScaleX,
-			fsy = camera.fullScaleY;
+		var fsx = camera.screenScaleX,
+			fsy = camera.screenScaleY;
 
 		_point.x = point.x + floorX(camera, x) - floorX(camera, camera.x * scrollX);
 		_point.y = point.y + floorY(camera, y) - floorY(camera, camera.y * scrollY);

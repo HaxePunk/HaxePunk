@@ -208,10 +208,10 @@ class Graphic
 		{
 			if (_screenClipRect == null) _screenClipRect = new Rectangle();
 			_screenClipRect.setTo(
-				(x + clipRect.x) * camera.fullScaleX,
-				(y + clipRect.y) * camera.fullScaleY,
-				clipRect.width * camera.fullScaleX,
-				clipRect.height * camera.fullScaleY
+				(x + clipRect.x) * camera.screenScaleX,
+				(y + clipRect.y) * camera.screenScaleY,
+				clipRect.width * camera.screenScaleX,
+				clipRect.height * camera.screenScaleY
 			);
 			return _screenClipRect;
 		}

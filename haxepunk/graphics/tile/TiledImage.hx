@@ -34,8 +34,8 @@ class TiledImage extends Image
 		_point.x = point.x + x - originX - camera.x * scrollX;
 		_point.y = point.y + y - originY - camera.y * scrollY;
 
-		var fsx = camera.fullScaleX,
-			fsy = camera.fullScaleY,
+		var fsx = camera.screenScaleX,
+			fsy = camera.screenScaleY,
 			sx = fsx * scale * scaleX,
 			sy = fsy * scale * scaleY,
 			x = 0.0, y = 0.0;
@@ -59,8 +59,8 @@ class TiledImage extends Image
 	override public function pixelPerfectRender(point:Vector2, camera:Camera)
 	{
 		// determine drawing location
-		var fsx = camera.fullScaleX,
-			fsy = camera.fullScaleY,
+		var fsx = camera.screenScaleX,
+			fsy = camera.screenScaleY,
 			sx = scale * scaleX,
 			sy = scale * scaleY;
 		_point.x = (point.x + floorX(camera, x - originX) - floorX(camera, camera.x * scrollX)) * fsx;

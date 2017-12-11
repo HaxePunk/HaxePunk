@@ -256,9 +256,9 @@ class Circle extends Hitbox
 	{
 		Mask.drawContext.lineThickness = 2;
 		Mask.drawContext.setColor(0xff0000, 0.25);
-		Mask.drawContext.circleFilled((_parent.x + _x - camera.x) * camera.fullScaleX, (_parent.y + _y - camera.y) * camera.fullScaleY, radius, camera.fullScaleX, camera.fullScaleY);
+		Mask.drawContext.circleFilled((_parent.x + _x - camera.x) * camera.screenScaleX, (_parent.y + _y - camera.y) * camera.screenScaleY, radius, camera.screenScaleX, camera.screenScaleY);
 		Mask.drawContext.setColor(0xff0000, 0.5);
-		Mask.drawContext.circle((_parent.x + _x - camera.x) * camera.fullScaleX, (_parent.y + _y - camera.y) * camera.fullScaleY, radius, camera.fullScaleX, camera.fullScaleY);
+		Mask.drawContext.circle((_parent.x + _x - camera.x) * camera.screenScaleX, (_parent.y + _y - camera.y) * camera.screenScaleY, radius, camera.screenScaleX, camera.screenScaleY);
 	}
 
 	override function get_x():Int return _x - _radius;

@@ -356,8 +356,8 @@ class Tilemap extends Graphic
 	@:dox(hide)
 	override public function render(point:Vector2, camera:Camera)
 	{
-		var fullScaleX:Float = camera.fullScaleX,
-			fullScaleY:Float = camera.fullScaleY;
+		var fullScaleX:Float = camera.screenScaleX,
+			fullScaleY:Float = camera.screenScaleY;
 
 		// determine drawing location
 		_point.x = point.x + x - camera.x * scrollX;
@@ -371,8 +371,8 @@ class Tilemap extends Graphic
 		// determine start and end tiles to draw (optimization)
 		var startx = Math.floor(-_point.x / tw),
 			starty = Math.floor(-_point.y / th),
-			destx = startx + 1 + Math.ceil(HXP.width / tw),
-			desty = starty + 1 + Math.ceil(HXP.height / th);
+			destx = startx + 1 + Math.ceil(HXP.width / camera.scale / camera.scaleX / tw),
+			desty = starty + 1 + Math.ceil(HXP.height / camera.scale / camera.scaleY / th);
 
 		// nothing will render if we're completely off screen
 		if (startx > _columns || starty > _rows || destx < 0 || desty < 0)
@@ -410,8 +410,8 @@ class Tilemap extends Graphic
 	@:dox(hide)
 	override public function pixelPerfectRender(point:Vector2, camera:Camera)
 	{
-		var fullScaleX:Float = camera.fullScaleX,
-			fullScaleY:Float = camera.fullScaleY;
+		var fullScaleX:Float = camera.screenScaleX,
+			fullScaleY:Float = camera.screenScaleY;
 
 		// determine drawing location
 		_point.x = point.x + floorX(camera, x) - floorX(camera, camera.x * scrollX);
@@ -425,8 +425,8 @@ class Tilemap extends Graphic
 		// determine start and end tiles to draw (optimization)
 		var startx = Math.floor(-_point.x / tw),
 			starty = Math.floor(-_point.y / th),
-			destx = startx + 1 + Math.ceil(HXP.width / tw),
-			desty = starty + 1 + Math.ceil(HXP.height / th);
+			destx = startx + 1 + Math.ceil(HXP.width / camera.scale / camera.scaleX / tw),
+			desty = starty + 1 + Math.ceil(HXP.height / camera.scale / camera.scaleY / th);
 
 		// nothing will render if we're completely off screen
 		if (startx > _columns || starty > _rows || destx < 0 || desty < 0)

@@ -33,8 +33,8 @@ class Cursor extends Entity
 		if (img != null)
 		{
 			// scale to 1
-			img.scaleX = 1 / camera.fullScaleX;
-			img.scaleY = 1 / camera.fullScaleY;
+			img.scaleX = 1 / camera.screenScaleX;
+			img.scaleY = 1 / camera.screenScaleY;
 		}
 		super.render(camera);
 	}

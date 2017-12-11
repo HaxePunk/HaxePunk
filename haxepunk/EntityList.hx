@@ -41,6 +41,7 @@ class EntityList<T:Entity> extends Entity
 		}
 		entity.parent = this;
 		entity.layer = layer;
+		entity.camera = camera;
 		return entity;
 	}
 
@@ -127,6 +128,12 @@ class EntityList<T:Entity> extends Entity
 		for (entity in entities)
 			entity.layer = entity.layer - originalLayer + value;
 		return value;
+	}
+
+	override function set_camera(value:Camera):Camera
+	{
+		for (entity in entities) entity.camera = value;
+		return camera = value;
 	}
 
 	/**

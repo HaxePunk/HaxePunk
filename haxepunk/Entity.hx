@@ -26,6 +26,9 @@ class Entity extends Tweener
 	 */
 	public var parent:Null<Entity>;
 
+	public var camera(default, set):Null<Camera> = null;
+	function set_camera(v:Camera) return camera = v;
+
 	/**
 	 * If set, skip every N update frames.
 	 */
@@ -218,16 +221,16 @@ class Entity extends Tweener
 		{
 			Mask.drawContext.lineThickness = 2;
 			Mask.drawContext.setColor(0xff0000, 0.25);
-			Mask.drawContext.rectFilled((x - camera.x - originX) * camera.fullScaleX, (y - camera.y - originY) * camera.fullScaleY, width * camera.fullScaleX, height * camera.fullScaleY);
+			Mask.drawContext.rectFilled((x - camera.x - originX) * camera.screenScaleX, (y - camera.y - originY) * camera.screenScaleY, width * camera.screenScaleX, height * camera.screenScaleY);
 			Mask.drawContext.setColor(0xff0000, 0.5);
-			Mask.drawContext.rect((x - camera.x - originX) * camera.fullScaleX, (y - camera.y - originY) * camera.fullScaleY, width * camera.fullScaleX, height * camera.fullScaleY);
+			Mask.drawContext.rect((x - camera.x - originX) * camera.screenScaleX, (y - camera.y - originY) * camera.screenScaleY, width * camera.screenScaleX, height * camera.screenScaleY);
 		}
 		else if (mask != null)
 		{
 			mask.debugDraw(camera);
 		}
 		Mask.drawContext.setColor(selected ? 0x00ff00 : 0xffffff, 1);
-		Mask.drawContext.circle((x - camera.x) * camera.fullScaleX, (y - camera.y) * camera.fullScaleY, 3, 8);
+		Mask.drawContext.circle((x - camera.x) * camera.screenScaleX, (y - camera.y) * camera.screenScaleY, 3, 8);
 	}
 
 	/**
