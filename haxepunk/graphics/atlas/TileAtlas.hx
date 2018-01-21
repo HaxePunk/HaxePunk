@@ -9,15 +9,23 @@ class TileAtlas extends Atlas
 	public var tileCount(get, never):Int;
 	inline function get_tileCount():Int return _regions.length;
 
+	public var tileWidth(get, never):Int;
+	inline function get_tileWidth():Int return _tileWidth;
+	
+	public var tileHeight(get, never):Int;
+	inline function get_tileHeight():Int return _tileHeight;
+
 	/**
 	 * Constructor.
 	 *
 	 * @param	source		Source texture.
 	 */
-	public function new(source:AtlasDataType)
+	public function new(source:AtlasDataType, tileWidth:Int = 0, tileHeight:Int = 0)
 	{
 		super(source);
 		_regions = new Array<AtlasRegion>();
+		_tileWidth = tileWidth;
+		_tileHeight = tileHeight;
 	}
 
 	/**
@@ -50,6 +58,11 @@ class TileAtlas extends Atlas
 			var region = textureAtlas.getRegion(spriteName);
 			atlas._regions.push(region);
 		}
+
+		var region = atlas._regions[0];
+		atlas._tileWidth = region.width;
+		atlas._tileHeight = region.height;
+
 		return atlas;
 	}
 
@@ -63,6 +76,9 @@ class TileAtlas extends Atlas
 	public function prepare(tileWidth:Int, tileHeight:Int, tileMarginWidth:Int=0, tileMarginHeight:Int=0)
 	{
 		if (_regions.length > 0) return; // only prepare once
+		_tileWidth = tileWidth;
+		_tileHeight = tileHeight;
+
 		var cols:Int = Math.floor(_data.width / tileWidth);
 		var rows:Int = Math.floor(_data.height / tileHeight);
 
@@ -85,4 +101,6 @@ class TileAtlas extends Atlas
 	}
 
 	var _regions:Array<AtlasRegion>;
+	var _tileWidth:Int;
+	var _tileHeight:Int;
 }
