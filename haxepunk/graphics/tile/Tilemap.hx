@@ -76,7 +76,6 @@ class Tilemap extends Graphic
 		_maxHeight -= _maxHeight % tileHeight;
 
 		// initialize map
-		_tile = new Rectangle(0, 0, tileWidth, tileHeight);
 		_map = new Array<Array<Int>>();
 		for (y in 0..._rows)
 		{
@@ -89,14 +88,9 @@ class Tilemap extends Graphic
 
 		// load the tileset graphic
 		_atlas = tileset;
-		_atlas.prepare(tileWidth, tileHeight, tileSpacingWidth, tileSpacingHeight);
 
 		if (_atlas == null)
 			throw "Invalid tileset graphic provided.";
-
-		_setColumns = Std.int(_atlas.width / tileWidth);
-		_setRows = Std.int(_atlas.height / tileHeight);
-		_setCount = _setColumns * _setRows;
 
 		pixelSnapping = true;
 	}
@@ -111,10 +105,10 @@ class Tilemap extends Graphic
 	{
 		if (usePositions)
 		{
-			column = Std.int(column / _tile.width);
-			row = Std.int(row / _tile.height);
+			column = Std.int(column / tileWidth);
+			row = Std.int(row / tileHeight);
 		}
-		if (index > -1) index %= _setCount;
+		if (index > -1) index %= tileCount;
 		column %= _columns;
 		row %= _rows;
 		_map[row][column] = index;
@@ -141,8 +135,8 @@ class Tilemap extends Graphic
 	{
 		if (usePositions)
 		{
-			column = Std.int(column / _tile.width);
-			row = Std.int(row / _tile.height);
+			column = Std.int(column / tileWidth);
+			row = Std.int(row / tileHeight);
 		}
 		return _map[row % _rows][column % _columns];
 	}
@@ -159,10 +153,10 @@ class Tilemap extends Graphic
 	{
 		if (usePositions)
 		{
-			column = Std.int(column / _tile.width);
-			row = Std.int(row / _tile.height);
-			width = Std.int(width / _tile.width);
-			height = Std.int(height / _tile.height);
+			column = Std.int(column / tileWidth);
+			row = Std.int(row / tileHeight);
+			width = Std.int(width / tileWidth);
+			height = Std.int(height / tileHeight);
 		}
 		column %= _columns;
 		row %= _rows;
@@ -195,10 +189,10 @@ class Tilemap extends Graphic
 	{
 		if (usePositions)
 		{
-			column = Std.int(column / _tile.width);
-			row = Std.int(row / _tile.height);
-			width = Std.int(width / _tile.width);
-			height = Std.int(height / _tile.height);
+			column = Std.int(column / tileWidth);
+			row = Std.int(row / tileHeight);
+			width = Std.int(width / tileWidth);
+			height = Std.int(height / tileHeight);
 		}
 		column %= _columns;
 		row %= _rows;
@@ -288,37 +282,6 @@ class Tilemap extends Graphic
 	}
 
 	/**
-	 * Calculates the index of a tile, based on its column and row in the tileset.
-	 * @param	tilesColumn		Tileset column.
-	 * @param	tilesRow		Tileset row.
-	 * @return	Index of the tile.
-	 */
-	public inline function getIndex(tilesColumn:Int, tilesRow:Int):Int
-	{
-		return (tilesRow % _setRows) * _setColumns + (tilesColumn % _setColumns);
-	}
-
-	/**
-	 * Calculates the column of a tile, based on its index in the tileset.
-	 * @param	index		Index of the tile.
-	 * @return	Column (x) of the tile.
-	 */
-	public inline function getX(index:Int):Int
-	{
-		return index % _setColumns;
-	}
-
-	/**
-	 * Calculates the row of a tile, based on its index in the tileset.
-	 * @param	index		Index of the tile.
-	 * @return	Row (y) of the tile.
-	 */
-	public inline function getY(index:Int):Int
-	{
-		return Std.int(index / _setColumns);
-	}
-
-	/**
 	 * Shifts all the tiles in the tilemap.
 	 * @param	columns		Horizontal shift.
 	 * @param	rows		Vertical shift.
@@ -328,8 +291,8 @@ class Tilemap extends Graphic
 	{
 		if (usePositions)
 		{
-			columns = Std.int(columns / _tile.width);
-			rows = Std.int(rows / _tile.height);
+			columns = Std.int(columns / tileWidth);
+			rows = Std.int(rows / tileHeight);
 		}
 
 		if (columns != 0)
@@ -497,9 +460,10 @@ class Tilemap extends Graphic
 
 	function drawTile(tile:Int, tx:Int, ty:Int, x:Float, y:Float, scx:Float, scy:Float)
 	{
-		updateTileRect(tile);
+		var region = _atlas.getRegion(tile);
+		HXP.rect.setTo(region.x, region.y, region.width, region.height);
 		_atlas.prepareTile(
-			_tile,
+			HXP.rect,
 			x, y,
 			scx, scy, 0,
 			color, alpha,
@@ -517,7 +481,7 @@ class Tilemap extends Graphic
 	{
 		if (grid == null)
 		{
-			grid = new Grid(width, height, Std.int(_tile.width), Std.int(_tile.height));
+			grid = new Grid(width, height, Std.int(tileWidth), Std.int(tileHeight));
 		}
 
 		for (y in 0..._rows)
@@ -534,13 +498,6 @@ class Tilemap extends Graphic
 		return grid;
 	}
 
-	/** @private Sets the _tile convenience rect to the x/y position of the supplied tile. Assumes _tile has the correct tile width/height set. Respects tile spacing. */
-	inline function updateTileRect(index:Int)
-	{
-		_tile.x = getX(index) * (_tile.width + tileSpacingWidth);
-		_tile.y = getY(index) * (_tile.height + tileSpacingHeight);
-	}
-
 	/** @private Used by shiftTiles to update a tile from the tilemap. */
 	function updateTile(column:Int, row:Int)
 	{
@@ -551,13 +508,13 @@ class Tilemap extends Graphic
 	 * The tile width.
 	 */
 	public var tileWidth(get, never):Int;
-	inline function get_tileWidth():Int return Std.int(_tile.width);
+	inline function get_tileWidth():Int return _atlas.tileWidth;
 
 	/**
 	 * The tile height.
 	 */
 	public var tileHeight(get, never):Int;
-	inline function get_tileHeight():Int return Std.int(_tile.height);
+	inline function get_tileHeight():Int return _atlas.tileHeight;
 
 	/**
 	 * The tile horizontal spacing of tile.
@@ -573,7 +530,7 @@ class Tilemap extends Graphic
 	 * How many tiles the tilemap has.
 	 */
 	public var tileCount(get, never):Int;
-	inline function get_tileCount():Int return _setCount;
+	inline function get_tileCount():Int return _atlas.tileCount;
 
 	/**
 	 * How many columns the tilemap has.
@@ -597,8 +554,4 @@ class Tilemap extends Graphic
 
 	// Tileset information.
 	var _atlas:TileAtlas;
-	var _setColumns:Int;
-	var _setRows:Int;
-	var _setCount:Int;
-	var _tile:Rectangle;
 }
