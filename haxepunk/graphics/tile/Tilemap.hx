@@ -88,6 +88,7 @@ class Tilemap extends Graphic
 
 		// load the tileset graphic
 		_atlas = tileset;
+		_atlas.prepare(tileWidth, tileHeight, tileSpacingWidth, tileSpacingHeight);
 
 		if (_atlas == null)
 			throw "Invalid tileset graphic provided.";
