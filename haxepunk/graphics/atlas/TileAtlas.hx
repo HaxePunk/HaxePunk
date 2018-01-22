@@ -93,6 +93,45 @@ class TileAtlas extends Atlas
 	}
 
 	/**
+	 *  Loads a TileAtlas from a region in another atlas.
+	 *  @param region				An AtlasRegion object to pull tiles from
+	 *  @param tileWidth			Width of the tiles
+	 *  @param tileHeight			Height of the tiles
+	 *  @param tileMarginWidth		Horizontal margin of the tiles
+	 *  @param tileMarginHeight		Vertical margin of the tiles
+	 *  @return A TileAtlas with all packed images defined as regions ordered like a normal tileset.
+	 */
+	public static function loadFromAtlasRegion(region:AtlasRegion, tileWidth:Int, tileHeight:Int, tileMarginWidth:Int=0, tileMarginHeight:Int=0):TileAtlas
+	{
+		@:privateAccess var atlas = new TileAtlas(region._parent);
+		atlas._tileWidth = tileWidth;
+		atlas._tileHeight = tileHeight;
+		atlas._tileMarginWidth = tileMarginWidth;
+		atlas._tileMarginHeight = tileMarginHeight;
+
+        var cols = Math.floor(region.width / tileWidth);
+		var rows = Math.floor(region.height / tileHeight);
+
+        HXP.rect.width = tileWidth;
+        HXP.rect.height = tileHeight;
+
+        HXP.point.x = HXP.point.y = 0;
+
+        for(y in 0 ... rows) {
+            HXP.rect.y = y * (tileHeight + tileMarginHeight);
+
+            for(x in 0 ... cols) {
+                HXP.rect.x = x * (tileWidth + tileMarginWidth);
+
+                var r = region.clip(HXP.rect, HXP.point);
+                atlas._regions.push(r);
+            }
+        }
+
+		return atlas;
+	}
+
+	/**
 	 * Prepares the atlas for drawing.
 	 * @param	tileWidth	With of the tiles.
 	 * @param	tileHeight	Height of the tiles.
