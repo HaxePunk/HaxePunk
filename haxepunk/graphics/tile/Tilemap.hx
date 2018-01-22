@@ -68,9 +68,9 @@ class Tilemap extends Graphic
 			throw "Invalid tileset graphic provided.";
 
 		// prepare the tileset if needed
-		if(_atlas.tileWidth == 0 || _atlas.tileHeight == 0)
+		if (_atlas.tileWidth == 0 || _atlas.tileHeight == 0)
 		{
-			if(tileWidth == null || tileHeight == null)
+			if (tileWidth == null || tileHeight == null)
 			{
 				throw "Invalid tileset graphic provided.\nThe tileset must be prepared or valid tile dimensions must be passed to the Tilemap constructor.";
 			}
