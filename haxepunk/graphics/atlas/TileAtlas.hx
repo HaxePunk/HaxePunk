@@ -5,27 +5,49 @@ import haxepunk.graphics.atlas.AtlasData;
 
 class TileAtlas extends Atlas
 {
-
+	/**
+	 *  The number of tiles.
+	 */
 	public var tileCount(get, never):Int;
 	inline function get_tileCount():Int return _regions.length;
 
+	/**
+	 *  The width of the tiles.
+	 */
 	public var tileWidth(get, never):Int;
 	inline function get_tileWidth():Int return _tileWidth;
 	
+	/**
+	 *  The height of the tiles.
+	 */
 	public var tileHeight(get, never):Int;
 	inline function get_tileHeight():Int return _tileHeight;
+
+	/**
+	 *  The horizontal margin of the tiles.
+	 */
+	public var tileMarginWidth(get, never):Int;
+	inline function get_tileMarginWidth():Int return _tileMarginWidth;
+
+	/**
+	 *  The vertical margin of the tiles.
+	 */
+	public var tileMarginHeight(get, never):Int;
+	inline function get_tileMarginHeight():Int return _tileMarginHeight;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param	source		Source texture.
 	 */
-	public function new(source:AtlasDataType, tileWidth:Int = 0, tileHeight:Int = 0)
+	public function new(source:AtlasDataType, tileWidth:Int = 0, tileHeight:Int = 0, tileMarginWidth:Int = 0, tileMarginHeight:Int = 0)
 	{
 		super(source);
 		_regions = new Array<AtlasRegion>();
 		_tileWidth = tileWidth;
 		_tileHeight = tileHeight;
+		_tileMarginWidth = tileMarginWidth;
+		_tileMarginHeight = tileMarginHeight;
 	}
 
 	/**
@@ -78,6 +100,8 @@ class TileAtlas extends Atlas
 		if (_regions.length > 0) return; // only prepare once
 		_tileWidth = tileWidth;
 		_tileHeight = tileHeight;
+		_tileMarginWidth = tileMarginWidth;
+		_tileMarginHeight = tileMarginHeight;
 
 		var cols:Int = Math.floor(_data.width / tileWidth);
 		var rows:Int = Math.floor(_data.height / tileHeight);
@@ -103,4 +127,6 @@ class TileAtlas extends Atlas
 	var _regions:Array<AtlasRegion>;
 	var _tileWidth:Int;
 	var _tileHeight:Int;
+	var _tileMarginWidth:Int;
+	var _tileMarginHeight:Int;
 }
