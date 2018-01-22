@@ -45,12 +45,12 @@ class TileAtlas extends Atlas
 	 * @param	tileMarginWidth		Horizontal margin of the tiles.
 	 * @param	tileMarginHeight	Vertical margin of the tiles.
 	 */
-	public function new(source:AtlasDataType, tileWidth:Int = 0, tileHeight:Int = 0, tileMarginWidth:Int = 0, tileMarginHeight:Int = 0)
+	public function new(source:AtlasDataType, ?tileWidth:Int, ?tileHeight:Int, tileMarginWidth:Int = 0, tileMarginHeight:Int = 0)
 	{
 		super(source);
 		_regions = new Array<AtlasRegion>();
 
-		if(tileWidth != 0 && tileHeight != 0)
+		if(tileWidth != null && tileHeight != null)
 			prepare(tileWidth, tileHeight, tileMarginWidth, tileMarginHeight);
 	}
 
