@@ -2,7 +2,6 @@ package haxepunk.graphics.tile;
 
 import haxepunk.math.Rectangle;
 import haxepunk.Graphic;
-import haxepunk.HXP;
 import haxepunk.graphics.atlas.TileAtlas;
 import haxepunk.masks.Grid;
 import haxepunk.math.Vector2;
@@ -462,9 +461,9 @@ class Tilemap extends Graphic
 	function drawTile(tile:Int, tx:Int, ty:Int, x:Float, y:Float, scx:Float, scy:Float)
 	{
 		var region = _atlas.getRegion(tile);
-		HXP.rect.setTo(region.x, region.y, region.width, region.height);
+		_tile.setTo(region.x, region.y, region.width, region.height);
 		_atlas.prepareTile(
-			HXP.rect,
+			_tile,
 			x, y,
 			scx, scy, 0,
 			color, alpha,
@@ -555,4 +554,5 @@ class Tilemap extends Graphic
 
 	// Tileset information.
 	var _atlas:TileAtlas;
+	static var _tile:Rectangle = new Rectangle();
 }
