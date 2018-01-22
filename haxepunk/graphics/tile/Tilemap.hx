@@ -471,9 +471,7 @@ class Tilemap extends Graphic
 	function drawTile(tile:Int, tx:Int, ty:Int, x:Float, y:Float, scx:Float, scy:Float)
 	{
 		var region = _atlas.getRegion(tile);
-		_tile.setTo(region.x, region.y, region.width, region.height);
-		_atlas.prepareTile(
-			_tile,
+		region.draw(
 			x, y,
 			scx, scy, 0,
 			color, alpha,
@@ -566,5 +564,4 @@ class Tilemap extends Graphic
 
 	// Tileset information.
 	var _atlas:TileAtlas;
-	static var _tile:Rectangle = new Rectangle();
 }
