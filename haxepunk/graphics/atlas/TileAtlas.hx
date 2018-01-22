@@ -50,7 +50,7 @@ class TileAtlas extends Atlas
 		super(source);
 		_regions = new Array<AtlasRegion>();
 
-		if(tileWidth != null && tileHeight != null)
+		if (tileWidth != null && tileHeight != null)
 			prepare(tileWidth, tileHeight, tileMarginWidth, tileMarginHeight);
 	}
 
@@ -109,24 +109,26 @@ class TileAtlas extends Atlas
 		atlas._tileMarginWidth = tileMarginWidth;
 		atlas._tileMarginHeight = tileMarginHeight;
 
-        var cols = Math.floor(region.width / tileWidth);
+		var cols = Math.floor(region.width / tileWidth);
 		var rows = Math.floor(region.height / tileHeight);
 
-        HXP.rect.width = tileWidth;
-        HXP.rect.height = tileHeight;
+		HXP.rect.width = tileWidth;
+		HXP.rect.height = tileHeight;
 
-        HXP.point.x = HXP.point.y = 0;
+		HXP.point.x = HXP.point.y = 0;
 
-        for(y in 0 ... rows) {
-            HXP.rect.y = y * (tileHeight + tileMarginHeight);
+		for (y in 0 ... rows)
+		{
+			HXP.rect.y = y * (tileHeight + tileMarginHeight);
 
-            for(x in 0 ... cols) {
-                HXP.rect.x = x * (tileWidth + tileMarginWidth);
+			for (x in 0 ... cols)
+			{
+				HXP.rect.x = x * (tileWidth + tileMarginWidth);
 
-                var r = region.clip(HXP.rect, HXP.point);
-                atlas._regions.push(r);
-            }
-        }
+				var r = region.clip(HXP.rect, HXP.point);
+				atlas._regions.push(r);
+			}
+		}
 
 		return atlas;
 	}
