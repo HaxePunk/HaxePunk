@@ -2,6 +2,7 @@ package haxepunk.graphics.atlas;
 
 import haxepunk.HXP;
 import haxepunk.graphics.atlas.AtlasData;
+import haxepunk.graphics.atlas.AtlasRegion;
 
 class TileAtlas extends Atlas
 {
@@ -38,16 +39,19 @@ class TileAtlas extends Atlas
 	/**
 	 * Constructor.
 	 *
-	 * @param	source		Source texture.
+	 * @param	source				Source texture.
+	 * @param	tileWidth			Width of the tiles.
+	 * @param	tileHeight			Height of the tiles.
+	 * @param	tileMarginWidth		Horizontal margin of the tiles.
+	 * @param	tileMarginHeight	Vertical margin of the tiles.
 	 */
 	public function new(source:AtlasDataType, tileWidth:Int = 0, tileHeight:Int = 0, tileMarginWidth:Int = 0, tileMarginHeight:Int = 0)
 	{
 		super(source);
 		_regions = new Array<AtlasRegion>();
-		_tileWidth = tileWidth;
-		_tileHeight = tileHeight;
-		_tileMarginWidth = tileMarginWidth;
-		_tileMarginHeight = tileMarginHeight;
+
+		if(tileWidth != 0 && tileHeight != 0)
+			prepare(tileWidth, tileHeight, tileMarginWidth, tileMarginHeight);
 	}
 
 	/**
