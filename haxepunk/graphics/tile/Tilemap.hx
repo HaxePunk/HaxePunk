@@ -53,20 +53,37 @@ class Tilemap extends Graphic
 	 * @param	height				Height of the tilemap, in pixels.
 	 * @param	tileWidth			Tile width.
 	 * @param	tileHeight			Tile height.
-	 * @param	tileSpacingWidth	Tile horizontal spacing.
-	 * @param	tileSpacingHeight	Tile vertical spacing.
+	 * @param	tileMarginWidth		Tile horizontal spacing.
+	 * @param	tileMarginHeight	Tile vertical spacing.
 	 */
-	public function new(tileset:TileType, width:Int, height:Int, tileWidth:Int, tileHeight:Int, tileSpacingWidth:Int=0, tileSpacingHeight:Int=0)
+	public function new(tileset:TileType, width:Int, height:Int, tileWidth:Int=0, tileHeight:Int=0, tileMarginWidth:Int=0, tileMarginHeight:Int=0)
 	{
 		// set some tilemap information
 		super();
+	
+		// load the tileset graphic
+		_atlas = tileset;
+
+		if (_atlas == null)
+			throw "Invalid tileset graphic provided.";
+
+		// prepare the tileset if needed
+		if(_atlas.tileWidth == 0 || _atlas.tileHeight == 0)
+		{
+			if(tileWidth == 0 || tileHeight == 0)
+			{
+				throw "Invalid tileset graphic provided.\nThe tileset must be prepared or valid tile dimensions must be passed to the Tilemap constructor.";
+			}
+			else
+			{
+				_atlas.prepare(tileWidth, tileHeight, tileMarginWidth, tileMarginHeight);
+			}
+		}
+
 		this.width = width - (width % tileWidth);
 		this.height = height - (height % tileHeight);
 		_columns = Std.int(this.width / tileWidth);
 		_rows = Std.int(this.height / tileHeight);
-
-		this.tileSpacingWidth = tileSpacingWidth;
-		this.tileSpacingHeight = tileSpacingHeight;
 
 		if (_columns == 0 || _rows == 0)
 			throw "Cannot create a texture of width/height = 0";
@@ -84,13 +101,6 @@ class Tilemap extends Graphic
 				_map[y][x] = -1;
 			}
 		}
-
-		// load the tileset graphic
-		_atlas = tileset;
-		_atlas.prepare(tileWidth, tileHeight, tileSpacingWidth, tileSpacingHeight);
-
-		if (_atlas == null)
-			throw "Invalid tileset graphic provided.";
 
 		pixelSnapping = true;
 	}
@@ -517,14 +527,16 @@ class Tilemap extends Graphic
 	inline function get_tileHeight():Int return _atlas.tileHeight;
 
 	/**
-	 * The tile horizontal spacing of tile.
+	 * The tile horizontal margin of tile.
 	 */
-	public var tileSpacingWidth(default, null):Int;
+	public var tileMarginWidth(get, never):Int;
+	inline function get_tileMarginWidth():Int return _atlas.tileMarginWidth;
 
 	/**
-	 * The tile vertical spacing of tile.
+	 * The tile vertical margin of tile.
 	 */
-	public var tileSpacingHeight(default, null):Int;
+	public var tileMarginHeight(default, null):Int;
+	inline function get_tileMarginHeight():Int return _atlas.tileMarginHeight;
 
 	/**
 	 * How many tiles the tilemap has.
