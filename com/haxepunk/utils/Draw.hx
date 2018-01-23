@@ -521,7 +521,7 @@ class Draw
 		    textGfx.render(_target, HXP.zero, _camera);
 		else
 		{
-		    textGfx.renderAtlas(layer,HXP.zero,_camera);
+		    textGfx.renderAtlas(0,HXP.zero,_camera);
 		}
 	}
 
