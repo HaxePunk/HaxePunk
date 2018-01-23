@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
-	<app preloader="haxepunk.Preloader" unless="no_haxepunk_preloader"/>
+	<app preloader="haxepunk.Preloader" unless="hxp_no_preloader"/>
 	<app swf-version="11.7" if="flash"/>
 
-	<assets path="assets/graphics" rename="graphics" include="*.png" embed="true"/>
-	<assets path="assets/font" rename="font" include="*.ttf" embed="true"/>
-	<assets path="assets/font" rename="font" include="*.fnt" type="text" embed="true"/>
-	<assets path="assets/font" rename="font" include="*.png" type="image" embed="true"/>
+	<section unless="hxp_no_assets">
+		<assets path="assets/graphics" rename="graphics" include="*.png" embed="true"/>
+		<assets path="assets/font" rename="font" include="*.ttf" embed="true"/>
+		<assets path="assets/font" rename="font" include="*.fnt" type="text" embed="true"/>
+		<assets path="assets/font" rename="font" include="*.png" type="image" embed="true"/>
+	</section>
 
 	<haxedef name="source-header" value="haxe"/>
 	<haxedef name="webgl" if="html5"/>
