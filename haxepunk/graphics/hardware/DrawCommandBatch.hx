@@ -46,6 +46,8 @@ class DrawCommandBatch
 
 	static var _bounds:Rectangle = new Rectangle();
 
+	public var visibleArea:Rectangle = new Rectangle();
+
 	var head = new DrawCommandIterator();
 	var last:DrawCommand;
 
@@ -68,11 +70,6 @@ class DrawCommandBatch
 
 	public function getDrawCommand(texture:Texture, shader:Shader, smooth:Bool, blend:BlendMode, clipRect:Rectangle, x1:Float=0, y1:Float=0, x2:Float=0, y2:Float=0, x3:Float=0, y3:Float=0, flexibleLayer:Bool=false)
 	{
-		if (texture == null)
-		{
-			texture = Texture.nullTexture;
-		}
-
 		if (last != null && last.match(texture, shader, smooth, blend, clipRect))
 		{
 			// we can reuse the most recent draw call
@@ -137,7 +134,17 @@ class DrawCommandBatch
 		}
 		#end
 
+		while (last != null && last.data == null)
+		{
+			// recycle draw commands we didn't actually populate
+			var l = last;
+			last = last._prev;
+			if (last != null) last._next = null;
+			l.recycle();
+		}
+
 		var command = DrawCommand.create(texture, shader, smooth, blend, clipRect);
+		command.visibleArea = this.visibleArea;
 		if (last == null)
 		{
 			head.command = last = command;

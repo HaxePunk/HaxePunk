@@ -132,7 +132,7 @@ class HardwareRenderer
 				GLUtils.checkForErrors();
 
 				var texture:Texture = drawCommand.texture;
-				if (texture.image != null) GLUtils.bindTexture(texture, drawCommand.smooth);
+				if (texture != null) GLUtils.bindTexture(texture, drawCommand.smooth);
 				GLUtils.checkForErrors();
 
 				shader.prepare(drawCommand, buffer);

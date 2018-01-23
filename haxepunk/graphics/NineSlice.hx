@@ -133,6 +133,7 @@ class NineSlice extends Graphic
 					segment.clipRect = _clipRect;
 				}
 				else segment.clipRect = null;
+				segment.shader = shader;
 				segment.smooth = smooth;
 				segment.render(point, camera);
 			}

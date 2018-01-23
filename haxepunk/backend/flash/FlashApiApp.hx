@@ -55,16 +55,6 @@ class FlashApiApp extends Sprite implements haxepunk.App
 		return flash.ui.Multitouch.supportsTouchEvents;
 	}
 
-	public function createImageData(width:Int, height:Int, transparent:Bool, color:Color):BitmapImageData
-	{
-		return BitmapImageData.create(width, height, transparent, color);
-	}
-
-	public function getImageData(name:String):BitmapImageData
-	{
-		return BitmapImageData.get(name);
-	}
-
 	function onEnterFrame(e:Event)
 	{
 		engine.onUpdate();

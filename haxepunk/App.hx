@@ -1,6 +1,5 @@
 package haxepunk;
 
-import haxepunk.graphics.hardware.ImageData;
 import haxepunk.utils.Color;
 
 interface App
@@ -24,16 +23,6 @@ interface App
 	 * Returns true if multitouch is supported on this platform
 	 */
 	public function multiTouchSupported():Bool;
-
-	/**
-	 * Creates an ImageData instance
-	 */
-	public function createImageData(width:Int, height:Int, transparent:Bool, color:Color):ImageData;
-
-	/**
-	 * Retrieves a named ImageData if it exists in the app assets, otherwise it returns null
-	 */
-	public function getImageData(name:String):Null<ImageData>;
 
 	/**
 	 * The mouse position relative to the app window starting at zero in the upper left

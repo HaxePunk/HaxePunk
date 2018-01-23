@@ -173,6 +173,7 @@ class DrawCommand
 	public var bounds:Rectangle = new Rectangle();
 	#end
 	public var triangleCount(default, null):Int = 0;
+	public var visibleArea:Rectangle;
 
 	function new() {}
 
@@ -184,7 +185,7 @@ class DrawCommand
 		// These conditions are checked as individual if statements
 		// to reduce the number of temporary variables created in hxcpp.
 		if (this.smooth != smooth) return false;
-		else if (this.texture.id != texture.id) return false;
+		else if (this.texture != texture) return false;
 		else if (this.shader.id != shader.id) return false;
 		else if (this.blend != blend) return false;
 		else
@@ -214,22 +215,30 @@ class DrawCommand
 	{
 		if (alpha > 0)
 		{
-			var data:DrawTriangle = getData();
-			data.tx1 = tx1;
-			data.ty1 = ty1;
-			data.uvx1 = uvx1;
-			data.uvy1 = uvy1;
-			data.tx2 = tx2;
-			data.ty2 = ty2;
-			data.uvx2 = uvx2;
-			data.uvy2 = uvy2;
-			data.tx3 = tx3;
-			data.ty3 = ty3;
-			data.uvx3 = uvx3;
-			data.uvy3 = uvy3;
-			data.color = color;
-			data.alpha = alpha;
-			addData(data);
+			var onScreen =
+				MathUtil.minOf3(tx1, tx2, tx3) <= visibleArea.right &&
+				MathUtil.maxOf3(tx1, tx2, tx3) >= visibleArea.left &&
+				MathUtil.minOf3(ty1, ty2, ty3) <= visibleArea.bottom &&
+				MathUtil.maxOf3(ty1, ty2, ty3) >= visibleArea.top;
+			if (onScreen)
+			{
+				var data:DrawTriangle = getData();
+				data.tx1 = tx1;
+				data.ty1 = ty1;
+				data.uvx1 = uvx1;
+				data.uvy1 = uvy1;
+				data.tx2 = tx2;
+				data.ty2 = ty2;
+				data.uvx2 = uvx2;
+				data.uvy2 = uvy2;
+				data.tx3 = tx3;
+				data.ty3 = ty3;
+				data.uvx3 = uvx3;
+				data.uvy3 = uvy3;
+				data.color = color;
+				data.alpha = alpha;
+				addData(data);
+			}
 		}
 	}
 

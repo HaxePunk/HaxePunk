@@ -137,8 +137,6 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 		if (texture == null)
 			throw 'Invalid XNA font asset "$asset": no Texture found.';
 
-		var image = texture.image;
-
 		if (options == null)
 			options = {};
 
@@ -150,29 +148,29 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 			options.glyphBGColor = 0xFF202020;
 
 		var glyphString:String = options.letters;
-		var globalBGColor:Int = image.getPixel(0, 0);
+		var globalBGColor:Int = texture.getPixel(0, 0);
 		var cy:Int = 0;
 		var cx:Int;
 		var letterIdx:Int = 0;
 		var glyph:String;
 		var alphabetLength = glyphString.length;
 
-		while (cy < image.height && letterIdx < alphabetLength)
+		while (cy < texture.height && letterIdx < alphabetLength)
 		{
 			var rowHeight:Int = 0;
 			cx = 0;
 
-			while (cx < image.width && letterIdx < alphabetLength)
+			while (cx < texture.width && letterIdx < alphabetLength)
 			{
-				if (Std.int(image.getPixel(cx, cy)) != globalBGColor)
+				if (Std.int(texture.getPixel(cx, cy)) != globalBGColor)
 				{
 					// found non bg pixel
 					var gx:Int = cx;
 					var gy:Int = cy;
 
 					// find width and height of glyph
-					while (Std.int(image.getPixel(gx, cy)) != globalBGColor) gx++;
-					while (Std.int(image.getPixel(cx, gy)) != globalBGColor) gy++;
+					while (Std.int(texture.getPixel(gx, cy)) != globalBGColor) gx++;
+					while (Std.int(texture.getPixel(cx, gy)) != globalBGColor) gy++;
 
 					var gw:Int = gx - cx;
 					var gh:Int = gy - cy;
@@ -211,12 +209,12 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 		atlas.lineHeight = atlas.fontSize;
 
 		// remove background color
-		var bgColor32:Int = image.getPixel(0, 0);
-		image.removeColor(bgColor32);
+		var bgColor32:Int = texture.getPixel(0, 0);
+		texture.removeColor(bgColor32);
 
 		if (options.glyphBGColor != null)
 		{
-			image.removeColor(options.glyphBGColor);
+			texture.removeColor(options.glyphBGColor);
 		}
 
 		return atlas;
