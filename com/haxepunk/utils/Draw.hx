@@ -517,7 +517,12 @@ class Draw
 	public static function text(text:String, ?x:Float = 0, ?y:Float = 0, ?options:TextOptions)
 	{
 		var textGfx:Text = new Text(text, x, y, 0, 0, options);
-		textGfx.render(_target, HXP.zero, _camera);
+		if(_target!=null)
+		    textGfx.render(_target, HXP.zero, _camera);
+		else
+		{
+		    textGfx.renderAtlas(layer,HXP.zero,_camera);
+		}
 	}
 
 	// Drawing information.
