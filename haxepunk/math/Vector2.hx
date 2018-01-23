@@ -133,4 +133,9 @@ class Vector2
 	{
 		return (x * other.y) - (y * other.x);
 	}
+
+	public inline function clone():Vector2
+	{
+		return new Vector2(x, y);
+	}
 }
