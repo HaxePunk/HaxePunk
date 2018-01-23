@@ -60,7 +60,7 @@ class Tilemap extends Graphic
 	{
 		// set some tilemap information
 		super();
-	
+
 		// load the tileset graphic
 		_atlas = tileset;
 
