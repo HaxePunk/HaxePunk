@@ -5,8 +5,8 @@ package haxepunk;
  */
 class Camera
 {
-	public var x:Float;
-	public var y:Float;
+	public var x:Float = 0;
+	public var y:Float = 0;
 
 	public var scale:Float = 1;
 	public var scaleX:Float = 1;
