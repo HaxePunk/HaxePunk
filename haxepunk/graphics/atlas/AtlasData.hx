@@ -79,19 +79,6 @@ class AtlasData
 	}
 
 	/**
-	 * Reloads the image for a particular atlas object
-	 */
-	public function reload(texture:Texture):Bool
-	{
-		if (_name != null)
-		{
-			this.texture = texture;
-			return Texture.overwriteCache(_name, texture);
-		}
-		return false;
-	}
-
-	/**
 	 * Sets the scene object
 	 * @param	scene	The scene object to set
 	 */
@@ -109,7 +96,6 @@ class AtlasData
 	{
 		if (_name != null)
 		{
-			Texture.remove(_name);
 			_dataPool.remove(_name);
 		}
 	}

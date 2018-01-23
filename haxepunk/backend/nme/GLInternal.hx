@@ -3,17 +3,15 @@ package haxepunk.backend.nme;
 #if nme
 
 import nme.gl.GL;
-import haxepunk.graphics.hardware.Texture;
-import haxepunk.backend.flash.BitmapImageData;
+import haxepunk.backend.flash.Texture;
 
 class GLInternal
 {
 	@:allow(haxepunk.graphics.hardware.opengl.GLUtils)
 	static function bindTexture(texture:Texture)
 	{
-		var bitmap = cast(texture.image, BitmapImageData).data;
-		if (!bitmap.premultipliedAlpha) bitmap.premultipliedAlpha = true;
-		GL.bindBitmapDataTexture(bitmap);
+		//if (!texture.premultipliedAlpha) texture.premultipliedAlpha = true;
+		GL.bindBitmapDataTexture(texture);
 	}
 
 	public static inline function invalid(object:nme.gl.GLObject)

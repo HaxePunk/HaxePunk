@@ -205,7 +205,7 @@ class Text extends Image
 
 	inline function getBitmapData(t:Texture):flash.display.BitmapData
 	{
-		return cast(t.image, haxepunk.backend.flash.BitmapImageData).data;
+		return cast t;
 	}
 
 	/** @private Updates the drawing buffer. */
@@ -238,8 +238,8 @@ class Text extends Image
 		}
 		else
 		{
-			_source.image.clearColor(0);
-			if (border != null && border.alpha > 0) _borderSource.image.clearColor(0);
+			_source.clearColor(0);
+			if (border != null && border.alpha > 0) _borderSource.clearColor(0);
 		}
 
 		_field.width = _width;
@@ -278,11 +278,11 @@ class Text extends Image
 	{
 		if (clearBefore)
 		{
-			_buffer.image.clearColor(0);
+			_buffer.clearColor(0);
 			if (border != null && border.alpha > 0)
 			{
-				_borderBuffer.image.clearColor(0);
-				_borderBackBuffer.image.clearColor(0);
+				_borderBuffer.clearColor(0);
+				_borderBackBuffer.clearColor(0);
 			}
 		}
 		if (_source == null) return;

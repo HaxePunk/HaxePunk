@@ -166,7 +166,7 @@ class Image extends Graphic
 			throw "Illegal circle, radius cannot be 0.";
 
 		var texture:Texture = Texture.create(radius * 2, radius * 2, true, 0);
-		texture.image.drawCircle(radius, radius, radius);
+		texture.drawCircle(radius, radius, radius);
 
 		var image = new Image(Atlas.loadImageAsRegion(texture));
 
