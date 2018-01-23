@@ -17,7 +17,7 @@ class TileAtlas extends Atlas
 	 */
 	public var tileWidth(get, never):Int;
 	inline function get_tileWidth():Int return _tileWidth;
-	
+
 	/**
 	 *  The height of the tiles.
 	 */
@@ -170,8 +170,8 @@ class TileAtlas extends Atlas
 	}
 
 	var _regions:Array<AtlasRegion>;
-	var _tileWidth:Int;
-	var _tileHeight:Int;
-	var _tileMarginWidth:Int;
-	var _tileMarginHeight:Int;
+	var _tileWidth:Int = 0;
+	var _tileHeight:Int = 0;
+	var _tileMarginWidth:Int = 0;
+	var _tileMarginHeight:Int = 0;
 }
