@@ -48,8 +48,18 @@ class Scene extends Tweener
 	 */
 	public var camera:Camera;
 
-	public var width:Int = 0;
-	public var height:Int = 0;
+	public var x:Int = 0;
+	public var y:Int = 0;
+
+	var _width:Null<Int> = null;
+	@:isVar public var width(get, set):Null<Int> = null;
+	inline function get_width() return _width == null ? (HXP.screen.width - x) : _width;
+	inline function set_width(v:Null<Int>) return _width = v;
+
+	var _height:Null<Int> = null;
+	@:isVar public var height(get, set):Null<Int> = null;
+	inline function get_height() return _height == null ? (HXP.screen.height - y) : _height;
+	inline function set_height(v:Null<Int>) return _height = v;
 
 	public var batch:DrawCommandBatch;
 
@@ -129,16 +139,11 @@ class Scene extends Tweener
 	@:allow(haxepunk.HXP)
 	function _resize()
 	{
-		if (width != HXP.width || height != HXP.height)
+		for (e in _update)
 		{
-			width = HXP.width;
-			height = HXP.height;
-			for (e in _update)
-			{
-				e.resized();
-			}
-			onResize.invoke();
+			e.resized();
 		}
+		onResize.invoke();
 	}
 
 	/**
@@ -228,6 +233,7 @@ class Scene extends Tweener
 	public function render()
 	{
 		AtlasData.startScene(batch);
+		batch.visibleArea.setTo(0, 0, width, height);
 
 		if (bgAlpha > 0)
 		{
@@ -235,7 +241,7 @@ class Scene extends Tweener
 			drawContext.scene = this;
 			drawContext.blend = BlendMode.Alpha;
 			drawContext.setColor(bgColor == null ? screen.color : bgColor, bgAlpha);
-			drawContext.rectFilled(0, 0, screen.width, screen.height);
+			drawContext.rectFilled(0, 0, width, height);
 		}
 
 		preRender.invoke();

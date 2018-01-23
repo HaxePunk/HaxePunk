@@ -89,6 +89,11 @@ class HardwareRenderer
 	{
 		GLUtils.checkForErrors();
 
+		var x = this.x,
+			y = this.y,
+			width = this.width,
+			height = this.height;
+
 		if (drawCommand != null && drawCommand.triangleCount > 0)
 		{
 			if (_tracking)
@@ -98,11 +103,7 @@ class HardwareRenderer
 				if (drawCallLimit > -1 && drawCallCount > drawCallLimit) return;
 			}
 
-			var x:Int = Std.int(HXP.screen.x),
-				y:Int = Std.int(HXP.screen.y);
-			var width:Int = HXP.screen.width,
-				height:Int = HXP.screen.height,
-				clipRect = drawCommand.clipRect;
+			var clipRect = drawCommand.clipRect;
 			if (clipRect != null)
 			{
 				width -= Std.int(clipRect.x);
@@ -182,6 +183,11 @@ class HardwareRenderer
 		{
 			bindDefaultFramebuffer();
 		}
+
+		x = Std.int(HXP.screen.x + Math.max(scene.x, 0));
+		y = Std.int(HXP.screen.y + Math.max(scene.y, 0));
+		width = Std.int(scene.width);
+		height = Std.int(scene.height);
 	}
 
 	public function flushScene(scene:Scene)
@@ -253,4 +259,9 @@ class HardwareRenderer
 	}
 
 	inline function destroy() {}
+
+	var x:Int = 0;
+	var y:Int = 0;
+	var width:Int = 0;
+	var height:Int = 0;
 }

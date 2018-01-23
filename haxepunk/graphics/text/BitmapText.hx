@@ -85,7 +85,7 @@ enum TextOpcode
  */
 class BitmapText extends Graphic
 {
-	static var FORMAT_TAG_RE = ~/<(([A-Za-z_-]+)\/?|(\/[A-Za-z_-]+))>/;
+	static var FORMAT_TAG_RE = ~/<(([A-Za-z_-]+)( ([a-zA-Z-_]+)="([^"]*)")?\/?|(\/[A-Za-z_-]+))>/;
 
 	static var formatTags:Map<String, Array<TextOpcode>> = [
 		// newline
@@ -97,6 +97,9 @@ class BitmapText extends Graphic
 		"/right" => [Align(Left)],
 		"center" => [Align(Center)],
 		"/center" => [Align(Left)],
+	];
+	static var dynamicTags:Map<String, String -> Array<TextOpcode>> = [
+		"img" => dynamicImage,
 	];
 
 	static var _colorStack:Array<Color> = new Array();
@@ -186,6 +189,15 @@ class BitmapText extends Graphic
 		if (formatTags.exists(tag)) formatTags.remove(tag);
 		var closeTag = '/$tag';
 		if (formatTags.exists(closeTag)) formatTags.remove(closeTag);
+	}
+
+	static var _imgArray:Array<TextOpcode> = new Array();
+	static function dynamicImage(src:String)
+	{
+		HXP.clear(_imgArray);
+		var img = new haxepunk.graphics.Image(src);
+		_imgArray.push(Image(img, 0));
+		return _imgArray;
 	}
 
 	@:isVar public var textWidth(get, set):Int = 0;
@@ -464,6 +476,61 @@ class BitmapText extends Graphic
 			}
 		}
 
+		inline function addTag(tag:TextOpcode)
+		{
+			switch (tag)
+			{
+				case Image(image, padding):
+					var imageWidth = ((image.width * image.scale * image.scaleX * this.scale * this.scaleX) + charSpacing) * currentScale;
+					_word.push(tag);
+					currentWordTrailingWhitespace = 0;
+					wordLength += imageWidth + padding * 2;
+					wordHeight = Math.max(wordHeight, image.height * currentScale * image.scale * image.scaleY * this.scale * this.scaleY);
+					if (cursorX > textWidth) textWidth = Std.int(cursorX);
+					++charCount;
+				case SetSize(size):
+					_sizeStack.push(size);
+					currentSizeRatio = size / this.size;
+					_word.push(tag);
+				case PopSize:
+					if (_sizeStack.length > 1) _sizeStack.pop();
+					currentSizeRatio = _sizeStack[_sizeStack.length - 1] / this.size;
+					_word.push(SetSize(_sizeStack[_sizeStack.length - 1]));
+				case SetScale(scale):
+					_scaleStack.push(currentScale = scale);
+					_word.push(tag);
+				case PopScale:
+					if (_scaleStack.length > 1) _scaleStack.pop();
+					currentScale = _scaleStack[_scaleStack.length - 1];
+					_word.push(SetScale(currentScale));
+				case SetColor(color):
+					_colorStack.push(color);
+					_word.push(tag);
+				case PopColor:
+					if (_colorStack.length > 1) _colorStack.pop();
+					_word.push(SetColor(_colorStack[_colorStack.length - 1]));
+				case SetAlpha(alpha):
+					_alphaStack.push(alpha);
+					_word.push(tag);
+				case PopAlpha:
+					if (_alphaStack.length > 1) _alphaStack.pop();
+					_word.push(SetAlpha(_alphaStack[_alphaStack.length - 1]));
+				case NewLine(_, _, _):
+					flushWord();
+					addNewLine();
+				case Align(alignType):
+					flushWord();
+					if (cursorX > 0)
+					{
+						addNewLine();
+					}
+					if (alignType != Left && !autoWidth) textWidth = Std.int(width);
+					currentAlign = alignType;
+				default:
+					_word.push(tag);
+			}
+		}
+
 		while (true)
 		{
 			var matched = FORMAT_TAG_RE.match(remaining);
@@ -517,68 +584,27 @@ class BitmapText extends Graphic
 			if (matched)
 			{
 				var tag:String = FORMAT_TAG_RE.matched(2);
-				if (tag == null) tag = FORMAT_TAG_RE.matched(3);
-				if (tag != null && formatTags.exists(tag))
+				if (tag == null) tag = FORMAT_TAG_RE.matched(1);
+				if (tag != null && FORMAT_TAG_RE.matched(4) != null && dynamicTags.exists(tag))
+				{
+					trace(FORMAT_TAG_RE.matched(4));
+					for (tag in dynamicTags[tag](FORMAT_TAG_RE.matched(5)))
+					{
+						addTag(tag);
+					}
+				}
+				else if (tag != null && FORMAT_TAG_RE.matched(4) == null && formatTags.exists(tag))
 				{
 					flushCurrentWord();
 					for (tag in formatTags[tag])
 					{
-						switch (tag)
-						{
-							case Image(image, padding):
-								var imageWidth = ((image.width * image.scale * image.scaleX * this.scale * this.scaleX) + charSpacing) * currentScale;
-								_word.push(tag);
-								currentWordTrailingWhitespace = 0;
-								wordLength += imageWidth + padding * 2;
-								wordHeight = Math.max(wordHeight, image.height * currentScale * image.scale * image.scaleY * this.scale * this.scaleY);
-								if (cursorX > textWidth) textWidth = Std.int(cursorX);
-								++charCount;
-							case SetSize(size):
-								_sizeStack.push(size);
-								currentSizeRatio = size / this.size;
-								_word.push(tag);
-							case PopSize:
-								if (_sizeStack.length > 1) _sizeStack.pop();
-								currentSizeRatio = _sizeStack[_sizeStack.length - 1] / this.size;
-								_word.push(SetSize(_sizeStack[_sizeStack.length - 1]));
-							case SetScale(scale):
-								_scaleStack.push(currentScale = scale);
-								_word.push(tag);
-							case PopScale:
-								if (_scaleStack.length > 1) _scaleStack.pop();
-								currentScale = _scaleStack[_scaleStack.length - 1];
-								_word.push(SetScale(currentScale));
-							case SetColor(color):
-								_colorStack.push(color);
-								_word.push(tag);
-							case PopColor:
-								if (_colorStack.length > 1) _colorStack.pop();
-								_word.push(SetColor(_colorStack[_colorStack.length - 1]));
-							case SetAlpha(alpha):
-								_alphaStack.push(alpha);
-								_word.push(tag);
-							case PopAlpha:
-								if (_alphaStack.length > 1) _alphaStack.pop();
-								_word.push(SetAlpha(_alphaStack[_alphaStack.length - 1]));
-							case NewLine(_, _, _):
-								flushWord();
-								addNewLine();
-							case Align(alignType):
-								flushWord();
-								if (cursorX > 0)
-								{
-									addNewLine();
-								}
-								if (alignType != Left && !autoWidth) textWidth = Std.int(width);
-								currentAlign = alignType;
-							default:
-								_word.push(tag);
-						}
+						addTag(tag);
 					}
 				}
 				else
 				{
-					throw 'Unrecognized format tag: <$tag>';
+					trace(text);
+					throw 'Unrecognized ${FORMAT_TAG_RE.matched(4) == null ? "format" : "dynamic"} tag: <$tag>';
 				}
 				remaining = FORMAT_TAG_RE.matchedRight();
 			}

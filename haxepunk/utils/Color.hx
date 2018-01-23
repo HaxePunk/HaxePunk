@@ -6,11 +6,10 @@ import haxepunk.math.MathUtil;
  * An abstract with various color utility functions.
  * @since	4.0.0
  **/
-@:enum
 abstract Color(UInt) from UInt to UInt
 {
-	var White = 0xffffff;
-	var Black = 0x000000;
+	public static inline var White:Color = 0xffffff;
+	public static inline var Black:Color = 0x000000;
 
 	/**
 	 * Linear interpolation between two colors.

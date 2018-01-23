@@ -4,6 +4,7 @@ import haxepunk.HXP;
 import haxepunk.Entity;
 
 typedef MouseCallback = Void -> Void;
+typedef MouseWheelCallback = Int -> Void;
 
 /**
  * Allow Entities to register callbacks on mouse interaction. Based on
@@ -46,6 +47,7 @@ class MouseManager extends Entity
 		?onRelease:MouseCallback,
 		?onEnter:MouseCallback,
 		?onExit:MouseCallback,
+		?onWheel:MouseWheelCallback,
 		fallThrough = false):Entity
 	{
 		if (this.type == "")
@@ -57,7 +59,7 @@ class MouseManager extends Entity
 			throw "Entities added to a MouseManager must all be the same type.";
 		}
 
-		var data:MouseData = new MouseData(entity, onPress, onRelease, onEnter, onExit, fallThrough);
+		var data:MouseData = new MouseData(entity, onPress, onRelease, onEnter, onExit, onWheel, fallThrough);
 		_registeredObjects[entity] = data;
 		return entity;
 	}
@@ -69,9 +71,10 @@ class MouseManager extends Entity
 		?onPress:MouseCallback,
 		?onRelease:MouseCallback,
 		?onEnter:MouseCallback,
-		?onExit:MouseCallback):Void
+		?onExit:MouseCallback,
+		?onWheel:MouseWheelCallback):Void
 	{
-		_default = new MouseData(null, onPress, onRelease, onEnter, onExit, false);
+		_default = new MouseData(null, onPress, onRelease, onEnter, onExit, onWheel, false);
 	}
 
 	/**
@@ -116,10 +119,10 @@ class MouseManager extends Entity
 
 		var collisions:Array<Entity> = _collisions;
 		// make sure the mouse is onscreen before checking for collisions
-		if (mouseX >= HXP.screen.x &&
-			mouseY >= HXP.screen.y &&
-			mouseX <= HXP.screen.x + HXP.screen.width &&
-			mouseY <= HXP.screen.y + HXP.screen.height)
+		if (mouseX >= scene.x &&
+			mouseY >= scene.y &&
+			mouseX <= scene.x + scene.width &&
+			mouseY <= scene.y + scene.height)
 		{
 			scene.collidePointInto(type, scene.mouseX, scene.mouseY, collisions, true);
 		}
@@ -149,6 +152,21 @@ class MouseManager extends Entity
 				if (_lastCollisions.indexOf(entity) == -1)
 				{
 					current.onEnter();
+				}
+			}
+		}
+
+		// onWheel
+		if (Mouse.mouseWheel)
+		{
+			var delta = Mouse.mouseWheelDelta;
+			for (entity in collisions)
+			{
+				var current = getData(entity);
+				if (current == null) continue;
+				if (current.onWheel != null)
+				{
+					current.onWheel(delta);
 				}
 			}
 		}
@@ -226,6 +244,7 @@ class MouseData
 	public var onRelease:MouseCallback;
 	public var onEnter:MouseCallback;
 	public var onExit:MouseCallback;
+	public var onWheel:MouseWheelCallback;
 	public var fallThrough:Bool;
 
 	public function new(
@@ -234,6 +253,7 @@ class MouseData
 		onRelease:MouseCallback,
 		onEnter:MouseCallback,
 		onExit:MouseCallback,
+		onWheel:MouseWheelCallback,
 		fallThrough:Bool)
 	{
 		this.entity = entity;
@@ -241,6 +261,7 @@ class MouseData
 		this.onRelease = onRelease;
 		this.onEnter = onEnter;
 		this.onExit = onExit;
+		this.onWheel = onWheel;
 		this.fallThrough = fallThrough;
 	}
 }

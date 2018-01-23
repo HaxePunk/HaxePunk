@@ -16,7 +16,7 @@ class MouseInput
 		stage.addEventListener(MouseEvent.MOUSE_UP, Mouse.onMouseUp, false,  2);
 		stage.addEventListener(MouseEvent.MOUSE_WHEEL, function(e:MouseEvent) {
 			Mouse.onMouseWheel(e.delta);
-		}, false,  2);
+		}, false, 2);
 		stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, Mouse.onMiddleMouseDown, false, 2);
 		stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, Mouse.onMiddleMouseUp, false, 2);
 		stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN, Mouse.onRightMouseDown, false, 2);
