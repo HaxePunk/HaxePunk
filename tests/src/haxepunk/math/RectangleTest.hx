@@ -1,7 +1,5 @@
 package haxepunk.math;
 
-import massive.munit.Assert;
-
 class RectangleTest
 {
 	@Test

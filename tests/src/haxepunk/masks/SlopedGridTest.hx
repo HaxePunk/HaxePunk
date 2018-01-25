@@ -1,6 +1,5 @@
 package haxepunk.masks;
 
-import massive.munit.Assert;
 import haxepunk.*;
 import haxepunk.masks.*;
 

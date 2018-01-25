@@ -1,7 +1,5 @@
 package haxepunk;
 
-import massive.munit.Assert;
-
 class TweenTest
 {
 	@Before

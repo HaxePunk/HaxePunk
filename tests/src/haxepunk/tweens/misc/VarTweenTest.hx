@@ -1,7 +1,5 @@
 package haxepunk.tweens.misc;
 
-import massive.munit.Assert;
-
 class VarTweenTest extends TestSuite
 {
 	@Test
