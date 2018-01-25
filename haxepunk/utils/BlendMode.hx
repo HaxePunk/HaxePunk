@@ -21,6 +21,6 @@ abstract BlendMode(Int) from Int to Int {
 		}
 	}
 #elseif openfl
-	@:from public static function fromFlashBlendMode(blend:flash.display.BlendMode):BlendMode return cast blend;
+	@:from public static function fromFlashBlendMode(blend:openfl.display.BlendMode):BlendMode return cast blend;
 #end
 }

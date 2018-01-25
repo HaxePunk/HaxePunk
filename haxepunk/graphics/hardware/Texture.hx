@@ -32,6 +32,7 @@ class Texture
 	public function removeColor(color:Color) {}
 	public function clearColor(color:Color) {}
 	public function drawCircle(x:Float, y:Float, radius:Float) {}
+	public function dispose() {}
 }
 
 #end

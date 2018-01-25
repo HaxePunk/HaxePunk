@@ -1,8 +1,8 @@
 package haxepunk.graphics.text;
 
 import haxe.xml.Fast;
-import haxepunk.Assets;
 import haxepunk.HXP;
+import haxepunk.assets.AssetLoader;
 import haxepunk.graphics.atlas.AtlasDataType;
 import haxepunk.graphics.atlas.TextureAtlas;
 import haxepunk.graphics.hardware.Texture;
@@ -55,7 +55,7 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 	 */
 	public static function loadXMLFont(file:String):BitmapFontAtlas
 	{
-		var xmlText = Assets.getText(file);
+		var xmlText = AssetLoader.getText(file);
 		if (xmlText == null) throw 'BitmapFontAtlas: "$file" not found!';
 
 		var xml = Xml.parse(xmlText);

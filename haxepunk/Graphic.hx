@@ -1,8 +1,7 @@
 package haxepunk;
 
 import haxe.ds.Either;
-import haxepunk.utils.BlendMode;
-import haxepunk.math.Vector2;
+import haxepunk.assets.AssetCache;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.TileAtlas;
 import haxepunk.graphics.atlas.AtlasRegion;
@@ -12,6 +11,8 @@ import haxepunk.graphics.hardware.Texture;
 import haxepunk.graphics.shader.Shader;
 import haxepunk.graphics.shader.TextureShader;
 import haxepunk.math.Rectangle;
+import haxepunk.math.Vector2;
+import haxepunk.utils.BlendMode;
 import haxepunk.utils.Color;
 
 /**
@@ -45,7 +46,7 @@ abstract ImageType(IAtlasRegion) from IAtlasRegion to IAtlasRegion
 {
 	@:dox(hide) @:from public static inline function fromString(s:String):ImageType
 	{
-		var region = AssetManager.getRegion(s);
+		var region = AssetCache.getRegion(s);
 		return region == null ? Atlas.loadImageAsRegion(s) : region;
 	}
 	@:dox(hide) @:from public static inline function fromTileAtlas(atlas:TileAtlas):ImageType

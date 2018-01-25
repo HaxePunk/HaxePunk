@@ -1,5 +1,6 @@
 package haxepunk.graphics.shader;
 
+import haxepunk.assets.AssetLoader;
 import haxepunk.graphics.hardware.opengl.GL;
 import haxepunk.graphics.hardware.opengl.GLBuffer;
 import haxepunk.graphics.hardware.opengl.GLUniformLocation;
@@ -30,7 +31,7 @@ void main() {
 	 */
 	public static inline function fromAsset(name:String):SceneShader
 	{
-		return new SceneShader(Assets.getText(name));
+		return new SceneShader(AssetLoader.getText(name));
 	}
 
 	/**

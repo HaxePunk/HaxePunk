@@ -1,5 +1,7 @@
 package haxepunk.graphics.shader;
 
+import haxepunk.assets.AssetLoader;
+
 class TextureShader extends Shader
 {
 	static var VERTEX_SHADER =
@@ -46,7 +48,7 @@ void main(void) {
 	 */
 	public static inline function fromAsset(name:String):TextureShader
 	{
-		return new TextureShader(null, flash.Assets.getText(name));
+		return new TextureShader(null, AssetLoader.getText(name));
 	}
 	#end
 

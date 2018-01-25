@@ -6,7 +6,6 @@ import haxepunk.utils.Color;
 
 import flash.display.BitmapData;
 import flash.geom.Point;
-import flash.Assets;
 
 @:forward(width, height, getPixel, setPixel, clone, dispose)
 abstract Texture(BitmapData) from BitmapData to BitmapData
@@ -14,11 +13,6 @@ abstract Texture(BitmapData) from BitmapData to BitmapData
 	public static inline function create(width:Int, height:Int, transparent:Bool=false, color:Color=0):Texture
 	{
 		return new BitmapData(width, height, transparent, color);
-	}
-
-	public static inline function fromAsset(name:String):Texture
-	{
-		return Assets.getBitmapData(name, false);
 	}
 
 	public inline function removeColor(color:Color)

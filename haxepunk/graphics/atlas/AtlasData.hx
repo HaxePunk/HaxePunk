@@ -1,14 +1,14 @@
 package haxepunk.graphics.atlas;
 
-import haxepunk.utils.BlendMode;
-import haxepunk.Scene;
+import haxepunk.assets.AssetCache;
 import haxepunk.graphics.shader.Shader;
 import haxepunk.graphics.hardware.DrawCommandBatch;
 import haxepunk.graphics.hardware.Texture;
-import haxepunk.utils.Color;
 import haxepunk.math.MathUtil;
 import haxepunk.math.Rectangle;
 import haxepunk.math.Vector2;
+import haxepunk.utils.BlendMode;
+import haxepunk.utils.Color;
 
 class AtlasData
 {
@@ -60,7 +60,7 @@ class AtlasData
 		}
 		else if (create)
 		{
-			var texture:Texture = Texture.fromAsset(name);
+			var texture:Texture = AssetCache.global.getTexture(name);
 			if (texture != null)
 			{
 				data = new AtlasData(texture, name);
