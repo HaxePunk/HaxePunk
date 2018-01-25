@@ -3,6 +3,7 @@ package haxepunk.graphics.text;
 import haxepunk.HXP;
 import haxepunk.Graphic;
 import haxepunk.utils.Color;
+import haxepunk.utils.Utf8String;
 import haxepunk.graphics.text.BitmapFontAtlas.BitmapFontFormat;
 import haxepunk.math.Vector2;
 
@@ -310,7 +311,7 @@ class BitmapText extends Graphic
 	 * 						leading		Vertical space between lines. (Currently ignored.)
 	 *						richText	If the text field uses a rich text string. (Currently ignored.)
 	 */
-	public function new(text:String, x:Float = 0, y:Float = 0, width:Int = 0, height:Int = 0, ?options:BitmapTextOptions)
+	public function new(text:Utf8String, x:Float = 0, y:Float = 0, width:Int = 0, height:Int = 0, ?options:BitmapTextOptions)
 	{
 		super();
 
@@ -349,8 +350,8 @@ class BitmapText extends Graphic
 		this.text = text != null ? text : "";
 	}
 
-	public var text(default, set):String;
-	function set_text(text:String):String
+	public var text(default, set):Utf8String;
+	function set_text(text:Utf8String):Utf8String
 	{
 		if (this.text != text)
 		{
@@ -389,8 +390,8 @@ class BitmapText extends Graphic
 		var cursorX:Float = 0,
 			cursorY:Float = 0,
 			trailingWhitespace:Float = 0,
-			block:String = "",
-			currentWord:String = "",
+			block:Utf8String = "",
+			currentWord:Utf8String = "",
 			wordLength:Float = 0,
 			wordTrailingWhitespace:Float = 0,
 			wordHeight:Float = 0,
@@ -534,13 +535,13 @@ class BitmapText extends Graphic
 		while (true)
 		{
 			var matched = FORMAT_TAG_RE.match(remaining);
-			var line:String = matched ? FORMAT_TAG_RE.matchedLeft() : remaining;
+			var line:Utf8String = matched ? FORMAT_TAG_RE.matchedLeft() : remaining;
 			if (line.length > 0)
 			{
 				var i:Int = 0;
 				while (i < line.length)
 				{
-					var char:String = line.charAt(i);
+					var char:Utf8String = line.charAt(i);
 					wordHeight = Math.max(wordHeight, lineHeight * currentScale * currentSizeRatio);
 					inline function addChar(whitespace:Bool = false)
 					{
@@ -583,7 +584,7 @@ class BitmapText extends Graphic
 
 			if (matched)
 			{
-				var tag:String = FORMAT_TAG_RE.matched(2);
+				var tag:Utf8String = FORMAT_TAG_RE.matched(2);
 				if (tag == null) tag = FORMAT_TAG_RE.matched(1);
 				if (tag != null && FORMAT_TAG_RE.matched(4) != null && dynamicTags.exists(tag))
 				{
