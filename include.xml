@@ -15,4 +15,8 @@
 	<haxeflag name="--macro" value="haxepunk.utils.Platform.run()"/>
 
 	<haxelib name="openfl"/>
+
+	<source path="backend/flash"/>
+	<source path="backend/lime" if="lime"/>
+	<source path="backend/nme" unless="lime"/>
 </project>

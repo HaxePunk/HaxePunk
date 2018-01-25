@@ -1,11 +1,11 @@
 -cp ..
+-cp ../backend/flash
+-cp ../backend/lime
 -cp src
 -main TestMain
 -lib munit
 -lib hamcrest
 --no-inline
-
---each
 
 -D unit_test
 -D lime_cffi
