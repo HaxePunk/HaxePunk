@@ -1,11 +1,5 @@
 package haxepunk;
 
-#if (lime || nme)
-
-typedef Sfx = haxepunk.backend.flash.Sfx;
-
-#else
-
 class Sfx
 {
 	/**
@@ -44,5 +38,3 @@ class Sfx
 	// TODO: This function needs to be removed!
 	public static function onGlobalUpdated(updatePan:Bool) {}
 }
-
-#end

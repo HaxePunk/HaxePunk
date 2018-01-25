@@ -1,10 +1,5 @@
 package haxepunk.graphics.hardware.opengl;
 
-#if lime
-typedef GL = lime.graphics.opengl.GL;
-#elseif nme
-typedef GL = flash.gl.GL;
-#else
 class GL
 {
 	public static inline var TEXTURE0:Int = 0;
@@ -78,4 +73,3 @@ class GL
 	public static function drawArrays(_, _, _) {}
 	public static function bindTexture(_, _) {}
 }
-#end

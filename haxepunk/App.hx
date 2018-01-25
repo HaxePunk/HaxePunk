@@ -1,36 +1,19 @@
 package haxepunk;
 
-import haxepunk.utils.Color;
-
-interface App
+class App
 {
-	/**
-	 * Toggles between windowed and fullscreen modes
-	 */
 	public var fullscreen(get, set):Bool;
+	inline function get_fullscreen():Bool return false;
+	inline function set_fullscreen(value:Bool):Bool return value;
 
-	/**
-	 * Initialize the app with an instance of Engine
-	 */
-	public function init():Void;
+	public function new(engine:Engine) {}
 
-	/**
-	 * Get the time value in milliseconds. This is an incremental value starting at zero when the app starts.
-	 */
-	public function getTimeMillis():Float;
+	public function init() {}
 
-	/**
-	 * Returns true if multitouch is supported on this platform
-	 */
-	public function multiTouchSupported():Bool;
+	public function getTimeMillis():Float return 0;
 
-	/**
-	 * The mouse position relative to the app window starting at zero in the upper left
-	 */
-	public function getMouseX():Float;
+	public function multiTouchSupported():Bool return false;
 
-	/**
-	 * The mouse position relative to the app window starting at zero in the upper left
-	 */
-	public function getMouseY():Float;
+	public function getMouseX():Float return 0;
+	public function getMouseY():Float return 0;
 }

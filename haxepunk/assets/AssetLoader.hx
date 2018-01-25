@@ -2,12 +2,6 @@ package haxepunk.assets;
 
 import haxepunk.graphics.hardware.Texture;
 
-#if (lime || nme)
-
-typedef AssetLoader = haxepunk.backend.flash.AssetLoader;
-
-#else
-
 class AssetLoader
 {
 	public static function getText(id:String):String
@@ -25,5 +19,3 @@ class AssetLoader
 		throw "Unimplemented";
 	}
 }
-
-#end

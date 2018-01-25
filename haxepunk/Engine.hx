@@ -110,13 +110,7 @@ class Engine
 	 */
 	function createApp():App
 	{
-#if lime
-		return new haxepunk.backend.lime.App(this);
-#elseif nme
-		return new haxepunk.backend.nme.App(this);
-#else
-		return new haxepunk.backend.dummy.App();
-#end
+		return new App(this);
 	}
 
 	/**

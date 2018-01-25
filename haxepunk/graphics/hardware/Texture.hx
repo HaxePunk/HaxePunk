@@ -2,12 +2,6 @@ package haxepunk.graphics.hardware;
 
 import haxepunk.utils.Color;
 
-#if (lime || nme)
-
-typedef Texture = haxepunk.backend.flash.Texture;
-
-#else
-
 class Texture
 {
 	public static inline function create(width:Int, height:Int, transparent:Bool=false, color:Color=0):Texture
@@ -34,5 +28,3 @@ class Texture
 	public function drawCircle(x:Float, y:Float, radius:Float) {}
 	public function dispose() {}
 }
-
-#end
