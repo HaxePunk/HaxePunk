@@ -1,7 +1,5 @@
 package haxepunk.tweens.motion;
 
-import massive.munit.Assert;
-
 class LinearPathTest extends TestSuite
 {
 	@Test
