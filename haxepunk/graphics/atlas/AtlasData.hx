@@ -41,9 +41,10 @@ class AtlasData
 				_dataPool.set(_name, this);
 			}
 		}
-
-		width = texture.width;
-		height = texture.height;
+		if(texture!=null){
+			width = texture.width;
+			height = texture.height;
+		}
 	}
 
 	/**
