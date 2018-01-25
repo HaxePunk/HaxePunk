@@ -264,6 +264,7 @@ class Engine
 
 			_scene.updateLists();
 			_scene.begin();
+			_scene.assetCache.enable();
 			_scene.updateLists();
 
 			onSceneSwitch.invoke();
@@ -287,6 +288,10 @@ class Engine
 	public function popScene():Scene
 	{
 		var scene = _scenes.pop();
+		if (scene.assetCache.enabled)
+		{
+			scene.assetCache.dispose();
+		}
 		return scene;
 	}
 

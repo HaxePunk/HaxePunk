@@ -31,7 +31,6 @@ abstract Position(PositionData) from PositionData to PositionData
 	inline function get_length():Float return Math.sqrt(x * x + y * y);
 
 	@:dox(hide) @:from public static inline function fromObject(obj:PositionData) return new Position(obj);
-	@:dox(hide) @:from public static inline function fromEntity(obj:Entity) return new Position(obj);
 
 	public inline function normalize(thickness:Float):Void
 	{

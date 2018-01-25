@@ -2,6 +2,7 @@ package haxepunk.masks;
 
 import haxepunk.Mask;
 import haxepunk.HXP;
+import haxepunk.assets.AssetCache;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.math.Rectangle;
 import haxepunk.math.Vector2;
@@ -30,7 +31,7 @@ class Pixelmask extends Hitbox
 		if (Std.is(source, Texture))
 			_data = source;
 		else
-			_data = Texture.fromAsset(source);
+			_data = AssetCache.global.getTexture(source);
 
 		if (_data == null)
 			throw "Invalid Pixelmask source image.";

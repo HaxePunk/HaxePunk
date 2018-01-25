@@ -2,10 +2,11 @@ package haxepunk.graphics.text;
 
 import haxepunk.HXP;
 import haxepunk.Graphic;
-import haxepunk.utils.Color;
-import haxepunk.utils.Utf8String;
+import haxepunk.assets.AssetCache;
 import haxepunk.graphics.text.BitmapFontAtlas.BitmapFontFormat;
 import haxepunk.math.Vector2;
+import haxepunk.utils.Color;
+import haxepunk.utils.Utf8String;
 
 /**
  * Text option including the font, size, color, font format...
@@ -324,7 +325,7 @@ class BitmapText extends Graphic
 		if (!Reflect.hasField(options, "wordWrap"))  options.wordWrap  = false;
 
 		// load the font as a BitmapFontAtlas
-		var font:IBitmapFont = AssetManager.getBitmapFont(options.font);
+		var font:IBitmapFont = AssetCache.getBitmapFont(options.font);
 		if (font == null)
 		{
 			font = BitmapFontAtlas.getFont(options.font, options.format, options.extraParams);

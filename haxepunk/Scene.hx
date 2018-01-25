@@ -2,9 +2,11 @@ package haxepunk;
 
 import haxe.ds.IntMap;
 import haxepunk.Signal;
+import haxepunk.assets.AssetCache;
 import haxepunk.graphics.atlas.AtlasData;
 import haxepunk.graphics.shader.SceneShader;
 import haxepunk.graphics.hardware.DrawCommandBatch;
+import haxepunk.graphics.hardware.Texture;
 import haxepunk.utils.BlendMode;
 import haxepunk.utils.Color;
 import haxepunk.utils.DrawContext;
@@ -47,6 +49,12 @@ class Scene extends Tweener
 	 * Point used to determine drawing offset in the render loop.
 	 */
 	public var camera:Camera;
+
+	/**
+	 * Scene-scoped asset cache. These assets will be destroyed when the scene
+	 * ends.
+	 */
+	public var assetCache:AssetCache;
 
 	public var x:Int = 0;
 	public var y:Int = 0;
@@ -108,6 +116,7 @@ class Scene extends Tweener
 		super();
 
 		camera = new Camera();
+		assetCache = new AssetCache();
 		batch = new DrawCommandBatch();
 
 		_layerList = new Array<Int>();
@@ -1174,6 +1183,11 @@ class Scene extends Tweener
 			}
 			HXP.clear(_recycle);
 		}
+	}
+
+	public function getTexture(id:String):Texture
+	{
+		return assetCache.getTexture(id);
 	}
 
 	/** @private Adds Entity to the update list. */

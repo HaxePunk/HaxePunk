@@ -310,6 +310,7 @@ class Console extends Scene
 
 	inline function getMemory():Float
 	{
+		// FIXME: belongs in App
 		#if (lime || nme)
 		return flash.system.System.totalMemory;
 		#else

@@ -4,8 +4,8 @@ import haxe.io.Eof;
 import haxe.io.Input;
 import haxe.io.Path;
 import haxe.io.StringInput;
-import haxepunk.Assets;
 import haxepunk.HXP;
+import haxepunk.assets.AssetLoader;
 import haxepunk.graphics.atlas.AtlasData;
 import haxepunk.math.Rectangle;
 import haxepunk.math.Vector2;
@@ -21,7 +21,7 @@ class TextureAtlas extends Atlas
 	 */
 	public static function loadTexturePacker(file:String):TextureAtlas
 	{
-		var xml = Xml.parse(Assets.getText(file));
+		var xml = Xml.parse(AssetLoader.getText(file));
 		var root = xml.firstElement();
 		var atlas = new TextureAtlas(root.get("imagePath"));
 		for (sprite in root.elements())
@@ -113,7 +113,7 @@ private class GdxTexturePacker
 {
 	public static function load(file:String):TextureAtlas
 	{
-		var data:String = Assets.getText(file);
+		var data:String = AssetLoader.getText(file);
 		var inputDir:String = Path.directory(file);
 		var atlas:TextureAtlas = new TextureAtlas();
 		var reader:StringInput = new StringInput(data);
