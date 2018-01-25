@@ -1,6 +1,5 @@
 package haxepunk;
 
-import massive.munit.Assert;
 import haxepunk.Engine;
 import haxepunk.Entity;
 import haxepunk.HXP;

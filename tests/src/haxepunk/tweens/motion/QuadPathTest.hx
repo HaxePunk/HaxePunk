@@ -1,7 +1,5 @@
 package haxepunk.tweens.motion;
 
-import massive.munit.Assert;
-
 class QuadPathTest extends TestSuite
 {
 	@Test

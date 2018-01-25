@@ -1,7 +1,5 @@
 package haxepunk.tweens.sound;
 
-import massive.munit.Assert;
-
 class FaderTest extends TestSuite
 {
 	@Test

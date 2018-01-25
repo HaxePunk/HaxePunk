@@ -1,6 +1,5 @@
 package haxepunk;
 
-import massive.munit.Assert;
 import haxepunk.graphics.Graphiclist;
 
 class SubEntity extends Entity {}
