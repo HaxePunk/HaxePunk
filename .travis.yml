@@ -17,6 +17,7 @@ env:
     - TEST=openfl3 OPENFL=3.6.1 LIME=2.9.1 DOCS=1
     - TEST=openfl4 OPENFL=4.6.0 LIME=3.6.2 DOCS=1
     - TEST=openfl5 OPENFL=5.0.0 LIME=4.1.0
+    - TEST=openfl7 OPENFL=7.0.0 LIME=6.0.1
 
 sudo: false
 
