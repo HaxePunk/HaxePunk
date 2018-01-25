@@ -56,7 +56,12 @@ class AssetCache
 		// their version
 		for (cache in active)
 		{
-			if (cache.hasTexture(id)) return cache.textures[id];
+			if (cache.hasTexture(id))
+			{
+				// keep this asset cached here too, in case the owning cache is
+				// disposed before this one is
+				return textures[id] = cache.textures[id];
+			}
 		}
 		// no cached version; load from asset loader
 		return textures[id] = AssetLoader.getTexture(id);
@@ -151,12 +156,24 @@ class AssetCache
 
 	public function dispose()
 	{
+		active.remove(this);
 		for (key in textures.keys())
 		{
-			var texture = textures[key];
-			texture.dispose();
+			var stillNeeded:Bool = false;
+			for (cache in active)
+			{
+				if (cache.textures.exists(key))
+				{
+					stillNeeded = true;
+					break;
+				}
+			}
+			if (!stillNeeded)
+			{
+				var texture = textures[key];
+				texture.dispose();
+			}
 			textures.remove(key);
 		}
-		active.remove(this);
 	}
 }
