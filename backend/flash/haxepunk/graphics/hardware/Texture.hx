@@ -5,9 +5,15 @@ import haxepunk.utils.Color;
 import flash.display.BitmapData;
 import flash.geom.Point;
 
-@:forward(width, height, getPixel, setPixel, clone, dispose)
+@:forward(getPixel, setPixel, clone, dispose)
 abstract Texture(BitmapData) from BitmapData to BitmapData
 {
+	public var width(get, never):Int;
+	inline function get_width() return this == null ? 0 : this.width;
+
+	public var height(get, never):Int;
+	inline function get_height() return this == null ? 0 : this.height;
+
 	public static inline function create(width:Int, height:Int, transparent:Bool=false, color:Color=0):Texture
 	{
 		return new BitmapData(width, height, transparent, color);
