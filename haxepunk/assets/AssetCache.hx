@@ -23,6 +23,15 @@ class AssetCache
 		return null;
 	}
 
+	public static function hasTexture(id:String):Bool
+	{
+		for (cache in active)
+		{
+			if (cache.regions.exists(id)) return true;
+		}
+		return false;
+	}
+
 	public static function getRegion(id:String):Null<IAtlasRegion>
 	{
 		for (cache in active)
@@ -43,11 +52,6 @@ class AssetCache
 
 	public function new() {}
 
-	public function hasTexture(id:String):Bool
-	{
-		return textures.exists(id);
-	}
-
 	public function getTexture(id:String):Texture
 	{
 		// if we already have this texture cached, return it
@@ -56,7 +60,7 @@ class AssetCache
 		// their version
 		for (cache in active)
 		{
-			if (cache.hasTexture(id))
+			if (cache.textures.exists(id))
 			{
 				// keep this asset cached here too, in case the owning cache is
 				// disposed before this one is
