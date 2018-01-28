@@ -4,6 +4,7 @@ import haxepunk.HXP;
 import haxepunk.Graphic;
 import haxepunk.assets.AssetCache;
 import haxepunk.graphics.text.BitmapFontAtlas.BitmapFontFormat;
+import haxepunk.graphics.text.IBitmapFont.BitmapFontType;
 import haxepunk.math.Vector2;
 import haxepunk.utils.Color;
 import haxepunk.utils.Utf8String;
@@ -23,6 +24,7 @@ typedef FormatTagOptions =
 	@:optional var color:Color;
 	@:optional var alpha:Float;
 	@:optional var scale:Float;
+	@:optional var font:BitmapFontType;
 	@:optional var size:Int;
 }
 
@@ -68,6 +70,7 @@ enum TextOpcode
 	SetColor(color:Color);
 	SetAlpha(alpha:Float);
 	SetScale(scale:Float);
+	SetFont(font:IBitmapFont);
 	SetSize(size:Int);
 	TextBlock(text:String);
 	NewLine(width:Float, height:Float, align:AlignType);
@@ -77,6 +80,7 @@ enum TextOpcode
 	PopColor;
 	PopAlpha;
 	PopScale;
+	PopFont;
 	PopSize;
 	PopCustom;
 }
@@ -107,6 +111,7 @@ class BitmapText extends Graphic
 	static var _colorStack:Array<Color> = new Array();
 	static var _alphaStack:Array<Float> = new Array();
 	static var _scaleStack:Array<Float> = new Array();
+	static var _fontStack:Array<IBitmapFont> = new Array();
 	static var _sizeStack:Array<Int> = new Array();
 	static var _word:Array<TextOpcode> = new Array();
 	static var _customStack:Array<CustomRenderFunction> = new Array();
@@ -139,6 +144,11 @@ class BitmapText extends Graphic
 		{
 			tagOps.push(SetScale(options.scale));
 			closeTagOps.push(PopScale);
+		}
+		if (Reflect.hasField(options, 'font'))
+		{
+			tagOps.push(SetFont(options.font));
+			closeTagOps.push(PopFont);
 		}
 		if (Reflect.hasField(options, 'size'))
 		{
@@ -370,12 +380,14 @@ class BitmapText extends Graphic
 	{
 		// clear current opcode list
 		HXP.clear(opCodes);
+		HXP.clear(_fontStack);
 		HXP.clear(_sizeStack);
 		HXP.clear(_scaleStack);
 		HXP.clear(_colorStack);
 		HXP.clear(_alphaStack);
 		HXP.clear(_word);
 
+		_fontStack.push(_font);
 		_sizeStack.push(size);
 		_scaleStack.push(1);
 		_colorStack.push(color);
@@ -397,6 +409,7 @@ class BitmapText extends Graphic
 			wordTrailingWhitespace:Float = 0,
 			wordHeight:Float = 0,
 			currentScale:Float = 1,
+			currentFont:IBitmapFont = _font,
 			currentSizeRatio:Float = 1,
 			currentAlign:AlignType = AlignType.Left,
 			wrapping:Bool = false,
@@ -490,6 +503,14 @@ class BitmapText extends Graphic
 					wordHeight = Math.max(wordHeight, image.height * currentScale * image.scale * image.scaleY * this.scale * this.scaleY);
 					if (cursorX > textWidth) textWidth = Std.int(cursorX);
 					++charCount;
+				case SetFont(font):
+					_fontStack.push(font);
+					currentFont = font;
+					lineHeight = font.getLineHeight(sy * fsy) / fsy;
+					_word.push(tag);
+				case PopFont:
+					if (_fontStack.length > 1) _fontStack.pop();
+					_word.push(SetFont(_fontStack[_fontStack.length - 1]));
 				case SetSize(size):
 					_sizeStack.push(size);
 					currentSizeRatio = size / this.size;
@@ -547,7 +568,7 @@ class BitmapText extends Graphic
 					inline function addChar(whitespace:Bool = false)
 					{
 						var maxFullScale = sx * fsx;
-						var gd = _font.getChar(char, maxFullScale * currentScale * currentSizeRatio);
+						var gd = currentFont.getChar(char, maxFullScale * currentScale * currentSizeRatio);
 						var charWidth = gd.xAdvance * gd.scale / fsx;
 						currentWord += char;
 						var charLength = charWidth + charSpacing * currentScale * currentSizeRatio;
@@ -644,6 +665,7 @@ class BitmapText extends Graphic
 		var currentColor:Color = color,
 			currentAlpha:Float = alpha,
 			currentScale:Float = 1,
+			currentFont:IBitmapFont = _font,
 			currentSizeRatio:Float = 1,
 			cursorX:Float = 0,
 			cursorY:Float = 0,
@@ -663,6 +685,9 @@ class BitmapText extends Graphic
 					currentAlpha = alpha;
 				case SetScale(scale):
 					currentScale = scale;
+				case SetFont(font):
+					currentFont = font;
+					lineHeight = font.getLineHeight(sy * fsy) / fsy;
 				case SetSize(size):
 					currentSizeRatio = size / this.size;
 				case TextBlock(text):
@@ -673,7 +698,7 @@ class BitmapText extends Graphic
 						++charCount;
 						var char = text.charAt(i);
 						var maxFullScale = sx * fsx;
-						var gd = _font.getChar(char, maxFullScale * currentScale * currentSizeRatio);
+						var gd = currentFont.getChar(char, maxFullScale * currentScale * currentSizeRatio);
 
 						if (char == ' ')
 						{
@@ -747,7 +772,7 @@ class BitmapText extends Graphic
 					_customStack.push(func);
 				case PopCustom:
 					_customStack.pop();
-				case PopSize, PopScale, PopColor, PopAlpha: {}
+				case PopFont, PopSize, PopScale, PopColor, PopAlpha: {}
 				case Align(_): {}
 			}
 		}
