@@ -510,7 +510,9 @@ class BitmapText extends Graphic
 					_word.push(tag);
 				case PopFont:
 					if (_fontStack.length > 1) _fontStack.pop();
-					_word.push(SetFont(_fontStack[_fontStack.length - 1]));
+					currentFont = _fontStack[_fontStack.length - 1];
+					lineHeight = currentFont.getLineHeight(sy * fsy) / fsy;
+					_word.push(SetFont(currentFont));
 				case SetSize(size):
 					_sizeStack.push(size);
 					currentSizeRatio = size / this.size;
