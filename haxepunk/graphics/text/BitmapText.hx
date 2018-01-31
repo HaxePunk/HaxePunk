@@ -612,7 +612,6 @@ class BitmapText extends Graphic
 				if (tag == null) tag = FORMAT_TAG_RE.matched(1);
 				if (tag != null && FORMAT_TAG_RE.matched(4) != null && dynamicTags.exists(tag))
 				{
-					trace(FORMAT_TAG_RE.matched(4));
 					for (tag in dynamicTags[tag](FORMAT_TAG_RE.matched(5)))
 					{
 						addTag(tag);
@@ -628,7 +627,6 @@ class BitmapText extends Graphic
 				}
 				else
 				{
-					trace(text);
 					throw 'Unrecognized ${FORMAT_TAG_RE.matched(4) == null ? "format" : "dynamic"} tag: <$tag>';
 				}
 				remaining = FORMAT_TAG_RE.matchedRight();
