@@ -87,6 +87,13 @@ class Mouse
 	public static var mouseWheel:Bool = false;
 
 	/**
+	 * If the mouse is current over the window. If not, the mouse coordinates
+	 * will show the last position before the mouse was moved out.
+	 */
+	public static var mouseOnScreen(get, never):Bool;
+	static inline function get_mouseOnScreen() return _mouseOnScreen;
+
+	/**
 	 * If the mouse wheel was moved this frame, this was the delta.
 	 */
 	public static var mouseWheelDelta(get, never):Int;
@@ -257,4 +264,5 @@ class Mouse
 	static var _control:Map<InputType, MouseButton> = new Map();
 	static var _buttonMap:Map<MouseButton, Array<InputType>> = new Map();
 	static var _mouseWheelDelta:Int = 0;
+	static var _mouseOnScreen:Bool = true;
 }
