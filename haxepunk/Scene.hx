@@ -172,8 +172,6 @@ class Scene extends Tweener
 	 */
 	override public function update()
 	{
-		preUpdate.invoke();
-
 		// update the camera
 		camera.update();
 
@@ -204,8 +202,6 @@ class Scene extends Tweener
 		{
 			HXP.cursor.update();
 		}
-
-		postUpdate.invoke();
 	}
 
 	/**
