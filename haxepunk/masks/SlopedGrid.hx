@@ -7,7 +7,7 @@ import haxepunk.math.Rectangle;
 import haxepunk.math.Vector2;
 
 @:enum
-abstract TileType(Int)
+abstract TileShape(Int)
 {
 	var Empty = 0;
 	var Solid = 1;
@@ -22,7 +22,7 @@ abstract TileType(Int)
 
 typedef Tile =
 {
-	var type:TileType;
+	var type:TileShape;
 	@:optional var slope:Float;
 	@:optional var yOffset:Float;
 }
@@ -149,7 +149,7 @@ class SlopedGrid extends Hitbox
 	 * @param	slope		The slope of the tile
 	 * @param	yOffset		The y offset of the tile
 	 */
-	public function setTile(column:Int = 0, row:Int = 0, ?type:TileType, slope:Float = 0, yOffset:Float=0):Void
+	public function setTile(column:Int = 0, row:Int = 0, ?type:TileShape, slope:Float = 0, yOffset:Float=0):Void
 	{
 		if (!checkTile(column, row)) return;
 
@@ -246,7 +246,7 @@ class SlopedGrid extends Hitbox
 	 * @param	slope		The slope of the tiles
 	 * @param	yOffset		The y offset of the tiles
 	 */
-	public function setRect(column:Int = 0, row:Int = 0, width:Int = 1, height:Int = 1, ?type:TileType, slope:Float = 0, yOffset:Float = 0)
+	public function setRect(column:Int = 0, row:Int = 0, width:Int = 1, height:Int = 1, ?type:TileShape, slope:Float = 0, yOffset:Float = 0)
 	{
 		if (type == null) type = Solid;
 
