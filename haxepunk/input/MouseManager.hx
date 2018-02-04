@@ -119,7 +119,8 @@ class MouseManager extends Entity
 
 		var collisions:Array<Entity> = _collisions;
 		// make sure the mouse is onscreen before checking for collisions
-		if (mouseX >= scene.x &&
+		if (Mouse.mouseOnScreen &&
+			mouseX >= scene.x &&
 			mouseY >= scene.y &&
 			mouseX <= scene.x + scene.width &&
 			mouseY <= scene.y + scene.height)
