@@ -14,13 +14,19 @@ class Camera
 
 	public function new(x:Float = 0, y:Float = 0)
 	{
-		setTo(x, y);
-	}
-
-	public inline function setTo(x:Float, y:Float)
-	{
 		this.x = x;
 		this.y = y;
+	}
+
+	/**
+	 * Set the Camera's position. If provided, px and py determine the part of
+	 * the screen to move to the given position; 0.5 will center the camera,
+	 * and 1.0 will set the right edge.
+	 */
+	public inline function setTo(x:Float, y:Float, px:Float = 0, py:Float = 0)
+	{
+		this.x = x - ((HXP.width / fullScaleX) * px);
+		this.y = y - ((HXP.height / fullScaleY) * py);
 	}
 
 	/**
@@ -85,8 +91,8 @@ class Camera
 			if (Std.is(anchorTarget, Entity))
 			{
 				var e:Entity = cast anchorTarget;
-				tx += e.width / 2;
-				ty += e.height / 2;
+				tx = e.centerX;
+				ty = e.centerY;
 			}
 			x = tx - (HXP.width / fullScaleX * anchorX);
 			y = ty - (HXP.height / fullScaleY * anchorY);
