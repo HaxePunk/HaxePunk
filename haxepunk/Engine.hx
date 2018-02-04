@@ -140,6 +140,7 @@ class Engine
 		checkScene();
 
 		preUpdate.invoke();
+		_scene.preUpdate.invoke();
 
 		if (HXP.tweener.active && HXP.tweener.hasTween) HXP.tweener.updateTweens(HXP.elapsed);
 		if (_scene.active)
@@ -149,6 +150,7 @@ class Engine
 		}
 		_scene.updateLists(false);
 
+		_scene.postUpdate.invoke();
 		postUpdate.invoke();
 	}
 
