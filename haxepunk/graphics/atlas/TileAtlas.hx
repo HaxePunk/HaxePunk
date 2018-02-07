@@ -140,7 +140,7 @@ class TileAtlas extends Atlas
 	 * @param	tileMarginWidth		Tile horizontal margin.
 	 * @param	tileMarginHeight	Tile vertical margin.
 	 */
-	public function prepare(tileWidth:Int, tileHeight:Int, tileMarginWidth:Int=0, tileMarginHeight:Int=0)
+	public function prepare(tileWidth:Int, tileHeight:Int, tileMarginWidth:Int=0, tileMarginHeight:Int=0, tileOffsetX:Int=0, tileOffsetY:Int=0)
 	{
 		if (_regions.length > 0) return; // only prepare once
 		_tileWidth = tileWidth;
@@ -158,11 +158,11 @@ class TileAtlas extends Atlas
 
 		for (y in 0...rows)
 		{
-			HXP.rect.y = y * (tileHeight + tileMarginHeight);
+			HXP.rect.y = tileOffsetY + y * (tileHeight + tileMarginHeight);
 
 			for (x in 0...cols)
 			{
-				HXP.rect.x = x * (tileWidth + tileMarginWidth);
+				HXP.rect.x = tileOffsetX + x * (tileWidth + tileMarginWidth);
 
 				_regions.push(_data.createRegion(HXP.rect, HXP.point));
 			}

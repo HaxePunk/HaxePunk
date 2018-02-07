@@ -56,7 +56,7 @@ class Tilemap extends Graphic
 	 * @param	tileMarginWidth		Tile horizontal spacing.
 	 * @param	tileMarginHeight	Tile vertical spacing.
 	 */
-	public function new(tileset:TileType, width:Int, height:Int, ?tileWidth:Int, ?tileHeight:Int, tileMarginWidth:Int=0, tileMarginHeight:Int=0)
+	public function new(tileset:TileType, width:Int, height:Int, ?tileWidth:Int, ?tileHeight:Int, tileMarginWidth:Int=0, tileMarginHeight:Int=0, tileOffsetX:Int=0, tileOffsetY:Int=0)
 	{
 		// set some tilemap information
 		super();
@@ -76,7 +76,7 @@ class Tilemap extends Graphic
 			}
 			else
 			{
-				_atlas.prepare(tileWidth, tileHeight, tileMarginWidth, tileMarginHeight);
+				_atlas.prepare(tileWidth, tileHeight, tileMarginWidth, tileMarginHeight, tileOffsetX, tileOffsetY);
 			}
 		}
 
