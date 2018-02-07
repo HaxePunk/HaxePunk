@@ -1,6 +1,7 @@
 package haxepunk;
 
-typedef PositionData =
+@:dox(hide)
+private typedef PositionData =
 {
 	x:Float,
 	y:Float

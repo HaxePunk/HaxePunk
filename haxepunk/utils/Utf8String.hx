@@ -2,6 +2,9 @@ package haxepunk.utils;
 
 import haxe.Utf8;
 
+/**
+ * This abstract exposes a String-like API with UTF8 support.
+ */
 abstract Utf8String(String) from String to String
 {
 	public var length(get, never):Int;

@@ -8,7 +8,10 @@ import haxepunk.math.Rectangle;
 import haxepunk.math.Vector2;
 
 /**
- * Automatic scaling 9-slice graphic.
+ * A NineSlice is an automatically scaling graphic cut into nine segments
+ * (upper/middle/lower and left/middle/right.) NineSlice is useful when a
+ * graphic has borders that should remain a constan size as the graphic scales
+ * (such as a UI button or panel.)
  */
 class NineSlice extends Graphic
 {
@@ -59,10 +62,10 @@ class NineSlice extends Graphic
 	/**
 	 * Constructor.
 	 * @param	source Source image
-	 * @param	leftWidth Distance from left side of the source image used for 9-Slicking the image
-	 * @param	rightWidth Distance from right side of the source image used for 9-Slicking the image
-	 * @param	topHeight Distance from top side of the source image used for 9-Slicking the image
-	 * @param	bottomHeight Distance from bottom side of the source image used for 9-Slicking the image
+	 * @param	leftWidth Distance from left side of the source image used for 9-slicing the image
+	 * @param	rightWidth Distance from right side of the source image used for 9-slicing the image
+	 * @param	topHeight Distance from top side of the source image used for 9-slicing the image
+	 * @param	bottomHeight Distance from bottom side of the source image used for 9-slicing the image
 	 */
 	public function new(source:ImageType, leftWidth:Int = 0, rightWidth:Int = 0, topHeight:Int = 0, bottomHeight:Int = 0)
 	{
