@@ -358,6 +358,15 @@ class Tilemap extends Graphic
 		}
 	}
 
+	/**
+	 *  Centers the origin of the tilemap based on it's full width/height.
+	 */
+	override public function centerOrigin():Void
+	{
+		originX = width * 0.5;
+		originY = height * 0.5;
+	}
+
 	@:dox(hide)
 	override public function render(point:Vector2, camera:Camera)
 	{
@@ -365,8 +374,8 @@ class Tilemap extends Graphic
 			fullScaleY:Float = camera.screenScaleY;
 
 		// determine drawing location
-		_point.x = point.x + x - camera.x * scrollX;
-		_point.y = point.y + y - camera.y * scrollY;
+		_point.x = point.x + x - originX - camera.x * scrollX;
+		_point.y = point.y + y - originY - camera.y * scrollY;
 
 		var scx = scale * scaleX,
 			scy = scale * scaleY,
@@ -418,14 +427,14 @@ class Tilemap extends Graphic
 		var fullScaleX:Float = camera.screenScaleX,
 			fullScaleY:Float = camera.screenScaleY;
 
-		// determine drawing location
-		_point.x = point.x + floorX(camera, x) - floorX(camera, camera.x * scrollX);
-		_point.y = point.y + floorY(camera, y) - floorY(camera, camera.y * scrollY);
-
 		var scx = scale * scaleX,
 			scy = scale * scaleY,
 			tw = tileWidth * scx,
 			th = tileHeight * scy;
+
+		// determine drawing location
+		_point.x = point.x + floorX(camera, x) - floorX(camera, originX * scx) - floorX(camera, camera.x * scrollX);
+		_point.y = point.y + floorY(camera, y) - floorY(camera, originY * scy) - floorY(camera, camera.y * scrollY);
 
 		// determine start and end tiles to draw (optimization)
 		var startx = Math.floor(-_point.x / tw),

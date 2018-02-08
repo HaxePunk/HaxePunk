@@ -167,7 +167,7 @@ class Image extends Graphic
 	/**
 	 * Centers the Image's originX/Y to its center.
 	 */
-	public function centerOrigin()
+	override public function centerOrigin()
 	{
 		originX = Std.int(width / 2);
 		originY = Std.int(height / 2);

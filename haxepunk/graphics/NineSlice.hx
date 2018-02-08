@@ -92,6 +92,15 @@ class NineSlice extends Graphic
 		pixelSnapping = false;
 	}
 
+	/**
+	 *  Centers the origin of this NineSlice.
+	 */
+	override public function centerOrigin():Void
+	{
+		originX = width * 0.5;
+		originY = height * 0.5;
+	}
+
 	inline function getSegment(source:ImageType, x:Int, y:Int, width:Int, height:Int):Image
 	{
 		var segment = new Image(source, new Rectangle(x, y, width, height));
@@ -126,8 +135,8 @@ class NineSlice extends Graphic
 		{
 			if (segment != null && segment.visible)
 			{
-				segment.x = floorX(camera, this.x) + x;
-				segment.y = floorY(camera, this.y) + y;
+				segment.x = floorX(camera, this.x) + x - originX;
+				segment.y = floorY(camera, this.y) + y - originY;
 				segment.scaleX = (floorX(camera, x + width) - floorX(camera, x)) / segment.width;
 				segment.scaleY = (floorY(camera, y + height) - floorY(camera, y)) / segment.height;
 				if (clipRect != null)

@@ -81,8 +81,8 @@ import haxepunk.math.Vector2;
 					std = type._scaleEase != null ? type._scaleEase(t) : t;
 					_source.scale = scale * p.scale(std);
 				}
-				_source.x = p.x(td) - point.x + this.x;
-				_source.y = p.y(td) - point.y + this.y;
+				_source.x = p.x(td) - point.x + this.x - originX;
+				_source.y = p.y(td) - point.y + this.y - originY;
 				_source.render(point, camera);
 			}
 
@@ -158,6 +158,14 @@ import haxepunk.math.Vector2;
 		}
 
 		_particle = null;
+	}
+
+	/**
+	 *  Resets originX/Y to 0 since there are no dimensions.
+	 */
+	override public function centerOrigin():Void
+	{
+		originX = originY = 0;
 	}
 
 	/**

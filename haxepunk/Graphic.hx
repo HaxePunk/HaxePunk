@@ -313,6 +313,14 @@ class Graphic
 		active = true;
 	}
 
+	/**
+	 *  Center the Origin of this graphic.
+	 */
+	public function centerOrigin()
+	{
+
+	}
+
 	public function toString():String return '[$_class]';
 
 	var _class:String;
