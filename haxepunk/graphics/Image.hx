@@ -36,18 +36,6 @@ class Image extends Graphic
 	public var scaleY:Float;
 
 	/**
-	 * X origin of the image, determines transformation point.
-	 * Defaults to top-left corner.
-	 */
-	public var originX:Float;
-
-	/**
-	 * Y origin of the image, determines transformation point.
-	 * Defaults to top-left corner.
-	 */
-	public var originY:Float;
-
-	/**
 	 * Constructor.
 	 * @param	source		Source image.
 	 * @param	clipRect	Optional rectangle defining area of the source image to draw.

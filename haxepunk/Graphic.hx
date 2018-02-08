@@ -180,6 +180,18 @@ class Graphic
 	public var scrollY:Float = 1;
 
 	/**
+	 * X origin of the graphic, determines transformation point.
+	 * Defaults to top-left corner.
+	 */
+	public var originX:Float = 0;
+
+	/**
+	 * Y origin of the graphic, determines transformation point.
+	 * Defaults to top-left corner.
+	 */
+	public var originY:Float = 0;
+
+	/**
 	 * Change the opacity of the Image, a value from 0 to 1.
 	 */
 	public var alpha(default, set):Float = 1;
