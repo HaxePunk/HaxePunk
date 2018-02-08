@@ -375,7 +375,7 @@ class BitmapText extends Graphic
 
 	override public function centerOrigin():Void
 	{
-		if(_dirty)
+		if (_dirty)
 			parseText();
 		
 		originX = (autoWidth ? textWidth : width) * 0.5;
