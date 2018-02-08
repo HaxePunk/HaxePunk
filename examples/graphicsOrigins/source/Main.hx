@@ -1,3 +1,5 @@
+package;
+
 import haxepunk.Engine;
 import haxepunk.HXP;
 

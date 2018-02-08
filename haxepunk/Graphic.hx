@@ -316,10 +316,7 @@ class Graphic
 	/**
 	 *  Center the Origin of this graphic.
 	 */
-	public function centerOrigin()
-	{
-
-	}
+	public function centerOrigin() {}
 
 	public function toString():String return '[$_class]';
 

@@ -1,3 +1,5 @@
+package;
+
 import haxepunk.HXP;
 import haxepunk.Scene;
 import haxepunk.graphics.ColoredRect;
@@ -56,7 +58,7 @@ class MainScene extends Scene
 			_gList.children[_currentIdx].visible = false;
 
 			_currentIdx++;
-			while(_currentIdx >= _gList.children.length)
+			while (_currentIdx >= _gList.children.length)
 				_currentIdx -= _gList.children.length;
 			
 			_txtList.children[_currentIdx].visible = true;
@@ -75,7 +77,8 @@ class MainScene extends Scene
 		graphic.originX += _targetOrigin.x;
 		graphic.originY += _targetOrigin.y;
 		_targetOrigin.rotate(Math.PI * HXP.elapsed);
-		if(Reflect.hasField(graphic, "scale"))
+
+		if (Reflect.hasField(graphic, "scale"))
 			Reflect.setField(graphic, "scale", _targetScale);
 	}
 
