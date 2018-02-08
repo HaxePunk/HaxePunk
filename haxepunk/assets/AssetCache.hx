@@ -153,6 +153,18 @@ class AssetCache
 		bitmapFonts.remove(fontName);
 	}
 
+	public function getText(assetName:String):String
+	{
+		// text assets aren't cached
+		return AssetLoader.getText(assetName);
+	}
+
+	public function getSound(assetName:String):Dynamic
+	{
+		// TODO
+		return AssetLoader.getSound(assetName);
+	}
+
 	public function enable()
 	{
 		if (!enabled) active.push(this);
