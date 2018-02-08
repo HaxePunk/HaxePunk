@@ -373,6 +373,15 @@ class BitmapText extends Graphic
 		return text;
 	}
 
+	override public function centerOrigin():Void
+	{
+		if(_dirty)
+			parseText();
+		
+		originX = (autoWidth ? textWidth : width) * 0.5;
+		originY = (autoHeight ? textHeight : height) * 0.5;
+	}
+
 	/**
 	 * Parse text and any formatting tags into a list of rendering opcodes.
 	 * Handles newlines and word wrapping.
@@ -654,8 +663,8 @@ class BitmapText extends Graphic
 		var fsx = camera.screenScaleX,
 			fsy = camera.screenScaleY;
 
-		_point.x = point.x + floorX(camera, x) - floorX(camera, camera.x * scrollX);
-		_point.y = point.y + floorY(camera, y) - floorY(camera, camera.y * scrollY);
+		_point.x = point.x + floorX(camera, x) - floorX(camera, originX * scaleX * scale) - floorX(camera, camera.x * scrollX);
+		_point.y = point.y + floorY(camera, y) - floorY(camera, originY * scaleY * scale) - floorY(camera, camera.y * scrollY);
 
 		var sx = scale * scaleX * size,
 			sy = scale * scaleY * size;

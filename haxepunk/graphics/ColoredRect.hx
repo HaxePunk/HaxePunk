@@ -30,12 +30,21 @@ class ColoredRect extends Graphic
 
 		var fsx = camera.screenScaleX,
 			fsy = camera.screenScaleY;
-		var x1 = (floorX(camera, point.x) - floorX(camera, camera.x) + floorX(camera, x)) * fsx,
+		var x1 = (floorX(camera, point.x) - floorX(camera, camera.x) + floorX(camera, x) - floorX(camera, originX)) * fsx,
 			x2 = x1 + width * fsx,
-			y1 = (floorY(camera, point.y) - floorY(camera, camera.y) + floorY(camera, y)) * fsy,
+			y1 = (floorY(camera, point.y) - floorY(camera, camera.y) + floorY(camera, y) - floorY(camera, originY)) * fsy,
 			y2 = y1 + height * fsy;
 
 		command.addTriangle(x1, y1, 0, 0, x2, y1, 0, 0, x1, y2, 0, 0, color, alpha);
 		command.addTriangle(x1, y2, 0, 0, x2, y1, 0, 0, x2, y2, 0, 0, color, alpha);
+	}
+
+	/**
+	 *  Centers the origin of this ColoredRect.
+	 */
+	override public function centerOrigin():Void
+	{
+		originX = width * 0.5;
+		originY = height * 0.5;
 	}
 }
