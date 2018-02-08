@@ -215,11 +215,12 @@ class DrawCommand
 	{
 		if (alpha > 0)
 		{
-			var onScreen =
+			var onScreen = shader.hasAttributes || (
 				MathUtil.minOf3(tx1, tx2, tx3) <= visibleArea.right &&
 				MathUtil.maxOf3(tx1, tx2, tx3) >= visibleArea.left &&
 				MathUtil.minOf3(ty1, ty2, ty3) <= visibleArea.bottom &&
-				MathUtil.maxOf3(ty1, ty2, ty3) >= visibleArea.top;
+				MathUtil.maxOf3(ty1, ty2, ty3) >= visibleArea.top
+			);
 			if (onScreen)
 			{
 				var data:DrawTriangle = getData();

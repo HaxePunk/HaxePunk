@@ -77,6 +77,11 @@ class Shader
 	public var texCoord:Attribute;
 	public var color:Attribute;
 
+	public var hasAttributes(get, never):Bool;
+	inline function get_hasAttributes() : Bool
+	{
+		return attributeNames.length > 0;
+	}
 	var attributeNames:Array<String> = new Array();
 	var attributes:Map<String, Attribute> = new Map();
 	var uniformIndices:Map<String, GLUniformLocation> = new Map();
