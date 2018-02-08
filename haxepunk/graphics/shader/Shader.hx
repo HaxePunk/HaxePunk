@@ -78,7 +78,7 @@ class Shader
 	public var color:Attribute;
 
 	public var hasAttributes(get, never):Bool;
-	private function get_hasAttributes() : Bool
+	inline function get_hasAttributes() : Bool
 	{
 		return attributeNames.length > 0;
 	}
