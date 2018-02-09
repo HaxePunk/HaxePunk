@@ -13,7 +13,7 @@ env:
     - HXCPP=3.4.49
   matrix:
     - TEST=no-backend
-    - TEST=nme NME=5.6.4
+    - TEST=nme NME=6.0.58
     - TEST=openfl3 OPENFL=3.6.1 LIME=2.9.1 DOCS=1
     - TEST=openfl4 OPENFL=4.6.0 LIME=3.6.2 DOCS=1
     - TEST=openfl5 OPENFL=5.0.0 LIME=4.1.0
