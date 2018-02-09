@@ -8,6 +8,7 @@ import haxepunk.graphics.Graphiclist;
 import haxepunk.graphics.NineSlice;
 import haxepunk.graphics.emitter.Emitter;
 import haxepunk.graphics.text.BitmapText;
+import haxepunk.graphics.tile.Backdrop;
 import haxepunk.graphics.tile.Tilemap;
 import haxepunk.input.Key;
 import haxepunk.math.Vector2;
@@ -139,6 +140,11 @@ class MainScene extends Scene
 		for (i in 0 ... map.columns)
 			for (j in 0 ... map.rows)
 				map.setTile(i, j, HXP.choose([0, 1, 2, 3]));
+
+		// ----- Backdrop
+		_txtList.add(createText("Backdrop"));
+		var bd = new Backdrop("graphics/HaxePunk.png", true, true);
+		_gList.add(bd);
 	}
 
 	function createText(text:String):BitmapText

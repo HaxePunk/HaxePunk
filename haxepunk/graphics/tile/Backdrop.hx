@@ -46,11 +46,20 @@ class Backdrop extends Graphic
 		pixelSnapping = true;
 	}
 
+	/**
+	 *  Centers the origin of this Backdrop based on the dimensions of it's graphic.
+	 */
+	override public function centerOrigin():Void
+	{
+		originX = _width * 0.5;
+		originY = _height * 0.5;
+	}
+
 	@:dox(hide)
 	override public function render(point:Vector2, camera:Camera)
 	{
-		_point.x = (point.x - camera.x * scrollX + x) * camera.screenScaleX;
-		_point.y = (point.y - camera.y * scrollY + y) * camera.screenScaleY;
+		_point.x = (point.x - camera.x * scrollX + x) * camera.screenScaleX - originX * scaleX * scale;
+		_point.y = (point.y - camera.y * scrollY + y) * camera.screenScaleY - originY * scaleY * scale;
 
 		var sx = scale * scaleX * camera.screenScaleX,
 			sy = scale * scaleY * camera.screenScaleY,
@@ -94,8 +103,8 @@ class Backdrop extends Graphic
 			fsy = camera.screenScaleY,
 			sx = scale * scaleX,
 			sy = scale * scaleY;
-		_point.x = (point.x - floorX(camera, camera.x * scrollX) + floorX(camera, x)) * fsx;
-		_point.y = (point.y - floorY(camera, camera.y * scrollY) + floorY(camera, y)) * fsy;
+		_point.x = (point.x - floorX(camera, camera.x * scrollX) + floorX(camera, x)) * fsx - floorX(camera, originX * sx);
+		_point.y = (point.y - floorY(camera, camera.y * scrollY) + floorY(camera, y)) * fsy - floorY(camera, originY * sy);
 
 		var scaledWidth = _width * sx * fsx,
 			scaledHeight = _height * sy * fsy;
