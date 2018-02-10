@@ -329,7 +329,7 @@ class BitmapText extends Graphic
 		if (options == null) options = {};
 
 		// defaults
-		if (!Reflect.hasField(options, "font"))      options.font      = HXP.defaultFont + ".fnt";
+		if (!Reflect.hasField(options, "font"))      options.font = HXP.defaultFont + ".fnt";
 		if (!Reflect.hasField(options, "size"))      options.size      = 16;
 		if (!Reflect.hasField(options, "color"))     options.color     = 0xFFFFFF;
 		if (!Reflect.hasField(options, "wordWrap"))  options.wordWrap  = false;
@@ -339,6 +339,7 @@ class BitmapText extends Graphic
 		if (font == null)
 		{
 			font = BitmapFontAtlas.getFont(options.font, options.format, options.extraParams);
+			AssetCache.global.addBitmapFont(options.font, font);
 		}
 
 		_font = font;

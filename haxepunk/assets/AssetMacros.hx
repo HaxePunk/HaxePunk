@@ -14,13 +14,14 @@ class AssetMacros
 			{
 				if (cache.$cache.exists(${id}))
 				{
-					if (${addRef})
+					var cached = cache.$cache[${id}];
+					if (${addRef} && cached != null)
 					{
 						// keep this asset cached here too, in case the owning cache is
 						// disposed before this one is
-						$i{cache}[${id}] = cache.$cache[${id}];
+						$i{cache}[${id}] = cached;
 					}
-					return cache.$cache[${id}];
+					return cached;
 				}
 			}
 			// no cached version; load from asset loader
