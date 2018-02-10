@@ -220,9 +220,9 @@ class Entity extends Tweener
 		if (mask == null && width > 0 && height > 0 && collidable)
 		{
 			Mask.drawContext.lineThickness = 2;
-			Mask.drawContext.setColor(0xff0000, 0.25);
+			Mask.drawContext.setColor(0xff0000, 0.065);
 			Mask.drawContext.rectFilled((x - camera.x - originX) * camera.screenScaleX, (y - camera.y - originY) * camera.screenScaleY, width * camera.screenScaleX, height * camera.screenScaleY);
-			Mask.drawContext.setColor(0xff0000, 0.5);
+			Mask.drawContext.setColor(0xff0000, 0.25);
 			Mask.drawContext.rect((x - camera.x - originX) * camera.screenScaleX, (y - camera.y - originY) * camera.screenScaleY, width * camera.screenScaleX, height * camera.screenScaleY);
 		}
 		else if (mask != null)
@@ -667,12 +667,12 @@ class Entity extends Tweener
 	 */
 	public function setHitboxTo(o:Dynamic)
 	{
-		#if html5 
+		#if html5
 		inline function getInt(value:Dynamic, defaultValue:Int = 0):Int
 		{
-			return if (Std.is(value, Int) || Std.is(value, Float)) 
+			return if (Std.is(value, Int) || Std.is(value, Float))
 				value;
-			else 
+			else
 				defaultValue;
 		};
 
@@ -701,7 +701,7 @@ class Entity extends Tweener
 
 		originX = getInt(o, "originX", -getInt(o, "x"));
 		originY = getInt(o, "originY", -getInt(o, "y"));
-		#end 
+		#end
 	}
 
 	/**

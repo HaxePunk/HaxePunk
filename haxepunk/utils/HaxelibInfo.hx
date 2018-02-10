@@ -23,7 +23,7 @@ class HaxelibInfoBuilder
 		}
 		catch (e:Dynamic)
 		{
-			trace(e);
+			Log.error(e);
 		}
 
 		// Construct fields

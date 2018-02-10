@@ -2,6 +2,7 @@ package haxepunk.graphics.hardware.opengl;
 
 class GL
 {
+	public static inline var NO_ERROR:Int = 0;
 	public static inline var TEXTURE0:Int = 0;
 	public static inline var ARRAY_BUFFER:Int = 0;
 	public static inline var TEXTURE_2D:Int = 0;
@@ -50,6 +51,7 @@ class GL
 	public static function bindFramebuffer(_, _) {}
 	public static function bufferData(_, _, _) {}
 	public static function bufferSubData(_, _, _) {}
+	public static function getError():Int { return 0; }
 	public static function getUniformLocation(_, _):GLUniformLocation { return 0; }
 	public static function uniform1f(_, _) {}
 	public static function uniform1i(_, _) {}
