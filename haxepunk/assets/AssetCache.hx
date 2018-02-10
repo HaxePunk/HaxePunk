@@ -13,6 +13,10 @@ import haxepunk.graphics.text.BitmapFontAtlas;
 import haxepunk.graphics.text.IBitmapFont;
 using haxepunk.assets.AssetMacros;
 
+/**
+ * An AssetCache can be used to cache and dispose of assets to control memory
+ * use. Use `AssetCache.global` to cache assets permanently.
+ */
 class AssetCache
 {
 	public static var global:AssetCache = new AssetCache("global");
