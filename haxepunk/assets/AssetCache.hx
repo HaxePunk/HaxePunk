@@ -105,12 +105,11 @@ class AssetCache
 		tileAtlases[id] = atlas;
 	}
 
-	public function getTileAtlas(id:String, tileWidth:Int=0, tileHeight:Int=0, tileMarginWidth:Int=0, tileMarginHeight:Int=0, tileOffsetX:Int=0, tileOffsetY:Int=0, addRef:Bool=true):TileAtlas
+	public function getTileAtlas(id:String, addRef:Bool=true):TileAtlas
 	{
 		return AssetMacros.findAsset(this, tileAtlases, id, addRef, {
 			var texture = getTexture(id);
 			var atlas = new TileAtlas(texture);
-			atlas.prepare(tileWidth, tileHeight, tileMarginWidth, tileMarginHeight, tileOffsetX, tileOffsetY);
 			atlas;
 		});
 	}
