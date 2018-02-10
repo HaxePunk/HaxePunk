@@ -19,8 +19,13 @@ Major release; see MIGRATION.md for migration guide.
 * [bendmorris] Signals implementation with Engine- and Scene-level signals
 * [bendmorris] Unified input handling system
 * [bendmorris] Support for multiple resolution versions of images/bitmap fonts
+* [bendmorris] Debug logging utility
+* [bendmorris] AssetLoader/AssetCache
+* [IkonOne] Add origin support to all Graphic types
+* [matrefeytontias] Custom vertex attributes
 * [MattTuttle] Removal of buffered rendering/Flash target support
 * [MattTuttle] Per-Graphic shaders
+* [MattTuttle] Backend framework abstraction
 
 v2.6.1
 ------------------------------
