@@ -337,17 +337,6 @@ class Text extends Image
 		}
 	}
 
-	/**
-	 * Removes the graphic from memory
-	 */
-	override public function destroy()
-	{
-		if (_region != null)
-		{
-			_region.destroy();
-		}
-	}
-
 	public function resize(width:Int, height:Int, redraw:Bool = true)
 	{
 		_width = width;
@@ -372,15 +361,10 @@ class Text extends Image
 
 			createBuffer();
 
-			if (_region != null)
-			{
-				_region.destroy();
-			}
 			_region = Atlas.loadImageAsRegion(_source);
 
 			if (_borderRegion != null)
 			{
-				_borderRegion.destroy();
 				_borderRegion = Atlas.loadImageAsRegion(_borderSource);
 			}
 		}

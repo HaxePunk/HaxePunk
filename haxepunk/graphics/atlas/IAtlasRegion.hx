@@ -23,5 +23,4 @@ interface IAtlasRegion
 		flexibleLayer:Bool=false):Void;
 
 	public function clip(clipRect:Rectangle, ?center:Vector2):IAtlasRegion;
-	public function destroy():Void;
 }

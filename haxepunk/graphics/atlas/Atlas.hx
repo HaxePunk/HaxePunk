@@ -42,14 +42,6 @@ class Atlas
 	}
 
 	/**
-	 * Removes an atlas from the display list
-	 */
-	public function destroy()
-	{
-		_data.destroy();
-	}
-
-	/**
 	 * Prepares tile data for rendering
 	 * @param  	rect   	The source rectangle to draw
 	 * @param	x		The x-axis location to draw the tile

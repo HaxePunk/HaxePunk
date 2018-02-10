@@ -158,6 +158,9 @@ class Gamepad
 			{
 				if (check(button)) return true;
 			}
+		}
+		if (_axisControl.exists(input))
+		{
 			for (axisDef in _axisControl[input])
 			{
 				if (checkAxis(axisDef)) return true;
@@ -193,6 +196,9 @@ class Gamepad
 			{
 				if (released(button)) return true;
 			}
+		}
+		if (_axisControl.exists(input))
+		{
 			for (axisDef in _axisControl[input])
 			{
 				if (releasedAxis(axisDef)) return true;

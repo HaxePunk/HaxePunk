@@ -24,7 +24,7 @@ abstract TileType(TileAtlas) from TileAtlas to TileAtlas
 {
 	@:dox(hide) @:from public static inline function fromString(tileset:String):TileType
 	{
-		return new TileAtlas(tileset);
+		return AssetCache.global.getTileAtlas(tileset, false);
 	}
 	@:dox(hide) @:from public static inline function fromTileAtlas(atlas:TileAtlas):TileType
 	{
@@ -46,8 +46,8 @@ abstract ImageType(IAtlasRegion) from IAtlasRegion to IAtlasRegion
 {
 	@:dox(hide) @:from public static inline function fromString(s:String):ImageType
 	{
-		var region = AssetCache.getRegion(s);
-		return region == null ? Atlas.loadImageAsRegion(s) : region;
+		var region = AssetCache.global.getAtlasRegion(s, false);
+		return region;
 	}
 	@:dox(hide) @:from public static inline function fromTileAtlas(atlas:TileAtlas):ImageType
 	{

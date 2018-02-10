@@ -5,6 +5,7 @@ import haxe.io.Input;
 import haxe.io.Path;
 import haxe.io.StringInput;
 import haxepunk.HXP;
+import haxepunk.assets.AssetCache;
 import haxepunk.assets.AssetLoader;
 import haxepunk.graphics.atlas.AtlasData;
 import haxepunk.math.Rectangle;
@@ -140,7 +141,8 @@ private class GdxTexturePacker
 			// new page
 			pageName = line;
 			extension = Path.extension(pageName);
-			page = AtlasData.getAtlasDataByName(Path.join([inputDir, pageName]), true);
+			var assetName = Path.join([inputDir, pageName]);
+			page = AssetCache.global.getAtlasData(assetName, false);
 			atlas._pages.set(pageName, page);
 
 			var line:String = "";

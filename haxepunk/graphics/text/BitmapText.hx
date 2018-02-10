@@ -335,7 +335,7 @@ class BitmapText extends Graphic
 		if (!Reflect.hasField(options, "wordWrap"))  options.wordWrap  = false;
 
 		// load the font as a BitmapFontAtlas
-		var font:IBitmapFont = AssetCache.getBitmapFont(options.font);
+		var font:IBitmapFont = AssetCache.global.getBitmapFont(options.font, false);
 		if (font == null)
 		{
 			font = BitmapFontAtlas.getFont(options.font, options.format, options.extraParams);

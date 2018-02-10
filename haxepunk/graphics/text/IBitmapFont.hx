@@ -7,7 +7,7 @@ abstract BitmapFontType(IBitmapFont) from IBitmapFont to IBitmapFont
 {
 	@:dox(hide) @:from public static inline function fromString(s:String):BitmapFontType
 	{
-		return AssetCache.getBitmapFont(s);
+		return AssetCache.global.getBitmapFont(s, false);
 	}
 	@:dox(hide) @:from public static inline function fromFont(font:IBitmapFont):BitmapFontType
 	{

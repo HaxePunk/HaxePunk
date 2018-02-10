@@ -20,9 +20,7 @@ class GameScene extends DemoScene
 
 	override public function begin()
 	{
-#if !flash
 		atlas = TextureAtlas.loadTexturePacker("atlas/assets.xml");
-#end
 
 		backdrop = new Backdrop("gfx/tile.png", true, true);
 		backdrop.color = 0x555555;
@@ -34,13 +32,6 @@ class GameScene extends DemoScene
 		smoke.setAlpha("exhaust");
 
 		smokeEntity = addGraphic(smoke);
-	}
-
-	override public function end()
-	{
-#if !flash
-		atlas.destroy();
-#end
 	}
 
 	function onTouch(touch:haxepunk.input.Touch)
