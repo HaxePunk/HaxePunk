@@ -132,15 +132,6 @@ class AtlasRegion implements IAtlasRegion
 		}
 	}
 
-	public function destroy():Void
-	{
-		if (_parent != null)
-		{
-			_parent.destroy();
-			_parent = null;
-		}
-	}
-
 	/**
 	 * Prints the region as a string
 	 *

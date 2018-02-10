@@ -1,5 +1,6 @@
 package haxepunk.graphics.atlas;
 
+import haxepunk.assets.AssetCache;
 import haxepunk.graphics.hardware.Texture;
 
 /**
@@ -14,7 +15,7 @@ abstract AtlasDataType(AtlasData)
 
 	@:dox(hide) @:from public static inline function fromString(s:String)
 	{
-		return new AtlasDataType(AtlasData.getAtlasDataByName(s, true));
+		return new AtlasDataType(AssetCache.global.getAtlasData(s, false));
 	}
 	@:dox(hide) @:from public static inline function fromTexture(texture:Texture)
 	{

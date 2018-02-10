@@ -1,10 +1,12 @@
 package haxepunk.assets;
 
 import haxepunk.graphics.atlas.Atlas;
+import haxepunk.graphics.atlas.AtlasData;
 import haxepunk.graphics.atlas.AtlasRegion;
 import haxepunk.graphics.atlas.AtlasResolutions;
 import haxepunk.graphics.atlas.IAtlasRegion;
 import haxepunk.graphics.atlas.TextureAtlas;
+import haxepunk.graphics.atlas.TileAtlas;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.graphics.text.BitmapFont;
 import haxepunk.graphics.text.BitmapFontAtlas;
@@ -14,118 +16,130 @@ class AssetCache
 	public static var global:AssetCache = new AssetCache();
 	public static var active:Array<AssetCache> = [global];
 
-	public static function getBitmapFont(fontName:String):Null<BitmapFont>
-	{
-		for (cache in active)
-		{
-			if (cache.bitmapFonts.exists(fontName)) return cache.bitmapFonts[fontName];
-		}
-		return null;
-	}
-
-	public static function hasTexture(id:String):Bool
-	{
-		for (cache in active)
-		{
-			if (cache.regions.exists(id)) return true;
-		}
-		return false;
-	}
-
-	public static function getRegion(id:String):Null<IAtlasRegion>
-	{
-		for (cache in active)
-		{
-			if (cache.regions.exists(id)) return cache.regions[id];
-		}
-		return null;
-	}
-
 	public var enabled(get, never):Bool;
 	inline function get_enabled() return active.indexOf(this) > -1;
 
 	var textures:Map<String, Texture> = new Map();
-	// TODO
-	//var sounds:Map<String, Texture>;
+	var text:Map<String, String> = new Map();
+	// TODO: abstraction for Sound type
+	var sounds:Map<String, Dynamic> = new Map();
 	var regions:Map<String, IAtlasRegion> = new Map();
 	var bitmapFonts:Map<String, BitmapFont> = new Map();
+	var tileAtlases:Map<String, TileAtlas> = new Map();
+	var atlasData:Map<String, AtlasData> = new Map();
 
 	public function new() {}
 
-	public function getTexture(id:String):Texture
-	{
-		// if we already have this texture cached, return it
-		if (textures.exists(id)) return textures[id];
-		// if another active cache already has this texture cached, return
-		// their version
-		for (cache in active)
-		{
-			if (cache.textures.exists(id))
-			{
-				// keep this asset cached here too, in case the owning cache is
-				// disposed before this one is
-				return textures[id] = cache.textures[id];
-			}
-		}
-		// no cached version; load from asset loader
-		return textures[id] = AssetLoader.getTexture(id);
-	}
-
-	public function saveTexture(id:String, texture:Texture)
+	public function addTexture(id:String, texture:Texture)
 	{
 		textures[id] = texture;
 	}
 
-	/**
-	 * Register multiple assets as different resolutions of a single image.
-	 *
-	 * After calling this method, use assetName wherever image assets are
-	 * expected: `new Image(assetName)`. Graphics will pick the appropriate
-	 * resolution from the list when rendering this asset.
-	 */
-	public function addResolutions(assetName:String, assets:Array<String>):AtlasResolutions
+	public function getTexture(id:String, addRef:Bool=true):Texture
 	{
-		if (regions.exists(assetName))
+		return AssetMacros.findAsset(textures, id, addRef, AssetLoader.getTexture(id));
+	}
+
+	public function removeTexture(id:String)
+	{
+		var texture = textures[id];
+		textures.remove(id);
+		var stillNeeded:Bool = false;
+		for (cache in active)
 		{
-			var resolutions:AtlasResolutions = cast regions[assetName];
-			for (asset in assets)
+			if (cache.textures.exists(id))
 			{
-				var region:AtlasRegion = cast getRegion(asset);
-				resolutions.addResolution(region);
+				stillNeeded = true;
+				break;
 			}
-			return resolutions;
 		}
-		else
+		if (!stillNeeded)
 		{
-			var resolutions = new AtlasResolutions([for (asset in assets) Atlas.loadImageAsRegion(asset)]);
-			regions[assetName] = resolutions;
-			return resolutions;
+			texture.dispose();
 		}
 	}
 
-	/**
-	 * Add all of the regions from a TextureAtlas to the AssetCache.
-	 *
-	 * After calling this method, regions can be specified wherever images
-	 * assets are expected, e.g. `new Image("my_atlas_region")`.
-	 */
-	@:access(haxepunk.graphics.atlas.TextureAtlas)
-	public function addTextureAtlas(atlas:TextureAtlas):Void
+	public function addText(id:String, value:String)
 	{
-		for (key in atlas._regions.keys())
-		{
-			regions[key] = atlas.getRegion(key);
-		}
+		text[id] = value;
 	}
 
-	public function addAtlasRegion(assetName:String, region:AtlasRegion):Void
+	public function getText(id:String, addRef:Bool=true):String
 	{
-		regions[assetName] = region;
+		return AssetMacros.findAsset(text, id, addRef, AssetLoader.getText(id));
 	}
 
-	public inline function removeRegion(assetName:String):Void
+	public function removeText(id:String)
 	{
-		regions.remove(assetName);
+		text.remove(id);
+	}
+
+	public function addSound(id:String, sound:Dynamic)
+	{
+		sounds[id] = sound;
+	}
+
+	public function getSound(id:String, addRef:Bool=true):Dynamic
+	{
+		return AssetMacros.findAsset(sounds, id, addRef, AssetLoader.getSound(id));
+	}
+
+	public function removeSound(id:String)
+	{
+		sounds.remove(id);
+	}
+
+	public function addTileAtlas(id:String, atlas:TileAtlas)
+	{
+		tileAtlases[id] = atlas;
+	}
+
+	public function getTileAtlas(id:String, tileWidth:Int=0, tileHeight:Int=0, tileMarginWidth:Int=0, tileMarginHeight:Int=0, tileOffsetX:Int=0, tileOffsetY:Int=0, addRef:Bool=true):TileAtlas
+	{
+		return AssetMacros.findAsset(tileAtlases, id, addRef, {
+			var texture = getTexture(id);
+			var atlas = new TileAtlas(texture);
+			atlas.prepare(tileWidth, tileHeight, tileMarginWidth, tileMarginHeight, tileOffsetX, tileOffsetY);
+			atlas;
+		});
+	}
+
+	public function removeTileAtlas(id:String)
+	{
+		tileAtlases.remove(id);
+	}
+
+	public function addAtlasData(id:String, data:AtlasData)
+	{
+		atlasData[id] = data;
+	}
+
+	public function getAtlasData(id:String, addRef:Bool=true):AtlasData
+	{
+		return AssetMacros.findAsset(atlasData, id, addRef, new AtlasData(getTexture(id), id));
+	}
+
+	public function removeAtlasData(id:String)
+	{
+		atlasData.remove(id);
+	}
+
+	public function addAtlasRegion(id:String, region:IAtlasRegion):Void
+	{
+		regions[id] = region;
+	}
+
+	public function getAtlasRegion(id:String, addRef:Bool=true):IAtlasRegion
+	{
+		return AssetMacros.findAsset(regions, id, addRef, {
+			var data = getAtlasData(id);
+			Atlas.loadImageAsRegion(data);
+		});
+	}
+
+	public inline function removeAtlasRegion(id:String):Void
+	{
+		regions.remove(id);
 	}
 
 	/**
@@ -148,21 +162,56 @@ class AssetCache
 		return bitmapFont;
 	}
 
+	public function getBitmapFont(fontName:String, addRef:Bool=true):BitmapFont
+	{
+		return AssetMacros.findAsset(bitmapFonts, fontName, addRef, throw 'Unrecognized bitmap font: $fontName');
+	}
+
 	public function removeBitmapFont(fontName:String):Void
 	{
 		bitmapFonts.remove(fontName);
 	}
 
-	public function getText(assetName:String):String
+	/**
+	 * Register multiple assets as different resolutions of a single image.
+	 *
+	 * After calling this method, use id wherever image assets are
+	 * expected: `new Image(id)`. Graphics will pick the appropriate
+	 * resolution from the list when rendering this asset.
+	 */
+	public function addResolutions(id:String, assets:Array<String>):AtlasResolutions
 	{
-		// text assets aren't cached
-		return AssetLoader.getText(assetName);
+		if (regions.exists(id))
+		{
+			var resolutions:AtlasResolutions = cast regions[id];
+			for (asset in assets)
+			{
+				var region:AtlasRegion = cast getAtlasRegion(asset);
+				resolutions.addResolution(region);
+			}
+			return resolutions;
+		}
+		else
+		{
+			var resolutions = new AtlasResolutions([for (asset in assets) Atlas.loadImageAsRegion(asset)]);
+			regions[id] = resolutions;
+			return resolutions;
+		}
 	}
 
-	public function getSound(assetName:String):Dynamic
+	/**
+	 * Add all of the regions from a TextureAtlas to the AssetCache.
+	 *
+	 * After calling this method, regions can be specified wherever images
+	 * assets are expected, e.g. `new Image("my_atlas_region")`.
+	 */
+	@:access(haxepunk.graphics.atlas.TextureAtlas)
+	public function addTextureAtlas(atlas:TextureAtlas):Void
 	{
-		// TODO
-		return AssetLoader.getSound(assetName);
+		for (key in atlas._regions.keys())
+		{
+			regions[key] = atlas.getRegion(key);
+		}
 	}
 
 	public function enable()
@@ -175,21 +224,7 @@ class AssetCache
 		active.remove(this);
 		for (key in textures.keys())
 		{
-			var stillNeeded:Bool = false;
-			for (cache in active)
-			{
-				if (cache.textures.exists(key))
-				{
-					stillNeeded = true;
-					break;
-				}
-			}
-			if (!stillNeeded)
-			{
-				var texture = textures[key];
-				texture.dispose();
-			}
-			textures.remove(key);
+			removeTexture(key);
 		}
 	}
 }

@@ -79,6 +79,11 @@ class Tilemap extends Graphic
 				_atlas.prepare(tileWidth, tileHeight, tileMarginWidth, tileMarginHeight, tileOffsetX, tileOffsetY);
 			}
 		}
+		else
+		{
+			tileWidth = _atlas.tileWidth;
+			tileHeight = _atlas.tileHeight;
+		}
 
 		this.width = width - (width % tileWidth);
 		this.height = height - (height % tileHeight);

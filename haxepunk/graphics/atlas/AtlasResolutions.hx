@@ -133,11 +133,6 @@ class AtlasResolutions implements IAtlasRegion
 		return new AtlasResolutions(clippedRegions);
 	}
 
-	public function destroy():Void
-	{
-		for (region in regions) region.destroy();
-	}
-
 	/**
 	 * Prints the region as a string
 	 *

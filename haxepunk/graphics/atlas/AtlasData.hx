@@ -30,43 +30,8 @@ class AtlasData
 
 		_name = name;
 
-		if (_name != null)
-		{
-			if (_dataPool.exists(_name))
-			{
-				throw 'Cannot cache duplicate AtlasData with the name "$_name"';
-			}
-			else
-			{
-				_dataPool.set(_name, this);
-			}
-		}
-
 		width = texture.width;
 		height = texture.height;
-	}
-
-	/**
-	 * Get's the atlas data for a specific texture, useful for setting rendering flags
-	 * @param	name	The name of the image file
-	 * @return	An AtlasData object (will create one if it doesn't already exist)
-	 */
-	public static inline function getAtlasDataByName(name:String, create:Bool=false):AtlasData
-	{
-		var data:AtlasData = null;
-		if (_dataPool.exists(name))
-		{
-			data = _dataPool.get(name);
-		}
-		else if (create)
-		{
-			var texture:Texture = AssetCache.global.getTexture(name);
-			if (texture != null)
-			{
-				data = new AtlasData(texture, name);
-			}
-		}
-		return data;
 	}
 
 	/**
@@ -87,28 +52,6 @@ class AtlasData
 	{
 		_batch = batch;
 		batch.recycle();
-	}
-
-	/**
-	 * Removes the object from memory
-	 */
-	public function destroy():Void
-	{
-		if (_name != null)
-		{
-			_dataPool.remove(_name);
-		}
-	}
-
-	/**
-	 * Removes all atlases from the display list
-	 */
-	public static function destroyAll():Void
-	{
-		for (atlas in _dataPool)
-		{
-			atlas.destroy();
-		}
 	}
 
 	/**
@@ -234,7 +177,6 @@ class AtlasData
 	var _name:String;
 
 	static var _batch:DrawCommandBatch;
-	static var _dataPool:Map<String, AtlasData> = new Map<String, AtlasData>();
 	static var _uniqueId:Int = 0; // allows for unique names
 	static var _rect:Rectangle = new Rectangle();
 }

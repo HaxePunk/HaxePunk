@@ -13,6 +13,7 @@
 	<haxedef name="source-header" value="haxe"/>
 	<haxedef name="webgl" if="html5"/>
 	<haxeflag name="--macro" value="haxepunk.utils.Platform.run()"/>
+	<haxeflag name="--macro" value="allowPackage('flash')"/>
 
 	<haxelib name="openfl"/>
 

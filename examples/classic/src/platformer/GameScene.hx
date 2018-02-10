@@ -37,9 +37,7 @@ class GameScene extends DemoScene
 
 	override public function begin()
 	{
-#if !flash
 		atlas = TextureAtlas.loadTexturePacker("atlas/assets.xml");
-#end
 		backdrop = new Backdrop("gfx/tile.png", true, true);
 		addGraphic(backdrop, 20);
 
@@ -76,13 +74,6 @@ class GameScene extends DemoScene
 		entity.mask = grid;
 		entity.type = "solid";
 		add(entity);
-	}
-
-	override public function end()
-	{
-#if !flash
-		atlas.destroy();
-#end
 	}
 
 	override public function update()
