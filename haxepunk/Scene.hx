@@ -116,7 +116,7 @@ class Scene extends Tweener
 		super();
 
 		camera = new Camera();
-		assetCache = new AssetCache();
+		assetCache = new AssetCache(Type.getClassName(Type.getClass(this)));
 		batch = new DrawCommandBatch();
 
 		_layerList = new Array<Int>();

@@ -105,7 +105,7 @@ class FlashApp extends Sprite
 		});
 		#end
 
-		#if debug_console
+		#if hxp_debug_console
 		Console.enabled = true;
 		#end
 	}

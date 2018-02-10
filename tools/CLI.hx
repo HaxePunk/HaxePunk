@@ -5,6 +5,7 @@ import haxe.io.BytesOutput;
 import haxe.io.Eof;
 
 import haxepunk.utils.HaxelibInfo;
+import haxepunk.utils.Log;
 
 class CLI
 {
@@ -89,7 +90,7 @@ class CLI
 			process.close();
 			output = buffer.getBytes().toString();
 		}
-		catch (e:Dynamic) { trace(e); }
+		catch (e:Dynamic) { Log.error(e); }
 
 		var lines = output.split("\n");
 		var result = "";

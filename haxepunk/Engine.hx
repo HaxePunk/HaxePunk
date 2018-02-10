@@ -254,12 +254,14 @@ class Engine
 	{
 		if (_scene != null && _scenes.length > 0 && _scenes[_scenes.length - 1] != _scene)
 		{
+			Log.debug("ending scene: " + Type.getClassName(Type.getClass(_scene)));
 			_scene.end();
 			_scene.updateLists();
 			if (_scene.autoClear && _scene.hasTween) _scene.clearTweens();
 
 			_scene = _scenes[_scenes.length - 1];
 
+			Log.debug("starting scene: " + Type.getClassName(Type.getClass(_scene)));
 			_scene.updateLists();
 			_scene.begin();
 			_scene.assetCache.enable();
@@ -276,6 +278,7 @@ class Engine
 	 */
 	public function pushScene(value:Scene):Void
 	{
+		Log.debug("pushed scene: " + Type.getClassName(Type.getClass(_scene)));
 		_scenes.push(value);
 	}
 
@@ -285,6 +288,7 @@ class Engine
 	 */
 	public function popScene():Scene
 	{
+		Log.debug("popped scene: " + Type.getClassName(Type.getClass(_scene)));
 		var scene = _scenes.pop();
 		if (scene.assetCache.enabled)
 		{

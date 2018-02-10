@@ -4,10 +4,14 @@
 	<app swf-version="11.7" if="flash"/>
 
 	<section unless="hxp_no_assets">
-		<assets path="assets/graphics" rename="graphics" include="*.png" embed="true"/>
-		<assets path="assets/font" rename="font" include="*.ttf" embed="true"/>
-		<assets path="assets/font" rename="font" include="*.fnt" type="text" embed="true"/>
-		<assets path="assets/font" rename="font" include="*.png" type="image" embed="true"/>
+		<assets path="assets/graphics" rename="graphics" include="*.png"/>
+		<assets path="assets/font" rename="font" include="*.ttf"/>
+		<assets path="assets/font" rename="font" include="*.fnt" type="text"/>
+		<assets path="assets/font" rename="font" include="*.png" type="image"/>
+	</section>
+	<section if="hxp_debug_console">
+		<assets path="assets/font" rename="font" include="*.fnt" type="text"/>
+		<assets path="assets/font" rename="font" include="*.png" type="image"/>
 	</section>
 
 	<haxedef name="source-header" value="haxe"/>

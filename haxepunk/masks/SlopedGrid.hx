@@ -314,7 +314,6 @@ class SlopedGrid extends Hitbox
 			starty = Std.int(_rect.y / _tile.height),
 			endx = Std.int((_rect.x + opw - 1) / _tile.width) + 1,
 			endy = Std.int((_rect.y + oph - 1) / _tile.height) + 1;
-		// trace(startx + ", " + starty + " : " + endx + ", " + endy);
 
 		var yy = py + starty * _tile.height;
 		for (dy in starty...endy)

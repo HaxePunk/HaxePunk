@@ -29,10 +29,10 @@ class GLUtils
 		var error = GL.getError();
 		if (error != GL.NO_ERROR)
 			throw "GL Error found at " + pos.fileName + ":" + pos.lineNumber + ": " + error;
-		#elseif debug
+		#else
 		var error = GL.getError();
 		if (error != GL.NO_ERROR)
-			trace("GL Error found at " + pos.fileName + ":" + pos.lineNumber + ": " + error);
+			Log.error("GL Error found at " + pos.fileName + ":" + pos.lineNumber + ": " + error);
 		#end
 	}
 

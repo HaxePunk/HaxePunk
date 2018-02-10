@@ -11,11 +11,14 @@ import haxepunk.graphics.hardware.Texture;
 import haxepunk.graphics.text.BitmapFont;
 import haxepunk.graphics.text.BitmapFontAtlas;
 import haxepunk.graphics.text.IBitmapFont;
+using haxepunk.assets.AssetMacros;
 
 class AssetCache
 {
-	public static var global:AssetCache = new AssetCache();
+	public static var global:AssetCache = new AssetCache("global");
 	public static var active:Array<AssetCache> = [global];
+
+	public var name:String;
 
 	public var enabled(get, never):Bool;
 	inline function get_enabled() return active.indexOf(this) > -1;
@@ -29,7 +32,10 @@ class AssetCache
 	var tileAtlases:Map<String, TileAtlas> = new Map();
 	var atlasData:Map<String, AtlasData> = new Map();
 
-	public function new() {}
+	public function new(name:String)
+	{
+		this.name = name;
+	}
 
 	public function addTexture(id:String, texture:Texture)
 	{
@@ -38,7 +44,10 @@ class AssetCache
 
 	public function getTexture(id:String, addRef:Bool=true):Texture
 	{
-		return AssetMacros.findAsset(textures, id, addRef, AssetLoader.getTexture(id));
+		return AssetMacros.findAsset(this, textures, id, addRef, {
+			Log.info('loading texture $id into cache $name');
+			AssetLoader.getTexture(id);
+		});
 	}
 
 	public function removeTexture(id:String)
@@ -56,6 +65,7 @@ class AssetCache
 		}
 		if (!stillNeeded)
 		{
+			Log.info('disposing texture $id');
 			texture.dispose();
 		}
 	}
@@ -67,7 +77,7 @@ class AssetCache
 
 	public function getText(id:String, addRef:Bool=true):String
 	{
-		return AssetMacros.findAsset(text, id, addRef, AssetLoader.getText(id));
+		return AssetMacros.findAsset(this, text, id, addRef, AssetLoader.getText(id));
 	}
 
 	public function removeText(id:String)
@@ -82,7 +92,7 @@ class AssetCache
 
 	public function getSound(id:String, addRef:Bool=true):Dynamic
 	{
-		return AssetMacros.findAsset(sounds, id, addRef, AssetLoader.getSound(id));
+		return AssetMacros.findAsset(this, sounds, id, addRef, AssetLoader.getSound(id));
 	}
 
 	public function removeSound(id:String)
@@ -97,7 +107,7 @@ class AssetCache
 
 	public function getTileAtlas(id:String, tileWidth:Int=0, tileHeight:Int=0, tileMarginWidth:Int=0, tileMarginHeight:Int=0, tileOffsetX:Int=0, tileOffsetY:Int=0, addRef:Bool=true):TileAtlas
 	{
-		return AssetMacros.findAsset(tileAtlases, id, addRef, {
+		return AssetMacros.findAsset(this, tileAtlases, id, addRef, {
 			var texture = getTexture(id);
 			var atlas = new TileAtlas(texture);
 			atlas.prepare(tileWidth, tileHeight, tileMarginWidth, tileMarginHeight, tileOffsetX, tileOffsetY);
@@ -117,7 +127,7 @@ class AssetCache
 
 	public function getAtlasData(id:String, addRef:Bool=true):AtlasData
 	{
-		return AssetMacros.findAsset(atlasData, id, addRef, new AtlasData(getTexture(id), id));
+		return AssetMacros.findAsset(this, atlasData, id, addRef, new AtlasData(getTexture(id), id));
 	}
 
 	public function removeAtlasData(id:String)
@@ -132,7 +142,7 @@ class AssetCache
 
 	public function getAtlasRegion(id:String, addRef:Bool=true):IAtlasRegion
 	{
-		return AssetMacros.findAsset(regions, id, addRef, {
+		return AssetMacros.findAsset(this, regions, id, addRef, {
 			var data = getAtlasData(id);
 			Atlas.loadImageAsRegion(data);
 		});
@@ -150,7 +160,7 @@ class AssetCache
 
 	public function getBitmapFont(fontName:String, addRef:Bool=true):IBitmapFont
 	{
-		return AssetMacros.findAsset(bitmapFonts, fontName, addRef, null);
+		return AssetMacros.findAsset(this, bitmapFonts, fontName, addRef, null);
 	}
 
 	public function removeBitmapFont(fontName:String):Void
@@ -223,15 +233,24 @@ class AssetCache
 
 	public function enable()
 	{
-		if (!enabled) active.push(this);
+		if (!enabled)
+		{
+			active.push(this);
+			Log.debug('enabled asset cache $name');
+		}
 	}
 
 	public function dispose()
 	{
-		active.remove(this);
-		for (key in textures.keys())
+		if (enabled)
 		{
-			removeTexture(key);
+			var pos = active.indexOf(this);
+			Log.debug('disposing asset cache $name');
+			active.remove(this);
+			for (key in textures.keys())
+			{
+				removeTexture(key);
+			}
 		}
 	}
 }

@@ -33,7 +33,7 @@ class Attribute
 		name = value;
 		rebind(); // requires name to be set
 		if (index == -1)
-			trace("Warning : attribute '" + name + "' is not declared or not used in shader source.");
+			Log.warning("attribute '" + name + "' is not declared or not used in shader source.");
 		return name;
 	}
 

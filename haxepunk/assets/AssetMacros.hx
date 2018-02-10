@@ -2,30 +2,31 @@ package haxepunk.assets;
 
 class AssetMacros
 {
-	macro public static function findAsset(cache:haxe.macro.Expr, id:haxe.macro.Expr, addRef:haxe.macro.Expr, fallback:haxe.macro.Expr)
+	macro public static function findAsset(cache:haxe.macro.Expr, map:haxe.macro.Expr, id:haxe.macro.Expr, addRef:haxe.macro.Expr, fallback:haxe.macro.Expr)
 	{
-		var cache = haxe.macro.ExprTools.toString(cache);
+		var map = haxe.macro.ExprTools.toString(map);
 		return macro {
 			// if we already have this asset cached, return it
-			if ($i{cache}.exists(${id})) return $i{cache}[${id}];
+			if ($i{map}.exists(${id})) return $i{map}[${id}];
 			// if another active cache already has this texture cached, return
 			// their version
-			for (cache in active)
+			for (otherCache in active)
 			{
-				if (cache.$cache.exists(${id}))
+				if (otherCache.$map.exists(${id}))
 				{
-					var cached = cache.$cache[${id}];
+					var cached = otherCache.$map[${id}];
 					if (${addRef} && cached != null)
 					{
 						// keep this asset cached here too, in case the owning cache is
 						// disposed before this one is
-						$i{cache}[${id}] = cached;
+						Log.debug('adding asset cache reference: ' + ${cache} + ':$id -> ' + otherCache.name + ':$id');
+						$i{map}[${id}] = cached;
 					}
 					return cached;
 				}
 			}
 			// no cached version; load from asset loader
-			return $i{cache}[${id}] = ${fallback};
+			return $i{map}[${id}] = ${fallback};
 		}
 	}
 }
