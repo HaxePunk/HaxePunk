@@ -75,7 +75,7 @@ class DrawCommandBatch
 			// we can reuse the most recent draw call
 			return last;
 		}
-		#if !no_render_batch
+		#if !hxp_no_render_batch
 		else if ((x1 != 0 || x2 != 0 || x3 != 0) && (y1 != 0 || y2 != 0 || y3 != 0))
 		{
 			// look back to see if we can add this to a previous draw call
