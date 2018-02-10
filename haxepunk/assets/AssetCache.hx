@@ -10,6 +10,7 @@ import haxepunk.graphics.atlas.TileAtlas;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.graphics.text.BitmapFont;
 import haxepunk.graphics.text.BitmapFontAtlas;
+import haxepunk.graphics.text.IBitmapFont;
 
 class AssetCache
 {
@@ -24,7 +25,7 @@ class AssetCache
 	// TODO: abstraction for Sound type
 	var sounds:Map<String, Dynamic> = new Map();
 	var regions:Map<String, IAtlasRegion> = new Map();
-	var bitmapFonts:Map<String, BitmapFont> = new Map();
+	var bitmapFonts:Map<String, IBitmapFont> = new Map();
 	var tileAtlases:Map<String, TileAtlas> = new Map();
 	var atlasData:Map<String, AtlasData> = new Map();
 
@@ -142,34 +143,40 @@ class AssetCache
 		regions.remove(id);
 	}
 
+	public function addBitmapFont(fontName:String, font:IBitmapFont)
+	{
+		bitmapFonts[fontName] = font;
+	}
+
+	public function getBitmapFont(fontName:String, addRef:Bool=true):IBitmapFont
+	{
+		return AssetMacros.findAsset(bitmapFonts, fontName, addRef, null);
+	}
+
+	public function removeBitmapFont(fontName:String):Void
+	{
+		bitmapFonts.remove(fontName);
+	}
+
 	/**
 	 * Add multiple BitmapFontAtlases to a single BitmapFont, representing
 	 * multiple sizes of a single font. You can then reference this font as
 	 * `fontName` in place of a bitmap font asset. BitmapText will
 	 * automatically use the most appropriate size of the font when rendering.
 	 */
-	public function addBitmapFont(fontName:String, fonts:Array<String>, format:BitmapFontFormat=BitmapFontFormat.XML, ?extraParams:Dynamic):BitmapFont
+	public function addBitmapFontSizes(fontName:String, fonts:Array<String>, format:BitmapFontFormat=BitmapFontFormat.XML, ?extraParams:Dynamic):BitmapFont
 	{
+		var bmf:BitmapFont = new BitmapFont(fontName);
 		if (!bitmapFonts.exists(fontName))
 		{
-			bitmapFonts[fontName] = new BitmapFont(fontName);
+			bitmapFonts[fontName] = bmf;
 		}
 		var bitmapFont = bitmapFonts[fontName];
 		for (font in fonts)
 		{
-			bitmapFont.addSize(BitmapFontAtlas.getFont(font, format, extraParams));
+			bmf.addSize(BitmapFontAtlas.getFont(font, format, extraParams));
 		}
-		return bitmapFont;
-	}
-
-	public function getBitmapFont(fontName:String, addRef:Bool=true):BitmapFont
-	{
-		return AssetMacros.findAsset(bitmapFonts, fontName, addRef, throw 'Unrecognized bitmap font: $fontName');
-	}
-
-	public function removeBitmapFont(fontName:String):Void
-	{
-		bitmapFonts.remove(fontName);
+		return bmf;
 	}
 
 	/**
