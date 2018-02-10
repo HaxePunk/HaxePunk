@@ -143,6 +143,8 @@ class TileAtlas extends Atlas
 	public function prepare(tileWidth:Int, tileHeight:Int, tileMarginWidth:Int=0, tileMarginHeight:Int=0, tileOffsetX:Int=0, tileOffsetY:Int=0)
 	{
 		if (_regions.length > 0) return; // only prepare once
+		if (tileWidth == 0) tileWidth = _data.width;
+		if (tileHeight == 0) tileHeight = _data.height;
 		Log.debug('preparing tile atlas: $tileWidth x $tileHeight, margin $tileMarginWidth x $tileMarginHeight, offset $tileOffsetX x $tileOffsetY');
 		_tileWidth = tileWidth;
 		_tileHeight = tileHeight;
