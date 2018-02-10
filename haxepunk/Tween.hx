@@ -57,9 +57,10 @@ class Tween
 	 * Constructor. Specify basic information about the Tween.
 	 * @param	duration		Duration of the tween (in seconds).
 	 * @param	type			Tween type, one of Tween.PERSIST (default), Tween.LOOPING, or Tween.ONESHOT.
+	 * @param	complete		Optional function which will bind to the onComplete signal.
 	 * @param	ease			Optional easer function to apply to the Tweened value.
 	 */
-	public function new(duration:Float, ?type:TweenType, ?ease:EaseFunction)
+	public function new(duration:Float, ?type:TweenType, ?complete:Void->Void, ?ease:EaseFunction)
 	{
 		if (duration < 0)
 		{
@@ -69,6 +70,10 @@ class Tween
 		_type = type == null ? TweenType.Persist : type;
 		_ease = ease;
 		_t = 0;
+		if (complete != null)
+		{
+			onComplete.bind(complete);
+		}
 	}
 
 	/** @private Update function for override in subclasses */
