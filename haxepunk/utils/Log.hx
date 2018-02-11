@@ -38,7 +38,7 @@ class Log
 	public static inline function write(s:Dynamic, level:LogLevel = LogLevel.Info, ?pos:haxe.PosInfos)
 	{
 		#if (hxp_debug && !(hxp_no_log))
-		haxe.Log.trace(level.format(Std.string(s), pos), null);
+		haxe.Log.trace(level.format(Std.string(s), pos), pos);
 		#end
 	}
 
