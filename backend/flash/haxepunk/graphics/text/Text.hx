@@ -9,7 +9,7 @@ import flash.text.TextFormatAlign;
 import flash.Assets;
 import flash.geom.Point;
 import haxepunk.HXP;
-import haxepunk.debug.Console;
+import haxepunk.utils.Log;
 import haxepunk.graphics.Image;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.AtlasRegion;
@@ -184,7 +184,7 @@ class Text extends Image
 #if debug
 			else
 			{
-				if (Console.enabled) HXP.engine.console.log("Could not found text style '" + tagName + "'");
+				Log.warning("Could not found text style '" + tagName + "'");
 			}
 #end
 		}
@@ -192,7 +192,7 @@ class Text extends Image
 #if debug
 		if (_field.text != _text)
 		{
-			if (Console.enabled) HXP.engine.console.log("Text field and _text do not match!");
+			Log.warning("Text field and _text do not match!");
 		}
 #end
 	}
