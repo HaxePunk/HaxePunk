@@ -30,7 +30,7 @@ class LogPanel extends Entity
 	{
 		super.update();
 
-		var targetHeight:Int = (expanded ? 20 * LOG_LINES : 40) + 8;
+		var targetHeight:Int = (expanded ? Std.int(HXP.height / 2) : 40) + 8;
 		if (height != targetHeight)
 		{
 			var change = Std.int(EXPAND_PER_SECOND * HXP.elapsed);

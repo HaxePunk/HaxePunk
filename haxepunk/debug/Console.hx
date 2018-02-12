@@ -104,7 +104,7 @@ class Console extends Scene
 		fpsChart.x = fpsChart.y = 8;
 		add(fpsChart);
 
-		memoryChart = new Metric("Memory Used (MB)", memory, 0xffdd55, 256);
+		memoryChart = new Metric("Memory (MB)", memory, 0xffdd55, 256);
 		memoryChart.x = fpsChart.x;
 		memoryChart.y = fpsChart.y + fpsChart.height + 8;
 		add(memoryChart);
