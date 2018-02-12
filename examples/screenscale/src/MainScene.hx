@@ -74,7 +74,7 @@ class MainScene extends Scene
 		Key.define("left", [Key.A, Key.LEFT]);
 		Key.define("right", [Key.D, Key.RIGHT]);
 		Key.define("next", [Key.SPACE, Key.ENTER]);
-		Key.define("snap", [Key.TAB]);
+		Key.define("snap", [Key.TAB, Key.P]);
 		Mouse.define("next", MouseButton.LEFT);
 		onInputPressed.next.bind(changeScaleMode);
 		onInputPressed.snap.bind(togglePixelSnapping);
@@ -128,7 +128,7 @@ class MainScene extends Scene
 
 	function setScaleMode()
 	{
-		label.text = scaleModes[scaleModeIndex].description + "\nClick to change. Arrows to move. Tab to toggle pixel snapping (" + (HXP.camera.pixelSnapping ? "on" : "off") + ".)";
+		label.text = scaleModes[scaleModeIndex].description + "\nClick to change. Arrows/WASD to move. P to toggle pixel snapping (" + (HXP.camera.pixelSnapping ? "on" : "off") + ".)";
 
 		HXP.screen.scaleMode = scaleModes[scaleModeIndex].mode;
 		HXP.screen.scaleMode.setBaseSize(640, 480);

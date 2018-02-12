@@ -1,4 +1,4 @@
 Asteroids
 =========
 
-Arrows to turn or move, Space to shoot.
+Arrows/WASD to turn or move, K or click to shoot.

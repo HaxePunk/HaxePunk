@@ -5,6 +5,7 @@ import haxepunk.graphics.emitter.Emitter;
 import haxepunk.graphics.shader.SceneShader;
 import haxepunk.input.Input;
 import haxepunk.input.Key;
+import haxepunk.input.Mouse;
 import haxepunk.utils.Ease;
 
 
@@ -24,12 +25,12 @@ class MainScene extends Scene
 		ship.y = HXP.height/2;
 		add(ship);
 
-		Input.define("shoot", [Key.SPACE]);
-
-		Input.define("left", [Key.A, Key.LEFT]);
-		Input.define("right", [Key.D, Key.RIGHT]);
-		Input.define("up", [Key.W, Key.UP]);
-		Input.define("down", [Key.S, Key.DOWN]);
+		Key.define("shoot", [Key.SPACE, Key.K]);
+		Mouse.define("shoot", MouseButton.LEFT);
+		Key.define("left", [Key.A, Key.LEFT]);
+		Key.define("right", [Key.D, Key.RIGHT]);
+		Key.define("up", [Key.W, Key.UP]);
+		Key.define("down", [Key.S, Key.DOWN]);
 
 		explosionEmitter = new Emitter("graphics/explosion.png");
 		explosionEmitter.newType("explode");
@@ -45,6 +46,8 @@ class MainScene extends Scene
 		for (i in 0 ... 4) newAsteroid();
 
 		shaders = [SceneShader.fromAsset("shaders/pixel.frag")];
+
+		onInputPressed.shoot.bind(ship.shoot);
 	}
 
 	override public function update()
@@ -56,7 +59,6 @@ class MainScene extends Scene
 			newAsteroid();
 		}
 
-		if (Input.pressed("shoot")) ship.shoot();
 		if (Input.check("up")) ship.move(1);
 		if (Input.check("down")) ship.move(-0.5);
 		if (Input.check("left")) ship.rotate(1);
