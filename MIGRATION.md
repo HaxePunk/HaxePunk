@@ -28,7 +28,7 @@ Class Changes
 | 2.x                                   | 4.x                                   |
 |---------------------------------------|---------------------------------------|
 | com.haxepunk.World                    | haxepunk.Scene                        |
-| com.haxepunk.graphics.Backdrop        | haxepunk.graphics.tile.Backdro        |
+| com.haxepunk.graphics.Backdrop        | haxepunk.graphics.tile.Backdrop       |
 | com.haxepunk.graphics.BitmapText      | haxepunk.graphics.text.BitmapText     |
 | com.haxepunk.graphics.Canvas          | *removed*                             |
 | com.haxepunk.graphics.Emitter         | haxepunk.graphics.emitter.Emitter     |
