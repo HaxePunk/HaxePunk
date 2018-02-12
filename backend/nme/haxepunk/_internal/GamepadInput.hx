@@ -7,7 +7,7 @@ import haxepunk.input.Input;
 @:access(haxepunk.input.Gamepad)
 class GamepadInput
 {
-	public static function init(app:App)
+	public static function init(app:FlashApp)
 	{
 		var stage = app.stage;
 		stage.addEventListener(JoystickEvent.AXIS_MOVE, onJoyAxisMove);
