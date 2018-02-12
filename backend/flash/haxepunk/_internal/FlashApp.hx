@@ -167,7 +167,10 @@ class FlashApp extends Sprite
 		KeyInput.init(this);
 	}
 
-	public function initGamepadInput() {}
+	public function initGamepadInput()
+	{
+		GamepadInput.init(this);
+	}
 
 	public function initTouchInput()
 	{

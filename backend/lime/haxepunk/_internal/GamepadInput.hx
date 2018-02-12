@@ -7,7 +7,7 @@ import haxepunk.input.Input;
 @:access(haxepunk.input.Gamepad)
 class GamepadInput
 {
-	public static function init(app:App)
+	public static function init(app:FlashApp)
 	{
 		LimeGamepad.onConnect.add(onJoyDeviceAdded);
 		for (device in LimeGamepad.devices) onJoyDeviceAdded(device);
