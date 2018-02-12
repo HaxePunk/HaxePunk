@@ -14,11 +14,11 @@ private class LayerToggle extends Entity
 	public function new(mouseManager:MouseManager)
 	{
 		super();
-		label = new BitmapText("Layer");
+		label = new BitmapText("Layer", {size: 12});
 		label.alpha = 0.75;
 		addGraphic(label);
-		width = 220;
-		height = 24;
+		width = 140;
+		height = 18;
 		type = mouseManager.type;
 		mouseManager.add(this, null, onClick, onEnter, onExit, true);
 	}
@@ -61,10 +61,11 @@ class LayerList extends EntityList<LayerToggle>
 	{
 		super();
 		this.mouseManager = mouseManager;
-		width = 280;
+		width = 100;
 		height = 320;
 
-		sceneLabel = new BitmapText("Scene");
+		sceneLabel = new BitmapText("Scene", {size: 14});
+		sceneLabel.x = 10;
 		sceneLabel.y = childY;
 		childY += sceneLabel.textHeight;
 		graphic = sceneLabel;
@@ -102,7 +103,7 @@ class LayerList extends EntityList<LayerToggle>
 			fsy:Float = camera.screenScaleY;
 		Draw.setColor(0, alpha);
 		Draw.lineThickness = 4;
-		Draw.rectFilled(x * fsx, y * fsy, width * fsx, height * fsy);
+		Draw.rectFilled((x - 2) * fsx, y * fsy, (width + 4) * fsx, height * fsy);
 
 		super.render(camera);
 	}
