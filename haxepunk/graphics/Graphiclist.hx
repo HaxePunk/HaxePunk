@@ -9,7 +9,9 @@ import haxepunk.math.Vector2;
  * A Graphic that can contain multiple Graphics of one or various types.
  * Useful for drawing sprites with multiple different parts, etc.
  */
-class Graphiclist extends Graphic
+typedef Graphiclist = BaseGraphicList<Graphic>;
+
+@:generic class BaseGraphicList<T:Graphic> extends Graphic
 {
 	override function set_alpha(v:Float):Float
 	{
@@ -33,10 +35,10 @@ class Graphiclist extends Graphic
 	 * Constructor.
 	 * @param	graphic		Graphic objects to add to the list.
 	 */
-	public function new(?graphic:Array<Graphic>)
+	public function new(?graphic:Array<T>)
 	{
-		_graphics = new Array<Graphic>();
-		_temp = new Array<Graphic>();
+		_graphics = new Array();
+		_temp = new Array();
 		_camera = new Camera();
 
 		super();
@@ -63,7 +65,7 @@ class Graphiclist extends Graphic
 	 * @return	The graphic in n index.
 	 */
 	@:arrayAccess
-	public function get(i:Int):Graphic
+	public function get(i:Int):T
 	{
 		if ( i >= _graphics.length || i < 0 ) throw "Index out of bounds.";
 		else return _graphics[i];
@@ -107,7 +109,7 @@ class Graphiclist extends Graphic
 	 * @param	graphic		The Graphic to add.
 	 * @return	The added Graphic.
 	 */
-	public function add(graphic:Graphic):Graphic
+	public function add(graphic:T):T
 	{
 		if (graphic == null) return graphic;
 
@@ -121,7 +123,7 @@ class Graphiclist extends Graphic
 	 * @param	graphic		The Graphic to remove.
 	 * @return	The removed Graphic.
 	 */
-	public function remove(graphic:Graphic):Graphic
+	public function remove(graphic:T):T
 	{
 		if (HXP.indexOf(_graphics, graphic) < 0) return graphic;
 		HXP.clear(_temp);
@@ -131,7 +133,7 @@ class Graphiclist extends Graphic
 			if (g == graphic) count--;
 			else _temp[_temp.length] = g;
 		}
-		var temp:Array<Graphic> = _graphics;
+		var temp:Array<T> = _graphics;
 		_graphics = _temp;
 		_temp = temp;
 		updateCheck();
@@ -164,8 +166,8 @@ class Graphiclist extends Graphic
 	/**
 	 * All Graphics in this list.
 	 */
-	public var children(get, null):Array<Graphic>;
-	function get_children():Array<Graphic> return _graphics;
+	public var children(get, null):Array<T>;
+	function get_children():Array<T> return _graphics;
 
 	/**
 	 * Amount of Graphics in this list.
@@ -189,7 +191,7 @@ class Graphiclist extends Graphic
 	}
 
 	// List information.
-	var _graphics:Array<Graphic>;
-	var _temp:Array<Graphic>;
-	var _camera:Camera;
+	var _graphics:Array<T> = new Array();
+	var _temp:Array<T> = new Array();
+	var _camera:Camera = new Camera();
 }
