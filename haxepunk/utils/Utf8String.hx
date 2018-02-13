@@ -7,6 +7,13 @@ import haxe.Utf8;
  */
 abstract Utf8String(String) from String to String
 {
+	public static inline function fromCharCode(unicode:Int):Utf8String
+	{
+		var u = new Utf8(4);
+		u.addChar(unicode);
+		return u.toString();
+	}
+
 	public var length(get, never):Int;
 	inline function get_length()
 	{
@@ -20,9 +27,7 @@ abstract Utf8String(String) from String to String
 
 	public inline function charAt(pos:Int):Utf8String
 	{
-		var u = new Utf8(4);
-		u.addChar(charCodeAt(pos));
-		return u.toString();
+		return fromCharCode(charCodeAt(pos));
 	}
 
 	public inline function charCodeAt(pos:Int):Int

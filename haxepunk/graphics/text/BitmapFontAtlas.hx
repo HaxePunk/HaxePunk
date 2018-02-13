@@ -6,6 +6,7 @@ import haxepunk.assets.AssetLoader;
 import haxepunk.graphics.atlas.AtlasDataType;
 import haxepunk.graphics.atlas.TextureAtlas;
 import haxepunk.graphics.hardware.Texture;
+import haxepunk.utils.Utf8String;
 
 @:enum
 abstract BitmapFontFormat(Int)
@@ -55,7 +56,7 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 	 */
 	public static function loadXMLFont(file:String):BitmapFontAtlas
 	{
-		var xmlText = AssetLoader.getText(file);
+		var xmlText:Utf8String = AssetLoader.getText(file);
 		if (xmlText == null) throw 'BitmapFontAtlas: "$file" not found!';
 
 		var xml = Xml.parse(xmlText);
@@ -83,7 +84,7 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 			}
 			else if (char.has.id)
 			{
-				glyph = String.fromCharCode(Std.parseInt(char.att.id));
+				glyph = Utf8String.fromCharCode(Std.parseInt(char.att.id));
 			}
 			if (glyph == null) throw '"$file" is not a valid .fnt file!';
 
