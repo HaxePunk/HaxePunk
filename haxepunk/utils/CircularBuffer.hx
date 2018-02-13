@@ -66,6 +66,12 @@ class CircularBuffer<T>
 		_iterator.reset();
 		return _iterator;
 	}
+
+	public inline function slice(start:Int)
+	{
+		_iterator.reset(start);
+		return _iterator;
+	}
 }
 
 private class CircularBufferIterator<T>
@@ -78,9 +84,9 @@ private class CircularBufferIterator<T>
 		this.buffer = buffer;
 	}
 
-	public inline function reset()
+	public inline function reset(i:Int = 0)
 	{
-		i = 0;
+		this.i = i;
 	}
 
 	public inline function hasNext() return i < buffer.length;
