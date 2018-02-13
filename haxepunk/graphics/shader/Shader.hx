@@ -111,7 +111,7 @@ class Shader
 		GL.attachShader(glProgram, fragmentShader);
 		GL.attachShader(glProgram, vertexShader);
 		GL.linkProgram(glProgram);
-		#if gl_debug
+		#if hxp_gl_debug
 		if (GL.getProgramParameter(glProgram, GL.LINK_STATUS) == 0)
 			throw "Unable to initialize the shader program.";
 		#end
@@ -128,7 +128,7 @@ class Shader
 		var shader = GL.createShader(type);
 		GL.shaderSource(shader, source);
 		GL.compileShader(shader);
-		#if gl_debug
+		#if hxp_gl_debug
 		if (GL.getShaderParameter(shader, GL.COMPILE_STATUS) == 0)
 			throw "Error compiling vertex shader: " + GL.getShaderInfoLog(shader);
 		#end

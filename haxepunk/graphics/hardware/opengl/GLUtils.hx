@@ -25,7 +25,7 @@ class GLUtils
 
 	public static inline function checkForErrors(?pos:PosInfos)
 	{
-		#if gl_debug
+		#if hxp_gl_debug
 		var error = GL.getError();
 		if (error != GL.NO_ERROR)
 			throw "GL Error found at " + pos.fileName + ":" + pos.lineNumber + ": " + error;
