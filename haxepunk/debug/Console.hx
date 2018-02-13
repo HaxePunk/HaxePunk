@@ -278,7 +278,7 @@ class Console extends Scene
 		updateLists();
 	}
 
-	public inline function log(data:Array<Dynamic>)
+	public inline function log(data:Dynamic)
 	{
 		logPanel.log(data);
 	}

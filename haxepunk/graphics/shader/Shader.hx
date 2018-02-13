@@ -100,6 +100,8 @@ class Shader
 #end
 
 		id = idSeq++;
+
+		Log.info('Shader #$idSeq initialized');
 	}
 
 	public function build()

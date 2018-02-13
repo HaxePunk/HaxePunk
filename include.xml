@@ -3,7 +3,7 @@
 	<app preloader="haxepunk.Preloader" unless="hxp_no_preloader"/>
 	<app swf-version="11.7" if="flash"/>
 
-	<haxedef name="hxp_debug" if="debug"/>
+	<haxedef name="hxp_debug" if="debug || hxp_debug_console"/>
 	<haxedef name="hxp_gl_debug" if="gl_debug"/>
 
 	<section unless="hxp_no_assets">
