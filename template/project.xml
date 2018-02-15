@@ -3,7 +3,7 @@
 	<meta title="{{PROJECT_NAME}}" package="com.example.app" version="1.0.0" company=""/>
 
 	<app file="{{PROJECT_CLASS}}" main="{{PROJECT_CLASS}}" path="export"/>
-	<icon path="HaxePunk-icon.png"/>
+	<icon path="HaxePunk-icon.svg"/>
 	<window fps="{{FRAMERATE}}" background="0x333333"/>
 	<window width="{{WIDTH}}" height="{{HEIGHT}}" resizable="true" unless="mobile"/>
 	<window width="0" height="0" fullscreen="true" if="mobile"/>
