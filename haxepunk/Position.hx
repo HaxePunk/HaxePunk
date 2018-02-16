@@ -1,8 +1,8 @@
 package haxepunk;
 
 /**
- *  A simple structure to contain the coordinates of a position in 2D space.
- *  Unifies with any object that has x:Float and y:Float variables.
+ * A simple structure to contain the coordinates of a position in 2D space.
+ * Unifies with any object that has x:Float and y:Float variables.
  */
 @:dox(hide)
 private typedef PositionData =
@@ -12,8 +12,8 @@ private typedef PositionData =
 };
 
 /**
- *  Same as PositionData, but unifies with objects (such as Entity)
- *  whose x and y are properties, not variables.
+ * Same as PositionData, but unifies with objects (such as Entity)
+ * whose x and y are properties, not variables.
  */
 @:dox(hide)
 private typedef PositionPropsData =
