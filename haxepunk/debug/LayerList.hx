@@ -17,7 +17,7 @@ private class LayerToggle extends Entity
 		label = new BitmapText("Layer", {size: 12});
 		label.alpha = 0.75;
 		addGraphic(label);
-		width = 140;
+		width = 220;
 		height = 18;
 		type = mouseManager.type;
 		mouseManager.add(this, null, onClick, onEnter, onExit, true);
@@ -61,10 +61,10 @@ class LayerList extends EntityList<LayerToggle>
 	{
 		super();
 		this.mouseManager = mouseManager;
-		width = 160;
+		width = 240;
 		height = 320;
 
-		sceneLabel = new BitmapText("Scene", {size: 14});
+		sceneLabel = new BitmapText("Scene", {size: 12});
 		sceneLabel.x = 10;
 		sceneLabel.y = childY;
 		childY += sceneLabel.textHeight;
