@@ -4,7 +4,7 @@
 	"license": "MIT",
 	"tags": ["flash", "game", "cpp", "openfl"],
 	"description": "A Haxe port of the FlashPunk AS3 engine.",
-	"version": "4.0.0",
+	"version": "4.0.1",
 	"releasenote": "See CHANGELOG.md",
 	"contributors": ["heardtheword", "_ibilon", "bendmorris"],
 	"install": {
