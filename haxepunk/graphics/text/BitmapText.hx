@@ -46,7 +46,7 @@ abstract AlignType(Int)
 
 class RenderData
 {
-	public var char:Null<String>;
+	public var char:Null<Utf8String>;
 	public var img:Null<Image>;
 	public var x:Float = 0;
 	public var y:Float = 0;
@@ -72,7 +72,7 @@ enum TextOpcode
 	SetScale(scale:Float);
 	SetFont(font:IBitmapFont);
 	SetSize(size:Int);
-	TextBlock(text:String);
+	TextBlock(text:Utf8String);
 	NewLine(width:Float, height:Float, align:AlignType);
 	Image(image:Image, padding:Int);
 	Align(alignType:AlignType);
@@ -377,7 +377,7 @@ class BitmapText extends Graphic
 	{
 		if (_dirty)
 			parseText();
-		
+
 		originX = (autoWidth ? textWidth : width) * 0.5;
 		originY = (autoHeight ? textHeight : height) * 0.5;
 	}
