@@ -6,7 +6,7 @@ varying vec2 vTexCoord;
 uniform sampler2D uImage0;
 uniform vec2 uResolution;
 
-const float COLOR_VALUES = 16.0;
+const float COLOR_VALUES = 8.0;
 const float SCALE = 3.0;
 
 vec3 posterize(vec3 c) {
