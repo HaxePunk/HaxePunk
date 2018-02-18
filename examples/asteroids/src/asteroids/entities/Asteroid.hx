@@ -1,11 +1,12 @@
+package asteroids.entities;
+
 import haxepunk.HXP;
-import haxepunk.Entity;
 import haxepunk.graphics.Spritemap;
 import haxepunk.graphics.emitter.Emitter;
 import haxepunk.math.MathUtil;
 import haxepunk.utils.Color;
 
-class Asteroid extends Entity
+class Asteroid extends ExplodingEntity
 {
 	static inline var MOVE_SPEED = 32;
 	static inline var TURN_SPEED = 10;
@@ -16,7 +17,6 @@ class Asteroid extends Entity
 	var asteroid:Spritemap;
 	var size:Int = 0;
 	var dir:Float=0;
-	var explosionEmitter:Emitter;
 
 	public var angle(default, set):Float = 0;
 	function set_angle(a:Float)
@@ -26,7 +26,7 @@ class Asteroid extends Entity
 
 	public function new(explosionEmitter:Emitter, size:Int=0)
 	{
-		super();
+		super(explosionEmitter);
 
 		asteroidCount += 1;
 		this.explosionEmitter = explosionEmitter;
@@ -48,13 +48,13 @@ class Asteroid extends Entity
 		asteroid.frame = size;
 		asteroid.centerOrigin();
 
-		if (size == 0) angle = Std.random(Std.int(360/5)) * 5;
+		if (size == 0) angle = Std.random(Std.int(360 / 5)) * 5;
 		dir = Math.random() - 0.5;
 
 		graphic = asteroid;
 
 		width = height = Std.int(128 / Math.pow(2, size));
-		originX = originY = Std.int(width/2);
+		originX = originY = Std.int(width / 2);
 
 		type = "asteroid";
 	}
@@ -81,7 +81,7 @@ class Asteroid extends Entity
 	{
 		if (!active) return;
 
-		explode(x, y, width/2);
+		explode(x, y, width / 2);
 		size += 1;
 		if (size > 3)
 		{
@@ -93,9 +93,9 @@ class Asteroid extends Entity
 		else
 		{
 			// break into 2 smaller asteroids
-			width = Std.int(width/2);
-			height = Std.int(height/2);
-			originX = originY = Std.int(width/2);
+			width = Std.int(width / 2);
+			height = Std.int(height / 2);
+			originX = originY = Std.int(width / 2);
 			asteroid.frame = size;
 			dir = 1;
 			angle = (angle + 90) % 360;
@@ -106,14 +106,6 @@ class Asteroid extends Entity
 			child.angle = (angle + 180) / 360;
 			child.dir = -1;
 			scene.add(child);
-		}
-	}
-
-	function explode(x:Float, y:Float, radius:Float)
-	{
-		for (_ in 0 ... Std.int(radius))
-		{
-			explosionEmitter.emitInCircle("explode", x, y, radius);
 		}
 	}
 }

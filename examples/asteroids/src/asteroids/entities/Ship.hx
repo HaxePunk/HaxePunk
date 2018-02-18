@@ -1,17 +1,27 @@
+package asteroids.entities;
+
 import haxepunk.HXP;
-import haxepunk.Entity;
 import haxepunk.graphics.Image;
 import haxepunk.graphics.emitter.Particle;
 import haxepunk.graphics.emitter.Emitter;
 import haxepunk.math.MathUtil;
 
-
-class Ship extends Entity
+class Ship extends ExplodingEntity
 {
+	public static inline var WEAPON_SHOTS:Float = 10;
+
 	static inline var TURN_PER_SEC=180;
 	static inline var MOVE_PER_SEC=180;
 	static inline var ACCEL_TIME = 0.5;
 	static inline var SHOOT_DELAY = 0.15;
+
+	static inline var SHIELD_DURATION:Float = 2.5;
+	static inline var SHIELD_RECOVERY_TIME:Float = 60;
+	static inline var WEAPON_RECOVERY_TIME:Float = 5;
+
+	public var score:Int = 0;
+	public var shields:Float = 1;
+	public var weapon:Float = WEAPON_SHOTS;
 
 	var body:Image;
 	var bullet:Emitter;
@@ -22,9 +32,9 @@ class Ship extends Entity
 		return body.angle = angle = a;
 	}
 
-	public function new()
+	public function new(explosionEmitter:Emitter)
 	{
-		super();
+		super(explosionEmitter);
 
 		body = new Image("graphics/ship.png");
 		body.color = 0x80ffff;
@@ -38,7 +48,7 @@ class Ship extends Entity
 		addGraphic(body);
 		addGraphic(bullet);
 
-		setHitbox(body.width, body.height, Std.int(body.width/2), Std.int(body.height/2));
+		setHitbox(body.width, body.height, Std.int(body.width / 2), Std.int(body.height / 2));
 	}
 
 	@:access(haxepunk.graphics.emitter.Emitter)
@@ -62,7 +72,21 @@ class Ship extends Entity
 		hit = cast collide("asteroid", x, y);
 		if (hit != null)
 		{
-			scene.camera.shake(0.1,4);
+			scene.camera.shake(0.1, 4);
+			if (shields > 0)
+			{
+				shields -= HXP.elapsed / SHIELD_DURATION;
+				if (shields <= 0)
+				{
+					shields = 0;
+					explode(x, y, width / 2);
+				}
+			}
+		}
+		else if (shields < 1)
+		{
+			shields += HXP.elapsed / SHIELD_RECOVERY_TIME;
+			if (shields > 1) shields = 1;
 		}
 
 		while (p != null)
@@ -77,9 +101,16 @@ class Ship extends Entity
 					hit.destroy();
 					// remove this particle after it collides with something
 					p._time = 1;
+					++score;
 				}
 			}
 			p = p._next;
+		}
+
+		if (weapon < WEAPON_SHOTS)
+		{
+			weapon += WEAPON_SHOTS * HXP.elapsed / WEAPON_RECOVERY_TIME;
+			if (weapon > WEAPON_SHOTS) weapon = WEAPON_SHOTS;
 		}
 	}
 
@@ -91,10 +122,10 @@ class Ship extends Entity
 	public function move(dir:Float=1)
 	{
 		// speed up and move
-		velocity = Math.min(1, velocity + HXP.elapsed/ACCEL_TIME);
+		velocity = Math.min(1, velocity + HXP.elapsed / ACCEL_TIME);
 		var moveSpeed = velocity * HXP.elapsed * MOVE_PER_SEC * dir;
-		x += moveSpeed * Math.cos(MathUtil.RAD*angle);
-		y += moveSpeed * Math.sin(MathUtil.RAD*angle);
+		x += moveSpeed * Math.cos(MathUtil.RAD * angle);
+		y += moveSpeed * Math.sin(MathUtil.RAD * angle);
 
 		// wrap around the screen
 		if (x < 0) x += HXP.width;
@@ -105,17 +136,18 @@ class Ship extends Entity
 		moving = true;
 	}
 
-
 	public function shoot()
 	{
 		if (_lastShot > 0) return;
-		var bx = width/2 * Math.cos(MathUtil.RAD*angle);
-		var by = height/2 * Math.sin(MathUtil.RAD*angle);
+		if (weapon < 1) return;
+		--weapon;
+		var bx = width / 2 * Math.cos(MathUtil.RAD * angle);
+		var by = height / 2 * Math.sin(MathUtil.RAD * angle);
 		bullet.emit("bullet", bx, by, angle);
 		_lastShot = 1;
 	}
 
-	var velocity:Float=0;
-	var moving:Bool=false;
-	var _lastShot:Float=0;
+	var velocity:Float = 0;
+	var moving:Bool = false;
+	var _lastShot:Float = 0;
 }
