@@ -155,15 +155,15 @@ class Graphic
 	 * X offset.
 	 */
 	@:isVar public var x(get, set):Float = 0;
-	inline function get_x():Float return x;
-	inline function set_x(value:Float):Float return x = value;
+	private function get_x():Float return x;
+	private function set_x(value:Float):Float return x = value;
 
 	/**
 	 * Y offset.
 	 */
 	@:isVar public var y(get, set):Float = 0;
-	inline function get_y():Float return y;
-	inline function set_y(value:Float):Float return y = value;
+	private function get_y():Float return y;
+	private function set_y(value:Float):Float return y = value;
 
 	/**
 	 * X scrollfactor, effects how much the camera offsets the drawn graphic.
