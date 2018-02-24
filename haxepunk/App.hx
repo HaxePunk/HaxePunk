@@ -11,6 +11,7 @@ class App
 	public function init() {}
 
 	public function getTimeMillis():Float return 0;
+	public function getMemoryUse():Float return 0;
 
 	public function multiTouchSupported():Bool return false;
 

@@ -8,6 +8,7 @@ import flash.display.StageQuality;
 import flash.display.StageScaleMode;
 import flash.events.Event;
 import flash.geom.Rectangle;
+import flash.system.System;
 import flash.Lib;
 import haxepunk.debug.Console;
 
@@ -44,6 +45,11 @@ class FlashApp extends Sprite
 	public function getTimeMillis():Float
 	{
 		return Lib.getTimer();
+	}
+
+	public function getMemoryUse():Float
+	{
+		return System.totalMemory;
 	}
 
 	public function multiTouchSupported():Bool
