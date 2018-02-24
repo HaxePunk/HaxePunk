@@ -87,6 +87,10 @@ class FlashApp extends Sprite
 		{
 			initTouchInput();
 		}
+		else
+		{
+			Log.debug("touch events not supported");
+		}
 
 		engine.checkScene();
 
@@ -165,21 +169,25 @@ class FlashApp extends Sprite
 
 	public function initMouseInput()
 	{
+		Log.debug("init mouse input");
 		MouseInput.init(this);
 	}
 
 	public function initKeyInput()
 	{
+		Log.debug("init key input");
 		KeyInput.init(this);
 	}
 
 	public function initGamepadInput()
 	{
+		Log.debug("init gamepad input");
 		GamepadInput.init(this);
 	}
 
 	public function initTouchInput()
 	{
+		Log.debug("init touch input");
 		TouchInput.init(this);
 	}
 

@@ -8,8 +8,8 @@ class KeyInput
 	public static function init(app:FlashApp)
 	{
 		var stage = app.stage;
-		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownCallback, false,  2);
-		stage.addEventListener(KeyboardEvent.KEY_UP, keyUpCallback, false,  2);
+		stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDownCallback, false, 2);
+		stage.addEventListener(KeyboardEvent.KEY_UP, keyUpCallback, false, 2);
 
 		#if !(js)
 		_nativeCorrection.set("0_64", Key.INSERT);
