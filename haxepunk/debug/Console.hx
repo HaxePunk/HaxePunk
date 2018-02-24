@@ -308,21 +308,11 @@ class Console extends Scene
 		_stepping = false;
 	}
 
-	inline function getMemory():Float
-	{
-		// FIXME: belongs in App
-		#if (lime || nme)
-		return flash.system.System.totalMemory;
-		#else
-		return 0;
-		#end
-	}
-
 	function updateMetrics()
 	{
 		var s = HXP.elapsed / SAMPLE_TIME;
 		_fps += 1 / HXP.elapsed * s;
-		_mem += getMemory() / 1024 / 1024 * s;
+		_mem += HXP.app.getMemoryUse() / 1024 / 1024 * s;
 		_ent += HXP.scene.count * s;
 		_tri += HardwareRenderer.triangleCount * s;
 		_dc += HardwareRenderer.drawCallCount * s;
