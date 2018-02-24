@@ -420,8 +420,7 @@ class HXP
 		if (type == null) type = TweenType.OneShot;
 		if (tweener == null) tweener = HXP.tweener;
 
-		var alarm:Alarm = new Alarm(delay, type);
-		if (complete != null) alarm.onComplete.bind(complete);
+		var alarm:Alarm = new Alarm(delay, complete, type);
 		tweener.addTween(alarm, true);
 		return alarm;
 	}
