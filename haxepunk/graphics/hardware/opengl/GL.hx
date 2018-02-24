@@ -4,6 +4,8 @@ class GL
 {
 	public static inline var NO_ERROR:Int = 0;
 	public static inline var TEXTURE0:Int = 0;
+	public static inline var TEXTURE1:Int = 0;
+	public static inline var TEXTURE2:Int = 0;
 	public static inline var ARRAY_BUFFER:Int = 0;
 	public static inline var TEXTURE_2D:Int = 0;
 	public static inline var TEXTURE_MIN_FILTER:Int = 0;
@@ -33,6 +35,7 @@ class GL
 	public static inline var CLAMP_TO_EDGE:Int = 0;
 	public static inline var FRAGMENT_SHADER:Int = 0;
 	public static inline var VERTEX_SHADER:Int = 0;
+	public static inline var MIRRORED_REPEAT:Int = 0;
 
 	public static function enable(_) {}
 	public static function disable(_) {}

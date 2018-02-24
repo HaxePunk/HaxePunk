@@ -27,7 +27,16 @@ class Input
 	public static var multiTouchSupported(default, null):Bool = false;
 
 	#if (cpp || neko)
-	static var _signals:Deque<String> = new Deque();
+	static var _signals(get, never):Deque<String>;
+	static var __signals:Deque<String>;
+	static inline function get__signals()
+	{
+		if (__signals == null)
+		{
+			__signals = new Deque();
+		}
+		return __signals;
+	}
 	#else
 	static var _signals:Array<String> = new Array();
 	#end

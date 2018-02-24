@@ -7,6 +7,8 @@ import flash.net.SharedObject;
  */
 class Data
 {
+	public static var PREFIX:Null<String> = "HaxePunk";
+
 	/**
 	 * If you want to share data between different SWFs on the same host, use this id.
 	 */
@@ -103,8 +105,9 @@ class Data
 	static function loadData(file:String):Dynamic
 	{
 		if (file == null) file = DEFAULT_FILE;
-		if (id != "") _shared = SharedObject.getLocal(PREFIX + "/" + id + "/" + file, "/");
-		else _shared = SharedObject.getLocal(PREFIX + "/" + file);
+		var p = (PREFIX == null ? "" : PREFIX + "/");
+		if (id != "") _shared = SharedObject.getLocal('$p$id/$file', "/");
+		else _shared = SharedObject.getLocal('$p$file');
 		return _shared.data;
 	}
 
@@ -112,7 +115,6 @@ class Data
 	static var _shared:SharedObject;
 	static var _dir:String;
 	static var _data:Map<String, Dynamic> = new Map<String, Dynamic>();
-	static inline var PREFIX:String = "HaxePunk";
 	static inline var DEFAULT_FILE:String = "_file";
 	static inline var SIZE:Int = 10000;
 }

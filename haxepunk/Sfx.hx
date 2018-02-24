@@ -2,10 +2,16 @@ package haxepunk;
 
 class Sfx
 {
+	public static function setVolume(type:String, volume:Float) {}
+
+	public function new(source:Dynamic, ?onComplete:Void->Void) {}
+
 	/**
 	 * Alter the volume factor (a value from 0 to 1) of the sound during playback.
 	 */
 	public var volume:Float;
+
+	public var type:String;
 
 	/**
 	 * Plays the sound once.
@@ -14,6 +20,8 @@ class Sfx
 	 * @param   loop   If the audio should loop infinitely
 	 */
 	public function play(volume:Float = 1, pan:Float = 0, loop:Bool = false) {}
+
+	public function resume() {}
 
 	/**
 	 * Plays the sound looping. Will loop continuously until you call stop(), play(), or loop() again.
