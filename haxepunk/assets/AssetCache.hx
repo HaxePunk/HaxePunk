@@ -22,6 +22,13 @@ class AssetCache
 	public static var global:AssetCache = new AssetCache("global");
 	public static var active:Array<AssetCache> = [global];
 
+	static var customLoaders:Map<String, CustomAssetLoader> = new Map();
+
+	public static function addCustomLoader(name:String, loader:CustomAssetLoader)
+	{
+		customLoaders[name] = loader;
+	}
+
 	public var name:String;
 
 	public var enabled(get, never):Bool;
@@ -35,6 +42,8 @@ class AssetCache
 	var bitmapFonts:Map<String, IBitmapFont> = new Map();
 	var tileAtlases:Map<String, TileAtlas> = new Map();
 	var atlasData:Map<String, AtlasData> = new Map();
+	// custom asset types
+	var custom:Map<String, Map<String, Dynamic>> = new Map();
 
 	public function new(name:String)
 	{
@@ -48,9 +57,19 @@ class AssetCache
 
 	public function getTexture(id:String, addRef:Bool=true):Texture
 	{
-		return AssetMacros.findAsset(this, textures, id, addRef, {
+		return AssetMacros.findAsset(this, textures, otherCache.textures, id, addRef, {
 			Log.info('loading texture $id into cache $name');
-			AssetLoader.getTexture(id);
+			var texture = AssetLoader.getTexture(id);
+			if (!atlasData.exists(id))
+			{
+				var data = new AtlasData(texture, id);
+				addAtlasData(id, data);
+				if (!regions.exists(id))
+				{
+					addAtlasRegion(id, Atlas.loadImageAsRegion(data));
+				}
+			}
+			texture;
 		});
 	}
 
@@ -81,7 +100,7 @@ class AssetCache
 
 	public function getText(id:String, addRef:Bool=true):String
 	{
-		return AssetMacros.findAsset(this, text, id, addRef, AssetLoader.getText(id));
+		return AssetMacros.findAsset(this, text, otherCache.text, id, addRef, AssetLoader.getText(id));
 	}
 
 	public function removeText(id:String)
@@ -96,7 +115,7 @@ class AssetCache
 
 	public function getSound(id:String, addRef:Bool=true):Dynamic
 	{
-		return AssetMacros.findAsset(this, sounds, id, addRef, AssetLoader.getSound(id));
+		return AssetMacros.findAsset(this, sounds, otherCache.sounds, id, addRef, AssetLoader.getSound(id));
 	}
 
 	public function removeSound(id:String)
@@ -111,7 +130,7 @@ class AssetCache
 
 	public function getTileAtlas(id:String, addRef:Bool=true):TileAtlas
 	{
-		return AssetMacros.findAsset(this, tileAtlases, id, addRef, {
+		return AssetMacros.findAsset(this, tileAtlases, otherCache.tileAtlases, id, addRef, {
 			var texture = getTexture(id);
 			var atlas = new TileAtlas(texture);
 			atlas;
@@ -130,7 +149,18 @@ class AssetCache
 
 	public function getAtlasData(id:String, addRef:Bool=true):AtlasData
 	{
-		return AssetMacros.findAsset(this, atlasData, id, addRef, new AtlasData(getTexture(id), id));
+		return AssetMacros.findAsset(this, atlasData, otherCache.atlasData, id, addRef, {
+			var data = new AtlasData(getTexture(id, true), id);
+			if (!regions.exists(id))
+			{
+				addAtlasRegion(id, Atlas.loadImageAsRegion(data));
+			}
+			data;
+		}, {
+			// If we add a reference to an AtlasData, get a reference to the
+			// texture too.
+			getTexture(id, true);
+		});
 	}
 
 	public function removeAtlasData(id:String)
@@ -145,9 +175,13 @@ class AssetCache
 
 	public function getAtlasRegion(id:String, addRef:Bool=true):IAtlasRegion
 	{
-		return AssetMacros.findAsset(this, regions, id, addRef, {
-			var data = getAtlasData(id);
+		return AssetMacros.findAsset(this, regions, otherCache.regions, id, addRef, {
+			var data = getAtlasData(id, true);
 			Atlas.loadImageAsRegion(data);
+		}, {
+			// If we add a reference to an AtlasRegion, get a reference to the
+			// AtlasData too.
+			getAtlasData(id, true);
 		});
 	}
 
@@ -163,7 +197,7 @@ class AssetCache
 
 	public function getBitmapFont(fontName:String, addRef:Bool=true):IBitmapFont
 	{
-		return AssetMacros.findAsset(this, bitmapFonts, fontName, addRef, null);
+		return AssetMacros.findAsset(this, bitmapFonts, otherCache.bitmapFonts, fontName, addRef, null);
 	}
 
 	public function removeBitmapFont(fontName:String):Void
@@ -231,6 +265,53 @@ class AssetCache
 		for (key in atlas._regions.keys())
 		{
 			regions[key] = atlas.getRegion(key);
+		}
+	}
+
+	public function addCustom(loader:String, id:String, resource:Dynamic)
+	{
+		if (!custom.exists(loader)) custom[loader] = new Map();
+		custom[loader][id] = resource;
+	}
+
+	public function getCustom(loader:String, id:String, addRef:Bool=true):Dynamic
+	{
+		for (cache in active)
+		{
+			if (!cache.custom.exists(loader)) cache.custom[loader] = new Map();
+		}
+		return AssetMacros.findAsset(this, custom[loader], otherCache.custom[loader], id, addRef, {
+			Log.info('loading custom asset $loader:$id into cache $name');
+			var resource = customLoaders[loader].load(id);
+			customLoaders[loader].onLoad(id, resource, this);
+			resource;
+		}, {
+			customLoaders[loader].onRef(id, cached, this, otherCache);
+		});
+	}
+
+	public function removeCustom(loader:String, id:String, resource:Dynamic)
+	{
+		if (custom.exists(loader))
+		{
+			if (custom[loader].exists(id))
+			{
+				var resource = custom[loader][id];
+				custom[loader].remove(id);
+				var stillNeeded = false;
+				for (cache in active)
+				{
+					if (cache.custom.exists(loader) && cache.custom[loader].exists(id))
+					{
+						stillNeeded = true;
+						break;
+					}
+				}
+				if (!stillNeeded)
+				{
+					customLoaders[loader].dispose(resource);
+				}
+			}
 		}
 	}
 
