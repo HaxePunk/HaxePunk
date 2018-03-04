@@ -1,5 +1,10 @@
 HaxePunk CHANGELOG
 
+v4.1.0
+------------------------------
+
+- Added `Scene.resume`. If the same Scene becomes active multiple times, it will only call `begin` the first time, and `resume` every time after that.
+
 v4.0.0
 ------------------------------
 

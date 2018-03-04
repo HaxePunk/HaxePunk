@@ -51,6 +51,11 @@ class Scene extends Tweener
 	public var camera:Camera;
 
 	/**
+	 * Set to true after `begin` is called.
+	 */
+	public var started:Bool = false;
+
+	/**
 	 * Scene-scoped asset cache. These assets will be destroyed when the scene
 	 * ends.
 	 */
@@ -136,9 +141,14 @@ class Scene extends Tweener
 	}
 
 	/**
-	 * Override this; called when Scene is switch to, and set to the currently active scene.
+	 * Override this; called when Scene is switched to for the first time.
 	 */
 	public function begin() {}
+
+	/**
+	 * Override this; called when this Scene is switched to after it has already begun.
+	 */
+	public function resume() {}
 
 	/**
 	 * Override this; called when Scene is changed, and the active scene is no longer this.

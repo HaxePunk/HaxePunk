@@ -256,18 +256,20 @@ class Engine
 		{
 			Log.debug("ending scene: " + Type.getClassName(Type.getClass(_scene)));
 			_scene.end();
-			_scene.updateLists();
+			_scene.updateLists(false);
 			if (_scene.autoClear && _scene.hasTween) _scene.clearTweens();
 
 			_scene = _scenes[_scenes.length - 1];
 
+			onSceneSwitch.invoke();
+
 			Log.debug("starting scene: " + Type.getClassName(Type.getClass(_scene)));
-			_scene.updateLists();
-			_scene.begin();
 			_scene.assetCache.enable();
 			_scene.updateLists();
-
-			onSceneSwitch.invoke();
+			if (_scene.started) _scene.resume();
+			else _scene.begin();
+			_scene.started = true;
+			_scene.updateLists(true);
 		}
 	}
 
