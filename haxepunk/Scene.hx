@@ -954,7 +954,7 @@ class Scene extends Tweener
 	 */
 	public inline function entitiesForType(type:String):List<Entity>
 	{
-		return _types.exists(type) ? _types.get(type) : null;
+		return _types.exists(type) ? _types.get(type) : new List();
 	}
 
 	/**
