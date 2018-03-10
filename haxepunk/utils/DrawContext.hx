@@ -45,6 +45,11 @@ class DrawContext
 	public var alpha:Float = 1;
 
 	/**
+	 * If true, scale coordinates using the current screen scale.
+	 */
+	public var scale:Bool = false;
+
+	/**
 	 * The line thickness to use when drawing lines. Defaults to a single pixel wide.
 	 */
 	public var lineThickness:Float = 1;
@@ -321,7 +326,7 @@ class DrawContext
 			var theta = segment * radians;
 			var x2 = x + (Math.sin(theta) * radius) * scaleX;
 			var y2 = y + (Math.cos(theta) * radius) * scaleY;
-			command.addTriangle(x, y, 0, 0, x1, y1, 0, 0, x2, y2, 0, 0, color, alpha);
+			addTriangle(x, y, 0, 0, x1, y1, 0, 0, x2, y2, 0, 0, color, alpha);
 			x1 = x2; y1 = y2;
 		}
 	}
@@ -392,14 +397,28 @@ class DrawContext
 
 	inline function drawTriangle(v1:Vector2, v2:Vector2, v3:Vector2):Void
 	{
-		command.addTriangle(v1.x, v1.y, 0, 0, v2.x, v2.y, 0, 0, v3.x, v3.y, 0, 0, color, alpha);
+		addTriangle(v1.x, v1.y, 0, 0, v2.x, v2.y, 0, 0, v3.x, v3.y, 0, 0, color, alpha);
 	}
 
 	/** @private Helper function to add a quad to the buffer */
 	inline function drawQuad(x1, y1, x2, y2, x3, y3, x4, y4)
 	{
-		command.addTriangle(x1, y1, 0, 0, x2, y2, 0, 0, x3, y3, 0, 0, color, alpha);
-		command.addTriangle(x1, y1, 0, 0, x3, y3, 0, 0, x4, y4, 0, 0, color, alpha);
+		addTriangle(x1, y1, 0, 0, x2, y2, 0, 0, x3, y3, 0, 0, color, alpha);
+		addTriangle(x1, y1, 0, 0, x3, y3, 0, 0, x4, y4, 0, 0, color, alpha);
+	}
+
+	inline function addTriangle(tx1:Float, ty1:Float, uvx1:Float, uvy1:Float, tx2:Float, ty2:Float, uvx2:Float, uvy2:Float, tx3:Float, ty3:Float, uvx3:Float, uvy3:Float, color:Color, alpha:Float)
+	{
+		if (scale)
+		{
+			tx1 *= HXP.screen.scaleX;
+			tx2 *= HXP.screen.scaleX;
+			tx3 *= HXP.screen.scaleX;
+			ty1 *= HXP.screen.scaleY;
+			ty2 *= HXP.screen.scaleY;
+			ty3 *= HXP.screen.scaleY;
+		}
+		command.addTriangle(tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, color, alpha);
 	}
 
 	// Drawing information.
