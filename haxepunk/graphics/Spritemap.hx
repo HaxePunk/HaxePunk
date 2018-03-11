@@ -74,6 +74,24 @@ class Spritemap extends Image
 	 * The currently playing animation.
 	 */
 	public var currentAnimation(default, null):Maybe<Animation>;
+	
+	/**
+	 * The amount of frames in the Spritemap.
+	 */
+	public var frameCount(get, null):Int;
+	private function get_frameCount():Int return _frameCount; 
+
+	/**
+	 * Columns in the Spritemap.
+	 */
+	public var columns(get, null):Int;
+	private function get_columns():Int return _columns; 
+
+	/**
+	 * Rows in the Spritemap.
+	 */
+	public var rows(get, null):Int;
+	private function get_rows():Int return _rows; 
 
 	/**
 	 * Constructor.
@@ -99,6 +117,9 @@ class Spritemap extends Image
 			frameHeight == 0 ? Std.int(_atlas.height) : frameHeight
 		);
 
+		_columns = Math.ceil(_atlas.width/frameWidth);
+		_rows = Math.ceil(_atlas.height/frameHeight);
+		_frameCount = _columns * _rows;
 		frame = 0;
 		active = true;
 	}
@@ -353,4 +374,7 @@ class Spritemap extends Image
 	var _index:Int;
 	var _timer:Float = 0;
 	var _atlas:TileAtlas;
+	var _columns:Int;
+	var _rows:Int;
+	var _frameCount:Int;
 }
