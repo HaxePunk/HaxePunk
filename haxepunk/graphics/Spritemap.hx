@@ -293,6 +293,31 @@ class Spritemap extends Image
 	}
 
 	/**
+	 * Gets the frame index based on the column and row of the source image.
+	 * @param	column		Frame column.
+	 * @param	row			Frame row.
+	 * @return	Frame index.
+	 */
+	public inline function getFrameColRow(column:Int = 0, row:Int = 0):Int
+	{
+		return (row % _rows) * _columns + (column % _columns);
+	}
+
+	/**
+	 * Sets the current display frame based on the column and row of the source image.
+	 * When you set the frame, any animations playing will be stopped to force the frame.
+	 * @param	column		Frame column.
+	 * @param	row			Frame row.
+	 */
+	public function setFrameColRow(column:Int = 0, row:Int = 0)
+	{
+		currentAnimation = null;
+		var frameFromPos:Int = getFrameColRow(column, row);
+		if (frameFromPos == frame) return;
+		set_frame(frameFromPos);
+	}
+
+	/**
 	 * Sets the current frame index.
 	 */
 	public var frame(default, set):Int = -1;
