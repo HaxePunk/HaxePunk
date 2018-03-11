@@ -1,10 +1,10 @@
 package haxepunk.graphics;
 
-import flash.geom.Point;
 import haxepunk.Graphic;
 import haxepunk.graphics.atlas.AtlasData;
 import haxepunk.graphics.shader.ColorShader;
 import haxepunk.utils.Color;
+import haxepunk.math.Vector2;
 
 class ColoredRect extends Graphic
 {
@@ -23,20 +23,28 @@ class ColoredRect extends Graphic
 
 	@:access(haxepunk.graphics.atlas.AtlasData)
 	@:access(haxepunk.graphics.hardware.SceneRenderer)
-	override public function render(point:Point, camera:Camera)
+	override public function render(point:Vector2, camera:Camera)
 	{
-		var batch = AtlasData._scene.renderer.batch,
-			command = batch.getDrawCommand(null, shader,
+		var command = AtlasData._batch.getDrawCommand(null, shader,
 				false, blend, screenClipRect(camera, point.x, point.y));
 
-		var fsx = camera.fullScaleX,
-			fsy = camera.fullScaleY;
-		var x1 = (camera.floorX(point.x) - camera.floorX(camera.x) + camera.floorX(x)) * fsx,
+		var fsx = camera.screenScaleX,
+			fsy = camera.screenScaleY;
+		var x1 = (floorX(camera, point.x) - floorX(camera, camera.x) + floorX(camera, x) - floorX(camera, originX)) * fsx,
 			x2 = x1 + width * fsx,
-			y1 = (camera.floorY(point.y) - camera.floorY(camera.y) + camera.floorY(y)) * fsy,
+			y1 = (floorY(camera, point.y) - floorY(camera, camera.y) + floorY(camera, y) - floorY(camera, originY)) * fsy,
 			y2 = y1 + height * fsy;
 
 		command.addTriangle(x1, y1, 0, 0, x2, y1, 0, 0, x1, y2, 0, 0, color, alpha);
 		command.addTriangle(x1, y2, 0, 0, x2, y1, 0, 0, x2, y2, 0, 0, color, alpha);
+	}
+
+	/**
+	 *  Centers the origin of this ColoredRect.
+	 */
+	override public function centerOrigin():Void
+	{
+		originX = width * 0.5;
+		originY = height * 0.5;
 	}
 }

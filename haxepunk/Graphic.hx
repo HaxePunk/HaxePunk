@@ -1,9 +1,7 @@
 package haxepunk;
 
 import haxe.ds.Either;
-import haxepunk.utils.BlendMode;
-import flash.geom.Point;
-import flash.geom.Rectangle;
+import haxepunk.assets.AssetCache;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.TileAtlas;
 import haxepunk.graphics.atlas.AtlasRegion;
@@ -12,6 +10,9 @@ import haxepunk.graphics.atlas.IAtlasRegion;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.graphics.shader.Shader;
 import haxepunk.graphics.shader.TextureShader;
+import haxepunk.math.Rectangle;
+import haxepunk.math.Vector2;
+import haxepunk.utils.BlendMode;
 import haxepunk.utils.Color;
 
 /**
@@ -23,7 +24,7 @@ abstract TileType(TileAtlas) from TileAtlas to TileAtlas
 {
 	@:dox(hide) @:from public static inline function fromString(tileset:String):TileType
 	{
-		return new TileAtlas(tileset);
+		return AssetCache.global.getTileAtlas(tileset, false);
 	}
 	@:dox(hide) @:from public static inline function fromTileAtlas(atlas:TileAtlas):TileType
 	{
@@ -45,8 +46,8 @@ abstract ImageType(IAtlasRegion) from IAtlasRegion to IAtlasRegion
 {
 	@:dox(hide) @:from public static inline function fromString(s:String):ImageType
 	{
-		var region = AssetManager.getRegion(s);
-		return region == null ? Atlas.loadImageAsRegion(s) : region;
+		var region = AssetCache.global.getAtlasRegion(s, false);
+		return region;
 	}
 	@:dox(hide) @:from public static inline function fromTileAtlas(atlas:TileAtlas):ImageType
 	{
@@ -111,6 +112,20 @@ class Graphic
 	public var smooth:Bool;
 
 	/**
+	 * Whether this graphic will be snapped to the nearest whole number pixel
+	 * position when rendering. If pixelSnapping is set to `true` on the
+	 * Camera, snapping will occur regardless of this setting. Some graphics
+	 * like Tilemap set this to true by default.
+	 */
+	public var pixelSnapping:Bool = false;
+
+	/**
+	 * If true, this graphic may sometimes "fall through" other textures to
+	 * reduce the number of draw calls. This can affect layering.
+	 */
+	public var flexibleLayer:Bool = false;
+
+	/**
 	 * Optional blend mode to use when drawing this image.
 	 * Use constants from the haxepunk.utils.BlendMode class.
 	 */
@@ -165,6 +180,18 @@ class Graphic
 	public var scrollY:Float = 1;
 
 	/**
+	 * X origin of the graphic, determines transformation point.
+	 * Defaults to top-left corner.
+	 */
+	public var originX:Float = 0;
+
+	/**
+	 * Y origin of the graphic, determines transformation point.
+	 * Defaults to top-left corner.
+	 */
+	public var originY:Float = 0;
+
+	/**
 	 * Change the opacity of the Image, a value from 0 to 1.
 	 */
 	public var alpha(default, set):Float = 1;
@@ -194,10 +221,10 @@ class Graphic
 		{
 			if (_screenClipRect == null) _screenClipRect = new Rectangle();
 			_screenClipRect.setTo(
-				(x + clipRect.x) * camera.fullScaleX,
-				(y + clipRect.y) * camera.fullScaleY,
-				clipRect.width * camera.fullScaleX,
-				clipRect.height * camera.fullScaleY
+				(x + clipRect.x) * camera.screenScaleX,
+				(y + clipRect.y) * camera.screenScaleY,
+				clipRect.width * camera.screenScaleX,
+				clipRect.height * camera.screenScaleY
 			);
 			return _screenClipRect;
 		}
@@ -213,14 +240,15 @@ class Graphic
 	@:allow(haxepunk)
 	function new()
 	{
-		if (HXP.stage != null)
-		{
-			smooth = (HXP.stage.quality != LOW);
-		}
+		// TODO: smooth default
+		smooth = true;
 		color = Color.White;
 		shader = TextureShader.defaultShader;
 		_class = Type.getClassName(Type.getClass(this));
 	}
+
+	public inline function floorX(camera:Camera, x:Float) return (pixelSnapping || camera.pixelSnapping) ? camera.floorX(x) : x;
+	public inline function floorY(camera:Camera, y:Float) return (pixelSnapping || camera.pixelSnapping) ? camera.floorY(y) : y;
 
 	/**
 	 * Updates the graphic.
@@ -233,13 +261,41 @@ class Graphic
 	 */
 	public function destroy() {}
 
+	public inline function isPixelPerfect(camera:Camera):Bool
+	{
+		return pixelSnapping || camera.pixelSnapping;
+	}
+
 	/**
-	 * Renders the graphic as an atlas.
+	 * Renders the graphic. This may call render or pixelPerfectRender
+	 * depending on settings.
 	 * @param  point      The position to draw the graphic.
 	 * @param  camera     The camera offset.
 	 */
 	@:dox(hide)
-	public function render(point:Point, camera:Camera) {}
+	public function doRender(point:Vector2, camera:Camera)
+	{
+		if (isPixelPerfect(camera)) pixelPerfectRender(point, camera);
+		else render(point, camera);
+	}
+
+	/**
+	 * Renders the graphic.
+	 * @param  point      The position to draw the graphic.
+	 * @param  camera     The camera offset.
+	 */
+	@:dox(hide)
+	public function render(point:Vector2, camera:Camera) {}
+
+	/**
+	 * Renders the graphic, taking extra care to snap pixel locations and
+	 * lengths to whole number positions. Not all graphics need a separate
+	 * pixelPerfectRender implementation; by default this will just call
+	 * render.
+	 * @param  point      The position to draw the graphic.
+	 * @param  camera     The camera offset.
+	 */
+	public function pixelPerfectRender(point:Vector2, camera:Camera) render(point, camera);
 
 	/**
 	 * Pause updating this graphic.
@@ -257,11 +313,16 @@ class Graphic
 		active = true;
 	}
 
+	/**
+	 *  Center the Origin of this graphic.
+	 */
+	public function centerOrigin() {}
+
 	public function toString():String return '[$_class]';
 
 	var _class:String;
 	// Graphic information.
 	var _scroll:Bool = true;
-	var _point:Point = new Point();
+	var _point:Vector2 = new Vector2();
 	var _visible:Bool = true;
 }

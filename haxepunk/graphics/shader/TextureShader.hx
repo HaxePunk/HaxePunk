@@ -1,6 +1,6 @@
 package haxepunk.graphics.shader;
 
-import flash.Assets;
+import haxepunk.assets.AssetLoader;
 
 class TextureShader extends Shader
 {
@@ -42,17 +42,19 @@ void main(void) {
 	}
 }";
 
+	#if (lime || nme)
 	/**
 	 * Create a custom shader from a text asset.
 	 */
 	public static inline function fromAsset(name:String):TextureShader
 	{
-		return new TextureShader(Assets.getText(name));
+		return new TextureShader(null, AssetLoader.getText(name));
 	}
+	#end
 
-	public function new(?fragment:String)
+	public function new(?vertex:String, ?fragment:String)
 	{
-		super(VERTEX_SHADER, fragment == null ? FRAGMENT_SHADER : fragment);
+		super(vertex == null ? VERTEX_SHADER : vertex, fragment == null ? FRAGMENT_SHADER : fragment);
 		position.name = "aPosition";
 		texCoord.name = "aTexCoord";
 		color.name = "aColor";

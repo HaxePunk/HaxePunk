@@ -1,9 +1,9 @@
 package haxepunk.graphics.atlas;
 
 import haxepunk.utils.BlendMode;
-import flash.geom.Point;
-import flash.geom.Rectangle;
 import haxepunk.graphics.shader.Shader;
+import haxepunk.math.Rectangle;
+import haxepunk.math.Vector2;
 import haxepunk.utils.Color;
 
 interface IAtlasRegion
@@ -14,12 +14,13 @@ interface IAtlasRegion
 	public function draw(x:Float, y:Float,
 		scaleX:Float=1, scaleY:Float=1, angle:Float=0,
 		color:Color=Color.White, alpha:Float=1,
-		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void;
+		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle,
+		flexibleLayer:Bool=false):Void;
 
 	public function drawMatrix(tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
 		color:Color=Color.White, alpha:Float=1,
-		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void;
+		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle,
+		flexibleLayer:Bool=false):Void;
 
-	public function clip(clipRect:Rectangle, ?center:Point):IAtlasRegion;
-	public function destroy():Void;
+	public function clip(clipRect:Rectangle, ?center:Vector2):IAtlasRegion;
 }

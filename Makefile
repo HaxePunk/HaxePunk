@@ -32,7 +32,7 @@ template.zip:
 haxepunk.zip: docs tools template.zip
 	@echo "Building haxelib project"
 	@zip -q haxepunk.zip run.n tool.n haxelib.json README.md include.xml template.zip
-	@zip -rq haxepunk.zip haxepunk assets doc/pages -x *.DS_Store*
+	@zip -rq haxepunk.zip haxepunk backend assets doc/pages -x *.DS_Store*
 
 haxelib: haxepunk.zip
 	@haxelib local haxepunk.zip > log.txt || cat log.txt
@@ -41,15 +41,14 @@ test: unit
 
 unit:
 	@echo "Running unit tests"
-	@cd tests && haxelib run munit test test-${TEST}.hxml -coverage
+	@cd tests && haxelib run munit test test-${TEST}.hxml
 
 checkstyle:
 	haxelib run checkstyle -c checkstyle.json -s haxepunk
 
 examples: tool.n
-	@git submodule update --init
 	@echo "Building examples with" ${TARGET} "using" ${COMMAND}
-	@(for path in `find examples -mindepth 1 -maxdepth 1 -type d`; do echo "Building" $$path"..."; (cd $$path; haxelib run ${COMMAND} build ${TARGET}) || exit; done)
+	@(for path in `find examples -mindepth 1 -maxdepth 1 -type d`; do echo "Building" $$path"..."; (cd $$path; haxelib run ${COMMAND} build ${TARGET} -Dhxp_debug) || exit; done)
 
 clean:
 	@echo "Cleaning up old files"

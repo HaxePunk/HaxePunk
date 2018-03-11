@@ -1,12 +1,12 @@
 package haxepunk.utils;
 
-import flash.net.SharedObject;
-
 /**
  * Static helper class used for saving and loading data from stored cookies.
  */
 class Data
 {
+	public static var PREFIX:String = "HaxePunk";
+
 	/**
 	 * If you want to share data between different SWFs on the same host, use this id.
 	 */
@@ -16,33 +16,14 @@ class Data
 	 * Overwrites the current data with the file.
 	 * @param	file		The filename to load.
 	 */
-	public static function load(file:String = "")
-	{
-		var data:Dynamic = loadData(file);
-		_data = new Map<String, Dynamic>();
-		for (str in Reflect.fields(data)) _data.set(str, Reflect.field(data, str));
-	}
+	public static function load(file:String = ""):Void {}
 
 	/**
 	 * Overwrites the file with the current data. The current data will not be saved until this function is called.
 	 * @param	file		The filename to save.
 	 * @param	overwrite	Clear the file before saving.
 	 */
-	public static function save(file:String = "", overwrite:Bool = true)
-	{
-		if (_shared != null) _shared.clear();
-		var data:Dynamic = loadData(file);
-		var str:String;
-		if (overwrite)
-			for (str in Reflect.fields(data)) Reflect.deleteField(data, str);
-		for (str in _data.keys()) Reflect.setField(data, str, _data.get(str));
-
-#if js
-		_shared.flush();
-#else
-		_shared.flush(SIZE);
-#end
-	}
+	public static function save(file:String = "", overwrite:Bool = true):Void {}
 
 	/**
 	 * Reads an int from the current data.
@@ -50,10 +31,7 @@ class Data
 	 * @param	defaultValue	Default value.
 	 * @return	The property value, or defaultValue if the property is not assigned.
 	 */
-	public static function readInt(name:String, defaultValue:Int = 0):Int
-	{
-		return Std.int(read(name, defaultValue));
-	}
+	public static function readInt(name:String, defaultValue:Int = 0):Int return defaultValue;
 
 	/**
 	 * Reads a Boolean from the current data.
@@ -61,10 +39,7 @@ class Data
 	 * @param	defaultValue	Default value.
 	 * @return	The property value, or defaultValue if the property is not assigned.
 	 */
-	public static function readBool(name:String, defaultValue:Bool = true):Bool
-	{
-		return read(name, defaultValue);
-	}
+	public static function readBool(name:String, defaultValue:Bool = true):Bool return defaultValue;
 
 	/**
 	 * Reads a String from the current data.
@@ -72,10 +47,7 @@ class Data
 	 * @param	defaultValue	Default value.
 	 * @return	The property value, or defaultValue if the property is not assigned.
 	 */
-	public static function readString(name:String, defaultValue:String = ""):String
-	{
-		return Std.string(read(name, defaultValue));
-	}
+	public static function readString(name:String, defaultValue:String = ""):String return defaultValue;
 
 	/**
 	 * Reads a property from the data object.
@@ -83,36 +55,15 @@ class Data
 	 * @param	defaultValue	Default value.
 	 * @return	The property value, or defaultValue if the property is not assigned.
 	 */
-	public static function read(name:String, defaultValue:Dynamic = null):Dynamic
-	{
-		if (_data.get(name) != null) return _data.get(name);
-		return defaultValue;
-	}
+	public static function read(name:String, ?defaultValue:Dynamic):Dynamic return null;
 
 	/**
 	 * Writes a Dynamic object to the current data.
 	 * @param	name		Property to write.
 	 * @param	value		Value to write.
 	 */
-	public static function write(name:String, value:Dynamic)
-	{
-		_data.set(name, value);
-	}
+	public static function write(name:String, value:Dynamic):Void {}
 
 	/** @private Loads the data file, or return it if you're loading the same one. */
-	static function loadData(file:String):Dynamic
-	{
-		if (file == null) file = DEFAULT_FILE;
-		if (id != "") _shared = SharedObject.getLocal(PREFIX + "/" + id + "/" + file, "/");
-		else _shared = SharedObject.getLocal(PREFIX + "/" + file);
-		return _shared.data;
-	}
-
-	// Data information.
-	static var _shared:SharedObject;
-	static var _dir:String;
-	static var _data:Map<String, Dynamic> = new Map<String, Dynamic>();
-	static inline var PREFIX:String = "HaxePunk";
-	static inline var DEFAULT_FILE:String = "_file";
-	static inline var SIZE:Int = 10000;
+	static function loadData(file:String):Dynamic return null;
 }

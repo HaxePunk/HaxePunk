@@ -15,7 +15,7 @@ class LayerScene extends DemoScene
 		super();
 	}
 
-	public override function begin()
+	override public function begin()
 	{
 		var e = new Entity();
 		e.layer = 50;

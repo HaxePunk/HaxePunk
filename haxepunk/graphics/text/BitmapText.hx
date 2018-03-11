@@ -1,10 +1,13 @@
 package haxepunk.graphics.text;
 
-import flash.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Graphic;
-import haxepunk.utils.Color;
+import haxepunk.assets.AssetCache;
 import haxepunk.graphics.text.BitmapFontAtlas.BitmapFontFormat;
+import haxepunk.graphics.text.IBitmapFont.BitmapFontType;
+import haxepunk.math.Vector2;
+import haxepunk.utils.Color;
+import haxepunk.utils.Utf8String;
 
 /**
  * Text option including the font, size, color, font format...
@@ -21,6 +24,7 @@ typedef FormatTagOptions =
 	@:optional var color:Color;
 	@:optional var alpha:Float;
 	@:optional var scale:Float;
+	@:optional var font:BitmapFontType;
 	@:optional var size:Int;
 }
 
@@ -30,9 +34,30 @@ abstract AlignType(Int)
 	var Left = 0;
 	var Center = 1;
 	var Right = 2;
+
+	public var floatValue(get, never):Float;
+	inline function get_floatValue() return switch (this)
+	{
+		case Center: 0.5;
+		case Right: 1;
+		default: 0;
+	};
 }
 
-typedef GlyphMoveFunction = String -> Point -> Point;
+class RenderData
+{
+	public var char:Null<Utf8String>;
+	public var img:Null<Image>;
+	public var x:Float = 0;
+	public var y:Float = 0;
+	public var color:Color = Color.White;
+	public var alpha:Float = 1;
+	public var scale:Float = 1;
+
+	public function new() {}
+}
+
+typedef CustomRenderFunction = BitmapText -> RenderData -> Void;
 
 /**
  * Rendering opcodes. Text is parsed into an array of these opcodes which
@@ -45,17 +70,19 @@ enum TextOpcode
 	SetColor(color:Color);
 	SetAlpha(alpha:Float);
 	SetScale(scale:Float);
+	SetFont(font:IBitmapFont);
 	SetSize(size:Int);
-	TextBlock(text:String);
+	TextBlock(text:Utf8String);
 	NewLine(width:Float, height:Float, align:AlignType);
 	Image(image:Image, padding:Int);
 	Align(alignType:AlignType);
-	MoveText(f:GlyphMoveFunction);
+	Custom(f:CustomRenderFunction);
 	PopColor;
 	PopAlpha;
 	PopScale;
+	PopFont;
 	PopSize;
-	PopMoveText;
+	PopCustom;
 }
 
 /**
@@ -64,7 +91,7 @@ enum TextOpcode
  */
 class BitmapText extends Graphic
 {
-	static var FORMAT_TAG_RE = ~/<(([A-Za-z_-]+)\/?|(\/[A-Za-z_-]+))>/;
+	static var FORMAT_TAG_RE = ~/<(([A-Za-z_-]+)( ([a-zA-Z-_]+)="([^"]*)")?\/?|(\/[A-Za-z_-]+))>/;
 
 	static var formatTags:Map<String, Array<TextOpcode>> = [
 		// newline
@@ -77,14 +104,18 @@ class BitmapText extends Graphic
 		"center" => [Align(Center)],
 		"/center" => [Align(Left)],
 	];
+	static var dynamicTags:Map<String, String -> Array<TextOpcode>> = [
+		"img" => dynamicImage,
+	];
 
 	static var _colorStack:Array<Color> = new Array();
 	static var _alphaStack:Array<Float> = new Array();
 	static var _scaleStack:Array<Float> = new Array();
+	static var _fontStack:Array<IBitmapFont> = new Array();
 	static var _sizeStack:Array<Int> = new Array();
 	static var _word:Array<TextOpcode> = new Array();
-	static var _moveStack:Array<GlyphMoveFunction> = new Array();
-	static var _renderPoint:Point = new Point();
+	static var _customStack:Array<CustomRenderFunction> = new Array();
+	static var _renderData:RenderData = new RenderData();
 
 	/**
 	 * Define a new format tag which can be used to modify the formatting of a
@@ -114,6 +145,11 @@ class BitmapText extends Graphic
 			tagOps.push(SetScale(options.scale));
 			closeTagOps.push(PopScale);
 		}
+		if (Reflect.hasField(options, 'font'))
+		{
+			tagOps.push(SetFont(options.font));
+			closeTagOps.push(PopFont);
+		}
 		if (Reflect.hasField(options, 'size'))
 		{
 			tagOps.push(SetSize(options.size));
@@ -138,12 +174,22 @@ class BitmapText extends Graphic
 		formatTags[tag] = [Image(image, padding)];
 	}
 
-	public static function defineMoveTag(tag:String, func:GlyphMoveFunction)
+	/**
+	 * Define a custom text rendering tag. Custom tags include a function which
+	 * takes the BitmapText and a RenderData object as parameters, and are
+	 * called before a glyph or image are rendered. Any modifications to the
+	 * RenderData object will be reflected in the rendered text; however, note
+	 * that you shouldn't hold onto the object reference, as it may be reused.
+	 * @param tag The tag name, e.g. "shake" (used as "<shake>text</shake>")
+	 * @param func The CustomRenderFunction
+	 * @since 4.0.0
+	 */
+	public static function defineCustomTag(tag:String, func:CustomRenderFunction)
 	{
 		if (formatTags.exists(tag)) throw 'Duplicate format tag: <$tag> already exists';
 		var closeTag = '/$tag';
-		formatTags[tag] = [MoveText(func)];
-		formatTags[closeTag] = [PopMoveText];
+		formatTags[tag] = [Custom(func)];
+		formatTags[closeTag] = [PopCustom];
 	}
 
 	/**
@@ -155,6 +201,15 @@ class BitmapText extends Graphic
 		if (formatTags.exists(tag)) formatTags.remove(tag);
 		var closeTag = '/$tag';
 		if (formatTags.exists(closeTag)) formatTags.remove(closeTag);
+	}
+
+	static var _imgArray:Array<TextOpcode> = new Array();
+	static function dynamicImage(src:String)
+	{
+		HXP.clear(_imgArray);
+		var img = new haxepunk.graphics.Image(src);
+		_imgArray.push(Image(img, 0));
+		return _imgArray;
 	}
 
 	@:isVar public var textWidth(get, set):Int = 0;
@@ -173,14 +228,14 @@ class BitmapText extends Graphic
 	}
 	inline function set_textHeight(v:Int) return textHeight = v;
 
-	public var width(default, set):Float = 0;
-	inline function set_width(v:Float)
+	public var width(default, set):Int = 0;
+	inline function set_width(v:Int)
 	{
 		if (v != width) _dirty = true;
 		return width = v;
 	}
-	public var height(default, set):Float = 0;
-	inline function set_height(v:Float)
+	public var height(default, set):Int = 0;
+	inline function set_height(v:Int)
 	{
 		if (v != height) _dirty = true;
 		return height = v;
@@ -267,23 +322,24 @@ class BitmapText extends Graphic
 	 * 						leading		Vertical space between lines. (Currently ignored.)
 	 *						richText	If the text field uses a rich text string. (Currently ignored.)
 	 */
-	public function new(text:String, x:Float = 0, y:Float = 0, width:Float = 0, height:Float = 0, ?options:BitmapTextOptions)
+	public function new(text:Utf8String, x:Float = 0, y:Float = 0, width:Int = 0, height:Int = 0, ?options:BitmapTextOptions)
 	{
 		super();
 
 		if (options == null) options = {};
 
 		// defaults
-		if (!Reflect.hasField(options, "font"))      options.font      = HXP.defaultFont + ".png";
-		if (!Reflect.hasField(options, "size"))      options.size      = null;
+		if (!Reflect.hasField(options, "font"))      options.font = HXP.defaultFont + ".fnt";
+		if (!Reflect.hasField(options, "size"))      options.size      = 16;
 		if (!Reflect.hasField(options, "color"))     options.color     = 0xFFFFFF;
 		if (!Reflect.hasField(options, "wordWrap"))  options.wordWrap  = false;
 
 		// load the font as a BitmapFontAtlas
-		var font:IBitmapFont = AssetManager.getBitmapFont(options.font);
+		var font:IBitmapFont = AssetCache.global.getBitmapFont(options.font, false);
 		if (font == null)
 		{
 			font = BitmapFontAtlas.getFont(options.font, options.format, options.extraParams);
+			AssetCache.global.addBitmapFont(options.font, font);
 		}
 
 		_font = font;
@@ -306,17 +362,24 @@ class BitmapText extends Graphic
 		this.text = text != null ? text : "";
 	}
 
-	public var text(default, set):String;
-	function set_text(text:String):String
+	public var text(default, set):Utf8String;
+	function set_text(text:Utf8String):Utf8String
 	{
 		if (this.text != text)
 		{
 			this.text = text;
-
-			parseText();
+			_dirty = true;
 		}
-
 		return text;
+	}
+
+	override public function centerOrigin():Void
+	{
+		if (_dirty)
+			parseText();
+
+		originX = (autoWidth ? textWidth : width) * 0.5;
+		originY = (autoHeight ? textHeight : height) * 0.5;
 	}
 
 	/**
@@ -327,18 +390,20 @@ class BitmapText extends Graphic
 	{
 		// clear current opcode list
 		HXP.clear(opCodes);
+		HXP.clear(_fontStack);
 		HXP.clear(_sizeStack);
 		HXP.clear(_scaleStack);
 		HXP.clear(_colorStack);
 		HXP.clear(_alphaStack);
 		HXP.clear(_word);
 
+		_fontStack.push(_font);
 		_sizeStack.push(size);
 		_scaleStack.push(1);
 		_colorStack.push(color);
 		_alphaStack.push(alpha);
-		var fsx:Float = HXP.screen.fullScaleX,
-			fsy:Float = HXP.screen.fullScaleY;
+		var fsx:Float = HXP.screen.scaleX,
+			fsy:Float = HXP.screen.scaleY;
 		var sx:Float = size * scale * scaleX,
 			sy:Float = size * scale * scaleY;
 		var lineHeight:Float = _font.getLineHeight(sy * fsy) / fsy,
@@ -347,14 +412,18 @@ class BitmapText extends Graphic
 		var remaining = text;
 		var cursorX:Float = 0,
 			cursorY:Float = 0,
-			block:String = "",
-			currentWord:String = "",
+			trailingWhitespace:Float = 0,
+			block:Utf8String = "",
+			currentWord:Utf8String = "",
 			wordLength:Float = 0,
+			wordTrailingWhitespace:Float = 0,
 			wordHeight:Float = 0,
 			currentScale:Float = 1,
+			currentFont:IBitmapFont = _font,
 			currentSizeRatio:Float = 1,
 			currentAlign:AlignType = AlignType.Left,
-			wrapping:Bool = false;
+			wrapping:Bool = false,
+			currentWordTrailingWhitespace:Float = 0;
 
 		var textWidth = 0;
 		charCount = 0;
@@ -384,8 +453,8 @@ class BitmapText extends Graphic
 		// start the next line
 		inline function addNewLine()
 		{
-			opCodes[newLineIndex] = NewLine(Std.int(cursorX), Std.int(thisLineHeight), currentAlign);
-			cursorX = 0;
+			opCodes[newLineIndex] = NewLine(cursorX - trailingWhitespace, thisLineHeight, currentAlign);
+			cursorX = trailingWhitespace = 0;
 			cursorY += thisLineHeight + (cursorY == 0 ? 0 : lineSpacing);
 			thisLineHeight = lineHeight * currentScale * currentSizeRatio;
 			opCodes.push(null);
@@ -399,6 +468,8 @@ class BitmapText extends Graphic
 			{
 				_word.push(TextBlock(currentWord));
 				currentWord = "";
+				wordTrailingWhitespace = currentWordTrailingWhitespace;
+				currentWordTrailingWhitespace = 0;
 			}
 		}
 		// add a word of text
@@ -407,7 +478,7 @@ class BitmapText extends Graphic
 			flushCurrentWord();
 			if (_word.length != 0)
 			{
-				if (wrap && cursorX + wordLength > width)
+				if (wrap && cursorX > 0 && cursorX - wordTrailingWhitespace + wordLength > width)
 				{
 					addNewLine();
 					cursorX = wordLength;
@@ -425,27 +496,98 @@ class BitmapText extends Graphic
 				HXP.clear(_word);
 				wordLength = 0;
 				wordHeight = 0;
+				trailingWhitespace = wordTrailingWhitespace;
+				wordTrailingWhitespace = 0;
+			}
+		}
+
+		inline function addTag(tag:TextOpcode)
+		{
+			switch (tag)
+			{
+				case Image(image, padding):
+					var imageWidth = ((image.width * image.scale * image.scaleX * this.scale * this.scaleX) + charSpacing) * currentScale;
+					_word.push(tag);
+					currentWordTrailingWhitespace = 0;
+					wordLength += imageWidth + padding * 2;
+					wordHeight = Math.max(wordHeight, image.height * currentScale * image.scale * image.scaleY * this.scale * this.scaleY);
+					if (cursorX > textWidth) textWidth = Std.int(cursorX);
+					++charCount;
+				case SetFont(font):
+					_fontStack.push(font);
+					currentFont = font;
+					lineHeight = font.getLineHeight(sy * fsy) / fsy;
+					_word.push(tag);
+				case PopFont:
+					if (_fontStack.length > 1) _fontStack.pop();
+					currentFont = _fontStack[_fontStack.length - 1];
+					lineHeight = currentFont.getLineHeight(sy * fsy) / fsy;
+					_word.push(SetFont(currentFont));
+				case SetSize(size):
+					_sizeStack.push(size);
+					currentSizeRatio = size / this.size;
+					_word.push(tag);
+				case PopSize:
+					if (_sizeStack.length > 1) _sizeStack.pop();
+					currentSizeRatio = _sizeStack[_sizeStack.length - 1] / this.size;
+					_word.push(SetSize(_sizeStack[_sizeStack.length - 1]));
+				case SetScale(scale):
+					_scaleStack.push(currentScale = scale);
+					_word.push(tag);
+				case PopScale:
+					if (_scaleStack.length > 1) _scaleStack.pop();
+					currentScale = _scaleStack[_scaleStack.length - 1];
+					_word.push(SetScale(currentScale));
+				case SetColor(color):
+					_colorStack.push(color);
+					_word.push(tag);
+				case PopColor:
+					if (_colorStack.length > 1) _colorStack.pop();
+					_word.push(SetColor(_colorStack[_colorStack.length - 1]));
+				case SetAlpha(alpha):
+					_alphaStack.push(alpha);
+					_word.push(tag);
+				case PopAlpha:
+					if (_alphaStack.length > 1) _alphaStack.pop();
+					_word.push(SetAlpha(_alphaStack[_alphaStack.length - 1]));
+				case NewLine(_, _, _):
+					flushWord();
+					addNewLine();
+				case Align(alignType):
+					flushWord();
+					if (cursorX > 0)
+					{
+						addNewLine();
+					}
+					if (alignType != Left && !autoWidth) textWidth = Std.int(width);
+					currentAlign = alignType;
+				default:
+					_word.push(tag);
 			}
 		}
 
 		while (true)
 		{
 			var matched = FORMAT_TAG_RE.match(remaining);
-			var line:String = matched ? FORMAT_TAG_RE.matchedLeft() : remaining;
+			var line:Utf8String = matched ? FORMAT_TAG_RE.matchedLeft() : remaining;
 			if (line.length > 0)
 			{
 				var i:Int = 0;
 				while (i < line.length)
 				{
-					var char:String = line.charAt(i);
+					var char:Utf8String = line.charAt(i);
 					wordHeight = Math.max(wordHeight, lineHeight * currentScale * currentSizeRatio);
-					inline function addChar()
+					inline function addChar(whitespace:Bool = false)
 					{
 						var maxFullScale = sx * fsx;
-						var gd = _font.getChar(char, maxFullScale * currentScale * currentSizeRatio);
+						var gd = currentFont.getChar(char, maxFullScale * currentScale * currentSizeRatio);
 						var charWidth = gd.xAdvance * gd.scale / fsx;
 						currentWord += char;
-						wordLength += charWidth + charSpacing * currentScale * currentSizeRatio;
+						var charLength = charWidth + charSpacing * currentScale * currentSizeRatio;
+						if (whitespace)
+							currentWordTrailingWhitespace += charLength;
+						else currentWordTrailingWhitespace = 0;
+						wordLength += charLength;
 						++charCount;
 					}
 					switch (char)
@@ -454,7 +596,7 @@ class BitmapText extends Graphic
 							flushWord();
 							addNewLine();
 						case " ":
-							addChar();
+							addChar(true);
 							flushWord();
 						case "-":
 							var hyphen = currentWord != "";
@@ -476,68 +618,26 @@ class BitmapText extends Graphic
 
 			if (matched)
 			{
-				var tag:String = FORMAT_TAG_RE.matched(2);
-				if (tag == null) tag = FORMAT_TAG_RE.matched(3);
-				if (tag != null && formatTags.exists(tag))
+				var tag:Utf8String = FORMAT_TAG_RE.matched(2);
+				if (tag == null) tag = FORMAT_TAG_RE.matched(1);
+				if (tag != null && FORMAT_TAG_RE.matched(4) != null && dynamicTags.exists(tag))
+				{
+					for (tag in dynamicTags[tag](FORMAT_TAG_RE.matched(5)))
+					{
+						addTag(tag);
+					}
+				}
+				else if (tag != null && FORMAT_TAG_RE.matched(4) == null && formatTags.exists(tag))
 				{
 					flushCurrentWord();
 					for (tag in formatTags[tag])
 					{
-						switch (tag)
-						{
-							case Image(image, padding):
-								var imageWidth = ((image.width * image.scale * image.scaleX * this.scale * this.scaleX) + charSpacing) * currentScale;
-								_word.push(tag);
-								wordLength += imageWidth + padding * 2;
-								wordHeight = Math.max(wordHeight, image.height * currentScale * image.scale * image.scaleY * this.scale * this.scaleY);
-								if (cursorX > textWidth) textWidth = Std.int(cursorX);
-								++charCount;
-							case SetSize(size):
-								_sizeStack.push(size);
-								currentSizeRatio = size / this.size;
-								_word.push(tag);
-							case PopSize:
-								if (_sizeStack.length > 1) _sizeStack.pop();
-								currentSizeRatio = _sizeStack[_sizeStack.length - 1] / this.size;
-								_word.push(SetSize(_sizeStack[_sizeStack.length - 1]));
-							case SetScale(scale):
-								_scaleStack.push(currentScale = scale);
-								_word.push(tag);
-							case PopScale:
-								if (_scaleStack.length > 1) _scaleStack.pop();
-								currentScale = _scaleStack[_scaleStack.length - 1];
-								_word.push(SetScale(currentScale));
-							case SetColor(color):
-								_colorStack.push(color);
-								_word.push(tag);
-							case PopColor:
-								if (_colorStack.length > 1) _colorStack.pop();
-								_word.push(SetColor(_colorStack[_colorStack.length - 1]));
-							case SetAlpha(alpha):
-								_alphaStack.push(alpha);
-								_word.push(tag);
-							case PopAlpha:
-								if (_alphaStack.length > 1) _alphaStack.pop();
-								_word.push(SetAlpha(_alphaStack[_alphaStack.length - 1]));
-							case NewLine(_, _, _):
-								flushWord();
-								addNewLine();
-							case Align(alignType):
-								flushWord();
-								if (cursorX > 0)
-								{
-									addNewLine();
-								}
-								if (alignType != Left && !autoWidth) textWidth = Std.int(width);
-								currentAlign = alignType;
-							default:
-								_word.push(tag);
-						}
+						addTag(tag);
 					}
 				}
 				else
 				{
-					throw 'Unrecognized format tag: <$tag>';
+					throw 'Unrecognized ${FORMAT_TAG_RE.matched(4) == null ? "format" : "dynamic"} tag: <$tag>';
 				}
 				remaining = FORMAT_TAG_RE.matchedRight();
 			}
@@ -553,17 +653,18 @@ class BitmapText extends Graphic
 	}
 
 	@:dox(hide)
-	override public function render(point:Point, camera:Camera)
+	override public function render(point:Vector2, camera:Camera)
 	{
 		if (_dirty) parseText();
-		HXP.clear(_moveStack);
+		HXP.clear(_customStack);
+		var pixelPerfect = isPixelPerfect(camera);
 
 		// determine drawing location
-		var fsx = camera.fullScaleX,
-			fsy = camera.fullScaleY;
+		var fsx = camera.screenScaleX,
+			fsy = camera.screenScaleY;
 
-		_point.x = camera.floorX(point.x) + camera.floorX(x) - camera.floorX(camera.x * scrollX);
-		_point.y = camera.floorY(point.y) + camera.floorY(y) - camera.floorY(camera.y * scrollY);
+		_point.x = point.x + floorX(camera, x) - floorX(camera, originX * scaleX * scale) - floorX(camera, camera.x * scrollX);
+		_point.y = point.y + floorY(camera, y) - floorY(camera, originY * scaleY * scale) - floorY(camera, camera.y * scrollY);
 
 		var sx = scale * scaleX * size,
 			sy = scale * scaleY * size;
@@ -574,19 +675,14 @@ class BitmapText extends Graphic
 		var currentColor:Color = color,
 			currentAlpha:Float = alpha,
 			currentScale:Float = 1,
+			currentFont:IBitmapFont = _font,
 			currentSizeRatio:Float = 1,
 			cursorX:Float = 0,
 			cursorY:Float = 0,
 			charCount:Int = 0;
-		inline function getRenderPoint(char:String = "")
+		inline function applyCustomFunctions(data:RenderData)
 		{
-			var point = _renderPoint;
-			point.setTo(cursorX, cursorY);
-			for (func in _moveStack)
-			{
-				point = func(char, point);
-			}
-			return point;
+			for (func in _customStack) func(this, data);
 		}
 		for (op in opCodes)
 		{
@@ -599,6 +695,9 @@ class BitmapText extends Graphic
 					currentAlpha = alpha;
 				case SetScale(scale):
 					currentScale = scale;
+				case SetFont(font):
+					currentFont = font;
+					lineHeight = font.getLineHeight(sy * fsy) / fsy;
 				case SetSize(size):
 					currentSizeRatio = size / this.size;
 				case TextBlock(text):
@@ -609,24 +708,32 @@ class BitmapText extends Graphic
 						++charCount;
 						var char = text.charAt(i);
 						var maxFullScale = sx * fsx;
-						var gd = _font.getChar(char, maxFullScale * currentScale * currentSizeRatio);
+						var gd = currentFont.getChar(char, maxFullScale * currentScale * currentSizeRatio);
 
 						if (char == ' ')
 						{
 							// it's a space, just move the cursor
-							cursorX += gd.xAdvance * gd.scale / fsx;
+							cursorX += gd.xAdvance * gd.scale / fsx + charSpacing * currentScale * currentSizeRatio;
 						}
 						else
 						{
 							// draw the character
-							var point = getRenderPoint(char);
-							var x = point.x + lineOffsetX + gd.xOffset * gd.scale / fsx,
-								y = point.y + gd.yOffset * gd.scale * sy / maxFullScale + thisLineHeight - (lineHeight * currentScale * currentSizeRatio);
+							_renderData.char = char;
+							_renderData.img = null;
+							_renderData.x = cursorX;
+							_renderData.y = cursorY;
+							_renderData.color = currentColor;
+							_renderData.alpha = currentAlpha;
+							_renderData.scale = currentScale;
+							applyCustomFunctions(_renderData);
+							var x = _renderData.x + lineOffsetX + gd.xOffset * gd.scale / fsx,
+								y = _renderData.y + gd.yOffset * gd.scale * sy / maxFullScale + thisLineHeight - (lineHeight * currentScale * currentSizeRatio);
 							gd.region.draw(
-								(_point.x + x) * fsx, (_point.y + y) * fsy,
+								(_point.x + floorX(camera, x)) * fsx,
+								(_point.y + floorY(camera, y)) * fsy,
 								gd.scale, gd.scale * sy * fsy / maxFullScale, 0,
-								currentColor, currentAlpha,
-								shader, smooth, blend
+								_renderData.color, _renderData.alpha,
+								shader, smooth, blend, clipRect, flexibleLayer
 							);
 							// advance cursor position
 							cursorX += gd.xAdvance * gd.scale / fsx + charSpacing * currentScale * currentSizeRatio;
@@ -636,12 +743,7 @@ class BitmapText extends Graphic
 					// advance to next line and set the new line height
 					cursorX = 0;
 					cursorY += thisLineHeight + ((cursorY > 0 && thisLineHeight > 0) ? lineSpacing : 0);
-					lineOffsetX = Std.int((width - lineWidth) * switch (alignType)
-					{
-						case Left: 0;
-						case Center: 0.5;
-						case Right: 1;
-					});
+					lineOffsetX = (width - lineWidth) * alignType.floatValue;
 					thisLineHeight = lineHeight;
 					if (cursorY != 0) ++charCount;
 				case Image(image, padding):
@@ -651,26 +753,36 @@ class BitmapText extends Graphic
 						originalScaleX = image.scaleX,
 						originalScaleY = image.scaleY;
 					image.originX = image.originY = 0;
-					var point = getRenderPoint();
-					image.x = _point.x + point.x + lineOffsetX + originalX + padding;
-					image.y = _point.y + point.y + thisLineHeight + originalY - image.height * image.scale * image.scaleY * currentScale * this.scale * this.scaleY;
-					image.color = currentColor;
-					image.alpha = currentAlpha;
-					image.scaleX *= this.scale * this.scaleX * currentScale;
-					image.scaleY *= this.scale * this.scaleY * currentScale;
-					image.render(HXP.zero, HXP.zeroCamera);
+					_renderData.char = null;
+					_renderData.img = image;
+					_renderData.x = cursorX;
+					_renderData.y = cursorY;
+					_renderData.color = currentColor;
+					_renderData.alpha = currentAlpha;
+					_renderData.scale = currentScale;
+					applyCustomFunctions(_renderData);
+					image.x = _point.x + _renderData.x + lineOffsetX + originalX + padding;
+					image.y = _point.y + _renderData.y + thisLineHeight + originalY - image.height * image.scale * image.scaleY * _renderData.scale * this.scale * this.scaleY;
+					image.color = _renderData.color;
+					image.alpha = _renderData.alpha;
+					image.scaleX *= this.scale * this.scaleX * _renderData.scale;
+					image.scaleY *= this.scale * this.scaleY * _renderData.scale;
+					image.pixelSnapping = pixelPerfect;
+					HXP.point.setTo(0, 0);
+					image.render(HXP.point, HXP.zeroCamera);
 					image.x = originalX;
 					image.y = originalY;
 					image.scaleX = originalScaleX;
 					image.scaleY = originalScaleY;
+					image.flexibleLayer = flexibleLayer;
 					// advance cursor position
-					cursorX += ((image.width * image.scale * image.scaleX * this.scale * this.scaleX) + charSpacing + padding * 2) * currentScale;
+					cursorX += ((image.width * image.scale * image.scaleX * this.scale * this.scaleX) + charSpacing + padding * 2) * _renderData.scale;
 					++charCount;
-				case MoveText(func):
-					_moveStack.push(func);
-				case PopMoveText:
-					_moveStack.pop();
-				case PopSize, PopScale, PopColor, PopAlpha: {}
+				case Custom(func):
+					_customStack.push(func);
+				case PopCustom:
+					_customStack.pop();
+				case PopFont, PopSize, PopScale, PopColor, PopAlpha: {}
 				case Align(_): {}
 			}
 		}

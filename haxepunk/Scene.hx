@@ -1,15 +1,17 @@
 package haxepunk;
 
 import haxe.ds.IntMap;
-import flash.geom.Point;
 import haxepunk.Signal;
+import haxepunk.assets.AssetCache;
 import haxepunk.graphics.atlas.AtlasData;
-import haxepunk.graphics.hardware.SceneRenderer;
 import haxepunk.graphics.shader.SceneShader;
+import haxepunk.graphics.hardware.DrawCommandBatch;
+import haxepunk.graphics.hardware.Texture;
 import haxepunk.utils.BlendMode;
 import haxepunk.utils.Color;
 import haxepunk.utils.DrawContext;
 import haxepunk.math.MathUtil;
+import haxepunk.math.Vector2;
 
 /**
  * Updated by `Engine`, main game container that holds all currently active Entities.
@@ -38,12 +40,36 @@ class Scene extends Tweener
 	public var bgAlpha:Float = 1;
 
 	/**
+	 * Whether or not to track draw calls for this scene
+	 * @since	4.0.0
+	 */
+	public var trackDrawCalls:Bool = true;
+
+	/**
 	 * Point used to determine drawing offset in the render loop.
 	 */
 	public var camera:Camera;
 
-	public var width:Int = 0;
-	public var height:Int = 0;
+	/**
+	 * Scene-scoped asset cache. These assets will be destroyed when the scene
+	 * ends.
+	 */
+	public var assetCache:AssetCache;
+
+	public var x:Int = 0;
+	public var y:Int = 0;
+
+	var _width:Null<Int> = null;
+	@:isVar public var width(get, set):Null<Int> = null;
+	inline function get_width() return _width == null ? (HXP.screen.width - x) : _width;
+	inline function set_width(v:Null<Int>) return _width = v;
+
+	var _height:Null<Int> = null;
+	@:isVar public var height(get, set):Null<Int> = null;
+	inline function get_height() return _height == null ? (HXP.screen.height - y) : _height;
+	inline function set_height(v:Null<Int>) return _height = v;
+
+	public var batch:DrawCommandBatch;
 
 	/**
 	 * Array of shaders which will be used to process the final result of
@@ -90,7 +116,8 @@ class Scene extends Tweener
 		super();
 
 		camera = new Camera();
-		renderer = new SceneRenderer(this);
+		assetCache = new AssetCache(Type.getClassName(Type.getClass(this)));
+		batch = new DrawCommandBatch();
 
 		_layerList = new Array<Int>();
 
@@ -121,16 +148,11 @@ class Scene extends Tweener
 	@:allow(haxepunk.HXP)
 	function _resize()
 	{
-		if (width != HXP.width || height != HXP.height)
+		for (e in _update)
 		{
-			width = HXP.width;
-			height = HXP.height;
-			for (e in _update)
-			{
-				e.resized();
-			}
-			onResize.invoke();
+			e.resized();
 		}
+		onResize.invoke();
 	}
 
 	/**
@@ -150,8 +172,6 @@ class Scene extends Tweener
 	 */
 	override public function update()
 	{
-		preUpdate.invoke();
-
 		// update the camera
 		camera.update();
 
@@ -161,7 +181,15 @@ class Scene extends Tweener
 			if (e.active)
 			{
 				if (e.hasTween) e.updateTweens(HXP.elapsed);
-				if (e.active) e.update();
+				if (e.active)
+				{
+					if (e.shouldUpdate())
+					{
+						e.preUpdate.invoke();
+						e.update();
+						e.postUpdate.invoke();
+					}
+				}
 			}
 			if (e.graphic != null && e.graphic.active) e.graphic.update();
 		}
@@ -174,8 +202,6 @@ class Scene extends Tweener
 		{
 			HXP.cursor.update();
 		}
-
-		postUpdate.invoke();
 	}
 
 	/**
@@ -211,15 +237,16 @@ class Scene extends Tweener
 	 */
 	public function render()
 	{
-		renderer.startFrame();
-		AtlasData.startScene(this);
+		AtlasData.startScene(batch);
+		batch.visibleArea.setTo(0, 0, width, height);
 
 		if (bgAlpha > 0)
 		{
+			var screen = HXP.screen;
 			drawContext.scene = this;
 			drawContext.blend = BlendMode.Alpha;
-			drawContext.setColor(bgColor == null ? HXP.stage.color : bgColor, bgAlpha);
-			drawContext.rectFilled(0, 0, HXP.width, HXP.height);
+			drawContext.setColor(bgColor == null ? screen.color : bgColor, bgAlpha);
+			drawContext.rectFilled(0, 0, width, height);
 		}
 
 		preRender.invoke();
@@ -230,7 +257,7 @@ class Scene extends Tweener
 			if (!layerVisible(layer)) continue;
 			for (e in _layers.get(layer))
 			{
-				if (e.visible) e.render(camera);
+				if (e.visible) e.render(e.camera == null ? camera : e.camera);
 			}
 		}
 
@@ -241,7 +268,6 @@ class Scene extends Tweener
 		}
 
 		postRender.invoke();
-		renderer.endFrame();
 	}
 
 	/**
@@ -250,7 +276,7 @@ class Scene extends Tweener
 	public var mouseX(get, null):Int;
 	inline function get_mouseX():Int
 	{
-		return Std.int((HXP.screen.mouseX / camera.scaleX + camera.x));
+		return Std.int((HXP.app.getMouseX() - HXP.screen.x - x) / camera.screenScaleX + camera.x);
 	}
 
 	/**
@@ -259,13 +285,8 @@ class Scene extends Tweener
 	public var mouseY(get, null):Int;
 	inline function get_mouseY():Int
 	{
-		return Std.int((HXP.screen.mouseY / camera.scaleY + camera.y));
+		return Std.int((HXP.app.getMouseY() - HXP.screen.y - y) / camera.screenScaleY + camera.y);
 	}
-
-	/**
-	 * Used to store render data.
-	 */
-	public var renderer(default, null):SceneRenderer;
 
 	/**
 	 * Adds the Entity to the Scene at the end of the frame.
@@ -561,7 +582,7 @@ class Scene extends Tweener
 	 * @param	p           If non-null, will have its x and y values set to the point of collision.
 	 * @return	The first Entity to collide, or null if none collide.
 	 */
-	public function collideLine(type:String, fromX:Int, fromY:Int, toX:Int, toY:Int, precision:Int = 1, p:Point = null):Entity
+	public function collideLine(type:String, fromX:Int, fromY:Int, toX:Int, toY:Int, precision:Int = 1, p:Vector2 = null):Entity
 	{
 		// If the distance is less than precision, do the short sweep.
 		if (precision < 1) precision = 1;
@@ -731,13 +752,25 @@ class Scene extends Tweener
 	 * @param	pY			Y position.
 	 * @param	into		The Array or Vector to populate with collided Entities.
 	 */
-	public function collidePointInto<E:Entity>(type:String, pX:Float, pY:Float, into:Array<E>)
+	public function collidePointInto<E:Entity>(type:String, pX:Float, pY:Float, into:Array<E>, cameraAdjust:Bool = false)
 	{
 		if (!_types.exists(type)) return;
 		var n:Int = into.length;
 		for (e in _types.get(type))
 		{
-			if (e.collidable && e.collidePoint(e.x, e.y, pX, pY)) into[n++] = cast e;
+			if (e.collidable)
+			{
+				if (cameraAdjust && e.camera != null)
+				{
+					var px = (pX + e.camera.x - camera.x) * camera.fullScaleX / e.camera.fullScaleX,
+						py = (pY + e.camera.y - camera.y) * camera.fullScaleY / e.camera.fullScaleY;
+					if (e.collidePoint(e.x, e.y, px, py)) into[n++] = cast e;
+				}
+				else
+				{
+					if (e.collidePoint(e.x, e.y, pX, pY)) into[n++] = cast e;
+				}
+			}
 		}
 	}
 
@@ -1146,6 +1179,11 @@ class Scene extends Tweener
 			}
 			HXP.clear(_recycle);
 		}
+	}
+
+	public function getTexture(id:String):Texture
+	{
+		return assetCache.getTexture(id);
 	}
 
 	/** @private Adds Entity to the update list. */

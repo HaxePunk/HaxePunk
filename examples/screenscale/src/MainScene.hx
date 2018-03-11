@@ -4,6 +4,7 @@ import haxepunk.Scene;
 import haxepunk.screen.ScaleMode;
 import haxepunk.screen.UniformScaleMode;
 import haxepunk.screen.FixedScaleMode;
+import haxepunk.screen.FixedHeightScaleMode;
 import haxepunk.input.Input;
 import haxepunk.input.Key;
 import haxepunk.input.Mouse;
@@ -57,14 +58,30 @@ class MainScene extends Scene
 			mode: new UniformScaleMode(UniformScaleType.Expand, true),
 			description: "Uniform (Expand, integer): Uses whole screen, zooms out when X/Y ratio is uneven."
 		},
+		{
+			mode: new FixedHeightScaleMode(),
+			description: "FixedHeight: Vertical resolution stays constant, horizontal area shown varies."
+		},
 	];
 	var scaleModeIndex:Int = 0;
 	var label:Text;
 
-	public override function begin()
+	public function new()
 	{
-		HXP.stage.color = 0;
+		super();
+		Key.define("up", [Key.W, Key.UP]);
+		Key.define("down", [Key.S, Key.DOWN]);
+		Key.define("left", [Key.A, Key.LEFT]);
+		Key.define("right", [Key.D, Key.RIGHT]);
+		Key.define("next", [Key.SPACE, Key.ENTER]);
+		Key.define("snap", [Key.TAB, Key.P]);
+		Mouse.define("next", MouseButton.LEFT);
+		onInputPressed.next.bind(changeScaleMode);
+		onInputPressed.snap.bind(togglePixelSnapping);
+	}
 
+	override public function begin()
+	{
 		var tilemap = new Tilemap("graphics/tiles.png", 840, 512, 60, 60, 4, 4);
 		for (x in 0 ... Std.int(840/60))
 		{
@@ -84,19 +101,17 @@ class MainScene extends Scene
 		label.y = HXP.height/2;
 
 		setScaleMode();
-
-		Key.define("up", [Key.W, Key.UP]);
-		Key.define("down", [Key.S, Key.DOWN]);
-		Key.define("left", [Key.A, Key.LEFT]);
-		Key.define("right", [Key.D, Key.RIGHT]);
-		Key.define("next", [Key.TAB, Key.SPACE, Key.ENTER]);
-		Mouse.define("next", MouseButton.LEFT);
-		onInputPressed.next.bind(changeScaleMode);
 	}
 
 	function changeScaleMode()
 	{
 		scaleModeIndex = (scaleModeIndex + 1) % scaleModes.length;
+		setScaleMode();
+	}
+
+	function togglePixelSnapping()
+	{
+		HXP.camera.pixelSnapping = !HXP.camera.pixelSnapping;
 		setScaleMode();
 	}
 
@@ -113,7 +128,7 @@ class MainScene extends Scene
 
 	function setScaleMode()
 	{
-		label.text = scaleModes[scaleModeIndex].description + "\nClick to change. Arrows to move.";
+		label.text = scaleModes[scaleModeIndex].description + "\nClick to change. Arrows/WASD to move. P to toggle pixel snapping (" + (HXP.camera.pixelSnapping ? "on" : "off") + ".)";
 
 		HXP.screen.scaleMode = scaleModes[scaleModeIndex].mode;
 		HXP.screen.scaleMode.setBaseSize(640, 480);

@@ -1,6 +1,5 @@
 package haxepunk;
 
-import massive.munit.Assert;
 import haxepunk.Tweener;
 
 class TweenerTest

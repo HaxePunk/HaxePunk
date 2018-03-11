@@ -1,7 +1,7 @@
 package haxepunk.debug;
 
 import haxepunk.Entity;
-import haxepunk.graphics.text.Text;
+import haxepunk.graphics.text.BitmapText;
 import haxepunk.utils.CircularBuffer;
 import haxepunk.utils.Color;
 import haxepunk.utils.DrawContext;
@@ -16,7 +16,7 @@ class Metric<T:Float> extends Entity
 	var minScale:Float = 0;
 	var color:Color = 0xffffff;
 
-	var label:Text;
+	var label:BitmapText;
 
 	public function new(name:String, data:CircularBuffer<T>, color:Color, minScale:Float)
 	{
@@ -26,11 +26,11 @@ class Metric<T:Float> extends Entity
 		this.color = color;
 		this.minScale = minScale;
 
-		label = new Text(name);
+		label = new BitmapText(name, {size: 12});
 		label.x = label.y = 4;
 		addGraphic(label);
 
-		width = 240;
+		width = 160;
 		height = 80;
 
 		if (drawContext == null)
@@ -48,8 +48,8 @@ class Metric<T:Float> extends Entity
 
 	override public function render(camera:Camera)
 	{
-		var fsx:Float = camera.fullScaleX,
-			fsy:Float = camera.fullScaleY;
+		var fsx:Float = camera.screenScaleX,
+			fsy:Float = camera.screenScaleY;
 
 		drawContext.scene = scene;
 		drawContext.setColor(color.lerp(0, 0.9), 0.8);

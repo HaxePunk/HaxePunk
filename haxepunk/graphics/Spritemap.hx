@@ -1,6 +1,5 @@
 package haxepunk.graphics;
 
-import flash.geom.Rectangle;
 import haxe.ds.Either;
 import haxepunk.HXP;
 import haxepunk.Graphic;
@@ -8,6 +7,7 @@ import haxepunk.Signal;
 import haxepunk.ds.Maybe;
 import haxepunk.graphics.atlas.TileAtlas;
 import haxepunk.math.Random;
+import haxepunk.math.Rectangle;
 
 @:allow(haxepunk.graphics.Spritemap)
 class Animation

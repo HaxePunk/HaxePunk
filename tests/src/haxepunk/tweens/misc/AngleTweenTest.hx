@@ -1,6 +1,5 @@
 package haxepunk.tweens.misc;
 
-import massive.munit.Assert;
 import haxepunk.math.Random;
 
 class AngleTweenTest extends TestSuite

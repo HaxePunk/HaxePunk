@@ -2,7 +2,7 @@ package haxepunk.tweens.motion;
 
 import haxepunk.HXP;
 import haxepunk.utils.Ease.EaseFunction;
-import flash.geom.Point;
+import haxepunk.math.Vector2;
 
 /**
  * Determines motion along a quadratic curve.
@@ -73,8 +73,8 @@ class QuadMotion extends Motion
 
 	function calculateDistance():Float
 	{
-		var a:Point = HXP.point,
-			b:Point = HXP.point2;
+		var a:Vector2 = HXP.point,
+			b:Vector2 = HXP.point2;
 		a.x = x - 2 * _controlX + _toX;
 		a.y = y - 2 * _controlY + _toY;
 		b.x = 2 * _controlX - 2 * x;

@@ -1,11 +1,12 @@
 package haxepunk;
 
-import flash.geom.Point;
 import haxe.ds.Either.Left;
 import haxe.ds.Either.Right;
+import haxepunk.Signal.Signal0;
 import haxepunk.ds.OneOf;
 import haxepunk.graphics.Graphiclist;
 import haxepunk.math.MathUtil;
+import haxepunk.math.Vector2;
 
 typedef SolidType = OneOf<String, Array<String>>;
 
@@ -24,6 +25,14 @@ class Entity extends Tweener
 	 * @since 4.0.0
 	 */
 	public var parent:Null<Entity>;
+
+	public var camera(default, set):Null<Camera> = null;
+	function set_camera(v:Camera) return camera = v;
+
+	/**
+	 * If set, skip every N update frames.
+	 */
+	public var skipFrames:Int = 0;
 
 	/**
 	 * If the Entity should render.
@@ -101,12 +110,16 @@ class Entity extends Tweener
 	/**
 	 * Width of the Entity's hitbox.
 	 */
-	public var width:Int = 0;
+	@:isVar public var width(get, set):Int = 0;
+	function get_width() return width;
+	function set_width(w:Int) return width = w;
 
 	/**
 	 * Height of the Entity's hitbox.
 	 */
-	public var height:Int = 0;
+	@:isVar public var height(get, set):Int = 0;
+	function get_height() return height;
+	function set_height(h:Int) return height = h;
 
 	/**
 	 * X origin of the Entity's hitbox.
@@ -117,6 +130,9 @@ class Entity extends Tweener
 	 * Y origin of the Entity's hitbox.
 	 */
 	public var originY:Int = 0;
+
+	public var preUpdate:Signal0 = new Signal0();
+	public var postUpdate:Signal0 = new Signal0();
 
 	/**
 	 * Constructor. Can be used to place the Entity and assign a graphic and mask.
@@ -138,7 +154,6 @@ class Entity extends Tweener
 		_name = "";
 
 		HITBOX = new Mask();
-		_point = HXP.point;
 
 		layer = 0;
 
@@ -163,6 +178,17 @@ class Entity extends Tweener
 	 */
 	public function resized():Void {}
 
+	public function shouldUpdate():Bool
+	{
+		if (skipFrames == 0) return true;
+		else if (++_frames % skipFrames == 0)
+		{
+			_frames %= skipFrames;
+			return true;
+		}
+		else return false;
+	}
+
 	/**
 	 * Updates the Entity.
 	 */
@@ -185,7 +211,7 @@ class Entity extends Tweener
 			{
 				_point.x = _point.y = 0;
 			}
-			graphic.render(_point, camera);
+			graphic.doRender(_point, camera);
 		}
 	}
 
@@ -194,17 +220,17 @@ class Entity extends Tweener
 		if (mask == null && width > 0 && height > 0 && collidable)
 		{
 			Mask.drawContext.lineThickness = 2;
+			Mask.drawContext.setColor(0xff0000, 0.065);
+			Mask.drawContext.rectFilled((x - camera.x - originX) * camera.screenScaleX, (y - camera.y - originY) * camera.screenScaleY, width * camera.screenScaleX, height * camera.screenScaleY);
 			Mask.drawContext.setColor(0xff0000, 0.25);
-			Mask.drawContext.rectFilled((x - camera.x - originX) * camera.fullScaleX, (y - camera.y - originY) * camera.fullScaleY, width * camera.fullScaleX, height * camera.fullScaleY);
-			Mask.drawContext.setColor(0xff0000, 0.5);
-			Mask.drawContext.rect((x - camera.x - originX) * camera.fullScaleX, (y - camera.y - originY) * camera.fullScaleY, width * camera.fullScaleX, height * camera.fullScaleY);
+			Mask.drawContext.rect((x - camera.x - originX) * camera.screenScaleX, (y - camera.y - originY) * camera.screenScaleY, width * camera.screenScaleX, height * camera.screenScaleY);
 		}
 		else if (mask != null)
 		{
 			mask.debugDraw(camera);
 		}
 		Mask.drawContext.setColor(selected ? 0x00ff00 : 0xffffff, 1);
-		Mask.drawContext.circle((x - camera.x) * camera.fullScaleX, (y - camera.y) * camera.fullScaleY, 3, 8);
+		Mask.drawContext.circle((x - camera.x) * camera.screenScaleX, (y - camera.y) * camera.screenScaleY, 3, 8);
 	}
 
 	/**
@@ -519,7 +545,9 @@ class Entity extends Tweener
 	inline function get_bottom():Float return top + height;
 
 	/**
-	 * The rendering layer of this Entity. Higher layers are rendered first.
+	 * The rendering layer of this Entity. Layers are drawn in descending order.
+	 * Backgrounds will have large (positive) numbers, foregrounds will have
+	 * small (negative) numbers.
 	 */
 	public var layer(get, set):Int;
 	inline function get_layer():Int return _layer;
@@ -639,6 +667,23 @@ class Entity extends Tweener
 	 */
 	public function setHitboxTo(o:Dynamic)
 	{
+		#if html5
+		inline function getInt(value:Dynamic, defaultValue:Int = 0):Int
+		{
+			return if (Std.is(value, Int) || Std.is(value, Float))
+				value;
+			else
+				defaultValue;
+		};
+
+		width = getInt(o.width);
+		height = getInt(o.height);
+
+		originX = getInt(o.originX, -getInt(o.x));
+		originY = getInt(o.originY, -getInt(o.y));
+
+		#else
+
 		inline function getInt(o:Dynamic, prop:String, defaultValue:Int=0):Int
 		{
 			return try
@@ -656,6 +701,7 @@ class Entity extends Tweener
 
 		originX = getInt(o, "originX", -getInt(o, "x"));
 		originY = getInt(o, "originY", -getInt(o, "y"));
+		#end
 	}
 
 	/**
@@ -907,6 +953,7 @@ class Entity extends Tweener
 	var _type:String;
 	var _layer:Int = 0;
 	var _name:String;
+	var _frames:Int = -1;
 
 	var _recycleNext:Entity;
 
@@ -918,8 +965,6 @@ class Entity extends Tweener
 	var _moveX:Float = 0;
 	var _moveY:Float = 0;
 
-	// Rendering information.
-	var _point:Point;
-
 	static var _EMPTY:Entity = new Entity();
+	static var _point:Vector2 = new Vector2();
 }

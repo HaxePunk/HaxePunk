@@ -6,11 +6,10 @@ import haxepunk.math.MathUtil;
  * An abstract with various color utility functions.
  * @since	4.0.0
  **/
-@:enum
 abstract Color(UInt) from UInt to UInt
 {
-	var White = 0xffffff;
-	var Black = 0x000000;
+	public static inline var White:Color = 0xffffff;
+	public static inline var Black:Color = 0x000000;
 
 	/**
 	 * Linear interpolation between two colors.
@@ -119,8 +118,19 @@ abstract Color(UInt) from UInt to UInt
 
 	public inline function withAlpha(a:Float):Color
 	{
-		a = a < 0 ? 0 : (a > 1 ? 1 : a);
-		return (Std.int(0xff * a) << 24) | (this & 0xffffff);
+		var alpha = if (a <= 0) // fully transparent
+		{
+			0;
+		}
+		else if (a >= 1) // fully opaque
+		{
+			0xFF << 24;
+		}
+		else // somewhere in-between
+		{
+			(Std.int(0xff * a) << 24);
+		};
+		return (this & 0xffffff) | alpha;
 	}
 
 	/**

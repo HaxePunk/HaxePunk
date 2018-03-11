@@ -1,9 +1,9 @@
 package haxepunk.graphics.atlas;
 
 import haxepunk.utils.BlendMode;
-import flash.geom.Rectangle;
 import haxepunk.graphics.atlas.AtlasData;
 import haxepunk.graphics.shader.Shader;
+import haxepunk.math.Rectangle;
 import haxepunk.utils.Color;
 
 class Atlas
@@ -39,14 +39,6 @@ class Atlas
 	{
 		var data:AtlasData = source;
 		return data.createRegion(new Rectangle(0, 0, data.width, data.height));
-	}
-
-	/**
-	 * Removes an atlas from the display list
-	 */
-	public function destroy()
-	{
-		_data.destroy();
 	}
 
 	/**

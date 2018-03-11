@@ -28,7 +28,7 @@ Class Changes
 | 2.x                                   | 4.x                                   |
 |---------------------------------------|---------------------------------------|
 | com.haxepunk.World                    | haxepunk.Scene                        |
-| com.haxepunk.graphics.Backdrop        | haxepunk.graphics.tile.Backdro        |
+| com.haxepunk.graphics.Backdrop        | haxepunk.graphics.tile.Backdrop       |
 | com.haxepunk.graphics.BitmapText      | haxepunk.graphics.text.BitmapText     |
 | com.haxepunk.graphics.Canvas          | *removed*                             |
 | com.haxepunk.graphics.Emitter         | haxepunk.graphics.emitter.Emitter     |
@@ -64,23 +64,3 @@ Mouse.define("left", MouseButton.LEFT);
 These can then be checked using `Input.check("left")`, `Input.pressed("left")`, or `Input.released("left")`
 
 Both the Engine (for global controls) and the Scene (for Scene-specific controls) also have `inputPressed` and `inputReleased` signals that you can bind callbacks to: `scene.inputPressed.left.bind(myFunction)`.
-
-Tween Events
-------------
-
-Previously tween events were dispatched but are now using signals. Instead of passing a `complete` function to the tween when constructing it you'll need to bind to the signal instead.
-
-```haxe
-var tween = new Tween(10, onComplete); // old style
-
-var tween = new Tween(10);
-tween.complete.bind(onComplete); // new style
-```
-
-In addition to the complete function you can also bind to start and update.
-
-```haxe
-var tween = new Tween(10);
-tween.started.bind(function() trace("Tween started!"));
-tween.updated.bind(function() trace("Tween updated!"));
-```

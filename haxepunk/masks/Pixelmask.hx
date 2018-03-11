@@ -1,10 +1,11 @@
 package haxepunk.masks;
 
 import haxepunk.Mask;
-import flash.geom.Point;
-import flash.geom.Rectangle;
 import haxepunk.HXP;
+import haxepunk.assets.AssetCache;
 import haxepunk.graphics.hardware.Texture;
+import haxepunk.math.Rectangle;
+import haxepunk.math.Vector2;
 
 /**
  * A bitmap mask used for pixel-perfect collision.
@@ -30,7 +31,7 @@ class Pixelmask extends Hitbox
 		if (Std.is(source, Texture))
 			_data = source;
 		else
-			_data = Texture.fromAsset(source);
+			_data = AssetCache.global.getTexture(source);
 
 		if (_data == null)
 			throw "Invalid Pixelmask source image.";
@@ -70,7 +71,7 @@ class Pixelmask extends Hitbox
 
 		var intersect = r1.intersection(r2);
 
-		if (intersect.isEmpty())
+		if (intersect == null)
 			return false;
 
 		for (dx in Math.floor(intersect.x)...Math.floor(intersect.x + intersect.width + 1))
@@ -98,7 +99,7 @@ class Pixelmask extends Hitbox
 
 		var intersect = r1.intersection(r2);
 
-		if (intersect.isEmpty())
+		if (intersect == null)
 			return false;
 
 		for (dx in Math.floor(intersect.x)...Math.floor(intersect.x + intersect.width + 1))
@@ -121,7 +122,7 @@ class Pixelmask extends Hitbox
 
 		var intersect = r1.intersection(r2);
 
-		if (intersect.isEmpty())
+		if (intersect == null)
 		{
 			return false;
 		}
@@ -163,6 +164,6 @@ class Pixelmask extends Hitbox
 
 	// Global objects.
 	var _rect:Rectangle;
-	var _point:Point;
-	var _point2:Point;
+	var _point:Vector2;
+	var _point2:Vector2;
 }

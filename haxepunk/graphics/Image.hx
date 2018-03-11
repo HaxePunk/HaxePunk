@@ -1,15 +1,14 @@
 package haxepunk.graphics;
 
-import flash.geom.Point;
-import flash.geom.Rectangle;
 import haxepunk.Camera;
 import haxepunk.Graphic;
-import haxepunk.HXP;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.IAtlasRegion;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.utils.Color;
 import haxepunk.math.MathUtil;
+import haxepunk.math.Rectangle;
+import haxepunk.math.Vector2;
 
 /**
  * Performance-optimized non-animated image. Can be drawn to the screen with transformations.
@@ -35,18 +34,6 @@ class Image extends Graphic
 	 * Y scale of the image.
 	 */
 	public var scaleY:Float;
-
-	/**
-	 * X origin of the image, determines transformation point.
-	 * Defaults to top-left corner.
-	 */
-	public var originX:Float;
-
-	/**
-	 * Y origin of the image, determines transformation point.
-	 * Defaults to top-left corner.
-	 */
-	public var originY:Float;
 
 	/**
 	 * Constructor.
@@ -88,33 +75,33 @@ class Image extends Graphic
 	}
 
 	@:dox(hide)
-	override public function render(point:Point, camera:Camera)
+	override public function render(point:Vector2, camera:Camera)
 	{
 		var sx = scale * scaleX,
 			sy = scale * scaleY,
-			fsx = camera.fullScaleX,
-			fsy = camera.fullScaleY;
+			fsx = camera.screenScaleX,
+			fsy = camera.screenScaleY;
 
-		var x = camera.floorX(x);
-		var y = camera.floorY(y);
+		var x = floorX(camera, x);
+		var y = floorY(camera, y);
 
 		if (angle == 0)
 		{
-			_point.x = camera.floorX(point.x) - camera.floorX(originX * sx) - camera.floorX(camera.x * scrollX) + x;
-			_point.y = camera.floorY(point.y) - camera.floorY(originY * sy) - camera.floorY(camera.y * scrollY) + y;
+			_point.x = floorX(camera, point.x) - floorX(camera, originX * sx) - floorX(camera, camera.x * scrollX) + x;
+			_point.y = floorY(camera, point.y) - floorY(camera, originY * sy) - floorY(camera, camera.y * scrollY) + y;
 
 			// render without rotation
 			var clipRect = screenClipRect(camera, _point.x, _point.y);
 			_region.draw(_point.x * fsx, _point.y * fsy,
 				sx * fsx, sy * fsy, angle,
 				color, alpha,
-				shader, smooth, blend, clipRect
+				shader, smooth, blend, clipRect, flexibleLayer
 			);
 		}
 		else
 		{
-			_point.x = camera.floorX(point.x) - camera.floorX(originX) - camera.floorX(camera.x * scrollX) + x;
-			_point.y = camera.floorY(point.y) - camera.floorY(originY) - camera.floorY(camera.y * scrollY) + y;
+			_point.x = floorX(camera, point.x) - floorX(camera, originX) - floorX(camera, camera.x * scrollX) + x;
+			_point.y = floorY(camera, point.y) - floorY(camera, originY) - floorY(camera, camera.y * scrollY) + y;
 			var angle = angle * MathUtil.RAD;
 			var cos = Math.cos(angle);
 			var sin = Math.sin(angle);
@@ -127,7 +114,7 @@ class Image extends Graphic
 			var clipRect = screenClipRect(camera, tx, ty);
 			_region.drawMatrix(tx * fsx, ty * fsy, a, b, c, d,
 				color, alpha,
-				shader, smooth, blend, clipRect
+				shader, smooth, blend, clipRect, flexibleLayer
 			);
 		}
 	}
@@ -166,11 +153,8 @@ class Image extends Graphic
 		if (radius == 0)
 			throw "Illegal circle, radius cannot be 0.";
 
-		HXP.sprite.graphics.clear();
-		HXP.sprite.graphics.beginFill(0xFFFFFF);
-		HXP.sprite.graphics.drawCircle(radius, radius, radius);
 		var texture:Texture = Texture.create(radius * 2, radius * 2, true, 0);
-		texture.bitmap.draw(HXP.sprite);
+		texture.drawCircle(radius, radius, radius);
 
 		var image = new Image(Atlas.loadImageAsRegion(texture));
 
@@ -183,7 +167,7 @@ class Image extends Graphic
 	/**
 	 * Centers the Image's originX/Y to its center.
 	 */
-	public function centerOrigin()
+	override public function centerOrigin()
 	{
 		originX = Std.int(width / 2);
 		originY = Std.int(height / 2);

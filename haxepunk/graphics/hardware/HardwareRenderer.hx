@@ -1,15 +1,8 @@
 package haxepunk.graphics.hardware;
 
-import haxe.PosInfos;
-import flash.geom.Rectangle;
-import flash.geom.Point;
-#if nme
-import flash.gl.GL;
-import flash.gl.GLFramebuffer;
-#else
-import lime.graphics.opengl.GL;
-import lime.graphics.opengl.GLFramebuffer;
-#end
+import haxepunk.graphics.hardware.opengl.GL;
+import haxepunk.graphics.hardware.opengl.GLFramebuffer;
+import haxepunk.graphics.hardware.opengl.GLUtils;
 import haxepunk.HXP;
 import haxepunk.graphics.shader.SceneShader;
 import haxepunk.utils.BlendMode;
@@ -30,19 +23,6 @@ class HardwareRenderer
 	static var triangleCount:Int = 0;
 	static var drawCallCount:Int = 0;
 	static var _tracking:Bool = true;
-
-	static inline function checkForGLErrors(?pos:PosInfos)
-	{
-		#if gl_debug
-		var error = GL.getError();
-		if (error != GL.NO_ERROR)
-			throw "GL Error found at " + pos.fileName + ":" + pos.lineNumber + ": " + error;
-		#elseif debug
-		var error = GL.getError();
-		if (error != GL.NO_ERROR)
-			trace("GL Error found at " + pos.fileName + ":" + pos.lineNumber + ": " + error);
-		#end
-	}
 
 	static inline function ortho(x0:Float, x1:Float, y0:Float, y1:Float, zNear:Float, zFar:Float)
 	{
@@ -79,7 +59,6 @@ class HardwareRenderer
 		}
 	}
 
-	static var _point:Point = new Point();
 	static var _ortho:Float32Array;
 
 	// for render to texture
@@ -106,9 +85,14 @@ class HardwareRenderer
 	}
 
 	@:access(haxepunk.graphics.hardware.DrawCommand)
-	public function render(drawCommand:DrawCommand, scene:Scene, rect:Rectangle):Void
+	public function render(drawCommand:DrawCommand):Void
 	{
-		#if (gl_debug || debug) checkForGLErrors(); #end
+		GLUtils.checkForErrors();
+
+		var x = this.x,
+			y = this.y,
+			width = this.width,
+			height = this.height;
 
 		if (drawCommand != null && drawCommand.triangleCount > 0)
 		{
@@ -119,11 +103,7 @@ class HardwareRenderer
 				if (drawCallLimit > -1 && drawCallCount > drawCallLimit) return;
 			}
 
-			var x:Int = Std.int(HXP.screen.x),
-				y:Int = Std.int(HXP.screen.y);
-			var width:Int = HXP.screen.width,
-				height:Int = HXP.screen.height,
-				clipRect = drawCommand.clipRect;
+			var clipRect = drawCommand.clipRect;
 			if (clipRect != null)
 			{
 				width -= Std.int(clipRect.x);
@@ -149,17 +129,15 @@ class HardwareRenderer
 				GL.uniformMatrix4fv(shader.uniformIndex(UNIFORM_MATRIX), false, _ortho);
 				#end
 
-				#if (gl_debug || debug) checkForGLErrors(); #end
+				GLUtils.checkForErrors();
 
 				var texture:Texture = drawCommand.texture;
-				if (texture.bitmap != null) GLUtils.bindTexture(texture, drawCommand.smooth);
+				if (texture != null) GLUtils.bindTexture(texture, drawCommand.smooth);
+				GLUtils.checkForErrors();
 
-				#if (gl_debug || debug) checkForGLErrors(); #end
-
-				GL.bindBuffer(GL.ARRAY_BUFFER, buffer.glBuffer);
 				shader.prepare(drawCommand, buffer);
 
-				#if (gl_debug || debug) checkForGLErrors(); #end
+				GLUtils.checkForErrors();
 
 				setBlendMode(drawCommand.blend);
 
@@ -174,21 +152,21 @@ class HardwareRenderer
 
 				GL.drawArrays(GL.TRIANGLES, 0, triangles * 3);
 
-				#if (gl_debug || debug) checkForGLErrors(); #end
+				GLUtils.checkForErrors();
 
 				GL.disable(GL.SCISSOR_TEST);
 
 				GL.bindBuffer(GL.ARRAY_BUFFER, null);
 				shader.unbind();
 
-				#if (gl_debug || debug) checkForGLErrors(); #end
+				GLUtils.checkForErrors();
 			}
 		}
 	}
 
 	public function startScene(scene:Scene)
 	{
-		_tracking = scene != HXP.engine.console;
+		_tracking = scene.trackDrawCalls;
 
 		if (buffer == null || GLUtils.invalid(buffer.glBuffer))
 		{
@@ -205,6 +183,11 @@ class HardwareRenderer
 		{
 			bindDefaultFramebuffer();
 		}
+
+		x = Std.int(HXP.screen.x + Math.max(scene.x, 0));
+		y = Std.int(HXP.screen.y + Math.max(scene.y, 0));
+		width = Std.int(scene.width);
+		height = Std.int(scene.height);
 	}
 
 	public function flushScene(scene:Scene)
@@ -276,4 +259,9 @@ class HardwareRenderer
 	}
 
 	inline function destroy() {}
+
+	var x:Int = 0;
+	var y:Int = 0;
+	var width:Int = 0;
+	var height:Int = 0;
 }

@@ -1,6 +1,5 @@
 package haxepunk.masks;
 
-import flash.geom.Point;
 import haxepunk.Mask;
 import haxepunk.utils.Draw;
 import haxepunk.math.Projection;
@@ -138,9 +137,9 @@ class Hitbox extends Mask
 		if (parent != null)
 		{
 			Mask.drawContext.setColor(0xff0000, 0.25);
-			Mask.drawContext.rectFilled((parent.x - camera.x + x) * camera.fullScaleX, (parent.y - camera.y + y) * camera.fullScaleY, width * camera.fullScaleX, height * camera.fullScaleY);
+			Mask.drawContext.rectFilled((parent.x - camera.x + x) * camera.screenScaleX, (parent.y - camera.y + y) * camera.screenScaleY, width * camera.screenScaleX, height * camera.screenScaleY);
 			Mask.drawContext.setColor(0xff0000, 0.5);
-			Mask.drawContext.rect((parent.x - camera.x + x) * camera.fullScaleX, (parent.y - camera.y + y) * camera.fullScaleY, width * camera.fullScaleX, height * camera.fullScaleY);
+			Mask.drawContext.rect((parent.x - camera.x + x) * camera.screenScaleX, (parent.y - camera.y + y) * camera.screenScaleY, width * camera.screenScaleX, height * camera.screenScaleY);
 		}
 	}
 

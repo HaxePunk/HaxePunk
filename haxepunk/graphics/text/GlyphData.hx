@@ -1,6 +1,6 @@
 package haxepunk.graphics.text;
 
-import flash.geom.Rectangle;
+import haxepunk.math.Rectangle;
 import haxepunk.graphics.atlas.AtlasRegion;
 
 typedef GlyphData =

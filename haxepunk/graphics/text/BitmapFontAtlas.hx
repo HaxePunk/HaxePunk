@@ -1,11 +1,12 @@
 package haxepunk.graphics.text;
 
-import flash.Assets;
 import haxe.xml.Fast;
 import haxepunk.HXP;
+import haxepunk.assets.AssetLoader;
 import haxepunk.graphics.atlas.AtlasDataType;
 import haxepunk.graphics.atlas.TextureAtlas;
 import haxepunk.graphics.hardware.Texture;
+import haxepunk.utils.Utf8String;
 
 @:enum
 abstract BitmapFontFormat(Int)
@@ -37,7 +38,6 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 		if (_fonts == null) _fonts = new Map();
 
 		if (format == null) format = XML;
-		if (fontName == HXP.defaultFont + ".png") format = XNA;
 
 		if (!_fonts.exists(fontName))
 		{
@@ -56,9 +56,7 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 	 */
 	public static function loadXMLFont(file:String):BitmapFontAtlas
 	{
-		var atlas = new BitmapFontAtlas(StringTools.replace(file, ".fnt", ".png"));
-
-		var xmlText = Assets.getText(file);
+		var xmlText:Utf8String = AssetLoader.getText(file);
 		if (xmlText == null) throw 'BitmapFontAtlas: "$file" not found!';
 
 		var xml = Xml.parse(xmlText);
@@ -66,6 +64,8 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 		if (firstElement == null) throw 'BitmapFontAtlas: "$file" contains invalid XML!';
 		var fast = new Fast(firstElement);
 
+		var imageFile = new haxe.io.Path(file).dir + "/" + fast.node.pages.node.page.att.file;
+		var atlas = new BitmapFontAtlas(imageFile);
 		atlas.lineHeight = Std.parseInt(fast.node.common.att.lineHeight);
 		atlas.fontSize = Std.parseInt(fast.node.info.att.size);
 		var chars = fast.node.chars;
@@ -84,7 +84,7 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 			}
 			else if (char.has.id)
 			{
-				glyph = String.fromCharCode(Std.parseInt(char.att.id));
+				glyph = Utf8String.fromCharCode(Std.parseInt(char.att.id));
 			}
 			if (glyph == null) throw '"$file" is not a valid .fnt file!';
 
@@ -138,8 +138,6 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 		if (texture == null)
 			throw 'Invalid XNA font asset "$asset": no Texture found.';
 
-		var bitmap = texture.bitmap;
-
 		if (options == null)
 			options = {};
 
@@ -151,29 +149,29 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 			options.glyphBGColor = 0xFF202020;
 
 		var glyphString:String = options.letters;
-		var globalBGColor:Int = bitmap.getPixel(0, 0);
+		var globalBGColor:Int = texture.getPixel(0, 0);
 		var cy:Int = 0;
 		var cx:Int;
 		var letterIdx:Int = 0;
 		var glyph:String;
 		var alphabetLength = glyphString.length;
 
-		while (cy < bitmap.height && letterIdx < alphabetLength)
+		while (cy < texture.height && letterIdx < alphabetLength)
 		{
 			var rowHeight:Int = 0;
 			cx = 0;
 
-			while (cx < bitmap.width && letterIdx < alphabetLength)
+			while (cx < texture.width && letterIdx < alphabetLength)
 			{
-				if (Std.int(bitmap.getPixel(cx, cy)) != globalBGColor)
+				if (Std.int(texture.getPixel(cx, cy)) != globalBGColor)
 				{
 					// found non bg pixel
 					var gx:Int = cx;
 					var gy:Int = cy;
 
 					// find width and height of glyph
-					while (Std.int(bitmap.getPixel(gx, cy)) != globalBGColor) gx++;
-					while (Std.int(bitmap.getPixel(cx, gy)) != globalBGColor) gy++;
+					while (Std.int(texture.getPixel(gx, cy)) != globalBGColor) gx++;
+					while (Std.int(texture.getPixel(cx, gy)) != globalBGColor) gy++;
 
 					var gw:Int = gx - cx;
 					var gh:Int = gy - cy;
@@ -212,11 +210,13 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 		atlas.lineHeight = atlas.fontSize;
 
 		// remove background color
-		var bgColor32:Int = bitmap.getPixel32(0, 0);
-		bitmap.threshold(bitmap, bitmap.rect, HXP.zero, "==", bgColor32, 0x00000000, 0xFFFFFFFF, true);
+		var bgColor32:Int = texture.getPixel(0, 0);
+		texture.removeColor(bgColor32);
 
 		if (options.glyphBGColor != null)
-			bitmap.threshold(bitmap, bitmap.rect, HXP.zero, "==", options.glyphBGColor, 0x00000000, 0xFFFFFFFF, true);
+		{
+			texture.removeColor(options.glyphBGColor);
+		}
 
 		return atlas;
 	}

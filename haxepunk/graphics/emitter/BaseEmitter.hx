@@ -1,13 +1,13 @@
 package haxepunk.graphics.emitter;
 
 import haxepunk.utils.BlendMode;
-import flash.geom.Point;
 import haxepunk.HXP;
 import haxepunk.Graphic;
 import haxepunk.utils.Color;
 import haxepunk.utils.Ease.EaseFunction;
 import haxepunk.math.MathUtil;
 import haxepunk.math.Random;
+import haxepunk.math.Vector2;
 
 @:generic class BaseEmitter<T:Graphic> extends Graphic
 {
@@ -28,7 +28,7 @@ import haxepunk.math.Random;
 		particleCount = 0;
 	}
 
-	override public function render(point:Point, camera:Camera)
+	override public function render(point:Vector2, camera:Camera)
 	{
 		var p:Particle = _particle;
 
@@ -57,6 +57,8 @@ import haxepunk.math.Random;
 			type = p._type;
 
 			_source.smooth = smooth;
+			_source.flexibleLayer = flexibleLayer;
+			_source.pixelSnapping = pixelSnapping;
 			_source.blend = type._blendMode == null ? this.blend : type._blendMode;
 
 			var n:Int = type._trailLength;
@@ -79,8 +81,8 @@ import haxepunk.math.Random;
 					std = type._scaleEase != null ? type._scaleEase(t) : t;
 					_source.scale = scale * p.scale(std);
 				}
-				_source.x = p.x(td) - point.x + this.x;
-				_source.y = p.y(td) - point.y + this.y;
+				_source.x = p.x(td) - point.x + this.x - originX;
+				_source.y = p.y(td) - point.y + this.y - originY;
 				_source.render(point, camera);
 			}
 
@@ -156,6 +158,14 @@ import haxepunk.math.Random;
 		}
 
 		_particle = null;
+	}
+
+	/**
+	 *  Resets originX/Y to 0 since there are no dimensions.
+	 */
+	override public function centerOrigin():Void
+	{
+		originX = originY = 0;
 	}
 
 	/**

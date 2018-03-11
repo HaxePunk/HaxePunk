@@ -371,8 +371,11 @@ class MathUtil
 	public static inline function iabs(i:Int):Int return i < 0 ? -i : i;
 
 	public static inline function max(a:Float, b:Float):Float return a < b ? b : a;
-	public static inline function min(a:Float, b:Float):Float return a > b ? b : a;
+	public static inline function maxOf3(a:Float, b:Float, c:Float):Float return a < b ? (b < c ? c : b) : (a < c ? c : a);
 	public static inline function imax(a:Int, b:Int):Int return a < b ? b : a;
+
+	public static inline function min(a:Float, b:Float):Float return a > b ? b : a;
+	public static inline function minOf3(a:Float, b:Float, c:Float):Float return a > b ? (b > c ? c : b) : (a > c ? c : a);
 	public static inline function imin(a:Int, b:Int):Int return a > b ? b : a;
 
 	public static inline function sin(theta:Float):Float return std.Math.sin(theta);

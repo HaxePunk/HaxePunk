@@ -9,18 +9,18 @@ import haxepunk.masks.Hitbox;
 import haxepunk.math.Projection;
 import haxepunk.math.Vector2;
 import haxepunk.math.MathUtil;
-import flash.geom.Point;
+import haxepunk.math.MakeConvex;
 
 
 /**
- * Uses polygonal structure to check for collisions.
+ * Uses a convex polygonal structure to check for collisions.
  */
 class Polygon extends Hitbox
 {
 	/**
 	 * The polygon rotates around this point when the angle is set.
 	 */
-	public var origin:Point;
+	public var origin:Vector2;
 
 	// Polygon bounding box.
 	/** Left x bounding box position. */
@@ -33,11 +33,26 @@ class Polygon extends Hitbox
 	public var maxY(default, null):Int = 0;
 
 	/**
-	 * Constructor.
-	 * @param	points		An array of coordinates that define the polygon (must have at least 3).
+	 * Creates a list of convex polygonal masks based on an array of vertices defined counter-clockwise.
+	 * The polygon must be simple (non-self-intersecting), but not necessarily convex.
+	 * @param	points		An array of coordinates that define the polygon (must have at least 3 and defined counter-clockwise).
 	 * @param	origin	 	Pivot point for rotations.
 	 */
-	public function new(points:Array<Vector2>, ?origin:Point)
+	public static function fromPoints(points:Array<Vector2>, ?origin:Vector2):Masklist
+	{
+		var cp = MakeConvex.run(points);
+		var list = new Masklist();
+		for (p in cp)
+			list.add(new Polygon(p, origin));
+		return list;
+	}
+
+	/**
+	 * Constructor. The passed polygon must be convex.
+	 * @param	points		An array of coordinates that define the polygon (must have at least 3 and be convex).
+	 * @param	origin	 	Pivot point for rotations.
+	 */
+	function new(points:Array<Vector2>, ?origin:Vector2)
 	{
 		super();
 		if (points.length < 3) throw "The polygon needs at least 3 sides.";
@@ -52,7 +67,7 @@ class Polygon extends Hitbox
 		_check.set(Type.getClassName(Circle), collideCircle);
 		_check.set(Type.getClassName(Polygon), collidePolygon);
 
-		this.origin = origin != null ? origin : new Point();
+		this.origin = origin != null ? origin : new Vector2();
 		_angle = 0;
 
 		updateAxes();
@@ -368,8 +383,8 @@ class Polygon extends Hitbox
 	{
 		var offsetX:Float = _parent.x + _x - camera.x,
 			offsetY:Float = _parent.y + _y - camera.y,
-			scaleX = camera.fullScaleX,
-			scaleY = camera.fullScaleY;
+			scaleX = camera.screenScaleX,
+			scaleY = camera.screenScaleY;
 
 		var dc = Mask.drawContext;
 		dc.setColor(0x0000ff, 0.3);

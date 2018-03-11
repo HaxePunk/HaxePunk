@@ -1,12 +1,12 @@
 package haxepunk.debug;
 
 import haxepunk.utils.BlendMode;
-import flash.geom.Point;
-import flash.geom.Rectangle;
+import haxepunk.math.Vector2;
+import haxepunk.math.Rectangle;
 import haxepunk.HXP;
 import haxepunk.cameras.UICamera;
 import haxepunk.graphics.Image;
-import haxepunk.graphics.hardware.Renderer;
+import haxepunk.graphics.hardware.HardwareRenderer;
 import haxepunk.input.Key;
 import haxepunk.input.Mouse;
 import haxepunk.input.MouseManager;
@@ -28,8 +28,11 @@ class Console extends Scene
 	static inline function get_enabled() return HXP.engine.console != null;
 	static inline function set_enabled(v:Bool)
 	{
-		HXP.engine.console = new Console();
-		return true;
+		if (v != enabled)
+		{
+			HXP.engine.console = v ? new Console() : null;
+		}
+		return v;
 	}
 
 	static inline function avg<T:Float>(buffer:CircularBuffer<T>):Float
@@ -75,7 +78,7 @@ class Console extends Scene
 	var _dc:Float = 0;
 	var _t:Float = 0;
 
-	var click:Point = new Point();
+	var click:Vector2 = new Vector2();
 	var selBox:Rectangle = new Rectangle();
 	var clickActive:Bool = false;
 	var dragging:Bool = false;
@@ -86,6 +89,7 @@ class Console extends Scene
 	function new()
 	{
 		super();
+		trackDrawCalls = false;
 		fps = new CircularBuffer(DATA_SIZE);
 		memory = new CircularBuffer(DATA_SIZE);
 		entities = new CircularBuffer(DATA_SIZE);
@@ -100,7 +104,7 @@ class Console extends Scene
 		fpsChart.x = fpsChart.y = 8;
 		add(fpsChart);
 
-		memoryChart = new Metric("Memory Used (MB)", memory, 0xffdd55, 256);
+		memoryChart = new Metric("Memory (MB)", memory, 0xffdd55, 256);
 		memoryChart.x = fpsChart.x;
 		memoryChart.y = fpsChart.y + fpsChart.height + 8;
 		add(memoryChart);
@@ -274,7 +278,7 @@ class Console extends Scene
 		updateLists();
 	}
 
-	public inline function log(data:Array<Dynamic>)
+	public inline function log(data:Dynamic)
 	{
 		logPanel.log(data);
 	}
@@ -308,10 +312,10 @@ class Console extends Scene
 	{
 		var s = HXP.elapsed / SAMPLE_TIME;
 		_fps += 1 / HXP.elapsed * s;
-		_mem += flash.system.System.totalMemory / 1024 / 1024 * s;
+		_mem += HXP.app.getMemoryUse() / 1024 / 1024 * s;
 		_ent += HXP.scene.count * s;
-		_tri += Renderer.triangleCount * s;
-		_dc += Renderer.drawCallCount * s;
+		_tri += HardwareRenderer.triangleCount * s;
+		_dc += HardwareRenderer.drawCallCount * s;
 		_t += s;
 		if (_t >= 1)
 		{
@@ -334,7 +338,7 @@ class Console extends Scene
 				if (!scene.layerVisible(layer)) continue;
 				for (e in scene._layers.get(layer))
 				{
-					e.debugDraw(scene.camera, selected.indexOf(e) > -1);
+					e.debugDraw(e.camera == null ? scene.camera : e.camera, selected.indexOf(e) > -1);
 				}
 			}
 		}
@@ -344,10 +348,10 @@ class Console extends Scene
 			drawContext.setColor(0xffffff, 0.9);
 			var camera = HXP.scene.camera;
 			drawContext.rect(
-				(selBox.x - camera.x) * camera.fullScaleX,
-				(selBox.y - camera.y) * camera.fullScaleY,
-				selBox.width * camera.fullScaleX,
-				selBox.height * camera.fullScaleY
+				(selBox.x - camera.x) * camera.screenScaleX,
+				(selBox.y - camera.y) * camera.screenScaleY,
+				selBox.width * camera.screenScaleX,
+				selBox.height * camera.screenScaleY
 			);
 		}
 	}

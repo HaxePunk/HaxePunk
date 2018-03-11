@@ -1,13 +1,13 @@
 package haxepunk.masks;
 
-import flash.geom.Point;
-import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.Mask;
 import haxepunk.math.MathUtil;
+import haxepunk.math.Rectangle;
+import haxepunk.math.Vector2;
 
 @:enum
-abstract TileType(Int)
+abstract TileShape(Int)
 {
 	var Empty = 0;
 	var Solid = 1;
@@ -22,7 +22,7 @@ abstract TileType(Int)
 
 typedef Tile =
 {
-	var type:TileType;
+	var type:TileShape;
 	@:optional var slope:Float;
 	@:optional var yOffset:Float;
 }
@@ -149,7 +149,7 @@ class SlopedGrid extends Hitbox
 	 * @param	slope		The slope of the tile
 	 * @param	yOffset		The y offset of the tile
 	 */
-	public function setTile(column:Int = 0, row:Int = 0, ?type:TileType, slope:Float = 0, yOffset:Float=0):Void
+	public function setTile(column:Int = 0, row:Int = 0, ?type:TileShape, slope:Float = 0, yOffset:Float=0):Void
 	{
 		if (!checkTile(column, row)) return;
 
@@ -246,7 +246,7 @@ class SlopedGrid extends Hitbox
 	 * @param	slope		The slope of the tiles
 	 * @param	yOffset		The y offset of the tiles
 	 */
-	public function setRect(column:Int = 0, row:Int = 0, width:Int = 1, height:Int = 1, ?type:TileType, slope:Float = 0, yOffset:Float = 0)
+	public function setRect(column:Int = 0, row:Int = 0, width:Int = 1, height:Int = 1, ?type:TileShape, slope:Float = 0, yOffset:Float = 0)
 	{
 		if (type == null) type = Solid;
 
@@ -314,7 +314,6 @@ class SlopedGrid extends Hitbox
 			starty = Std.int(_rect.y / _tile.height),
 			endx = Std.int((_rect.x + opw - 1) / _tile.width) + 1,
 			endy = Std.int((_rect.y + oph - 1) / _tile.height) + 1;
-		// trace(startx + ", " + starty + " : " + endx + ", " + endy);
 
 		var yy = py + starty * _tile.height;
 		for (dy in starty...endy)
@@ -386,8 +385,8 @@ class SlopedGrid extends Hitbox
 	override public function debugDraw(camera:Camera):Void
 	{
 		var dc = Mask.drawContext,
-			scaleX = camera.fullScaleX,
-			scaleY = camera.fullScaleY;
+			scaleX = camera.screenScaleX,
+			scaleY = camera.screenScaleY;
 		var cellX:Float, cellY:Float,
 			stepX = tileWidth * scaleX,
 			stepY = tileHeight * scaleY;
@@ -524,8 +523,8 @@ class SlopedGrid extends Hitbox
 	// Grid information.
 	var _tile:Rectangle;
 	var _rect:Rectangle;
-	var _point:Point;
-	var _point2:Point;
+	var _point:Vector2;
+	var _point2:Vector2;
 
 	static var _emptyTile:Tile = { type: Empty }; // prevent recreation of empty tile
 }

@@ -1,14 +1,17 @@
 package haxepunk.graphics;
 
-import flash.geom.Point;
-import flash.geom.Rectangle;
 import haxepunk.HXP;
 import haxepunk.Graphic;
 import haxepunk.graphics.Image;
 import haxepunk.utils.Color;
+import haxepunk.math.Rectangle;
+import haxepunk.math.Vector2;
 
 /**
- * Automatic scaling 9-slice graphic.
+ * A NineSlice is an automatically scaling graphic cut into nine segments
+ * (upper/middle/lower and left/middle/right.) NineSlice is useful when a
+ * graphic has borders that should remain a constan size as the graphic scales
+ * (such as a UI button or panel.)
  */
 class NineSlice extends Graphic
 {
@@ -20,6 +23,11 @@ class NineSlice extends Graphic
 	 * regardless of screen scale.
 	 */
 	public var scaleBorder:Bool = false;
+
+	/**
+	 * Set this to false to skip the center, drawing only the border segments.
+	 */
+	public var drawCenter:Bool = true;
 
 	override function set_color(v:Color):Color
 	{
@@ -54,10 +62,10 @@ class NineSlice extends Graphic
 	/**
 	 * Constructor.
 	 * @param	source Source image
-	 * @param	leftWidth Distance from left side of the source image used for 9-Slicking the image
-	 * @param	rightWidth Distance from right side of the source image used for 9-Slicking the image
-	 * @param	topHeight Distance from top side of the source image used for 9-Slicking the image
-	 * @param	bottomHeight Distance from bottom side of the source image used for 9-Slicking the image
+	 * @param	leftWidth Distance from left side of the source image used for 9-slicing the image
+	 * @param	rightWidth Distance from right side of the source image used for 9-slicing the image
+	 * @param	topHeight Distance from top side of the source image used for 9-slicing the image
+	 * @param	bottomHeight Distance from bottom side of the source image used for 9-slicing the image
 	 */
 	public function new(source:ImageType, leftWidth:Int = 0, rightWidth:Int = 0, topHeight:Int = 0, bottomHeight:Int = 0)
 	{
@@ -81,6 +89,16 @@ class NineSlice extends Graphic
 
 		width = w;
 		height = h;
+		pixelSnapping = false;
+	}
+
+	/**
+	 *  Centers the origin of this NineSlice.
+	 */
+	override public function centerOrigin():Void
+	{
+		originX = width * 0.5;
+		originY = height * 0.5;
 	}
 
 	inline function getSegment(source:ImageType, x:Int, y:Int, width:Int, height:Int):Image
@@ -90,25 +108,25 @@ class NineSlice extends Graphic
 		return segment;
 	}
 
-	override public function render(point:Point, camera:Camera)
+	override public function render(point:Vector2, camera:Camera)
 	{
 		var leftWidth:Float, rightWidth:Float, topHeight:Float, bottomHeight:Float;
 		if (scaleBorder)
 		{
-			leftWidth = camera.floorX(_sliceRect.left);
-			rightWidth = camera.floorX(source.width - _sliceRect.width);
-			topHeight = camera.floorY(_sliceRect.top);
-			bottomHeight = camera.floorY(source.height - _sliceRect.height);
+			leftWidth = floorX(camera, _sliceRect.left);
+			rightWidth = floorX(camera, source.width - _sliceRect.width);
+			topHeight = floorY(camera, _sliceRect.top);
+			bottomHeight = floorY(camera, source.height - _sliceRect.height);
 		}
 		else
 		{
-			leftWidth = camera.floorX(_sliceRect.left) / camera.fullScaleX;
-			rightWidth = camera.floorX(source.width - _sliceRect.width) / camera.fullScaleX;
-			topHeight = camera.floorY(_sliceRect.top) / camera.fullScaleY;
-			bottomHeight = camera.floorY(source.height - _sliceRect.height) / camera.fullScaleY;
+			leftWidth = floorX(camera, _sliceRect.left) / camera.screenScaleX;
+			rightWidth = floorX(camera, source.width - _sliceRect.width) / camera.screenScaleX;
+			topHeight = floorY(camera, _sliceRect.top) / camera.screenScaleY;
+			bottomHeight = floorY(camera, source.height - _sliceRect.height) / camera.screenScaleY;
 		}
-		var centerWidth:Float = camera.floorX(width) - leftWidth - rightWidth,
-			centerHeight:Float = camera.floorY(height) - topHeight - bottomHeight;
+		var centerWidth:Float = floorX(camera, width) - leftWidth - rightWidth,
+			centerHeight:Float = floorY(camera, height) - topHeight - bottomHeight;
 
 		var leftX = 0, centerX = leftWidth, rightX = leftWidth + centerWidth,
 			topY = 0, centerY = topHeight, bottomY = topHeight + centerHeight;
@@ -117,16 +135,17 @@ class NineSlice extends Graphic
 		{
 			if (segment != null && segment.visible)
 			{
-				segment.x = camera.floorX(this.x) + x;
-				segment.y = camera.floorY(this.y) + y;
-				segment.scaleX = (camera.floorX(x + width) - camera.floorX(x)) / segment.width;
-				segment.scaleY = (camera.floorY(y + height) - camera.floorY(y)) / segment.height;
+				segment.x = floorX(camera, this.x) + x - originX;
+				segment.y = floorY(camera, this.y) + y - originY;
+				segment.scaleX = (floorX(camera, x + width) - floorX(camera, x)) / segment.width;
+				segment.scaleY = (floorY(camera, y + height) - floorY(camera, y)) / segment.height;
 				if (clipRect != null)
 				{
 					_clipRect.setTo(clipRect.x - x, clipRect.y - y, clipRect.width, clipRect.height);
 					segment.clipRect = _clipRect;
 				}
 				else segment.clipRect = null;
+				segment.shader = shader;
 				segment.smooth = smooth;
 				segment.render(point, camera);
 			}
@@ -136,7 +155,7 @@ class NineSlice extends Graphic
 		drawSegment(topC, centerX, topY, centerWidth, topHeight);
 		drawSegment(topR, rightX, topY, rightWidth, topHeight);
 		drawSegment(medL, leftX, centerY, leftWidth, centerHeight);
-		drawSegment(medC, centerX, centerY, centerWidth, centerHeight);
+		if (drawCenter) drawSegment(medC, centerX, centerY, centerWidth, centerHeight);
 		drawSegment(medR, rightX, centerY, rightWidth, centerHeight);
 		drawSegment(botL, leftX, bottomY, leftWidth, bottomHeight);
 		drawSegment(botC, centerX, bottomY, centerWidth, bottomHeight);

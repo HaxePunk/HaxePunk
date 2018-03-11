@@ -47,7 +47,7 @@ class GameScene extends Scene
 		atlas = TextureAtlas.loadTexturePacker("atlas/assets.xml");
 	}
 
-	public override function begin()
+	override public function begin()
 	{
 		// background
 		backdrop = new Backdrop(atlas.getRegion("grass.png"), true, true);
@@ -58,17 +58,18 @@ class GameScene extends Scene
 		bunny = new Entity();
 		bunnyList = new Graphiclist([]);
 		bunny.graphic = bunnyList;
-		addBunnies(numBunnies);
 		add(bunny);
 
 		// and some big pirate
 		pirate = new Image(atlas.getRegion("pirate.png"));
 		addGraphic(pirate);
 
-		// overlayText = new Text("numBunnies = " + numBunnies, 0, 0, 0, 0, { color:0x000000, size:30 } );
-		// overlayText.resizable = true;
-		// var overlay:Entity = new Entity(0, HXP.screen.height - 40, overlayText);
-		// add(overlay);
+		overlayText = new Text("numBunnies = " + numBunnies, 0, 0, 0, 0, { color:0x000000, size:30 } );
+		overlayText.resizable = true;
+		var overlay:Entity = new Entity(0, HXP.screen.height - 40, overlayText);
+		add(overlay);
+
+		addBunnies(numBunnies);
 	}
 
 	function addBunnies(numToAdd:Int):Void
@@ -89,11 +90,10 @@ class GameScene extends Scene
 		}
 
 		numBunnies = bunnies.length;
-		// overlayText.text = "numBunnies = " + numBunnies;
-		trace(numBunnies);
+		overlayText.text = "numBunnies = " + numBunnies;
 	}
 
-	public override function update()
+	override public function update()
 	{
 		var t = Lib.getTimer();
 		pirate.x = Std.int((HXP.width - pirate.width) * (0.5 + 0.5 * Math.sin(t / 3000)));

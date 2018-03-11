@@ -27,7 +27,7 @@ class BunnyImage extends Image
 		active = true;
 	}
 
-	public override function update()
+	override public function update()
 	{
 		var elapsed = HXP.elapsed;
 		x += velocity.x * elapsed;

@@ -32,7 +32,6 @@ class ScaleMode
 	public function resize(stageWidth:Int, stageHeight:Int)
 	{
 		HXP.screen.x = HXP.screen.y = 0;
-		HXP.screen.scale = 1;
 		HXP.screen.scaleX = stageWidth / baseWidth;
 		HXP.screen.scaleY = stageHeight / baseHeight;
 		HXP.screen.width = stageWidth;

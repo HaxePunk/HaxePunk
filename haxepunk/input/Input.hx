@@ -1,9 +1,12 @@
 package haxepunk.input;
 
-import flash.ui.Multitouch;
 import haxepunk.HXP;
 import haxepunk.Signal.Signals;
-import haxepunk.debug.Console;
+#if cpp
+import cpp.vm.Deque;
+#elseif neko
+import neko.vm.Deque;
+#end
 
 /**
  * Manage the different inputs.
@@ -23,7 +26,29 @@ class Input
 	 */
 	public static var multiTouchSupported(default, null):Bool = false;
 
+	#if (cpp || neko)
+	static var _signals(get, never):Deque<String>;
+	static var __signals:Deque<String>;
+	static inline function get__signals()
+	{
+		if (__signals == null)
+		{
+			__signals = new Deque();
+		}
+		return __signals;
+	}
+	#else
 	static var _signals:Array<String> = new Array();
+	#end
+
+	static inline function pushSignal(s:String)
+	{
+		#if (cpp || neko)
+		_signals.add(s);
+		#else
+		_signals.push(s);
+		#end
+	}
 
 	/**
 	 * Trigger any callbacks meant for this type of input.
@@ -31,8 +56,8 @@ class Input
 	 */
 	public static function triggerPress(type:InputType)
 	{
-		_signals.push(PRESS);
-		_signals.push(type);
+		pushSignal(PRESS);
+		pushSignal(type);
 	}
 
 	/**
@@ -41,8 +66,8 @@ class Input
 	 */
 	public static function triggerRelease(type:InputType)
 	{
-		_signals.push(RELEASE);
-		_signals.push(type);
+		pushSignal(RELEASE);
+		pushSignal(type);
 	}
 
 	/**
@@ -96,26 +121,6 @@ class Input
 	}
 
 	/**
-	 * Enables input handling
-	 */
-	@:dox(hide)
-	public static function enable()
-	{
-		if (!_enabled && HXP.stage != null)
-		{
-			Key.init();
-			Mouse.init();
-			Gamepad.init();
-
-			multiTouchSupported = Multitouch.supportsTouchEvents;
-			if (multiTouchSupported)
-			{
-				Touch.init();
-			}
-		}
-	}
-
-	/**
 	 * Updates the input states
 	 */
 	@:dox(hide)
@@ -132,11 +137,21 @@ class Input
 
 	static inline function triggerSignals()
 	{
+		#if (cpp || neko)
+		var op:String;
+		while ((op = _signals.pop(false)) != null)
+		{
+			var type:String = _signals.pop(true);
+
+		#else
 		var i:Int = 0;
 		while (i < _signals.length)
 		{
 			var op = _signals[i++],
 				type = _signals[i++];
+
+		#end
+
 			inline function trigger(signals:Signals)
 			{
 				if (signals.exists(type)) signals.resolve(type).invoke();
@@ -146,15 +161,15 @@ class Input
 				case PRESS:
 					trigger(HXP.engine.onInputPressed);
 					trigger(HXP.scene.onInputPressed);
-					if (Console.enabled) trigger(HXP.scene.onInputPressed);
 				case RELEASE:
 					trigger(HXP.engine.onInputReleased);
 					trigger(HXP.scene.onInputReleased);
-					if (Console.enabled) trigger(HXP.scene.onInputReleased);
 				default: {}
 			}
 		}
+		#if (!(cpp || neko))
 		HXP.clear(_signals);
+		#end
 	}
 
 	static var _enabled:Bool = false;

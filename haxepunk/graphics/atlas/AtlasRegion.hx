@@ -1,12 +1,11 @@
 package haxepunk.graphics.atlas;
 
 import haxepunk.utils.BlendMode;
-import flash.geom.Rectangle;
-import flash.geom.Point;
-import flash.geom.Matrix;
 import haxepunk.utils.Color;
-import haxepunk.math.MathUtil;
 import haxepunk.graphics.shader.Shader;
+import haxepunk.math.MathUtil;
+import haxepunk.math.Rectangle;
+import haxepunk.math.Vector2;
 
 class AtlasRegion implements IAtlasRegion
 {
@@ -44,16 +43,14 @@ class AtlasRegion implements IAtlasRegion
 	 * @param	center		The new center point
 	 * @return	A new atlas region with the clipped coordinates
 	 */
-	public function clip(clipRect:Rectangle, ?center:Point):AtlasRegion
+	public function clip(clipRect:Rectangle, ?center:Vector2):AtlasRegion
 	{
 		// make a copy of clipRect, to avoid modifying the original
 		var clipRectCopy = clipRect.clone();
 
 		// only clip within the current region
-		if (clipRectCopy.x + clipRectCopy.width > _rect.width)
-			clipRectCopy.width = _rect.width - clipRectCopy.x;
-		if (clipRectCopy.y + clipRectCopy.height > _rect.height)
-			clipRectCopy.height = _rect.height - clipRectCopy.y;
+		if (clipRectCopy.right > _rect.width) clipRectCopy.width = _rect.width - clipRectCopy.x;
+		if (clipRectCopy.bottom > _rect.height) clipRectCopy.height = _rect.height - clipRectCopy.y;
 
 		// do not allow negative width/height
 		if (clipRectCopy.width < 0) clipRectCopy.width = 0;
@@ -84,14 +81,14 @@ class AtlasRegion implements IAtlasRegion
 	public inline function draw(x:Float, y:Float,
 		scaleX:Float=1, scaleY:Float=1, angle:Float=0,
 		color:Color=Color.White, alpha:Float=1,
-		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
+		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle, flexibleLayer:Bool = false)
 	{
 		if (rotated) angle = angle + 90;
 
 		_parent.prepareTile(_rect, x, y,
 			scaleX, scaleY, angle,
 			color, alpha,
-			shader, smooth, blend, clipRect);
+			shader, smooth, blend, clipRect, flexibleLayer);
 	}
 
 	/**
@@ -113,16 +110,16 @@ class AtlasRegion implements IAtlasRegion
 	 */
 	public inline function drawMatrix(tx:Float, ty:Float, a:Float, b:Float, c:Float, d:Float,
 		color:Color=Color.White, alpha:Float=1,
-		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle):Void
+		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle,
+		flexibleLayer:Bool = false):Void
 	{
 		if (rotated)
 		{
-			var matrix = new Matrix(a, b, c, d, tx, ty);
-			matrix.rotate(90 * MathUtil.RAD);
+			// rotate 90 degrees by inverting values
 			_parent.prepareTileMatrix(_rect,
-				matrix.tx, matrix.ty, matrix.a, matrix.b, matrix.c, matrix.d,
+				-ty, tx, -b, a, -d, c,
 				color, alpha,
-				shader, smooth, blend, clipRect
+				shader, smooth, blend, clipRect, flexibleLayer
 			);
 		}
 		else
@@ -132,15 +129,6 @@ class AtlasRegion implements IAtlasRegion
 				color, alpha,
 				shader, smooth, blend, clipRect
 			);
-		}
-	}
-
-	public function destroy():Void
-	{
-		if (_parent != null)
-		{
-			_parent.destroy();
-			_parent = null;
 		}
 	}
 

@@ -1,5 +1,6 @@
 package haxepunk.math;
 
+@:structInit
 class Vector2
 {
 	public var x:Float;
@@ -131,5 +132,10 @@ class Vector2
 	public inline function zcross(other:Vector2):Float
 	{
 		return (x * other.y) - (y * other.x);
+	}
+
+	public inline function clone():Vector2
+	{
+		return new Vector2(x, y);
 	}
 }

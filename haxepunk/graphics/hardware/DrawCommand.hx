@@ -1,13 +1,12 @@
 package haxepunk.graphics.hardware;
 
-import flash.geom.Rectangle;
 import haxepunk.graphics.shader.Shader;
+import haxepunk.math.MathUtil;
+import haxepunk.math.Rectangle;
 import haxepunk.utils.BlendMode;
 import haxepunk.utils.Color;
 
-@:allow(haxepunk.graphics.hardware.DrawCommand)
-@:allow(haxepunk.graphics.hardware.DrawCommandBatch)
-@:allow(haxepunk.graphics.hardware.HardwareRenderer)
+@:allow(haxepunk.graphics.hardware)
 private class DrawTriangle
 {
 	public function new() {}
@@ -28,13 +27,13 @@ private class DrawTriangle
 	public var alpha:Float = 0;
 
 	public var x1(get, never):Float;
-	public inline function get_x1() return DrawCommandBatch.minOf3(tx1, tx2, tx3);
+	public inline function get_x1() return MathUtil.minOf3(tx1, tx2, tx3);
 	public var x2(get, never):Float;
-	public inline function get_x2() return DrawCommandBatch.maxOf3(tx1, tx2, tx3);
+	public inline function get_x2() return MathUtil.maxOf3(tx1, tx2, tx3);
 	public var y1(get, never):Float;
-	public inline function get_y1() return DrawCommandBatch.minOf3(ty1, ty2, ty3);
+	public inline function get_y1() return MathUtil.minOf3(ty1, ty2, ty3);
 	public var y2(get, never):Float;
-	public inline function get_y2() return DrawCommandBatch.maxOf3(ty1, ty2, ty3);
+	public inline function get_y2() return MathUtil.maxOf3(ty1, ty2, ty3);
 
 	public inline function intersectsTriangle(x1:Float, y1:Float, x2:Float, y2:Float, x3:Float, y3:Float):Bool
 	{
@@ -94,6 +93,30 @@ private class DrawTriangle
 	var _next:DrawTriangle;
 }
 
+class TriangleIterator
+{
+	var triangle:DrawTriangle = null;
+
+	public function new() {}
+
+	public inline function reset(triangle:DrawTriangle)
+	{
+		this.triangle = triangle;
+	}
+
+	public inline function hasNext():Bool
+	{
+		return triangle != null;
+	}
+
+	public inline function next():DrawTriangle
+	{
+		var current = triangle;
+		triangle = triangle._next;
+		return current;
+	}
+}
+
 /**
  * Represents a pending hardware draw call. A single DrawCommand batches render
  * calls for the same texture, target and parameters. Based on work by
@@ -146,10 +169,11 @@ class DrawCommand
 	public var smooth:Bool = false;
 	public var blend:BlendMode = BlendMode.Alpha;
 	public var clipRect:Rectangle = null;
-	#if !no_render_batch
+	#if !hxp_no_render_batch
 	public var bounds:Rectangle = new Rectangle();
 	#end
 	public var triangleCount(default, null):Int = 0;
+	public var visibleArea:Rectangle;
 
 	function new() {}
 
@@ -161,7 +185,7 @@ class DrawCommand
 		// These conditions are checked as individual if statements
 		// to reduce the number of temporary variables created in hxcpp.
 		if (this.smooth != smooth) return false;
-		else if (this.texture.id != texture.id) return false;
+		else if (this.texture != texture) return false;
 		else if (this.shader.id != shader.id) return false;
 		else if (this.blend != blend) return false;
 		else
@@ -191,22 +215,31 @@ class DrawCommand
 	{
 		if (alpha > 0)
 		{
-			var data:DrawTriangle = getData();
-			data.tx1 = tx1;
-			data.ty1 = ty1;
-			data.uvx1 = uvx1;
-			data.uvy1 = uvy1;
-			data.tx2 = tx2;
-			data.ty2 = ty2;
-			data.uvx2 = uvx2;
-			data.uvy2 = uvy2;
-			data.tx3 = tx3;
-			data.ty3 = ty3;
-			data.uvx3 = uvx3;
-			data.uvy3 = uvy3;
-			data.color = color;
-			data.alpha = alpha;
-			addData(data);
+			var onScreen = shader.hasAttributes || (
+				MathUtil.minOf3(tx1, tx2, tx3) <= visibleArea.right &&
+				MathUtil.maxOf3(tx1, tx2, tx3) >= visibleArea.left &&
+				MathUtil.minOf3(ty1, ty2, ty3) <= visibleArea.bottom &&
+				MathUtil.maxOf3(ty1, ty2, ty3) >= visibleArea.top
+			);
+			if (onScreen)
+			{
+				var data:DrawTriangle = getData();
+				data.tx1 = tx1;
+				data.ty1 = ty1;
+				data.uvx1 = uvx1;
+				data.uvy1 = uvy1;
+				data.tx2 = tx2;
+				data.ty2 = ty2;
+				data.uvx2 = uvx2;
+				data.uvy2 = uvy2;
+				data.tx3 = tx3;
+				data.ty3 = ty3;
+				data.uvx3 = uvx3;
+				data.uvy3 = uvy3;
+				data.color = color;
+				data.alpha = alpha;
+				addData(data);
+			}
 		}
 	}
 
@@ -226,15 +259,11 @@ class DrawCommand
 		_pool = this;
 	}
 
-	@:access(haxepunk.graphics.hardware.DrawTriangle)
-	public inline function loopTriangles(callback:DrawTriangle->Void)
+	public var triangles(get, never):TriangleIterator;
+	inline function get_triangles():TriangleIterator
 	{
-		var data = this.data;
-		while (data != null)
-		{
-			callback(data);
-			data = data._next;
-		}
+		_iterator.reset(data);
+		return _iterator;
 	}
 
 	inline function getData():DrawTriangle
@@ -267,28 +296,36 @@ class DrawCommand
 
 		++triangleCount;
 
-		#if !no_render_batch
+		#if !hxp_no_render_batch
 		// update bounds
 		var x1 = data.x1, x2 = data.x2, y1 = data.y1, y2 = data.y2;
 		if (bounds.width == 0)
 		{
 			bounds.x = x1;
-			bounds.right = x2;
+			bounds.width = x2 - x1;
 		}
 		else
 		{
-			if (x1 < bounds.left) bounds.left = x1;
-			if (x2 > bounds.right) bounds.right = x2;
+			if (x1 < bounds.left)
+			{
+				bounds.width += bounds.left - x1;
+				bounds.left = x1;
+			}
+			if (x2 > bounds.right) bounds.width = x2 - bounds.left;
 		}
 		if (bounds.height == 0)
 		{
 			bounds.y = y1;
-			bounds.bottom = y2;
+			bounds.height = y2 - y1;
 		}
 		else
 		{
-			if (y1 < bounds.top) bounds.top = y1;
-			if (y2 > bounds.bottom) bounds.bottom = y2;
+			if (y1 < bounds.top)
+			{
+				bounds.height += bounds.top - y1;
+				bounds.top = y1;
+			}
+			if (y2 > bounds.bottom) bounds.height = y2 - bounds.top;
 		}
 		#end
 	}
@@ -296,17 +333,19 @@ class DrawCommand
 	inline function recycleData()
 	{
 		triangleCount = 0;
+		texture = null;
 		if (data != null)
 		{
 			_lastData._next = _dataPool;
 			_dataPool = data;
 		}
 		data = _lastData = null;
-		#if !no_render_batch
+		#if !hxp_no_render_batch
 		bounds.setTo(0, 0, 0, 0);
 		#end
 	}
 
+	var _iterator = new TriangleIterator();
 	var data:DrawTriangle;
 	var _lastData:DrawTriangle;
 	var _prev:DrawCommand;

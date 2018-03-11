@@ -1,11 +1,10 @@
 package haxepunk.graphics.tile;
 
-import flash.geom.Point;
-import flash.geom.Rectangle;
+import haxepunk.math.Rectangle;
 import haxepunk.Graphic;
-import haxepunk.HXP;
 import haxepunk.graphics.atlas.TileAtlas;
 import haxepunk.masks.Grid;
+import haxepunk.math.Vector2;
 
 /**
  * A rendered grid of tiles.
@@ -54,20 +53,42 @@ class Tilemap extends Graphic
 	 * @param	height				Height of the tilemap, in pixels.
 	 * @param	tileWidth			Tile width.
 	 * @param	tileHeight			Tile height.
-	 * @param	tileSpacingWidth	Tile horizontal spacing.
-	 * @param	tileSpacingHeight	Tile vertical spacing.
+	 * @param	tileMarginWidth		Tile horizontal spacing.
+	 * @param	tileMarginHeight	Tile vertical spacing.
 	 */
-	public function new(tileset:TileType, width:Int, height:Int, tileWidth:Int, tileHeight:Int, tileSpacingWidth:Int=0, tileSpacingHeight:Int=0)
+	public function new(tileset:TileType, width:Int, height:Int, ?tileWidth:Int, ?tileHeight:Int, tileMarginWidth:Int=0, tileMarginHeight:Int=0, tileOffsetX:Int=0, tileOffsetY:Int=0)
 	{
 		// set some tilemap information
 		super();
+
+		// load the tileset graphic
+		_atlas = tileset;
+
+		if (_atlas == null)
+			throw "Invalid tileset graphic provided.";
+
+		// prepare the tileset if needed
+		if (_atlas.tileWidth == 0 || _atlas.tileHeight == 0)
+		{
+			if (tileWidth == null || tileHeight == null)
+			{
+				throw "Invalid tileset graphic provided.\nThe tileset must be prepared or valid tile dimensions must be passed to the Tilemap constructor.";
+			}
+			else
+			{
+				_atlas.prepare(tileWidth, tileHeight, tileMarginWidth, tileMarginHeight, tileOffsetX, tileOffsetY);
+			}
+		}
+		else
+		{
+			tileWidth = _atlas.tileWidth;
+			tileHeight = _atlas.tileHeight;
+		}
+
 		this.width = width - (width % tileWidth);
 		this.height = height - (height % tileHeight);
 		_columns = Std.int(this.width / tileWidth);
 		_rows = Std.int(this.height / tileHeight);
-
-		this.tileSpacingWidth = tileSpacingWidth;
-		this.tileSpacingHeight = tileSpacingHeight;
 
 		if (_columns == 0 || _rows == 0)
 			throw "Cannot create a texture of width/height = 0";
@@ -76,7 +97,6 @@ class Tilemap extends Graphic
 		_maxHeight -= _maxHeight % tileHeight;
 
 		// initialize map
-		_tile = new Rectangle(0, 0, tileWidth, tileHeight);
 		_map = new Array<Array<Int>>();
 		for (y in 0..._rows)
 		{
@@ -87,16 +107,7 @@ class Tilemap extends Graphic
 			}
 		}
 
-		// load the tileset graphic
-		_atlas = tileset;
-		_atlas.prepare(tileWidth, tileHeight, tileSpacingWidth, tileSpacingHeight);
-
-		if (_atlas == null)
-			throw "Invalid tileset graphic provided.";
-
-		_setColumns = Std.int(_atlas.width / tileWidth);
-		_setRows = Std.int(_atlas.height / tileHeight);
-		_setCount = _setColumns * _setRows;
+		pixelSnapping = true;
 	}
 
 	/**
@@ -109,10 +120,10 @@ class Tilemap extends Graphic
 	{
 		if (usePositions)
 		{
-			column = Std.int(column / _tile.width);
-			row = Std.int(row / _tile.height);
+			column = Std.int(column / tileWidth);
+			row = Std.int(row / tileHeight);
 		}
-		if (index > -1) index %= _setCount;
+		if (index > -1) index %= tileCount;
 		column %= _columns;
 		row %= _rows;
 		_map[row][column] = index;
@@ -139,8 +150,8 @@ class Tilemap extends Graphic
 	{
 		if (usePositions)
 		{
-			column = Std.int(column / _tile.width);
-			row = Std.int(row / _tile.height);
+			column = Std.int(column / tileWidth);
+			row = Std.int(row / tileHeight);
 		}
 		return _map[row % _rows][column % _columns];
 	}
@@ -157,10 +168,10 @@ class Tilemap extends Graphic
 	{
 		if (usePositions)
 		{
-			column = Std.int(column / _tile.width);
-			row = Std.int(row / _tile.height);
-			width = Std.int(width / _tile.width);
-			height = Std.int(height / _tile.height);
+			column = Std.int(column / tileWidth);
+			row = Std.int(row / tileHeight);
+			width = Std.int(width / tileWidth);
+			height = Std.int(height / tileHeight);
 		}
 		column %= _columns;
 		row %= _rows;
@@ -193,10 +204,10 @@ class Tilemap extends Graphic
 	{
 		if (usePositions)
 		{
-			column = Std.int(column / _tile.width);
-			row = Std.int(row / _tile.height);
-			width = Std.int(width / _tile.width);
-			height = Std.int(height / _tile.height);
+			column = Std.int(column / tileWidth);
+			row = Std.int(row / tileHeight);
+			width = Std.int(width / tileWidth);
+			height = Std.int(height / tileHeight);
 		}
 		column %= _columns;
 		row %= _rows;
@@ -286,37 +297,6 @@ class Tilemap extends Graphic
 	}
 
 	/**
-	 * Calculates the index of a tile, based on its column and row in the tileset.
-	 * @param	tilesColumn		Tileset column.
-	 * @param	tilesRow		Tileset row.
-	 * @return	Index of the tile.
-	 */
-	public inline function getIndex(tilesColumn:Int, tilesRow:Int):Int
-	{
-		return (tilesRow % _setRows) * _setColumns + (tilesColumn % _setColumns);
-	}
-
-	/**
-	 * Calculates the column of a tile, based on its index in the tileset.
-	 * @param	index		Index of the tile.
-	 * @return	Column (x) of the tile.
-	 */
-	public inline function getX(index:Int):Int
-	{
-		return index % _setColumns;
-	}
-
-	/**
-	 * Calculates the row of a tile, based on its index in the tileset.
-	 * @param	index		Index of the tile.
-	 * @return	Row (y) of the tile.
-	 */
-	public inline function getY(index:Int):Int
-	{
-		return Std.int(index / _setColumns);
-	}
-
-	/**
 	 * Shifts all the tiles in the tilemap.
 	 * @param	columns		Horizontal shift.
 	 * @param	rows		Vertical shift.
@@ -326,8 +306,8 @@ class Tilemap extends Graphic
 	{
 		if (usePositions)
 		{
-			columns = Std.int(columns / _tile.width);
-			rows = Std.int(rows / _tile.height);
+			columns = Std.int(columns / tileWidth);
+			rows = Std.int(rows / tileHeight);
 		}
 
 		if (columns != 0)
@@ -378,15 +358,24 @@ class Tilemap extends Graphic
 		}
 	}
 
-	@:dox(hide)
-	override public function render(point:Point, camera:Camera)
+	/**
+	 *  Centers the origin of the tilemap based on it's full width/height.
+	 */
+	override public function centerOrigin():Void
 	{
-		var fullScaleX:Float = camera.fullScaleX,
-			fullScaleY:Float = camera.fullScaleY;
+		originX = width * 0.5;
+		originY = height * 0.5;
+	}
+
+	@:dox(hide)
+	override public function render(point:Vector2, camera:Camera)
+	{
+		var fullScaleX:Float = camera.screenScaleX,
+			fullScaleY:Float = camera.screenScaleY;
 
 		// determine drawing location
-		_point.x = camera.floorX(point.x) + camera.floorX(x) - camera.floorX(camera.x * scrollX);
-		_point.y = camera.floorY(point.y) + camera.floorY(y) - camera.floorY(camera.y * scrollY);
+		_point.x = point.x + x - originX - camera.x * scrollX;
+		_point.y = point.y + y - originY - camera.y * scrollY;
 
 		var scx = scale * scaleX,
 			scy = scale * scaleY,
@@ -396,8 +385,8 @@ class Tilemap extends Graphic
 		// determine start and end tiles to draw (optimization)
 		var startx = Math.floor(-_point.x / tw),
 			starty = Math.floor(-_point.y / th),
-			destx = startx + 1 + Math.ceil(HXP.width / tw),
-			desty = starty + 1 + Math.ceil(HXP.height / th);
+			destx = startx + 1 + Math.ceil(HXP.width / camera.scale / camera.scaleX / tw),
+			desty = starty + 1 + Math.ceil(HXP.height / camera.scale / camera.scaleY / th);
 
 		// nothing will render if we're completely off screen
 		if (startx > _columns || starty > _rows || destx < 0 || desty < 0)
@@ -414,38 +403,94 @@ class Tilemap extends Graphic
 
 		_point.x *= fullScaleX;
 		_point.y *= fullScaleY;
-		wy = camera.floorY(starty * th) * fullScaleY;
 		for (y in starty...desty)
 		{
-			ny = camera.floorY((y + 1) * th) * fullScaleY;
+			for (x in startx...destx)
+			{
+				tile = _map[y % _rows][x % _columns];
+				if (tile >= 0)
+				{
+					drawTile(
+						tile, x, y,
+						_point.x + x * tw * fullScaleX,
+						_point.y + y * th * fullScaleY,
+						scx * fullScaleX, scy * fullScaleY
+					);
+				}
+			}
+		}
+	}
+
+	@:dox(hide)
+	override public function pixelPerfectRender(point:Vector2, camera:Camera)
+	{
+		var fullScaleX:Float = camera.screenScaleX,
+			fullScaleY:Float = camera.screenScaleY;
+
+		var scx = scale * scaleX,
+			scy = scale * scaleY,
+			tw = tileWidth * scx,
+			th = tileHeight * scy;
+
+		// determine drawing location
+		_point.x = point.x + floorX(camera, x) - floorX(camera, originX * scx) - floorX(camera, camera.x * scrollX);
+		_point.y = point.y + floorY(camera, y) - floorY(camera, originY * scy) - floorY(camera, camera.y * scrollY);
+
+		// determine start and end tiles to draw (optimization)
+		var startx = Math.floor(-_point.x / tw),
+			starty = Math.floor(-_point.y / th),
+			destx = startx + 1 + Math.ceil(HXP.width / camera.scale / camera.scaleX / tw),
+			desty = starty + 1 + Math.ceil(HXP.height / camera.scale / camera.scaleY / th);
+
+		// nothing will render if we're completely off screen
+		if (startx > _columns || starty > _rows || destx < 0 || desty < 0)
+			return;
+
+		// clamp values to boundaries
+		if (startx < 0) startx = 0;
+		if (destx > _columns) destx = _columns;
+		if (starty < 0) starty = 0;
+		if (desty > _rows) desty = _rows;
+
+		var wx:Float, wy:Float, nx:Float, ny:Float,
+			tile:Int = 0;
+
+		_point.x *= fullScaleX;
+		_point.y *= fullScaleY;
+		wy = floorY(camera, starty * th) * fullScaleY;
+		for (y in starty...desty)
+		{
+			ny = floorY(camera, (y + 1) * th) * fullScaleY;
 			// ensure no vertical overlap between this and next tile
 			scy = (ny - wy) / tileHeight;
-			wx = camera.floorX(startx * tw) * fullScaleX;
+			wx = floorX(camera, startx * tw) * fullScaleX;
 
 			for (x in startx...destx)
 			{
-				nx = camera.floorX((x + 1) * tw) * fullScaleX;
+				nx = floorX(camera, (x + 1) * tw) * fullScaleX;
 				tile = _map[y % _rows][x % _columns];
 				if (tile >= 0)
 				{
 					// ensure no horizontal overlap between this and next tile
 					scx = (nx - wx) / tileWidth;
-
-					updateTileRect(tile);
-					_atlas.prepareTile(
-						_tile,
-						_point.x + wx,
-						_point.y + wy,
-						scx, scy, 0,
-						color, alpha,
-						shader, smooth, blend
-					);
+					drawTile(tile, x, y, _point.x + wx, _point.y + wy, scx, scy);
 				}
 				wx = nx;
 			}
 
 			wy = ny;
 		}
+	}
+
+	function drawTile(tile:Int, tx:Int, ty:Int, x:Float, y:Float, scx:Float, scy:Float)
+	{
+		var region = _atlas.getRegion(tile);
+		region.draw(
+			x, y,
+			scx, scy, 0,
+			color, alpha,
+			shader, smooth, blend
+		);
 	}
 
 	/**
@@ -458,7 +503,7 @@ class Tilemap extends Graphic
 	{
 		if (grid == null)
 		{
-			grid = new Grid(width, height, Std.int(_tile.width), Std.int(_tile.height));
+			grid = new Grid(width, height, Std.int(tileWidth), Std.int(tileHeight));
 		}
 
 		for (y in 0..._rows)
@@ -475,13 +520,6 @@ class Tilemap extends Graphic
 		return grid;
 	}
 
-	/** @private Sets the _tile convenience rect to the x/y position of the supplied tile. Assumes _tile has the correct tile width/height set. Respects tile spacing. */
-	inline function updateTileRect(index:Int)
-	{
-		_tile.x = getX(index) * (_tile.width + tileSpacingWidth);
-		_tile.y = getY(index) * (_tile.height + tileSpacingHeight);
-	}
-
 	/** @private Used by shiftTiles to update a tile from the tilemap. */
 	function updateTile(column:Int, row:Int)
 	{
@@ -492,29 +530,31 @@ class Tilemap extends Graphic
 	 * The tile width.
 	 */
 	public var tileWidth(get, never):Int;
-	inline function get_tileWidth():Int return Std.int(_tile.width);
+	inline function get_tileWidth():Int return _atlas.tileWidth;
 
 	/**
 	 * The tile height.
 	 */
 	public var tileHeight(get, never):Int;
-	inline function get_tileHeight():Int return Std.int(_tile.height);
+	inline function get_tileHeight():Int return _atlas.tileHeight;
 
 	/**
-	 * The tile horizontal spacing of tile.
+	 * The tile horizontal margin of tile.
 	 */
-	public var tileSpacingWidth(default, null):Int;
+	public var tileMarginWidth(get, never):Int;
+	inline function get_tileMarginWidth():Int return _atlas.tileMarginWidth;
 
 	/**
-	 * The tile vertical spacing of tile.
+	 * The tile vertical margin of tile.
 	 */
-	public var tileSpacingHeight(default, null):Int;
+	public var tileMarginHeight(default, null):Int;
+	inline function get_tileMarginHeight():Int return _atlas.tileMarginHeight;
 
 	/**
 	 * How many tiles the tilemap has.
 	 */
 	public var tileCount(get, never):Int;
-	inline function get_tileCount():Int return _setCount;
+	inline function get_tileCount():Int return _atlas.tileCount;
 
 	/**
 	 * How many columns the tilemap has.
@@ -538,8 +578,4 @@ class Tilemap extends Graphic
 
 	// Tileset information.
 	var _atlas:TileAtlas;
-	var _setColumns:Int;
-	var _setRows:Int;
-	var _setCount:Int;
-	var _tile:Rectangle;
 }

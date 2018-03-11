@@ -1,9 +1,25 @@
 package haxepunk;
 
-typedef PositionData =
+/**
+ * A simple structure to contain the coordinates of a position in 2D space.
+ * Unifies with any object that has x:Float and y:Float variables.
+ */
+@:dox(hide)
+private typedef PositionData =
 {
 	x:Float,
 	y:Float
+};
+
+/**
+ * Same as PositionData, but unifies with objects (such as Entity)
+ * whose x and y are properties, not variables.
+ */
+@:dox(hide)
+private typedef PositionPropsData =
+{
+	@:isVar var x(get, set):Float;
+	@:isVar var y(get, set):Float;
 };
 
 /**
@@ -11,7 +27,7 @@ typedef PositionData =
  *
  * Conversion from a `{ x:Float, y:Float }` or a `Entity` is automatic, no need to use this.
  */
-abstract Position(PositionData)
+abstract Position(PositionData) from PositionData to PositionData
 {
 	public function new(?obj:Dynamic)
 	{
@@ -30,7 +46,7 @@ abstract Position(PositionData)
 	public var length(get, never):Float;
 	inline function get_length():Float return Math.sqrt(x * x + y * y);
 
-	@:dox(hide) @:from public static inline function fromObject(obj:PositionData) return new Position(obj);
+	@:dox(hide) @:from public static inline function fromProps(obj:PositionPropsData) return new Position(obj);
 
 	public inline function normalize(thickness:Float):Void
 	{

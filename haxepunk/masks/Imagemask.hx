@@ -1,13 +1,16 @@
 package haxepunk.masks;
 
-import haxepunk.Mask;
-import flash.geom.Point;
-import flash.geom.Matrix;
-import flash.geom.Rectangle;
 import haxepunk.HXP;
+import haxepunk.Mask;
 import haxepunk.graphics.Image;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.math.MathUtil;
+import haxepunk.math.Rectangle;
+
+#if (lime || nme)
+import flash.geom.Point;
+import flash.geom.Matrix;
+#end
 
 
 /**
@@ -87,8 +90,9 @@ class Imagemask extends Pixelmask
 	 * transformation.
 	 * @return  the bound box in local coordinates.
 	 */
-	public function getBounds():flash.geom.Rectangle
+	public function getBounds():Rectangle
 	{
+		#if (lime || nme)
 		var sx = _source.scale * _source.scaleX;
 		var sy = _source.scale * _source.scaleY;
 
@@ -116,6 +120,9 @@ class Imagemask extends Pixelmask
 		r.height = Math.max(Math.max(p1.y - r.y, p2.y - r.y), Math.max(p3.y - r.y, p4.y - r.y));
 
 		return r;
+		#else
+		throw "Unimplemented";
+		#end
 	}
 
 	/** @private Collide against a Pixelmask or an Imagemask. */
@@ -141,7 +148,7 @@ class Imagemask extends Pixelmask
 
 		var intersect = rect.intersection(_rect);
 
-		if (intersect.isEmpty())
+		if (intersect == null)
 		{
 			return false;
 		}

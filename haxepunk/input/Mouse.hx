@@ -1,7 +1,5 @@
 package haxepunk.input;
 
-import flash.events.MouseEvent;
-import flash.ui.Mouse as FlashMouse;
 import haxepunk.HXP;
 
 @:enum
@@ -14,17 +12,6 @@ abstract MouseButton(Int) from Int to Int
 
 class Mouse
 {
-	public static function init()
-	{
-		HXP.stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown, false,  2);
-		HXP.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp, false,  2);
-		HXP.stage.addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel, false,  2);
-		HXP.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_DOWN, onMiddleMouseDown, false, 2);
-		HXP.stage.addEventListener(MouseEvent.MIDDLE_MOUSE_UP, onMiddleMouseUp, false, 2);
-		HXP.stage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN, onRightMouseDown, false, 2);
-		HXP.stage.addEventListener(MouseEvent.RIGHT_MOUSE_UP, onRightMouseUp, false, 2);
-	}
-
 	/**
 	 * X position of the mouse on the screen.
 	 */
@@ -41,24 +28,6 @@ class Mouse
 	static function get_mouseY():Int
 	{
 		return HXP.screen.mouseY;
-	}
-
-	/**
-	 * The absolute mouse x position on the screen (unscaled).
-	 */
-	public static var mouseFlashX(get, never):Int;
-	static function get_mouseFlashX():Int
-	{
-		return Std.int(HXP.stage.mouseX - HXP.screen.x);
-	}
-
-	/**
-	 * The absolute mouse y position on the screen (unscaled).
-	 */
-	public static var mouseFlashY(get, never):Int;
-	static function get_mouseFlashY():Int
-	{
-		return Std.int(HXP.stage.mouseY - HXP.screen.y);
 	}
 
 	/**
@@ -118,6 +87,13 @@ class Mouse
 	public static var mouseWheel:Bool = false;
 
 	/**
+	 * If the mouse is current over the window. If not, the mouse coordinates
+	 * will show the last position before the mouse was moved out.
+	 */
+	public static var mouseOnScreen(get, never):Bool;
+	static inline function get_mouseOnScreen() return _mouseOnScreen;
+
+	/**
 	 * If the mouse wheel was moved this frame, this was the delta.
 	 */
 	public static var mouseWheelDelta(get, never):Int;
@@ -136,7 +112,11 @@ class Mouse
 	 */
 	public static function showCursor()
 	{
-		FlashMouse.show();
+		#if (lime || nme)
+		flash.ui.Mouse.show();
+		#else
+		throw "Unimplemented";
+		#end
 	}
 
 	/**
@@ -144,7 +124,11 @@ class Mouse
 	 */
 	public static function hideCursor()
 	{
-		FlashMouse.hide();
+		#if (lime || nme)
+		flash.ui.Mouse.hide();
+		#else
+		throw "Unimplemented";
+		#end
 	}
 
 	public static inline function define(input:InputType, button:MouseButton)
@@ -214,7 +198,7 @@ class Mouse
 		mousePressed = mouseReleased = middleMousePressed = middleMouseReleased = rightMousePressed = rightMouseReleased = false;
 	}
 
-	static function onMouseDown(e:MouseEvent)
+	static function onMouseDown(_)
 	{
 		if (!mouseDown)
 		{
@@ -225,7 +209,7 @@ class Mouse
 		}
 	}
 
-	static function onMouseUp(e:MouseEvent)
+	static function onMouseUp(_)
 	{
 		mouseDown = false;
 		mouseUp = true;
@@ -233,13 +217,13 @@ class Mouse
 		if (_buttonMap.exists(MouseButton.LEFT)) for (input in _buttonMap[MouseButton.LEFT]) Input.triggerRelease(input);
 	}
 
-	static function onMouseWheel(e:MouseEvent)
+	static function onMouseWheel(delta:Int)
 	{
 		mouseWheel = true;
-		_mouseWheelDelta = e.delta;
+		_mouseWheelDelta = delta;
 	}
 
-	static function onMiddleMouseDown(e:MouseEvent)
+	static function onMiddleMouseDown(_)
 	{
 		if (!middleMouseDown)
 		{
@@ -250,7 +234,7 @@ class Mouse
 		}
 	}
 
-	static function onMiddleMouseUp(e:MouseEvent)
+	static function onMiddleMouseUp(_)
 	{
 		middleMouseDown = false;
 		middleMouseUp = true;
@@ -258,7 +242,7 @@ class Mouse
 		if (_buttonMap.exists(MouseButton.MIDDLE)) for (input in _buttonMap[MouseButton.MIDDLE]) Input.triggerRelease(input);
 	}
 
-	static function onRightMouseDown(e:MouseEvent)
+	static function onRightMouseDown(_)
 	{
 		if (!rightMouseDown)
 		{
@@ -269,7 +253,7 @@ class Mouse
 		}
 	}
 
-	static function onRightMouseUp(e:MouseEvent)
+	static function onRightMouseUp(_)
 	{
 		rightMouseDown = false;
 		rightMouseUp = true;
@@ -280,4 +264,5 @@ class Mouse
 	static var _control:Map<InputType, MouseButton> = new Map();
 	static var _buttonMap:Map<MouseButton, Array<InputType>> = new Map();
 	static var _mouseWheelDelta:Int = 0;
+	static var _mouseOnScreen:Bool = true;
 }

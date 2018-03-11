@@ -1,7 +1,7 @@
 package haxepunk.debug;
 
 import haxepunk.HXP;
-import haxepunk.graphics.text.Text;
+import haxepunk.graphics.text.BitmapText;
 import haxepunk.input.MouseManager;
 import haxepunk.utils.CircularBuffer;
 import haxepunk.utils.Draw;
@@ -9,9 +9,11 @@ import haxepunk.utils.Draw;
 class LogPanel extends Entity
 {
 	static inline var EXPAND_PER_SECOND:Int = 2048;
-	static inline var LOG_LINES:Int = 24;
+	static inline var LOG_LINES:Int = 10;
+	static inline var MAX_HEIGHT:Int = 216;
+	static inline var MIN_HEIGHT:Int = 48;
 
-	var label:Text;
+	var label:BitmapText;
 	var expanded:Bool = false;
 	var alpha:Float = 0.5;
 	var logMessages:CircularBuffer<String> = new CircularBuffer(LOG_LINES);
@@ -19,7 +21,8 @@ class LogPanel extends Entity
 	public function new(mouseManager:MouseManager)
 	{
 		super();
-		label = new Text("Mouse");
+		label = new BitmapText("Mouse");
+		label.x = 8;
 		addGraphic(label);
 		height = 48;
 		type = mouseManager.type;
@@ -30,7 +33,7 @@ class LogPanel extends Entity
 	{
 		super.update();
 
-		var targetHeight:Int = (expanded ? 20 * LOG_LINES : 40) + 8;
+		var targetHeight:Int = expanded ? MAX_HEIGHT : MIN_HEIGHT;
 		if (height != targetHeight)
 		{
 			var change = Std.int(EXPAND_PER_SECOND * HXP.elapsed);
@@ -45,16 +48,15 @@ class LogPanel extends Entity
 		}
 
 		var txt:String = "";
-		if (expanded && height == targetHeight)
+		var heightDiff = MAX_HEIGHT - MIN_HEIGHT;
+		var p = (height - MIN_HEIGHT) / heightDiff;
+		var lines:Int = Std.int(1 + p * (LOG_LINES - 1));
+		for (msg in logMessages.slice(logMessages.length - lines))
 		{
-			for (msg in logMessages)
+			if (msg != null)
 			{
 				txt += msg + "\n";
 			}
-		}
-		else
-		{
-			if (logMessages.length > 0) txt += logMessages.last + "\n";
 		}
 		var mouseLabel = StringTools.rpad("Mouse: " + HXP.scene.mouseX + "," + HXP.scene.mouseY, " ", 20);
 		txt += mouseLabel + "Camera: " + HXP.scene.camera.x + "," + HXP.scene.camera.y;
@@ -64,8 +66,8 @@ class LogPanel extends Entity
 
 	override public function render(camera:Camera)
 	{
-		var fsx:Float = camera.fullScaleX,
-			fsy:Float = camera.fullScaleY;
+		var fsx:Float = camera.screenScaleX,
+			fsy:Float = camera.screenScaleY;
 		Draw.setColor(0, alpha);
 		Draw.lineThickness = 4;
 		Draw.rectFilled(x * fsx, y * fsy, width * fsx, height * fsy);
@@ -73,12 +75,9 @@ class LogPanel extends Entity
 		super.render(camera);
 	}
 
-	public function log(data:Array<Dynamic>)
+	public function log(data:Dynamic)
 	{
-		for (msgs in data)
-		{
-			for (msg in Std.string(msgs).split("\n")) logMessages.push(Std.string(msg));
-		}
+		logMessages.push(Std.string(data));
 	}
 
 	function onClick()

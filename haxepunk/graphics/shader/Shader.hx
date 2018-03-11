@@ -1,39 +1,44 @@
 package haxepunk.graphics.shader;
 
-#if nme
-import flash.gl.GL;
-import flash.gl.GLProgram;
-import flash.gl.GLShader;
-#else
-import lime.graphics.opengl.GL;
-import lime.graphics.opengl.GLProgram;
-import lime.graphics.opengl.GLShader;
-#end
-import haxepunk.graphics.hardware.GLUtils;
+import haxepunk.graphics.hardware.opengl.GL;
+import haxepunk.graphics.hardware.opengl.GLProgram;
+import haxepunk.graphics.hardware.opengl.GLShader;
+import haxepunk.graphics.hardware.opengl.GLUniformLocation;
+import haxepunk.graphics.hardware.opengl.GLUtils;
 import haxepunk.graphics.hardware.DrawCommand;
 import haxepunk.graphics.hardware.Float32Array;
 import haxepunk.graphics.hardware.RenderBuffer;
 
-#if js
-typedef GLUniformLocation = js.html.webgl.UniformLocation;
-#else
-typedef GLUniformLocation = Int;
-#end
-
 class Attribute
 {
-	public var index(default, null):Int;
+	public var index(default, null):Int = -1;
+	public var data(default, set):Array<Float>;
+	private function set_data(v:Array<Float>) : Array<Float>
+	{
+		dataPos = -1;
+		return data = v;
+	}
+	public var valuesPerElement:Int;
+
+	@:allow(haxepunk.graphics.hardware.RenderBuffer)
+	private var dataPos(default, set):Int = -1; // for use by RenderBuffer to push data in VBOs
+	private function set_dataPos(v:Int) : Int
+	{
+		return dataPos = v > -1 && data != null ? v % data.length : v;
+	}
 
 	public var name(default, set):String;
 	public inline function set_name(value:String):String
 	{
 		name = value;
 		rebind(); // requires name to be set
+		if (index == -1)
+			Log.warning("attribute '" + name + "' is not declared or not used in shader source.");
 		return name;
 	}
 
-	public var isEnabled(get, never):Bool;
-	inline function get_isEnabled():Bool return name != null;
+	public var isEnabled(get, null):Bool;
+	private function get_isEnabled() : Bool return name != null && index != -1;
 
 	var parent:Shader;
 
@@ -44,18 +49,25 @@ class Attribute
 
 	public function rebind()
 	{
-		if (isEnabled) index = parent.attributeIndex(name);
+		if (name != null) index = parent.attributeIndex(name);
+		dataPos = -1;
 	}
 }
 
 class Shader
 {
-
 	public var glProgram:GLProgram;
 	public var floatsPerVertex(get, never):Int;
-	inline function get_floatsPerVertex():Int return 2 + (texCoord.isEnabled ? 2 : 0) + (color.isEnabled ? 1 : 0);
+	function get_floatsPerVertex():Int
+	{
+		var a = 2 + (texCoord.isEnabled ? 2 : 0) + (color.isEnabled ? 1 : 0);
+		for (v in attributes.iterator())
+			if (v.isEnabled)
+				a += v.valuesPerElement;
+		return a;
+	}
 
-	var vertexSource:String;
+	public var vertexSource:String;
 	var fragmentSource:String;
 
 	public var id(default, null):Int;
@@ -65,8 +77,14 @@ class Shader
 	public var texCoord:Attribute;
 	public var color:Attribute;
 
+	public var hasAttributes(get, never):Bool;
+	inline function get_hasAttributes() : Bool
+	{
+		return attributeNames.length > 0;
+	}
+	var attributeNames:Array<String> = new Array();
+	var attributes:Map<String, Attribute> = new Map();
 	var uniformIndices:Map<String, GLUniformLocation> = new Map();
-	var attributeIndices:Map<String, Int> = new Map();
 	var uniformNames:Array<String> = new Array();
 	var uniformValues:Map<String, Float> = new Map();
 
@@ -82,6 +100,8 @@ class Shader
 #end
 
 		id = idSeq++;
+
+		Log.info('Shader #$idSeq initialized');
 	}
 
 	public function build()
@@ -93,7 +113,7 @@ class Shader
 		GL.attachShader(glProgram, fragmentShader);
 		GL.attachShader(glProgram, vertexShader);
 		GL.linkProgram(glProgram);
-		#if gl_debug
+		#if hxp_gl_debug
 		if (GL.getProgramParameter(glProgram, GL.LINK_STATUS) == 0)
 			throw "Unable to initialize the shader program.";
 		#end
@@ -101,6 +121,8 @@ class Shader
 		position.rebind();
 		texCoord.rebind();
 		color.rebind();
+		for (v in attributes.iterator())
+			v.rebind();
 	}
 
 	function compile(type:Int, source:String):GLShader
@@ -108,7 +130,7 @@ class Shader
 		var shader = GL.createShader(type);
 		GL.shaderSource(shader, source);
 		GL.compileShader(shader);
-		#if gl_debug
+		#if hxp_gl_debug
 		if (GL.getShaderParameter(shader, GL.COMPILE_STATUS) == 0)
 			throw "Error compiling vertex shader: " + GL.getShaderInfoLog(shader);
 		#end
@@ -118,57 +140,75 @@ class Shader
 	public function destroy()
 	{
 		for (key in uniformIndices.keys()) uniformIndices.remove(key);
-		for (key in attributeIndices.keys()) attributeIndices.remove(key);
+		for (key in attributes.keys()) attributes.remove(key);
 	}
 
 	public function prepare(drawCommand:DrawCommand, buffer:RenderBuffer)
 	{
 		if (!position.isEnabled) return;
+		var attribs = attributeNames.map(function(n) return attributes[n]).filter(function (a) return a.isEnabled);
 
-		var bufferPos:Int = -1;
-
-		var hasTexCoord = texCoord.isEnabled;
-		var hasColor = color.isEnabled;
-
-		drawCommand.loopTriangles(function(data)
+		buffer.use();
+		if (texCoord.isEnabled)
 		{
-			var c:UInt = hasColor ? data.color.withAlpha(data.alpha) : 0;
-
-			inline function addTriangle(tx:Float, ty:Float, uvx:Float, uvy:Float)
+			if (color.isEnabled)
 			{
-				buffer.set(++bufferPos, tx);
-				buffer.set(++bufferPos, ty);
-				if (hasTexCoord)
-				{
-					buffer.set(++bufferPos, uvx);
-					buffer.set(++bufferPos, uvy);
-				}
-				if (hasColor)
-				{
-					buffer.setInt32(++bufferPos, c);
-				}
+				buffer.prepareVertexUVandColor(drawCommand);
 			}
-
-			addTriangle(data.tx1, data.ty1, data.uvx1, data.uvy1);
-			addTriangle(data.tx2, data.ty2, data.uvx2, data.uvy2);
-			addTriangle(data.tx3, data.ty3, data.uvx3, data.uvy3);
-		});
-
-		#if (lime >= "4.0.0")
-		GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer.length * Float32Array.BYTES_PER_ELEMENT, buffer.buffer);
-		#else
-		GL.bufferSubData(GL.ARRAY_BUFFER, 0, buffer.buffer);
-		#end
-
-		var stride:Int = floatsPerVertex * Float32Array.BYTES_PER_ELEMENT;
-		GL.vertexAttribPointer(position.index, 2, GL.FLOAT, false, stride, 0);
-		if (hasTexCoord)
-		{
-			GL.vertexAttribPointer(texCoord.index, 2, GL.FLOAT, false, stride, 2 * Float32Array.BYTES_PER_ELEMENT);
+			else
+			{
+				buffer.prepareVertexAndUV(drawCommand);
+			}
 		}
-		if (hasColor)
+		else if (color.isEnabled)
 		{
-			GL.vertexAttribPointer(color.index, 4, GL.UNSIGNED_BYTE, true, stride, (hasTexCoord ? 4 : 2) * Float32Array.BYTES_PER_ELEMENT);
+			buffer.prepareVertexAndColor(drawCommand);
+		}
+		else
+		{
+			buffer.prepareVertexOnly(drawCommand);
+		}
+
+		buffer.addVertexAttribData(attribs, drawCommand.triangleCount * 3);
+
+		buffer.updateGraphicsCard();
+
+		setAttributePointers(drawCommand.triangleCount);
+	}
+
+	function setAttributePointers(nbTriangles:Int)
+	{
+		var offset:Int = 0;
+		// var stride:Int = floatsPerVertex * Float32Array.BYTES_PER_ELEMENT;
+		var stride:Int = (2 + (texCoord.isEnabled ? 2 : 0) + (color.isEnabled ? 1 : 0)) * Float32Array.BYTES_PER_ELEMENT;
+		GL.vertexAttribPointer(position.index, 2, GL.FLOAT, false, stride, offset);
+		offset += 2 * Float32Array.BYTES_PER_ELEMENT;
+
+		if (texCoord.isEnabled)
+		{
+			GL.vertexAttribPointer(texCoord.index, 2, GL.FLOAT, false, stride, offset);
+			offset += 2 * Float32Array.BYTES_PER_ELEMENT;
+		}
+
+		if (color.isEnabled)
+		{
+			GL.vertexAttribPointer(color.index, 4, GL.UNSIGNED_BYTE, true, stride, offset);
+			offset += 1 * Float32Array.BYTES_PER_ELEMENT;
+		}
+
+		// Custom vertex attrib data is at the end of the buffer to speed up construction.
+
+		offset *= nbTriangles * 3;
+
+		// Use an array of names to preserve order, since the order of keys in a Map is undefined
+		for (n in attributeNames)
+		{
+			var attrib = attributes[n];
+			if (attrib.isEnabled)
+			{
+				GL.vertexAttribPointer(attrib.index, attrib.valuesPerElement, GL.FLOAT, false, 0, offset);
+				offset += nbTriangles * 3 * attrib.valuesPerElement * Float32Array.BYTES_PER_ELEMENT;
+			}
 		}
 	}
 
@@ -190,6 +230,11 @@ class Shader
 		GL.enableVertexAttribArray(position.index);
 		if (texCoord.isEnabled) GL.enableVertexAttribArray(texCoord.index);
 		if (color.isEnabled) GL.enableVertexAttribArray(color.index);
+		for (n in attributeNames)
+			if (attributes[n].isEnabled)
+				GL.enableVertexAttribArray(attributes[n].index);
+
+		GLUtils.checkForErrors();
 	}
 
 	public function unbind()
@@ -198,6 +243,9 @@ class Shader
 		GL.disableVertexAttribArray(position.index);
 		if (texCoord.isEnabled) GL.disableVertexAttribArray(texCoord.index);
 		if (color.isEnabled) GL.disableVertexAttribArray(color.index);
+		for (n in attributeNames)
+			if (attributes[n].isEnabled)
+				GL.disableVertexAttribArray(attributes[n].index);
 	}
 
 	/**
@@ -208,11 +256,7 @@ class Shader
 #if unit_test
 		return 0;
 #else
-		if (!attributeIndices.exists(name))
-		{
-			attributeIndices[name] = GL.getAttribLocation(glProgram, name);
-		}
-		return attributeIndices[name];
+		return GL.getAttribLocation(glProgram, name);
 #end
 	}
 
@@ -238,5 +282,39 @@ class Shader
 			uniformNames.push(name);
 		}
 		uniformValues[name] = value;
+	}
+
+	/**
+	 * Set or change the values of a named vertex attribute.
+	 */
+	public function setVertexAttribData(name:String, values:Array<Float>, valuesPerElement:Int)
+	{
+		var attrib:Attribute;
+		if (!attributes.exists(name))
+		{
+			attrib = new Attribute(this);
+			attrib.name = name;
+			attributes[name] = attrib;
+			attributeNames.push(name);
+		}
+		else
+			attrib = attributes[name];
+		attrib.data = values;
+		attrib.valuesPerElement = valuesPerElement;
+	}
+
+	/**
+	 * Add extra values to a named vertex attribute.
+	 */
+	public function appendVertexAttribData(name:String, values:Array<Float>)
+	{
+		var attrib:Attribute;
+		if (!attributes.exists(name))
+			throw "appendVertexAttribData : attribute '" + name + "' was not declared";
+		else
+			attrib = attributes[name];
+		if (values.length % attrib.valuesPerElement != 0)
+			throw "appendVertexAttribData : values per element do not match";
+		attrib.data = attrib.data.concat(values);
 	}
 }
