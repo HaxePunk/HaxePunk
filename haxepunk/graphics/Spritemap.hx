@@ -162,6 +162,31 @@ class Spritemap extends Image
 	}
 
 	/**
+	 * Check if Animation Exists with passed in name.
+	 * @param	name		Name of the animation.
+	 * @return	Has Animation or Not
+	 */
+	public function exists(name:String):Bool
+	{
+		return _anims.exists(name);
+	}
+
+	/**
+	 * Removes Existing Animation.
+	 * @param	name		Name of the animation.
+	 * @return	if Animation Has Been Removed
+	 */
+	public function remove(name:String):Bool
+	{
+		if (!_anims.exists(name))
+		{
+			return false;
+		}
+		_anims.remove(name);
+		return true;
+	}
+
+	/**
 	 * Plays an animation previous defined by add().
 	 * @param	name		Name of the animation to play.
 	 * @param	reset		If the animation should force-restart if it is already playing.
