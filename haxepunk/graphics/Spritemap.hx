@@ -117,8 +117,8 @@ class Spritemap extends Image
 			frameHeight == 0 ? Std.int(_atlas.height) : frameHeight
 		);
 
-		_columns = Math.ceil(_atlas.width/frameWidth);
-		_rows = Math.ceil(_atlas.height/frameHeight);
+		_columns = Math.ceil(_atlas.width / frameWidth);
+		_rows = Math.ceil(_atlas.height / frameHeight);
 		_frameCount = _columns * _rows;
 		frame = 0;
 		active = true;
