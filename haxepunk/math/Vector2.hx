@@ -1,6 +1,11 @@
 package haxepunk.math;
 
-private typedef Position = { x:Float, y:Float };
+private typedef Position =
+{
+	x:Float,
+	y:Float
+};
+
 private typedef PositionObj =
 {
 	@:isVar var x(get, set):Float;
@@ -22,7 +27,7 @@ abstract Vector2(Position) from Position
 		this = { x:x, y:y };
 	}
 	
-	@:dox(hide) @:from public static inline function _(obj:PositionObj)
+	@:dox(hide) @:from public static inline function fromObj(obj:PositionObj)
 	{
 		return new Vector2(obj.x, obj.y);
 	}
