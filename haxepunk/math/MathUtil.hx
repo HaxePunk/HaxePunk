@@ -95,7 +95,8 @@ class MathUtil
 			return;
 		}
 		point.normalize(distance);
-		object += point;
+		object.x += point.x;
+		object.y += point.y;
 	}
 
 	/**
@@ -106,9 +107,11 @@ class MathUtil
 	 */
 	public static inline function anchorTo(object:Vector2, anchor:Vector2, distance:Float = 0)
 	{
-		point = object - anchor;
+		point.x = object.x - anchor.x;
+		point.y = object.y - anchor.y;
 		if (point.length > distance) point.normalize(distance);
-		object = anchor + point;
+		object.x = anchor.x + point.x;
+		object.y = anchor.y + point.y;
 	}
 
 	/**
