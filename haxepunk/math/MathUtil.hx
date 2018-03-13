@@ -84,7 +84,7 @@ class MathUtil
 	 * @param	y			Y position to step towards.
 	 * @param	distance	The distance to step (will not overshoot target).
 	 */
-	public static function stepTowards(object:Position, x:Float, y:Float, distance:Float = 1)
+	public static function stepTowards(object:Vector2, x:Float, y:Float, distance:Float = 1)
 	{
 		point.x = x - object.x;
 		point.y = y - object.y;
@@ -95,8 +95,7 @@ class MathUtil
 			return;
 		}
 		point.normalize(distance);
-		object.x += point.x;
-		object.y += point.y;
+		object += point;
 	}
 
 	/**
@@ -105,13 +104,11 @@ class MathUtil
 	 * @param	anchor		The anchor object.
 	 * @param	distance	The max distance object can be anchored to the anchor.
 	 */
-	public static inline function anchorTo(object:Position, anchor:Position, distance:Float = 0)
+	public static inline function anchorTo(object:Vector2, anchor:Vector2, distance:Float = 0)
 	{
-		point.x = object.x - anchor.x;
-		point.y = object.y - anchor.y;
+		point = object - anchor;
 		if (point.length > distance) point.normalize(distance);
-		object.x = anchor.x + point.x;
-		object.y = anchor.y + point.y;
+		object = anchor + point;
 	}
 
 	/**
@@ -136,7 +133,7 @@ class MathUtil
 	 * @param	x			X offset.
 	 * @param	y			Y offset.
 	 */
-	public static inline function angleXY(object:Position, angle:Float, length:Float = 1, x:Float = 0, y:Float = 0)
+	public static inline function angleXY(object:Vector2, angle:Float, length:Float = 1, x:Float = 0, y:Float = 0)
 	{
 		angle *= RAD;
 		object.x = Math.cos(angle) * length + x;
@@ -164,7 +161,7 @@ class MathUtil
 	 * @param	angle		The amount of degrees to rotate by.
 	 * @param	relative	If the angle is relative to the angle between the object and the anchor.
 	 */
-	public static inline function rotateAround(object:Position, anchor:Position, angle:Float = 0, relative:Bool = true)
+	public static inline function rotateAround(object:Vector2, anchor:Vector2, angle:Float = 0, relative:Bool = true)
 	{
 		if (relative) angle += MathUtil.angle(anchor.x, anchor.y, object.x, object.y);
 		angleXY(object, angle, distance(anchor.x, anchor.y, object.x, object.y), anchor.x, anchor.y);
@@ -324,7 +321,7 @@ class MathUtil
 	 * @param	height		Rectangle's height.
 	 * @param	padding		Rectangle's padding.
 	 */
-	public static inline function clampInRect(object:Position, x:Float, y:Float, width:Float, height:Float, padding:Float = 0)
+	public static inline function clampInRect(object:Vector2, x:Float, y:Float, width:Float, height:Float, padding:Float = 0)
 	{
 		object.x = clamp(object.x, x + padding, x + width - padding);
 		object.y = clamp(object.y, y + padding, y + height - padding);
@@ -395,5 +392,5 @@ class MathUtil
 	public static inline function pow(v:Float, p:Float) return std.Math.pow(v, p);
 	public static inline function log(v:Float) return std.Math.log(v);
 
-	static var point:Position = new Position();
+	static var point:Vector2 = new Vector2();
 }

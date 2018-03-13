@@ -17,8 +17,6 @@ typedef SolidType = OneOf<String, Array<String>>;
 @:allow(haxepunk.Scene)
 class Entity extends Tweener
 {
-	@:dox(hide) @:to public static inline function toPosition(entity:Entity):Position return new Position(entity);
-
 	/**
 	 * The entity's parent, if any. This entity's position will be offset by
 	 * the parent's position.
@@ -863,7 +861,7 @@ class Entity extends Tweener
 	{
 		_point.x = x - this.x;
 		_point.y = y - this.y;
-		if (_point.x * _point.x + _point.y * _point.y > amount * amount)
+		if (_point.dot(_point) > amount * amount)
 		{
 			_point.normalize(amount);
 		}
