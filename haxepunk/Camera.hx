@@ -1,5 +1,7 @@
 package haxepunk;
 
+import haxepunk.math.Vector2;
+
 /**
  * @since 4.0.0
  */
@@ -61,7 +63,7 @@ class Camera
 	 */
 	public inline function floorY(y:Float) return Math.floor(y * screenScaleY) / screenScaleY;
 
-	var anchorTarget:Null<Position>;
+	var anchorTarget:Null<Vector2>;
 	var anchorX:Float = 0;
 	var anchorY:Float = 0;
 
@@ -70,7 +72,7 @@ class Camera
 	 * Camera will keep the target in the specified part of the screen.
 	 * @since 4.0.0
 	 */
-	public function anchor(?target:Position, anchorX:Float = 0.5, anchorY:Float = 0.5)
+	public function anchor(?target:Vector2, anchorX:Float = 0.5, anchorY:Float = 0.5)
 	{
 		anchorTarget = target;
 		this.anchorX = anchorX;
