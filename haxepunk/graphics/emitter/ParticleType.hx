@@ -1,5 +1,6 @@
 package haxepunk.graphics.emitter;
 
+import haxepunk.math.Degrees;
 import haxepunk.utils.BlendMode;
 import haxepunk.utils.Color;
 import haxepunk.utils.Ease.EaseFunction;
@@ -52,7 +53,7 @@ class ParticleType
 	 * @param	backwards		If the motion should be played backwards.
 	 * @return	This ParticleType object.
 	 */
-	public function setMotion(angle:Float, distance:Float, duration:Float, angleRange:Float = 0, distanceRange:Float = 0, durationRange:Float = 0, ?ease:EaseFunction, backwards:Bool = false):ParticleType
+	public function setMotion(angle:Degrees, distance:Float, duration:Float, angleRange:Degrees = 0, distanceRange:Float = 0, durationRange:Float = 0, ?ease:EaseFunction, backwards:Bool = false):ParticleType
 	{
 		_angle = angle;
 		_distance = distance;
@@ -138,7 +139,7 @@ class ParticleType
 	 * @param	ease	Optional easer function.
 	 * @return	This ParticleType object.
 	 */
-	public function setRotation(startAngle:Float, spanAngle:Float, startAngleRange:Float = 0, spanAngleRange:Float = 0, ?ease:EaseFunction):ParticleType
+	public function setRotation(startAngle:Degrees, spanAngle:Degrees, startAngleRange:Degrees = 0, spanAngleRange:Degrees = 0, ?ease:EaseFunction):ParticleType
 	{
 		_startAngle = startAngle;
 		_spanAngle = spanAngle;
@@ -189,8 +190,8 @@ class ParticleType
 	var _blendMode:Null<BlendMode>;
 
 	// Motion information.
-	var _angle:Float;
-	var _angleRange:Float;
+	var _angle:Degrees;
+	var _angleRange:Degrees;
 	var _distance:Float;
 	var _distanceRange:Float;
 	var _duration:Float;
@@ -213,10 +214,10 @@ class ParticleType
 	var _scaleEase:EaseFunction;
 
 	// Rotation information.
-	var _startAngle:Float;
-	var _spanAngle:Float;
-	var _startAngleRange:Float;
-	var _spanAngleRange:Float;
+	var _startAngle:Degrees;
+	var _spanAngle:Degrees;
+	var _startAngleRange:Degrees;
+	var _spanAngleRange:Degrees;
 	var _rotationEase:EaseFunction;
 
 	// Color information.

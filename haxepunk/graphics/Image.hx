@@ -6,7 +6,9 @@ import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.IAtlasRegion;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.utils.Color;
+import haxepunk.math.Degrees;
 import haxepunk.math.MathUtil;
+import haxepunk.math.Radians;
 import haxepunk.math.Rectangle;
 import haxepunk.math.Vector2;
 
@@ -18,7 +20,7 @@ class Image extends Graphic
 	/**
 	 * Rotation of the image, in degrees.
 	 */
-	public var angle:Float;
+	public var angle:Degrees;
 
 	/**
 	 * Scale of the image, effects both x and y scale.
@@ -114,7 +116,7 @@ class Image extends Graphic
 		{
 			_point.x = floorX(camera, point.x) - floorX(camera, originX) - floorX(camera, camera.x * scrollX) + x;
 			_point.y = floorY(camera, point.y) - floorY(camera, originY) - floorY(camera, camera.y * scrollY) + y;
-			var angle = angle * MathUtil.RAD;
+			var angle:Radians = angle;
 			var cos = Math.cos(angle);
 			var sin = Math.sin(angle);
 			var a = sx * cos * fsx;

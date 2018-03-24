@@ -1,6 +1,7 @@
 package haxepunk.input;
 
 import haxepunk.HXP;
+import haxepunk.math.Degrees;
 import haxepunk.math.MathUtil;
 
 /**
@@ -53,7 +54,7 @@ class GestureType
 		return time == 0 ? 0 : distance / time;
 	}
 
-	public var angle(get, never):Float;
+	public var angle(get, never):Degrees;
 	function get_angle()
 	{
 		// TODO

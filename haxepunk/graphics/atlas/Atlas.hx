@@ -3,6 +3,7 @@ package haxepunk.graphics.atlas;
 import haxepunk.utils.BlendMode;
 import haxepunk.graphics.atlas.AtlasData;
 import haxepunk.graphics.shader.Shader;
+import haxepunk.math.Degrees;
 import haxepunk.math.Rectangle;
 import haxepunk.utils.Color;
 
@@ -55,7 +56,7 @@ class Atlas
 	 * @param	alpha	The tile's opacity
 	 */
 	public inline function prepareTile(rect:Rectangle, x:Float, y:Float,
-		scaleX:Float, scaleY:Float, angle:Float,
+		scaleX:Float, scaleY:Float, angle:Degrees,
 		color:Color, alpha:Float,
 		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle)
 	{
