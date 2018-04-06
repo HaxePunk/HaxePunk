@@ -15,7 +15,7 @@ class GamepadInput
 
 	static function onJoyDeviceAdded(limeGamepad:LimeGamepad)
 	{
-		var joy:Gamepad = new Gamepad(limeGamepad.id);
+		var joy:Gamepad = new Gamepad(limeGamepad.id, limeGamepad.name);
 		Gamepad.gamepads[limeGamepad.id] = joy;
 		++Gamepad.gamepadCount;
 

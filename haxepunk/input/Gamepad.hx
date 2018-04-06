@@ -55,6 +55,7 @@ class Gamepad
 	public static var gamepadCount(default, null):Int = 0;
 
 	public var id:Int = 0;
+	public var name:String;
 
 	/**
 	 * If the gamepad is currently connected.
@@ -79,9 +80,10 @@ class Gamepad
 	 * Creates and initializes a new Gamepad.
 	 */
 	@:dox(hide)
-	function new(id:Int)
+	function new(id:Int, name:String)
 	{
 		this.id = id;
+		this.name = name;
 	}
 
 	public function update():Void {}
