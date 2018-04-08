@@ -19,6 +19,18 @@ class GamepadInput
 		Gamepad.gamepads[limeGamepad.id] = joy;
 		++Gamepad.gamepadCount;
 
+		// Lime automatically maps gamepad inputs to a common profile; store
+		// name/guid, but don't use a mapping class
+		joy.name = limeGamepad.name;
+		joy.guid = limeGamepad.guid;
+
+		Log.info('Gamepad (${joy.guid}: ${joy.name} added');
+		if (joy.type != null)
+		{
+			Log.debug(@:privateAccess joy.type.buttons.toString());
+			Log.debug(@:privateAccess joy.type.axes.toString());
+		}
+
 		limeGamepad.onButtonUp.add(joy.onButtonUp);
 		limeGamepad.onButtonDown.add(joy.onButtonDown);
 		limeGamepad.onAxisMove.add(onJoyAxisMove.bind(limeGamepad));
@@ -34,12 +46,12 @@ class GamepadInput
 		joy.connected = false;
 		Gamepad.gamepads.remove(limeGamepad.id);
 		--Gamepad.gamepadCount;
-
 		if (Input.handlers.indexOf(joy) > -1) Input.handlers.remove(joy);
 		Gamepad.onDisconnect.invoke(joy);
+		Log.info('Gamepad (${joy.guid}: ${joy.name}) removed');
 	}
 
-	static function onJoyAxisMove(limeGamepad:LimeGamepad, a:GamepadAxis, v:Float)
+	static function onJoyAxisMove(limeGamepad:LimeGamepad, a:Int, v:Float)
 	{
 		var joy:Gamepad = Gamepad.gamepad(limeGamepad.id);
 		joy.onAxisMove(a, v);

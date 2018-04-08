@@ -81,7 +81,9 @@ class FlashApp extends Sprite
 		// enable input
 		initKeyInput();
 		initMouseInput();
+		#if !hxp_no_gamepad
 		initGamepadInput();
+		#end
 
 		if (multiTouchSupported())
 		{
@@ -179,11 +181,13 @@ class FlashApp extends Sprite
 		KeyInput.init(this);
 	}
 
+	#if !hxp_no_gamepad
 	public function initGamepadInput()
 	{
 		Log.debug("init gamepad input");
 		GamepadInput.init(this);
 	}
+	#end
 
 	public function initTouchInput()
 	{

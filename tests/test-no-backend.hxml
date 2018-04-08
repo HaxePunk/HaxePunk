@@ -5,4 +5,5 @@
 -lib hamcrest
 --no-inline
 -D unit_test
+-D linux
 -neko test.n

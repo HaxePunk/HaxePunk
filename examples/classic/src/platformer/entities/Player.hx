@@ -5,7 +5,8 @@ import haxepunk.Sfx;
 import haxepunk.graphics.Spritemap;
 import haxepunk.input.Input;
 import haxepunk.input.Gamepad;
-import haxepunk.input.gamepads.XboxGamepad;
+import haxepunk.input.gamepad.GamepadAxis;
+import haxepunk.input.gamepad.GamepadButton;
 import haxepunk.input.Key;
 import haxepunk.input.Mouse;
 import haxepunk.math.MathUtil;
@@ -55,8 +56,10 @@ class Player extends Physics
 
 		Mouse.define("switch_jump_mode", MouseButton.RIGHT);
 
+		#if !hxp_no_gamepad
 		Gamepad.onConnect.bind(registerGamepad);
 		for (gamepad in Gamepad.gamepads) registerGamepad(gamepad);
+		#end
 	}
 
 	override public function added()
@@ -64,17 +67,18 @@ class Player extends Physics
 		scene.onInputPressed.switch_jump_mode.bind(switchJumpStyle);
 	}
 
+	#if !hxp_no_gamepad
 	function registerGamepad(gamepad:Gamepad)
 	{
-		gamepad.defineButton("left", [XboxGamepad.DPAD_LEFT]);
-		gamepad.defineButton("right", [XboxGamepad.DPAD_RIGHT]);
-		gamepad.defineButton("jump", [XboxGamepad.A_BUTTON]);
-		gamepad.defineButton("switch_jump_mode", [XboxGamepad.B_BUTTON]);
-		gamepad.defineAxis("left", XboxGamepad.LEFT_ANALOGUE_X, -0.1, -1);
-		gamepad.defineAxis("right", XboxGamepad.LEFT_ANALOGUE_X, 0.1, 1);
-		gamepad.defineAxis("jump", XboxGamepad.LEFT_ANALOGUE_Y, -0.5, -1);
-		gamepad.defineAxis("jump", XboxGamepad.RIGHT_ANALOGUE_Y, -0.5, -1);
+		gamepad.defineButton("left", [GamepadButton.DpadLeft]);
+		gamepad.defineButton("right", [GamepadButton.DpadRight]);
+		gamepad.defineButton("jump", [GamepadButton.BtnA]);
+		gamepad.defineButton("switch_jump_mode", [GamepadButton.BtnB]);
+		gamepad.defineAxis("left", GamepadAxis.LeftX, -0.1, -1);
+		gamepad.defineAxis("right", GamepadAxis.LeftX, 0.1, 1);
+		gamepad.defineAxis("jump", GamepadAxis.RightY, -0.5, -1);
 	}
+	#end
 
 	function doJump()
 	{

@@ -41,6 +41,8 @@ class GamepadInput
 	static function onJoyDeviceAdded(e:JoystickEvent)
 	{
 		var joy = new Gamepad(e.device);
+		// FIXME: NME doesn't expose device name/guid
+		Log.info(joy.type == null ? 'unknown Gamepad (${joy.guid}: ${joy.name}) added' : 'Gamepad (${joy.guid}: ${joy.name}) added; mapped as ${joy.type.name}');
 		Gamepad.gamepads[e.device] = joy;
 		++Gamepad.gamepadCount;
 		Input.handlers.push(joy);
@@ -53,7 +55,8 @@ class GamepadInput
 		joy.connected = false;
 		Gamepad.gamepads.remove(e.device);
 		--Gamepad.gamepadCount;
-		if (Input.handlers.indexOf(joy) > -1) Input.handlers.remove(joy);
+		Input.handlers.remove(joy);
 		Gamepad.onDisconnect.invoke(joy);
+		Log.info('Gamepad (${joy.guid}: ${joy.name}) removed');
 	}
 }
