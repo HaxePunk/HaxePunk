@@ -99,6 +99,11 @@ abstract ImageOrTileType(Either<ImageType, TileType>) from Either<ImageType, Til
 class Graphic
 {
 	/**
+	 * Newly created graphics will have this `smooth` setting by default.
+	 */
+	public static var smoothDefault:Bool = true;
+
+	/**
 	 * If the graphic should update.
 	 */
 	public var active:Bool = false;
@@ -240,8 +245,7 @@ class Graphic
 	@:allow(haxepunk)
 	function new()
 	{
-		// TODO: smooth default
-		smooth = true;
+		smooth = smoothDefault;
 		color = Color.White;
 		shader = TextureShader.defaultShader;
 		_class = Type.getClassName(Type.getClass(this));
