@@ -13,6 +13,7 @@ import haxepunk.math.Rectangle;
 class Animation
 {
 	public var onComplete:Signal0 = new Signal0();
+	public var name:String;
 
 	var frames:Array<Int>;
 	var frameRate:Float;
@@ -20,12 +21,14 @@ class Animation
 	var loop:Bool;
 	var parent:Spritemap;
 
-	function new(parent:Spritemap, frames:Array<Int>, frameRate:Float, loop:Bool)
+	function new(parent:Spritemap, frames:Array<Int>, frameRate:Float, loop:Bool, name:String="")
 	{
+		this.name = name;
 		this.frames = frames;
 		this.frameRate = (frameRate == 0 ? HXP.assignedFrameRate : frameRate);
 		this.frameCount = this.frames.length;
 		this.loop = loop;
+		this.name = name;
 	}
 
 	public function play(reset:Bool = false, reverse:Bool = false)
@@ -74,24 +77,24 @@ class Spritemap extends Image
 	 * The currently playing animation.
 	 */
 	public var currentAnimation(default, null):Maybe<Animation>;
-	
+
 	/**
 	 * The amount of frames in the Spritemap.
 	 */
 	public var frameCount(get, null):Int;
-	private function get_frameCount():Int return _frameCount; 
+	private function get_frameCount():Int return _frameCount;
 
 	/**
 	 * Columns in the Spritemap.
 	 */
 	public var columns(get, null):Int;
-	private function get_columns():Int return _columns; 
+	private function get_columns():Int return _columns;
 
 	/**
 	 * Rows in the Spritemap.
 	 */
 	public var rows(get, null):Int;
-	private function get_rows():Int return _rows; 
+	private function get_rows():Int return _rows;
 
 	/**
 	 * Constructor.
@@ -177,7 +180,7 @@ class Spritemap extends Image
 		}
 
 		// make sure frames are valid
-		var anim = new Animation(this, frames, frameRate, loop);
+		var anim = new Animation(this, frames, frameRate, loop, name);
 		_anims.set(name, anim);
 		return anim;
 	}
