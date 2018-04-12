@@ -45,6 +45,10 @@ class Image extends Graphic
 	 */
 	public var flipY:Bool = false;
 
+	public var flipped(get, set):Bool;
+	inline function get_flipped() return flipX;
+	inline function set_flipped(v:Bool) return flipX = v;
+
 	/**
 	 * Constructor.
 	 * @param	source		Source image.
