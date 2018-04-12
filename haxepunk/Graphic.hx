@@ -104,6 +104,13 @@ class Graphic
 	public static var smoothDefault:Bool = true;
 
 	/**
+	 * Newly created graphics will have this `pixelSnapping` setting by default,
+	 * except for `haxepunk.graphics.tile.*` graphics which will always default
+	 * to `true`.
+	 */
+	public static var pixelSnappingDefault:Bool = false;
+
+	/**
 	 * If the graphic should update.
 	 */
 	public var active:Bool = false;
@@ -246,6 +253,7 @@ class Graphic
 	function new()
 	{
 		smooth = smoothDefault;
+		pixelSnapping = pixelSnappingDefault;
 		color = Color.White;
 		shader = TextureShader.defaultShader;
 		_class = Type.getClassName(Type.getClass(this));
