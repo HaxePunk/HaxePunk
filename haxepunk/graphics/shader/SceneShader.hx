@@ -107,10 +107,21 @@ void main () {
 		sy *= y;
 		if (_lastX != x || _lastY != y || _lastSx != sx || _lastSy != sy)
 		{
+			#if nme
+			inline function f(i) v[i] = sx * 2 - 1;
+			f(4); f(12); f(16);
+			inline function f(i) v[i] = -sy * 2 + 1;
+			f(1); f(5); f(13);
+			inline function f(i) v[i] = x;
+			f(6); f(14); f(18);
+			inline function f(i) v[i] = 1 - y;
+			f(3); f(7); f(15);
+			#else
 			v[4] = v[12] = v[16] = sx * 2 - 1;
 			v[1] = v[5] = v[13] = -sy * 2 + 1;
 			v[6] = v[14] = v[18] = x;
 			v[3] = v[7] = v[15] = 1 - y;
+			#end
 
 			#if (lime >= "4.0.0")
 			GL.bufferData(GL.ARRAY_BUFFER, v.length * Float32Array.BYTES_PER_ELEMENT, v, GL.STATIC_DRAW);
@@ -123,7 +134,6 @@ void main () {
 			_lastSx = sx;
 			_lastSy = sy;
 		}
-		trace(_lastX, _lastY, _lastSx, _lastSy);
 	}
 
 	override public function bind()
