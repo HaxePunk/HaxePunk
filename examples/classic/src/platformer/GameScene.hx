@@ -2,16 +2,17 @@ package platformer;
 
 import haxepunk.HXP;
 import haxepunk.Entity;
+import haxepunk.Graphic;
 import haxepunk.graphics.atlas.TextureAtlas;
 import haxepunk.graphics.tile.Tilemap;
 import haxepunk.graphics.tile.Backdrop;
+import haxepunk.graphics.shader.SceneShader;
 import haxepunk.masks.Grid;
 import haxepunk.math.MathUtil;
 import platformer.entities.Player;
 
 class GameScene extends DemoScene
 {
-
 	static var map:Array<Array<Int>> = [
 		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 		[1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1],
@@ -30,10 +31,22 @@ class GameScene extends DemoScene
 		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 	];
 
+	static var s1:SceneShader;
+	static var s2:SceneShader;
+
 	public function new()
 	{
 		super();
+		Graphic.smoothDefault = false;
+		// use two texture renders to scale up pixel perfect without blurring
+		if (s1 == null) s1 = new SceneShader();
+		s1.width = Std.int(HXP.width / 2);
+		s1.height = Std.int(HXP.height / 2);
+		if (s2 == null) s2 = new SceneShader();
+		s2.smooth = true;
+		shaders = [s1, s2];
 	}
+
 
 	override public function begin()
 	{
@@ -78,11 +91,14 @@ class GameScene extends DemoScene
 
 	override public function update()
 	{
-		backdrop.x += 1;
-		backdrop.y += 2 * MathUtil.sign(player.gravity.y);
+		backdrop.x += 60 * HXP.elapsed;
+		backdrop.y += 60 * HXP.elapsed * MathUtil.sign(player.gravity.y);
 		HXP.camera.x = player.x - HXP.halfWidth;
 		HXP.camera.y = player.y - HXP.halfHeight;
 		super.update();
+
+		s2.width = Std.int(Std.int(Math.max(HXP.screen.scaleX, 1)) * HXP.width);
+		s2.height = Std.int(Std.int(Math.max(HXP.screen.scaleY, 1)) * HXP.height);
 	}
 
 	var player:Player;
