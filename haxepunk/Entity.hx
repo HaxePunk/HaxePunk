@@ -333,7 +333,7 @@ class Entity extends Tweener
 		{
 			if (_mask == null)
 			{
-				if ((untyped e._mask) == null || (untyped e._mask).collide(HITBOX))
+				if ((e._mask) == null || (e._mask).collide(HITBOX))
 				{
 					this.x = _x; this.y = _y;
 					return e;
@@ -341,7 +341,7 @@ class Entity extends Tweener
 				this.x = _x; this.y = _y;
 				return null;
 			}
-			if (_mask.collide((untyped e._mask) != null ? (untyped e._mask) : (untyped e.HITBOX)))
+			if (_mask.collide((e._mask) != null ? (e._mask) : (e.HITBOX)))
 			{
 				this.x = _x; this.y = _y;
 				return e;
@@ -449,7 +449,7 @@ class Entity extends Tweener
 					&& x - originX < e.x - e.originX + e.width
 					&& y - originY < e.y - e.originY + e.height)
 				{
-					if ((untyped e._mask) == null || (untyped e._mask).collide(HITBOX)) array[n++] = cast e;
+					if ((e._mask) == null || (e._mask).collide(HITBOX)) array[n++] = cast e;
 				}
 			}
 		}
@@ -464,7 +464,7 @@ class Entity extends Tweener
 					&& x - originX < e.x - e.originX + e.width
 					&& y - originY < e.y - e.originY + e.height)
 				{
-					if (_mask.collide((untyped e._mask) != null ? (untyped e._mask) : (untyped e.HITBOX))) array[n++] = cast e;
+					if (_mask.collide((e._mask) != null ? (e._mask) : (e.HITBOX))) array[n++] = cast e;
 				}
 			}
 		}

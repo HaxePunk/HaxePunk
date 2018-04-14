@@ -11,7 +11,7 @@ class TouchInput
 {
 	public static function init(app:FlashApp)
 	{
-		untyped Input.multiTouchSupported = true;
+		@:privateAccess Input.multiTouchSupported = true;
 		Input.handlers.push(Touch);
 		var stage = app.stage;
 		Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
