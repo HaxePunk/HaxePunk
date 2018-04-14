@@ -7,6 +7,9 @@ import haxepunk.graphics.shader.SceneShader;
 
 class PixelArtScaler extends Entity
 {
+	public static var baseWidth:Null<Int> = null;
+	public static var baseHeight:Null<Int> = null;
+
 	static var s1:SceneShader;
 	static var s2:SceneShader;
 
@@ -35,10 +38,10 @@ class PixelArtScaler extends Entity
 	{
 		if (scene.shaders == null) scene.shaders = new Array();
 		if (s1 == null) s1 = new SceneShader();
-		s1.width = Std.int(HXP.width);
-		s1.height = Std.int(HXP.height);
+		s1.width = baseWidth == null ? HXP.width : baseWidth;
+		s1.height = baseHeight == null ? HXP.height : baseHeight;
+		s1.smooth = false;
 		if (s2 == null) s2 = new SceneShader();
-		s2.smooth = true;
 		resized();
 
 		scene.shaders.push(s1);
@@ -57,10 +60,10 @@ class PixelArtScaler extends Entity
 
 	override public function resized()
 	{
-		var sx = Std.int(Math.max(HXP.screen.scaleX, 1)),
-			sy = Std.int(Math.max(HXP.screen.scaleY, 1));
+		var sx = Std.int(Math.max(HXP.screen.width / s1.width, 1)),
+			sy = Std.int(Math.max(HXP.screen.height / s1.height, 1));
 		s1.active = sx > 1 || sy > 1;
-		s2.width = Std.int(sx * HXP.width);
-		s2.height = Std.int(sy* HXP.height);
+		s2.width = Std.int(sx * s1.width);
+		s2.height = Std.int(sy * s1.height);
 	}
 }
