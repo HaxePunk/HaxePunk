@@ -9,11 +9,6 @@ class Texture
 		return null;
 	}
 
-	public static inline function fromAsset(name:String):Texture
-	{
-		return null;
-	}
-
 	public var width:Int = 0;
 	public var height:Int = 0;
 
