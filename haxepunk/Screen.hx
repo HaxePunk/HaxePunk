@@ -34,8 +34,8 @@ class Screen
 
 		scaleMode.resize(width, height);
 
-		width = HXP.width = Std.int(HXP.screen.width / HXP.screen.scaleX);
-		height = HXP.height = Std.int(HXP.screen.height / HXP.screen.scaleY);
+		width = HXP.width = Std.int((HXP.screen.width + 0.5) / HXP.screen.scaleX);
+		height = HXP.height = Std.int((HXP.screen.height + 0.5) / HXP.screen.scaleY);
 	}
 
 	/**
@@ -85,19 +85,6 @@ class Screen
 		scaleY = value;
 		HXP.needsResize = true;
 		return scaleY;
-	}
-
-	/**
-	 * Whether screen smoothing should be used or not.
-	 */
-	public var smoothing(get, set):Bool;
-	function get_smoothing():Bool
-	{
-		return Atlas.smooth;
-	}
-	function set_smoothing(value:Bool):Bool
-	{
-		return Atlas.smooth = value;
 	}
 
 	/**

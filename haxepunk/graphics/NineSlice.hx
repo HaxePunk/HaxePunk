@@ -89,7 +89,6 @@ class NineSlice extends Graphic
 
 		width = w;
 		height = h;
-		pixelSnapping = false;
 	}
 
 	/**

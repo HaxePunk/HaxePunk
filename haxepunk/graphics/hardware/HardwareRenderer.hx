@@ -187,10 +187,19 @@ class HardwareRenderer
 		screenScaleY = screen.scaleY;
 
 		var postProcess:Array<SceneShader> = scene.shaders;
-		if (postProcess != null && postProcess.length > 0)
+		var firstShader:SceneShader = null;
+		if (postProcess != null) for (p in postProcess)
+		{
+			if (p.active)
+			{
+				firstShader = p;
+				break;
+			}
+		}
+		if (firstShader != null)
 		{
 			fb.bindFrameBuffer();
-			var p = postProcess[0];
+			var p = firstShader;
 			if (p.width != null || p.height != null)
 			{
 				var w = p.textureWidth,
@@ -224,12 +233,24 @@ class HardwareRenderer
 		screen.scaleY = screenScaleY;
 
 		var postProcess:Array<SceneShader> = scene.shaders;
-		if (postProcess != null)
+		var hasPostProcess = false;
+		if (postProcess != null) for (p in postProcess)
 		{
-			for (i in 0 ... postProcess.length)
+			if (p.active)
 			{
-				var last = i == postProcess.length - 1;
+				hasPostProcess = true;
+				break;
+			}
+		}
+		if (hasPostProcess)
+		{
+			var l = postProcess.length;
+			while (!postProcess[l - 1].active) --l;
+			for (i in 0 ... l)
+			{
+				var last = i == l - 1;
 				var shader = postProcess[i];
+				if (!shader.active) continue;
 				var renderTexture = fb.texture;
 
 				var scaleX:Float, scaleY:Float;

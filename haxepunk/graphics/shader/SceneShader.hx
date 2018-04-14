@@ -47,6 +47,7 @@ void main () {
 		return new SceneShader(AssetLoader.getText(name));
 	}
 
+	public var active:Bool = true;
 	public var width:Null<Int> = null;
 	public var height:Null<Int> = null;
 	public var smooth:Bool = false;

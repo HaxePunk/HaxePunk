@@ -27,4 +27,6 @@
 	<source path="backend/flash"/>
 	<source path="backend/lime" if="lime"/>
 	<source path="backend/nme" unless="lime"/>
+
+	<source path="extras" if="hxp_extras"/>
 </project>

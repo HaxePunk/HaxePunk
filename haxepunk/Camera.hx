@@ -57,11 +57,11 @@ class Camera
 	/**
 	 * Return an X value that, after scaling, will result in an integer.
 	 */
-	public inline function floorX(x:Float) return Math.floor(x * screenScaleX) / screenScaleX;
+	public inline function floorX(x:Float) return Math.floor((x + 0.5) * screenScaleX) / screenScaleX;
 	/**
 	 * Return a Y value that, after scaling, will result in an integer.
 	 */
-	public inline function floorY(y:Float) return Math.floor(y * screenScaleY) / screenScaleY;
+	public inline function floorY(y:Float) return Math.floor((y + 0.5) * screenScaleY) / screenScaleY;
 
 	var anchorTarget:Null<Vector2>;
 	var anchorX:Float = 0;
