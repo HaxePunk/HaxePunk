@@ -8,6 +8,7 @@ import haxepunk.graphics.text.IBitmapFont.BitmapFontType;
 import haxepunk.math.Vector2;
 import haxepunk.utils.Color;
 import haxepunk.utils.Utf8String;
+using haxepunk.HXP;
 
 /**
  * Text option including the font, size, color, font format...
@@ -72,7 +73,7 @@ enum TextOpcode
 	SetScale(scale:Float);
 	SetFont(font:IBitmapFont);
 	SetSize(size:Int);
-	TextBlock(text:Utf8String);
+	TextBlock(text:Array<Utf8String>);
 	NewLine(width:Float, height:Float, align:AlignType);
 	Image(image:Image, padding:Int);
 	Align(alignType:AlignType);
@@ -414,7 +415,7 @@ class BitmapText extends Graphic
 			cursorY:Float = 0,
 			trailingWhitespace:Float = 0,
 			block:Utf8String = "",
-			currentWord:Utf8String = "",
+			currentWord:Array<Utf8String> = new Array(),
 			wordLength:Float = 0,
 			wordTrailingWhitespace:Float = 0,
 			wordHeight:Float = 0,
@@ -442,7 +443,10 @@ class BitmapText extends Graphic
 					switch (opCodes[opCodes.length - 1])
 					{
 						case TextBlock(txt1):
-							opCodes[opCodes.length - 1] = TextBlock(txt1 + txt2);
+							for (c in txt2)
+							{
+								txt1.push(c);
+							}
 						default:
 							opCodes.push(opCode);
 					}
@@ -464,10 +468,10 @@ class BitmapText extends Graphic
 		// flush some text to the current word
 		inline function flushCurrentWord()
 		{
-			if (currentWord != "")
+			if (currentWord.length > 0)
 			{
-				_word.push(TextBlock(currentWord));
-				currentWord = "";
+				_word.push(TextBlock(currentWord.copy()));
+				currentWord.clear();
 				wordTrailingWhitespace = currentWordTrailingWhitespace;
 				currentWordTrailingWhitespace = 0;
 			}
@@ -582,7 +586,7 @@ class BitmapText extends Graphic
 						var maxFullScale = sx * fsx;
 						var gd = currentFont.getChar(char, maxFullScale * currentScale * currentSizeRatio);
 						var charWidth = gd.xAdvance * gd.scale / fsx;
-						currentWord += char;
+						currentWord.push(char);
 						var charLength = charWidth + charSpacing * currentScale * currentSizeRatio;
 						if (whitespace)
 							currentWordTrailingWhitespace += charLength;
@@ -599,7 +603,7 @@ class BitmapText extends Graphic
 							addChar(true);
 							flushWord();
 						case "-":
-							var hyphen = currentWord != "";
+							var hyphen = currentWord.length > 0;
 							if (hyphen && i < line.length - 1)
 							{
 								var nextChar = line.charAt(i + 1);
@@ -706,7 +710,7 @@ class BitmapText extends Graphic
 					{
 						if (displayCharCount > -1 && charCount >= displayCharCount) break;
 						++charCount;
-						var char = text.charAt(i);
+						var char = text[i];
 						var maxFullScale = sx * fsx;
 						var gd = currentFont.getChar(char, maxFullScale * currentScale * currentSizeRatio);
 
