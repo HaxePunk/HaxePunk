@@ -10,6 +10,7 @@ import haxepunk.input.Input;
 import haxepunk.input.Key;
 import haxepunk.input.Mouse;
 import haxepunk.utils.Ease;
+import haxepunk.pixel.PixelArtScaler;
 
 class MainScene extends Scene
 {
@@ -36,7 +37,7 @@ class MainScene extends Scene
 	var shieldsMeter:CircularMeter;
 	var weaponMeter:CircularMeter;
 
-	var shader:SceneShader;
+	var shader:PixelArtScaler;
 
 	function new()
 	{
@@ -123,12 +124,11 @@ class MainScene extends Scene
 
 	function toggleShader()
 	{
-		if (shader == null)
+		if (shader != null)
 		{
-			shader = SceneShader.fromAsset("shaders/pixel.frag");
+			remove(shader);
+			shader = null;
 		}
-		if (shaders == null) shaders = [shader];
-		else if (shaders.length == 0) shaders.push(shader);
-		else shaders.pop();
+		else shader = PixelArtScaler.activate();
 	}
 }
