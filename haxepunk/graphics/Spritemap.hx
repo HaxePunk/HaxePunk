@@ -104,7 +104,7 @@ class Spritemap extends Image
 	 */
 	public function new(source:TileType, frameWidth:Int = 0, frameHeight:Int = 0)
 	{
-		_anims = new Map<String, Animation>();
+		_anims = new Map();
 
 		super();
 
@@ -132,6 +132,7 @@ class Spritemap extends Image
 	override public function update()
 	{
 		currentAnimation.may(function(anim) {
+			var original = currentAnimation;
 			if (complete) return;
 
 			_timer += HXP.elapsed * anim.frameRate * rate;
@@ -160,7 +161,7 @@ class Spritemap extends Image
 					}
 				}
 			}
-			frame = Std.int(anim.frames[_index]);
+			if (!complete && currentAnimation == original) frame = Std.int(anim.frames[_index]);
 		});
 	}
 
