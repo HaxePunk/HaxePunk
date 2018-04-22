@@ -129,6 +129,8 @@ class Entity extends Tweener
 	 */
 	public var originY:Int = 0;
 
+	public var onAdd:Signal0 = new Signal0();
+	public var onRemove:Signal0 = new Signal0();
 	public var preUpdate:Signal0 = new Signal0();
 	public var postUpdate:Signal0 = new Signal0();
 

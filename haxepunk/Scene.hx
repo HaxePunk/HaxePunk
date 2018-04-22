@@ -201,7 +201,13 @@ class Scene extends Tweener
 					}
 				}
 			}
-			if (e.graphic != null && e.graphic.active) e.graphic.update();
+			var g = e.graphic;
+			if (g != null && g.active)
+			{
+				g.preUpdate.invoke();
+				g.update();
+				g.postUpdate.invoke();
+			}
 		}
 
 		// update the camera again, in case it's following an entity
@@ -1150,6 +1156,7 @@ class Scene extends Tweener
 				if (e._scene != this)
 					continue;
 				e.removed();
+				e.onRemove.invoke();
 				e._scene = null;
 				removeUpdate(e);
 				removeRender(e);
@@ -1172,6 +1179,7 @@ class Scene extends Tweener
 				if (e._type != "") addType(e);
 				if (e._name != "") registerName(e);
 				e.added();
+				e.onAdd.invoke();
 			}
 			HXP.clear(_add);
 		}

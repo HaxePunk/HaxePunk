@@ -1,6 +1,7 @@
 package haxepunk;
 
 import haxe.ds.Either;
+import haxepunk.Signal;
 import haxepunk.assets.AssetCache;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.TileAtlas;
@@ -245,6 +246,9 @@ class Graphic
 			return null;
 		}
 	}
+
+	public var preUpdate:Signal0 = new Signal0();
+	public var postUpdate:Signal0 = new Signal0();
 
 	/**
 	 * Constructor.
