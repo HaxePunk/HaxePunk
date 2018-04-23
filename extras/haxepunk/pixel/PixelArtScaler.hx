@@ -31,7 +31,33 @@ class PixelArtScaler extends Entity
 	function new()
 	{
 		super();
-		visible = active = collidable = false;
+		visible = collidable = false;
+	}
+
+	override public function update()
+	{
+		if (HXP.screen.width <= s1.width || HXP.screen.height <= s1.height)
+		{
+			s1.active = s2.active = false;
+		}
+		else if (HXP.screen.width == s1.width && HXP.screen.height == s1.height)
+		{
+			s1.active = s2.active = false;
+		}
+		else if (HXP.screen.width % s1.width == 0 && HXP.screen.height % s1.height == 0)
+		{
+			s1.active = true;
+			s2.active = false;
+		}
+		else s1.active = s2.active = true;
+
+		if (s2.active)
+		{
+			var sx = Std.int(Math.max(HXP.screen.width / s1.width, 1)),
+				sy = Std.int(Math.max(HXP.screen.height / s1.height, 1));
+			s2.width = Std.int(sx * s1.width);
+			s2.height = Std.int(sy * s1.height);
+		}
 	}
 
 	override public function added()
@@ -44,8 +70,8 @@ class PixelArtScaler extends Entity
 		if (s2 == null) s2 = new SceneShader();
 		resized();
 
-		scene.shaders.push(s1);
-		scene.shaders.push(s2);
+		if (scene.shaders.indexOf(s1) == -1) scene.shaders.push(s1);
+		if (scene.shaders.indexOf(s2) == -1) scene.shaders.push(s2);
 		Log.info("pixel art shaders activated");
 	}
 
@@ -56,14 +82,5 @@ class PixelArtScaler extends Entity
 			scene.shaders.remove(s2);
 			scene.shaders.remove(s1);
 		}
-	}
-
-	override public function resized()
-	{
-		var sx = Std.int(Math.max(HXP.screen.width / s1.width, 1)),
-			sy = Std.int(Math.max(HXP.screen.height / s1.height, 1));
-		s1.active = sx > 1 || sy > 1;
-		s2.width = Std.int(sx * s1.width);
-		s2.height = Std.int(sy * s1.height);
 	}
 }
