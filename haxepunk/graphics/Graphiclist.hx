@@ -55,7 +55,7 @@ typedef Graphiclist = BaseGraphicList<Graphic>;
 	{
 		for (g in _graphics)
 		{
-			if (g.active)
+			if (g != null && g.active)
 			{
 				g.preUpdate.invoke();
 				g.update();
