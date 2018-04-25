@@ -72,9 +72,9 @@ class HardwareRenderer
 
 	public function new()
 	{
-		#if ios
-		defaultFramebuffer = new GLFramebuffer(GL.version, GL.getParameter(GL.FRAMEBUFFER_BINDING));
-		#end
+		//#if ios
+		//defaultFramebuffer = GL.createFramebuffer();
+		//#end
 		if (_ortho == null)
 		{
 			_ortho = new Float32Array(16);
@@ -142,7 +142,7 @@ class HardwareRenderer
 				GLUtils.checkForErrors();
 
 				setBlendMode(drawCommand.blend);
-
+				GLUtils.checkForErrors();
 				if (clipRect != null)
 				{
 					x += Std.int(Math.max(clipRect.x, 0));
@@ -151,7 +151,7 @@ class HardwareRenderer
 
 				GL.scissor(x, screenHeight - y - height, width, height);
 				GL.enable(GL.SCISSOR_TEST);
-
+				GLUtils.checkForErrors();
 				GL.drawArrays(GL.TRIANGLES, 0, triangles * 3);
 
 				GLUtils.checkForErrors();
