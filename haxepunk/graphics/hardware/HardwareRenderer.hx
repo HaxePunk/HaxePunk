@@ -72,7 +72,7 @@ class HardwareRenderer
 
 	public function new()
 	{
-		#if ios
+		#if (ios && (lime && lime < 3))
 		defaultFramebuffer = new GLFramebuffer(GL.version, GL.getParameter(GL.FRAMEBUFFER_BINDING));
 		#end
 		if (_ortho == null)
