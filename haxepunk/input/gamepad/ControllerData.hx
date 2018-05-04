@@ -70,7 +70,7 @@ class ControllerData
 				{
 					var buttonMappings = [for (key in buttonMappings.keys()) macro $v{key} => ${buttonMappings[key]}];
 					var axisMappings = [for (key in axisMappings.keys()) macro $v{key} => ${axisMappings[key]}];
-					map[guid] = macro new GamepadType($v{guid}, $v{name}, $a{buttonMappings}, ${axisMappings.length > 0 ? macro [$a{axisMappings}] : macro new Map()});
+					map[guid] = macro new GamepadType($v{guid}, $v{name}, ${buttonMappings.length > 0 ? macro $a{buttonMappings} : macro new Map()}, ${axisMappings.length > 0 ? macro $a{axisMappings} : macro new Map()});
 				}
 			}
 		}
