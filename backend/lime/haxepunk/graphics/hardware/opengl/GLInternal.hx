@@ -11,9 +11,11 @@ class GLInternal
 	static function bindTexture(texture:Texture)
 	{
 		var renderer = cast cast(HXP.app, flash.display.Sprite).stage.__renderer;
-		var renderSession = renderer.renderSession;
+		#if (openfl < "8.0.0")
+		var renderer = renderer.renderSession;
+		#end
 		var bmd:BitmapData = cast texture;
-		GL.bindTexture(GL.TEXTURE_2D, bmd.getTexture(renderSession.gl));
+		GL.bindTexture(GL.TEXTURE_2D, bmd.getTexture(renderer.gl));
 	}
 
 	public static inline function invalid(object:Dynamic)
