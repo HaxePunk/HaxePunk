@@ -1,0 +1,20 @@
+-cp ..
+-cp ../backend/flash
+-cp ../backend/lime
+-cp src
+-main TestMain
+-lib munit
+-lib hamcrest
+--no-inline
+
+-D unit_test
+-D lime_cffi
+-D openfl="8.0.0"
+-D native
+-D lime-native
+-D linux
+-D desktop
+-lib lime
+-lib openfl
+--remap flash:openfl
+-neko test.n
