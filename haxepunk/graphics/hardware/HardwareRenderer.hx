@@ -280,6 +280,10 @@ class HardwareRenderer
 				GL.activeTexture(GL.TEXTURE0);
 				GL.bindTexture(GL.TEXTURE_2D, renderTexture);
 
+				#if desktop
+				GL.enable(GL.TEXTURE_2D);
+				#end
+
 				if (shader.smooth)
 				{
 					GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
@@ -297,6 +301,10 @@ class HardwareRenderer
 
 				GL.bindBuffer(GL.ARRAY_BUFFER, null);
 				GL.bindTexture(GL.TEXTURE_2D, null);
+
+				#if desktop
+				GL.disable(GL.TEXTURE_2D);
+				#end
 
 				shader.unbind();
 
