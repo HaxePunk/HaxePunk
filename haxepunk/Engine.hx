@@ -157,7 +157,7 @@ class Engine
 	}
 
 	/**
-	 * Called from OpenGLView render. Any visible scene will have its draw commands rendered to OpenGL.
+	 * Called from backend renderer. Any visible scene will have its draw commands rendered to OpenGL.
 	 */
 	public function onRender()
 	{
