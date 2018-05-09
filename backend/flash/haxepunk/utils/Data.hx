@@ -106,8 +106,8 @@ class Data
 	{
 		if (file == null) file = DEFAULT_FILE;
 		var p = (PREFIX == null ? "" : PREFIX + "/");
-		if (id != "") _shared = SharedObject.getLocal('$p/$file', id);
-		else _shared = SharedObject.getLocal('$p/$file');
+		if (id != "") _shared = SharedObject.getLocal('$p$id/$file', "/");
+		else _shared = SharedObject.getLocal('$p$file');
 		return _shared.data;
 	}
 
