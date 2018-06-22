@@ -667,23 +667,6 @@ class Entity extends Tweener
 	 */
 	public function setHitboxTo(o:Dynamic)
 	{
-		#if html5
-		inline function getInt(value:Dynamic, defaultValue:Int = 0):Int
-		{
-			return if (Std.is(value, Int) || Std.is(value, Float))
-				value;
-			else
-				defaultValue;
-		};
-
-		width = getInt(o.width);
-		height = getInt(o.height);
-
-		originX = getInt(o.originX, -getInt(o.x));
-		originY = getInt(o.originY, -getInt(o.y));
-
-		#else
-
 		inline function getInt(o:Dynamic, prop:String, defaultValue:Int=0):Int
 		{
 			return try
@@ -701,7 +684,6 @@ class Entity extends Tweener
 
 		originX = getInt(o, "originX", -getInt(o, "x"));
 		originY = getInt(o, "originY", -getInt(o, "y"));
-		#end
 	}
 
 	/**
