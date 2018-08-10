@@ -20,7 +20,7 @@ private typedef PositionObj =
  * All functions are reentrant.
  */
 @:forward
-abstract Vector2(Position) from Position
+abstract Vector2(Position) from Position to Position
 {
 	public inline function new(x:Float = 0, y:Float = 0)
 	{
