@@ -366,7 +366,7 @@ class Tilemap extends Graphic
 		originX = width * 0.5;
 		originY = height * 0.5;
 	}
-
+	
 	@:dox(hide)
 	override public function render(point:Vector2, camera:Camera)
 	{
@@ -374,19 +374,19 @@ class Tilemap extends Graphic
 			fullScaleY:Float = camera.screenScaleY;
 
 		// determine drawing location
-		_point.x = point.x + x - originX - camera.x * scrollX;
-		_point.y = point.y + y - originY - camera.y * scrollY;
+		_point.x = (point.x + x - originX - camera.x * scrollX - HXP.halfWidth) * fullScaleX + HXP.halfWidth;
+		_point.y = (point.y + y - originY - camera.y * scrollY - HXP.halfHeight) * fullScaleX + HXP.halfHeight;
 
 		var scx = scale * scaleX,
 			scy = scale * scaleY,
-			tw = tileWidth * scx,
-			th = tileHeight * scy;
+			tw = tileWidth * scx * fullScaleX,
+			th = tileHeight * scy * fullScaleY;
 
 		// determine start and end tiles to draw (optimization)
 		var startx = Math.floor(-_point.x / tw),
 			starty = Math.floor(-_point.y / th),
-			destx = startx + 1 + Math.ceil(HXP.width / camera.scale / camera.scaleX / tw),
-			desty = starty + 1 + Math.ceil(HXP.height / camera.scale / camera.scaleY / th);
+			destx = startx + 1 + Math.ceil(HXP.width / tw),
+			desty = starty + 1 + Math.ceil(HXP.height / th);
 
 		// nothing will render if we're completely off screen
 		if (startx > _columns || starty > _rows || destx < 0 || desty < 0)
@@ -398,11 +398,8 @@ class Tilemap extends Graphic
 		if (starty < 0) starty = 0;
 		if (desty > _rows) desty = _rows;
 
-		var wx:Float, wy:Float, nx:Float, ny:Float,
-			tile:Int = 0;
-
-		_point.x *= fullScaleX;
-		_point.y *= fullScaleY;
+		var tile:Int = 0;
+		
 		for (y in starty...desty)
 		{
 			for (x in startx...destx)
@@ -412,8 +409,8 @@ class Tilemap extends Graphic
 				{
 					drawTile(
 						tile, x, y,
-						_point.x + x * tw * fullScaleX,
-						_point.y + y * th * fullScaleY,
+						_point.x + x * tw,
+						_point.y + y * th,
 						scx * fullScaleX, scy * fullScaleY
 					);
 				}
@@ -434,13 +431,15 @@ class Tilemap extends Graphic
 
 		// determine drawing location
 		_point.x = point.x + floorX(camera, x) - floorX(camera, originX * scx) - floorX(camera, camera.x * scrollX);
+		_point.x = (_point.x - HXP.halfWidth) * fullScaleX + HXP.halfWidth;
 		_point.y = point.y + floorY(camera, y) - floorY(camera, originY * scy) - floorY(camera, camera.y * scrollY);
+		_point.y = (_point.y - HXP.halfHeight) * fullScaleY + HXP.halfHeight;
 
 		// determine start and end tiles to draw (optimization)
-		var startx = Math.floor(-_point.x / tw),
-			starty = Math.floor(-_point.y / th),
-			destx = startx + 1 + Math.ceil(HXP.width / camera.scale / camera.scaleX / tw),
-			desty = starty + 1 + Math.ceil(HXP.height / camera.scale / camera.scaleY / th);
+		var startx = Math.floor(-_point.x / tw / fullScaleX),
+			starty = Math.floor(-_point.y / th / fullScaleY),
+			destx = startx + 1 + Math.ceil(HXP.width / tw / fullScaleX),
+			desty = starty + 1 + Math.ceil(HXP.height / th / fullScaleY);
 
 		// nothing will render if we're completely off screen
 		if (startx > _columns || starty > _rows || destx < 0 || desty < 0)
@@ -455,8 +454,6 @@ class Tilemap extends Graphic
 		var wx:Float, wy:Float, nx:Float, ny:Float,
 			tile:Int = 0;
 
-		_point.x *= fullScaleX;
-		_point.y *= fullScaleY;
 		wy = floorY(camera, starty * th) * fullScaleY;
 		for (y in starty...desty)
 		{

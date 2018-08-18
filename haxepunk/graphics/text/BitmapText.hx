@@ -733,8 +733,8 @@ class BitmapText extends Graphic
 							var x = _renderData.x + lineOffsetX + gd.xOffset * gd.scale / fsx,
 								y = _renderData.y + gd.yOffset * gd.scale * sy / maxFullScale + thisLineHeight - (lineHeight * currentScale * currentSizeRatio);
 							gd.region.draw(
-								(_point.x + floorX(camera, x)) * fsx,
-								(_point.y + floorY(camera, y)) * fsy,
+								(_point.x + floorX(camera, x) - HXP.halfWidth) * fsx + HXP.halfWidth,
+								(_point.y + floorY(camera, y) - HXP.halfHeight) * fsy + HXP.halfHeight,
 								gd.scale, gd.scale * sy * fsy / maxFullScale, 0,
 								_renderData.color, _renderData.alpha,
 								shader, smooth, blend, clipRect, flexibleLayer
@@ -766,11 +766,13 @@ class BitmapText extends Graphic
 					_renderData.scale = currentScale;
 					applyCustomFunctions(_renderData);
 					image.x = _point.x + _renderData.x + lineOffsetX + originalX + padding;
+					image.x = (image.x - HXP.halfWidth) * fsx + HXP.halfWidth;
 					image.y = _point.y + _renderData.y + thisLineHeight + originalY - image.height * image.scale * image.scaleY * _renderData.scale * this.scale * this.scaleY;
+					image.y = (image.y - HXP.halfHeight) * fsy + HXP.halfHeight;
 					image.color = _renderData.color;
 					image.alpha = _renderData.alpha;
-					image.scaleX *= this.scale * this.scaleX * _renderData.scale;
-					image.scaleY *= this.scale * this.scaleY * _renderData.scale;
+					image.scaleX *= this.scale * this.scaleX * _renderData.scale * fsx;
+					image.scaleY *= this.scale * this.scaleY * _renderData.scale * fsy;
 					image.pixelSnapping = pixelPerfect;
 					HXP.point.setTo(0, 0);
 					image.render(HXP.point, HXP.zeroCamera);

@@ -2,6 +2,7 @@ package haxepunk.graphics;
 
 import haxepunk.Camera;
 import haxepunk.Graphic;
+import haxepunk.HXP;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.IAtlasRegion;
 import haxepunk.graphics.hardware.Texture;
@@ -108,7 +109,8 @@ class Image extends Graphic
 
 			// render without rotation
 			var clipRect = screenClipRect(camera, _point.x, _point.y);
-			_region.draw(_point.x * fsx, _point.y * fsy,
+			_region.draw((_point.x - HXP.halfWidth) * fsx + HXP.halfWidth,
+			 	(_point.y - HXP.halfHeight) * fsy + HXP.halfHeight,
 				sx * fsx, sy * fsy, angle,
 				color, alpha,
 				shader, smooth, blend, clipRect, flexibleLayer
@@ -128,7 +130,9 @@ class Image extends Graphic
 			var tx = (-originX * sx * cos + originY * sy * sin + originX + _point.x);
 			var ty = (-originX * sx * sin - originY * sy * cos + originY + _point.y);
 			var clipRect = screenClipRect(camera, tx, ty);
-			_region.drawMatrix(tx * fsx, ty * fsy, a, b, c, d,
+			_region.drawMatrix((tx - HXP.halfWidth) * fsx + HXP.halfWidth,
+			 	(ty - HXP.halfHeight) * fsy + HXP.halfHeight,
+				a, b, c, d,
 				color, alpha,
 				shader, smooth, blend, clipRect, flexibleLayer
 			);

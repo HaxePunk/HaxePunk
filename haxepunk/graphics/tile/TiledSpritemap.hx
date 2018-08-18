@@ -1,5 +1,6 @@
 package haxepunk.graphics.tile;
 
+import haxepunk.HXP;
 import haxepunk.Graphic.TileType;
 import haxepunk.math.Vector2;
 
@@ -24,7 +25,7 @@ class TiledSpritemap extends Spritemap
 
 		pixelSnapping = true;
 	}
-
+	
 	/** Renders the image. */
 	@:dox(hide)
 	override public function render(point:Vector2, camera:Camera)
@@ -43,7 +44,8 @@ class TiledSpritemap extends Spritemap
 		{
 			while (x < _imageWidth)
 			{
-				_region.draw(Math.floor((_point.x + x) * fsx), Math.floor((_point.y + y) * fsy),
+				_region.draw(Math.floor((_point.x + x - HXP.halfWidth) * fsx + HXP.halfWidth),
+					Math.floor((_point.y + y - HXP.halfHeight) * fsy + HXP.halfHeight),
 					sx, sy, angle,
 					color, alpha,
 					shader, smooth, blend
@@ -60,14 +62,12 @@ class TiledSpritemap extends Spritemap
 	override public function pixelPerfectRender(point:Vector2, camera:Camera)
 	{
 		// determine drawing location
-		_point.x = point.x + floorX(camera, x - originX) - floorX(camera, camera.x * scrollX);
-		_point.y = point.y + floorY(camera, y - originY) - floorY(camera, camera.y * scrollY);
-
 		var fsx = camera.screenScaleX,
 			fsy = camera.screenScaleY,
-			sx = fsx * scale * scaleX,
-			sy = fsy * scale * scaleY,
-			x = 0.0, y = 0.0;
+			sx = scale * scaleX,
+			sy = scale * scaleY;
+		_point.x = (point.x + floorX(camera, x - originX) - floorX(camera, camera.x * scrollX) - HXP.halfWidth) * fsx + HXP.halfWidth;
+		_point.y = (point.y + floorY(camera, y - originY) - floorY(camera, camera.y * scrollY) - HXP.halfHeight) * fsy + HXP.halfHeight;
 
 		var x:Float = 0, y:Float = 0,
 			x1:Float = 0, y1:Float = 0,
@@ -76,7 +76,7 @@ class TiledSpritemap extends Spritemap
 		{
 			y += _sourceRect.height * sy;
 			y2 = floorY(camera, y) * fsy;
-			while (x1 < _imageWidth * sx)
+			while (x < _imageWidth * sx)
 			{
 				x += _sourceRect.width * sx;
 				x2 = floorX(camera, x) * fsx;
