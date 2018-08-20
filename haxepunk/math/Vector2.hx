@@ -161,7 +161,27 @@ abstract Vector2(Position) from Position to Position
 	{
 		return clone().subtract(other);
 	}
-
+	
+	/**
+	 * Component-wise multiplication.
+	 */
+	public inline function hadamard(other:Vector2):Vector2
+	{
+		this.x *= other.x;
+		this.y *= other.y;
+		return this;
+	}
+	
+	/**
+	 * Returns the Hadamard product of the two vectors, that is,
+	 * the vector formed by the component-wise mulitplication.
+	 */
+	@:op(a*b)
+	public inline function times(other:Vector2):Vector2
+	{
+		return new Vector2(this.x * other.x, this.y * other.y);
+	}
+	
 	/**
 	 * Returns the distance between this and another point.
 	 * @param other  The other point to use for distance calculation

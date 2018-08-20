@@ -1,5 +1,6 @@
 package haxepunk.graphics.tile;
 
+import haxepunk.HXP;
 import haxepunk.math.Rectangle;
 import haxepunk.Graphic.ImageType;
 import haxepunk.math.Vector2;
@@ -44,7 +45,8 @@ class TiledImage extends Image
 		{
 			while (x < _width)
 			{
-				_region.draw(Math.floor((_point.x + x) * fsx), Math.floor((_point.y + y) * fsy),
+				_region.draw(Math.floor((_point.x + x - HXP.halfWidth) * fsx + HXP.halfWidth),
+					Math.floor((_point.y + y - HXP.halfHeight) * fsy + HXP.halfHeight),
 					sx, sy, angle,
 					color, alpha,
 					shader, smooth, blend
@@ -63,8 +65,8 @@ class TiledImage extends Image
 			fsy = camera.screenScaleY,
 			sx = scale * scaleX,
 			sy = scale * scaleY;
-		_point.x = (point.x + floorX(camera, x - originX) - floorX(camera, camera.x * scrollX)) * fsx;
-		_point.y = (point.y + floorY(camera, y - originY) - floorY(camera, camera.y * scrollY)) * fsy;
+		_point.x = (point.x + floorX(camera, x - originX) - floorX(camera, camera.x * scrollX) - HXP.halfWidth) * fsx + HXP.halfWidth;
+		_point.y = (point.y + floorY(camera, y - originY) - floorY(camera, camera.y * scrollY) - HXP.halfHeight) * fsy + HXP.halfHeight;
 
 		var x:Float = 0, y:Float = 0,
 			x1:Float = 0, y1:Float = 0,
@@ -73,7 +75,7 @@ class TiledImage extends Image
 		{
 			y += _sourceRect.height * sy;
 			y2 = floorY(camera, y) * fsy;
-			while (x1 < _width * sx)
+			while (x < _width * sx)
 			{
 				x += _sourceRect.width * sx;
 				x2 = floorX(camera, x) * fsx;

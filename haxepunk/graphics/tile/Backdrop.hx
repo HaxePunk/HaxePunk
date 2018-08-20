@@ -54,17 +54,19 @@ class Backdrop extends Graphic
 		originX = _width * 0.5;
 		originY = _height * 0.5;
 	}
-
+	
 	@:dox(hide)
 	override public function render(point:Vector2, camera:Camera)
 	{
-		_point.x = (point.x - camera.x * scrollX + x) * camera.screenScaleX - originX * scaleX * scale;
-		_point.y = (point.y - camera.y * scrollY + y) * camera.screenScaleY - originY * scaleY * scale;
-
-		var sx = scale * scaleX * camera.screenScaleX,
-			sy = scale * scaleY * camera.screenScaleY,
-			scaledWidth = _width * sx,
-			scaledHeight = _height * sy;
+		var fsx = camera.screenScaleX,
+			fsy = camera.screenScaleY,
+			sx = scale * scaleX,
+			sy = scale * scaleY,
+			scaledWidth = _width * sx * fsx,
+			scaledHeight = _height * sy * fsy;
+		
+		_point.x = (point.x - camera.x * scrollX + x - HXP.halfWidth - originX * sx) * fsx + HXP.halfWidth ;
+		_point.y = (point.y - camera.y * scrollY + y - HXP.halfHeight - originY * sy) * fsy + HXP.halfHeight ;
 
 		var xi:Int = 1,
 			yi:Int = 1;
@@ -85,10 +87,9 @@ class Backdrop extends Graphic
 		{
 			for (x in 0 ... xi)
 			{
-				_region.draw(
-					_point.x + x * scaledWidth,
+				_region.draw(_point.x + x * scaledWidth,
 					_point.y + y * scaledHeight,
-					sx, sy, 0,
+					sx * fsx, sy * fsy, 0,
 					color, alpha,
 					shader, smooth, blend
 				);
@@ -103,8 +104,8 @@ class Backdrop extends Graphic
 			fsy = camera.screenScaleY,
 			sx = scale * scaleX,
 			sy = scale * scaleY;
-		_point.x = (floorX(camera, point.x) + floorX(camera, x) - floorX(camera, originX * sx) - floorX(camera, camera.x * scrollX)) * fsx;
-		_point.y = (floorY(camera, point.y) + floorY(camera, y) - floorY(camera, originY * sy) - floorY(camera, camera.y * scrollY)) * fsy;
+		_point.x = (floorX(camera, point.x) + floorX(camera, x) - floorX(camera, originX * sx) - floorX(camera, camera.x * scrollX) - HXP.halfWidth) * fsx + HXP.halfWidth;
+		_point.y = (floorY(camera, point.y) + floorY(camera, y) - floorY(camera, originY * sy) - floorY(camera, camera.y * scrollY) - HXP.halfHeight) * fsy + HXP.halfHeight;
 
 		var scaledWidth = _width * sx * fsx,
 			scaledHeight = _height * sy * fsy;

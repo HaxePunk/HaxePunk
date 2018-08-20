@@ -1,6 +1,7 @@
 package haxepunk.graphics;
 
 import haxepunk.Graphic;
+import haxepunk.HXP;
 import haxepunk.graphics.atlas.AtlasData;
 import haxepunk.graphics.shader.ColorShader;
 import haxepunk.utils.Color;
@@ -30,11 +31,16 @@ class ColoredRect extends Graphic
 
 		var fsx = camera.screenScaleX,
 			fsy = camera.screenScaleY;
-		var x1 = (floorX(camera, point.x) - floorX(camera, camera.x) + floorX(camera, x) - floorX(camera, originX)) * fsx,
-			x2 = x1 + width * fsx,
-			y1 = (floorY(camera, point.y) - floorY(camera, camera.y) + floorY(camera, y) - floorY(camera, originY)) * fsy,
-			y2 = y1 + height * fsy;
-
+		var x1 = floorX(camera, point.x) - floorX(camera, camera.x) + floorX(camera, x) - floorX(camera, originX),
+			x2 = x1 + width,
+			y1 = floorY(camera, point.y) - floorY(camera, camera.y) + floorY(camera, y) - floorY(camera, originY),
+			y2 = y1 + height;
+		
+		x1 = (x1 - HXP.halfWidth) * fsx + HXP.halfWidth;
+		x2 = (x2 - HXP.halfWidth) * fsx + HXP.halfWidth;
+		y1 = (y1 - HXP.halfHeight) * fsx + HXP.halfHeight;
+		y2 = (y2 - HXP.halfHeight) * fsx + HXP.halfHeight;
+		
 		command.addTriangle(x1, y1, 0, 0, x2, y1, 0, 0, x1, y2, 0, 0, color, alpha);
 		command.addTriangle(x1, y2, 0, 0, x2, y1, 0, 0, x2, y2, 0, 0, color, alpha);
 	}
