@@ -292,7 +292,7 @@ class Scene extends Tweener
 	public var mouseX(get, null):Int;
 	inline function get_mouseX():Int
 	{
-		return Std.int((HXP.app.getMouseX() - HXP.screen.x - x) / camera.screenScaleX + camera.x);
+		return Std.int((HXP.app.getMouseX() - HXP.screen.x - x - HXP.halfWidth) / camera.screenScaleX + camera.x + HXP.halfWidth);
 	}
 
 	/**
@@ -301,7 +301,7 @@ class Scene extends Tweener
 	public var mouseY(get, null):Int;
 	inline function get_mouseY():Int
 	{
-		return Std.int((HXP.app.getMouseY() - HXP.screen.y - y) / camera.screenScaleY + camera.y);
+		return Std.int((HXP.app.getMouseY() - HXP.screen.y - y - HXP.halfHeight) / camera.screenScaleY + camera.y + HXP.halfHeight);
 	}
 
 	/**
