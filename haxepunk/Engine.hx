@@ -377,7 +377,7 @@ private class VisibleSceneIterator
 		while (i >= 0)
 		{
 			scene = engine._scenes[i];
-			if (scene.visible)
+			if (scene.visible && scene.added)
 			{
 				scenes.push(scene);
 			}
