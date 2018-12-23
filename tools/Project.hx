@@ -140,6 +140,9 @@ class Project
 
 					CLI.print(filename);
 
+					// Windows will throw if a file is opened and its folder wasn't created yet
+					createDirectory(path + "/" + Path.directory(filename) + "/"); 
+
 					var fout:FileOutput = File.write(path + "/" + filename, true);
 					fout.writeBytes(bytes, 0, bytes.length);
 					fout.close();
