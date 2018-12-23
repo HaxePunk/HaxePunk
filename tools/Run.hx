@@ -27,7 +27,7 @@ class Run
 		if (!FileSystem.exists(template))
 		{
 			Sys.setCwd(path);
- 
+
 			// copy template folder to zip file
 			var out = sys.io.File.write("template.zip", true);
 			var zip = new haxe.zip.Writer(out);
@@ -53,7 +53,6 @@ class Run
 		Sys.exit(code);
 	}
 
-
 	/** 
 	* Recursively copies a directory. 
 	* @param dir The directory to copy for compression.
@@ -61,12 +60,14 @@ class Run
 	* @source: https://code.haxe.org/category/other/haxe-zip.html
 	* @author: Mark Knol
 	**/
-	private static function getEntries(dir:String, entries:List<haxe.zip.Entry> = null, inDir:Null<String> = null):List<haxe.zip.Entry> {
+	private static function getEntries(dir:String, ?entries:List<haxe.zip.Entry>, ?inDir:Null<String>):List<haxe.zip.Entry> 
+	{
 		if (entries == null)
 		{
 			entries = new List<haxe.zip.Entry>();
 		}
-		if (inDir == null){
+		if (inDir == null)
+		{
 			inDir = dir;
 		}
 		for (file in sys.FileSystem.readDirectory(dir)) 
@@ -93,6 +94,5 @@ class Run
 		}
 		return entries;
 	}
-
 
 }
