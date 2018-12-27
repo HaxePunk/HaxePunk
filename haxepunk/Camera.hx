@@ -6,7 +6,7 @@ import haxepunk.math.Vector2;
 import haxepunk.ds.OneOf;
 
 @:dox(hide)
-typedef CamPoint = OneOf<PositionObj,Vector2>;
+typedef CamPoint = OneOf<PositionObj, Vector2>;
 
 /**
  * @since 4.0.0
