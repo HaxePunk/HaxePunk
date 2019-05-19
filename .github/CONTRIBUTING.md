@@ -32,7 +32,21 @@ When each release is merged into the master branch it is tagged as a version (v2
 
 ## Testing HaxePunk
 
-It is suggested that you test your changes on Flash and Neko if making updates to cross-platform code. There are unit tests that can be run by typing `ant unit` on the command line. It's also good to run the full suite, with examples, by typing `ant`. This may require you to install [Ant](http://ant.apache.org/) unless you already have it on your computer.
+HaxePunk uses [Massive Unit](https://github.com/massiveinteractive/MassiveUnit) as its tool for testing. You'll need to have it installed in order to perform any of the tests. 
+```shell
+# haxelib version
+haxelib install munit
+# git version
+haxelib git munit https://github.com/massiveinteractive/MassiveUnit.git master src
+```
+Either version you install should work.
+
+When contributing new code, it is advised to test your changes on Neko if you're making updates to cross-platform code. There are two ways to execute tests. If you have make installed, you can run `make test test-name` from the root folder. Otherwise, you can directly invoke munit inside of the `tests/` folder.
+
+* Using make: `$haxepunk> make test no-backend`
+* Using munit: `$haxepunk\tests> haxelib run munit test test-no-backend.hxml`
+
+If you look inside of the tests folder, you'll find a number of hxml files which represent the tests you can use. 
 
 ## Programming Guidlines
 
