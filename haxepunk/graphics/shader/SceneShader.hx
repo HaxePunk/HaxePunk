@@ -73,17 +73,24 @@ void main () {
 		position.name = "aPosition";
 		texCoord.name = "aTexCoord";
 	}
-
+	
+	function bufferData(target, size, srcData, usage)
+	{
+		#if (html5 && lime >= "5.0.0")
+		GL.bufferDataWEBGL(target, srcData, usage);
+		#elseif (lime >= "4.0.0")
+		GL.bufferData(target, size, srcData, usage);
+		#else
+		GL.bufferData(target, srcData, usage);
+		#end
+	}
+	
 	function createBuffer()
 	{
 		buffer = GL.createBuffer();
 		GL.bindBuffer(GL.ARRAY_BUFFER, buffer);
 		v = new Float32Array(_vertices);
-		#if (lime >= "4.0.0")
-		GL.bufferData(GL.ARRAY_BUFFER, v.length * Float32Array.BYTES_PER_ELEMENT, v, GL.STATIC_DRAW);
-		#else
-		GL.bufferData(GL.ARRAY_BUFFER, v, GL.STATIC_DRAW);
-		#end
+		bufferData(GL.ARRAY_BUFFER, v.length * Float32Array.BYTES_PER_ELEMENT, v, GL.STATIC_DRAW);
 		GL.bindBuffer(GL.ARRAY_BUFFER, null);
 	}
 
@@ -124,11 +131,7 @@ void main () {
 			v[3] = v[7] = v[15] = 1 - y;
 			#end
 
-			#if (lime >= "4.0.0")
-			GL.bufferData(GL.ARRAY_BUFFER, v.length * Float32Array.BYTES_PER_ELEMENT, v, GL.STATIC_DRAW);
-			#else
-			GL.bufferData(GL.ARRAY_BUFFER, v, GL.STATIC_DRAW);
-			#end
+			bufferData(GL.ARRAY_BUFFER, v.length * Float32Array.BYTES_PER_ELEMENT, v, GL.STATIC_DRAW);			
 
 			_lastX = x;
 			_lastY = y;

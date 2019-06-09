@@ -125,7 +125,9 @@ class HardwareRenderer
 				var floatsPerTriangle:Int = shader.floatsPerVertex * 3;
 				buffer.ensureSize(triangles, floatsPerTriangle);
 
-				#if (lime >= "4.0.0")
+				#if (html5 && lime >= "5.0.0")
+				GL.uniformMatrix4fvWEBGL(shader.uniformIndex(UNIFORM_MATRIX), false, _ortho);
+				#elseif (lime >= "4.0.0")
 				GL.uniformMatrix4fv(shader.uniformIndex(UNIFORM_MATRIX), 1, false, _ortho);
 				#else
 				GL.uniformMatrix4fv(shader.uniformIndex(UNIFORM_MATRIX), false, _ortho);
