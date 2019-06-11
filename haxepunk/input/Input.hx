@@ -64,7 +64,7 @@ class Input
 	/**
 	 * @deprecated use Key.define
 	 */
-	public static inline function define(input:InputType, keys:Array<Key>)
+	public static inline function define(input:InputType, keys:Array<KeyCode>)
 	{
 		Key.define(input, keys);
 	}

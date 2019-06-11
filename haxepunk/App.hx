@@ -3,6 +3,7 @@ package haxepunk;
 import kha.Scheduler;
 import kha.System;
 import kha.Window;
+import kha.input.Keyboard;
 
 class App
 {
@@ -126,7 +127,11 @@ class App
 	}
 
 	// TODO : this is all backend code
-	private function initKeyInput() { }
+	private function initKeyInput()
+	{
+		var keyboard = Keyboard.get();
+		keyboard.notify(Key.onKeyDown, Key.onKeyUp, Key.onCharacter);
+	}
 	private function initMouseInput() { }
 	private function initGamepadInput() { }
 	private function initTouchInput() { }
