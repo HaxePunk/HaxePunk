@@ -66,7 +66,7 @@ class Signal2<A, B> extends Signal<A->B->Void>
 /**
  * A collection of named signals, which can be accessed as attributes.
  */
-class Signals implements Dynamic<Signal0>
+class Signals #if !haxe4 implements Dynamic<Signal0> #end
 {
 	var signals:Map<String, Signal0> = new Map();
 
