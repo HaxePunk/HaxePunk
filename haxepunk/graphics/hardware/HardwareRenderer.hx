@@ -1,8 +1,10 @@
 package haxepunk.graphics.hardware;
 
-import haxepunk.graphics.hardware.opengl.GL;
-import haxepunk.graphics.hardware.opengl.GLFramebuffer;
-import haxepunk.graphics.hardware.opengl.GLUtils;
+import kha.Canvas;
+import kha.Image;
+import kha.graphics4.BlendingFactor;
+import kha.graphics4.BlendingOperation;
+
 import haxepunk.HXP;
 import haxepunk.graphics.shader.SceneShader;
 import haxepunk.utils.BlendMode;
@@ -16,14 +18,15 @@ import haxepunk.utils.BlendMode;
 @:access(haxepunk.Engine)
 class HardwareRenderer
 {
-	public static var drawCallLimit:Int = -1;
+	// public static var drawCallLimit:Int = -1;
 
-	public static inline var UNIFORM_MATRIX:String = "uMatrix";
+	// public static inline var UNIFORM_MATRIX:String = "uMatrix";
 
-	static var triangleCount:Int = 0;
-	static var drawCallCount:Int = 0;
-	static var _tracking:Bool = true;
+	// static var triangleCount:Int = 0;
+	// static var drawCallCount:Int = 0;
+	// static var _tracking:Bool = true;
 
+	/*
 	static inline function ortho(x0:Float, x1:Float, y0:Float, y1:Float, zNear:Float, zFar:Float)
 	{
 		var sx = 1.0 / (x1 - x0);
@@ -36,6 +39,7 @@ class HardwareRenderer
 		_ortho[13] = -(y0 + y1) * sy;
 		_ortho[14] = -(zNear + zFar) * sz;
 	}
+	*/
 
 	static inline function setBlendMode(blend:BlendMode)
 	{
@@ -59,17 +63,16 @@ class HardwareRenderer
 		}
 	}
 
-	static var _ortho:Float32Array;
-
 	// for render to texture
-	var fb:FrameBuffer;
-	var backFb:FrameBuffer;
+	var fb:Image;
+	var backFb:Image;
 
-	var buffer:RenderBuffer;
-	var defaultFramebuffer:GLFramebuffer = null;
+	// var buffer:RenderBuffer;
+	var defaultFramebuffer:Canvas;
 
 	public function new()
 	{
+		/*
 		#if ios
 		defaultFramebuffer = new GLFramebuffer(GL.version, GL.getParameter(GL.FRAMEBUFFER_BINDING));
 		#end
@@ -82,11 +85,14 @@ class HardwareRenderer
 			}
 			_ortho[15] = 1;
 		}
+		*/
 	}
 
 	@:access(haxepunk.graphics.hardware.DrawCommand)
 	public function render(drawCommand:DrawCommand):Void
 	{
+		// nnf this
+		/*
 		GLUtils.checkForErrors();
 
 		var x = this.x,
@@ -162,32 +168,20 @@ class HardwareRenderer
 				GLUtils.checkForErrors();
 			}
 		}
+		*/
 	}
 
-	public function startScene(scene:Scene)
+	public function startScene(scene:Scene) : Canvas
 	{
-		_tracking = scene.trackDrawCalls;
-
-		if (buffer == null || GLUtils.invalid(buffer.glBuffer))
-		{
-			destroy();
-			init();
-		}
-
-		var postProcess:Array<SceneShader> = scene.shaders;
-		if (postProcess != null && postProcess.length > 0)
-		{
-			fb.bindFrameBuffer();
-		}
-		else
-		{
-			bindDefaultFramebuffer();
-		}
-
+		// _tracking = scene.trackDrawCalls;
+		
 		x = Std.int(HXP.screen.x + Math.max(scene.x, 0));
 		y = Std.int(HXP.screen.y + Math.max(scene.y, 0));
 		width = Std.int(scene.width);
 		height = Std.int(scene.height);
+
+		var postProcess = scene.shaders;
+		return postProcess != null && postProcess.length > 0 ? fb : defaultFramebuffer;
 	}
 
 	public function flushScene(scene:Scene)
@@ -195,6 +189,14 @@ class HardwareRenderer
 		var postProcess:Array<SceneShader> = scene.shaders;
 		if (postProcess != null)
 		{
+			var g2 = defaultFramebuffer.g2;
+			g2.begin();
+			g2.drawImage(fb, 0, 0);
+			g2.end();
+			
+			// TODO : apply scene shaders
+			
+			/*
 			for (i in 0 ... postProcess.length)
 			{
 				var last = i == postProcess.length - 1;
@@ -229,33 +231,37 @@ class HardwareRenderer
 
 				GL.bindFramebuffer(GL.FRAMEBUFFER, null);
 			}
+			*/
 		}
 	}
 
-	public function startFrame()
+	public function startFrame(framebuffer)
 	{
-		triangleCount = 0;
-		drawCallCount = 0;
-		bindDefaultFramebuffer();
+		// triangleCount = 0;
+		// drawCallCount = 0;
+		// bindDefaultFramebuffer();
+		defaultlFrameBuffer = framebuffer;
 	}
 	public function endFrame() {}
 
 	inline function init()
 	{
+		/*
 		if (buffer == null)
 		{
 			buffer = new RenderBuffer();
 		}
+		*/
 		if (fb == null)
 		{
-			fb = new FrameBuffer();
-			backFb = new FrameBuffer();
+			fb = Image.createRenderTarget(width, height);
+			backFb = Image.createRenderTarget(width, height);
 		}
 	}
 
 	inline function bindDefaultFramebuffer()
 	{
-		GL.bindFramebuffer(GL.FRAMEBUFFER, defaultFramebuffer);
+		// GL.bindFramebuffer(GL.FRAMEBUFFER, defaultFramebuffer);
 	}
 
 	inline function destroy() {}

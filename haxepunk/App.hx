@@ -68,8 +68,9 @@ class App
 		setStageProperties();
 
 		// Use the engine's render method
-		// TODO : frames have to be passed to the engine, and the engine has to accept them as params
-		System.notifyOnFrames(function (frames) _engine.onRender());
+		// TODO : consider iterating over framebuffers.
+		// Right now, HaxePunk only supports having one window but you never know what happens.
+		System.notifyOnFrames(function (frames) _engine.onRender(frames[0]));
 
 		// Enable input
 		// TODO : this is all backend code

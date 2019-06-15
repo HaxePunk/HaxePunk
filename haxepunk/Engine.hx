@@ -159,7 +159,7 @@ class Engine
 	/**
 	 * Called from OpenGLView render. Any visible scene will have its draw commands rendered to OpenGL.
 	 */
-	public function onRender()
+	public function onRender(framebuffer)
 	{
 		// timing stuff
 		var t:Float = app.getTimeMillis();
@@ -172,16 +172,12 @@ class Engine
 
 		preRender.invoke();
 
-		_renderer.startFrame();
+		_renderer.startFrame(framebuffer);
 		for (scene in _iterator.reset(this))
 		{
-			_renderer.startScene(scene);
+			var fb = _renderer.startScene(scene);
 			HXP.renderingScene = scene;
-			scene.render();
-			for (commands in scene.batch)
-			{
-				_renderer.render(commands);
-			}
+			scene.render(fb);
 			_renderer.flushScene(scene);
 		}
 		HXP.renderingScene = null;
