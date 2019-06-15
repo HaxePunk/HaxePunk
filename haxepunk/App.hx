@@ -20,6 +20,7 @@ class App
 
 	public function init()
 	{
+		// TODO : fetch window title and dimensions from project file
 		System.start({title: "Project", width: 1024, height: 768, framebuffer: {frequency: HXP.assignedFramerate}}, function(window)
 		{
 			// TODO : a better way to do this
@@ -103,7 +104,7 @@ class App
 	/**
 	 * @private Sets the game's stage properties. Override this to set them differently.
 	 */
-	private function setStageProperties(window:Window)
+	private function setStageProperties()
 	{
 		// framerate set in System.start
 		// nnf align
