@@ -8,7 +8,7 @@ import kha.input.Keyboard;
 class App
 {
 	public var fullscreen(get, set):Bool;
-	inline function get_fullscreen():Bool return System.isFullScreen();
+	inline function get_fullscreen():Bool return System.isFullscreen();
 	inline function set_fullscreen(value:Bool):Bool
 	{
 		if(value)
@@ -21,7 +21,7 @@ class App
 	public function init()
 	{
 		// TODO : fetch window title and dimensions from project file
-		System.start({title: "Project", width: 1024, height: 768, framebuffer: {frequency: HXP.assignedFramerate}}, function(window)
+		System.start({title: "Project", width: 1024, height: 768, framebuffer: {frequency: HXP.assignedFrameRate}}, function(window)
 		{
 			// TODO : a better way to do this
 			Assets.loadEverything(onStage.bind(window));
