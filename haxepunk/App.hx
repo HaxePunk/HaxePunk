@@ -1,5 +1,6 @@
 package haxepunk;
 
+import kha.Assets;
 import kha.Scheduler;
 import kha.System;
 import kha.Window;
