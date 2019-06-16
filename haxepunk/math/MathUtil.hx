@@ -6,7 +6,7 @@ package haxepunk.math;
  */
 class MathUtil
 {
-	public static var NUMBER_MAX_VALUE(get_NUMBER_MAX_VALUE,never):Float;
+	public static var NUMBER_MAX_VALUE(get,never):Float;
 	public static inline function get_NUMBER_MAX_VALUE():Float { return 179 * Math.pow(10, 306); } // 1.79e+308
 
 	// Used for rad-to-deg and deg-to-rad conversion.

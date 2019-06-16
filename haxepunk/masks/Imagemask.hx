@@ -132,7 +132,7 @@ class Imagemask extends Pixelmask
 		rect.x += _parent.x;
 		rect.y += _parent.y;
 
-		if (Std.instance(other, Imagemask) != null) // 'other' inherits from Imagemask
+		if (Std.downcast(other, Imagemask) != null) // 'other' inherits from Imagemask
 		{
 			_rect = cast(other, Imagemask).getBounds();
 			_rect.x += other._parent.x;

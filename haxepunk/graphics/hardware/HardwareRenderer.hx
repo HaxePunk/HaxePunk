@@ -18,15 +18,16 @@ import haxepunk.utils.BlendMode;
 @:access(haxepunk.Engine)
 class HardwareRenderer
 {
-	// public static var drawCallLimit:Int = -1;
+	public static var drawCallLimit:Int = -1;
 
-	// public static inline var UNIFORM_MATRIX:String = "uMatrix";
+	public static inline var UNIFORM_MATRIX:String = "uMatrix";
 
-	// static var triangleCount:Int = 0;
-	// static var drawCallCount:Int = 0;
-	// static var _tracking:Bool = true;
+	static var triangleCount:Int = 0;
+	static var drawCallCount:Int = 0;
+	static var _tracking:Bool = true;
 
-	/*
+	static var _ortho:Float32Array;
+
 	static inline function ortho(x0:Float, x1:Float, y0:Float, y1:Float, zNear:Float, zFar:Float)
 	{
 		var sx = 1.0 / (x1 - x0);
@@ -39,10 +40,10 @@ class HardwareRenderer
 		_ortho[13] = -(y0 + y1) * sy;
 		_ortho[14] = -(zNear + zFar) * sz;
 	}
-	*/
 
 	static inline function setBlendMode(blend:BlendMode)
 	{
+		#if 0
 		switch (blend)
 		{
 			case BlendMode.Add:
@@ -61,6 +62,7 @@ class HardwareRenderer
 				GL.blendEquation(GL.FUNC_ADD);
 				GL.blendFunc(GL.ONE, GL.ONE_MINUS_SRC_ALPHA);
 		}
+		#end
 	}
 
 	// for render to texture
@@ -72,7 +74,7 @@ class HardwareRenderer
 
 	public function new()
 	{
-		/*
+#if 0
 		#if ios
 		defaultFramebuffer = new GLFramebuffer(GL.version, GL.getParameter(GL.FRAMEBUFFER_BINDING));
 		#end
@@ -85,14 +87,14 @@ class HardwareRenderer
 			}
 			_ortho[15] = 1;
 		}
-		*/
+#end
 	}
 
+#if 0
+	// nnf this
 	@:access(haxepunk.graphics.hardware.DrawCommand)
 	public function render(drawCommand:DrawCommand):Void
 	{
-		// nnf this
-		/*
 		GLUtils.checkForErrors();
 
 		var x = this.x,
@@ -168,8 +170,8 @@ class HardwareRenderer
 				GLUtils.checkForErrors();
 			}
 		}
-		*/
 	}
+#end
 
 	public function startScene(scene:Scene) : Canvas
 	{
@@ -240,7 +242,7 @@ class HardwareRenderer
 		// triangleCount = 0;
 		// drawCallCount = 0;
 		// bindDefaultFramebuffer();
-		defaultlFrameBuffer = framebuffer;
+		defaultFramebuffer = framebuffer;
 	}
 	public function endFrame() {}
 

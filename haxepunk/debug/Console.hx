@@ -158,7 +158,7 @@ class Console extends Scene
 	{
 		super.update();
 
-		if (Key.pressed(Key.TILDE))
+		if (Key.pressed(KeyCode.Tilde))
 		{
 			togglePause();
 			debugDraw = paused;
@@ -171,15 +171,15 @@ class Console extends Scene
 
 		if (paused)
 		{
-			if (Key.check(Key.RIGHT_SQUARE_BRACKET)) step();
+			if (Key.check(KeyCode.CloseCurlyBracket)) step();
 
-			if (Key.check(Key.SHIFT))
+			if (Key.check(KeyCode.Shift))
 			{
 				var mx:Int = 0, my:Int = 0;
-				if (Key.check(Key.LEFT)) mx = -1;
-				else if (Key.check(Key.RIGHT)) mx = 1;
-				if (Key.check(Key.UP)) my = -1;
-				else if (Key.check(Key.DOWN)) my = 1;
+				if (Key.check(KeyCode.Left)) mx = -1;
+				else if (Key.check(KeyCode.Right)) mx = 1;
+				if (Key.check(KeyCode.Up)) my = -1;
+				else if (Key.check(KeyCode.Down)) my = 1;
 				if (mx != 0 || my != 0)
 				{
 					var camera = HXP.scene.camera;

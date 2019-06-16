@@ -25,7 +25,7 @@ class Key
 	 * @return	The name.
 	 */
 	// TODO : build with macro probably
-	public static function nameOfKey(char:KeyCode):String
+	public static function nameOfKey(char:Int):String
 	{
 		return "";
 	}
@@ -84,17 +84,17 @@ class Key
 		return false;
 	}
 
-	public static inline function check(key:KeyCode):Bool
+	public static inline function check(key:Int):Bool
 	{
 		return ((key < 0 && _keyNum > 0) || _key.get(key));
 	}
 
-	public static inline function pressed(key:KeyCode):Bool
+	public static inline function pressed(key:Int):Bool
 	{
 		return (key < 0 ? _pressNum != 0 : HXP.indexOf(_press, key) >= 0);
 	}
 
-	public static inline function released(key:KeyCode):Bool
+	public static inline function released(key:Int):Bool
 	{
 		return (key < 0 ? _releaseNum != 0 : HXP.indexOf(_release, key) >= 0);
 	}
@@ -112,7 +112,7 @@ class Key
 	{
 		lastKey = code;
 
-		if (code == KeyCode.BACKSPACE) keyString = keyString.substr(0, keyString.length - 1);
+		if (code == KeyCode.Backspace) keyString = keyString.substr(0, keyString.length - 1);
 
 		if (!_key[code])
 		{
@@ -165,5 +165,5 @@ class Key
 	static var _release:Array<Int> = new Array<Int>();
 	static var _releaseNum:Int = 0;
 	static var _control:Map<InputType, Array<KeyCode>> = new Map();
-	static var _keyMap:Map<KeyCode, Array<InputType>> = new Map();
+	static var _keyMap:Map<Int, Array<InputType>> = new Map();
 }

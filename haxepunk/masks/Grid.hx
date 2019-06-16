@@ -346,7 +346,7 @@ class Grid extends Hitbox
 	{
 		_point.x = _parent.x + _x - _parent.originX;
 		_point.y = _parent.y + _y - _parent.originY;
-		if (Std.instance(other, Imagemask) != null) // 'other' inherits from Imagemask
+		if (Std.downcast(other, Imagemask) != null) // 'other' inherits from Imagemask
 		{
 			_rect = cast(other, Imagemask).getBounds();
 			_rect.x += other._parent.x;

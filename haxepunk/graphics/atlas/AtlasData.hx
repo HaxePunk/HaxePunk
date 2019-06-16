@@ -1,8 +1,9 @@
 package haxepunk.graphics.atlas;
 
+import kha.graphics2.Graphics;
+
 import haxepunk.assets.AssetCache;
 import haxepunk.graphics.shader.Shader;
-import haxepunk.graphics.hardware.DrawCommandBatch;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.math.MathUtil;
 import haxepunk.math.Rectangle;
@@ -43,6 +44,7 @@ class AtlasData
 		return (_name == null ? "AtlasData" : _name);
 	}
 
+#if 0
 	/**
 	 * Sets the scene object
 	 * @param	scene	The scene object to set
@@ -51,8 +53,8 @@ class AtlasData
 	static inline function startScene(batch:DrawCommandBatch):Void
 	{
 		_batch = batch;
-		batch.recycle();
 	}
+#end
 
 	/**
 	 * Creates a new AtlasRegion
@@ -87,12 +89,15 @@ class AtlasData
 		shader:Shader, smooth:Bool=false, blend:BlendMode, ?clipRect:Rectangle,
 		flexibleLayer:Bool = false)
 	{
+		Log.debug("AtlasData.prepareTileMatrix");
+		#if 0
 		_batch.addRect(
 			texture, shader, smooth, blend, clipRect,
 			rect.x, rect.y, rect.width, rect.height,
 			a, b, c, d, tx, ty,
 			color, alpha, flexibleLayer
 		);
+		#end
 	}
 
 	/**
@@ -115,6 +120,8 @@ class AtlasData
 		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle,
 		flexibleLayer:Bool = false):Void
 	{
+		Log.debug("AtlasData.prepareTile");
+		#if 0
 		var a:Float, b:Float, c:Float, d:Float;
 
 		// matrix transformation
@@ -137,6 +144,7 @@ class AtlasData
 		}
 
 		_batch.addRect(texture, shader, smooth, blend, clipRect, rect.x, rect.y, rect.width, rect.height, a, b, c, d, tx, ty, color, alpha, flexibleLayer);
+		#end
 	}
 
 	/**
@@ -170,13 +178,18 @@ class AtlasData
 		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle,
 		flexibleLayer:Bool = false):Void
 	{
+		Log.debug("AtlasData.prepareTriangle");
+		#if 0
 		_batch.addTriangle(texture, shader, smooth, blend, clipRect, tx1, ty1, uvx1, uvy1, tx2, ty2, uvx2, uvy2, tx3, ty3, uvx3, uvy3, color, alpha, flexibleLayer);
+		#end
 	}
 
 	// used for pooling
 	var _name:String;
 
+#if 0
 	static var _batch:DrawCommandBatch;
+#end
 	static var _uniqueId:Int = 0; // allows for unique names
 	static var _rect:Rectangle = new Rectangle();
 }

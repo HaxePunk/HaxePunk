@@ -1,6 +1,7 @@
 package haxepunk.input;
 
 import haxepunk.HXP;
+import haxepunk.input.Key;
 import haxepunk.Signal.Signals;
 #if cpp
 import cpp.vm.Deque;
@@ -64,7 +65,7 @@ class Input
 	/**
 	 * @deprecated use Key.define
 	 */
-	public static inline function define(input:InputType, keys:Array<Key>)
+	public static inline function define(input:InputType, keys:Array<KeyCode>)
 	{
 		Key.define(input, keys);
 	}

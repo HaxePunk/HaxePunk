@@ -1,5 +1,7 @@
 package haxepunk;
 
+import kha.graphics2.Graphics;
+
 import haxepunk.Graphic;
 import haxepunk.graphics.Image;
 

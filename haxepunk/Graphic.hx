@@ -1,6 +1,9 @@
 package haxepunk;
 
 import haxe.ds.Either;
+
+import kha.graphics2.Graphics;
+
 import haxepunk.assets.AssetCache;
 import haxepunk.graphics.atlas.Atlas;
 import haxepunk.graphics.atlas.TileAtlas;

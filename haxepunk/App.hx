@@ -1,5 +1,6 @@
 package haxepunk;
 
+import kha.WindowMode;
 import kha.Assets;
 import kha.Scheduler;
 import kha.System;
@@ -11,6 +12,7 @@ import haxepunk.input.Key;
 class App
 {
 	public var fullscreen(get, set):Bool;
+	// TODO : test that this works correctly
 	inline function get_fullscreen():Bool return System.isFullscreen();
 	inline function set_fullscreen(value:Bool):Bool
 	{

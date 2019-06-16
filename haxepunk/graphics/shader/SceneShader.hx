@@ -1,10 +1,6 @@
 package haxepunk.graphics.shader;
 
 import haxepunk.assets.AssetLoader;
-import haxepunk.graphics.hardware.opengl.GL;
-import haxepunk.graphics.hardware.opengl.GLBuffer;
-import haxepunk.graphics.hardware.opengl.GLUniformLocation;
-import haxepunk.graphics.hardware.opengl.GLUtils;
 import haxepunk.graphics.hardware.Float32Array;
 
 /**
@@ -46,6 +42,7 @@ void main() {
 
 	function createBuffer()
 	{
+		#if 0
 		buffer = GL.createBuffer();
 		GL.bindBuffer(GL.ARRAY_BUFFER, buffer);
 		var v = new Float32Array(_vertices);
@@ -55,18 +52,22 @@ void main() {
 		GL.bufferData(GL.ARRAY_BUFFER, v, GL.STATIC_DRAW);
 		#end
 		GL.bindBuffer(GL.ARRAY_BUFFER, null);
+		#end
 	}
 
 	override public function build()
 	{
 		super.build();
+		#if 0
 		image = uniformIndex("uImage0");
 		resolution = uniformIndex("uResolution");
+		#end
 	}
 
 	override public function bind()
 	{
 		super.bind();
+		#if 0
 		if (GLUtils.invalid(buffer))
 		{
 			createBuffer();
@@ -78,6 +79,7 @@ void main() {
 
 		GL.uniform1i(image, 0);
 		GL.uniform2f(resolution, HXP.screen.width, HXP.screen.height);
+		#end
 	}
 
 	static var _vertices:Array<Float> = [
@@ -89,7 +91,9 @@ void main() {
 		-1.0,  1.0, 0, 1
 	];
 
+#if 0
 	var image:GLUniformLocation;
 	var resolution:GLUniformLocation;
 	static var buffer:GLBuffer;
+#end
 }

@@ -1,6 +1,6 @@
 package haxepunk.graphics.text;
 
-import haxe.xml.Fast;
+import haxe.xml.Access;
 import haxepunk.HXP;
 import haxepunk.assets.AssetLoader;
 import haxepunk.graphics.atlas.AtlasDataType;
@@ -62,7 +62,7 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 		var xml = Xml.parse(xmlText);
 		var firstElement = xml.firstElement();
 		if (firstElement == null) throw 'BitmapFontAtlas: "$file" contains invalid XML!';
-		var fast = new Fast(firstElement);
+		var fast = new Access(firstElement);
 
 		var imageFile = new haxe.io.Path(file).dir + "/" + fast.node.pages.node.page.att.file;
 		var atlas = new BitmapFontAtlas(imageFile);

@@ -1,11 +1,13 @@
 package haxepunk;
 
 import haxe.ds.IntMap;
+
+import kha.Canvas;
+
 import haxepunk.Signal;
 import haxepunk.assets.AssetCache;
 import haxepunk.graphics.atlas.AtlasData;
 import haxepunk.graphics.shader.SceneShader;
-import haxepunk.graphics.hardware.DrawCommandBatch;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.utils.BlendMode;
 import haxepunk.utils.Color;
@@ -69,7 +71,9 @@ class Scene extends Tweener
 	inline function get_height() return _height == null ? (HXP.screen.height - y) : _height;
 	inline function set_height(v:Null<Int>) return _height = v;
 
+#if 0
 	public var batch:DrawCommandBatch;
+#end
 
 	/**
 	 * Array of shaders which will be used to process the final result of
@@ -117,7 +121,9 @@ class Scene extends Tweener
 
 		camera = new Camera();
 		assetCache = new AssetCache(Type.getClassName(Type.getClass(this)));
+		#if 0
 		batch = new DrawCommandBatch();
+		#end
 
 		_layerList = new Array<Int>();
 
@@ -235,10 +241,14 @@ class Scene extends Tweener
 	 * If you override this to give your Scene render code, remember
 	 * to call super.render() or your Entities will not be rendered.
 	 */
-	public function render()
+	public function render(fb:Canvas)
 	{
+		#if 0
 		AtlasData.startScene(batch);
 		batch.visibleArea.setTo(0, 0, width, height);
+		#end
+
+		fb.g2.begin();
 
 		if (bgAlpha > 0)
 		{
@@ -266,6 +276,8 @@ class Scene extends Tweener
 		{
 			HXP.cursor.render(camera);
 		}
+
+		fb.g2.end();
 
 		postRender.invoke();
 	}

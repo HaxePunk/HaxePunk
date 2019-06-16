@@ -2,6 +2,9 @@ package haxepunk;
 
 import haxe.ds.Either.Left;
 import haxe.ds.Either.Right;
+
+import kha.graphics2.Graphics;
+
 import haxepunk.Signal.Signal0;
 import haxepunk.ds.OneOf;
 import haxepunk.graphics.Graphiclist;

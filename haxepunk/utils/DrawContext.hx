@@ -4,7 +4,6 @@ import haxepunk.utils.BlendMode;
 import haxepunk.Entity;
 import haxepunk.HXP;
 import haxepunk.Graphic;
-import haxepunk.graphics.hardware.DrawCommand;
 import haxepunk.graphics.shader.ColorShader;
 import haxepunk.graphics.shader.Shader;
 import haxepunk.math.Vector2;
@@ -321,7 +320,7 @@ class DrawContext
 			var theta = segment * radians;
 			var x2 = x + (Math.sin(theta) * radius) * scaleX;
 			var y2 = y + (Math.cos(theta) * radius) * scaleY;
-			command.addTriangle(x, y, 0, 0, x1, y1, 0, 0, x2, y2, 0, 0, color, alpha);
+			drawTriangle(new Vector2(x, y), new Vector2(x1, y1), new Vector2(x2, y2));
 			x1 = x2; y1 = y2;
 		}
 	}
@@ -387,21 +386,32 @@ class DrawContext
 	{
 		if (shader == null) shader = new ColorShader();
 		var scene = (this.scene == null) ? (HXP.renderingScene == null ? HXP.scene : HXP.renderingScene) : this.scene;
+		Log.debug("DrawContext.begin");
+		#if 0
 		command = scene.batch.getDrawCommand(null, shader, smooth, blend, null);
+		#end
 	}
 
 	inline function drawTriangle(v1:Vector2, v2:Vector2, v3:Vector2):Void
 	{
+		Log.debug("DrawContext.drawTriangle");
+		#if 0
 		command.addTriangle(v1.x, v1.y, 0, 0, v2.x, v2.y, 0, 0, v3.x, v3.y, 0, 0, color, alpha);
+		#end
 	}
 
 	/** @private Helper function to add a quad to the buffer */
 	inline function drawQuad(x1, y1, x2, y2, x3, y3, x4, y4)
 	{
+		Log.debug("DrawContext.drawQuad");
+		#if 0
 		command.addTriangle(x1, y1, 0, 0, x2, y2, 0, 0, x3, y3, 0, 0, color, alpha);
 		command.addTriangle(x1, y1, 0, 0, x3, y3, 0, 0, x4, y4, 0, 0, color, alpha);
+		#end
 	}
 
 	// Drawing information.
+#if 0
 	var command:DrawCommand;
+#end
 }

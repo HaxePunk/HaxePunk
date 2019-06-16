@@ -1,13 +1,6 @@
 package haxepunk.graphics.shader;
 
-import haxepunk.graphics.hardware.opengl.GL;
-import haxepunk.graphics.hardware.opengl.GLProgram;
-import haxepunk.graphics.hardware.opengl.GLShader;
-import haxepunk.graphics.hardware.opengl.GLUniformLocation;
-import haxepunk.graphics.hardware.opengl.GLUtils;
-import haxepunk.graphics.hardware.DrawCommand;
 import haxepunk.graphics.hardware.Float32Array;
-import haxepunk.graphics.hardware.RenderBuffer;
 
 class Attribute
 {
@@ -20,7 +13,6 @@ class Attribute
 	}
 	public var valuesPerElement:Int;
 
-	@:allow(haxepunk.graphics.hardware.RenderBuffer)
 	private var dataPos(default, set):Int = -1; // for use by RenderBuffer to push data in VBOs
 	private function set_dataPos(v:Int) : Int
 	{
@@ -56,7 +48,9 @@ class Attribute
 
 class Shader
 {
+	#if 0
 	public var glProgram:GLProgram;
+	#end
 	public var floatsPerVertex(get, never):Int;
 	function get_floatsPerVertex():Int
 	{
@@ -84,7 +78,9 @@ class Shader
 	}
 	var attributeNames:Array<String> = new Array();
 	var attributes:Map<String, Attribute> = new Map();
+	#if 0
 	var uniformIndices:Map<String, GLUniformLocation> = new Map();
+	#end
 	var uniformNames:Array<String> = new Array();
 	var uniformValues:Map<String, Float> = new Map();
 
@@ -106,6 +102,7 @@ class Shader
 
 	public function build()
 	{
+		#if 0
 		var vertexShader = compile(GL.VERTEX_SHADER, vertexSource);
 		var fragmentShader = compile(GL.FRAGMENT_SHADER, fragmentSource);
 
@@ -123,8 +120,10 @@ class Shader
 		color.rebind();
 		for (v in attributes.iterator())
 			v.rebind();
+		#end
 	}
 
+#if 0
 	function compile(type:Int, source:String):GLShader
 	{
 		var shader = GL.createShader(type);
@@ -136,13 +135,17 @@ class Shader
 		#end
 		return shader;
 	}
+#end
 
 	public function destroy()
 	{
+		#if 0
 		for (key in uniformIndices.keys()) uniformIndices.remove(key);
+		#end
 		for (key in attributes.keys()) attributes.remove(key);
 	}
 
+#if 0
 	public function prepare(drawCommand:DrawCommand, buffer:RenderBuffer)
 	{
 		if (!position.isEnabled) return;
@@ -175,7 +178,9 @@ class Shader
 
 		setAttributePointers(drawCommand.triangleCount);
 	}
+#end
 
+#if 0
 	function setAttributePointers(nbTriangles:Int)
 	{
 		var offset:Int = 0;
@@ -211,9 +216,11 @@ class Shader
 			}
 		}
 	}
+#end
 
 	public function bind()
 	{
+		#if 0
 		if (GLUtils.invalid(glProgram))
 		{
 			destroy();
@@ -235,10 +242,12 @@ class Shader
 				GL.enableVertexAttribArray(attributes[n].index);
 
 		GLUtils.checkForErrors();
+		#end
 	}
 
 	public function unbind()
 	{
+		#if 0
 		GL.useProgram(null);
 		GL.disableVertexAttribArray(position.index);
 		if (texCoord.isEnabled) GL.disableVertexAttribArray(texCoord.index);
@@ -246,6 +255,7 @@ class Shader
 		for (n in attributeNames)
 			if (attributes[n].isEnabled)
 				GL.disableVertexAttribArray(attributes[n].index);
+		#end
 	}
 
 	/**
@@ -253,16 +263,21 @@ class Shader
 	 */
 	public inline function attributeIndex(name:String):Int
 	{
+#if 0
 #if unit_test
 		return 0;
 #else
 		return GL.getAttribLocation(glProgram, name);
+#end
+#else
+		return 0;
 #end
 	}
 
 	/**
 	 * Returns the index of a named shader uniform.
 	 */
+#if 0
 	public inline function uniformIndex(name:String):GLUniformLocation
 	{
 		if (!uniformIndices.exists(name))
@@ -271,6 +286,7 @@ class Shader
 		}
 		return uniformIndices[name];
 	}
+#end
 
 	/**
 	 * Set or change the value of a named shader uniform.
