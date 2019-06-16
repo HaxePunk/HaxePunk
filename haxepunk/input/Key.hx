@@ -107,6 +107,7 @@ class Key
 		while (_releaseNum > 0) _release[--_releaseNum] = -1;
 	}
 
+	@:allow(haxepunk.App)
 	static function onKeyDown(code:KeyCode)
 	{
 		lastKey = code;
@@ -129,6 +130,7 @@ class Key
 		}
 	}
 
+	@:allow(haxepunk.App)
 	static function onKeyUp(code:KeyCode)
 	{
 		if (_key[code])
@@ -147,6 +149,7 @@ class Key
 		}
 	}
 
+	@:allow(haxepunk.App)
 	static function onCharacter(char:String)
 	{
 		if(keyString.length >= kKeyStringMax)

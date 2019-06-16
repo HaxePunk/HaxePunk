@@ -6,6 +6,8 @@ import kha.System;
 import kha.Window;
 import kha.input.Keyboard;
 
+import haxepunk.input.Key;
+
 class App
 {
 	public var fullscreen(get, set):Bool;
@@ -22,7 +24,7 @@ class App
 	public function init()
 	{
 		// TODO : fetch window title and dimensions from project file
-		System.start({title: "Project", width: 1024, height: 768, framebuffer: {frequency: HXP.assignedFrameRate}}, function(window)
+		System.start({title: "Project", width: 1024, height: 768, framebuffer: {frequency: Std.int(HXP.assignedFrameRate)}}, function(window)
 		{
 			// TODO : a better way to do this
 			Assets.loadEverything(onStage.bind(window));
@@ -88,11 +90,11 @@ class App
 
 		// Start game loop
 		// TODO : Engine can do that on its own
-		_engine._rate = 1000 / HXP.assignedFramerate;
+		_engine._rate = 1000 / HXP.assignedFrameRate;
 
 		// Nonfixed framerate
 		_engine._last = getTimeMillis();
-		Scheduler.addFrameTask(onEnterFrame);
+		Scheduler.addFrameTask(onEnterFrame, 0);
 		
 		// TODO : catch application closing and call _engine.close()
 		// On mobile, use the shutdownListener in System.notifyOnApplicationState()
