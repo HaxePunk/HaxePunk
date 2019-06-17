@@ -1,5 +1,12 @@
 HaxePunk CHANGELOG
 
+v4. KHA
+------------------------------
+
+Work in progress.
+* [ghouly-tg] Updated HaxePunk template / Fixed template generation 
+
+
 v4.0.0
 ------------------------------
 
