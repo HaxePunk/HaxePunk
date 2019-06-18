@@ -39,14 +39,15 @@ class App
 	// TODO : figure out a way to get that info from Kha
 	public function multiTouchSupported():Bool return false;
 
-	// TODO : figure out if we want that functional or deleted
-	public function getMouseX():Float
+	static var _mouseX = 0;
+	static var _mouseY = 0;
+	public inline function getMouseX():Float
 	{
-		return 0;
+		return _mouseX;
 	}
-	public function getMouseY():Float
+	public inline function getMouseY():Float
 	{
-		return 0;
+		return _mouseY;
 	}
 
 	/// ###############
@@ -139,7 +140,12 @@ class App
 		var keyboard = Keyboard.get();
 		keyboard.notify(Key.onKeyDown, Key.onKeyUp, Key.onCharacter);
 	}
-	private function initMouseInput() { }
+
+	private function initMouseInput()
+	{
+		haxepunk.input.Mouse.init();
+	}
+
 	private function initGamepadInput() { }
 	private function initTouchInput() { }
 
