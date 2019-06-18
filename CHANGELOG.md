@@ -4,6 +4,7 @@ v4. KHA
 ------------------------------
 
 Work in progress.
+* [ghouly-tg] Wired up Kha mouse input 
 * [ghouly-tg] Updated HaxePunk template / Fixed template generation 
 
 
