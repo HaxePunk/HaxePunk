@@ -140,7 +140,10 @@ class App
 		keyboard.notify(Key.onKeyDown, Key.onKeyUp, Key.onCharacter);
 	}
 	private function initMouseInput() { }
-	private function initGamepadInput() { }
+	private function initGamepadInput()
+	{ 
+		haxepunk._internal.GamepadInput.init();
+	}
 	private function initTouchInput() { }
 
 	private function onEnterFrame()

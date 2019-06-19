@@ -275,6 +275,18 @@ class Gamepad
 		if (_buttonMap.exists(id)) for (inputType in _buttonMap[id]) Input.triggerPress(inputType);
 	}
 
+	// TODO: test for correct dispatch of up and down events
+	// TODO(later): Support analog-feedback buttons, not just digital
+	function onButtonInput(id:GamepadButton, _)
+	{		
+		switch (buttons.get(id))
+		{
+			case BUTTON_OFF: onButtonDown(id);
+			case BUTTON_ON: onButtonUp(id);
+			default: onButtonDown(id);
+		}
+	}
+
 	function onAxisMove(axis:GamepadAxis, v:Float):Void
 	{
 		if (Math.abs(v) < deadZone) v = 0;
