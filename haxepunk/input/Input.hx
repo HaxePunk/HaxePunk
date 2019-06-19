@@ -25,7 +25,12 @@ class Input
 	/**
 	 * Returns true if the device supports multi touch
 	 */
-	public static var multiTouchSupported(default, null):Bool = false;
+	public static var multiTouchSupported(get, null):Bool;
+	
+	private static inline function get_multiTouchSupported():Bool
+	{
+		return HXP.app.multiTouchSupported();
+	}
 
 	#if (cpp || neko)
 	static var _signals:Deque<String> = new Deque();

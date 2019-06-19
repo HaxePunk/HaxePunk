@@ -36,8 +36,8 @@ class App
 	// TODO : System.time or Scheduler.time() ?
 	public function getTimeMillis():Float return System.time;
 
-	// TODO : figure out a way to get that info from Kha
-	public function multiTouchSupported():Bool return false;
+	// TODO : needs to be tested.
+	public function multiTouchSupported():Bool return kha.input.Surface.get() != null;
 
 	// TODO : figure out if we want that functional or deleted
 	public function getMouseX():Float
