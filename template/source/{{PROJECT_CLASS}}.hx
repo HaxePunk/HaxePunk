@@ -5,6 +5,7 @@ class {{PROJECT_CLASS}} extends Engine
 {
 	static function main()
 	{
+		// TODO reflect {{FRAMERATE}} and {{WIDTH}}/{{HEIGHT}} in setup.
 		new {{PROJECT_CLASS}}();
 	}
 

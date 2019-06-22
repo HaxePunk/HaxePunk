@@ -5,13 +5,59 @@ import haxepunk.HXP;
 @:enum
 abstract MouseButton(Int) from Int to Int
 {
-	var LEFT = 1;
-	var RIGHT = 2;
-	var MIDDLE = 3;
+	var LEFT = 0;
+	var RIGHT = 1;
+	var MIDDLE = 2;
 }
 
 class Mouse
 {
+	@:access(haxepunk.App)
+	public static function init(){
+		var mouse = kha.input.Mouse.get();
+
+		mouse.notify(
+			// Mouse Down
+			function(button:Int, x:Int, y:Int)
+			{
+				Mouse._mouseOnScreen = true;
+				App._mouseX = x;
+				App._mouseY = y;
+				switch(button)
+				{
+					case LEFT: onMouseDown();
+					case RIGHT: onRightMouseDown();
+					case MIDDLE: onMiddleMouseDown();
+				}
+
+			},
+			// Mouse Up
+			function(button:Int, x:Int, y:Int)
+			{
+				Mouse._mouseOnScreen = true;
+				App._mouseX = x;
+				App._mouseY = y;
+				switch(button)
+				{
+					case LEFT: onMouseUp();
+					case RIGHT: onRightMouseUp();
+					case MIDDLE: onMiddleMouseUp();
+				}
+			},
+			// Mouse Move
+			function(x:Int, y:Int, _, _) 
+			{
+				Mouse._mouseOnScreen = true;
+				App._mouseX = x;
+				App._mouseY = y;
+			},
+			// Mouse wheel
+			onMouseWheel,
+			// Mouse leave
+			() -> Mouse._mouseOnScreen = false
+		);	
+	}
+
 	/**
 	 * X position of the mouse on the screen.
 	 */
@@ -110,25 +156,17 @@ class Mouse
 	/**
 	 * Shows the native cursor
 	 */
-	public static function showCursor()
+	public static inline function showCursor()
 	{
-		#if (lime || nme)
-		flash.ui.Mouse.show();
-		#else
-		throw "Unimplemented";
-		#end
+		kha.input.Mouse.get().showSystemCursor();
 	}
 
 	/**
 	 * Hides the native cursor
 	 */
-	public static function hideCursor()
+	public static inline function hideCursor()
 	{
-		#if (lime || nme)
-		flash.ui.Mouse.hide();
-		#else
-		throw "Unimplemented";
-		#end
+		kha.input.Mouse.get().hideSystemCursor();
 	}
 
 	public static inline function define(input:InputType, button:MouseButton)
@@ -198,7 +236,7 @@ class Mouse
 		mousePressed = mouseReleased = middleMousePressed = middleMouseReleased = rightMousePressed = rightMouseReleased = false;
 	}
 
-	static function onMouseDown(_)
+	static function onMouseDown()
 	{
 		if (!mouseDown)
 		{
@@ -209,7 +247,7 @@ class Mouse
 		}
 	}
 
-	static function onMouseUp(_)
+	static function onMouseUp()
 	{
 		mouseDown = false;
 		mouseUp = true;
@@ -223,7 +261,7 @@ class Mouse
 		_mouseWheelDelta = delta;
 	}
 
-	static function onMiddleMouseDown(_)
+	static function onMiddleMouseDown()
 	{
 		if (!middleMouseDown)
 		{
@@ -234,7 +272,7 @@ class Mouse
 		}
 	}
 
-	static function onMiddleMouseUp(_)
+	static function onMiddleMouseUp()
 	{
 		middleMouseDown = false;
 		middleMouseUp = true;
@@ -242,7 +280,7 @@ class Mouse
 		if (_buttonMap.exists(MouseButton.MIDDLE)) for (input in _buttonMap[MouseButton.MIDDLE]) Input.triggerRelease(input);
 	}
 
-	static function onRightMouseDown(_)
+	static function onRightMouseDown()
 	{
 		if (!rightMouseDown)
 		{
@@ -253,7 +291,7 @@ class Mouse
 		}
 	}
 
-	static function onRightMouseUp(_)
+	static function onRightMouseUp()
 	{
 		rightMouseDown = false;
 		rightMouseUp = true;
