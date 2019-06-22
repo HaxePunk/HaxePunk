@@ -34,7 +34,7 @@ class App
 	}
 
 	// TODO : System.time or Scheduler.time() ?
-	public function getTimeMillis():Float return System.time;
+	public function getTimeMillis():Float return Scheduler.time() / 1000;
 
 	// TODO : figure out a way to get that info from Kha
 	public function multiTouchSupported():Bool return false;
