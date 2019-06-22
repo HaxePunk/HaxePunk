@@ -1,5 +1,7 @@
 package haxepunk.utils;
 
+import kha.graphics2.Graphics;
+
 import haxepunk.utils.BlendMode;
 import haxepunk.Entity;
 import haxepunk.HXP;
@@ -36,12 +38,24 @@ class DrawContext
 	/**
 	 * The red, green, and blue values in a single integer value.
 	 */
-	public var color:Color = 0xFFFFFF;
+	public var color(default, set):Color = 0xFFFFFF;
+	function set_color(c:Color) : Color
+	{
+		if(_targetScene != null)
+			_targetScene.g2.color = c + 0; // cast between haxepunk.utils.Color and kha.Color
+		return color = c;
+	}
 
 	/**
 	 * The alpha value to draw. Ranges between 0-1 where 0 is completely transparent and 1 is opaque.
 	 */
-	public var alpha:Float = 1;
+	public var alpha(default, set):Float = 1;
+	function set_alpha(v:Float) : Float
+	{
+		if(_targetScene != null)
+			_targetScene.g2.opacity = v;
+		return alpha = v;
+	}
 
 	/**
 	 * The line thickness to use when drawing lines. Defaults to a single pixel wide.
@@ -385,8 +399,9 @@ class DrawContext
 	inline function begin()
 	{
 		if (shader == null) shader = new ColorShader();
-		var scene = (this.scene == null) ? (HXP.renderingScene == null ? HXP.scene : HXP.renderingScene) : this.scene;
-		Log.debug("DrawContext.begin");
+		_targetScene = scene == null ? (HXP.renderingScene == null ? HXP.scene : HXP.renderingScene) : scene;
+		_targetScene.g2.color = color + 0;
+		_targetScene.g2.opacity = alpha;
 		#if 0
 		command = scene.batch.getDrawCommand(null, shader, smooth, blend, null);
 		#end
@@ -394,24 +409,26 @@ class DrawContext
 
 	inline function drawTriangle(v1:Vector2, v2:Vector2, v3:Vector2):Void
 	{
-		Log.debug("DrawContext.drawTriangle");
 		#if 0
 		command.addTriangle(v1.x, v1.y, 0, 0, v2.x, v2.y, 0, 0, v3.x, v3.y, 0, 0, color, alpha);
 		#end
+		_targetScene.g2.fillTriangle(v1.x, v1.y, v2.x, v2.y, v3.x, v3.y);
 	}
 
 	/** @private Helper function to add a quad to the buffer */
 	inline function drawQuad(x1, y1, x2, y2, x3, y3, x4, y4)
 	{
-		Log.debug("DrawContext.drawQuad");
 		#if 0
 		command.addTriangle(x1, y1, 0, 0, x2, y2, 0, 0, x3, y3, 0, 0, color, alpha);
 		command.addTriangle(x1, y1, 0, 0, x3, y3, 0, 0, x4, y4, 0, 0, color, alpha);
 		#end
+		_targetScene.g2.fillTriangle(x1, y1, x2, y2, x3, y3);
+		_targetScene.g2.fillTriangle(x1, y1, x3, y3, x4, y4);
 	}
 
 	// Drawing information.
 #if 0
 	var command:DrawCommand;
 #end
+	var _targetScene:Scene;
 }
