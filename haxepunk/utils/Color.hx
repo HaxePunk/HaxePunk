@@ -4,6 +4,7 @@ import haxepunk.math.MathUtil;
 
 /**
  * An abstract with various color utility functions.
+ * TODO : merge with kha.Color ?
  * @since	4.0.0
  **/
 abstract Color(UInt) from UInt to UInt

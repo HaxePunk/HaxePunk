@@ -3,6 +3,7 @@ package haxepunk;
 import haxe.ds.IntMap;
 
 import kha.Canvas;
+import kha.graphics2.Graphics;
 
 import haxepunk.Signal;
 import haxepunk.assets.AssetCache;
@@ -74,6 +75,14 @@ class Scene extends Tweener
 #if 0
 	public var batch:DrawCommandBatch;
 #end
+
+	public var g2(get, null):Graphics;
+	function get_g2()
+	{
+		if(HXP.renderingScene != this)
+			throw "Can only query Graphics object when the scene is rendering.";
+		return g2;
+	}
 
 	/**
 	 * Array of shaders which will be used to process the final result of
@@ -247,6 +256,8 @@ class Scene extends Tweener
 		AtlasData.startScene(batch);
 		batch.visibleArea.setTo(0, 0, width, height);
 		#end
+
+		g2 = fb.g2;
 
 		fb.g2.begin();
 
