@@ -275,7 +275,6 @@ class Gamepad
 		if (_buttonMap.exists(id)) for (inputType in _buttonMap[id]) Input.triggerPress(inputType);
 	}
 
-	// TODO: test for correct dispatch of up and down events
 	// TODO(later): Support analog-feedback buttons, not just digital
 	function onButtonInput(id:GamepadButton, _)
 	{		
