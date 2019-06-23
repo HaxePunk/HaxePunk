@@ -307,5 +307,5 @@ class Gamepad
 	var _allButtons:Array<GamepadButton> = new Array();
 	var _axisControl:Map<InputType, Array<AxisDefinition>> = new Map();
 	var _axisMap:Map<GamepadAxis, Array<AxisDefinition>> = new Map();
-	var _allAxes:Array<GamepadButton> = new Array();
+	var _allAxes:Array<GamepadAxis> = new Array();
 }
