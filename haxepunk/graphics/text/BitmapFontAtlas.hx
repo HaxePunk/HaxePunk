@@ -1,6 +1,10 @@
 package haxepunk.graphics.text;
 
-import haxe.xml.Fast;
+#if !haxe4
+import haxe.xml.Fast; 
+#else
+import haxe.xml.Access as Fast; 
+#end
 import haxepunk.HXP;
 import haxepunk.assets.AssetLoader;
 import haxepunk.graphics.atlas.AtlasDataType;

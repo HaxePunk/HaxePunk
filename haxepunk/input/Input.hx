@@ -2,7 +2,9 @@ package haxepunk.input;
 
 import haxepunk.HXP;
 import haxepunk.Signal.Signals;
-#if cpp
+#if haxe4
+import sys.thread.Deque;
+#elseif cpp
 import cpp.vm.Deque;
 #elseif neko
 import neko.vm.Deque;
