@@ -66,6 +66,7 @@ class Signal2<A, B> extends Signal<A->B->Void>
 /**
  * A collection of named signals, which can be accessed as attributes.
  */
+#if haxe4
 abstract Signals(Map<String, Signal0>) from Map<String, Signal0> {
 
 	public function new()
@@ -106,3 +107,24 @@ abstract Signals(Map<String, Signal0>) from Map<String, Signal0> {
 		return this[field];
 	}
 }
+#else
+class Signals implements Dynamic<Signal0>
+{
+	var signals:Map<String, Signal0> = new Map();
+
+	public function new() {}
+
+	public inline function exists(field:String) return signals.exists(field);
+
+	public inline function invoke(field:String)
+	{
+		if (exists(field)) signals[field].invoke();
+	}
+
+	public function resolve(field:String):Signal0
+	{
+		if (!exists(field)) signals[field] = new Signal0();
+		return signals[field];
+	}
+}
+#end
