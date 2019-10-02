@@ -1,5 +1,7 @@
 package haxepunk;
 
+import kha.Framebuffer;
+
 import haxepunk.Signal;
 import haxepunk.debug.Console;
 import haxepunk.graphics.hardware.HardwareRenderer;
@@ -159,7 +161,7 @@ class Engine
 	/**
 	 * Called from OpenGLView render. Any visible scene will have its draw commands rendered to OpenGL.
 	 */
-	public function onRender(framebuffer)
+	public function onRender(fb:Framebuffer)
 	{
 		// timing stuff
 		var t:Float = app.getTimeMillis();
@@ -172,12 +174,16 @@ class Engine
 
 		preRender.invoke();
 
-		_renderer.startFrame(framebuffer);
+		_renderer.startFrame(fb);
 		for (scene in _iterator.reset(this))
 		{
-			var fb = _renderer.startScene(scene);
+			_renderer.startScene(scene);
 			HXP.renderingScene = scene;
-			scene.render(fb);
+			scene.render();
+			for (commands in scene.batch)
+			{
+				_renderer.render(commands);
+			}
 			_renderer.flushScene(scene);
 		}
 		HXP.renderingScene = null;
@@ -259,7 +265,8 @@ class Engine
 
 			Log.debug("starting scene: " + Type.getClassName(Type.getClass(_scene)));
 			_scene.updateLists();
-			_scene.begin();
+			if (_scene.started) _scene.resume();
+			else _scene.begin();
 			_scene.assetCache.enable();
 			_scene.updateLists();
 
@@ -371,7 +378,7 @@ private class VisibleSceneIterator
 		while (i >= 0)
 		{
 			scene = engine._scenes[i];
-			if (scene.visible)
+			if (scene.visible && scene.started)
 			{
 				scenes.push(scene);
 			}

@@ -1,14 +1,11 @@
 package haxepunk;
 
 import haxe.ds.IntMap;
-
-import kha.Canvas;
-import kha.graphics2.Graphics;
-
 import haxepunk.Signal;
 import haxepunk.assets.AssetCache;
 import haxepunk.graphics.atlas.AtlasData;
 import haxepunk.graphics.shader.SceneShader;
+import haxepunk.graphics.hardware.DrawCommandBatch;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.utils.BlendMode;
 import haxepunk.utils.Color;
@@ -54,6 +51,11 @@ class Scene extends Tweener
 	public var camera:Camera;
 
 	/**
+	 * Set to true after `begin` is called.
+	 */
+	public var started:Bool = false;
+
+	/**
 	 * Scene-scoped asset cache. These assets will be destroyed when the scene
 	 * ends.
 	 */
@@ -72,17 +74,7 @@ class Scene extends Tweener
 	inline function get_height() return _height == null ? (HXP.screen.height - y) : _height;
 	inline function set_height(v:Null<Int>) return _height = v;
 
-#if 0
 	public var batch:DrawCommandBatch;
-#end
-
-	public var g2(get, null):Graphics;
-	function get_g2()
-	{
-		if(HXP.renderingScene != this)
-			throw "Can only query Graphics object when the scene is rendering.";
-		return g2;
-	}
 
 	/**
 	 * Array of shaders which will be used to process the final result of
@@ -130,9 +122,7 @@ class Scene extends Tweener
 
 		camera = new Camera();
 		assetCache = new AssetCache(Type.getClassName(Type.getClass(this)));
-		#if 0
 		batch = new DrawCommandBatch();
-		#end
 
 		_layerList = new Array<Int>();
 
@@ -154,6 +144,11 @@ class Scene extends Tweener
 	 * Override this; called when Scene is switch to, and set to the currently active scene.
 	 */
 	public function begin() {}
+
+	/**
+	 * Override this; called when this Scene is switched to after it has already begun.
+	 */
+	public function resume() {}
 
 	/**
 	 * Override this; called when Scene is changed, and the active scene is no longer this.
@@ -250,16 +245,10 @@ class Scene extends Tweener
 	 * If you override this to give your Scene render code, remember
 	 * to call super.render() or your Entities will not be rendered.
 	 */
-	public function render(fb:Canvas)
+	public function render()
 	{
-		#if 0
 		AtlasData.startScene(batch);
 		batch.visibleArea.setTo(0, 0, width, height);
-		#end
-
-		g2 = fb.g2;
-
-		fb.g2.begin();
 
 		if (bgAlpha > 0)
 		{
@@ -287,8 +276,6 @@ class Scene extends Tweener
 		{
 			HXP.cursor.render(camera);
 		}
-
-		fb.g2.end();
 
 		postRender.invoke();
 	}

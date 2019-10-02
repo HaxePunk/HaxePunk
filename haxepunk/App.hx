@@ -23,6 +23,11 @@ class App
 		return value;
 	}
 
+	public function new(engine:Engine)
+	{
+		_engine = engine;
+	}
+
 	public function init()
 	{
 		// TODO : fetch window title and dimensions from project file
@@ -57,12 +62,6 @@ class App
 	private var _engine:Engine;
 	private var _window:Window;
 
-	@:allow(haxepunk.Engine.createApp)
-	private function new(engine:Engine)
-	{
-		_engine = engine;
-	}
-
 	/**
 	 * @private Event handler for stage entry.
 	 * @param window Kha window linked to the running System.
@@ -79,10 +78,11 @@ class App
 		System.notifyOnFrames(function (frames) _engine.onRender(frames[0]));
 
 		// Enable input
-		// TODO : this is all backend code
 		initKeyInput();
 		initMouseInput();
+		// TODO
 		initGamepadInput();
+		// TODO
 		if(multiTouchSupported())
 			initTouchInput();
 		

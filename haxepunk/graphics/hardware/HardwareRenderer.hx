@@ -90,11 +90,10 @@ class HardwareRenderer
 #end
 	}
 
-#if 0
-	// nnf this
 	@:access(haxepunk.graphics.hardware.DrawCommand)
 	public function render(drawCommand:DrawCommand):Void
 	{
+		#if 0
 		GLUtils.checkForErrors();
 
 		var x = this.x,
@@ -170,8 +169,8 @@ class HardwareRenderer
 				GLUtils.checkForErrors();
 			}
 		}
+		#end
 	}
-#end
 
 	public function startScene(scene:Scene) : Canvas
 	{
@@ -237,7 +236,7 @@ class HardwareRenderer
 		}
 	}
 
-	public function startFrame(framebuffer)
+	public function startFrame(framebuffer:Canvas)
 	{
 		// triangleCount = 0;
 		// drawCallCount = 0;
