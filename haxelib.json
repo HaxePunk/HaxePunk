@@ -10,6 +10,6 @@
 	"install": {
 		"munit": "",
 		"openfl": "8.9.1",
-		"lime": "7.4.0"
+		"lime": "7.6.3"
 	}
 }
