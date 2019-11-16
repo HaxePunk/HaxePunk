@@ -1,7 +1,11 @@
 package haxepunk.graphics.hardware;
 
 #if js
+#if haxe4
+import js.lib.Int32Array;
+#else
 import js.html.Int32Array;
+#end
 #end
 import haxepunk.graphics.hardware.opengl.GL;
 import haxepunk.graphics.hardware.opengl.GLBuffer;
@@ -45,7 +49,7 @@ class RenderBuffer
 	{
 		glBuffer = GL.createBuffer();
 	}
-	
+
 	function bufferData(target, size, srcData, usage)
 	{
 		#if (html5 && lime >= "5.0.0")
@@ -56,7 +60,7 @@ class RenderBuffer
 		GL.bufferData(target, srcData, usage);
 		#end
 	}
-	
+
 	public function ensureSize(triangles:Int, floatsPerTriangle:Int)
 	{
 		if (GLUtils.invalid(glBuffer))
