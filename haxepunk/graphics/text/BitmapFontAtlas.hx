@@ -1,9 +1,9 @@
 package haxepunk.graphics.text;
 
 #if !haxe4
-import haxe.xml.Fast; 
+import haxe.xml.Fast;
 #else
-import haxe.xml.Access as Fast; 
+import haxe.xml.Access as Fast;
 #end
 import haxepunk.HXP;
 import haxepunk.assets.AssetLoader;
@@ -88,7 +88,11 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 			}
 			else if (char.has.id)
 			{
+				#if haxe4
+				glyph = cast(char.att.id, Utf8String);
+				#else
 				glyph = Utf8String.fromCharCode(Std.parseInt(char.att.id));
+				#end
 			}
 			if (glyph == null) throw '"$file" is not a valid .fnt file!';
 
