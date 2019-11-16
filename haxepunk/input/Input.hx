@@ -21,7 +21,7 @@ class Input
 	/**
 	 * Array of currently active InputHandlers.
 	 */
-	public static var handlers:Array<InputHandler> = [Key, Mouse];
+	public static var handlers:Array<InputHandler> = [Key.Handler, Mouse];
 
 	/**
 	 * Returns true if the device supports multi touch

@@ -184,7 +184,7 @@ abstract Key(Int) from Int to Int
 		}
 	}
 
-	public static function checkInput(input:InputType)
+	public static function checkInput(input:InputType):Bool
 	{
 		if (_control.exists(input))
 		{
@@ -196,7 +196,7 @@ abstract Key(Int) from Int to Int
 		return false;
 	}
 
-	public static function pressedInput(input:InputType)
+	public static function pressedInput(input:InputType):Bool
 	{
 		if (_control.exists(input))
 		{
@@ -208,7 +208,7 @@ abstract Key(Int) from Int to Int
 		return false;
 	}
 
-	public static function releasedInput(input:InputType)
+	public static function releasedInput(input:InputType):Bool
 	{
 		if (_control.exists(input))
 		{
@@ -234,8 +234,6 @@ abstract Key(Int) from Int to Int
 	{
 		return (key < 0 ? _releaseNum != 0 : HXP.indexOf(_release, key) >= 0);
 	}
-
-	public static function update() {}
 
 	public static function postUpdate()
 	{
@@ -303,4 +301,30 @@ abstract Key(Int) from Int to Int
 	static var _releaseNum:Int = 0;
 	static var _control:Map<InputType, Array<Key>> = new Map();
 	static var _keyMap:Map<Key, Array<InputType>> = new Map();
+}
+
+// can't use abstract for the handler so we pass it through this class
+class Handler
+{
+	public static function update() {}
+
+	public static function postUpdate()
+	{
+		Key.postUpdate();
+	}
+
+	public static function checkInput(input:InputType):Bool
+	{
+		return Key.checkInput(input);
+	}
+
+	public static function pressedInput(input:InputType):Bool
+	{
+		return Key.pressedInput(input);
+	}
+
+	public static function releasedInput(input:InputType):Bool
+	{
+		return Key.releasedInput(input);
+	}
 }
