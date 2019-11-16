@@ -66,6 +66,48 @@ class Signal2<A, B> extends Signal<A->B->Void>
 /**
  * A collection of named signals, which can be accessed as attributes.
  */
+#if haxe4
+abstract Signals(Map<String, Signal0>) from Map<String, Signal0> {
+
+	public function new()
+	{
+		this = new Map<String, Signal0>();
+	}
+
+	@:op([]) inline public function arrayRead(field:String)
+	{
+		return this[field];
+	}
+
+	@:op([]) inline public function arrayWrite(field:String, signal:Signal0)
+	{
+		return this[field] = signal;
+	}
+
+	@:op(a.b) inline public function fieldRead(field:String)
+	{
+		return resolve( field);
+	}
+
+	@:op(a.b) inline public function fieldWrite(field:String, signal:Signal0)
+	{
+		return this[field] = signal;
+	}
+
+	public inline function exists(field:String) return this.exists(field);
+	
+	public inline function invoke(field:String)
+	{
+		if (exists(field)) this[field].invoke();
+	}
+
+	public function resolve(field:String)
+	{
+		if (!exists(field)) this[field] = new Signal0();
+		return this[field];
+	}
+}
+#else
 class Signals implements Dynamic<Signal0>
 {
 	var signals:Map<String, Signal0> = new Map();
@@ -85,3 +127,4 @@ class Signals implements Dynamic<Signal0>
 		return signals[field];
 	}
 }
+#end
