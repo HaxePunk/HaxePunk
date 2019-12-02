@@ -1,5 +1,11 @@
 package haxepunk.utils;
 
+#if haxe4
+
+typedef Utf8String = UnicodeString;
+
+#else
+
 import haxe.Utf8;
 
 /**
@@ -48,3 +54,5 @@ abstract Utf8String(String) from String to String
 		return buf.toString();
 	}
 }
+
+#end

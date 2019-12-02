@@ -2,7 +2,9 @@ package haxepunk.input;
 
 import haxepunk.HXP;
 import haxepunk.Signal.Signals;
-#if cpp
+#if ((cpp || neko) && haxe4)
+import sys.thread.Deque;
+#elseif cpp
 import cpp.vm.Deque;
 #elseif neko
 import neko.vm.Deque;
@@ -19,7 +21,7 @@ class Input
 	/**
 	 * Array of currently active InputHandlers.
 	 */
-	public static var handlers:Array<InputHandler> = [Key, Mouse];
+	public static var handlers:Array<InputHandler> = [Key.Handler, Mouse];
 
 	/**
 	 * Returns true if the device supports multi touch

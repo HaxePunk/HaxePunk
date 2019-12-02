@@ -7,6 +7,14 @@ import haxepunk.graphics.hardware.Texture;
 import haxepunk.math.Rectangle;
 import haxepunk.math.Vector2;
 
+abstract PixelmaskSource(Texture) from Texture to Texture
+{
+	@:dox(hide) @:from public static inline function fromString(source:String):PixelmaskSource
+	{
+		return AssetCache.global.getTexture(source);
+	}
+}
+
 /**
  * A bitmap mask used for pixel-perfect collision.
  */
@@ -23,18 +31,14 @@ class Pixelmask extends Hitbox
 	 * @param	x			X offset of the mask.
 	 * @param	y			Y offset of the mask.
 	 */
-	public function new(source:Dynamic, x:Int = 0, y:Int = 0)
+	public function new(source:PixelmaskSource, x:Int = 0, y:Int = 0)
 	{
 		super();
 
-		// fetch mask data
-		if (Std.is(source, Texture))
-			_data = source;
-		else
-			_data = AssetCache.global.getTexture(source);
-
-		if (_data == null)
+		if (source == null)
 			throw "Invalid Pixelmask source image.";
+
+		_data = source;
 
 		threshold = 1;
 

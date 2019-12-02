@@ -30,7 +30,7 @@ typedef FormatTagOptions =
 }
 
 @:enum
-abstract AlignType(Int)
+abstract AlignType(Int) to Int
 {
 	var Left = 0;
 	var Center = 1;
