@@ -8,6 +8,8 @@ import kha.Window;
 import kha.input.Keyboard;
 
 import haxepunk.input.Key;
+import haxepunk.input.Mouse;
+import haxepunk._internal.GamepadInput;
 
 class App
 {
@@ -140,13 +142,17 @@ class App
 		var keyboard = Keyboard.get();
 		keyboard.notify(Key.onKeyDown, Key.onKeyUp, Key.onCharacter);
 	}
+	
+	private function initGamepadInput()
+	{ 
+		GamepadInput.init();
+	}
 
 	private function initMouseInput()
 	{
-		haxepunk.input.Mouse.init();
+		Mouse.init();
 	}
 
-	private function initGamepadInput() { }
 	private function initTouchInput() { }
 
 	private function onEnterFrame()
