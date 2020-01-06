@@ -262,6 +262,30 @@ class Gamepad
 		else return (Math.abs(axis[a]) < deadZone) ? 0 : axis[a];
 	}
 
+	/**
+	 * Returns an allocated array of all buttons pressed on this frame.
+	 */
+	public function getPressedButtons():Array<GamepadButton>
+	{
+		var pressed:Array<GamepadButton> = [];
+		for (button => value in buttons) {
+			if( value == BUTTON_PRESSED ) pressed.push( button );
+		}
+		return pressed;	
+	}
+
+	/**
+	 * Returns an allocated array of all axis outside of the deadzone for this frame.
+	 */
+	public inline function getActiveAxes():Array<GamepadAxis>
+	{
+		var active:Array<GamepadAxis> = [];
+		for (axisID => value in axis) {
+			if( value != 0 ) active.push( axisID );
+		}
+		return active;	
+	}
+
 	function onButtonUp(id:GamepadButton)
 	{
 		buttons.set(id, BUTTON_RELEASED);
