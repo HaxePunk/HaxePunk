@@ -54,7 +54,7 @@ haxelib git HaxePunk https://github.com/HaxePunk/HaxePunk.git dev
 There are a few ways you can get involved with HaxePunk.
 
 * The development roadmap is available on [Trello](https://trello.com/b/WZrfACWS/haxepunk-development).
-* Come chat with us on [Gitter](https://gitter.im/HaxePunk/HaxePunk).
+* Come chat with us on [Discord](https://discord.gg/j6GeNwq) or [Gitter](https://gitter.im/HaxePunk/HaxePunk).
 * Drop by the [HaxePunk forum](http://forum.haxepunk.com) to ask a question or show off what you've created.
 * Create an issue or pull request or take part in the discussion.
 * Follow us on Twitter: [@HaxePunk](https://twitter.com/intent/user?screen_name=HaxePunk)

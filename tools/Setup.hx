@@ -18,7 +18,10 @@ class Setup
 	{
 		for (field in Reflect.fields(HaxelibInfo.install))
 		{
-			Sys.command("haxelib", ["install", field, Reflect.field(HaxelibInfo.install, field)]);
+			var version = Reflect.field(HaxelibInfo.install, field),
+				args = if(version != "") ["install", field, version]
+					else ["install", field];
+			Sys.command("haxelib", args);
 		}
 	}
 

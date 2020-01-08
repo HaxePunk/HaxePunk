@@ -2,6 +2,7 @@
 *.sublime*
 *.zip
 *.n
+!run.n
 *.build
 *.hash
 *.docset/

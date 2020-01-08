@@ -9,11 +9,6 @@ import haxepunk.utils.Color;
 class Atlas
 {
 	/**
-	 * Whether or not to use antialiasing (default: false)
-	 */
-	public static var smooth:Bool = false;
-
-	/**
 	 * The width of this atlas
 	 */
 	public var width(get, never):Int;

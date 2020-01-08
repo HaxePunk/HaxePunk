@@ -1,22 +1,42 @@
 package haxepunk.math;
 
-@:structInit
-class Vector2
+private typedef Position =
 {
-	public var x:Float;
-	public var y:Float;
+	x:Float,
+	y:Float
+};
 
+private typedef PositionObj =
+{
+	@:isVar var x(get, set):Float;
+	@:isVar var y(get, set):Float;
+};
+
+/**
+ * Represents a position on a two dimensional coordinate system.
+ *
+ * Conversion from a `{ x:Float, y:Float }` or an `Entity` is automatic.
+ *
+ * All functions are reentrant.
+ */
+@:forward
+abstract Vector2(Position) from Position to Position
+{
 	public inline function new(x:Float = 0, y:Float = 0)
 	{
-		this.x = x;
-		this.y = y;
+		this = { x:x, y:y };
+	}
+	
+	@:dox(hide) @:from public static inline function fromObj(obj:PositionObj)
+	{
+		return new Vector2(obj.x, obj.y);
 	}
 
 	/**
-	 * The length of this vector
+	 * The length of this vector.
 	 **/
 	public var length(get, set):Float;
-	inline function get_length():Float return Math.sqrt(x * x + y * y);
+	inline function get_length():Float return Math.sqrt(this.x * this.x + this.y * this.y);
 	inline function set_length(value:Float)
 	{
 		normalize(value);
@@ -24,64 +44,126 @@ class Vector2
 	}
 
 	/**
-	 * Set the internal x, y values
+	 * Sets the internal x, y values.
 	 **/
-	public inline function setTo(x:Float, y:Float)
+	public inline function setTo(x:Float, y:Float):Vector2
 	{
 		this.x = x;
 		this.y = y;
+		return this;
 	}
 
 	/**
-	 * Convert this vector to it's perpendicular counterpart
+	 * Converts this vector to it's perpendicular counterpart.
 	 **/
-	public inline function perpendicular()
+	public inline function perpendicular():Vector2
 	{
-		setTo(-y, x);
+		setTo(-this.y, this.x);
+		return this;
 	}
 
 	/**
-	 * Invert (negate) the vector contents
+	 * Inverts (negates) the vector contents.
 	 **/
-	public inline function inverse():Void
+	public inline function inverse():Vector2
 	{
-		x = -x;
-		y = -y;
+		this.x = -this.x;
+		this.y = -this.y;
+		return this;
+	}
+	
+	/**
+	 * Returns a new vector which is this vector negated.
+	 **/
+	@:op(-a)
+	public inline function neg():Vector2
+	{
+		return clone().inverse();
 	}
 
 	/**
-	 * Copies the values from one vector into this one
+	 * Copies the values from one vector into this one.
 	 * @param other  The vector to copy from
 	 **/
-	public inline function copyFrom(other:Vector2):Void
+	public inline function copyFrom(other:Vector2):Vector2
 	{
-		x = other.x;
-		y = other.y;
+		this.x = other.x;
+		this.y = other.y;
+		return this;
 	}
 
 	/**
-	 * Scale the vector by a single value
+	 * Scales the vector by a single value.
 	 **/
-	public inline function scale(scalar:Float):Void
+	public inline function scale(scalar:Float):Vector2
 	{
-		x *= scalar;
-		y *= scalar;
+		this.x *= scalar;
+		this.y *= scalar;
+		return this;
 	}
-
-	public inline function add(other:Vector2):Void
+	
+	/**
+	 * Returns a new vector which is this vector scaled
+	 * by the given amount.
+	 **/
+	@:op(a*b) @:commutative
+	public inline function mult(scalar:Float):Vector2
 	{
-		x += other.x;
-		y += other.y;
+		return clone().scale(scalar);
 	}
-
-	public inline function subtract(other:Vector2):Void
+	
+	/**
+	 * Returns a new vector which is this vector scaled
+	 * by the inverse of the given amount.
+	 **/
+	@:op(a/b)
+	public inline function div(scalar:Float):Vector2
 	{
-		x -= other.x;
-		y -= other.y;
+		return clone().scale(1 / scalar);
+	}
+	
+	/**
+	 * Adds a vector to this vector in-place.
+	 */
+	public inline function add(other:Vector2):Vector2
+	{
+		this.x += other.x;
+		this.y += other.y;
+		return this;
+	}
+	
+	/**
+	 * Returns a new vector which is the addition of
+	 * this vector and another vector.
+	 **/
+	@:op(a+b)
+	public inline function plus(other:Vector2):Vector2
+	{
+		return clone().add(other);
+	}
+	
+	/**
+	 * Subtracts a vector to this vector in-place.
+	 */
+	public inline function subtract(other:Vector2):Vector2
+	{
+		this.x -= other.x;
+		this.y -= other.y;
+		return this;
+	}
+	
+	/**
+	 * Returns a new vector which is the subtraction of
+	 * another vector from this vector.
+	 **/
+	@:op(a-b)
+	public inline function minus(other:Vector2):Vector2
+	{
+		return clone().subtract(other);
 	}
 
 	/**
-	 * Returns the distance between this and another point
+	 * Returns the distance between this and another point.
 	 * @param other  The other point to use for distance calculation
 	 * @returns The distance between the two points
 	 **/
@@ -93,28 +175,40 @@ class Vector2
 	}
 
 	/**
-	 * Normalize the vector to a set length
+	 * Normalizes the vector to a set length.
 	 * @param size  The length of the resulting vector. Default: unit length (1)
 	 **/
-	public inline function normalize(size:Float=1):Void
+	public inline function normalize(size:Float=1):Vector2
 	{
-		if (!(x == 0 && y == 0))
+		if (!(this.x == 0 && this.y == 0))
 		{
-			var normal = size / this.length;
-			x *= normal;
-			y *= normal;
+			var normal = size / length;
+			this.x *= normal;
+			this.y *= normal;
 		}
+		return this;
 	}
 
 	/**
-	 * Rotate the vector around an angle
+	 * Rotates the vector around an angle in-place.
 	 * @param angle  The angle, in radians to rotate around (clockwise)
 	 **/
-	public inline function rotate(angle:Float):Void
+	public inline function rotate(angle:Float):Vector2
 	{
 		var sin = Math.sin(angle);
 		var cos = Math.cos(angle);
-		setTo(cos * x - sin * y, sin * x + cos * y);
+		setTo(cos * this.x - sin * this.y, sin * this.x + cos * this.y);
+		return this;
+	}
+	
+	/**
+	 * Returns a new vector that is equal to this vector rotated
+	 * by the given angle.
+	 * @param angle  The angle, in radians to rotate around (clockwise)
+	 */
+	public inline function rotated(angle:Float):Vector2
+	{
+		return clone().rotate(angle);
 	}
 
 	/**
@@ -122,7 +216,7 @@ class Vector2
 	 */
 	public inline function dot(other:Vector2):Float
 	{
-		return (x * other.x) + (y * other.y);
+		return (this.x * other.x) + (this.y * other.y);
 	}
 
 	/**
@@ -131,11 +225,11 @@ class Vector2
 	 */
 	public inline function zcross(other:Vector2):Float
 	{
-		return (x * other.y) - (y * other.x);
+		return (this.x * other.y) - (this.y * other.x);
 	}
 
 	public inline function clone():Vector2
 	{
-		return new Vector2(x, y);
+		return new Vector2(this.x, this.y);
 	}
 }

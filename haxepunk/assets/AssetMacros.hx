@@ -2,31 +2,40 @@ package haxepunk.assets;
 
 class AssetMacros
 {
-	macro public static function findAsset(cache:haxe.macro.Expr, map:haxe.macro.Expr, id:haxe.macro.Expr, addRef:haxe.macro.Expr, fallback:haxe.macro.Expr)
+	macro public static function findAsset(cache:haxe.macro.Expr, map:haxe.macro.Expr, other:haxe.macro.Expr, id:haxe.macro.Expr, addRef:haxe.macro.Expr, fallback:haxe.macro.Expr, ?onRef:haxe.macro.Expr)
 	{
-		var map = haxe.macro.ExprTools.toString(map);
+		if (onRef == null) onRef = macro {};
 		return macro {
+			var result = null;
 			// if we already have this asset cached, return it
-			if ($i{map}.exists(${id})) return $i{map}[${id}];
-			// if another active cache already has this texture cached, return
-			// their version
-			for (otherCache in active)
+			if (${map}.exists(${id}))
 			{
-				if (otherCache.$map.exists(${id}))
-				{
-					var cached = otherCache.$map[${id}];
-					if (${addRef} && cached != null)
-					{
-						// keep this asset cached here too, in case the owning cache is
-						// disposed before this one is
-						Log.debug('adding asset cache reference: ' + ${cache} + ':$id -> ' + otherCache.name + ':$id');
-						$i{map}[${id}] = cached;
-					}
-					return cached;
-				}
+				result = ${map}[${id}];
 			}
-			// no cached version; load from asset loader
-			return $i{map}[${id}] = ${fallback};
+			else
+			{
+				// if another active cache already has this texture cached, return
+				// their version
+				for (otherCache in active)
+				{
+					if (${other}.exists(${id}))
+					{
+						var cached = $other[${id}];
+						if (${addRef} && cached != null)
+						{
+							// keep this asset cached here too, in case the owning cache is
+							// disposed before this one is
+							Log.debug('adding asset cache reference: ' + ${cache} + ':$id -> ' + otherCache.name + ':$id');
+							${map}[${id}] = cached;
+							${onRef};
+						}
+						result = cached;
+					}
+				}
+				// no cached version; load from asset loader
+				if (result == null) result = ${map}[${id}] = ${fallback};
+			}
+			result;
 		}
 	}
 }

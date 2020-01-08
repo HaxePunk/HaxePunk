@@ -5,6 +5,8 @@ import haxepunk.graphics.Graphiclist;
 class SubEntity extends Entity {}
 class RenderedGraphic extends Graphic
 {
+	public function new() super();
+
 	public var isRendered = false;
 	override public function render(p, g)
 	{

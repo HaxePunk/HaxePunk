@@ -159,7 +159,7 @@ class Engine
 	}
 
 	/**
-	 * Called from OpenGLView render. Any visible scene will have its draw commands rendered to OpenGL.
+	 * Called from backend renderer. Any visible scene will have its draw commands rendered to Kha.
 	 */
 	public function onRender(fb:Framebuffer)
 	{
@@ -258,19 +258,20 @@ class Engine
 		{
 			Log.debug("ending scene: " + Type.getClassName(Type.getClass(_scene)));
 			_scene.end();
-			_scene.updateLists();
+			_scene.updateLists(false);
 			if (_scene.autoClear && _scene.hasTween) _scene.clearTweens();
 
 			_scene = _scenes[_scenes.length - 1];
 
+			onSceneSwitch.invoke();
+
 			Log.debug("starting scene: " + Type.getClassName(Type.getClass(_scene)));
+			_scene.assetCache.enable();
 			_scene.updateLists();
 			if (_scene.started) _scene.resume();
 			else _scene.begin();
-			_scene.assetCache.enable();
-			_scene.updateLists();
-
-			onSceneSwitch.invoke();
+			_scene.started = true;
+			_scene.updateLists(true);
 		}
 	}
 

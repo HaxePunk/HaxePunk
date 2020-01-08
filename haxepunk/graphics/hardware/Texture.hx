@@ -1,30 +1,84 @@
 package haxepunk.graphics.hardware;
 
-import haxepunk.utils.Color;
+import kha.Image;
 
-class Texture
+import haxepunk.utils.Color;
+import haxepunk.utils.Log;
+
+using kha.graphics2.GraphicsExtension;
+
+@:forward(width, height)
+abstract Texture(Image) from Image to Image
 {
-	public static inline function create(width:Int, height:Int, transparent:Bool=false, color:Color=0):Texture
+	/**
+	 * Create a new texture with given dimensions, transparency and color.
+	 * @param width 
+	 * @param height 
+	 * @param transparent 
+	 * @param color 
+	 * @return Texture
+	 */
+	public static inline function create(width:Int, height:Int, transparent:Bool=false, color:Color=Color.Black):Texture
 	{
-		return null;
+		if(!transparent)
+			Log.warning("Textures always have transparency.");
+		var tex = Image.create(width, height);
+		tex.clear(0, 0, 0, width, height, 1, color);
+		return tex;
 	}
 
+	/**
+	 * Load a texture from an asset given its path.
+	 * @param name 
+	 * @return Texture
+	 */
 	public static inline function fromAsset(name:String):Texture
 	{
+		Log.critical("Asset loading not yet implemented");
 		return null;
 	}
 
-	public var width:Int = 0;
-	public var height:Int = 0;
-
-	public function getPixel(x:Int, y:Int):Color
+	/**
+	 * Get a pixel's color.
+	 * @param x 
+	 * @param y 
+	 * @return Color
+	 */
+	public function getPixel(x:Int, y:Int) : Color
 	{
-		return 0;
+		return this.at(x, y);
 	}
-	public function setPixel(x:Int, y:Int, c:Color) {}
 
-	public function removeColor(color:Color) {}
-	public function clearColor(color:Color) {}
-	public function drawCircle(x:Float, y:Float, radius:Float) {}
-	public function dispose() {}
+	/**
+	 * Set all the texture's pixels to a given color.
+	 * @param color 
+	 */
+	public function clearColor(color:Color)
+	{
+		this.clear(0, 0, 0, this.width, this.height, 1, color);
+	}
+	
+	/**
+	 * Find and make transparent all the pixels of a given color.
+	 * @param color 
+	 */
+	public function removeColor(color:Color)
+	{
+		Log.critical("removeColor not implemented");
+	}
+
+	public function drawCircle(x:Float, y:Float, radius:Float)
+	{
+		this.g2.begin();
+		this.g2.drawCircle(x, y, radius);
+		this.g2.end();
+	}
+
+	/**
+	 * Dispose of this texture.
+	 */
+	public function dispose()
+	{
+		this.unload();
+	}
 }

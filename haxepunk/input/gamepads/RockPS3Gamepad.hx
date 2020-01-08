@@ -2,6 +2,9 @@ package haxepunk.input.gamepads;
 
 /**
  * Mapping to use a Rock Candy PS3 gamepad with `Gamepad`.
+ *
+ * @deprecated HaxePunk now maps gamepads automatically. Use `GamepadButton`
+ * or `GamepadAxis` values instead.
  */
 class RockPS3Gamepad
 {

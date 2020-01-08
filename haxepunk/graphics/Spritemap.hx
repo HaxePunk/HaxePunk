@@ -13,6 +13,7 @@ import haxepunk.math.Rectangle;
 class Animation
 {
 	public var onComplete:Signal0 = new Signal0();
+	public var name:String;
 
 	var frames:Array<Int>;
 	var frameRate:Float;
@@ -20,12 +21,14 @@ class Animation
 	var loop:Bool;
 	var parent:Spritemap;
 
-	function new(parent:Spritemap, frames:Array<Int>, frameRate:Float, loop:Bool)
+	function new(parent:Spritemap, frames:Array<Int>, frameRate:Float, loop:Bool, name:String="")
 	{
+		this.name = name;
 		this.frames = frames;
 		this.frameRate = (frameRate == 0 ? HXP.assignedFrameRate : frameRate);
 		this.frameCount = this.frames.length;
 		this.loop = loop;
+		this.name = name;
 	}
 
 	public function play(reset:Bool = false, reverse:Bool = false)
@@ -76,6 +79,24 @@ class Spritemap extends Image
 	public var currentAnimation(default, null):Maybe<Animation>;
 
 	/**
+	 * The amount of frames in the Spritemap.
+	 */
+	public var frameCount(get, null):Int;
+	private function get_frameCount():Int return _frameCount;
+
+	/**
+	 * Columns in the Spritemap.
+	 */
+	public var columns(get, null):Int;
+	private function get_columns():Int return _columns;
+
+	/**
+	 * Rows in the Spritemap.
+	 */
+	public var rows(get, null):Int;
+	private function get_rows():Int return _rows;
+
+	/**
 	 * Constructor.
 	 * @param	source			Source image.
 	 * @param	frameWidth		Frame width.
@@ -83,7 +104,7 @@ class Spritemap extends Image
 	 */
 	public function new(source:TileType, frameWidth:Int = 0, frameHeight:Int = 0)
 	{
-		_anims = new Map<String, Animation>();
+		_anims = new Map();
 
 		super();
 
@@ -99,6 +120,9 @@ class Spritemap extends Image
 			frameHeight == 0 ? Std.int(_atlas.height) : frameHeight
 		);
 
+		_columns = Math.ceil(_atlas.width / frameWidth);
+		_rows = Math.ceil(_atlas.height / frameHeight);
+		_frameCount = _columns * _rows;
 		frame = 0;
 		active = true;
 	}
@@ -108,6 +132,7 @@ class Spritemap extends Image
 	override public function update()
 	{
 		currentAnimation.may(function(anim) {
+			var original = currentAnimation;
 			if (complete) return;
 
 			_timer += HXP.elapsed * anim.frameRate * rate;
@@ -136,7 +161,7 @@ class Spritemap extends Image
 					}
 				}
 			}
-			frame = Std.int(anim.frames[_index]);
+			if (!complete && currentAnimation == original) frame = Std.int(anim.frames[_index]);
 		});
 	}
 
@@ -156,9 +181,34 @@ class Spritemap extends Image
 		}
 
 		// make sure frames are valid
-		var anim = new Animation(this, frames, frameRate, loop);
+		var anim = new Animation(this, frames, frameRate, loop, name);
 		_anims.set(name, anim);
 		return anim;
+	}
+
+	/**
+	 * Check if Animation Exists with passed in name.
+	 * @param	name		Name of the animation.
+	 * @return	Has Animation or Not
+	 */
+	public function exists(name:String):Bool
+	{
+		return _anims.exists(name);
+	}
+
+	/**
+	 * Removes Existing Animation.
+	 * @param	name		Name of the animation.
+	 * @return	if Animation Has Been Removed
+	 */
+	public function remove(name:String):Bool
+	{
+		if (!_anims.exists(name))
+		{
+			return false;
+		}
+		_anims.remove(name);
+		return true;
 	}
 
 	/**
@@ -268,6 +318,31 @@ class Spritemap extends Image
 	}
 
 	/**
+	 * Gets the frame index based on the column and row of the source image.
+	 * @param	column		Frame column.
+	 * @param	row			Frame row.
+	 * @return	Frame index.
+	 */
+	public inline function getFrameColRow(column:Int = 0, row:Int = 0):Int
+	{
+		return (row % _rows) * _columns + (column % _columns);
+	}
+
+	/**
+	 * Sets the current display frame based on the column and row of the source image.
+	 * When you set the frame, any animations playing will be stopped to force the frame.
+	 * @param	column		Frame column.
+	 * @param	row			Frame row.
+	 */
+	public function setFrameColRow(column:Int = 0, row:Int = 0)
+	{
+		currentAnimation = null;
+		var frameFromPos:Int = getFrameColRow(column, row);
+		if (frameFromPos == frame) return;
+		set_frame(frameFromPos);
+	}
+
+	/**
 	 * Sets the current frame index.
 	 */
 	public var frame(default, set):Int = -1;
@@ -303,4 +378,7 @@ class Spritemap extends Image
 	var _index:Int;
 	var _timer:Float = 0;
 	var _atlas:TileAtlas;
+	var _columns:Int;
+	var _rows:Int;
+	var _frameCount:Int;
 }

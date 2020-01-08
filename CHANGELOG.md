@@ -1,12 +1,19 @@
 HaxePunk CHANGELOG
 
-v4. KHA
+v5? KHA
 ------------------------------
 
 Work in progress.
 * [ghouly-tg] Wired up Kha mouse input 
 * [ghouly-tg] Updated HaxePunk template / Fixed template generation 
+* [ghouly-tg] Wired up Kha gamepad (no auto mapping)
+* [matrefeytontias] Moved hardware rendering to Kha
 
+v4.0.1
+------------------------------
+
+- Added `Scene.resume`. If the same Scene becomes active multiple times, it will only call `begin` the first time, and `resume` every time after that.
+- Added custom asset loading/caching support for AssetCache.
 
 v4.0.0
 ------------------------------

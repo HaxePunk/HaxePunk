@@ -103,8 +103,8 @@ class Backdrop extends Graphic
 			fsy = camera.screenScaleY,
 			sx = scale * scaleX,
 			sy = scale * scaleY;
-		_point.x = (point.x - floorX(camera, camera.x * scrollX) + floorX(camera, x)) * fsx - floorX(camera, originX * sx);
-		_point.y = (point.y - floorY(camera, camera.y * scrollY) + floorY(camera, y)) * fsy - floorY(camera, originY * sy);
+		_point.x = (floorX(camera, point.x) + floorX(camera, x) - floorX(camera, originX * sx) - floorX(camera, camera.x * scrollX)) * fsx;
+		_point.y = (floorY(camera, point.y) + floorY(camera, y) - floorY(camera, originY * sy) - floorY(camera, camera.y * scrollY)) * fsy;
 
 		var scaledWidth = _width * sx * fsx,
 			scaledHeight = _height * sy * fsy;

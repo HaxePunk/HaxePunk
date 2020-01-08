@@ -1,5 +1,6 @@
 package haxepunk.graphics.hardware;
 
+import haxepunk.HXP;
 import haxepunk.graphics.hardware.opengl.GL;
 import haxepunk.graphics.hardware.opengl.GLFramebuffer;
 import haxepunk.graphics.hardware.opengl.GLTexture;
@@ -47,7 +48,11 @@ class FrameBuffer
 	{
 		texture = GL.createTexture();
 		GL.bindTexture(GL.TEXTURE_2D, texture);
+		#if (html5 && lime >= "5.0.0")
+		GL.texImage2DWEBGL(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE);
+		#else
 		GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, #if ((lime >= "4.0.0") && cpp) 0 #else null #end);
+		#end
 
 		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
 		GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);

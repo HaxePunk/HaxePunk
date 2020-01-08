@@ -12,8 +12,8 @@
 
 	<source path="src"/>
 
+	<set name="hxp_extras"/>
 	<haxelib name="HaxePunk"/>
 
 	<assets path="assets/graphics" rename="graphics" include="*.png|*.jpg" type="image" embed="true"/>
-	<assets path="assets/shaders" rename="shaders" include="*.frag" type="text" embed="true"/>
 </project>

@@ -1,7 +1,9 @@
 package haxepunk.graphics.shader;
 
+import haxepunk.HXP;
 import haxepunk.assets.AssetLoader;
 import haxepunk.graphics.hardware.Float32Array;
+import haxepunk.graphics.hardware.opengl.GLUtils;
 
 /**
  * Used to create a custom shader.
@@ -22,6 +24,19 @@ void main() {
 	gl_Position = aPosition;
 }";
 
+	static inline var DEFAULT_FRAGMENT_SHADER:String = "
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+varying vec2 vTexCoord;
+uniform sampler2D uImage0;
+uniform vec2 uResolution;
+
+void main () {
+	gl_FragColor = texture2D(uImage0, vTexCoord);
+}";
+
 	/**
 	 * Create a custom shader from a text asset.
 	 */
@@ -30,38 +45,105 @@ void main() {
 		return new SceneShader(AssetLoader.getText(name));
 	}
 
+	public var active:Bool = true;
+	public var width:Null<Int> = null;
+	public var height:Null<Int> = null;
+	public var smooth:Bool = false;
+
+	public var textureWidth(get, never):Int;
+	inline function get_textureWidth() return width == null ? HXP.screen.width : Std.int(Math.min(HXP.screen.width, width));
+
+	public var textureHeight(get, never):Int;
+	inline function get_textureHeight() return height == null ? HXP.screen.height : Std.int(Math.min(HXP.screen.height, height));
+
+	var v:Float32Array;
+
 	/**
 	 * Create a custom shader from a string.
 	 */
-	public function new(fragment:String)
+	public function new(?fragment:String)
 	{
+		if (fragment == null)
+		{
+			fragment = DEFAULT_FRAGMENT_SHADER;
+		}
 		super(DEFAULT_VERTEX_SHADER, fragment);
 		position.name = "aPosition";
 		texCoord.name = "aTexCoord";
 	}
-
+	
+	function bufferData(target, size, srcData, usage)
+	{
+#if 0
+		#if (html5 && lime >= "5.0.0")
+		GL.bufferDataWEBGL(target, srcData, usage);
+		#elseif (lime >= "4.0.0")
+		GL.bufferData(target, size, srcData, usage);
+		#else
+		GL.bufferData(target, srcData, usage);
+		#end
+#end
+	}
+	
 	function createBuffer()
 	{
-		#if 0
+#if 0
 		buffer = GL.createBuffer();
 		GL.bindBuffer(GL.ARRAY_BUFFER, buffer);
-		var v = new Float32Array(_vertices);
-		#if (lime >= "4.0.0")
-		GL.bufferData(GL.ARRAY_BUFFER, v.length * Float32Array.BYTES_PER_ELEMENT, v, GL.STATIC_DRAW);
-		#else
-		GL.bufferData(GL.ARRAY_BUFFER, v, GL.STATIC_DRAW);
-		#end
+		v = new Float32Array(_vertices);
+		bufferData(GL.ARRAY_BUFFER, v.length * Float32Array.BYTES_PER_ELEMENT, v, GL.STATIC_DRAW);
 		GL.bindBuffer(GL.ARRAY_BUFFER, null);
-		#end
+#end
 	}
 
 	override public function build()
 	{
 		super.build();
-		#if 0
+#if 0
 		image = uniformIndex("uImage0");
 		resolution = uniformIndex("uResolution");
-		#end
+#end
+	}
+
+	public function setScale(w:Int, h:Int, sx:Float, sy:Float)
+	{
+		/*
+		if (GLUtils.invalid(buffer) || GLUtils.invalid(v))
+		{
+			createBuffer();
+		}
+
+		GL.bindBuffer(GL.ARRAY_BUFFER, buffer);
+		*/
+		var x:Float = w / HXP.screen.width,
+			y:Float = h / HXP.screen.height;
+		sx *= x;
+		sy *= y;
+		if (_lastX != x || _lastY != y || _lastSx != sx || _lastSy != sy)
+		{
+			#if nme
+			inline function f(i) v[i] = sx * 2 - 1;
+			f(4); f(12); f(16);
+			inline function f(i) v[i] = -sy * 2 + 1;
+			f(1); f(5); f(13);
+			inline function f(i) v[i] = x;
+			f(6); f(14); f(18);
+			inline function f(i) v[i] = 1 - y;
+			f(3); f(7); f(15);
+			#else
+			v[4] = v[12] = v[16] = sx * 2 - 1;
+			v[1] = v[5] = v[13] = -sy * 2 + 1;
+			v[6] = v[14] = v[18] = x;
+			v[3] = v[7] = v[15] = 1 - y;
+			#end
+
+			// bufferData(GL.ARRAY_BUFFER, v.length * Float32Array.BYTES_PER_ELEMENT, v, GL.STATIC_DRAW);			
+
+			_lastX = x;
+			_lastY = y;
+			_lastSx = sx;
+			_lastSy = sy;
+		}
 	}
 
 	override public function bind()
@@ -73,7 +155,6 @@ void main() {
 			createBuffer();
 		}
 
-		GL.bindBuffer(GL.ARRAY_BUFFER, buffer);
 		GL.vertexAttribPointer(position.index, 2, GL.FLOAT, false, 4 * Float32Array.BYTES_PER_ELEMENT, 0);
 		GL.vertexAttribPointer(texCoord.index, 2, GL.FLOAT, false, 4 * Float32Array.BYTES_PER_ELEMENT, 2 * Float32Array.BYTES_PER_ELEMENT);
 
@@ -85,10 +166,10 @@ void main() {
 	static var _vertices:Array<Float> = [
 		-1.0, -1.0, 0, 0,
 		1.0, -1.0, 1, 0,
-		-1.0,  1.0, 0, 1,
+		-1.0, 1.0, 0, 1,
 		1.0, -1.0, 1, 0,
-		1.0,  1.0, 1, 1,
-		-1.0,  1.0, 0, 1
+		1.0, 1.0, 1, 1,
+		-1.0, 1.0, 0, 1
 	];
 
 #if 0
@@ -96,4 +177,8 @@ void main() {
 	var resolution:GLUniformLocation;
 	static var buffer:GLBuffer;
 #end
+	static var _lastX:Float = 0;
+	static var _lastY:Float = 0;
+	static var _lastSx:Float = 0;
+	static var _lastSy:Float = 0;
 }

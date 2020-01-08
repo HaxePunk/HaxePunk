@@ -1,7 +1,11 @@
 package haxepunk.graphics.hardware;
 
 #if js
+#if haxe4
+import js.lib.Int32Array;
+#else
 import js.html.Int32Array;
+#end
 #end
 import haxepunk.graphics.hardware.opengl.GL;
 import haxepunk.graphics.hardware.opengl.GLBuffer;

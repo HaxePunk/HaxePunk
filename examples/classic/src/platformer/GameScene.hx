@@ -2,6 +2,7 @@ package platformer;
 
 import haxepunk.HXP;
 import haxepunk.Entity;
+import haxepunk.Graphic;
 import haxepunk.graphics.atlas.TextureAtlas;
 import haxepunk.graphics.tile.Tilemap;
 import haxepunk.graphics.tile.Backdrop;
@@ -11,7 +12,6 @@ import platformer.entities.Player;
 
 class GameScene extends DemoScene
 {
-
 	static var map:Array<Array<Int>> = [
 		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
 		[1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1],
@@ -35,8 +35,11 @@ class GameScene extends DemoScene
 		super();
 	}
 
+
 	override public function begin()
 	{
+		haxepunk.pixel.PixelArtScaler.activate();
+
 		atlas = TextureAtlas.loadTexturePacker("atlas/assets.xml");
 		backdrop = new Backdrop("gfx/tile.png", true, true);
 		addGraphic(backdrop, 20);
@@ -78,8 +81,8 @@ class GameScene extends DemoScene
 
 	override public function update()
 	{
-		backdrop.x += 1;
-		backdrop.y += 2 * MathUtil.sign(player.gravity.y);
+		backdrop.x += 60 * HXP.elapsed;
+		backdrop.y += 60 * HXP.elapsed * MathUtil.sign(player.gravity.y);
 		HXP.camera.x = player.x - HXP.halfWidth;
 		HXP.camera.y = player.y - HXP.halfHeight;
 		super.update();

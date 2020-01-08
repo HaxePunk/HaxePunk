@@ -86,7 +86,7 @@ class TiledImage extends Image
 				);
 				x1 = x2;
 			}
-			x1 = x2 = 0;
+			x = x1 = x2 = 0;
 			y1 = y2;
 		}
 	}

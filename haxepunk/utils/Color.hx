@@ -4,13 +4,18 @@ import haxepunk.math.MathUtil;
 
 /**
  * An abstract with various color utility functions.
- * TODO : merge with kha.Color ?
  * @since	4.0.0
  **/
-abstract Color(UInt) from UInt to UInt
+abstract Color(kha.Color) from kha.Color to kha.Color
 {
-	public static inline var White:Color = 0xffffff;
-	public static inline var Black:Color = 0x000000;
+	public static inline var White:Color = kha.Color.White;
+	public static inline var Black:Color = kha.Color.Black;
+
+	@:from public static function fromInt(v:UInt) : Color
+	{
+		var c:kha.Color = v;
+		return c;
+	}
 
 	/**
 	 * Linear interpolation between two colors.

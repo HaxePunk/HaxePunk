@@ -1,6 +1,5 @@
 package haxepunk._internal;
 
-import flash.display.OpenGLView;
 import flash.display.Sprite;
 import flash.display.StageAlign;
 import flash.display.StageDisplayState;
@@ -8,6 +7,7 @@ import flash.display.StageQuality;
 import flash.display.StageScaleMode;
 import flash.events.Event;
 import flash.geom.Rectangle;
+import flash.system.System;
 import flash.Lib;
 import haxepunk.debug.Console;
 
@@ -46,6 +46,11 @@ class FlashApp extends Sprite
 		return Lib.getTimer();
 	}
 
+	public function getMemoryUse():Float
+	{
+		return System.totalMemory;
+	}
+
 	public function multiTouchSupported():Bool
 	{
 		return flash.ui.Multitouch.supportsTouchEvents;
@@ -56,6 +61,11 @@ class FlashApp extends Sprite
 		engine.onUpdate();
 	}
 
+	function initRenderer()
+	{
+		throw "not implemented";
+	}
+
 	/** @private Event handler for stage entry. */
 	@:access(haxepunk.Engine)
 	function onStage(?e:Event)
@@ -64,22 +74,22 @@ class FlashApp extends Sprite
 		removeEventListener(Event.ADDED_TO_STAGE, onStage);
 		setStageProperties();
 
-		// create an OpenGLView object and use the engine's render method
-		var view = new OpenGLView();
-		view.render = function(rect:Rectangle)
-		{
-			engine.onRender();
-		};
-		addChild(view);
+		initRenderer();
 
 		// enable input
 		initKeyInput();
 		initMouseInput();
+		#if !hxp_no_gamepad
 		initGamepadInput();
+		#end
 
 		if (multiTouchSupported())
 		{
 			initTouchInput();
+		}
+		else
+		{
+			Log.debug("touch events not supported");
 		}
 
 		engine.checkScene();
@@ -159,21 +169,27 @@ class FlashApp extends Sprite
 
 	public function initMouseInput()
 	{
+		Log.debug("init mouse input");
 		MouseInput.init(this);
 	}
 
 	public function initKeyInput()
 	{
+		Log.debug("init key input");
 		KeyInput.init(this);
 	}
 
+	#if !hxp_no_gamepad
 	public function initGamepadInput()
 	{
+		Log.debug("init gamepad input");
 		GamepadInput.init(this);
 	}
+	#end
 
 	public function initTouchInput()
 	{
+		Log.debug("init touch input");
 		TouchInput.init(this);
 	}
 

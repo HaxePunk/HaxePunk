@@ -146,10 +146,15 @@ class Shader
 	}
 
 #if 0
+	static var _attribs:Array<Attribute> = new Array();
 	public function prepare(drawCommand:DrawCommand, buffer:RenderBuffer)
 	{
 		if (!position.isEnabled) return;
-		var attribs = attributeNames.map(function(n) return attributes[n]).filter(function (a) return a.isEnabled);
+		HXP.clear(_attribs);
+		for (name in attributeNames)
+		{
+			if (attributes[name].isEnabled) _attribs.push(attributes[name]);
+		}
 
 		buffer.use();
 		if (texCoord.isEnabled)
@@ -172,7 +177,7 @@ class Shader
 			buffer.prepareVertexOnly(drawCommand);
 		}
 
-		buffer.addVertexAttribData(attribs, drawCommand.triangleCount * 3);
+		buffer.addVertexAttribData(_attribs, drawCommand.triangleCount * 3);
 
 		buffer.updateGraphicsCard();
 

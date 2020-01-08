@@ -3,10 +3,11 @@ package haxepunk.input;
 import haxepunk.HXP;
 import haxepunk.Signal;
 import haxepunk.math.Vector2;
+import haxepunk.input.gamepad.GamepadAxis;
+import haxepunk.input.gamepad.GamepadButton;
+import haxepunk.input.gamepad.GamepadType;
 
 typedef GamepadID = Int;
-typedef GamepadButton = Int;
-typedef GamepadAxis = Int;
 
 @:enum
 abstract JoyButtonState(Int) from Int to Int
@@ -39,6 +40,11 @@ class Gamepad
 	public static var onConnect:Signal1<Gamepad> = new Signal1();
 	public static var onDisconnect:Signal1<Gamepad> = new Signal1();
 
+	public static function getController(guid:String)
+	{
+		return GamepadType.get(guid);
+	}
+
 	/**
 	 * Returns a gamepad object, or null if none exists at this ID.
 	 * @param  id The id of the gamepad, starting with 0
@@ -54,6 +60,8 @@ class Gamepad
 	 */
 	public static var gamepadCount(default, null):Int = 0;
 
+	public var name:String = "???";
+	public var guid:String = "???";
 	public var id:Int = 0;
 
 	/**
@@ -74,6 +82,13 @@ class Gamepad
 	 * A Point containing the gamepad's hat value.
 	 */
 	public var hat:Vector2 = new Vector2();
+
+	/**
+	 * A GamepadType which will be used to map inputs from this
+	 * device to standard GamepadButton codes. If null, the raw button codes
+	 * will be used instead.
+	 */
+	public var type:Null<GamepadType> = null;
 
 	/**
 	 * Creates and initializes a new Gamepad.
@@ -310,7 +325,7 @@ class Gamepad
 		}
 	}
 
-	function onAxisMove(axis:GamepadAxis, v:Float):Void
+	function onAxisMove(axis:GamepadAxis, v:Float)
 	{
 		if (Math.abs(v) < deadZone) v = 0;
 		if (!this.axis.exists(axis)) _allAxes.push(axis);

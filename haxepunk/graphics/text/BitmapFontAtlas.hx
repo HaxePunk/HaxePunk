@@ -1,6 +1,10 @@
 package haxepunk.graphics.text;
 
-import haxe.xml.Access;
+#if !haxe4
+import haxe.xml.Fast;
+#else
+import haxe.xml.Access as Fast;
+#end
 import haxepunk.HXP;
 import haxepunk.assets.AssetLoader;
 import haxepunk.graphics.atlas.AtlasDataType;
@@ -62,7 +66,7 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 		var xml = Xml.parse(xmlText);
 		var firstElement = xml.firstElement();
 		if (firstElement == null) throw 'BitmapFontAtlas: "$file" contains invalid XML!';
-		var fast = new Access(firstElement);
+		var fast = new Fast(firstElement);
 
 		var imageFile = new haxe.io.Path(file).dir + "/" + fast.node.pages.node.page.att.file;
 		var atlas = new BitmapFontAtlas(imageFile);
@@ -84,7 +88,11 @@ class BitmapFontAtlas extends TextureAtlas implements IBitmapFont
 			}
 			else if (char.has.id)
 			{
+				#if haxe4
+				glyph = cast(char.att.id, Utf8String);
+				#else
 				glyph = Utf8String.fromCharCode(Std.parseInt(char.att.id));
+				#end
 			}
 			if (glyph == null) throw '"$file" is not a valid .fnt file!';
 

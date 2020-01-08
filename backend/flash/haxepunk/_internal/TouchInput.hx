@@ -3,6 +3,7 @@ package haxepunk._internal;
 import flash.events.TouchEvent;
 import flash.ui.Multitouch;
 import flash.ui.MultitouchInputMode;
+import haxepunk.input.Input;
 import haxepunk.input.Touch;
 
 @:access(haxepunk.input.Touch)
@@ -10,6 +11,8 @@ class TouchInput
 {
 	public static function init(app:FlashApp)
 	{
+		@:privateAccess Input.multiTouchSupported = true;
+		Input.handlers.push(Touch);
 		var stage = app.stage;
 		Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
 		stage.addEventListener(TouchEvent.TOUCH_BEGIN, onTouchBegin);

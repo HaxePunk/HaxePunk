@@ -55,7 +55,12 @@ typedef Graphiclist = BaseGraphicList<Graphic>;
 	{
 		for (g in _graphics)
 		{
-			if (g.active) g.update();
+			if (g != null && g.active)
+			{
+				g.preUpdate.invoke();
+				g.update();
+				g.postUpdate.invoke();
+			}
 		}
 	}
 
@@ -79,7 +84,7 @@ typedef Graphiclist = BaseGraphicList<Graphic>;
 		camera.setTo(cx * scrollX, cy * scrollY);
 		for (g in _graphics)
 		{
-			if (g.visible)
+			if (g != null && g.visible)
 			{
 				if (g.relative)
 				{
@@ -182,7 +187,7 @@ typedef Graphiclist = BaseGraphicList<Graphic>;
 		active = false;
 		for (g in _graphics)
 		{
-			if (g.active)
+			if (g != null && g.active)
 			{
 				active = true;
 				return;
