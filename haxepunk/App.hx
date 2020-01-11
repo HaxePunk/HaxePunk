@@ -44,8 +44,8 @@ class App
 	public function getTimeMillis():Float return Scheduler.time() / 1000;
 	public function getMemoryUse():Float return 0;
 
-	// TODO : figure out a way to get that info from Kha
-	public function multiTouchSupported():Bool return false;
+	// TODO : needs to be tested.
+	public function multiTouchSupported():Bool return kha.input.Surface.get() != null;
 
 	static var _mouseX = 0;
 	static var _mouseY = 0;
