@@ -34,8 +34,8 @@ class Hitbox extends Mask
 		var px:Float = _x + _parent.x,
 			py:Float = _y + _parent.y;
 
-		var ox = other._parent.originX + other._parent.x,
-			oy = other._parent.originY + other._parent.y;
+		var ox = other._parent.x - other._parent.originX,
+			oy = other._parent.y - other._parent.originY;
 
 		return px + _width > ox
 			&& py + _height > oy
