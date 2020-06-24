@@ -36,8 +36,8 @@ class Circle extends Hitbox
 	/** @private Collides against an Entity. */
 	override function collideMask(other:Mask):Bool
 	{
-		var distanceX = Math.abs(_parent.x + _x - other._parent.x - other._parent.width * 0.5),
-			distanceY = Math.abs(_parent.y + _y - other._parent.y - other._parent.height * 0.5);
+		var distanceX = Math.abs(_parent.x + _x - (other._parent.x - other._parent.originX + other._parent.width * 0.5)),
+			distanceY = Math.abs(_parent.y + _y - (other._parent.y - other._parent.originY + other._parent.height * 0.5));
 
 		if (distanceX > other._parent.width * 0.5 + radius
 			|| distanceY > other._parent.height * 0.5 + radius)
