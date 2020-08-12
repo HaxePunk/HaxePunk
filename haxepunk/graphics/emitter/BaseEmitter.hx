@@ -5,7 +5,8 @@ import haxepunk.HXP;
 import haxepunk.Graphic;
 import haxepunk.utils.Color;
 import haxepunk.utils.Ease.EaseFunction;
-import haxepunk.math.MathUtil;
+import haxepunk.math.Degrees;
+import haxepunk.math.Radians;
 import haxepunk.math.Random;
 import haxepunk.math.Vector2;
 
@@ -196,7 +197,7 @@ import haxepunk.math.Vector2;
 	 * @param	angle		Base angle to start from.
 	 * @return	The Particle emited.
 	 */
-	public function emit(name:String, x:Float = 0, y:Float = 0, angle:Float = 0):Particle
+	public function emit(name:String, x:Float = 0, y:Float = 0, angle:Degrees = 0):Particle
 	{
 		var p:Particle, type:ParticleType = _types.get(name);
 
@@ -224,8 +225,9 @@ import haxepunk.math.Vector2;
 		p._startAngle = type._startAngle + type._startAngleRange * Random.random;
 		p._spanAngle = type._spanAngle + type._spanAngleRange * Random.random;
 		var d:Float = type._distance + type._distanceRange * Random.random;
-		p._moveX = Math.cos(p._angle * MathUtil.RAD) * d;
-		p._moveY = Math.sin(p._angle * MathUtil.RAD) * d;
+		var angle:Radians = p._angle;
+		p._moveX = Math.cos(angle) * d;
+		p._moveY = Math.sin(angle) * d;
 		p._x = x;
 		p._y = y;
 		p._gravity = type._gravity + type._gravityRange * Random.random;
@@ -279,7 +281,7 @@ import haxepunk.math.Vector2;
 	 * @param	backwards		If the motion should be played backwards.
 	 * @return	This ParticleType object.
 	 */
-	public function setMotion(name:String, angle:Float, distance:Float, duration:Float, angleRange:Float = 0, distanceRange:Float = 0, durationRange:Float = 0, ?ease:EaseFunction, backwards:Bool = false):ParticleType
+	public function setMotion(name:String, angle:Degrees, distance:Float, duration:Float, angleRange:Degrees = 0, distanceRange:Float = 0, durationRange:Float = 0, ?ease:EaseFunction, backwards:Bool = false):ParticleType
 	{
 		var pt:ParticleType = _types.get(name);
 		if (pt == null) return null;
@@ -340,7 +342,7 @@ import haxepunk.math.Vector2;
 	 * @since	2.6.0
 	 * @return	This ParticleType object.
 	 */
-	public function setRotation(name:String, startAngle:Float, spanAngle:Float, startAngleRange:Float = 0, spanAngleRange:Float = 0, ?ease:EaseFunction):ParticleType
+	public function setRotation(name:String, startAngle:Degrees, spanAngle:Degrees, startAngleRange:Degrees = 0, spanAngleRange:Degrees = 0, ?ease:EaseFunction):ParticleType
 	{
 		var pt:ParticleType = _types.get(name);
 		if (pt == null) return null;

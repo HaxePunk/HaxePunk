@@ -2,6 +2,7 @@ package haxepunk.tweens.misc;
 
 import haxepunk.HXP;
 import haxepunk.Tween;
+import haxepunk.math.Degrees;
 import haxepunk.utils.Ease.EaseFunction;
 
 /**
@@ -12,7 +13,7 @@ class AngleTween extends Tween
 	/**
 	 * The current value.
 	 */
-	public var angle:Float = 0;
+	public var angle:Degrees = 0;
 
 	/**
 	 * Constructor.
@@ -31,11 +32,11 @@ class AngleTween extends Tween
 	 * @param	duration		Duration of the tween.
 	 * @param	ease			Optional easer function.
 	 */
-	public function tween(fromAngle:Float, toAngle:Float, duration:Float, ?ease:EaseFunction)
+	public function tween(fromAngle:Degrees, toAngle:Degrees, duration:Float, ?ease:EaseFunction)
 	{
 		_start = angle = fromAngle;
-		var d:Float = toAngle - angle,
-			a:Float = Math.abs(d);
+		var d:Degrees = toAngle - angle,
+			a:Degrees = d.abs();
 		if (a > 181) _range = (360 - a) * (d > 0 ? -1 : 1);
 		else if (a < 179) _range = d;
 		else _range = HXP.choose([180, -180]);
@@ -53,6 +54,6 @@ class AngleTween extends Tween
 	}
 
 	// Tween information.
-	var _start:Float;
-	var _range:Float;
+	var _start:Degrees;
+	var _range:Degrees;
 }

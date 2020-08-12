@@ -17,11 +17,6 @@ class Tilemap extends Graphic
 	public var usePositions:Bool;
 
 	/**
-	 * Rotation of the tilemap, in degrees.
-	 */
-	public var angle:Float = 0;
-
-	/**
 	 * Scale of the tilemap, effects both x and y scale.
 	 */
 	public var scale:Float = 1;

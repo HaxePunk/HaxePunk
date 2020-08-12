@@ -8,7 +8,7 @@ class CircularMotionTest extends TestSuite
 		var tween = new CircularMotion();
 		tween.setMotion(0, 0, 10, 0, true, 4);
 		tween.update(2);
-		Assert.areEqual(Math.PI, tween.angle);
+		Assert.areEqual(180, tween.angle);
 	}
 
 	@Test
@@ -17,7 +17,7 @@ class CircularMotionTest extends TestSuite
 		var tween = new CircularMotion();
 		tween.setMotion(0, 0, 10, 0, false, 4);
 		tween.update(2);
-		Assert.areEqual(-Math.PI, tween.angle);
+		Assert.areEqual(-180, tween.angle);
 	}
 
 	@Test

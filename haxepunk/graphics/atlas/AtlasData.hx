@@ -4,7 +4,9 @@ import haxepunk.assets.AssetCache;
 import haxepunk.graphics.shader.Shader;
 import haxepunk.graphics.hardware.DrawCommandBatch;
 import haxepunk.graphics.hardware.Texture;
+import haxepunk.math.Degrees;
 import haxepunk.math.MathUtil;
+import haxepunk.math.Radians;
 import haxepunk.math.Rectangle;
 import haxepunk.math.Vector2;
 import haxepunk.utils.BlendMode;
@@ -110,7 +112,7 @@ class AtlasData
 	 */
 	public inline function prepareTile(
 		rect:Rectangle, tx:Float, ty:Float,
-		scaleX:Float, scaleY:Float, angle:Float,
+		scaleX:Float, scaleY:Float, angle:Degrees,
 		color:Color, alpha:Float,
 		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle,
 		flexibleLayer:Bool = false):Void
@@ -128,8 +130,9 @@ class AtlasData
 		}
 		else
 		{
-			var cos = Math.cos(-angle * MathUtil.RAD);
-			var sin = Math.sin(-angle * MathUtil.RAD);
+			var rads:Radians = -angle;
+			var cos = Math.cos(rads),
+				sin = Math.sin(rads);
 			a = cos * scaleX; // m00
 			b = -sin * scaleY; // m10
 			c = sin * scaleX; // m01

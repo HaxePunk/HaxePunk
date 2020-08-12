@@ -1,15 +1,16 @@
 package haxepunk.masks;
 
 import haxepunk.Entity;
-import haxepunk.HXP;
 import haxepunk.Mask;
 import haxepunk.masks.Circle;
 import haxepunk.masks.Grid;
 import haxepunk.masks.Hitbox;
-import haxepunk.math.Projection;
-import haxepunk.math.Vector2;
-import haxepunk.math.MathUtil;
+import haxepunk.math.Degrees;
 import haxepunk.math.MakeConvex;
+import haxepunk.math.MathUtil;
+import haxepunk.math.Projection;
+import haxepunk.math.Radians;
+import haxepunk.math.Vector2;
 
 
 /**
@@ -407,9 +408,9 @@ class Polygon extends Hitbox
 	/**
 	 * Rotation angle (in degrees) of the polygon (rotates around origin point).
 	 */
-	public var angle(get, set):Float;
-	inline function get_angle():Float return _angle;
-	function set_angle(value:Float):Float
+	public var angle(get, set):Degrees;
+	inline function get_angle():Degrees return _angle;
+	function set_angle(value:Degrees):Degrees
 	{
 		if (value != _angle)
 		{
@@ -474,19 +475,19 @@ class Polygon extends Hitbox
 	 * @param	angle	How much the polygon is rotated (in degrees).
 	 * @return	The polygon
 	 */
-	public static function createPolygon(sides:Int = 3, radius:Float = 100, angle:Float = 0):Polygon
+	public static function createPolygon(sides:Int = 3, radius:Float = 100, angle:Degrees = 0):Polygon
 	{
 		if (sides < 3) throw "The polygon needs at least 3 sides.";
 
 		// figure out the angle required for each step
-		var rotationAngle:Float = (Math.PI * 2) / sides;
+		var rotationAngle:Radians = Radians.CIRCLE / sides;
 
 		// loop through and generate each point
 		var points:Array<Vector2> = new Array<Vector2>();
 
 		for (i in 0...sides)
 		{
-			var tempAngle:Float = Math.PI + i * rotationAngle;
+			var tempAngle:Radians = Math.PI + i * rotationAngle;
 			var p:Vector2 = new Vector2();
 			p.x = Math.cos(tempAngle) * radius + radius;
 			p.y = Math.sin(tempAngle) * radius + radius;
@@ -519,11 +520,11 @@ class Polygon extends Hitbox
 		return new Polygon(p);
 	}
 
-	function rotate(angleDelta:Float):Void
+	function rotate(angleDelta:Degrees):Void
 	{
 		_angle += angleDelta;
 
-		angleDelta *= MathUtil.RAD;
+		var angleDelta:Radians = angleDelta;
 
 		var p:Vector2;
 
@@ -612,7 +613,7 @@ class Polygon extends Hitbox
 	}
 
 	// Hitbox information.
-	var _angle:Float;
+	var _angle:Degrees;
 	var _points:Array<Vector2>;
 	var _axes:Array<Vector2>;
 

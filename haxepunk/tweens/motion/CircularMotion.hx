@@ -1,6 +1,8 @@
 package haxepunk.tweens.motion;
 
 import haxepunk.utils.Ease.EaseFunction;
+import haxepunk.math.Degrees;
+import haxepunk.math.Radians;
 import haxepunk.math.MathUtil;
 
 /**
@@ -11,13 +13,13 @@ class CircularMotion extends Motion
 	/**
 	 * The current position on the circle.
 	 */
-	public var angle(default, null):Float = 0;
+	public var angle(default, null):Degrees = 0;
 
 	/**
 	 * The circumference of the current circle motion.
 	 */
 	public var circumference(get, never):Float;
-	function get_circumference():Float return _radius * _CIRC;
+	function get_circumference():Float return _radius * Radians.CIRCLE;
 
 	/**
 	 * Starts moving along a circle.
@@ -29,13 +31,13 @@ class CircularMotion extends Motion
 	 * @param	duration	Duration of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotion(centerX:Float, centerY:Float, radius:Float, angle:Float, clockwise:Bool, duration:Float, ?ease:EaseFunction)
+	public function setMotion(centerX:Float, centerY:Float, radius:Float, angle:Degrees, clockwise:Bool, duration:Float, ?ease:EaseFunction)
 	{
 		_centerX = centerX;
 		_centerY = centerY;
 		_radius = radius;
-		this.angle = _angleStart = angle * MathUtil.RAD;
-		_angleFinish = _CIRC * (clockwise ? 1 : -1);
+		this.angle = _angleStart = angle;
+		_angleFinish = Degrees.CIRCLE * (clockwise ? 1 : -1);
 		_target = duration;
 		_ease = ease;
 		start();
@@ -51,14 +53,14 @@ class CircularMotion extends Motion
 	 * @param	speed		Speed of the movement.
 	 * @param	ease		Optional easer function.
 	 */
-	public function setMotionSpeed(centerX:Float, centerY:Float, radius:Float, angle:Float, clockwise:Bool, speed:Float, ?ease:EaseFunction)
+	public function setMotionSpeed(centerX:Float, centerY:Float, radius:Float, angle:Degrees, clockwise:Bool, speed:Float, ?ease:EaseFunction)
 	{
 		_centerX = centerX;
 		_centerY = centerY;
 		_radius = radius;
-		this.angle = _angleStart = angle * MathUtil.RAD;
-		_angleFinish = _CIRC * (clockwise ? 1 : -1);
-		_target = (_radius * _CIRC) / speed;
+		this.angle = _angleStart = angle;
+		_angleFinish = Degrees.CIRCLE * (clockwise ? -1 : 1);
+		_target = (_radius * Radians.CIRCLE) / speed;
 		_ease = ease;
 		start();
 	}
@@ -68,17 +70,14 @@ class CircularMotion extends Motion
 	override function updateInternal()
 	{
 		angle = _angleStart + _angleFinish * _t;
-		x = _centerX + Math.cos(angle) * _radius;
-		y = _centerY + Math.sin(angle) * _radius;
+		x = _centerX + Degrees.cos(angle) * _radius;
+		y = _centerY + Degrees.sin(angle) * _radius;
 	}
 
 	// Circle information.
 	var _centerX:Float = 0;
 	var _centerY:Float = 0;
 	var _radius:Float = 0;
-	var _angleStart:Float = 0;
-	var _angleFinish:Float = 0;
-
-	static var _CIRC(get, never):Float;
-	static inline function get__CIRC():Float return Math.PI * 2;
+	var _angleStart:Degrees = 0;
+	var _angleFinish:Degrees = 0;
 }

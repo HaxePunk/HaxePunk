@@ -1,5 +1,6 @@
 package haxepunk.graphics.emitter;
 
+import haxepunk.math.Degrees;
 import haxepunk.utils.Color;
 
 /**
@@ -19,7 +20,7 @@ class Particle
 		return _y + _oy + _moveY * (_type._backwards ? 1 - td : td) + Math.pow(td * _gravity, 2);
 	}
 
-	public function angle(td:Float):Float
+	public function angle(td:Float):Degrees
 	{
 		return _startAngle + _spanAngle * td;
 	}
@@ -55,12 +56,12 @@ class Particle
 	var _y:Float = 0;
 	var _moveX:Float = 0;
 	var _moveY:Float = 0;
-	var _angle:Float = 0;
+	var _angle:Degrees = 0;
 	var _firstDraw:Bool = false;
 	var _ox:Float = 0;
 	var _oy:Float = 0;
-	var _startAngle:Float = 0;
-	var _spanAngle:Float = 0;
+	var _startAngle:Degrees = 0;
+	var _spanAngle:Degrees = 0;
 
 	// Gravity information.
 	var _gravity:Float = 0;
