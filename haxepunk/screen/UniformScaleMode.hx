@@ -54,10 +54,11 @@ class UniformScaleMode extends ScaleMode
 		{
 			case Letterbox:
 				// fill only part of the window
-				HXP.screen.width = Std.int(baseWidth * scale);
-				HXP.screen.height = Std.int(baseHeight * scale);
-				HXP.screen.x = Std.int((stageWidth - HXP.screen.width) / 2);
-				HXP.screen.y = Std.int((stageHeight - HXP.screen.height) / 2);
+				// TODO: Add toggleable black bars
+				HXP.screen.x = Std.int((stageWidth - Std.int(baseWidth * scale)) / 2);
+				HXP.screen.y = Std.int((stageHeight - Std.int(baseHeight * scale)) / 2);
+				HXP.screen.width = stageWidth;
+				HXP.screen.height = stageHeight;
 			case Expand, ZoomIn:
 				// fill the window
 				HXP.screen.x = HXP.screen.y = 0;
