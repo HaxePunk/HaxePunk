@@ -1,6 +1,12 @@
 package haxepunk;
 
+import haxe.ds.Either.Left;
+import haxe.ds.Either.Right;
 import haxepunk.math.Vector2;
+import haxepunk.ds.OneOf;
+
+@:dox(hide)
+typedef CamPoint = OneOf<PositionObj, Vector2>;
 
 /**
  * @since 4.0.0
@@ -63,7 +69,7 @@ class Camera
 	 */
 	public inline function floorY(y:Float) return Math.floor((y + 0.5) * screenScaleY) / screenScaleY;
 
-	var anchorTarget:Null<Vector2>;
+	var anchorTarget:Null<CamPoint>;
 	var anchorX:Float = 0;
 	var anchorY:Float = 0;
 
@@ -72,9 +78,9 @@ class Camera
 	 * Camera will keep the target in the specified part of the screen.
 	 * @since 4.0.0
 	 */
-	public function anchor(?target:Vector2, anchorX:Float = 0.5, anchorY:Float = 0.5)
+	public function anchor(?targetL:PositionObj, ?targetR:Vector2, anchorX:Float = 0.5, anchorY:Float = 0.5)
 	{
-		anchorTarget = target;
+		anchorTarget = (targetL != null)? targetL : targetR;		
 		this.anchorX = anchorX;
 		this.anchorY = anchorY;
 	}
@@ -107,16 +113,26 @@ class Camera
 
 	public function update()
 	{
+
 		if (anchorTarget != null)
 		{
-			var tx = anchorTarget.x,
-				ty = anchorTarget.y;
-			if (Std.is(anchorTarget, Entity))
+			var tx, ty;
+			switch (anchorTarget)
 			{
-				var e:Entity = cast anchorTarget;
-				tx = e.centerX;
-				ty = e.centerY;
+				case Left(v):
+					tx = v.x;
+					ty = v.y;
+					if (Std.is(v, Entity))
+					{
+						var e:Entity = cast v;
+						tx = e.centerX;
+						ty = e.centerY;
+					}
+				case Right(v):
+					tx = v.x;
+					ty = v.y;
 			}
+
 			x = tx - (HXP.width / fullScaleX * anchorX);
 			y = ty - (HXP.height / fullScaleY * anchorY);
 		}

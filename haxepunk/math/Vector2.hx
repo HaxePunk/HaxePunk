@@ -6,7 +6,7 @@ private typedef Position =
 	y:Float
 };
 
-private typedef PositionObj =
+typedef PositionObj =
 {
 	@:isVar var x(get, set):Float;
 	@:isVar var y(get, set):Float;
