@@ -111,7 +111,7 @@ class Camera
 		{
 			var tx = anchorTarget.x,
 				ty = anchorTarget.y;
-			if (Std.is(anchorTarget, Entity))
+			if (Std.isOfType(anchorTarget, Entity))
 			{
 				var e:Entity = cast anchorTarget;
 				tx = e.centerX;

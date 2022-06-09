@@ -34,7 +34,7 @@ class HaxelibInfoBuilder
 			var value = Reflect.field(doc, field);
 
 			// Simple String value
-			if (Std.is(value, String))
+			if (Std.isOfType(value, String))
 			{
 				fields.push({
 					name: field,

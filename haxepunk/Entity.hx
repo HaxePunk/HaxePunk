@@ -632,7 +632,7 @@ class Entity extends Tweener
 		{
 			graphic = g;
 		}
-		else if (Std.is(graphic, Graphiclist))
+		else if (Std.isOfType(graphic, Graphiclist))
 		{
 			cast(graphic, Graphiclist).add(g);
 		}
@@ -670,7 +670,7 @@ class Entity extends Tweener
 		#if html5
 		inline function getInt(value:Dynamic, defaultValue:Int = 0):Int
 		{
-			return if (Std.is(value, Int) || Std.is(value, Float))
+			return if (Std.isOfType(value, Int) || Std.isOfType(value, Float))
 				value;
 			else
 				defaultValue;

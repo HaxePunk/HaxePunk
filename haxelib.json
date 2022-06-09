@@ -9,7 +9,7 @@
 	"contributors": ["heardtheword", "_ibilon", "bendmorris", "matrefeytontias"],
 	"install": {
 		"munit": "",
-		"openfl": "8.9.1",
-		"lime": "7.6.3"
+		"openfl": "9.1.0",
+		"lime": "7.9.0"
 	}
 }
