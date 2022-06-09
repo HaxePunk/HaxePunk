@@ -22,7 +22,7 @@ import haxepunk.math.Vector2;
 	{
 		super();
 		_source = source;
-		_sourceIsImage = Std.is(_source, Image);
+		_sourceIsImage = Std.isOfType(_source, Image);
 		_types = new Map<String, ParticleType>();
 		active = true;
 		particleCount = 0;

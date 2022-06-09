@@ -90,7 +90,7 @@ class SceneTest extends TestSuite
 	public function testCreateRecycle()
 	{
 		var e:TestEntity = scene.create(TestEntity, false);
-		Assert.isTrue(Std.is(e, TestEntity));
+		Assert.isTrue(Std.isOfType(e, TestEntity));
 		scene.updateLists();
 		Assert.areEqual(0, countRecycled(scene));
 

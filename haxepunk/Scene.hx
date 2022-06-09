@@ -865,7 +865,7 @@ class Scene extends Tweener
 		for (n in _types.get(type))
 		{
 			dist = (x - n.x) * (x - n.x) + (y - n.y) * (y - n.y);
-			if (dist < nearDist && Std.is(e, classType))
+			if (dist < nearDist && Std.isOfType(e, classType))
 			{
 				nearDist = dist;
 				near = n;
@@ -982,7 +982,7 @@ class Scene extends Tweener
 	{
 		for (e in _update)
 		{
-			if (Std.is(e, c)) return cast e;
+			if (Std.isOfType(e, c)) return cast e;
 		}
 		return null;
 	}
@@ -1085,7 +1085,7 @@ class Scene extends Tweener
 		var n:Int = into.length;
 		for (e in _update)
 		{
-			if (Std.is(e, c))
+			if (Std.isOfType(e, c))
 				into[n++] = cast e;
 		}
 	}

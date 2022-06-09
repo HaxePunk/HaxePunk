@@ -35,7 +35,7 @@ class Sfx
 		if (source == null)
 			throw "Invalid source Sound.";
 
-		if (Std.is(source, String))
+		if (Std.isOfType(source, String))
 		{
 			_sound = AssetLoader.getSound(source);
 			_sounds.set(source, _sound);

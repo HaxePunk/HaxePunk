@@ -157,7 +157,7 @@ class Masklist extends Hitbox
 
 		for (m in _masks)
 		{
-			if (Std.is(m, Polygon))
+			if (Std.isOfType(m, Polygon))
 			{
 				p = cast m;
 				if (p != null)

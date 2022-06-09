@@ -143,7 +143,7 @@ class HXP
 			throw "Can't choose a random element on an empty array";
 		}
 
-		if (Std.is(objs[0], Array)) // Passed an Array
+		if (Std.isOfType(objs[0], Array)) // Passed an Array
 		{
 			var c:Array<Dynamic> = cast(objs[0], Array<Dynamic>);
 
@@ -390,7 +390,7 @@ class HXP
 			complete:Void -> Void = null,
 			ease:Float -> Float = null,
 			tweener:Tweener = HXP.tweener;
-		if (Std.is(object, Tweener)) tweener = cast(object, Tweener);
+		if (Std.isOfType(object, Tweener)) tweener = cast(object, Tweener);
 		if (options != null)
 		{
 			if (Reflect.hasField(options, "type")) type = options.type;
