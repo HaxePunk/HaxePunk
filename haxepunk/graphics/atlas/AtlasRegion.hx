@@ -3,6 +3,7 @@ package haxepunk.graphics.atlas;
 import haxepunk.utils.BlendMode;
 import haxepunk.utils.Color;
 import haxepunk.graphics.shader.Shader;
+import haxepunk.math.Degrees;
 import haxepunk.math.MathUtil;
 import haxepunk.math.Rectangle;
 import haxepunk.math.Vector2;
@@ -79,11 +80,11 @@ class AtlasRegion implements IAtlasRegion
 	 * @param	clipRect	Clipping rectangle
 	 */
 	public inline function draw(x:Float, y:Float,
-		scaleX:Float=1, scaleY:Float=1, angle:Float=0,
+		scaleX:Float=1, scaleY:Float=1, angle:Degrees=0,
 		color:Color=Color.White, alpha:Float=1,
 		shader:Shader, smooth:Bool, blend:BlendMode, ?clipRect:Rectangle, flexibleLayer:Bool = false)
 	{
-		if (rotated) angle = angle + 90;
+		if (rotated) angle += 90;
 
 		_parent.prepareTile(_rect, x, y,
 			scaleX, scaleY, angle,

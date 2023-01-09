@@ -4,13 +4,15 @@ import haxepunk.HXP;
 import haxepunk.graphics.Image;
 import haxepunk.graphics.emitter.Particle;
 import haxepunk.graphics.emitter.Emitter;
+import haxepunk.math.Degrees;
 import haxepunk.math.MathUtil;
+import haxepunk.math.Radians;
 
 class Ship extends ExplodingEntity
 {
 	public static inline var WEAPON_SHOTS:Float = 10;
 
-	static inline var TURN_PER_SEC=180;
+	static var TURN_PER_SEC:Radians = -Math.PI;
 	static inline var MOVE_PER_SEC=180;
 	static inline var ACCEL_TIME = 0.5;
 	static inline var SHOOT_DELAY = 0.15;
@@ -26,8 +28,13 @@ class Ship extends ExplodingEntity
 	var body:Image;
 	var bullet:Emitter;
 
-	public var angle(default, set):Float = 0;
-	function set_angle(a:Float)
+	/**
+	 * Just for fun, we'll use units of radians to manage the angle. Usually
+	 * HaxePunk works in degrees, but as long as we annotate the types
+	 * correctly, it'll do the conversions automatically.
+	 */
+	public var angle(default, set):Radians = 0;
+	function set_angle(a:Radians):Radians
 	{
 		return body.angle = angle = a;
 	}
@@ -124,8 +131,9 @@ class Ship extends ExplodingEntity
 		// speed up and move
 		velocity = Math.min(1, velocity + HXP.elapsed / ACCEL_TIME);
 		var moveSpeed = velocity * HXP.elapsed * MOVE_PER_SEC * dir;
-		x += moveSpeed * Math.cos(MathUtil.RAD * angle);
-		y += moveSpeed * Math.sin(MathUtil.RAD * angle);
+		var rads:Radians = angle;
+		x += moveSpeed * Math.cos(rads);
+		y += moveSpeed * Math.sin(rads);
 
 		// wrap around the screen
 		if (x < 0) x += HXP.width;
@@ -141,8 +149,8 @@ class Ship extends ExplodingEntity
 		if (_lastShot > 0) return;
 		if (weapon < 1) return;
 		--weapon;
-		var bx = width / 2 * Math.cos(MathUtil.RAD * angle);
-		var by = height / 2 * Math.sin(MathUtil.RAD * angle);
+		var bx = width / 2 * Degrees.cos(angle);
+		var by = height / 2 * Degrees.sin(angle);
 		bullet.emit("bullet", bx, by, angle);
 		_lastShot = 1;
 	}

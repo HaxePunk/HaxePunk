@@ -3,6 +3,7 @@ package asteroids.entities;
 import haxepunk.HXP;
 import haxepunk.graphics.Spritemap;
 import haxepunk.graphics.emitter.Emitter;
+import haxepunk.math.Degrees;
 import haxepunk.math.MathUtil;
 import haxepunk.utils.Color;
 
@@ -18,8 +19,8 @@ class Asteroid extends ExplodingEntity
 	var size:Int = 0;
 	var dir:Float=0;
 
-	public var angle(default, set):Float = 0;
-	function set_angle(a:Float)
+	public var angle(default, set):Degrees = 0;
+	function set_angle(a:Degrees)
 	{
 		return asteroid.angle = angle = a;
 	}
@@ -65,8 +66,8 @@ class Asteroid extends ExplodingEntity
 
 		angle += HXP.elapsed * dir * TURN_SPEED;
 		var moveSpeed = HXP.elapsed * MOVE_SPEED * (size + 1);
-		var moveX = Math.cos(angle * MathUtil.RAD);
-		var moveY = Math.sin(angle * MathUtil.RAD);
+		var moveX = Degrees.cos(angle);
+		var moveY = Degrees.sin(angle);
 
 		x += moveSpeed * moveX;
 		y += moveSpeed * moveY;

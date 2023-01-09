@@ -5,6 +5,7 @@ import haxepunk.Mask;
 import haxepunk.graphics.Image;
 import haxepunk.graphics.hardware.Texture;
 import haxepunk.math.MathUtil;
+import haxepunk.math.Radians;
 import haxepunk.math.Rectangle;
 
 #if (lime || nme)
@@ -99,7 +100,8 @@ class Imagemask extends Pixelmask
 		var matrix = new Matrix(sx, 0, 0, sy,
 			-_source.originX * sx,
 			-_source.originY * sy);
-		matrix.rotate(_source.angle * MathUtil.RAD);
+		var angle:Radians = _source.angle;
+		matrix.rotate(angle);
 
 		var point = new Point(0, 0);
 		var p1 = matrix.transformPoint(point);
